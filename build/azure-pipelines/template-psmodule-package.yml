@@ -1,0 +1,39 @@
+# PowerShell Module Package Pipeline Template
+# https://aka.ms/yaml
+
+parameters:
+- name: moduleName
+  type: string
+  default:
+- name: moduleVersion
+  type: string
+  default:
+- name: pipelineId
+  type: string
+  default:
+- name: artifactInput
+  type: string
+  default: 'PSModuleSigned'
+- name: artifactOutput
+  type: string
+  default: 'PSModulePackage'
+
+steps:
+#- download: current
+#  artifact: '${{ parameters.artifactName }}'
+
+- task: ArchiveFiles@2
+  displayName: 'Package PowerShell Module'
+  inputs:
+    rootFolderOrFile: '$(Pipeline.Workspace)/${{ parameters.pipelineId }}/${{ parameters.artifactInput }}/${{ parameters.moduleName }}'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ parameters.moduleName }}_${{ parameters.moduleVersion }}.zip'
+    replaceExistingArchive: true
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish PowerShell Module Package Artifact'
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ parameters.moduleName }}_${{ parameters.moduleVersion }}.zip'
+    artifact: '${{ parameters.artifactOutput }}'
+    publishLocation: 'pipeline'

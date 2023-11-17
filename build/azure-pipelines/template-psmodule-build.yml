@@ -1,0 +1,112 @@
+# PowerShell Module Build Pipeline Template
+# https://aka.ms/yaml
+
+parameters:
+- name: moduleName
+  type: string
+  default:
+- name: moduleRename
+  type: string
+  default:
+- name: moduleGuid
+  type: string
+  default:
+- name: moduleVersion
+  type: string
+  default:
+- name: prereleaseTag
+  type: string
+  default:
+- name: packages
+  type: object
+  default:
+- name: artifactOutput
+  type: string
+  default: 'PSModule'
+- name: GenerateManifest
+  type: boolean
+  default: false
+
+steps:
+- task: CopyFiles@2
+  displayName: 'Copy Source to Staging'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/src'
+    Contents: '**'
+    TargetFolder: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}'
+    preserveTimestamp: true
+
+- task: PowerShell@2
+  displayName: 'Merge PowerShell Module Nested Module Scripts'
+  inputs:
+    filePath: '$(System.DefaultWorkingDirectory)/build/Merge-PSModuleNestedModuleScripts.ps1'
+    arguments: '-ModuleManifestPath "$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}.psd1" -MergeWithRootModule -RemoveNestedModuleScriptFiles'
+    pwsh: true
+
+- task: CopyFiles@2
+  displayName: 'Copy LICENSE to Staging'
+  inputs:
+    Contents: 'LICENSE'
+    TargetFolder: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}'
+    preserveTimestamp: true
+
+- pwsh: 'Rename-Item "$env:StagingDirectory/$env:ModuleName/LICENSE" -NewName "License.txt"'
+  displayName: 'Rename LICENSE to License.txt'
+  env:
+    StagingDirectory: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}'
+    ModuleName: '${{ coalesce(parameters.moduleRename,parameters.moduleName) }}'
+
+- ${{ if gt(length(parameters.packages), 0) }}:
+  - task: NuGetCommand@2
+    displayName: 'Restore NuGet Packages'
+    inputs:
+      command: 'restore'
+      restoreSolution: '$(System.DefaultWorkingDirectory)/packages.config'
+      feedsToUse: 'config'
+      nugetConfigPath: '$(System.DefaultWorkingDirectory)/NuGet.config'
+      restoreDirectory: '$(System.DefaultWorkingDirectory)/packages'
+
+  - ${{ each package in parameters.packages }}:
+    - ${{ each targetFramework in package.targetFramework }}:
+      - task: CopyFiles@2
+        displayName: 'Copy ${{ package.id }}.${{ package.version }} ${{ targetFramework }} to Staging'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/packages/${{ package.id }}.${{ package.version }}/lib/${{ targetFramework }}'
+          Contents: '**'
+          TargetFolder: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}/${{ package.id }}.${{ package.version }}/${{ targetFramework }}'
+          preserveTimestamp: true
+
+- ${{ if ne(parameters.moduleRename, '') }}:
+  - pwsh: 'Rename-Item "$env:StagingDirectory/$env:ModuleRename/$env:ModuleName.psd1" -NewName "$env:ModuleRename.psd1"'
+    displayName: 'Rename PowerShell Module Manifest'
+    env:
+      StagingDirectory: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}'
+      ModuleName: '${{ parameters.moduleName }}'
+      ModuleRename: '${{ parameters.moduleRename }}'
+
+- task: PowerShell@2
+  displayName: 'Update PowerShell Module Manifest'
+  inputs:
+    filePath: '$(System.DefaultWorkingDirectory)/build/Update-PSModuleManifest.ps1'
+    arguments: '-ModuleManifestPath "$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}.psd1" -Guid "${{ parameters.moduleGuid }}" -ModuleVersion "${{ parameters.moduleVersion }}" -Prerelease "${{ parameters.prereleaseTag }}" -SkipRequiredAssembliesDetection'
+    pwsh: true
+
+- task: PowerShell@2
+  displayName: 'Add PowerShell Module Header'
+  inputs:
+    filePath: '$(System.DefaultWorkingDirectory)/build/Add-PSModuleHeader.ps1'
+    arguments: '-ModuleManifestPath "$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}.psd1"'
+    pwsh: true
+
+- ${{ if parameters.GenerateManifest }}:
+  - task: ManifestGeneratorTask@0
+    displayName: 'Generate Software Bill of Materials (SBOM)'
+    inputs:
+      BuildDropPath: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish PowerShell Module Artifact'
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}'
+    artifact: '${{ parameters.artifactOutput }}'
+    publishLocation: 'pipeline'

@@ -1,0 +1,80 @@
+# Continuous Integration Pipeline
+# https://aka.ms/yaml
+
+parameters:
+- name: vmImage
+  displayName: 'Pool Image'
+  type: string
+  default: 'ubuntu-latest'
+  values:
+  - windows-latest
+  - ubuntu-latest
+  - macOS-latest
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+    - preview
+  paths:
+    include:
+    - src/*
+
+#pr: none
+
+variables:
+  vmImage: '${{ parameters.vmImage }}'
+  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+    prereleaseTag: 
+  ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+    prereleaseTag: 'preview'
+  artifactModule: 'PSModule'
+
+pool:
+  vmImage: $(vmImage)
+
+stages:
+
+- stage: Test
+  # dependsOn: Build
+  jobs: 
+  - job: Windows
+    variables: 
+      skipComponentGovernanceDetection: true
+      runCodesignValidationInjection: false
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - template: template-psmodule-test.yml
+      parameters:
+        pipelineId: 's'
+        artifactInput: 'src'
+        PesterConfigurationName: 'CI'
+        TestWindowsPowershell: true
+
+  - job: Ubuntu
+    variables: 
+      skipComponentGovernanceDetection: true
+      runCodesignValidationInjection: false
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: template-psmodule-test.yml
+      parameters:
+        pipelineId: 's'
+        artifactInput: 'src'
+        PesterConfigurationName: 'CI'
+
+  - job: MacOS
+    variables: 
+      skipComponentGovernanceDetection: true
+      runCodesignValidationInjection: false
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+    - template: template-psmodule-test.yml
+      parameters:
+        pipelineId: 's'
+        artifactInput: 'src'
+        PesterConfigurationName: 'CI'
