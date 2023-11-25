@@ -1,8 +1,0 @@
-Generated with https://express.adobe.com/express-apps/logo-maker/preview
-
-            Fonts used: Lato-Bold 
-
-            Colors used: E2E2E2,171717  
-
-            Icon url: https://thenounproject.com/term/net/40516  
-        
