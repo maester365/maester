@@ -1,6 +1,6 @@
 ﻿<#
  .Synopsis
-  Gets the default app mangement policy of the tenant.
+  Checks if the default app management policy is enabled.
 
  .Description
   GET /policies/defaultAppManagementPolicy
@@ -11,6 +11,7 @@
 
 Function Test-MtAppManagementPolicyEnabled {
   [CmdletBinding()]
+  [OutputType([bool])]
   param()
 
   $result = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/defaultAppManagementPolicy"
