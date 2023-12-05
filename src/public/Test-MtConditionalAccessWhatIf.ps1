@@ -9,11 +9,11 @@ Function Test-MtConditionalAccessWhatIf {
         [string]$UserId,
 
         # The applications that should be tested Default: All
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ApplicationBasedCA')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ApplicationBasedCA")]
         [string[]]$IncludeApplications = "All",
 
         # The user action that should be tested. Default: registerOrJoinDevices
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'UserActionBasedCA')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "UserActionBasedCA")]
         [ValidateSet("registerOrJoinDevices", "registerSecurityInformation")]
         [string[]]$UserAction = "registerOrJoinDevices",
 
@@ -40,7 +40,7 @@ Function Test-MtConditionalAccessWhatIf {
 
     process {
         # Definition of conditional access
-        if ($UserAction) {
+        if ($PSCmdlet.ParameterSetName -eq "UserActionBasedCA") {
             $CAContext = @{
                 "@odata.type" = "#microsoft.graph.whatIfUserActionContext"
                 "userAction"  = $UserAction
