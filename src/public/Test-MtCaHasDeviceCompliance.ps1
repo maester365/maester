@@ -23,7 +23,7 @@ Function Test-MtCaHasDeviceCompliance {
 
   $policies = Get-MtConditionalAccessPolicies
 
-  $result = & { Set-StrictMode -Off; $policies.value.grantcontrols.builtincontrols -contains 'compliantDevice' }
+  $result = & { Set-StrictMode -Off; $policies.value.grantcontrols.builtincontrols -contains 'compliantDevice' -and $pol.value.state -eq 'enabled' }
   return $result
 
 }
