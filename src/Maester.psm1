@@ -9,21 +9,24 @@
 #>
 
 ## Set Strict Mode for Module. https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/set-strictmode
-Set-StrictMode -Version 3.0
+# Set-StrictMode -Version 3.0
 
 ## Initialize Module Configuration
 
 ## Initialize Module Variables
+$script:ModuleRoot = $PSScriptRoot
 
 # Import private and public scripts and expose the public ones
 $privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1")
 $publicScripts = @(Get-ChildItem -Path "$PSScriptRoot\public" -Recurse -Filter "*.ps1")
+$scriptScripts = @(Get-ChildItem -Path "$PSScriptRoot\scripts" -Recurse -Filter "*.ps1")
+$checkScripts = @(Get-ChildItem -Path "$PSScriptRoot\checks" -Recurse -Filter "*.ps1")
 
-foreach ($script in ($privateScripts + $publicScripts)) {
+foreach ($file in ($privateScripts + $publicScripts + $scriptScripts + $checkScripts)) {
 	try {
-		. $script.FullName
+		. $file.FullName
 	} catch {
-		Write-Error -Message ("Failed to import function {0}: {1}" -f $script, $_)
+		Write-Error -Message ("Failed to import function {0}: {1}" -f $file, $_)
 	}
 }
 
