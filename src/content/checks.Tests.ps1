@@ -4,7 +4,7 @@
 
 	foreach ($checkGroup in $byCategory) {
 		$message = $categories[$checkGroup.Name]
-		if (-not $message) { "Executing category: $($checkGroup.Name)" }
+		if (-not $message) { $message = "Executing category: $($checkGroup.Name)" }
 
 		Describe $message -ForEach $checkGroup {
 			$checkGroup = $_
@@ -15,7 +15,7 @@
 					Parameters = Resolve-MtCheckParameter -Name $check.Name
 				}
 				It $check.Message -Tag $check.Tags -ForEach $set {
-					& $check.Check.Code $check.parameters
+					& $check.Code $parameters
 				}
 			}
 		}
