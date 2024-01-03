@@ -14,6 +14,7 @@ Set-StrictMode -Version 3.0
 ## Initialize Module Configuration
 
 ## Initialize Module Variables
+$MtGraphCache = @{}
 
 # Import private and public scripts and expose the public ones
 $privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1")

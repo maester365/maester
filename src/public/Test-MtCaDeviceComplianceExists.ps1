@@ -9,21 +9,25 @@
   https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device
 
  .Example
-  Test-MtCaHasDeviceCompliance
+  Test-MtCaDeviceComplianceExists
 #>
 
-Function Test-MtCaHasDeviceCompliance {
+Function Test-MtCaDeviceComplianceExists {
   [CmdletBinding()]
   [OutputType([bool])]
-  param (
-    # The policies in the tenant, returned by Get-MtConditionalAccessPolicies
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
-    [object] $Policies
-  )
+  param ()
 
   $policies = Get-MtConditionalAccessPolicies
 
-  $result = & { Set-StrictMode -Off; $policies.value.grantcontrols.builtincontrols -contains 'compliantDevice' -and $pol.value.state -eq 'enabled' }
-  return $result
+  Set-StrictMode -Off
 
+  $result = $false
+  foreach ($policy in $policies) {
+    if ($policy.value.grantcontrols.builtincontrols -contains 'compliantDevice' -and $policy.value.state -eq 'enabled') {
+      $result = $true
+    }
+  }
+  Set-StrictMode -Version Latest
+
+  return $result
 }
