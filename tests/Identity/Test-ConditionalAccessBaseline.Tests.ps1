@@ -12,4 +12,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1006: At least one Conditional Access policy is configured to require MFA for admins" {
         Test-MtCaAllAppsExists | Should -Be $true -Because "There is no policy that requires MFA for admins"
     }
+    It "ID1007: At least one Conditional Access policy is configured to require MFA for all users" {
+        Test-MtCaMfaForAllUsers | Should -Be $true -Because "There is no policy that requires MFA for all users"
+    }
 }
