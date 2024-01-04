@@ -1,6 +1,4 @@
-
-
-Function Test-MtConditionalAccessWhatIf {
+function Test-MtConditionalAccessWhatIf {
     [CmdletBinding(DefaultParameterSetName = 'ApplicationBasedCA')]
     [OutputType([object])]
     param (
@@ -47,7 +45,7 @@ Function Test-MtConditionalAccessWhatIf {
             }
         } else {
             $CAContext = @{
-                "@odata.type"         = "#microsoft.graph.whatifapplicationContext"
+                "@odata.type"         = "#microsoft.graph.whatIfApplicationContext"
                 "includeApplications" = @(
                     $IncludeApplications
                 )
@@ -69,7 +67,16 @@ Function Test-MtConditionalAccessWhatIf {
 
         Write-Verbose ( $ConditionalAccessWhatIfDefinition | ConvertTo-Json -Depth 99 -Compress )
 
-        $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri "https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate" -Body ( $ConditionalAccessWhatIfDefinition | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value | Where-Object { $_.policyApplies -eq $true }
-        return $ConditionalAccessWhatIfResult
+        try {
+            $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri "https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate" -Body ( $ConditionalAccessWhatIfDefinition | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
+            # Output raw result for debugging
+            Write-Verbose ( $ConditionalAccessWhatIfResult | ConvertTo-Json -Depth 99 | Out-String )
+            # Filter out policies that do not apply
+            $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }
+            # Output filtered results
+            return $ConditionalAccessWhatIfResult
+        } catch {
+            Write-Error $_.Exception.Message
+        }
     }
 }
