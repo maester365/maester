@@ -1,8 +1,23 @@
-<#
+﻿<#
 .SYNOPSIS
-    Run a Microsoft Graph Command
+    Enhanced version of Invoke-MgGraphRequest that supports paging, batching and caching.
+
+ .Description
+    The version of Invoke-Graph request supports
+    * Filter, Select and Unique IDs as parameters
+    * Automatic paging if Graph returns a nextLink
+    * Batching of requests to Graph if multiple requests are piped through
+    * Caching of results for the duration of the session
+    * Ability to skip cache and go directly to Graph
+    * Specify consistency level as a parameter
+
+    Note: Batch requests don't support caching.
+ .Example
+    Get all users with a display name of "John Doe" and return the first 10 results.
+    Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName" -Top 10
+
 #>
-function Invoke-Graph{
+Function Invoke-MtGraphRequest {
     [CmdletBinding()]
     param(
         # Graph endpoint such as "users".
@@ -38,12 +53,15 @@ function Invoke-Graph{
         [int] $BatchSize = 20,
         # Base URL for Microsoft Graph API.
         [Parameter(Mandatory = $false)]
-        [uri] $GraphBaseUri
+        [uri] $GraphBaseUri,
+        # Specify if this request should skip cache and go directly to Graph.
+        [Parameter(Mandatory = $false)]
+        [switch] $DisableCache
     )
 
     begin {
-        if(!$GraphBaseUri){
-            if(!(Test-Path variable:global:GraphBaseUri)){
+        if (!$GraphBaseUri) {
+            if (!(Test-Path variable:global:GraphBaseUri)) {
                 $global:GraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
             }
             $GraphBaseUri = $global:GraphBaseUri
@@ -52,23 +70,26 @@ function Invoke-Graph{
 
         function Format-Result ($results, $RawOutput) {
             if (!$RawOutput -and $results -and (Get-ObjectProperty $results 'value')) {
+                $dataContextName = '@odata.context'
                 foreach ($result in $results.value) {
                     if ($result -is [hashtable]) {
-                        $result.Add('@odata.context', ('{0}/$entity' -f $results.'@odata.context'))
-                    }
-                    else {
-                        $result | Add-Member -MemberType NoteProperty -Name '@odata.context' -Value ('{0}/$entity' -f $results.'@odata.context')
+                        if (!$result.ContainsKey($dataContextName)) {
+                            $result.Add($dataContextName, ('{0}/$entity' -f $results.'@odata.context'))
+                        }
+                    } else {
+                        if (![bool]$results.PSObject.Properties[$dataContextName]) {
+                            $result | Add-Member -MemberType NoteProperty -Name $dataContextName -Value ('{0}/$entity' -f $results.'@odata.context')
+                        }
                     }
                     Write-Output $result
                 }
-            }
-            else { Write-Output $results }
+            } else { Write-Output $results }
         }
 
         function Complete-Result ($results, $DisablePaging) {
             if (!$DisablePaging -and $results) {
                 while (Get-ObjectProperty $results '@odata.nextLink') {
-                    $results = Invoke-MgGraphRequest -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject
+                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject -DisableCache:$DisableCache
                     Format-Result $results $DisablePaging
                 }
             }
@@ -78,6 +99,7 @@ function Invoke-Graph{
     process {
         ## Initialize
         $results = $null
+
         if (!$UniqueId) { [string[]] $UniqueId = '' }
         if ($DisableBatching -and ($RelativeUri.Count -gt 1 -or $UniqueId.Count -gt 1)) {
             Write-Warning ('This command is invoking {0} individual Graph requests. For better performance, remove the -DisableBatching parameter.' -f ($RelativeUri.Count * $UniqueId.Count))
@@ -95,8 +117,7 @@ function Invoke-Graph{
                         $finalQueryParameters[$ParameterName] = $QueryParameters[$ParameterName]
                     }
                 }
-            }
-            elseif ($QueryParameters) { [hashtable] $finalQueryParameters = $QueryParameters }
+            } elseif ($QueryParameters) { [hashtable] $finalQueryParameters = $QueryParameters }
             else { [hashtable] $finalQueryParameters = @{ } }
             if ($Select) { $finalQueryParameters['$select'] = $Select -join ',' }
             if ($Filter) { $finalQueryParameters['$filter'] = $Filter }
@@ -116,12 +137,12 @@ function Invoke-Graph{
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
-                }
-                else {
-                        ## Get results
-                        $results = Invoke-MgGraphRequest -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject
-                        Format-Result $results $DisablePaging
-                        Complete-Result $results $DisablePaging
+                } else {
+
+                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject -DisableCache:$DisableCache
+
+                    Format-Result $results $DisablePaging
+                    Complete-Result $results $DisablePaging
                 }
             }
         }
@@ -135,7 +156,7 @@ function Invoke-Graph{
                 $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
                 Write-Debug $jsonRequests
 
-                $resultsBatch = Invoke-MgGraphRequest -Method POST -Uri $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType PSObject
+                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType PSObject -DisableCache:$DisableCache
                 $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
 
                 foreach ($results in ($resultsBatch.body)) {

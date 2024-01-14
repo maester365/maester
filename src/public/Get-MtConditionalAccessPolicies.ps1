@@ -10,20 +10,8 @@
 
 Function Get-MtConditionalAccessPolicies {
   [CmdletBinding()]
-  param(
-    [switch]$Force
-  )
+  param()
 
-  $uri = 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies'
-  $result = Get-CacheValue $uri
+  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta
 
-  if (!$result -or $Force) {
-    $result = Invoke-GraphRequest -Uri 'https://graph.microsoft.com/beta/identity/conditionalAccess/policies' -OutputType PSObject
-    if ($result) {
-      Set-CacheValue -Key $uri -Value $result
-    }
-
-  }
-
-  return $result
 }

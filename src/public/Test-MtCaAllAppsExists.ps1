@@ -30,11 +30,11 @@ Function Test-MtCaAllAppsExists {
 
   $result = $false
   foreach ($policy in $policies) {
-    if ($policy.value.conditions.applications.includeApplications -eq 'all' `
-        -and $policy.value.state -eq 'enabled') {
+    if ($policy.conditions.applications.includeApplications -eq 'all' `
+        -and $policy.state -eq 'enabled') {
 
       $result = $SkipCheckAllUsers.IsPresent `
-        -or $policy.value.conditions.users.includeusers -eq 'all'
+        -or $policy.conditions.users.includeusers -eq 'all'
     }
   }
 

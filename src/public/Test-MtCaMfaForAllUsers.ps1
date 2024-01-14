@@ -17,7 +17,7 @@ Function Test-MtCaMfaForAllUsers {
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Select-Object -ExpandProperty value | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
 

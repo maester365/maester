@@ -14,7 +14,7 @@ Function Test-MtAppManagementPolicyEnabled {
   [OutputType([bool])]
   param()
 
-  $result = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/defaultAppManagementPolicy"
+  $result = Invoke-MtGraphRequest -RelativeUri "policies/defaultAppManagementPolicy"
   return $result.isEnabled -eq 'True'
 
 }
