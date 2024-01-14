@@ -51,7 +51,7 @@ Function GetPropertyName($CurrentValue) {
 $aadsc = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv3/config/AadSecConfig.json' | ConvertFrom-Json
 
 $template = @'
-Describe "AADSC: %ControlName% - %DisplayName%. See https://maester.dev/t/AADSC-%Name%" -Tag "AADSCA", "Security", "All", "%Severity%" {
+Describe "AADSC: %ControlName% - %DisplayName%. See https://maester.dev/t/AADSC-%GraphEndPoint%.%Name%" -Tag "AADSCA", "Security", "All", "%Severity%" {
     It "AADSC-%Name%:" {
         $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
         $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue% but was $($result.%CurrentValue%)"
@@ -80,6 +80,7 @@ foreach ($control in $aadsc) {
         $output = $output -replace '%ApiVersion%', $apiVersion
         $output = $output -replace '%RecommendedValue%', $recommendedValue
         $output = $output -replace '%CurrentValue%', $CurrentValue
+        $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
 
         if ($CurrentValue -eq '' -or $control.ControlName -eq '') {
             Write-Warning 'Skipping'
