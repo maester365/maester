@@ -76,4 +76,7 @@ $PesterConfiguration = New-PesterConfiguration -Hashtable @{
         Verbosity = 'Detailed'
     }
 }
+
+Clear-MtGraphCache #Reset the cache to avoid stale data
+
 Invoke-Pester -Configuration $PesterConfiguration

@@ -18,7 +18,7 @@ Function Test-MtCaEmergencyAccessExists {
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Select-Object -ExpandProperty value | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     Set-StrictMode -Off
 
