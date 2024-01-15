@@ -1,5 +1,5 @@
 ---
-title: ID1006
+title: ID.1006
 description: At least one Conditional Access policy is configured to require MFA for admins
 ---
 

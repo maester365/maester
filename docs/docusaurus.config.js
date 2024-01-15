@@ -4,50 +4,55 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Maester',
-  tagline: 'Your Microsoft 365 test automation framework to continously validate your Microsoft cloud configuration!',
-  favicon: 'img/favicon.ico',
+  title: "Maester",
+  tagline:
+    "Your Microsoft 365 test automation framework to continously validate your Microsoft cloud configuration!",
+  favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: 'https://maester.dev',
+  url: "https://maester.dev",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'maester365', // Usually your GitHub org/user name.
-  projectName: 'maester', // Usually your repo name.
+  organizationName: "maester365", // Usually your GitHub org/user name.
+  projectName: "maester", // Usually your repo name.
 
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ["@docusaurus/theme-mermaid"],
 
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: './sidebars.js',
+          sidebarPath: "./sidebars.js",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/maester365/docs/tree/main/src/site',
+          editUrl: "https://github.com/maester365/docs/tree/main/src/site",
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
       }),
     ],
@@ -57,64 +62,64 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/maester-social-card.jpg',
+      image: "img/maester-social-card.jpg",
       navbar: {
-        title: 'Maester',
+        title: "Maester",
         logo: {
-          alt: 'Maester Logo',
-          src: 'img/logo.svg',
+          alt: "Maester Logo",
+          src: "img/logo.svg",
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'siteSidebar',
-            position: 'left',
-            label: 'Docs',
+            type: "docSidebar",
+            sidebarId: "siteSidebar",
+            position: "left",
+            label: "Docs",
           },
           {
-            type: 'docSidebar',
-            sidebarId: 'siteSidebar',
-            position: 'left',
-            label: 'Tests',
+            type: "docSidebar",
+            sidebarId: "siteSidebar",
+            position: "left",
+            label: "Tests",
           },
           {
-            href: 'https://github.com/maester365/maester',
-            label: 'GitHub',
-            position: 'right',
+            href: "https://github.com/maester365/maester",
+            label: "GitHub",
+            position: "right",
           },
         ],
       },
       footer: {
-        style: 'dark',
+        style: "dark",
         links: [
           {
-            title: 'Docs',
+            title: "Docs",
             items: [
               {
-                label: 'Tests',
-                to: '/docs/intro',
+                label: "Tests",
+                to: "/docs/intro",
               },
             ],
           },
           {
-            title: 'Community',
+            title: "Community",
             items: [
               {
-                label: 'Discord',
-                href: 'https://discord.entra.news',
+                label: "Discord",
+                href: "https://discord.entra.news",
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/maester365',
+                label: "Twitter",
+                href: "https://twitter.com/maester365",
               },
             ],
           },
           {
-            title: 'More',
+            title: "More",
             items: [
               {
-                label: 'GitHub',
-                href: 'https://github.com/maester365/maester',
+                label: "GitHub",
+                href: "https://github.com/maester365/maester",
               },
             ],
           },
@@ -126,10 +131,10 @@ const config = {
         darkTheme: prismThemes.dracula,
       },
       colorMode: {
-        defaultMode: 'light',
+        defaultMode: "light",
         disableSwitch: false,
         respectPrefersColorScheme: true,
-      },  
+      },
     }),
 };
 

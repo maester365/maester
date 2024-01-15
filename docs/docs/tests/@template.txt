@@ -1,0 +1,19 @@
+---
+title: %title%
+description: %heading%
+---
+
+# %heading%
+
+## Description
+
+%description%
+
+## How to fix
+
+%howtofix%
+
+## Learn more
+
+%learnmore%
+-

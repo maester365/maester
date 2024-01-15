@@ -1,0 +1,29 @@
+---
+title: %DocName%
+description: %Name% - %DisplayName%
+---
+
+# %DisplayName%
+
+%ControlItemDescription%
+
+| | |
+|-|-|
+| **Name** | %Name% |
+| **Control** | %ControlName% |
+| **Description** | %Description% |
+| **Severity** | %Severity% |
+
+%MitreDiagram%
+
+## How to fix
+| | |
+|-|-|
+| **Recommendation** | %Recommendation% |
+| **Configuration** | %RelativeUri% |
+| **Setting** | `%CurrentValue%` |
+| **Recommended Value** | %RecommendedValue% |
+| **Default Value** | %DefaultValue% |
+| **Graph API Docs** | %GraphDocsUrl% |
+| **Graph Explorer** | %GraphExplorerUrl% |
+%PortalDeepLink%
