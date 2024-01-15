@@ -1,5 +1,5 @@
 ---
-title: ID1007
+title: ID.1007
 description: At least one Conditional Access policy is configured to require MFA for all users
 ---
 

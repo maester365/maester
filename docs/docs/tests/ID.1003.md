@@ -1,7 +1,8 @@
 ---
-title: ID1003
+title: ID.1003
 description: At least one Conditional Access policy is configured with All cloud apps
 ---
+
 # At least one Conditional Access policy is configured with `All cloud apps`
 
 ## Description
@@ -10,8 +11,8 @@ Ensure that every app has at least one Conditional Access policy applied. From a
 
 This practice ensures you
 
-* Don't need to update Conditional Access policies every time you onboard a new application.
-* Protect all Microsoft Graph API calls from apps that are not listed in the Apps blade in the Entra portal.
+- Don't need to update Conditional Access policies every time you onboard a new application.
+- Protect all Microsoft Graph API calls from apps that are not listed in the Apps blade in the Entra portal.
 
 ## How to fix
 
@@ -19,4 +20,4 @@ Create a conditional access policy that applies to `All cloud apps`, and then ex
 
 ## Learn more
 
-* [Apply Conditional Access policies to every app](https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app)
+- [Apply Conditional Access policies to every app](https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app)

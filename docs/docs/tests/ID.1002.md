@@ -1,7 +1,8 @@
 ---
-title: ID1002
+title: ID.1002
 description: Enforce credential configurations on apps and service principals
 ---
+
 # Enforce credential configurations on apps and service principals
 
 ## Description
@@ -10,8 +11,8 @@ By default Microsoft Entra ID allows service principals and applications to be c
 
 This can include
 
-* client secrets instead of certificates
-* secrets and certificates with long expiry (e.g. 10 year)
+- client secrets instead of certificates
+- secrets and certificates with long expiry (e.g. 10 year)
 
 ## How to fix
 
@@ -67,4 +68,4 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 
 ## Learn more
 
-* [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
+- [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)

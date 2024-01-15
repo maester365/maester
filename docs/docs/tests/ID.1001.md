@@ -1,7 +1,8 @@
 ---
-title: ID1001
+title: ID.1001
 description: At least one Conditional Access policy is configured with device compliance
 ---
+
 # At least one Conditional Access policy is configured with device compliance
 
 ## Description
@@ -16,4 +17,4 @@ Use this template and customize it to exclude MFA so that only device compliance
 
 ## Learn more
 
-* [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
+- [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
