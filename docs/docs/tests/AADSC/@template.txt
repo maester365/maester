@@ -14,8 +14,6 @@ description: %Name% - %DisplayName%
 | **Description** | %Description% |
 | **Severity** | %Severity% |
 
-%MitreDiagram%
-
 ## How to fix
 | | |
 |-|-|
@@ -27,3 +25,5 @@ description: %Name% - %DisplayName%
 | **Graph API Docs** | %GraphDocsUrl% |
 | **Graph Explorer** | %GraphExplorerUrl% |
 %PortalDeepLink%
+
+%MitreDiagram%

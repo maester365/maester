@@ -14,8 +14,6 @@ Inactivity timeout is being enforced by this setting. You will be signed out aft
 | **Description** | Control the idle timeout for web sessions for applications that support activity-based timeout functionality |
 | **Severity** | Informational |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -27,4 +25,5 @@ Inactivity timeout is being enforced by this setting. You will be signed out aft
 | **Graph API Docs** | [activityBasedTimeoutPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/activitybasedtimeoutpolicy) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/activityBasedTimeoutPolicies&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
 | **Azure Portal** | [View in Azure Portal](https://portal.azure.com/#settings) | 
+
 
