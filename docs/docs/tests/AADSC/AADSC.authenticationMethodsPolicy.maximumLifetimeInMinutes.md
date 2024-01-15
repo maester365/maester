@@ -14,8 +14,6 @@ Maximum lifetime in minutes for any Temporary Access Pass created in the tenant.
 | **Description** | Define configuration settings and users or groups that are enabled to use Temporary Access Pass |
 | **Severity** | High |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ Maximum lifetime in minutes for any Temporary Access Pass created in the tenant.
 | **Default Value** | 480 |
 | **Graph API Docs** | [temporaryAccessPassAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 

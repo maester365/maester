@@ -14,8 +14,6 @@ Determines whether the pass is limited to a one-time use.
 | **Description** | Define configuration settings and users or groups that are enabled to use Temporary Access Pass |
 | **Severity** | Medium |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ Determines whether the pass is limited to a one-time use.
 | **Default Value** | false |
 | **Graph API Docs** | [temporaryAccessPassAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/temporaryaccesspassauthenticationmethodconfiguration) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 

@@ -72,22 +72,34 @@ Function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
     return "[View in Graph Explorer]($graphExplorerUrl)"
 }
 
-Function GetMitreTitle($item) {
+Function GetMitreUrl($item) {
     $item = $item.Trim()
 
     $urlPart = ''
-    if ($item -ne '' -and !$item.StartsWith('TA')) {
-        if ($item.StartsWith('T')) {
+    if ($item -ne '') {
+        if ($item.StartsWith('TA')) {
+            $urlPart = "tactics" #The json includes the heading, split it and get just the code
+            $item = $item.Split(" ")[0]
+        } elseif ($item.StartsWith('T')) {
             $urlPart = "techniques"
         } elseif ($item.StartsWith('M')) {
             $urlPart = "mitigations"
         }
     }
     if ($urlPart -eq '') {
-        return $item
+        return $null
     }
+
     $itemUrl = $item.Replace('.', '/') #Sub items
     $url = "https://attack.mitre.org/$urlPart/$itemUrl"
+    return $url
+}
+
+Function GetMitreTitle($item) {
+    $url = GetMitreUrl($item)
+    if ($null -eq $url) {
+        return $item
+    }
     $title = GetPageTitle($url)
 
     $cleanHeading = $title.Split(",")[0] # Remove rest of headings
@@ -110,6 +122,30 @@ Function GetMitreItems($items) {
     }
     return $output
 }
+
+Function GetMitreMarkdownLink($item) {
+    $url = GetMitreUrl($item)
+    if ($null -eq $url) {
+        return $item
+    }
+    $title = GetMitreTitle($item)
+    $output = "[$title]($url)"
+    return $output
+}
+
+Function GetMitreMarkdownLinks($items) {
+    $output = ""
+    $isFirst = $true
+    foreach ($item in $items) {
+        if ($isFirst) {
+            $isFirst = $false
+        } else {
+            $output += "<br/>"
+        }
+        $output += GetMitreMarkdownLink($item)
+    }
+    return $output
+}
 Function GetMitreDiagram($controlItem) {
 
     if ($controlItem.MitreTactic.Length -le 0) {
@@ -129,14 +165,25 @@ mindmap
     (Technique)
 %Techniques%
 ```
+|Tactic|Technique|Mitigation|
+|---|---|---|
+|%TacticUrls%|%TechniqueUrls%|%MitigationUrls%|
 
 '@
     $tactics = GetMitreItems($controlItem.MitreTactic)
     $techniques = GetMitreItems($controlItem.MitreTechnique)
     $mitigations = GetMitreItems($controlItem.MitreMitigation)
+
+    $tacticsLinks = GetMitreMarkdownLinks($controlItem.MitreTactic)
+    $techniquesLinks = GetMitreMarkdownLinks($controlItem.MitreTechnique)
+    $mitigationsLinks = GetMitreMarkdownLinks($controlItem.MitreMitigation)
+
     $mermaid = $mermaid -replace '%Tactics%', $tactics
     $mermaid = $mermaid -replace '%Mitigations%', $mitigations
     $mermaid = $mermaid -replace '%Techniques%', $techniques
+    $mermaid = $mermaid -replace '%TacticUrls%', $tacticsLinks
+    $mermaid = $mermaid -replace '%MitigationUrls%', $mitigationsLinks
+    $mermaid = $mermaid -replace '%TechniqueUrls%', $techniquesLinks
     return $mermaid
 }
 

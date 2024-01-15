@@ -14,8 +14,6 @@ Determines whether voice call is usable on office phone numbers. Mobile phone ca
 | **Description** | Define configuration settings and users or groups that are enabled to use voice call for authentication. Voice call is not usable as a first-factor authentication method. |
 | **Severity** | High |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ Determines whether voice call is usable on office phone numbers. Mobile phone ca
 | **Default Value** | disabled |
 | **Graph API Docs** |  |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 

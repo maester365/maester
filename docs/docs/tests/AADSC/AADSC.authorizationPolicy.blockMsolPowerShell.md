@@ -14,8 +14,6 @@ Specifies whether the user-based access to the legacy service endpoint used by M
 | **Description** | Manages authorization settings in Azure AD |
 | **Severity** | Medium |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ Specifies whether the user-based access to the legacy service endpoint used by M
 | **Default Value** | false |
 | **Graph API Docs** | [authorizationPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 

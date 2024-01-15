@@ -14,8 +14,6 @@ Rules are configured in addition to the authentication mode to bind a specific x
 | **Description** | Define configuration settings and users or groups that are enabled to use certificate-based authentication. |
 | **Severity** |  |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ Rules are configured in addition to the authentication mode to bind a specific x
 | **Default Value** |  |
 | **Graph API Docs** | [certificateBasedAuthConfiguration resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/certificatebasedauthconfiguration) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('X509Certificate')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 

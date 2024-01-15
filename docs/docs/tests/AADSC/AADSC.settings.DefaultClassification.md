@@ -14,8 +14,6 @@ The classification that is to be used as the default classification for a group 
 | **Description** | Define group configurations that can be used to customize the tenant-wide and object-specific restrictions and allowed behavior |
 | **Severity** | Informational |
 
-
-
 ## How to fix
 | | |
 |-|-|
@@ -26,5 +24,6 @@ The classification that is to be used as the default classification for a group 
 | **Default Value** |  |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=settings&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+
 
 
