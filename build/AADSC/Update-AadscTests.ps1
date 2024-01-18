@@ -241,8 +241,8 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
 $aadsc = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv3/config/AadSecConfig.json' | ConvertFrom-Json
 
 $testTemplate = @'
-Describe "AADSC: %ControlName% - %DisplayName%. See https://maester.dev/t/%DocName%" -Tag "AADSCA", "Security", "All", "%Severity%" {
-    It "%DocName% {
+Describe "%DocName%" -Tag "AADSCA", "Security", "All", "%Severity%" {
+    It "AADSC: %ControlName% - %DisplayName%. See https://maester.dev/t/%DocName%" {
         $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
         $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue% but was $($result.%CurrentValue%)"
     }
