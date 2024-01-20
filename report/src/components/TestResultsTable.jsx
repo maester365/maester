@@ -1,24 +1,10 @@
 import { useState } from "react";
-import {
-  Card,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  Badge,
-  MultiSelect,
-  MultiSelectItem,
-} from "@tremor/react";
+import { Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, } from "@tremor/react";
 import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
 
-
-
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState([]);
-
   const testResults = props.TestResults;
 
   const isStatusSelected = (salesPerson) =>
@@ -45,7 +31,7 @@ export default function TestResultsTable(props) {
             <TableHeaderCell>Test</TableHeaderCell>
             <TableHeaderCell className="text-center">Status</TableHeaderCell>
             <TableHeaderCell className="text-center">Info</TableHeaderCell>
-            
+
           </TableRow>
         </TableHead>
 
