@@ -18,9 +18,8 @@ Function Test-MtCaEmergencyAccessExists {
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
-
     Set-StrictMode -Off
+    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     $PolicyCount = $policies | Measure-Object | Select-Object -ExpandProperty Count

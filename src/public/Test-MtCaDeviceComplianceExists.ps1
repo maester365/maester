@@ -17,9 +17,8 @@ Function Test-MtCaDeviceComplianceExists {
   [OutputType([bool])]
   param ()
 
-  $policies = Get-MtConditionalAccessPolicies
-
   Set-StrictMode -Off
+  $policies = Get-MtConditionalAccessPolicies
 
   $result = $false
   foreach ($policy in $policies) {

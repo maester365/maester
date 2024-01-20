@@ -34,9 +34,8 @@ Function Test-MtCaMfaForAdmins {
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
-
     Set-StrictMode -Off
+    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     foreach ($policy in $policies) {
