@@ -241,12 +241,10 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
 $aadsc = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv3/config/AadSecConfig.json' | ConvertFrom-Json
 
 $testTemplate = @'
-Describe "%DocName%" -Tag "AADSCA", "Security", "All", "%Severity%" {
     It "AADSC: %ControlName% - %DisplayName%. See https://maester.dev/t/%DocName%" {
         $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
         $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue% but was $($result.%CurrentValue%)"
     }
-}
 '@
 
 $docsTemplateFilePath = Join-Path $DocsPath '@template.txt'
@@ -257,17 +255,24 @@ $sb = [System.Text.StringBuilder]::new()
 foreach ($control in $aadsc) {
     Write-Verbose "Generating test for $($control.ControlName)"
 
+    $testOutputList = [System.Text.StringBuilder]::new()
     foreach ($controlItem in $control.Controls) {
         $docName = "AADSC.$($control.GraphEndpoint).$($controlItem.Name)"
         $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
         $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
 
         if ($testOutput -ne '') {
-            [void]$sb.AppendLine($testOutput)
+            [void]$testOutputList.AppendLine($testOutput)
 
             $docFilePath = Join-Path $DocsPath "$docName.md"
             $docsOutput | Out-File $docFilePath -Encoding utf8
         }
+    }
+    if ($testOutputList.Length -ne 0) {
+        $header = 'Describe "%ControlName%" -Tag "AADSCA", "Security", "All" {'.Replace("%ControlName%", $control.ControlName)
+        [void]$sb.AppendLine($header)
+        [void]$sb.AppendLine($testOutputList)
+        [void]$sb.AppendLine("}")
     }
 }
 $output = $sb.ToString()

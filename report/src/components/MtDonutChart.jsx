@@ -9,11 +9,12 @@ export default function MtDonutChart(props) {
     }
 
     return (
-        <Card className="max-w-lg mb-6">
-            <Title>Test Status</Title>
+        <Card>
+            <Title>Test status</Title>
             <div className="p-4 flex items-center space-x-6">
                 <DonutChart
-                    className="h-40 w-2/3"
+                    showAnimation={true}
+                    className="w-2/3"
                     data={[
                         {
                             name: 'Passed',

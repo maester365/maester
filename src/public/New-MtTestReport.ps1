@@ -53,6 +53,26 @@ Function New-MtTestReport {
             }
             $mtTests += $mtTestInfo
         }
+
+        $mtBlocks = @()
+        foreach ($container in $PesterResults.Containers) {
+
+            foreach ($block in $container.Blocks) {
+                $mtBlockInfo = [PSCustomObject]@{
+                    Name         = $block.Name
+                    Result       = $block.Result
+                    FailedCount  = $block.FailedCount
+                    PassedCount  = $block.PassedCount
+                    SkippedCount = $block.SkippedCount
+                    NotRunCount  = $block.NotRunCount
+                    TotalCount   = $block.TotalCount
+                    Duration     = $block.Duration
+                    Tag          = $block.Tag
+                }
+                $mtBlocks += $mtBlockInfo
+            }
+        }
+
         $mtTestResults = [PSCustomObject]@{
             Result       = $PesterResults.Result
             FailedCount  = $PesterResults.FailedCount
@@ -64,6 +84,7 @@ Function New-MtTestReport {
             TenantName   = $tenantName
             Account      = $account
             Tests        = $mtTests
+            Blocks       = $mtBlocks
         }
         $json = $mtTestResults | ConvertTo-Json -Depth 2 -WarningAction Ignore
 

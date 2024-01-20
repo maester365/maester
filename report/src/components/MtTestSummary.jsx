@@ -5,8 +5,17 @@ import { CheckCircleIcon, ExclamationIcon, ArchiveIcon } from "@heroicons/react/
 
 export default function MtTestSummary(props) {
 
-    const testSummary = [40, 60, 0];
+    const pctPassed = getPercentage(props.PassedCount);
+    const pctFailed = getPercentage(props.FailedCount);
+    const pctSkipped = getPercentage(props.SkippedCount);
+
+
+    const testSummary = [pctPassed, pctFailed, pctSkipped];
     const testSummaryColors = ["emerald", "rose", "gray"];
+
+    function getPercentage(count) {
+        return Math.round((count / props.TotalCount) * 100);
+    }
 
     return (
         <Grid numItemsSm={2} numItemsLg={4} className="gap-6 mb-6">
@@ -18,6 +27,7 @@ export default function MtTestSummary(props) {
                     <Metric>{props.TotalCount}</Metric>
                 </Flex>
                 <CategoryBar
+                    showAnimation={true}
                     values={testSummary}
                     colors={testSummaryColors}
                     className="mt-4"
@@ -32,7 +42,7 @@ export default function MtTestSummary(props) {
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.PassedCount}</Metric>
                 </Flex>
-                <ProgressBar value={42} color="emerald" className="mt-3" />
+                <ProgressBar value={getPercentage(props.PassedCount)} color="emerald" className="mt-3" showAnimation={true} />
             </Card>
             <Card>
                 <Flex alignItems="start">
@@ -42,7 +52,7 @@ export default function MtTestSummary(props) {
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.FailedCount}</Metric>
                 </Flex>
-                <ProgressBar value={58} color="rose" className="mt-3" />
+                <ProgressBar value={getPercentage(props.FailedCount)} color="rose" className="mt-3" showAnimation={true} />
             </Card>
             <Card>
                 <Flex alignItems="start">
@@ -52,7 +62,7 @@ export default function MtTestSummary(props) {
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.SkippedCount}</Metric>
                 </Flex>
-                <ProgressBar value={0} color="gray" className="mt-3" />
+                <ProgressBar value={getPercentage(props.SkippedCount)} color="gray" className="mt-3" showAnimation={true} />
             </Card>
         </Grid>
     );
