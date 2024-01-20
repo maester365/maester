@@ -19,7 +19,7 @@ export default function MtBlocksArea(props) {
     }
     return (
         <Card>
-            <Title>By type</Title>
+            <Title>By category</Title>
             <AreaChart
                 className="mt-4 h-40"
                 data={props.Blocks}

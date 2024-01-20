@@ -1,30 +1,47 @@
 import { useState } from "react";
-import { Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, } from "@tremor/react";
+import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, } from "@tremor/react";
 import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
 
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState([]);
+  const [selectedBlock, setSelectedBlock] = useState([]);
   const testResults = props.TestResults;
 
-  const isStatusSelected = (salesPerson) =>
-    selectedStatus.includes(salesPerson.Result) || selectedStatus.length === 0;
+  const isStatusSelected = (item) => {
+    return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) && (selectedBlock.includes(item.Block) || selectedBlock.length === 0);
+  }
 
   const status = ['Passed', 'Failed', 'Not tested'];
 
   return (
     <Card>
-      <MultiSelect
-        onValueChange={setSelectedStatus}
-        placeholder="Select status..."
-        className="max-w-xs"
-      >
-        {status.map((item) => (
-          <MultiSelectItem key={item} value={item}>
-            {item}
-          </MultiSelectItem>
-        ))}
-      </MultiSelect>
+      <Flex justifyContent="start">
+        <MultiSelect
+          onValueChange={setSelectedBlock}
+          placeholder="Select category..."
+          className="max-w-lg mr-6"
+        >
+          {testResults.Blocks
+            .sort((a, b) => a.Name > b.Name ? 1 : -1)
+            .map((item) => (
+              <MultiSelectItem key={item.Name} value={item.Name}>
+                {item.Name}
+              </MultiSelectItem>
+            ))}
+        </MultiSelect>
+        <MultiSelect
+          onValueChange={setSelectedStatus}
+          placeholder="Select status..."
+          className="min-w-fit max-w-6"
+        >
+          {status.map((item) => (
+            <MultiSelectItem key={item} value={item}>
+              <StatusLabel Result={item} />
+            </MultiSelectItem>
+          ))}
+        </MultiSelect>
+      </Flex>
       <Table className="mt-6 w-full">
         <TableHead>
           <TableRow>
@@ -38,8 +55,9 @@ export default function TestResultsTable(props) {
         <TableBody>
           {testResults.Tests
             .filter((item) => isStatusSelected(item))
+            .sort((a, b) => a.Name > b.Name ? 1 : -1)
             .map((item) => (
-              <TableRow key={item.Name}>
+              <TableRow>
                 <TableCell className="whitespace-normal">{item.Name}</TableCell>
                 <TableCell className="text-center">
                   <StatusLabel Result={item.Result} />

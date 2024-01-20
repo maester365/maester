@@ -40,16 +40,16 @@ Function New-MtTestReport {
                 $helpUrl = $name.Substring($start + 4).Trim() #Strip away the "See https://maester.dev" part
                 $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part
             }
+            $blockName = $test.Block
             $mtTestInfo = [PSCustomObject]@{
                 Name            = $name
                 HelpUrl         = $helpUrl
-                Tag             = $test.Tag
+                Tag             = $test.Block.Tag
                 Result          = $test.Result
-                ScriptBlock     = $test.ScriptBlock
+                ScriptBlock     = $test.ScriptBlock.ToString()
                 ScriptBlockFile = $test.ScriptBlock.File
                 ErrorRecord     = $test.ErrorRecord
-                Duration        = $test.Duration
-                Block           = $test.Block
+                Block           = $test.Block.Name
             }
             $mtTests += $mtTestInfo
         }
@@ -66,7 +66,6 @@ Function New-MtTestReport {
                     SkippedCount = $block.SkippedCount
                     NotRunCount  = $block.NotRunCount
                     TotalCount   = $block.TotalCount
-                    Duration     = $block.Duration
                     Tag          = $block.Tag
                 }
                 $mtBlocks += $mtBlockInfo
@@ -86,7 +85,7 @@ Function New-MtTestReport {
             Tests        = $mtTests
             Blocks       = $mtBlocks
         }
-        $json = $mtTestResults | ConvertTo-Json -Depth 2 -WarningAction Ignore
+        $json = $mtTestResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
 
         $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.html'
         $templateHtml = Get-Content -Path $htmlFilePath -Raw
