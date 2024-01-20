@@ -27,4 +27,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1010: At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync. See https://maester.dev/t/ID1010" {
         Test-MtCaBlockLegacyExchangeActiveSyncAuthentication | Should -Be $true -Because "There is no policy that blocks legacy authentication for Exchange ActiveSync"
     }
+    It "ID1011: At least one Conditional Access policy is configured to secure security info registration only from a trusted location. See https://maester.dev/t/ID1011" {
+        Test-MtCaSecureSecurityInfoRegistration | Should -Be $true -Because "There is no policy that secures security info registration"
+    }
 }
