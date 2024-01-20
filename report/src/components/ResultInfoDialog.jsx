@@ -22,7 +22,7 @@ export default function ResultInfoDialog(props) {
         <DialogPanel className="max-w-3xl">
           <div className="grid grid-cols-1">
             <div className="text-right">
-              <StatusLabel Item={props.Item} />
+              <StatusLabel Result={props.Item.Result} />
             </div>
             <Title>{props.Item.Name}</Title>
             <Divider></Divider>
