@@ -6,7 +6,7 @@
     MFA for admins conditional access policy can be used to require MFA for all admins in the tenant.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
  .Example
   Test-MtCaMfaForAdmins

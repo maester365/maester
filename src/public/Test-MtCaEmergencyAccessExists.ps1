@@ -7,7 +7,7 @@
   This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access
+  https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access
 
  .Example
   Test-MtCaEmergencyAccessExists

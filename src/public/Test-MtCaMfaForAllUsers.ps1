@@ -6,7 +6,7 @@
     MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
 
  .Example
   Test-MtCaMfaForAllUsers

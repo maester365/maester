@@ -7,7 +7,7 @@
     conditional access policy requiring multifactor authentication to access Azure management.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-azure-management
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-azure-management
 
  .Example
   Test-MtCaMfaForAdminManagement

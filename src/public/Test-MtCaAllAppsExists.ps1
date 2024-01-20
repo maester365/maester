@@ -7,7 +7,7 @@
   and ideally should be enabled for all users.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
+  https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
 
  .Example
   Test-MtCaAllAppsExists
