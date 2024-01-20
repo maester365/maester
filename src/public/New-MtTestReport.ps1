@@ -7,10 +7,11 @@
     results with a summary view and click through of the details.
 
  .Example
-  New-Testreport PesterResults $pesterResults -OutputHtmlPath ./testResults.html
+    $pesterResults = Invoke-Pester -PassThru
+    New-MtTestReport PesterResults $pesterResults -OutputHtmlPath ./testResults.html
 #>
 
-Function New-TestReport {
+Function New-MtTestReport {
     [CmdletBinding()]
     param(
         # The Pester test results returned from Invoke-Pester -PassThru
@@ -40,14 +41,15 @@ Function New-TestReport {
                 $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part
             }
             $mtTestInfo = [PSCustomObject]@{
-                Name        = $name
-                HelpUrl     = $helpUrl
-                Tag         = $test.Tag
-                Result      = $test.Result
-                ScriptBlock = $test.ScriptBlock
-                ErrorRecord = $test.ErrorRecord
-                Duration    = $test.Duration
-                Block       = $test.Block
+                Name            = $name
+                HelpUrl         = $helpUrl
+                Tag             = $test.Tag
+                Result          = $test.Result
+                ScriptBlock     = $test.ScriptBlock
+                ScriptBlockFile = $test.ScriptBlock.File
+                ErrorRecord     = $test.ErrorRecord
+                Duration        = $test.Duration
+                Block           = $test.Block
             }
             $mtTests += $mtTestInfo
         }
@@ -69,7 +71,7 @@ Function New-TestReport {
         $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
         $insertLocationStart = $templateHtml.IndexOf("const testResults = {")
-        $insertLocationEnd = $templateHtml.IndexOf("function TestResultsTable() {")
+        $insertLocationEnd = $templateHtml.IndexOf("function App() {")
 
         $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
         $outputHtml += "const testResults = $json;`n"

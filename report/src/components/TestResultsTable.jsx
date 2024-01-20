@@ -25,7 +25,7 @@ export default function TestResultsTable(props) {
           </MultiSelectItem>
         ))}
       </MultiSelect>
-      <Table className="mt-6">
+      <Table className="mt-6 w-full">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Test</TableHeaderCell>
@@ -40,7 +40,7 @@ export default function TestResultsTable(props) {
             .filter((item) => isStatusSelected(item))
             .map((item) => (
               <TableRow key={item.Name}>
-                <TableCell>{item.Name}</TableCell>
+                <TableCell className="whitespace-normal">{item.Name}</TableCell>
                 <TableCell className="text-center">
                   <StatusLabel Result={item.Result} />
                 </TableCell>

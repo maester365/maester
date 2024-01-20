@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import { Card, Button, Dialog, DialogPanel, Title } from "@tremor/react";
-import { InformationCircleIcon, ExternalLinkIcon, DotsHorizontalIcon, BookOpenIcon } from "@heroicons/react/outline";
+import { ExternalLinkIcon, DotsHorizontalIcon } from "@heroicons/react/outline";
 import { Divider } from "@tremor/react";
-import { CheckCircleIcon, ExclamationIcon, } from "@heroicons/react/outline";
 import StatusLabel from "./StatusLabel";
 
 export default function ResultInfoDialog(props) {
@@ -43,6 +42,10 @@ export default function ResultInfoDialog(props) {
                 {props.Item.ErrorRecord}
               </Card>
             }
+            <Card className="mt-4">
+              <Title>Source</Title>
+              {props.Item.ScriptBlockFile}
+            </Card>
             <div className="mt-3">
               <Button variant="primary" onClick={() => setIsOpen(false)}>
                 Close
