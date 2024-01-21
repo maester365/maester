@@ -30,4 +30,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1011: At least one Conditional Access policy is configured to secure security info registration only from a trusted location. See https://maester.dev/t/ID1011" {
         Test-MtCaSecureSecurityInfoRegistration | Should -Be $true -Because "There is no policy that secures security info registration"
     }
+    It "ID1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/t/ID1012" {
+        Test-MtCaMfaForRiskySignIns | Should -Be $true -Because "There is no policy that requires MFA for risky sign-ins"
+    }
 }
