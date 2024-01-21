@@ -24,7 +24,12 @@ Function Test-MtCaMfaForRiskySignIns {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) -and $policy.conditions.users.includeUsers -eq "All" -and $policy.conditions.applications.includeApplications -eq "All" -and "high" -in $policy.conditions.signInRiskLevels -and "medium" -in $policy.conditions.signInRiskLevels ) {
+        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
+                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+                -and "high" -in $policy.conditions.signInRiskLevels `
+                -and "medium" -in $policy.conditions.signInRiskLevels ) {
             $result = $true
             $currentresult = $true
         } else {

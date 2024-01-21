@@ -23,7 +23,11 @@ Function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( $policy.grantcontrols.builtincontrols -contains 'block' -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes -and $policy.conditions.applications.includeApplications -eq "00000002-0000-0ff1-ce00-000000000000" -and $policy.conditions.users.includeUsers -eq "All" ) {
+        if ( $policy.grantcontrols.builtincontrols -contains 'block' `
+                -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes `
+                -and $policy.conditions.applications.includeApplications -eq "00000002-0000-0ff1-ce00-000000000000" `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+        ) {
             $result = $true
             $currentresult = $true
         } else {

@@ -25,7 +25,11 @@ Function Test-MtCaBlockLegacyOtherAuthentication {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( $policy.grantcontrols.builtincontrols -contains 'block' -and "other" -in $policy.conditions.clientAppTypes -and $policy.conditions.applications.includeApplications -eq "All" -and $policy.conditions.users.includeUsers -eq "All" ) {
+        if ( $policy.grantcontrols.builtincontrols -contains 'block' `
+                -and "other" -in $policy.conditions.clientAppTypes `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+        ) {
             $result = $true
             $currentresult = $true
         } else {

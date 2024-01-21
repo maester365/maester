@@ -46,7 +46,12 @@ Function Test-MtCaDeviceComplianceAdminsExists {
         $PolicyIncludesAllRoles = $false
       }
     }
-    if ( 'domainJoinedDevice' -in $policy.grantcontrols.builtincontrols -and 'compliantDevice' -in $policy.grantcontrols.builtincontrols -and $policy.grantControls.operator -eq "OR" -and $PolicyIncludesAllRoles -and $policy.conditions.applications.includeApplications -eq "All") {
+    if ( 'domainJoinedDevice' -in $policy.grantcontrols.builtincontrols `
+        -and 'compliantDevice' -in $policy.grantcontrols.builtincontrols `
+        -and $policy.grantControls.operator -eq "OR" `
+        -and $PolicyIncludesAllRoles `
+        -and $policy.conditions.applications.includeApplications -eq "All" `
+    ) {
       $result = $true
     }
   }

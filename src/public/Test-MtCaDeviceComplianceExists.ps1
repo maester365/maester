@@ -22,7 +22,9 @@ Function Test-MtCaDeviceComplianceExists {
 
   $result = $false
   foreach ($policy in $policies) {
-    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' -and $policy.state -eq 'enabled') {
+    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' `
+        -and $policy.state -eq 'enabled' `
+    ) {
       $result = $true
     }
   }

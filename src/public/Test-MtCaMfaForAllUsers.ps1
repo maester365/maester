@@ -24,7 +24,11 @@ Function Test-MtCaMfaForAllUsers {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) -and $policy.conditions.users.includeUsers -eq "All" -and $policy.conditions.applications.includeApplications -eq "All" ) {
+        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
+                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+        ) {
             $result = $true
             $currentresult = $true
         } else {

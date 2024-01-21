@@ -23,7 +23,11 @@ Function Test-MtCaMfaForAdminManagement {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) -and $policy.conditions.users.includeUsers -eq "All" -and "797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications ) {
+        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
+                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
+                -and $policy.conditions.users.includeUsers -eq "All" `
+                -and "797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications `
+        ) {
             $result = $true
             $currentresult = $true
         } else {

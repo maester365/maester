@@ -37,7 +37,10 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms {
         } catch {
             $AllKnownPlatformsExcluded = $false
         }
-        if ( $policy.grantcontrols.builtincontrols -eq 'block' -and $policy.conditions.platforms.includePlatforms -eq "All" -and $AllKnownPlatformsExcluded -ne $false ) {
+        if ( $policy.grantcontrols.builtincontrols -eq 'block' `
+                -and $policy.conditions.platforms.includePlatforms -eq "All" `
+                -and $AllKnownPlatformsExcluded -ne $false `
+        ) {
             $result = $true
             $currentresult = $true
         } else {

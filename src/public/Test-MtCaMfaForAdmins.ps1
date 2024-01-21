@@ -45,7 +45,11 @@ Function Test-MtCaMfaForAdmins {
                 $PolicyIncludesAllRoles = $false
             }
         }
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) -and $PolicyIncludesAllRoles -and $policy.conditions.applications.includeApplications -eq "All" ) {
+        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
+                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
+                -and $PolicyIncludesAllRoles `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+        ) {
             $result = $true
             $currentresult = $true
         } else {
