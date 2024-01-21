@@ -36,4 +36,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/t/ID1013" {
         Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "There is no policy that requires new password when user risk is high"
     }
+    It "ID1014: At least one Conditional Access policy is configured to require compliant or hybrid Azure AD joined devices for admins. See https://maester.dev/t/ID1014" {
+        Test-MtCaDeviceComplianceAdminsExists | Should -Be $true -Because "There is no policy that requires compliant or hybrid Azure AD joined devices for admins"
+    }
 }
