@@ -1,33 +1,32 @@
 <#
  .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
+  Checks if the tenant has at least one conditional access policy requiring multifactor authentication to access Azure management.
 
  .Description
-    MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
+    MFA for Azure management is a critical security control. This function checks if the tenant has at least one
+    conditional access policy requiring multifactor authentication to access Azure management.
 
   Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-azure-management
 
  .Example
-  Test-MtCaMfaForAllUsers
+  Test-MtCaMfaForAdminManagement
 #>
 
-Function Test-MtCaMfaForAllUsers {
+Function Test-MtCaMfaForAdminManagement {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
     Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
-    # Remove policies that require password change, as they are related to user risk and not MFA on signin
-    $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
 
     $result = $false
     foreach ($policy in $policies) {
         if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
                     -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
                 -and $policy.conditions.users.includeUsers -eq "All" `
-                -and $policy.conditions.applications.includeApplications -eq "All" `
+                -and "797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications `
         ) {
             $result = $true
             $currentresult = $true

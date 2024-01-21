@@ -6,7 +6,7 @@
     MFA for admins conditional access policy can be used to require MFA for all admins in the tenant.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
  .Example
   Test-MtCaMfaForAdmins
@@ -34,9 +34,8 @@ Function Test-MtCaMfaForAdmins {
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
-
     Set-StrictMode -Off
+    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     foreach ($policy in $policies) {
@@ -46,7 +45,11 @@ Function Test-MtCaMfaForAdmins {
                 $PolicyIncludesAllRoles = $false
             }
         }
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) -and $PolicyIncludesAllRoles -and $policy.conditions.applications.includeApplications -eq "All" ) {
+        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
+                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
+                -and $PolicyIncludesAllRoles `
+                -and $policy.conditions.applications.includeApplications -eq "All" `
+        ) {
             $result = $true
             $currentresult = $true
         } else {
