@@ -33,7 +33,7 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms {
     foreach ($policy in $policies) {
         try {
             # Check if all known platforms are excluded from the policy
-            $AllKnownPlatformsExcluded = Compare-Object -ReferenceObject $KnownPlatforms -DifferenceObject $policy.conditions.platforms.excludePlatforms -IncludeEqual -ExcludeDifferent -PassThru | Measure-Object | Select-Object -ExpandProperty Count
+            $AllKnownPlatformsExcluded = ( Compare-Object -ReferenceObject $KnownPlatforms -DifferenceObject $policy.conditions.platforms.excludePlatforms -IncludeEqual -ExcludeDifferent -PassThru | Measure-Object | Select-Object -ExpandProperty Count ) -eq $KnownPlatforms.Count
         } catch {
             $AllKnownPlatformsExcluded = $false
         }
