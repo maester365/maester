@@ -51,4 +51,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1018: At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices. See https://maester.dev/t/ID1018" {
         Test-MtCaEnforceSignInFrequency | Should -Be $true -Because "There is no policy that enforces sign-in frequency for non-corporate devices"
     }
+    It "ID1019: At least one Conditional Access policy is configured to enable application enforced restrictions. See https://maester.dev/t/ID1019" {
+        Test-MtCaApplicationEnforcedRestrictions | Should -Be $true -Because "There is no policy that enables application enforced restrictions"
+    }
 }
