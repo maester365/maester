@@ -6,7 +6,7 @@
   Device compliance conditional access policy can be used to require devices to be compliant with the tenant's device compliance policy.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device
 
  .Example
   Test-MtCaDeviceComplianceExists
@@ -17,13 +17,14 @@ Function Test-MtCaDeviceComplianceExists {
   [OutputType([bool])]
   param ()
 
-  $policies = Get-MtConditionalAccessPolicies
-
   Set-StrictMode -Off
+  $policies = Get-MtConditionalAccessPolicies
 
   $result = $false
   foreach ($policy in $policies) {
-    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' -and $policy.state -eq 'enabled') {
+    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' `
+        -and $policy.state -eq 'enabled' `
+    ) {
       $result = $true
     }
   }

@@ -7,7 +7,7 @@
   and ideally should be enabled for all users.
 
   Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
+  https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
 
  .Example
   Test-MtCaAllAppsExists
@@ -24,18 +24,20 @@ Function Test-MtCaAllAppsExists {
     [switch] $SkipCheckAllUsers = $false
   )
 
-  $policies = Get-MtConditionalAccessPolicies
-
   Set-StrictMode -Off
+  $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
   $result = $false
   foreach ($policy in $policies) {
-    if ($policy.conditions.applications.includeApplications -eq 'all' `
-        -and $policy.state -eq 'enabled') {
-
-      $result = $SkipCheckAllUsers.IsPresent `
-        -or $policy.conditions.users.includeusers -eq 'all'
+    if ( ( $SkipCheckAllUsers.IsPresent -or $policy.conditions.users.includeUsers -eq "All" ) `
+        -and $policy.conditions.applications.includeApplications -eq 'all' `
+    ) {
+      $result = $true
+      $currentresult = $true
+    } else {
+      $currentresult = $false
     }
+    Write-Verbose "$($policy.displayName) - $currentresult"
   }
 
   return $result

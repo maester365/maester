@@ -1,18 +1,18 @@
 <#
  .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
+  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins.
 
  .Description
-    MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
+    MFA for risky sign-ins conditional access policy can be used to require MFA for all users in the tenant.
 
   Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk
 
  .Example
-  Test-MtCaMfaForAllUsers
+  Test-MtCaMfaForRiskySignIns
 #>
 
-Function Test-MtCaMfaForAllUsers {
+Function Test-MtCaMfaForRiskySignIns {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -28,7 +28,8 @@ Function Test-MtCaMfaForAllUsers {
                     -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
                 -and $policy.conditions.users.includeUsers -eq "All" `
                 -and $policy.conditions.applications.includeApplications -eq "All" `
-        ) {
+                -and "high" -in $policy.conditions.signInRiskLevels `
+                -and "medium" -in $policy.conditions.signInRiskLevels ) {
             $result = $true
             $currentresult = $true
         } else {

@@ -1,18 +1,19 @@
 <#
  .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
+  Checks if the tenant has at least one conditional access policy that blocks legacy authentication.
 
  .Description
-    MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
+    Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
+    conditional access policy that blocks legacy authentication.
 
   Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
 
  .Example
-  Test-MtCaMfaForAllUsers
+  Test-MtCaBlockLegacyOtherAuthentication
 #>
 
-Function Test-MtCaMfaForAllUsers {
+Function Test-MtCaBlockLegacyOtherAuthentication {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -24,10 +25,10 @@ Function Test-MtCaMfaForAllUsers {
 
     $result = $false
     foreach ($policy in $policies) {
-        if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
-                    -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
-                -and $policy.conditions.users.includeUsers -eq "All" `
+        if ( $policy.grantcontrols.builtincontrols -contains 'block' `
+                -and "other" -in $policy.conditions.clientAppTypes `
                 -and $policy.conditions.applications.includeApplications -eq "All" `
+                -and $policy.conditions.users.includeUsers -eq "All" `
         ) {
             $result = $true
             $currentresult = $true

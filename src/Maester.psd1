@@ -73,43 +73,58 @@
     'New-MtTestReport',
     'Invoke-MtGraphRequest', 'Test-MtAppManagementPolicyEnabled',
     'Test-MtCaAllAppsExists', 'Test-MtCaDeviceComplianceExists',
-    'Test-MtCaEmergencyAccessExists', 'Test-MtCaMfaForAdmins',
-    'Test-MtCaMfaForAllUsers', 'Test-MtConditionalAccessWhatIf'
+    # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
+    FunctionsToExport = 'Clear-MtGraphCache', 'Get-MtConditionalAccessPolicies',
+    'Invoke-MtGraphRequest', 'Test-MtAppManagementPolicyEnabled',
+    'Test-MtCaAllAppsExists',
+    'Test-MtCaApplicationEnforcedRestrictions',
+    'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+    'Test-MtCaBlockLegacyOtherAuthentication',
+    'Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms',
+    'Test-MtCaDeviceComplianceAdminsExists',
+    'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
+    'Test-MtCaEnforceNonPersistentBrowserSession',
+    'Test-MtCaEnforceSignInFrequency', 'Test-MtCaMfaForAdminManagement',
+    'Test-MtCaMfaForAdmins', 'Test-MtCaMfaForAllUsers',
+    'Test-MtCaMfaForGuests', 'Test-MtCaMfaForRiskySignIns',
+    'Test-MtCaRequirePasswordChangeForHighUserRisk',
+    'Test-MtCaSecureSecurityInfoRegistration',
+    'Test-MtConditionalAccessWhatIf'
+    Tags = 'Maester', 'Microsoft', '365', 'Cloud', 'Test', 'Pester', 'Entra', 'AzureAD', 'Automation', 'Regression', 'DevOps'
 
-    # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport      = @()
+    # A URL to the license for this module.
+    LicenseUri = 'https://github.com/maester365/maester/blob/main/LICENSE'
 
-    # Variables to export from this module
-    # VariablesToExport = @()
+    # A URL to the main website for this project.
+    ProjectUri = 'https://github.com/maester365/maester'
 
-    # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport      = @()
+    # A URL to an icon representing this module.
+    # IconUri = ''
 
-    # DSC resources to export from this module
-    # DscResourcesToExport = @()
+    # ReleaseNotes of this module
+    # ReleaseNotes = ''
 
-    # List of all modules packaged with this module
-    # ModuleList = @()
+    # Prerelease string of this module
+    # Prerelease = ''
 
-    # List of all files packaged with this module
-    FileList             = @(".\assets\ReportTemplate.html")
+    # Flag to indicate whether the module requires explicit user acceptance for install/update/save
+    # RequireLicenseAcceptance = $false
 
-    # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData          = @{
+    # External dependent modules of this module
+    # ExternalModuleDependencies = @()
 
-        PSData = @{
+} # End of PSData hashtable
 
-            # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'Maester', 'Microsoft', '365', 'Cloud', 'Test', 'Pester', 'Entra', 'AzureAD', 'Automation', 'Regression', 'DevOps'
+} # End of PrivateData hashtable
 
-            # A URL to the license for this module.
-            LicenseUri = 'https://github.com/maester365/maester/blob/main/LICENSE'
+# HelpInfo URI of this module
+# HelpInfoURI = ''
 
-            # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/maester365/maester'
+# Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
+# DefaultCommandPrefix = ''
 
-            # A URL to an icon representing this module.
-            # IconUri = ''
+}
+
 
             # ReleaseNotes of this module
             # ReleaseNotes = ''
