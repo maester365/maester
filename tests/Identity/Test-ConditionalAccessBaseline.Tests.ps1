@@ -33,4 +33,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/t/ID1012" {
         Test-MtCaMfaForRiskySignIns | Should -Be $true -Because "There is no policy that requires MFA for risky sign-ins"
     }
+    It "ID1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/t/ID1013" {
+        Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "There is no policy that requires new password when user risk is high"
+    }
 }
