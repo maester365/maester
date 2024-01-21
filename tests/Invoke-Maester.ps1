@@ -26,8 +26,8 @@ try {
     $RequiredScopesOkay = $false
 }
 
-if ( $RequiredScopesOkay ) {
-    Connect-MgGraph -UseDeviceAuthentication -Scope $RequiredScopes
+if ( -not $RequiredScopesOkay ) {
+    Connect-MgGraph -UseDeviceAuthentication -Scope $RequiredScopes -NoWelcome
 }
 
 $PSDefaultParameterValues = @{
