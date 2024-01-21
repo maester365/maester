@@ -45,4 +45,10 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1016: At least one Conditional Access policy is configured to require MFA for guest access. See https://maester.dev/t/ID1016" {
         Test-MtCaMfaForGuests | Should -Be $true -Because "There is no policy that requires MFA for guest access"
     }
+    It "ID1017: At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices. See https://maester.dev/t/ID1017" {
+        Test-MtCaEnforceNonPersistentBrowserSession | Should -Be $true -Because "There is no policy that enforces non persistent browser session for non-corporate devices"
+    }
+    It "ID1018: At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices. See https://maester.dev/t/ID1018" {
+        Test-MtCaEnforceSignInFrequency | Should -Be $true -Because "There is no policy that enforces sign-in frequency for non-corporate devices"
+    }
 }
