@@ -77,7 +77,8 @@
     'Test-MtCaMfaForAdminManagement', 'Test-MtCaBlockLegacyOtherAuthentication',
     'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 'Test-MtCaSecureSecurityInfoRegistration',
     'Test-MtCaMfaForRiskySignIns', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
-    'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms'
+    'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms',
+    'Test-MtCaMfaForGuests'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

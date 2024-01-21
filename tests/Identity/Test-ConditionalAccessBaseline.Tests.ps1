@@ -42,4 +42,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1015: At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. See https://maester.dev/t/ID1015" {
         Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms | Should -Be $true -Because "There is no policy that blocks access for unknown or unsupported device platforms"
     }
+    It "ID1016: At least one Conditional Access policy is configured to require MFA for guest access. See https://maester.dev/t/ID1016" {
+        Test-MtCaMfaForGuests | Should -Be $true -Because "There is no policy that requires MFA for guest access"
+    }
 }
