@@ -8,10 +8,10 @@
 
  .Example
     $pesterResults = Invoke-Pester -PassThru
-    New-MtTestReport PesterResults $pesterResults -OutputHtmlPath ./testResults.html
+    Export-MtHtmlReport PesterResults $pesterResults -OutputHtmlPath ./testResults.html
 #>
 
-Function New-MtTestReport {
+Function Export-MtHtmlReport {
     [CmdletBinding()]
     param(
         # The Pester test results returned from Invoke-Pester -PassThru

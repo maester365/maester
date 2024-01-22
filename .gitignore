@@ -484,3 +484,5 @@ dist
 .pnp.*
 testResults.html
 test.json
+
+.idea
