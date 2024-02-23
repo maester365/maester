@@ -54,4 +54,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "ID1019: At least one Conditional Access policy is configured to enable application enforced restrictions. See https://maester.dev/t/ID1019" {
         Test-MtCaApplicationEnforcedRestrictions | Should -Be $true -Because "there is no policy that enables application enforced restrictions"
     }
+    It "ID1020: All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them. See https://maester.dev/t/ID1020" {
+        Test-MtCaExclusionForDirectorySyncAccounts | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
+    }
 }
