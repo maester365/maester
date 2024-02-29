@@ -8,7 +8,7 @@
 
  .Example
     $pesterResults = Invoke-Pester -PassThru
-    Export-MtHtmlReport PesterResults $pesterResults -OutputHtmlPath ./testResults.html
+    Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath ./testResults.html
 #>
 
 Function Export-MtHtmlReport {
