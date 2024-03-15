@@ -6,7 +6,9 @@
 
 if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable)) {
     Install-Module Alt3.Docusaurus.Powershell -Scope CurrentUser -Force -SkipPublisherCheck
+    Install-Module PlatyPS -Scope CurrentUser -Force -SkipPublisherCheck
 }
 Import-Module Alt3.Docusaurus.Powershell
+Import-Module PlatyPS
 New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./docs/docs -NoPlaceHolderExamples
 Copy-Item ./docs/docs-templates/commands-index.md ./docs/docs/commands/index.md
