@@ -77,12 +77,6 @@ const config = {
             label: "Docs",
           },
           {
-            type: "docSidebar",
-            sidebarId: "siteSidebar",
-            position: "left",
-            label: "Tests",
-          },
-          {
             href: "https://github.com/maester365/maester",
             label: "GitHub",
             position: "right",

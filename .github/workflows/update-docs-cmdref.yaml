@@ -1,0 +1,41 @@
+# Regenerates the documentation for the "Command Reference" section of the site https://maester.dev
+#
+name: update-docs-cmdref
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update docs
+        run: |
+          Import-Module ./src/Maester.psm1 -Force
+          New-DocusaurusHelp -Module Maester
+        shell: pwsh
+
+      - name: Update repo
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            # Changes
+            echo "Updating command reference"
+            git config --global user.name 'Merill Fernando'
+            git config --global user.email 'merill@users.noreply.github.com'
+            git add -A && git commit -m "Bot: Updating command reference"
+            git push
+          else
+            # No changes
+            echo "No changes"
+          fi

@@ -1,0 +1,82 @@
+---
+id: Test-MtCaAllAppsExists
+title: Test-MtCaAllAppsExists
+hide_title: false
+hide_table_of_contents: false
+---
+
+## SYNOPSIS
+
+Checks if the tenant has at least one fallback policy targetting All Apps and All Users.
+
+## SYNTAX
+
+```powershell
+Test-MtCaAllAppsExists [-SkipCheckAllUsers] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Microsoft recommends creating at least one conditional access policy targetting all cloud apps
+and ideally should be enabled for all users.
+
+Learn more:
+https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCaAllAppsExists
+```
+
+Test-MtCaAllAppsExists -SkipCheckAllUsers
+
+## PARAMETERS
+
+### -SkipCheckAllUsers
+
+\{\{ Fill SkipCheckAllUsers Description \}\}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: False
+Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS

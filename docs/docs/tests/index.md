@@ -1,7 +1,7 @@
 ---
 id: tests
 title: Maester - Out of the box tests
-sidebar_label: Tests
+sidebar_label: Tests Reference
 ---
 
 ```mdx-code-block
