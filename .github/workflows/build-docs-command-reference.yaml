@@ -21,9 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Update docs
-        run: |
-          Import-Module ./src/Maester.psm1 -Force
-          New-DocusaurusHelp -Module Maester
+        run: ./build/Build-CommandReference.ps1
         shell: pwsh
 
       - name: Update repo
