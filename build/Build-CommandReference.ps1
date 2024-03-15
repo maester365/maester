@@ -10,5 +10,5 @@ if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable)) {
 }
 Import-Module Alt3.Docusaurus.Powershell
 Import-Module PlatyPS
-New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./docs/docs -NoPlaceHolderExamples
+New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./docs/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/src/public/
 Copy-Item ./docs/docs-templates/commands-index.md ./docs/docs/commands/index.md

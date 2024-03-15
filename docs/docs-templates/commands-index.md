@@ -1,6 +1,6 @@
 ---
 id: commands
-title: Maester - Command Reference
+title: Command Reference
 sidebar_label: Command Reference
 ---
 
