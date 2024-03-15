@@ -1,6 +1,6 @@
 # Regenerates the documentation for the "Command Reference" section of the site https://maester.dev
 #
-name: update-docs-cmdref
+name: Build Docs Command Reference
 
 on:
   # Runs on pushes targeting the default branch
