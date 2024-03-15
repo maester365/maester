@@ -77,8 +77,9 @@ const config = {
             label: "Docs",
           },
           {
+            "aria-label": "GitHub Repository",
+            className: "navbar--github-link",
             href: "https://github.com/maester365/maester",
-            label: "GitHub",
             position: "right",
           },
         ],
