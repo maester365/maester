@@ -1,0 +1,44 @@
+---
+id: Connect-MtGraph
+title: Connect-MtGraph
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/src/public/Connect-MtGraph.ps1
+---
+
+## SYNOPSIS
+
+Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+
+## SYNTAX
+
+```powershell
+Connect-MtGraph
+```
+
+## DESCRIPTION
+
+Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
+
+This cmdlet is a short form for calling
+```
+Connect-MgGraph -Scopes (Get-MtGraphScopes)
+```
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Connect-MtGraph
+```
+
+## PARAMETERS
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS

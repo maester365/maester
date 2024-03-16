@@ -10,8 +10,10 @@
 
 module.exports = [
     'commands/Clear-MtGraphCache',
+    'commands/Connect-MtGraph',
     'commands/Export-MtHtmlReport',
     'commands/Get-MtConditionalAccessPolicies',
+    'commands/Get-MtGraphScopes',
     'commands/Invoke-MtGraphRequest',
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtCaAllAppsExists',
