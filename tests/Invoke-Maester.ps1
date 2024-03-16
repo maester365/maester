@@ -33,11 +33,10 @@ $pesterResults = Invoke-Pester -PassThru -TagFilter $Tag # Run Pester tests
 
 Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
 
+Write-Output "Test file generated at $htmlFileName"
 #--------------------------------------------------------------
 
 if ([Environment]::UserInteractive) {
     # Open test results in default browser
     Invoke-Item $htmlFileName
-} else {
-    Write-Output "Test file generated at $htmlFileName"
 }
