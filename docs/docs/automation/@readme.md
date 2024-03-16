@@ -1,5 +1,7 @@
 ---
 id: automation-overview
+sidebar_label: Overview
+sidebar_position: 1
 title: Set up Maester to automatically run daily
 ---
 

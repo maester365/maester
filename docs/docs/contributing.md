@@ -3,7 +3,11 @@ sidebar_position: 5
 title: Contributing
 ---
 
+import TOCInline from '@theme/TOCInline';
+
 # Contributing
+
+<TOCInline toc={toc} />
 
 ## Contributing to docs
 
@@ -45,7 +49,7 @@ You will now be able to edit add and edit markdown files in the ./docs/docs fold
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://measter.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
 
-## Maester Developer Guide
+## Maester cmdlet dev guide
 
 ### Simple debugging
 

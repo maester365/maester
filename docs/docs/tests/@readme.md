@@ -1,5 +1,5 @@
 ---
-id: tests
+id: tests-overview
 title: Maester - Out of the box tests
 sidebar_label: Overview
 sidebar_position: 1
