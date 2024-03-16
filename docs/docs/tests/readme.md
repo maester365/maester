@@ -1,6 +1,6 @@
 ---
 id: overview
-title: Maester - Out of the box tests
+title: Test Reference
 sidebar_label: Overview
 sidebar_position: 1
 ---
