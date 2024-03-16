@@ -1,7 +1,8 @@
 ---
-id: overview
+id: eidsca-overview
 title: Entra ID - Security Config Analyzer Tests
-sidebar_label: Overview
+sidebar_label: EIDSCA Tests Overview
+description: Overview of the Entra ID Security Config Analyzer tests
 ---
 
 ```mdx-code-block

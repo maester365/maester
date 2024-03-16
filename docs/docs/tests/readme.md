@@ -1,8 +1,8 @@
 ---
 id: overview
 title: Test Reference
-sidebar_label: Overview
-sidebar_position: 1
+sidebar_label: Test Reference Overview
+description: Overview of the different types of tests available in Maester
 ---
 
 ```mdx-code-block
@@ -16,16 +16,14 @@ This section lists the collection of community contributed tests that you can us
 
 These pages are referenced by the tests and provide guidance on each test and includes references to the Microsoft documentation for further reading.
 
-## [Maester Tests](./maester)
+## [Maester Tests](/docs/tests/maester-overview)
 
 These tests validate if your conditional access policies are following generally recommended best practices.
 
-## [Entra ID Security Config Analyzer Tests](./eidsca)
+## [Entra ID Security Config Analyzer Tests](/docs/tests/eidsca-overview)
 
-These tests validate tenant security config and are based on the [Azure AD Attack and Defense - Security Config Analyzer](AADSC)
+These tests validate tenant security config and are based on the [Entra ID Security Config Analyzer](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/main/AADSecurityConfigAnalyzer.md)
 
 See the [Getting started](/docs/intro) page on how to run these tests.
 
-## Tests
-<DocCardList />
 ```

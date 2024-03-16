@@ -1,7 +1,8 @@
 ---
-id: overview
+id: maester-overview
 title: Maester Tests
-sidebar_label: Overview
+sidebar_label: Maester Tests Overview
+description: Overview of the Maester tests
 ---
 
 ```mdx-code-block
