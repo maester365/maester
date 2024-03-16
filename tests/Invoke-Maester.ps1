@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param ()
+param ($Tag = "All")
 
 $motd = @"
 
@@ -14,46 +14,30 @@ $motd = @"
 "@
 Write-Host -ForegroundColor Green -Object $motd
 
-$RequiredScopes = @(
-    'Policy.Read.All'
-    'Directory.Read.All'
-    'Policy.ReadWrite.ConditionalAccess'
-)
-$CurrentScopes = Get-MgContext | Select-Object -ExpandProperty Scopes
-try {
-    $RequiredScopesOkay = [bool][string]::IsNullOrWhiteSpace( $( Compare-Object -ReferenceObject $CurrentScopes -DifferenceObject $RequiredScopes | Where-Object { $_.SideIndicator -eq '=>' } | Select-Object -ExpandProperty InputObject ) )
-} catch {
-    $RequiredScopesOkay = $false
+# Create unique file name for the test results with current date and time
+$timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
+$outpuFolder = "./test-results"
+if ( -not (Test-Path -Path $outpuFolder) ) {
+    New-Item -Path $outpuFolder -ItemType Directory
 }
+$htmlFileName = Join-Path $outpuFolder "TestResults-$timestamp.html"
 
-if ( -not $RequiredScopesOkay ) {
-    Connect-MgGraph -UseDeviceAuthentication -Scope $RequiredScopes -NoWelcome
+
+#--------------------------------------------------------------
+
+Connect-MtGraph # Short cmdlet for `Connect-MgGraph -Scopes (Get-MtGraphScopes)`
+
+Clear-MtGraphCache # Reset the cache to avoid stale data
+
+$pesterResults = Invoke-Pester -PassThru -TagFilter $Tag # Run Pester tests
+
+Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
+
+#--------------------------------------------------------------
+
+if ([Environment]::UserInteractive) {
+    # Open test results in default browser
+    Invoke-Item $htmlFileName
+} else {
+    Write-Output "Test file generated at $htmlFileName"
 }
-
-$PSDefaultParameterValues = @{
-    'Invoke-MgGraphRequest:Verbose' = $false
-}
-
-
-$PesterConfiguration = New-PesterConfiguration -Hashtable @{
-    Filter     = @{
-        # Use the filter configuration to only specify the tests
-        Tag = "All"
-    }
-    TestResult = @{
-        Enabled = $true
-    }
-    Run        = @{
-        Exit = $true
-    }
-    Should     = @{
-        ErrorAction = 'Continue'
-    }
-    Output     = @{
-        Verbosity = 'Detailed'
-    }
-}
-
-Clear-MtGraphCache #Reset the cache to avoid stale data
-
-Invoke-Pester -Configuration $PesterConfiguration

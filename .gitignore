@@ -486,3 +486,6 @@ testResults.html
 test.json
 
 .idea
+
+# Don't allow test results in the main branch
+test-results

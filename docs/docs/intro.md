@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+title: Introduction
 ---
 
 # Introduction
@@ -12,8 +13,9 @@ To get started install the Maester PowerShell module and clone the pre-defined r
 
 ```powershell
 Install-Module Maester
-git clone https://github.com/maester365/maester
-Invoke-Maester
+git clone https://github.com/maester365/maester-tests
+cd maester-tests
+./Invoke-Maester.ps1
 ```
 
 ## Reporting Test Results
