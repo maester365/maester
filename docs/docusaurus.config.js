@@ -77,7 +77,7 @@ const config = {
           {
             type: "doc",
             position: "left",
-            docId: "tests/tests-overview",
+            docId: "tests/overview",
             label: "Tests",
           },
           {
@@ -132,8 +132,9 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Maester`,
       },
       prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        theme: prismThemes.shadesOfPurple,
+        darkTheme: prismThemes.shadesOfPurple,
+        additionalLanguages: ["powershell"],
       },
       colorMode: {
         defaultMode: "light",

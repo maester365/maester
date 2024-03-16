@@ -1,18 +1,23 @@
 ﻿<#
- .Synopsis
+  .Synopsis
   Checks if the tenant has at least one fallback policy targetting All Apps and All Users.
 
- .Description
+  .Description
   Microsoft recommends creating at least one conditional access policy targetting all cloud apps
   and ideally should be enabled for all users.
 
   Learn more:
   https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
 
- .Example
+  .Example
   Test-MtCaAllAppsExists
 
+  Returns true if at least one conditional access policy exists that targets all cloud apps and all users.
+
+  .Example
   Test-MtCaAllAppsExists -SkipCheckAllUsers
+
+  Returns true if at least one conditional access policy exists that targets all cloud apps and all users, but skips the check for all users.
 #>
 
 Function Test-MtCaAllAppsExists {

@@ -1,5 +1,25 @@
-﻿[CmdletBinding()]
-param ($Tag = "All")
+﻿<#
+ .Synopsis
+    Script to run Maester tests and generate the report.
+
+ .Description
+    MFA for risky sign-ins conditional access policy can be used to require MFA for all users in the tenant.
+
+ .Example
+    ./Invoke-Maester.ps1
+#>
+
+[CmdletBinding()]
+param (
+
+    # The Pester test results returned from Invoke-Pester -PassThru
+    [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true)]
+    [string[]] $Tag = "All",
+
+    # The path to the html file to be generated
+    [Parameter(Mandatory = $false, Position = 1, ValueFromPipeline = $true)]
+    [string] $OutputFolder = "./test-results"
+)
 
 $motd = @"
 
@@ -16,12 +36,8 @@ Write-Host -ForegroundColor Green -Object $motd
 
 # Create unique file name for the test results with current date and time
 $timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
-$outpuFolder = "./test-results"
-if ( -not (Test-Path -Path $outpuFolder) ) {
-    New-Item -Path $outpuFolder -ItemType Directory
-}
-$htmlFileName = Join-Path $outpuFolder "TestResults-$timestamp.html"
-
+New-Item -Path $OutputFolder -ItemType Directory -Force | Out-Null # Create the output folder if it doesn't exist
+$htmlFileName = Join-Path $OutputFolder "TestResults-$timestamp.html"
 
 #--------------------------------------------------------------
 

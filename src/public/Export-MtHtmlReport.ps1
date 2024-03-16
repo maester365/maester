@@ -36,6 +36,7 @@ Function Export-MtHtmlReport {
             $helpUrl = ''
 
             $start = $name.IndexOf("See https")
+            # Get the Help Url from the message and the ID
             if ($start -gt 0) {
                 $helpUrl = $name.Substring($start + 4).Trim() #Strip away the "See https://maester.dev" part
                 $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part

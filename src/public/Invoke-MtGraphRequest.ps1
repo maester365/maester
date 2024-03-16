@@ -1,6 +1,6 @@
 ﻿<#
-.SYNOPSIS
-    Enhanced version of Invoke-MgGraphRequest that supports paging, batching and caching.
+ .SYNOPSIS
+   Enhanced version of Invoke-MgGraphRequest that supports paging, batching and caching.
 
  .Description
     The version of Invoke-Graph request supports
@@ -11,10 +11,15 @@
     * Ability to skip cache and go directly to Graph
     * Specify consistency level as a parameter
 
+    :::info
     Note: Batch requests don't support caching.
+    :::
+
  .Example
-    Get all users with a display name of "John Doe" and return the first 10 results.
+
     Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName" -Top 10
+
+    Get all users with a display name of "John Doe" and return the first 10 results.
 
 #>
 Function Invoke-MtGraphRequest {

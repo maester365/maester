@@ -32,7 +32,15 @@ https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-a
 Test-MtCaAllAppsExists
 ```
 
+Returns true if at least one conditional access policy exists that targets all cloud apps and all users.
+
+### EXAMPLE 2
+
+```powershell
 Test-MtCaAllAppsExists -SkipCheckAllUsers
+```
+
+Returns true if at least one conditional access policy exists that targets all cloud apps and all users, but skips the check for all users.
 
 ## PARAMETERS
 

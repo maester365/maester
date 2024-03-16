@@ -29,16 +29,19 @@ The version of Invoke-Graph request supports
 * Ability to skip cache and go directly to Graph
 * Specify consistency level as a parameter
 
+:::info
 Note: Batch requests don't support caching.
+:::
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get all users with a display name of "John Doe" and return the first 10 results.
 Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName" -Top 10
 ```
+
+Get all users with a display name of "John Doe" and return the first 10 results.
 
 ## PARAMETERS
 
