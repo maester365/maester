@@ -47,8 +47,6 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/maester365/docs/tree/main/src/site",
         },
         theme: {
@@ -75,6 +73,18 @@ const config = {
             sidebarId: "siteSidebar",
             position: "left",
             label: "Docs",
+          },
+          {
+            type: "doc",
+            position: "left",
+            docId: "tests/tests",
+            label: "Tests",
+          },
+          {
+            type: "doc",
+            position: "left",
+            docId: "commands-overview",
+            label: "Commands",
           },
           {
             "aria-label": "GitHub Repository",

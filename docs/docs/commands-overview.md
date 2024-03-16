@@ -1,7 +1,5 @@
 ---
-id: commands
-title: Command Reference
-sidebar_label: Command Reference
+id: commands-overview
 ---
 
 ```mdx-code-block

@@ -1,8 +1,6 @@
 ---
-id: automation
+id: automation-overview
 title: Set up Maester to automatically run daily
-sidebar_label: Daily Automation
-sidebar_position: 3
 ---
 
 This section provides guidance on how to set up Maester to be run as a daily automation.
