@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.externalIdentitiesPolicy.allowDeletedIdentitiesDataRemoval
-description: allowDeletedIdentitiesDataRemoval - Deleted Identities Data Removal
+title: Deleted Identities Data Removal (allowDeletedIdentitiesDataRemoval)
 slug: /tests/EIDSCA.externalIdentitiesPolicy.allowDeletedIdentitiesDataRemoval
 ---
 

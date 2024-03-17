@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.keyRestrictions.isEnforced
-description: keyRestrictions.isEnforced - Enforce key restrictions
+title: Enforce key restrictions (keyRestrictions.isEnforced)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.isEnforced
 ---
 

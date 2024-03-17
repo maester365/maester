@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredState
-description: numberMatchingRequiredState - Require number matching for push notifications
+title: Require number matching for push notifications (numberMatchingRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredState
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredStateExcluded
-description: displayAppInformationRequiredStateExcluded - Excluded users/groups to show application name in push and passwordless notifications
+title: Excluded users/groups to show application name in push and passwordless notifications (displayAppInformationRequiredStateExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredStateExcluded
 ---
 

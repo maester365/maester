@@ -1,6 +1,6 @@
 ---
-title: MT.1003
-description: At least one Conditional Access policy is configured with All cloud apps
+title: MT.1003 - At least one Conditional Access policy is configured with All cloud apps
+description: Ensure that every app has at least one Conditional Access policy applied.
 slug: /tests/MT.1003
 ---
 

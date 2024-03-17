@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.servicePrincipalCreationPolicies.requestDurationInDays
-description: requestDurationInDays - Consent request expires after (days)???
+title: Consent request expires after (days)??? (requestDurationInDays)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.requestDurationInDays
 ---
 

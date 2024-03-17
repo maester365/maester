@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.guestUserRoleId
-description: guestUserRoleId - Guest user access
+title: Guest user access (guestUserRoleId)
 slug: /tests/EIDSCA.authorizationPolicy.guestUserRoleId
 ---
 

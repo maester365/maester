@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.isUsableOnce
-description: isUsableOnce - One-time
+title: One-time (isUsableOnce)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isUsableOnce
 ---
 

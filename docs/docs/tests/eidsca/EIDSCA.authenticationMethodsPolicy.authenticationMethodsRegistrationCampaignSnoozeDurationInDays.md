@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignSnoozeDurationInDays
-description: authenticationMethodsRegistrationCampaignSnoozeDurationInDays - Registration campaign - Days allowed to snooze
+title: Registration campaign - Days allowed to snooze (authenticationMethodsRegistrationCampaignSnoozeDurationInDays)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignSnoozeDurationInDays
 ---
 

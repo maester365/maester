@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesState
-description: systemCredentialPreferencesState - System Credential Preferences - State
+title: System Credential Preferences - State (systemCredentialPreferencesState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesState
 ---
 

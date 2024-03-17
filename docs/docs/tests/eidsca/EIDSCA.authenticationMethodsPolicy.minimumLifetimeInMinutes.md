@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.minimumLifetimeInMinutes
-description: minimumLifetimeInMinutes - Minimum lifetime
+title: Minimum lifetime (minimumLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.minimumLifetimeInMinutes
 ---
 

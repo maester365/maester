@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.keyRestrictions.enforcementType
-description: keyRestrictions.enforcementType - Restrict specific keys
+title: Restrict specific keys (keyRestrictions.enforcementType)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.enforcementType
 ---
 

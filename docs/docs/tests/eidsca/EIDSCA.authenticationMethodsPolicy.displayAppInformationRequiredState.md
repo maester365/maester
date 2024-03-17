@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredState
-description: displayAppInformationRequiredState - Show application name in push and passwordless notifications
+title: Show application name in push and passwordless notifications (displayAppInformationRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredState
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.CustomBlockedWordsList
-description: CustomBlockedWordsList - M365 groups naming convention - Custom blocked words list
+title: M365 groups naming convention - Custom blocked words list (CustomBlockedWordsList)
 slug: /tests/EIDSCA.settings.CustomBlockedWordsList
 ---
 

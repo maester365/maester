@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.EnableBannedPasswordCheckOnPremises
-description: EnableBannedPasswordCheckOnPremises - Password Protection - Enable password protection on Windows Server Active Directory
+title: Password Protection - Enable password protection on Windows Server Active Directory (EnableBannedPasswordCheckOnPremises)
 slug: /tests/EIDSCA.settings.EnableBannedPasswordCheckOnPremises
 ---
 

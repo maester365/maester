@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.AdminMFAV2
-description: Microsoft.Identity.IAM.Insights.AdminMFAV2 - Require multifactor authentication for administrative roles
+title: Require multifactor authentication for administrative roles (Microsoft.Identity.IAM.Insights.AdminMFAV2)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.AdminMFAV2
 ---
 

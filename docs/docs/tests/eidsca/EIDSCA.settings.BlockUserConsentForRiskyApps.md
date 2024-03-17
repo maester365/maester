@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.BlockUserConsentForRiskyApps
-description: BlockUserConsentForRiskyApps - Block user consent for risky apps
+title: Block user consent for risky apps (BlockUserConsentForRiskyApps)
 slug: /tests/EIDSCA.settings.BlockUserConsentForRiskyApps
 ---
 

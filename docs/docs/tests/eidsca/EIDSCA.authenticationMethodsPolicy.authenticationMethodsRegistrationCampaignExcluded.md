@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignExcluded
-description: authenticationMethodsRegistrationCampaignExcluded - Registration campaign - Excluded users/groups
+title: Registration campaign - Excluded users/groups (authenticationMethodsRegistrationCampaignExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignExcluded
 ---
 

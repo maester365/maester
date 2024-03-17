@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToCreateApps
-description: allowedToCreateApps - Default User Role Permissions - Allowed to create Apps
+title: Default User Role Permissions - Allowed to create Apps (allowedToCreateApps)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateApps
 ---
 

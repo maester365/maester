@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.excludeTargets
-description: excludeTargets - Excluded users/group from CBA
+title: Excluded users/group from CBA (excludeTargets)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.excludeTargets
 ---
 

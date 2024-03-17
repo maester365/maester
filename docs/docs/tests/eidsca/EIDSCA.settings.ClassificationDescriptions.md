@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.ClassificationDescriptions
-description: ClassificationDescriptions - M365 groups naming convention - Classification descriptions
+title: M365 groups naming convention - Classification descriptions (ClassificationDescriptions)
 slug: /tests/EIDSCA.settings.ClassificationDescriptions
 ---
 

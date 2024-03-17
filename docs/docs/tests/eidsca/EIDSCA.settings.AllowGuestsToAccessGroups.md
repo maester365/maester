@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.AllowGuestsToAccessGroups
-description: AllowGuestsToAccessGroups - M365 groups - Allow Guests to have access to groups content
+title: M365 groups - Allow Guests to have access to groups content (AllowGuestsToAccessGroups)
 slug: /tests/EIDSCA.settings.AllowGuestsToAccessGroups
 ---
 

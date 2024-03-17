@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.BannedPasswordList
-description: BannedPasswordList - Password Protection - Custom banned password list
+title: Password Protection - Custom banned password list (BannedPasswordList)
 slug: /tests/EIDSCA.settings.BannedPasswordList
 ---
 

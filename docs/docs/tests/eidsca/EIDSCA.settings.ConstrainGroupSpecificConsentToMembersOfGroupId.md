@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.ConstrainGroupSpecificConsentToMembersOfGroupId
-description: ConstrainGroupSpecificConsentToMembersOfGroupId - Group owner consent for apps accessing data - Restricted to selected group owners
+title: Group owner consent for apps accessing data - Restricted to selected group owners (ConstrainGroupSpecificConsentToMembersOfGroupId)
 slug: /tests/EIDSCA.settings.ConstrainGroupSpecificConsentToMembersOfGroupId
 ---
 

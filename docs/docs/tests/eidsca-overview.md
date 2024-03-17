@@ -6,17 +6,17 @@ description: Overview of the Entra ID Security Config Analyzer tests
 ---
 
 ```mdx-code-block
-import DocCardList from '@theme/DocCardList';
+import DocLinkList from '@site/src/components/DocLinkList/DocLinkList';
 
 # Entra ID - Security Config Analyzer Tests
 
 ## Overview
 
-These tests on this page have been generated based on the excellent [Entra ID Attack and Defense Playbook](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense) specifically the [Entra ID Security Config Analyzer (EIDSCA)
-EIDSCA)](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/main/AADSecurityConfigAnalyzer.md).
+The tests in this section are based on the [Entra ID Attack and Defense Playbook](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense) specifically the [Entra ID Security Config Analyzer (EIDSCA)](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/main/AADSecurityConfigAnalyzer.md).
 
-See the [Getting started](/docs/intro) page on how to run these tests.
+These tests verify if mitigations are in place to protect from various common attack scenarios on Microsoft Entra. Each test in EIDSCA is mapped to the MITRE ATT&CK framework.
+
 
 ## Tests
-<DocCardList />
+<DocLinkList />
 ```

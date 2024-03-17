@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.EnableAdminConsentRequests
-description: EnableAdminConsentRequests - Users can request admin consent to apps they are unable to consent to???
+title: Users can request admin consent to apps they are unable to consent to??? (EnableAdminConsentRequests)
 slug: /tests/EIDSCA.settings.EnableAdminConsentRequests
 ---
 

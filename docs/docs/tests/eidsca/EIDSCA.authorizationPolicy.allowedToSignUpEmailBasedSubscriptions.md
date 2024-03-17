@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToSignUpEmailBasedSubscriptions
-description: allowedToSignUpEmailBasedSubscriptions - Sign-up for email based subscription
+title: Sign-up for email based subscription (allowedToSignUpEmailBasedSubscriptions)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToSignUpEmailBasedSubscriptions
 ---
 

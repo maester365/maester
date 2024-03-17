@@ -1,6 +1,6 @@
 ---
-title: MT.1002
-description: Enforce credential configurations on apps and service principals
+title: MT.1002 - Enforce credential configurations on apps and service principals
+description: By default Microsoft Entra ID allows service principals and applications to be configured with weak credentials.
 slug: /tests/MT.1002
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.state
-description: state - State
+title: State (state)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.state
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.PrefixSuffixNamingRequirement
-description: PrefixSuffixNamingRequirement - M365 groups naming convention - prefix/suffix naming requirement
+title: M365 groups naming convention - prefix/suffix naming requirement (PrefixSuffixNamingRequirement)
 slug: /tests/EIDSCA.settings.PrefixSuffixNamingRequirement
 ---
 

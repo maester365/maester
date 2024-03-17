@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredState
-description: displayLocationInformationRequiredState - Show geographic location in push and passwordless notifications
+title: Show geographic location in push and passwordless notifications (displayLocationInformationRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredState
 ---
 

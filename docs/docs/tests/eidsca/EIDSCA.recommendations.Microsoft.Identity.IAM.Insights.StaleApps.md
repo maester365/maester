@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.StaleApps
-description: Microsoft.Identity.IAM.Insights.StaleApps - Remove unused applications
+title: Remove unused applications (Microsoft.Identity.IAM.Insights.StaleApps)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.StaleApps
 ---
 

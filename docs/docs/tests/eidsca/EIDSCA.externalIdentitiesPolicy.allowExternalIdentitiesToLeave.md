@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.externalIdentitiesPolicy.allowExternalIdentitiesToLeave
-description: allowExternalIdentitiesToLeave - External user leave settings
+title: External user leave settings (allowExternalIdentitiesToLeave)
 slug: /tests/EIDSCA.externalIdentitiesPolicy.allowExternalIdentitiesToLeave
 ---
 

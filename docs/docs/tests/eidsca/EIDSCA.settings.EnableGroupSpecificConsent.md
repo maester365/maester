@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.EnableGroupSpecificConsent
-description: EnableGroupSpecificConsent - Group owner consent for apps accessing data
+title: Group owner consent for apps accessing data (EnableGroupSpecificConsent)
 slug: /tests/EIDSCA.settings.EnableGroupSpecificConsent
 ---
 

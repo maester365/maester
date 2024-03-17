@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.maximumLifetimeInMinutes
-description: maximumLifetimeInMinutes - Maximum lifetime
+title: Maximum lifetime (maximumLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.maximumLifetimeInMinutes
 ---
 

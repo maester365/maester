@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.enabledPreviewFeatures
-description: enabledPreviewFeatures - Enabled 
+title: Enabled  (enabledPreviewFeatures)
 slug: /tests/EIDSCA.authorizationPolicy.enabledPreviewFeatures
 ---
 

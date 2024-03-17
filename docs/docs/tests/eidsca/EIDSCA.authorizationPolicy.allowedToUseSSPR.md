@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToUseSSPR
-description: allowedToUseSSPR - Enabled Self service password reset
+title: Enabled Self service password reset (allowedToUseSSPR)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToUseSSPR
 ---
 

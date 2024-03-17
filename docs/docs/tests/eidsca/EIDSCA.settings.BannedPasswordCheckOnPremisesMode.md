@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.BannedPasswordCheckOnPremisesMode
-description: BannedPasswordCheckOnPremisesMode - Password Protection - Mode
+title: Password Protection - Mode (BannedPasswordCheckOnPremisesMode)
 slug: /tests/EIDSCA.settings.BannedPasswordCheckOnPremisesMode
 ---
 

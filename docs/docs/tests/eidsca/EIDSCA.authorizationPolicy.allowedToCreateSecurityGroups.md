@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToCreateSecurityGroups
-description: allowedToCreateSecurityGroups - Default User Role Permissions - Allowed to create Security Groups
+title: Default User Role Permissions - Allowed to create Security Groups (allowedToCreateSecurityGroups)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateSecurityGroups
 ---
 

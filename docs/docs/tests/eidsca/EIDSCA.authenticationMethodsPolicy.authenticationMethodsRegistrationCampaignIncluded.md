@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignIncluded
-description: authenticationMethodsRegistrationCampaignIncluded - Registration campaign - Included users/groups
+title: Registration campaign - Included users/groups (authenticationMethodsRegistrationCampaignIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignIncluded
 ---
 

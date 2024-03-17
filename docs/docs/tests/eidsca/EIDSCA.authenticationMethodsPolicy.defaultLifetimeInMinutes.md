@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.defaultLifetimeInMinutes
-description: defaultLifetimeInMinutes - Default lifetime
+title: Default lifetime (defaultLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.defaultLifetimeInMinutes
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateIncluded
-description: systemCredentialPreferencesStateIncluded - System Credential Preferences - Included users/groups
+title: System Credential Preferences - Included users/groups (systemCredentialPreferencesStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateIncluded
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.LockoutDurationInSeconds
-description: LockoutDurationInSeconds - Smart Lockout - Lockout duration in seconds
+title: Smart Lockout - Lockout duration in seconds (LockoutDurationInSeconds)
 slug: /tests/EIDSCA.settings.LockoutDurationInSeconds
 ---
 

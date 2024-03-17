@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateIncluded
-description: numberMatchingRequiredStateIncluded - Included users/groups of number matching for push notifications
+title: Included users/groups of number matching for push notifications (numberMatchingRequiredStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateIncluded
 ---
 

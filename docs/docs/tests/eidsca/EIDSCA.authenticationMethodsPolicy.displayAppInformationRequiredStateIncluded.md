@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredStateIncluded
-description: displayAppInformationRequiredStateIncluded - Included users/groups to show application name in push and passwordless notifications
+title: Included users/groups to show application name in push and passwordless notifications (displayAppInformationRequiredStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredStateIncluded
 ---
 

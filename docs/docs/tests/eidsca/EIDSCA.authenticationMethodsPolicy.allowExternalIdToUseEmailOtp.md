@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.allowExternalIdToUseEmailOtp
-description: allowExternalIdToUseEmailOtp - Allow external users to use email OTP
+title: Allow external users to use email OTP (allowExternalIdToUseEmailOtp)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.allowExternalIdToUseEmailOtp
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.EnableMSStandardBlockedWords
-description: EnableMSStandardBlockedWords - M365 groups naming convention - Microsoft Standard List of blocked words (deprecated)
+title: M365 groups naming convention - Microsoft Standard List of blocked words (deprecated) (EnableMSStandardBlockedWords)
 slug: /tests/EIDSCA.settings.EnableMSStandardBlockedWords
 ---
 

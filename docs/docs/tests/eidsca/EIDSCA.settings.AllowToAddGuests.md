@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.AllowToAddGuests
-description: AllowToAddGuests - M365 groups - Allow to add Guests
+title: M365 groups - Allow to add Guests (AllowToAddGuests)
 slug: /tests/EIDSCA.settings.AllowToAddGuests
 ---
 

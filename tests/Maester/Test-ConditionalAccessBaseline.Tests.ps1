@@ -36,8 +36,8 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" {
         Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "there is no policy that requires new password when user risk is high"
     }
-    It "MT.1014: At least one Conditional Access policy is configured to require compliant or hybrid Azure AD joined devices for admins. See https://maester.dev/docs/tests/MT.1014" {
-        Test-MtCaDeviceComplianceAdminsExists | Should -Be $true -Because "there is no policy that requires compliant or hybrid Azure AD joined devices for admins"
+    It "MT.1014: At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. See https://maester.dev/docs/tests/MT.1014" {
+        Test-MtCaDeviceComplianceAdminsExists | Should -Be $true -Because "there is no policy that requires compliant or Entra hybrid joined devices for admins"
     }
     It "MT.1015: At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. See https://maester.dev/docs/tests/MT.1015" {
         Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms | Should -Be $true -Because "there is no policy that blocks access for unknown or unsupported device platforms"

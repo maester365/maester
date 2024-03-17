@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsReporting code
-description: reportSuspiciousActivitySettingsReporting code - Report suspicious activity - Reporting code
+title: Report suspicious activity - Reporting code (reportSuspiciousActivitySettingsReporting code)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsReporting code
 ---
 

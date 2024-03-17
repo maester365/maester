@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.isAttestationEnforced
-description: isAttestationEnforced - Enforce attestation
+title: Enforce attestation (isAttestationEnforced)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isAttestationEnforced
 ---
 

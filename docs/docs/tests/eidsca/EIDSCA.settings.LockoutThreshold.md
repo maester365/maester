@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.LockoutThreshold
-description: LockoutThreshold - Smart Lockout - Lockout threshold
+title: Smart Lockout - Lockout threshold (LockoutThreshold)
 slug: /tests/EIDSCA.settings.LockoutThreshold
 ---
 

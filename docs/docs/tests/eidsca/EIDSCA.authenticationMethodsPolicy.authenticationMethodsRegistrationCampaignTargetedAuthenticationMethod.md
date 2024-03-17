@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod
-description: authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod - Registration campaign - Authentication Method
+title: Registration campaign - Authentication Method (authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod
 ---
 

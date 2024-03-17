@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.EnableBannedPasswordCheck
-description: EnableBannedPasswordCheck - Enforce custom list
+title: Enforce custom list (EnableBannedPasswordCheck)
 slug: /tests/EIDSCA.settings.EnableBannedPasswordCheck
 ---
 

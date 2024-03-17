@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsIncluded
-description: reportSuspiciousActivitySettingsIncluded - Report suspicious activity - Included users/groups
+title: Report suspicious activity - Included users/groups (reportSuspiciousActivitySettingsIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsIncluded
 ---
 

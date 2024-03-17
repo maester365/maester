@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowUserConsentForRiskyApps
-description: allowUserConsentForRiskyApps - Risk-based step-up consent
+title: Risk-based step-up consent (allowUserConsentForRiskyApps)
 slug: /tests/EIDSCA.authorizationPolicy.allowUserConsentForRiskyApps
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredStateIncluded
-description: displayLocationInformationRequiredStateIncluded - Included users/groups to show geographic location in push and passwordless notifications
+title: Included users/groups to show geographic location in push and passwordless notifications (displayLocationInformationRequiredStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredStateIncluded
 ---
 

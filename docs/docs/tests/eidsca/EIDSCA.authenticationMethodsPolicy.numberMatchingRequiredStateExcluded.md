@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateExcluded
-description: numberMatchingRequiredStateExcluded - Excluded users/groups of number matching for push notifications
+title: Excluded users/groups of number matching for push notifications (numberMatchingRequiredStateExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateExcluded
 ---
 

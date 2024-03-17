@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowInvitesFrom
-description: allowInvitesFrom - Guest invite restrictions
+title: Guest invite restrictions (allowInvitesFrom)
 slug: /tests/EIDSCA.authorizationPolicy.allowInvitesFrom
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.blockMsolPowerShell
-description: blockMsolPowerShell - Blocked MSOnline PowerShell access
+title: Blocked MSOnline PowerShell access (blockMsolPowerShell)
 slug: /tests/EIDSCA.authorizationPolicy.blockMsolPowerShell
 ---
 

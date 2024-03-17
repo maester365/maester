@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsState
-description: reportSuspiciousActivitySettingsState - Report suspicious activity - State
+title: Report suspicious activity - State (reportSuspiciousActivitySettingsState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsState
 ---
 

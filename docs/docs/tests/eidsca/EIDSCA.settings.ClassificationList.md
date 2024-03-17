@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.ClassificationList
-description: ClassificationList - M365 groups - Classification list
+title: M365 groups - Classification list (ClassificationList)
 slug: /tests/EIDSCA.settings.ClassificationList
 ---
 

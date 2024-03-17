@@ -12,13 +12,13 @@ import DocCardList from '@theme/DocCardList';
 
 ## Overview
 
-This section lists the collection of community contributed tests that you can use to get started with Maester.
+This section lists the collection tests that you can use to get started with Maester.
 
 These pages are referenced by the tests and provide guidance on each test and includes references to the Microsoft documentation for further reading.
 
 ## [Maester Tests](/docs/tests/maester-overview)
 
-These tests validate if your conditional access policies are following generally recommended best practices.
+These tests validate if your Microsoft configuration is following generally recommended best practices.
 
 ## [Entra ID Security Config Analyzer Tests](/docs/tests/eidsca-overview)
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.UserRiskPolicy
-description: Microsoft.Identity.IAM.Insights.UserRiskPolicy - Protect all users with a user risk policy
+title: Protect all users with a user risk policy (Microsoft.Identity.IAM.Insights.UserRiskPolicy)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.UserRiskPolicy
 ---
 

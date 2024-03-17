@@ -6,16 +6,18 @@ description: Overview of the Maester tests
 ---
 
 ```mdx-code-block
-import DocCardList from '@theme/DocCardList';
+import DocLinkList from '@site/src/components/DocLinkList/DocLinkList';
 
 # Maester Tests
 
 ## Overview
 
-These tests on this page are community contributed tests for your Microsoft 365 tenant.
+This section lists the collection of tests that have been created by the Maester community to help you get started with Maester.
 
-See the [Getting started](/docs/intro) page on how to run these tests.
+The first version of these tests primarily focus on validating your Conditional Access policy configuration. The tests are based on Microsoft's recommendations an each test includes references to the Microsoft documentation for further reading.
 
 ## Tests
-<DocCardList />
+
+<DocLinkList />
+
 ```

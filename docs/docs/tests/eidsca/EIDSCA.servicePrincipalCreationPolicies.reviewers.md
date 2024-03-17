@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.servicePrincipalCreationPolicies.reviewers
-description: reviewers - Consent request expires after (days)???
+title: Consent request expires after (days)??? (reviewers)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.reviewers
 ---
 

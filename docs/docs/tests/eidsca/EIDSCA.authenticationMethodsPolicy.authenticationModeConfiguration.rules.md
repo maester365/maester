@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.rules
-description: authenticationModeConfiguration.rules - Authentication binding - Rules
+title: Authentication binding - Rules (authenticationModeConfiguration.rules)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.rules
 ---
 

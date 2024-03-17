@@ -1,6 +1,6 @@
 ---
-title: MT.1004
-description: At least one Conditional Access policy is configured with All Cloud Apps and All Users
+title: MT.1004 - At least one Conditional Access policy is configured with All Cloud Apps and All Users
+description: Ensure that every app has at least one Conditional Access policy applied and it is assigned to `All users`.
 slug: /tests/MT.1004
 ---
 

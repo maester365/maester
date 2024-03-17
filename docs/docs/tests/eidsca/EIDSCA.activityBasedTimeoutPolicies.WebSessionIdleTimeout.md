@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.activityBasedTimeoutPolicies.WebSessionIdleTimeout
-description: WebSessionIdleTimeout - Enable directory level idle timeout
+title: Enable directory level idle timeout (WebSessionIdleTimeout)
 slug: /tests/EIDSCA.activityBasedTimeoutPolicies.WebSessionIdleTimeout
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.DefaultClassification
-description: DefaultClassification - M365 groups naming convention - Default classification
+title: M365 groups naming convention - Default classification (DefaultClassification)
 slug: /tests/EIDSCA.settings.DefaultClassification
 ---
 

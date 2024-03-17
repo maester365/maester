@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.isOfficePhoneAllowed
-description: isOfficePhoneAllowed - Phone Options - Office
+title: Phone Options - Office (isOfficePhoneAllowed)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isOfficePhoneAllowed
 ---
 

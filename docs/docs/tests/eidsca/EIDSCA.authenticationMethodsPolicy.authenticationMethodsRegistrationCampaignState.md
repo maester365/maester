@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignState
-description: authenticationMethodsRegistrationCampaignState - Registration campaign - State
+title: Registration campaign - State (authenticationMethodsRegistrationCampaignState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignState
 ---
 

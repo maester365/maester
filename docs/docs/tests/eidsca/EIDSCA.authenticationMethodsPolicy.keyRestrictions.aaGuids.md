@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.keyRestrictions.aaGuids
-description: keyRestrictions.aaGuids - Restricted
+title: Restricted (keyRestrictions.aaGuids)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.aaGuids
 ---
 

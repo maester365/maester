@@ -1,6 +1,5 @@
 ---
-title: %DocName%
-description: %Name% - %DisplayName%
+title: %DisplayName% (%Name%)
 slug: /tests/%DocName%
 ---
 

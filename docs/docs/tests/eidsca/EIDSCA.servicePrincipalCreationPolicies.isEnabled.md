@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.servicePrincipalCreationPolicies.isEnabled
-description: isEnabled - Users can request admin consent to apps they are unable to consent to
+title: Users can request admin consent to apps they are unable to consent to (isEnabled)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.isEnabled
 ---
 

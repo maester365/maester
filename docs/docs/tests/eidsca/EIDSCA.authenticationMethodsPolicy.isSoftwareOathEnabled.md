@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.isSoftwareOathEnabled
-description: isSoftwareOathEnabled - Allow use of Microsoft Authenticator OTP
+title: Allow use of Microsoft Authenticator OTP (isSoftwareOathEnabled)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isSoftwareOathEnabled
 ---
 

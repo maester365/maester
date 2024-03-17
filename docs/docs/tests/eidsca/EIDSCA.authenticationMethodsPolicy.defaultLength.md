@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.defaultLength
-description: defaultLength - Length
+title: Length (defaultLength)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.defaultLength
 ---
 

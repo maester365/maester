@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateExcluded
-description: systemCredentialPreferencesStateExcluded - System Credential Preferences - Excluded users/groups
+title: System Credential Preferences - Excluded users/groups (systemCredentialPreferencesStateExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateExcluded
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.GuestUsageGuidelinesUrl
-description: GuestUsageGuidelinesUrl - M365 groups - Guest usage guidelines URL
+title: M365 groups - Guest usage guidelines URL (GuestUsageGuidelinesUrl)
 slug: /tests/EIDSCA.settings.GuestUsageGuidelinesUrl
 ---
 

@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode
-description: authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode - Authentication binding - Protected Level
+title: Authentication binding - Protected Level (authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode
 ---
 

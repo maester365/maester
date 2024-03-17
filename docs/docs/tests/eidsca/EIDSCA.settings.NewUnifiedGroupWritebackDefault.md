@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.settings.NewUnifiedGroupWritebackDefault
-description: NewUnifiedGroupWritebackDefault - Default writeback setting for newly created Microsoft 365 groups
+title: Default writeback setting for newly created Microsoft 365 groups (NewUnifiedGroupWritebackDefault)
 slug: /tests/EIDSCA.settings.NewUnifiedGroupWritebackDefault
 ---
 

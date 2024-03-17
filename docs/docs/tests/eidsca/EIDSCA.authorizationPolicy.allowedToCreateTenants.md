@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToCreateTenants
-description: allowedToCreateTenants - Default User Role Permissions - Allowed to create Tenants
+title: Default User Role Permissions - Allowed to create Tenants (allowedToCreateTenants)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateTenants
 ---
 

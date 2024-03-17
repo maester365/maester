@@ -6,7 +6,7 @@
     Microsoft recommends blocking access for unknown or unsupported device platforms.
 
   Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-policy-common
+  https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device
 
  .Example
   Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms

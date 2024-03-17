@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.isSelfServiceRegistrationAllowed
-description: isSelfServiceRegistrationAllowed - Allow self-service set up
+title: Allow self-service set up (isSelfServiceRegistrationAllowed)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isSelfServiceRegistrationAllowed
 ---
 

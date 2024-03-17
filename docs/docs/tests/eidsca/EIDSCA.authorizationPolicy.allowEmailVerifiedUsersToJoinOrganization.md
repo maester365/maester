@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization
-description: allowEmailVerifiedUsersToJoinOrganization - User can joint the tenant by email validation
+title: User can joint the tenant by email validation (allowEmailVerifiedUsersToJoinOrganization)
 slug: /tests/EIDSCA.authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization
 ---
 

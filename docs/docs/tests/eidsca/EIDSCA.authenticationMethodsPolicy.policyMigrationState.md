@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.policyMigrationState
-description: policyMigrationState - Manage migration
+title: Manage migration (policyMigrationState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.policyMigrationState
 ---
 

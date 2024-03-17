@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.servicePrincipalCreationPolicies.version
-description: version - Consent request expires after (days)???
+title: Consent request expires after (days)??? (version)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.version
 ---
 

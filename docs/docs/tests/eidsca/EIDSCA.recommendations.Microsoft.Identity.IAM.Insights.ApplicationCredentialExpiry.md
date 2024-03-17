@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry
-description: Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry - Renew expiring application credentials
+title: Renew expiring application credentials (Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry
 ---
 

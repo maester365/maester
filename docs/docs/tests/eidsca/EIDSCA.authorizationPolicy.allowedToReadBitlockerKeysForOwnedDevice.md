@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToReadBitlockerKeysForOwnedDevice
-description: allowedToReadBitlockerKeysForOwnedDevice - Default User Role Permissions - Allowed to read BitLocker Keys for Owned Devices
+title: Default User Role Permissions - Allowed to read BitLocker Keys for Owned Devices (allowedToReadBitlockerKeysForOwnedDevice)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToReadBitlockerKeysForOwnedDevice
 ---
 

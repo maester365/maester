@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authorizationPolicy.allowedToReadOtherUsers
-description: allowedToReadOtherUsers - Default User Role Permissions - Allowed to read other users
+title: Default User Role Permissions - Allowed to read other users (allowedToReadOtherUsers)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToReadOtherUsers
 ---
 

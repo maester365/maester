@@ -1,6 +1,5 @@
 ---
-title: EIDSCA.authenticationMethodsPolicy.includeTargets
-description: includeTargets - Included users/groups from CBA
+title: Included users/groups from CBA (includeTargets)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.includeTargets
 ---
 
