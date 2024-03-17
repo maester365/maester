@@ -83,7 +83,7 @@ const config = {
           {
             type: "doc",
             position: "left",
-            docId: "commands-overview",
+            docId: "commands/commands-overview",
             label: "Commands",
           },
           {
