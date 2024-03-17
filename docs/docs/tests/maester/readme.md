@@ -1,5 +1,4 @@
 ---
-id: maester-overview
 title: Maester Tests
 description: Overview of the Maester tests
 ---

@@ -1,5 +1,4 @@
 ---
-id: eidsca-overview
 title: Entra ID - Security Config Analyzer Tests
 sidebar_label: Entra ID SCA Tests
 description: Overview of the Entra ID Security Config Analyzer tests

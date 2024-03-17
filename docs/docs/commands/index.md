@@ -1,4 +1,5 @@
 ---
+id: commands-index
 title: Maester PowerShell commands
 sidebar_class_name: powershell
 ---
