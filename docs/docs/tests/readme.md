@@ -1,7 +1,6 @@
 ---
 id: overview
 title: Tests Overview
-sidebar_label: Tests
 description: Overview of the different types of tests available in Maester
 ---
 

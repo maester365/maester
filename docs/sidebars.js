@@ -50,6 +50,10 @@ const sidebars = {
       ],
     },
     {
+      type: "html",
+      value: '<span class="sidebar-divider" />',
+    },
+    {
       type: "category",
       label: "Command Reference",
       collapsed: false,
