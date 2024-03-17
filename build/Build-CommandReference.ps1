@@ -10,3 +10,13 @@ if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable)) {
 Import-Module Alt3.Docusaurus.Powershell
 Import-Module PlatyPS
 New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./docs/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/src/public/
+
+# Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
+
+$cmdMarkdownFiles = Get-ChildItem ./docs/docs/commands
+foreach ($file in $cmdMarkdownFiles) {
+    $content = Get-Content $file
+    $synopsis = $content[($content.IndexOf("## SYNOPSIS") + 2)] # Get the synopsis
+    $updatedContent = $content.Replace("id:", "description: $($synopsis)`nid:")
+    Set-Content $file $updatedContent
+}

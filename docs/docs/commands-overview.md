@@ -3,7 +3,7 @@ id: commands-overview
 ---
 
 ```mdx-code-block
-import DocCardList from '@theme/DocCardList';
+import DocLinkList from '@site/src/components/DocLinkList/DocLinkList';
 
 # Maester - Command Reference
 
@@ -13,5 +13,5 @@ This page lists the commands available in the Maester module and provides a refe
 See the [writing Maester tests](./writing-tests) guide for more information on how to write your own tests using these commands.
 
 ## Maester Commands
-<DocCardList />
+<DocLinkList />
 ```
