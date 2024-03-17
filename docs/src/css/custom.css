@@ -105,3 +105,11 @@ html[data-theme="dark"] .navbar--github-link:before {
 .hidden {
   display: none !important;
 }
+
+/* Override non-category links to be horizonally compact */
+
+.powershell a::before {
+  padding-right: 0.2rem;
+  margin-top: 0.2rem;
+  content: url(/static/img/icons/mdi--powershell.svg);
+}

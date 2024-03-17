@@ -11,8 +11,10 @@ Import-Module Alt3.Docusaurus.Powershell
 Import-Module PlatyPS
 New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./docs/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/src/public/
 
-# Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
+# Copy the command reference to the correct location since the New-DocusaurusHelp deletes the old one
+Copy-Item -Path ./docs/docs/commands-overview.md -Destination ./docs/docs/commands/index.md -Force
 
+# Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
 $cmdMarkdownFiles = Get-ChildItem ./docs/docs/commands
 foreach ($file in $cmdMarkdownFiles) {
     $content = Get-Content $file
