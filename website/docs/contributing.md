@@ -11,7 +11,7 @@ import TOCInline from '@theme/TOCInline';
 
 ## Contributing to docs
 
-Simple edits can be made in the GitHub UI by clicking the 'Edit this page' at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/docs/docs) folder on GitHub.
+Simple edits can be made in the GitHub UI by clicking the 'Edit this page' at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
 
 For more complex changes, you can fork the repository and submit a pull request.
 
@@ -43,7 +43,7 @@ npm start
 
 #### Editing content
 
-You will now be able to edit add and edit markdown files in the ./docs/docs folder and see the changes in real-time in your browser.
+You will now be able to edit add and edit markdown files in the ./website/docs folder and see the changes in real-time in your browser.
 
 - Read the [markdown documentation](https://docusaurus.io/docs/markdown-features) for more information on some of the custom markdown features available.
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://measter.dev/docs/automation/) page for examples.

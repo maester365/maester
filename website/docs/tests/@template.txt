@@ -2,6 +2,7 @@
 title: %title%
 description: %heading%
 slug: /docs/tests/%title%
+sidebar_class_name: hidden
 ---
 
 # %heading%
