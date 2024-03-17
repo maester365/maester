@@ -490,4 +490,4 @@ test.json
 # Don't allow test results in the main branch
 test-results
 
-build/
+website/build/
