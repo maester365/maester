@@ -1,6 +1,7 @@
 ---
 title: Consent request expires after (days)??? (version)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.version
+sidebar_class_name: hidden
 ---
 
 # Consent request expires after (days)???

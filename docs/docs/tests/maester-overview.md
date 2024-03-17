@@ -1,7 +1,6 @@
 ---
 id: maester-overview
 title: Maester Tests
-sidebar_label: Maester Tests Overview
 description: Overview of the Maester tests
 ---
 

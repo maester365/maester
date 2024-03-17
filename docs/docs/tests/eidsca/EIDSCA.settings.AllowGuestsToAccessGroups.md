@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Allow Guests to have access to groups content (AllowGuestsToAccessGroups)
 slug: /tests/EIDSCA.settings.AllowGuestsToAccessGroups
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Allow Guests to have access to groups content

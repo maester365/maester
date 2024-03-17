@@ -17,6 +17,6 @@ $cmdMarkdownFiles = Get-ChildItem ./docs/docs/commands
 foreach ($file in $cmdMarkdownFiles) {
     $content = Get-Content $file
     $synopsis = $content[($content.IndexOf("## SYNOPSIS") + 2)] # Get the synopsis
-    $updatedContent = $content.Replace("id:", "description: $($synopsis)`nid:")
+    $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: $($synopsis)`nid:")
     Set-Content $file $updatedContent
 }

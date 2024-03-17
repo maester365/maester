@@ -1,6 +1,7 @@
 ---
 title: Report suspicious activity - Reporting code (reportSuspiciousActivitySettingsReporting code)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsReporting code
+sidebar_class_name: hidden
 ---
 
 # Report suspicious activity - Reporting code

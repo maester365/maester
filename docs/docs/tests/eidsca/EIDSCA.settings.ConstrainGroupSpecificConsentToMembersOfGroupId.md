@@ -1,6 +1,7 @@
 ---
 title: Group owner consent for apps accessing data - Restricted to selected group owners (ConstrainGroupSpecificConsentToMembersOfGroupId)
 slug: /tests/EIDSCA.settings.ConstrainGroupSpecificConsentToMembersOfGroupId
+sidebar_class_name: hidden
 ---
 
 # Group owner consent for apps accessing data - Restricted to selected group owners

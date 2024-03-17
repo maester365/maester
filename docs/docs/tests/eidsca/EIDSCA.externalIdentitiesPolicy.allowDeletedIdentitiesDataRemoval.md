@@ -1,6 +1,7 @@
 ---
 title: Deleted Identities Data Removal (allowDeletedIdentitiesDataRemoval)
 slug: /tests/EIDSCA.externalIdentitiesPolicy.allowDeletedIdentitiesDataRemoval
+sidebar_class_name: hidden
 ---
 
 # Deleted Identities Data Removal

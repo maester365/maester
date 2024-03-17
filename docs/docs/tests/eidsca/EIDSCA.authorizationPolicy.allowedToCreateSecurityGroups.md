@@ -1,6 +1,7 @@
 ---
 title: Default User Role Permissions - Allowed to create Security Groups (allowedToCreateSecurityGroups)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateSecurityGroups
+sidebar_class_name: hidden
 ---
 
 # Default User Role Permissions - Allowed to create Security Groups

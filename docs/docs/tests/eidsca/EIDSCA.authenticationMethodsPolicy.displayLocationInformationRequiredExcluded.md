@@ -1,6 +1,7 @@
 ---
 title: Excluded users/groups to show geographic location in push and passwordless notifications (displayLocationInformationRequiredExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredExcluded
+sidebar_class_name: hidden
 ---
 
 # Excluded users/groups to show geographic location in push and passwordless notifications

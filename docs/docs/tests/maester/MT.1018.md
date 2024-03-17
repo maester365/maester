@@ -2,6 +2,7 @@
 title: MT.1018 - At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices
 description: Checks if the tenant has at least one conditional access policy enforcing sign-in frequency for non-corporate devices
 slug: /tests/MT.1018
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices

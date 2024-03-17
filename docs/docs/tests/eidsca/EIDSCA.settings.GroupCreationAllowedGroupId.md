@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Allow group created for a specific security group (GroupCreationAllowedGroupId)
 slug: /tests/EIDSCA.settings.GroupCreationAllowedGroupId
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Allow group created for a specific security group

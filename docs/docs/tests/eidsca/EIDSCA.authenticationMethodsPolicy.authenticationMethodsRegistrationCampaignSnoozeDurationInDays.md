@@ -1,6 +1,7 @@
 ---
 title: Registration campaign - Days allowed to snooze (authenticationMethodsRegistrationCampaignSnoozeDurationInDays)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignSnoozeDurationInDays
+sidebar_class_name: hidden
 ---
 
 # Registration campaign - Days allowed to snooze

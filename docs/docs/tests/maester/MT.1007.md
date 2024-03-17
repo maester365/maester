@@ -2,6 +2,7 @@
 title: MT.1007 - At least one Conditional Access policy is configured to require MFA for all users
 description: Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
 slug: /tests/MT.1007
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require MFA for all users

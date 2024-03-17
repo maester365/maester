@@ -1,6 +1,7 @@
 ---
 title: Group owner consent for apps accessing data (EnableGroupSpecificConsent)
 slug: /tests/EIDSCA.settings.EnableGroupSpecificConsent
+sidebar_class_name: hidden
 ---
 
 # Group owner consent for apps accessing data

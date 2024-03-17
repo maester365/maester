@@ -1,6 +1,7 @@
 ---
 title: M365 groups naming convention - Microsoft Standard List of blocked words (deprecated) (EnableMSStandardBlockedWords)
 slug: /tests/EIDSCA.settings.EnableMSStandardBlockedWords
+sidebar_class_name: hidden
 ---
 
 # M365 groups naming convention - Microsoft Standard List of blocked words (deprecated)

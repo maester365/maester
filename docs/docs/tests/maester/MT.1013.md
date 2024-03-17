@@ -2,6 +2,7 @@
 title: MT.1013 - At least one Conditional Access policy is configured to require new password when user risk is high
 description: Checks if the tenant has at least one conditional access policy requiring password change for high user risk. Password change for high user risk is a good way to prevent compromised accounts from being used to access your tenant.
 slug: /tests/MT.1013
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require new password when user risk is high

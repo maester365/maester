@@ -1,6 +1,7 @@
 ---
 title: Default User Role Permissions - Allowed to create Tenants (allowedToCreateTenants)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateTenants
+sidebar_class_name: hidden
 ---
 
 # Default User Role Permissions - Allowed to create Tenants

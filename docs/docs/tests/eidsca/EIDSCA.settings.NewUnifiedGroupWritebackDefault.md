@@ -1,6 +1,7 @@
 ---
 title: Default writeback setting for newly created Microsoft 365 groups (NewUnifiedGroupWritebackDefault)
 slug: /tests/EIDSCA.settings.NewUnifiedGroupWritebackDefault
+sidebar_class_name: hidden
 ---
 
 # Default writeback setting for newly created Microsoft 365 groups

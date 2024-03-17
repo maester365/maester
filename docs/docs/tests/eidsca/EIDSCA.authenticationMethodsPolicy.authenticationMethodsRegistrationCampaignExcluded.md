@@ -1,6 +1,7 @@
 ---
 title: Registration campaign - Excluded users/groups (authenticationMethodsRegistrationCampaignExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignExcluded
+sidebar_class_name: hidden
 ---
 
 # Registration campaign - Excluded users/groups

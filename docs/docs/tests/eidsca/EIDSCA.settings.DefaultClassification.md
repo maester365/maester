@@ -1,6 +1,7 @@
 ---
 title: M365 groups naming convention - Default classification (DefaultClassification)
 slug: /tests/EIDSCA.settings.DefaultClassification
+sidebar_class_name: hidden
 ---
 
 # M365 groups naming convention - Default classification

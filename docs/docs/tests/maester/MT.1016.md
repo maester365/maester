@@ -2,6 +2,7 @@
 title: MT.1016 - At least one Conditional Access policy is configured to require MFA for guest access
 description: Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all guest users.
 slug: /tests/MT.1016
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require MFA for guest access

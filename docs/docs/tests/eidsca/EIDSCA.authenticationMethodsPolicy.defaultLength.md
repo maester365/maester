@@ -1,6 +1,7 @@
 ---
 title: Length (defaultLength)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.defaultLength
+sidebar_class_name: hidden
 ---
 
 # Length

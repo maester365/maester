@@ -1,6 +1,7 @@
 ---
 title: Use limited administrative roles (Microsoft.Identity.IAM.Insights.RoleOverlap)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.RoleOverlap
+sidebar_class_name: hidden
 ---
 
 # Use limited administrative roles

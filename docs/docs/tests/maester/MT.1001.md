@@ -2,6 +2,7 @@
 title: MT.1001 - At least one Conditional Access policy is configured with device compliance
 description: Device compliance conditional access policy can be used to require devices to be compliant with the tenant's security configuration.
 slug: /tests/MT.1001
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured with device compliance

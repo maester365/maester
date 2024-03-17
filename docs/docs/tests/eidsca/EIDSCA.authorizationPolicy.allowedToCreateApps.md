@@ -1,6 +1,7 @@
 ---
 title: Default User Role Permissions - Allowed to create Apps (allowedToCreateApps)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToCreateApps
+sidebar_class_name: hidden
 ---
 
 # Default User Role Permissions - Allowed to create Apps

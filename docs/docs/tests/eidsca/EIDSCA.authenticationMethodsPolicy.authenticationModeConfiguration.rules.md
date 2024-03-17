@@ -1,6 +1,7 @@
 ---
 title: Authentication binding - Rules (authenticationModeConfiguration.rules)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.rules
+sidebar_class_name: hidden
 ---
 
 # Authentication binding - Rules

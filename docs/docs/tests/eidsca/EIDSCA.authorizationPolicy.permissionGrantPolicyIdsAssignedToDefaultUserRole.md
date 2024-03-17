@@ -1,6 +1,7 @@
 ---
 title: User consent policy assigned for applications (permissionGrantPolicyIdsAssignedToDefaultUserRole)
 slug: /tests/EIDSCA.authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole
+sidebar_class_name: hidden
 ---
 
 # User consent policy assigned for applications

@@ -1,6 +1,7 @@
 ---
 title: M365 groups naming convention - Custom blocked words list (CustomBlockedWordsList)
 slug: /tests/EIDSCA.settings.CustomBlockedWordsList
+sidebar_class_name: hidden
 ---
 
 # M365 groups naming convention - Custom blocked words list

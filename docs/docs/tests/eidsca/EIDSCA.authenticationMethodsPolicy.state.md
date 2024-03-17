@@ -1,6 +1,7 @@
 ---
 title: State (state)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.state
+sidebar_class_name: hidden
 ---
 
 # State

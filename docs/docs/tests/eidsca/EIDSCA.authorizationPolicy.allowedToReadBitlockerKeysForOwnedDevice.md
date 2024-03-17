@@ -1,6 +1,7 @@
 ---
 title: Default User Role Permissions - Allowed to read BitLocker Keys for Owned Devices (allowedToReadBitlockerKeysForOwnedDevice)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToReadBitlockerKeysForOwnedDevice
+sidebar_class_name: hidden
 ---
 
 # Default User Role Permissions - Allowed to read BitLocker Keys for Owned Devices

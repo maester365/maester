@@ -2,6 +2,7 @@
 title: MT.1008 - At least one Conditional Access policy is configured to require MFA for Azure management
 description: Checks if the tenant has at least one conditional access policy requiring MFA for admins.
 slug: /tests/MT.1008
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require MFA for Azure management

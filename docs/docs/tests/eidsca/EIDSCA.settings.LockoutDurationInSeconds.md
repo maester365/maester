@@ -1,6 +1,7 @@
 ---
 title: Smart Lockout - Lockout duration in seconds (LockoutDurationInSeconds)
 slug: /tests/EIDSCA.settings.LockoutDurationInSeconds
+sidebar_class_name: hidden
 ---
 
 # Smart Lockout - Lockout duration in seconds

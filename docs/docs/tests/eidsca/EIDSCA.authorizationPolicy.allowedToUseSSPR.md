@@ -1,6 +1,7 @@
 ---
 title: Enabled Self service password reset (allowedToUseSSPR)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToUseSSPR
+sidebar_class_name: hidden
 ---
 
 # Enabled Self service password reset

@@ -1,6 +1,7 @@
 ---
 title: System Credential Preferences - State (systemCredentialPreferencesState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesState
+sidebar_class_name: hidden
 ---
 
 # System Credential Preferences - State

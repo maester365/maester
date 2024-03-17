@@ -1,6 +1,7 @@
 ---
 title: Maximum lifetime (maximumLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.maximumLifetimeInMinutes
+sidebar_class_name: hidden
 ---
 
 # Maximum lifetime

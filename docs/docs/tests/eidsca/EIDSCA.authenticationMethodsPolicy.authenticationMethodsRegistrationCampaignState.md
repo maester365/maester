@@ -1,6 +1,7 @@
 ---
 title: Registration campaign - State (authenticationMethodsRegistrationCampaignState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignState
+sidebar_class_name: hidden
 ---
 
 # Registration campaign - State

@@ -2,6 +2,7 @@
 title: MT.1006 - At least one Conditional Access policy is configured to require MFA for admins
 description: Checks if the tenant has at least one fallback policy targetting All Apps and All Users.
 slug: /tests/MT.1006
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require MFA for admins

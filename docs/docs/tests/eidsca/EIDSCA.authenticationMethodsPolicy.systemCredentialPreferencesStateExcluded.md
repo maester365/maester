@@ -1,6 +1,7 @@
 ---
 title: System Credential Preferences - Excluded users/groups (systemCredentialPreferencesStateExcluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateExcluded
+sidebar_class_name: hidden
 ---
 
 # System Credential Preferences - Excluded users/groups

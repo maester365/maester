@@ -1,6 +1,7 @@
 ---
 title: Enforce key restrictions (keyRestrictions.isEnforced)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.isEnforced
+sidebar_class_name: hidden
 ---
 
 # Enforce key restrictions

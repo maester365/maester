@@ -1,6 +1,7 @@
 ---
 title: Restricted (keyRestrictions.aaGuids)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.aaGuids
+sidebar_class_name: hidden
 ---
 
 # Restricted

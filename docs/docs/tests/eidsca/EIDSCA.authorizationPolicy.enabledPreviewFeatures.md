@@ -1,6 +1,7 @@
 ---
 title: Enabled  (enabledPreviewFeatures)
 slug: /tests/EIDSCA.authorizationPolicy.enabledPreviewFeatures
+sidebar_class_name: hidden
 ---
 
 # Enabled 

@@ -1,6 +1,7 @@
 ---
 title: Enforce custom list (EnableBannedPasswordCheck)
 slug: /tests/EIDSCA.settings.EnableBannedPasswordCheck
+sidebar_class_name: hidden
 ---
 
 # Enforce custom list

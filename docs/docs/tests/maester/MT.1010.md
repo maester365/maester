@@ -2,6 +2,7 @@
 title: MT.1010 - At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync
 description: Checks if the tenant has at least one conditional access policy that blocks legacy authentication for Exchange Active Sync authentication.
 slug: /tests/MT.1010
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync

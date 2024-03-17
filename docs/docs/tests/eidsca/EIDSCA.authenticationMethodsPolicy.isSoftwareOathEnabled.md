@@ -1,6 +1,7 @@
 ---
 title: Allow use of Microsoft Authenticator OTP (isSoftwareOathEnabled)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isSoftwareOathEnabled
+sidebar_class_name: hidden
 ---
 
 # Allow use of Microsoft Authenticator OTP

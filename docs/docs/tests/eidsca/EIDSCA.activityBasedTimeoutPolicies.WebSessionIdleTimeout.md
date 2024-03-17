@@ -1,6 +1,7 @@
 ---
 title: Enable directory level idle timeout (WebSessionIdleTimeout)
 slug: /tests/EIDSCA.activityBasedTimeoutPolicies.WebSessionIdleTimeout
+sidebar_class_name: hidden
 ---
 
 # Enable directory level idle timeout

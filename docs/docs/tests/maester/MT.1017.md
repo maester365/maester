@@ -2,6 +2,7 @@
 title: MT.1017 - At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices
 description: Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
 slug: /tests/MT.1017
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices

@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Guest usage guidelines URL (GuestUsageGuidelinesUrl)
 slug: /tests/EIDSCA.settings.GuestUsageGuidelinesUrl
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Guest usage guidelines URL

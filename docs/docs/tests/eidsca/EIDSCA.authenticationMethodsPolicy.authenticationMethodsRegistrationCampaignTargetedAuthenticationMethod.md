@@ -1,6 +1,7 @@
 ---
 title: Registration campaign - Authentication Method (authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignTargetedAuthenticationMethod
+sidebar_class_name: hidden
 ---
 
 # Registration campaign - Authentication Method

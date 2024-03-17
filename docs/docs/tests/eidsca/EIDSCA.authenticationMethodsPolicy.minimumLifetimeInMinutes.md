@@ -1,6 +1,7 @@
 ---
 title: Minimum lifetime (minimumLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.minimumLifetimeInMinutes
+sidebar_class_name: hidden
 ---
 
 # Minimum lifetime

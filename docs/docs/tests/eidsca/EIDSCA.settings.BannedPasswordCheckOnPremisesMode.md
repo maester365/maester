@@ -1,6 +1,7 @@
 ---
 title: Password Protection - Mode (BannedPasswordCheckOnPremisesMode)
 slug: /tests/EIDSCA.settings.BannedPasswordCheckOnPremisesMode
+sidebar_class_name: hidden
 ---
 
 # Password Protection - Mode

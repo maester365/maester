@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Allow Guests to become Group Owner (AllowGuestsToBeGroupOwner)
 slug: /tests/EIDSCA.settings.AllowGuestsToBeGroupOwner
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Allow Guests to become Group Owner

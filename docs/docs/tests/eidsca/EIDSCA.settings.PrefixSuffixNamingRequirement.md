@@ -1,6 +1,7 @@
 ---
 title: M365 groups naming convention - prefix/suffix naming requirement (PrefixSuffixNamingRequirement)
 slug: /tests/EIDSCA.settings.PrefixSuffixNamingRequirement
+sidebar_class_name: hidden
 ---
 
 # M365 groups naming convention - prefix/suffix naming requirement

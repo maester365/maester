@@ -1,6 +1,7 @@
 ---
 title: Registration campaign - Included users/groups (authenticationMethodsRegistrationCampaignIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationMethodsRegistrationCampaignIncluded
+sidebar_class_name: hidden
 ---
 
 # Registration campaign - Included users/groups

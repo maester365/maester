@@ -2,6 +2,7 @@
 title: MT.1015 - At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms
 description: Checks if the tenant has at least one Conditional Access policy is configured to block access for unknown or unsupported device platforms.
 slug: /tests/MT.1015
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms

@@ -1,6 +1,7 @@
 ---
 title: System Credential Preferences - Included users/groups (systemCredentialPreferencesStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.systemCredentialPreferencesStateIncluded
+sidebar_class_name: hidden
 ---
 
 # System Credential Preferences - Included users/groups

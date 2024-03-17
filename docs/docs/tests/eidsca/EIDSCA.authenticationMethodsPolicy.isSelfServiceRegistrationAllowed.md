@@ -1,6 +1,7 @@
 ---
 title: Allow self-service set up (isSelfServiceRegistrationAllowed)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isSelfServiceRegistrationAllowed
+sidebar_class_name: hidden
 ---
 
 # Allow self-service set up

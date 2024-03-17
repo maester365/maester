@@ -1,6 +1,7 @@
 ---
 title: Protect all users with a user risk policy (Microsoft.Identity.IAM.Insights.UserRiskPolicy)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.UserRiskPolicy
+sidebar_class_name: hidden
 ---
 
 # Protect all users with a user risk policy

@@ -1,6 +1,7 @@
 ---
 title: Report suspicious activity - State (reportSuspiciousActivitySettingsState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsState
+sidebar_class_name: hidden
 ---
 
 # Report suspicious activity - State

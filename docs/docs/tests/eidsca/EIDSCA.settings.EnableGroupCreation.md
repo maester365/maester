@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Enable Group creation for any members (EnableGroupCreation)
 slug: /tests/EIDSCA.settings.EnableGroupCreation
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Enable Group creation for any members

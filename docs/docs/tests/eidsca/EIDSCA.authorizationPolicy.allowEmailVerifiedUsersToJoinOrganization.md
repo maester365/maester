@@ -1,6 +1,7 @@
 ---
 title: User can joint the tenant by email validation (allowEmailVerifiedUsersToJoinOrganization)
 slug: /tests/EIDSCA.authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization
+sidebar_class_name: hidden
 ---
 
 # User can joint the tenant by email validation

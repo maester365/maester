@@ -1,6 +1,7 @@
 ---
 title: Reviewers will receive email notifications when admin consent requests are about to expire??? (notifyReviewers)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.notifyReviewers
+sidebar_class_name: hidden
 ---
 
 # Reviewers will receive email notifications when admin consent requests are about to expire???

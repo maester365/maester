@@ -1,6 +1,7 @@
 ---
 title: M365 groups naming convention - Classification descriptions (ClassificationDescriptions)
 slug: /tests/EIDSCA.settings.ClassificationDescriptions
+sidebar_class_name: hidden
 ---
 
 # M365 groups naming convention - Classification descriptions

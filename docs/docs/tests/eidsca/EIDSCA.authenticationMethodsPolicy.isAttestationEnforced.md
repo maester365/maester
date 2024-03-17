@@ -1,6 +1,7 @@
 ---
 title: Enforce attestation (isAttestationEnforced)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isAttestationEnforced
+sidebar_class_name: hidden
 ---
 
 # Enforce attestation

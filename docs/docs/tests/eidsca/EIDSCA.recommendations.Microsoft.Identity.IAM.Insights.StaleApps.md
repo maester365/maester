@@ -1,6 +1,7 @@
 ---
 title: Remove unused applications (Microsoft.Identity.IAM.Insights.StaleApps)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.StaleApps
+sidebar_class_name: hidden
 ---
 
 # Remove unused applications

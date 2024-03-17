@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Allow to add Guests (AllowToAddGuests)
 slug: /tests/EIDSCA.settings.AllowToAddGuests
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Allow to add Guests

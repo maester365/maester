@@ -1,6 +1,7 @@
 ---
 title: Password Protection - Custom banned password list (BannedPasswordList)
 slug: /tests/EIDSCA.settings.BannedPasswordList
+sidebar_class_name: hidden
 ---
 
 # Password Protection - Custom banned password list

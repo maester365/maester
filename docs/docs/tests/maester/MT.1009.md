@@ -2,6 +2,7 @@
 title: MT.1009 - At least one Conditional Access policy is configured to block other legacy authentication
 description: Checks if the tenant has at least one conditional access policy that blocks legacy authentication.
 slug: /tests/MT.1009
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to block other legacy authentication

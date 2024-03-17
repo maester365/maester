@@ -1,6 +1,6 @@
 ---
 sidebar_label: Azure DevOps
-sidebar_position: 1
+sidebar_position: 2
 title: Azure DevOps
 ---
 

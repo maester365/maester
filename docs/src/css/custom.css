@@ -101,3 +101,7 @@ html[data-theme="dark"] .navbar--github-link:before {
 .theme-doc-sidebar-item-link {
   white-space: nowrap;
 }
+
+.hidden {
+  display: none !important;
+}

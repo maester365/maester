@@ -1,6 +1,7 @@
 ---
 title: Allow external users to use email OTP (allowExternalIdToUseEmailOtp)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.allowExternalIdToUseEmailOtp
+sidebar_class_name: hidden
 ---
 
 # Allow external users to use email OTP

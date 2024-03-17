@@ -1,6 +1,7 @@
 ---
 title: Microsoft Information Protection (MIP) Sensitivity labels to Microsoft 365 groups (EnableMIPLabels)
 slug: /tests/EIDSCA.settings.EnableMIPLabels
+sidebar_class_name: hidden
 ---
 
 # Microsoft Information Protection (MIP) Sensitivity labels to Microsoft 365 groups

@@ -1,6 +1,7 @@
 ---
 title: Show geographic location in push and passwordless notifications (displayLocationInformationRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredState
+sidebar_class_name: hidden
 ---
 
 # Show geographic location in push and passwordless notifications

@@ -1,6 +1,7 @@
 ---
 title: Manage migration (policyMigrationState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.policyMigrationState
+sidebar_class_name: hidden
 ---
 
 # Manage migration

@@ -1,6 +1,7 @@
 ---
 title: Show application name in push and passwordless notifications (displayAppInformationRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredState
+sidebar_class_name: hidden
 ---
 
 # Show application name in push and passwordless notifications

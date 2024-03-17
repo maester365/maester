@@ -1,6 +1,7 @@
 ---
 title: Smart Lockout - Lockout threshold (LockoutThreshold)
 slug: /tests/EIDSCA.settings.LockoutThreshold
+sidebar_class_name: hidden
 ---
 
 # Smart Lockout - Lockout threshold

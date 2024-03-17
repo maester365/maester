@@ -1,6 +1,7 @@
 ---
 title: Block user consent for risky apps (BlockUserConsentForRiskyApps)
 slug: /tests/EIDSCA.settings.BlockUserConsentForRiskyApps
+sidebar_class_name: hidden
 ---
 
 # Block user consent for risky apps

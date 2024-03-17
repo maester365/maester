@@ -1,6 +1,7 @@
 ---
 title: Users can request admin consent to apps they are unable to consent to??? (EnableAdminConsentRequests)
 slug: /tests/EIDSCA.settings.EnableAdminConsentRequests
+sidebar_class_name: hidden
 ---
 
 # Users can request admin consent to apps they are unable to consent to???

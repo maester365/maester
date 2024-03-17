@@ -1,6 +1,7 @@
 ---
 title: Authentication binding - Protected Level (authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.authenticationModeConfiguration.x509CertificateAuthenticationDefaultMode
+sidebar_class_name: hidden
 ---
 
 # Authentication binding - Protected Level

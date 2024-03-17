@@ -1,6 +1,7 @@
 ---
 title: One-time (isUsableOnce)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isUsableOnce
+sidebar_class_name: hidden
 ---
 
 # One-time

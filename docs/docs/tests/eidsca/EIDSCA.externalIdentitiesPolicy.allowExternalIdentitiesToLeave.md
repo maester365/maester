@@ -1,6 +1,7 @@
 ---
 title: External user leave settings (allowExternalIdentitiesToLeave)
 slug: /tests/EIDSCA.externalIdentitiesPolicy.allowExternalIdentitiesToLeave
+sidebar_class_name: hidden
 ---
 
 # External user leave settings

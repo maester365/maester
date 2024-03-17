@@ -2,6 +2,7 @@
 title: MT.1014 - At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins
 description: Checks if the tenant has at least one conditional access policy requiring device compliance for admins.
 slug: /tests/MT.1014
+sidebar_class_name: hidden
 ---
 
 # At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins

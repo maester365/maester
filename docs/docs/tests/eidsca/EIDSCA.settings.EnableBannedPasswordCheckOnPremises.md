@@ -1,6 +1,7 @@
 ---
 title: Password Protection - Enable password protection on Windows Server Active Directory (EnableBannedPasswordCheckOnPremises)
 slug: /tests/EIDSCA.settings.EnableBannedPasswordCheckOnPremises
+sidebar_class_name: hidden
 ---
 
 # Password Protection - Enable password protection on Windows Server Active Directory

@@ -1,6 +1,7 @@
 ---
 title: Renew expiring application credentials (Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.ApplicationCredentialExpiry
+sidebar_class_name: hidden
 ---
 
 # Renew expiring application credentials

@@ -1,6 +1,7 @@
 ---
 title: Sign-up for email based subscription (allowedToSignUpEmailBasedSubscriptions)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToSignUpEmailBasedSubscriptions
+sidebar_class_name: hidden
 ---
 
 # Sign-up for email based subscription

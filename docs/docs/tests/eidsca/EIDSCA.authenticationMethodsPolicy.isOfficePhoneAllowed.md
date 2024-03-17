@@ -1,6 +1,7 @@
 ---
 title: Phone Options - Office (isOfficePhoneAllowed)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.isOfficePhoneAllowed
+sidebar_class_name: hidden
 ---
 
 # Phone Options - Office

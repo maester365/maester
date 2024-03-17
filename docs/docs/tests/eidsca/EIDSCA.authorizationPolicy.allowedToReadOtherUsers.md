@@ -1,6 +1,7 @@
 ---
 title: Default User Role Permissions - Allowed to read other users (allowedToReadOtherUsers)
 slug: /tests/EIDSCA.authorizationPolicy.allowedToReadOtherUsers
+sidebar_class_name: hidden
 ---
 
 # Default User Role Permissions - Allowed to read other users

@@ -1,6 +1,7 @@
 ---
 title: Risk-based step-up consent (allowUserConsentForRiskyApps)
 slug: /tests/EIDSCA.authorizationPolicy.allowUserConsentForRiskyApps
+sidebar_class_name: hidden
 ---
 
 # Risk-based step-up consent

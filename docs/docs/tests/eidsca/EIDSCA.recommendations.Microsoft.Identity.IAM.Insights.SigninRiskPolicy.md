@@ -1,6 +1,7 @@
 ---
 title: Protect all users with a sign-in risk policy (Microsoft.Identity.IAM.Insights.SigninRiskPolicy)
 slug: /tests/EIDSCA.recommendations.Microsoft.Identity.IAM.Insights.SigninRiskPolicy
+sidebar_class_name: hidden
 ---
 
 # Protect all users with a sign-in risk policy

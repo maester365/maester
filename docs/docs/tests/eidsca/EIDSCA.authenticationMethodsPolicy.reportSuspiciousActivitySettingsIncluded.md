@@ -1,6 +1,7 @@
 ---
 title: Report suspicious activity - Included users/groups (reportSuspiciousActivitySettingsIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsIncluded
+sidebar_class_name: hidden
 ---
 
 # Report suspicious activity - Included users/groups

@@ -1,6 +1,7 @@
 ---
 title: Users can request admin consent to apps they are unable to consent to (isEnabled)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.isEnabled
+sidebar_class_name: hidden
 ---
 
 # Users can request admin consent to apps they are unable to consent to

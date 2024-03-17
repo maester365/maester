@@ -1,6 +1,7 @@
 ---
 title: Excluded users/group from CBA (excludeTargets)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.excludeTargets
+sidebar_class_name: hidden
 ---
 
 # Excluded users/group from CBA

@@ -1,6 +1,7 @@
 ---
 title: Restrict specific keys (keyRestrictions.enforcementType)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.enforcementType
+sidebar_class_name: hidden
 ---
 
 # Restrict specific keys

@@ -1,6 +1,7 @@
 ---
 title: Included users/groups of number matching for push notifications (numberMatchingRequiredStateIncluded)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateIncluded
+sidebar_class_name: hidden
 ---
 
 # Included users/groups of number matching for push notifications

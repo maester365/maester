@@ -1,6 +1,7 @@
 ---
 title: Require number matching for push notifications (numberMatchingRequiredState)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredState
+sidebar_class_name: hidden
 ---
 
 # Require number matching for push notifications

@@ -1,6 +1,7 @@
 ---
 title: Default lifetime (defaultLifetimeInMinutes)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.defaultLifetimeInMinutes
+sidebar_class_name: hidden
 ---
 
 # Default lifetime

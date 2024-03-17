@@ -1,6 +1,7 @@
 ---
 title: Blocked MSOnline PowerShell access (blockMsolPowerShell)
 slug: /tests/EIDSCA.authorizationPolicy.blockMsolPowerShell
+sidebar_class_name: hidden
 ---
 
 # Blocked MSOnline PowerShell access

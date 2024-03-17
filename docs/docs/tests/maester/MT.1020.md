@@ -2,6 +2,7 @@
 title: MT.1020 - All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them
 description: Exclude service accounts like the Microsoft Entra Connect Sync Account from conditional access policies
 slug: /tests/MT.1020
+sidebar_class_name: hidden
 ---
 
 # All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them

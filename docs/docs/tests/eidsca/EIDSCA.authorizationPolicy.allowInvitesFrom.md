@@ -1,6 +1,7 @@
 ---
 title: Guest invite restrictions (allowInvitesFrom)
 slug: /tests/EIDSCA.authorizationPolicy.allowInvitesFrom
+sidebar_class_name: hidden
 ---
 
 # Guest invite restrictions

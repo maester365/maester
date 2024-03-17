@@ -1,6 +1,7 @@
 ---
 title: M365 groups - Classification list (ClassificationList)
 slug: /tests/EIDSCA.settings.ClassificationList
+sidebar_class_name: hidden
 ---
 
 # M365 groups - Classification list

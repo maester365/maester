@@ -1,6 +1,7 @@
 ---
 title: Guest user access (guestUserRoleId)
 slug: /tests/EIDSCA.authorizationPolicy.guestUserRoleId
+sidebar_class_name: hidden
 ---
 
 # Guest user access

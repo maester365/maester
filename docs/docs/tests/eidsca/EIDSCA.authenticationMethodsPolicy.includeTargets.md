@@ -1,6 +1,7 @@
 ---
 title: Included users/groups from CBA (includeTargets)
 slug: /tests/EIDSCA.authenticationMethodsPolicy.includeTargets
+sidebar_class_name: hidden
 ---
 
 # Included users/groups from CBA

@@ -1,6 +1,7 @@
 ---
 title:  (featureRolloutPolicy)
 slug: /tests/EIDSCA.featureRolloutPolicies.featureRolloutPolicy
+sidebar_class_name: hidden
 ---
 
 # 
