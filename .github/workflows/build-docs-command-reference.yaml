@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Update docs
-        run: ./build/Build-CommandReference.ps1
+        run: ./build/Update-CommandReference.ps1
         shell: pwsh
 
       - name: Update repo

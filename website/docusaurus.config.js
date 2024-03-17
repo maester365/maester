@@ -47,7 +47,7 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
-          editUrl: "https://github.com/maester365/docs/tree/main/src/site",
+          editUrl: "https://github.com/maester365/maester/tree/main/website",
         },
         theme: {
           customCss: "./src/css/custom.css",
