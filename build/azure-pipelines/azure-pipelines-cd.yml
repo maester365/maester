@@ -19,13 +19,13 @@ trigger:
     - preview
   paths:
     include:
-    - src/*
+    - powershell/*
 
 pr: none
 
 variables:
   ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-    prereleaseTag: 
+    prereleaseTag:
   ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
     prereleaseTag: 'preview'
   vmImage: '${{ parameters.vmImage }}'
@@ -39,7 +39,7 @@ pool:
 
 stages:
 - stage: Build
-  jobs: 
+  jobs:
   - job: Prepare
     variables:
       skipComponentGovernanceDetection: true
@@ -50,12 +50,12 @@ stages:
       displayName: 'Get Parameters for PowerShell Module'
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/build/Get-PSModuleInfo.ps1'
-        arguments: '-ModuleManifestPath "$(Build.SourcesDirectory)/src/*.psd1" -TrimVersionDepth 2'
+        arguments: '-ModuleManifestPath "$(Build.SourcesDirectory)/powershell/*.psd1" -TrimVersionDepth 2'
         pwsh: true
 
   - job: Build
     dependsOn: Prepare
-    variables: 
+    variables:
       runCodesignValidationInjection: false
       moduleNameSrc: '$[ dependencies.Prepare.outputs[''ModuleInfo.moduleName''] ]'
       moduleVersionSrc: '$[ coalesce(dependencies.Prepare.outputs[''ModuleInfo.moduleVersionTrimmed''], dependencies.Prepare.outputs[''ModuleInfo.moduleVersion'']) ]'
@@ -91,7 +91,7 @@ stages:
 - stage: Package
   displayName: 'Standalone Package'
   dependsOn: Build
-  jobs: 
+  jobs:
   - job: Prepare
     variables:
       skipComponentGovernanceDetection: true
@@ -129,7 +129,7 @@ stages:
   - Build
   #- Test
   - Package
-  jobs: 
+  jobs:
   - job: Prepare
     variables:
       skipComponentGovernanceDetection: true
@@ -179,9 +179,9 @@ stages:
 
 # - stage: Test
 #   dependsOn: Build
-#   jobs: 
+#   jobs:
 #   - job: Windows
-#     variables: 
+#     variables:
 #       skipComponentGovernanceDetection: true
 #       runCodesignValidationInjection: false
 #     pool:
@@ -210,7 +210,7 @@ stages:
 #         Recurse: true
 
 #   - job: Ubuntu
-#     variables: 
+#     variables:
 #       skipComponentGovernanceDetection: true
 #       runCodesignValidationInjection: false
 #     pool:
@@ -232,7 +232,7 @@ stages:
 #         PesterConfigurationName: 'CD'
 
 #   - job: MacOS
-#     variables: 
+#     variables:
 #       skipComponentGovernanceDetection: true
 #       runCodesignValidationInjection: false
 #     pool:

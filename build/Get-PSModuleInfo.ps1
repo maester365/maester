@@ -2,7 +2,7 @@ param
 (
     # Path to Module Manifest
     [parameter(Mandatory = $false)]
-    [string] $ModuleManifestPath = "..\src",
+    [string] $ModuleManifestPath = "..\powershell",
     # Path to packages.config file
     [parameter(Mandatory = $false)]
     [string] $PackagesConfigPath = "..\",

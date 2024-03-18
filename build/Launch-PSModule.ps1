@@ -1,7 +1,7 @@
 param (
     # Module to Launch
     [Parameter(Mandatory = $false)]
-    [string] $ModuleManifestPath = '.\src\*.psd1',
+    [string] $ModuleManifestPath = '.\powershell\*.psd1',
     # ScriptBlock to Execute After Module Import
     [Parameter(Mandatory = $false)]
     [scriptblock] $PostImportScriptBlock,
@@ -24,8 +24,7 @@ $PSModuleCacheDirectory = &$PSScriptRoot\Restore-PSModuleDependencies.ps1 -Modul
 if ($NoNewWindow) {
     Import-Module $ModuleManifestPath -PassThru -Force
     if ($PostImportScriptBlock) { Invoke-Command -ScriptBlock $PostImportScriptBlock -NoNewScope }
-}
-else {
+} else {
     [scriptblock] $ScriptBlock = {
         param ([string]$ModulePath, [string]$PSModuleCacheDirectory, [scriptblock]$PostImportScriptBlock)
         ## Reset PSModulePath environment variable to default value because starting powershell.exe from pwsh.exe (or vice versa) will inherit environment variables for the wrong version of PowerShell.
@@ -43,8 +42,7 @@ else {
     foreach ($Path in $PowerShellPaths) {
         if ($Path -eq 'wsl') {
             Start-Process $Path -ArgumentList ('pwsh' , '-NoExit', '-NoProfile', '-EncodedCommand', [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($strScriptBlock)))
-        }
-        else {
+        } else {
             Start-Process $Path -ArgumentList ('-NoExit', '-NoProfile', '-EncodedCommand', [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($strScriptBlock)))
         }
     }

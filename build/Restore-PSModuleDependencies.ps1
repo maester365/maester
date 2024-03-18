@@ -2,14 +2,14 @@ param
 (
     # Path to Module Manifest
     [Parameter(Mandatory = $false)]
-    [string] $ModuleManifestPath = ".\src\*.psd1",
+    [string] $ModuleManifestPath = ".\powershell\*.psd1",
     #
     [Parameter(Mandatory = $false)]
     [string] $PSModuleCacheDirectory = ".\build\TestResults\PSModuleCache",
-    # 
+    #
     [Parameter(Mandatory = $false)]
     [string[]] $Repository = "PSGallery",
-    # 
+    #
     [Parameter(Mandatory = $false)]
     [switch] $SkipExternalModuleDependencies
 )
@@ -41,8 +41,7 @@ foreach ($Module in $ModuleManifest['RequiredModules']) {
             $paramSaveModule['Name'] = $Module.ModuleName
             if ($Module.ContainsKey('ModuleVersion')) { $paramSaveModule['MinimumVersion'] = $Module.ModuleVersion }
             elseif ($Module.ContainsKey('RequiredVersion')) { $paramSaveModule['RequiredVersion'] = $Module.RequiredVersion }
-        }
-        else { $paramSaveModule['Name'] = $Module }
+        } else { $paramSaveModule['Name'] = $Module }
 
         if (!$SkipExternalModuleDependencies -or $paramSaveModule['Name'] -notin $ModuleManifest.PrivateData.PSData['ExternalModuleDependencies']) {
             Save-Module -Repository $Repository -Path $PSModuleCacheDirectoryInfo.FullName @paramSaveModule

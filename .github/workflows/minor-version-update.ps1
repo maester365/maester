@@ -1,7 +1,7 @@
 [CmdletBinding()]
 Param(
     [Parameter()]
-    [string]$ModuleRoot = "$($env:GITHUB_WORKSPACE)/src"
+    [string]$ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"
 )
 
 $ManfifestPath = "$($ModuleRoot)/Maester.psd1"

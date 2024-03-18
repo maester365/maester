@@ -8,7 +8,7 @@ param
     [string] $OutputDirectory = ".\build\release\",
     #
     [Parameter(Mandatory = $false)]
-    [string] $SourceDirectory = ".\src\",
+    [string] $SourceDirectory = ".\powershell\",
     #
     [Parameter(Mandatory = $false)]
     [string] $ModuleManifestPath,

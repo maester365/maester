@@ -19,14 +19,14 @@ trigger:
     - preview
   paths:
     include:
-    - src/*
+    - powershell/*
 
 #pr: none
 
 variables:
   vmImage: '${{ parameters.vmImage }}'
   ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
-    prereleaseTag: 
+    prereleaseTag:
   ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
     prereleaseTag: 'preview'
   artifactModule: 'PSModule'
@@ -38,9 +38,9 @@ stages:
 
 - stage: Test
   # dependsOn: Build
-  jobs: 
+  jobs:
   - job: Windows
-    variables: 
+    variables:
       skipComponentGovernanceDetection: true
       runCodesignValidationInjection: false
     pool:
@@ -49,12 +49,12 @@ stages:
     - template: template-psmodule-test.yml
       parameters:
         pipelineId: 's'
-        artifactInput: 'src'
+        artifactInput: 'powershell'
         PesterConfigurationName: 'CI'
         TestWindowsPowershell: true
 
   - job: Ubuntu
-    variables: 
+    variables:
       skipComponentGovernanceDetection: true
       runCodesignValidationInjection: false
     pool:
@@ -63,11 +63,11 @@ stages:
     - template: template-psmodule-test.yml
       parameters:
         pipelineId: 's'
-        artifactInput: 'src'
+        artifactInput: 'powershell'
         PesterConfigurationName: 'CI'
 
   - job: MacOS
-    variables: 
+    variables:
       skipComponentGovernanceDetection: true
       runCodesignValidationInjection: false
     pool:
@@ -76,5 +76,5 @@ stages:
     - template: template-psmodule-test.yml
       parameters:
         pipelineId: 's'
-        artifactInput: 'src'
+        artifactInput: 'powershell'
         PesterConfigurationName: 'CI'

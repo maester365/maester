@@ -15,7 +15,7 @@ Import-Module Pester
 $commandsIndexFile = "./website/docs/commands/readme.md"
 $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it will be deleted by New-DocusaurusHelp
 
-New-DocusaurusHelp -Module ./src/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/src/public/
+New-DocusaurusHelp -Module ./powershell/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/
 
 # Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
 $cmdMarkdownFiles = Get-ChildItem ./website/docs/commands

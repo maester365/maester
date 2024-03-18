@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "src/**"
-      - "!src/Maester.psd1"
+      - "powershell/**"
+      - "!powershell/Maester.psd1"
   workflow_dispatch:
 
 jobs:

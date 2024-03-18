@@ -2,7 +2,7 @@ param
 (
     #
     [Parameter(Mandatory = $false)]
-    [string] $ModuleManifestPath = ".\src\*.psd1",
+    [string] $ModuleManifestPath = ".\powershell\*.psd1",
     #
     [Parameter(Mandatory = $false)]
     [string] $PSModuleCacheDirectory = ".\build\TestResults\PSModuleCache",

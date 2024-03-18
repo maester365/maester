@@ -31,7 +31,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Source to Staging'
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/src'
+    SourceFolder: '$(Build.SourcesDirectory)/powershell'
     Contents: '**'
     TargetFolder: '$(Pipeline.Workspace)/${{ parameters.artifactOutput }}/${{ coalesce(parameters.moduleRename,parameters.moduleName) }}'
     preserveTimestamp: true

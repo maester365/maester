@@ -8,7 +8,7 @@
       "name": "PowerShell: Module Interactive Session",
       "type": "PowerShell",
       "request": "launch",
-      "script": "Import-Module -Force ${workspaceFolder}/src/Maester.psm1"
+      "script": "Import-Module -Force ${workspaceFolder}/powershell/Maester.psm1"
     }
   ]
 }
