@@ -12,7 +12,7 @@ For more advanced configuration, you can directly use the Pester module and the 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
 .EXAMPLE
-Invoke-MtMaester
+Invoke-Maester
 
 Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
 
