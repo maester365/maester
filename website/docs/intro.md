@@ -15,7 +15,7 @@ To get started install the Maester PowerShell module and clone the pre-defined r
 Install-Module Maester
 git clone https://github.com/maester365/maester-tests
 cd maester-tests
-./Invoke-Maester.ps1
+Invoke-Maester
 ```
 
 ## Reporting Test Results
