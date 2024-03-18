@@ -58,8 +58,6 @@ Invoke-Maester -PesterConfiguration $configuration
 ```
 Runs all the Pester tests in the EIDSCA folder.
 #>
-
-
 Function Invoke-Maester {
     [Alias('Invoke-MtMaester')]
     [CmdletBinding(DefaultParameterSetName = 'OutputFolder')]

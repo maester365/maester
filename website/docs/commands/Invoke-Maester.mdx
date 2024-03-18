@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: \{\{ Fill in the Synopsis \}\}
+description: Runs the Pester tests and generates a report of the results.
 id: Invoke-Maester
 title: Invoke-Maester
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/src/public/Invo
 
 ## SYNOPSIS
 
-\{\{ Fill in the Synopsis \}\}
+Runs the Pester tests and generates a report of the results.
 
 ## SYNTAX
 
@@ -37,15 +37,123 @@ Invoke-Maester [-OutputFile <String>] [-OutputFolder <String>] -PesterConfigurat
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+This helper script runs Pester tests and generates a report of the results in HTML format.
+
+Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
+
+For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
+
+By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
 ## EXAMPLES
 
+### EXAMPLE 1
+
+```powershell
+Invoke-MtMaester
+```
+
+Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
+
+### EXAMPLE 2
+
+```powershell
+Invoke-Maester ./tests/Maester
+```
+
+Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
+
+### EXAMPLE 3
+
+```powershell
+Invoke-Maester -Tag "CA"
+```
+
+Runs the Pester tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
+
+### EXAMPLE 4
+
+```powershell
+Invoke-Maester -Tag "CA", "App"
+```
+
+Runs the Pester tests with the tags "CA" and "App" and generates a report of the results in the default ./test-results folder.
+
+### EXAMPLE 5
+
+```powershell
+Invoke-Maester -OutputFolder "./my-test-results"
+```
+
+Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
+
+### EXAMPLE 6
+
+```powershell
+Invoke-Maester -OutputFile "./test-results/TestResults.html"
+```
+
+Runs all the Pester tests and generates a report of the results in the specified file.
+
+### EXAMPLE 7
+
+```powershell
+Invoke-Maester -Path ./tests/EIDSCA
+```
+
+Runs all the Pester tests in the EIDSCA folder.
+
+### EXAMPLE 8
+
+```powershell
+$configuration = [PesterConfiguration]::Default
+$configuration.Run.Path = './tests/Maester'
+$configuration.Filter.Tag = 'CA'
+$configuration.Filter.ExcludeTag = 'App'
+
+Invoke-Maester -PesterConfiguration $configuration
+
+```
+
 ## PARAMETERS
+
+### -Path
+
+Specifies one or more paths to files containing tests.
+The value is a path\file name or name pattern.
+Wildcards are permitted.
+
+```yaml
+Type: String
+Parameter Sets: OutputFolder, OutputFile
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Tag
+
+Only run the tests that match this tag(s).
+
+```yaml
+Type: String[]
+Parameter Sets: OutputFolder, OutputFile
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ExcludeTag
 
-\{\{ Fill ExcludeTag Description \}\}
+Exclude the tests that match this tag(s).
 
 ```yaml
 Type: String[]
@@ -61,7 +169,8 @@ Accept wildcard characters: False
 
 ### -OutputFile
 
-\{\{ Fill OutputFile Description \}\}
+The path to the file to save the test results in html format.
+The filename should include an .html extension.
 
 ```yaml
 Type: String
@@ -89,7 +198,9 @@ Accept wildcard characters: False
 
 ### -OutputFolder
 
-\{\{ Fill OutputFolder Description \}\}
+The folder to save the test results.
+Default is "./test-results".
+The file name will be automatically generated with the current date and time.
 
 ```yaml
 Type: String
@@ -98,30 +209,17 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Path
-
-\{\{ Fill Path Description \}\}
-
-```yaml
-Type: String
-Parameter Sets: OutputFolder, OutputFile
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
+Default value: ./test-results
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -PesterConfiguration
 
-\{\{ Fill PesterConfiguration Description \}\}
+[PesterConfiguration] object for Advanced Configuration
+Default is New-PesterConfiguration
+For help on each option see New-PesterConfiguration, or inspect the object it returns.
+See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
 
 ```yaml
 Type: PesterConfiguration
@@ -141,22 +239,6 @@ Parameter Sets: Advanced
 Aliases:
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Tag
-
-\{\{ Fill Tag Description \}\}
-
-```yaml
-Type: String[]
-Parameter Sets: OutputFolder, OutputFile
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -185,11 +267,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
-
-### System.Object
 
 ## NOTES
 
