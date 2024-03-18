@@ -66,35 +66,35 @@
     # FormatsToProcess = @()
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    NestedModules        = @()
+    # NestedModules        = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport    = 'Clear-MtGraphCache', 'Connect-MtGraph'. 'Export-MtHtmlReport',
-    'Get-MtConditionalAccessPolicies', 'Get-MtGraphScopes', 'Invoke-Maester', 'Invoke-MtGraphRequest',
-    'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists',
-    'Test-MtCaApplicationEnforcedRestrictions',
-    'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
-    'Test-MtCaBlockLegacyOtherAuthentication',
-    'Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms',
-    'Test-MtCaDeviceComplianceAdminsExists',
-    'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
-    'Test-MtCaEnforceNonPersistentBrowserSession',
-    'Test-MtCaEnforceSignInFrequency',
-    'Test-MtCaExclusionForDirectorySyncAccounts',
-    'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAdmins',
-    'Test-MtCaMfaForAllUsers', 'Test-MtCaMfaForGuests',
-    'Test-MtCaMfaForRiskySignIns',
-    'Test-MtCaRequirePasswordChangeForHighUserRisk',
-    'Test-MtCaSecureSecurityInfoRegistration'
+    FunctionsToExport    = @('Clear-MtGraphCache', 'Connect-MtGraph', 'Export-MtHtmlReport',
+        'Get-MtConditionalAccessPolicies', 'Get-MtGraphScopes', 'Invoke-Maester', 'Invoke-MtGraphRequest',
+        'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists',
+        'Test-MtCaApplicationEnforcedRestrictions',
+        'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+        'Test-MtCaBlockLegacyOtherAuthentication',
+        'Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms',
+        'Test-MtCaDeviceComplianceAdminsExists',
+        'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
+        'Test-MtCaEnforceNonPersistentBrowserSession',
+        'Test-MtCaEnforceSignInFrequency',
+        'Test-MtCaExclusionForDirectorySyncAccounts',
+        'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAdmins',
+        'Test-MtCaMfaForAllUsers', 'Test-MtCaMfaForGuests',
+        'Test-MtCaMfaForRiskySignIns',
+        'Test-MtCaRequirePasswordChangeForHighUserRisk',
+        'Test-MtCaSecureSecurityInfoRegistration')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-    CmdletsToExport      = @()
+    # CmdletsToExport      = @()
 
     # Variables to export from this module
     # VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport      = @()
+    # AliasesToExport      = @()
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
@@ -111,7 +111,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = 'Microsoft', '365', 'Cloud', 'Test', 'Pester', 'Entra', 'AzureAD', 'Automation', 'Regression', 'DevOps'
+            Tags       = @('Microsoft', '365', 'Cloud', 'Test', 'Pester', 'Entra', 'AzureAD', 'Automation', 'Regression', 'DevOps', 'EntraID')
 
             # A URL to the license for this module.
             LicenseUri = 'https://raw.githubusercontent.com/microsoft/maester/main/LICENSE'
@@ -145,4 +145,3 @@
     # DefaultCommandPrefix = ''
 
 }
-
