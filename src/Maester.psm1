@@ -28,4 +28,4 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 	}
 }
 
-Export-ModuleMember -Function $publicScripts.BaseName -Alias 'Invoke-Maester'
+Export-ModuleMember -Function $publicScripts.BaseName -Alias 'Invoke-MtMaester'

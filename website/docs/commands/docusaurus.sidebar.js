@@ -14,6 +14,7 @@ module.exports = [
     'commands/Export-MtHtmlReport',
     'commands/Get-MtConditionalAccessPolicies',
     'commands/Get-MtGraphScopes',
+    'commands/Invoke-Maester',
     'commands/Invoke-MtGraphRequest',
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtCaAllAppsExists',

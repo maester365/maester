@@ -1,69 +1,67 @@
 ﻿<#
-    .SYNOPSIS
-    Runs the Pester tests and generates a report of the results.
+.SYNOPSIS
+Runs the Pester tests and generates a report of the results.
 
-    .DESCRIPTION
-    This helper script runs Pester tests and generates a report of the results in HTML format.
+.DESCRIPTION
+This helper script runs Pester tests and generates a report of the results in HTML format.
 
-    Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
+Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
-    For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
+For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
 
-    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
+By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
-    .EXAMPLE
-    Invoke-MtMaester
+.EXAMPLE
+Invoke-MtMaester
 
-    Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
+Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
 
-    .EXAMPLE
-    Invoke-Maester ./tests/Maester
+.EXAMPLE
+Invoke-Maester ./tests/Maester
 
-    Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
+Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
 
-    .EXAMPLE
-    Invoke-Maester -Tag "CA"
+.EXAMPLE
+Invoke-Maester -Tag "CA"
 
-    Runs the Pester tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
+Runs the Pester tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
 
-    .EXAMPLE
-    Invoke-Maester -Tag "CA", "App"
+.EXAMPLE
+Invoke-Maester -Tag "CA", "App"
 
-    Runs the Pester tests with the tags "CA" and "App" and generates a report of the results in the default ./test-results folder.
+Runs the Pester tests with the tags "CA" and "App" and generates a report of the results in the default ./test-results folder.
 
-    .EXAMPLE
-    Invoke-Maester -OutputFolder "./my-test-results"
+.EXAMPLE
+Invoke-Maester -OutputFolder "./my-test-results"
 
-    Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
+Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
 
-    .EXAMPLE
-    Invoke-Maester -OutputFile "./test-results/TestResults.html"
+.EXAMPLE
+Invoke-Maester -OutputFile "./test-results/TestResults.html"
 
-    Runs all the Pester tests and generates a report of the results in the specified file.
+Runs all the Pester tests and generates a report of the results in the specified file.
 
-    .EXAMPLE
-    Invoke-Maester -Path ./tests/EIDSCA
+.EXAMPLE
+Invoke-Maester -Path ./tests/EIDSCA
 
-    Runs all the Pester tests in the EIDSCA folder.
+Runs all the Pester tests in the EIDSCA folder.
 
-    .EXAMPLE
-    ```
-    $configuration = [PesterConfiguration]::Default
-    $configuration.Run.Path = './tests/Maester'
-    $configuration.Filter.Tag = 'CA'
-    $configuration.Filter.ExcludeTag = 'App'
+.EXAMPLE
+```
+$configuration = [PesterConfiguration]::Default
+$configuration.Run.Path = './tests/Maester'
+$configuration.Filter.Tag = 'CA'
+$configuration.Filter.ExcludeTag = 'App'
 
-    Invoke-Maester -PesterConfiguration $configuration
+Invoke-Maester -PesterConfiguration $configuration
 
-    ```
-    Runs all the Pester tests in the EIDSCA folder.
-
-
+```
+Runs all the Pester tests in the EIDSCA folder.
 #>
 
 
-Function Invoke-MtMaester {
-    [Alias('Invoke-Maester')]
+Function Invoke-Maester {
+    [Alias('Invoke-MtMaester')]
     [CmdletBinding(DefaultParameterSetName = 'OutputFolder')]
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.

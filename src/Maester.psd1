@@ -70,7 +70,7 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = 'Clear-MtGraphCache', 'Connect-MtGraph'. 'Export-MtHtmlReport',
-    'Get-MtConditionalAccessPolicies', 'Get-MtGraphScopes', 'Invoke-MtMaester', 'Invoke-MtGraphRequest',
+    'Get-MtConditionalAccessPolicies', 'Get-MtGraphScopes', 'Invoke-Maester', 'Invoke-MtGraphRequest',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists',
     'Test-MtCaApplicationEnforcedRestrictions',
     'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
