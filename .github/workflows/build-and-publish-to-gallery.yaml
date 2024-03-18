@@ -34,7 +34,7 @@ jobs:
         shell: pwsh
         run: |
           $ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"
-          $ManfifestPath = "$($ModuleRoot)/EntraIDPasskeyHelper.psd1"
+          $ManfifestPath = "$($ModuleRoot)/maester.psd1"
           if ( -not (Test-Path $ManfifestPath )) {
               Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
               throw
@@ -54,20 +54,20 @@ jobs:
             --azure-key-vault-certificate "${{ vars.CODE_SIGN_CERTIFICATENAME }}" `
             --timestamp-rfc3161 "http://timestamp.digicert.com" `
             --input-file-list ./signfiles.txt
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/EntraIDPasskeyHelper/ -Force
+          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
 
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         if: false
         shell: pwsh
         run: |
-          Publish-Module -Path ${{ github.workspace }}/powershell -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
         shell: pwsh
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/powershell/* -DestinationPath ${{ github.workspace }}/maester.zip
+          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
         uses: ncipollo/release-action@v1
