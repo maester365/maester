@@ -66,7 +66,7 @@ Function Invoke-MtGraphRequest {
 
     begin {
         if ([string]::IsNullOrEmpty($GraphBaseUri)) {
-            if ([string]::IsNullOrEmpty($global:GraphBaseUri)) {
+            if ((Test-Path variable:global:GraphBaseUri) -and ![string]::IsNullOrEmpty($global:GraphBaseUri)) {
                 $global:GraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
             }
             $GraphBaseUri = $global:GraphBaseUri

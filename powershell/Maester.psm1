@@ -12,6 +12,7 @@
 Set-StrictMode -Version 3.0
 
 ## Initialize Module Configuration
+#Requires -Module Pester
 
 ## Initialize Module Variables
 $MtGraphCache = @{}
