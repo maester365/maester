@@ -22,7 +22,7 @@ Function Test-MtCaExclusionForDirectorySyncAccounts {
 
     Set-StrictMode -Off
     $DirectorySynchronizationAccountRoleTemplateId = "d29b2b05-8046-44ba-8758-1e26182fcf32"
-    $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleId')" -Select id | Select-Object -ExpandProperty id
+    $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
     $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
 
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
