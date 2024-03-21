@@ -144,9 +144,12 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green -Object $motd
 
-    $htmlFileName = GetOutputFilePath
+    if (!(Get-MgContext)) {
+        Write-Error "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'.`nFor more information, use 'Get-Help Connect-MtGraph'."
+        return
+    }
 
-    Connect-MtGraph # Connect using default scopes
+    $htmlFileName = GetOutputFilePath
 
     Clear-MtGraphCache # Reset the cache to avoid stale data
 

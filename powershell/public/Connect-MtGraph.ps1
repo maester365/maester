@@ -5,7 +5,7 @@
  .Description
     Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 
-    This cmdlet is a short form for calling
+    This cmdlet is a helper method for running the following command.
     ```
     Connect-MgGraph -Scopes (Get-MtGraphScopes)
     ```
