@@ -66,11 +66,12 @@ Function Invoke-MtGraphRequest {
 
     begin {
         if ([string]::IsNullOrEmpty($GraphBaseUri)) {
-            if ((Test-Path variable:global:GraphBaseUri) -and ![string]::IsNullOrEmpty($global:GraphBaseUri)) {
+            if (!(Test-Path variable:global:GraphBaseUri) -or [string]::IsNullOrEmpty($global:GraphBaseUri)) {
                 $global:GraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
             }
-            $GraphBaseUri = $global:GraphBaseUri
         }
+        $GraphBaseUri = $global:GraphBaseUri
+
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
         function Format-Result ($results, $RawOutput) {
