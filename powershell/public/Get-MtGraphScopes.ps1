@@ -14,6 +14,6 @@ Function Get-MtGraphScopes {
     return @(
         'Policy.Read.All'
         'Directory.Read.All'
-        'Policy.ReadWrite.ConditionalAccess'
+        'Policy.Read.ConditionalAccess'
     )
 }
