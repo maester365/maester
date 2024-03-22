@@ -32,25 +32,119 @@ This guide will walk you through setting up Maester in Azure DevOps and automate
 
 ## Set up the Azure Pipeline
 
-When authenticating with Microsoft Graph you can use one of the following methods.
+- [**Workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) uses OpenID Connect (OIDC) to authenticate with Microsoft Entra protected resources without using secrets.
+- **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
 
-- **Workload Identity Federation (WIF)** is the most secure and recommended method for Azure Pipelines since it does not require storing secrets or rotating of secrets.
-  - _Note: WIF requires an Azure subscription and connections can only be made to the Entra tenant that hosts your Azure DevOps organization._
-- **Certificate** stored in Azure Key Vault is an alternative method for authenticating with Microsoft Graph. Use this option if the Entra ID tenant if you are unable to use WIF.
-  - _Note: An Azure subscription with a Key Vault is required to store the certificate securely._
-- **Secret** is the least secure method and is not recommended.
-  - Note This method does not require an Azure subscription or key vault.
+:::note
+Workload identity federation requires an Azure subscription where you are the owner and connections are limited to the Entra tenant associated with your Azure DevOps organization.
+
+Client secret does not require an Azure subscription but is less secure.
+:::
 
 <Tabs>
-  <TabItem value="wif" label="Workload Identity Federation (recommended)" default>
+  <TabItem value="wif" label="Workload identity federation (recommended)" default>
+
+### Create an empty Azure Resource Group
+
+This empty resource group is required to set up workload identity federation authentication. No Azure resources will be created in this resource group and there are no costs associated with it.
+
+- Open the [Azure portal](https://portal.azure.com)
+- Click **Create a resource** > **Resource group**
+- Enter a name for the resource group (e.g. `Maester Resource Group`)
+- Select any region
+- Click **Review + create** > **Create**
+
+### Create a new workload identity federation service connection
+
+- In the Azure DevOps project, go to **Project settings** > **Service connections**.
+- Select **New service connection**, and then select **Azure Resource Manager**.
+- Select **Workload identity federation (automatic)**.
+- Specify the following parameters:
+  - **Subscription**: Select an existing Azure subscription.
+  - **Resource Group**: Select the resource group created in the previous step. (e.g. `Maester Resource Group`) Leaving this field empty will grant Contribute access to all resources in the subscription.
+  - **Service connection name**: A name for this connection (e.g. `Maester Service Connection`)
+- Click **Save** to create the connection.
+
+### Grant permissions to Microsoft Graph
+
+- Select the service connection you created in the previous step (e.g. `Maester Service Connection`)
+  - Service connections are listed under **Project settings** > **Service connections**.
+- Select **Manage Service Principal** to open the Service Principal in the Entra portal.
+- Click **API permissions** > **Add a permission**
+- Select **Microsoft Graph** > **Application permissions**
+- Search for each of the permissions and check the box next to each permission:
+  - **Directory.Read.All**
+  - **Policy.Read.All**
+- Click **Add permissions**
+- Click **Grant admin consent for [your organization]**
+- Click **Yes** to confirm
+
+### Create Azure Pipeline
+
+- Open your Azure DevOps project
+- Click **Pipelines** > **New pipeline**
+- Select **Azure Repos Git** as the location of your code
+- Select the repository where you imported the Maester tests
+- Click **Starter pipeline**
+- Replace the content of the `azure-pipelines.yml` file with the code below
+- Verify the `azureSubscription` value is set to the service connection you created in the previous step (e.g. `Maester Service Connection`)
+- Click **Validate and save** > **Save**
+- Click **Run** to run the pipeline
+- Click **Job** to view the test results
+
+```yaml
+# Maester Daily Tests
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: AzureCLI@2
+    displayName: "Get Graph token for workload identity federation"
+    inputs:
+      azureSubscription: "Maester Service Connection"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        $token = az account get-access-token --resource-type ms-graph
+        $accessToken = ($token | ConvertFrom-Json).accessToken
+        Write-Host "##vso[task.setvariable variable=secretToken;issecret=true]$accessToken"
+  - pwsh: |
+      # Convert the secure variable to a secure string
+      $secureToken = ConvertTo-SecureString -String $(secretToken) -AsPlainText
+
+      # Connect to Microsoft Graph
+      Connect-MgGraph $secureToken
+
+      # Install Maester
+      Install-Module Maester -Force
+
+      # Configure test results
+      $PesterConfiguration = New-PesterConfiguration
+      $PesterConfiguration.TestResult.Enabled = $true
+      $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+
+      # Run Maester tests
+      Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+    env:
+      PS_ClientSecret: $(CLIENTSECRET)
+    continueOnError: true
+    displayName: Run Maester Tests
+  - publish: $(System.DefaultWorkingDirectory)/test-results
+    artifact: TestResults
+    displayName: Publish Maester Html Report
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: "NUnit"
+      testResultsFiles: "**/test-results.xml"
+    displayName: Publish Pester Test Results
+```
 
   </TabItem>
-  <TabItem value="cert" label="Certificate">
-
-  </TabItem>
-  <TabItem value="secret" label="Secret (not recommended)">
-
-Follow the steps below to create an application identity in the Entra tenant, grant permissions to Microsoft Graph, create a secret to authenticate and set up the Azure Pipeline to use the secret.
+  <TabItem value="cert" label="Client secret">
 
 ### Create an Entra Application
 
@@ -92,7 +186,7 @@ Follow the steps below to create an application identity in the Entra tenant, gr
   - Name: **CLIENTID**, Value: The Application (client) ID of the Entra application you created
   - Name: **CLIENTSECRET**, Value: The client secret you copied in the previous step
     - _Important: Tick the **Keep this value secret** checkbox_
-- Replace the content of the `azure-pipelines.yml` file with the code
+- Replace the content of the `azure-pipelines.yml` file with the code below
 - Click **Validate and save** > **Save**
 - Click **Run** to run the pipeline
 - Click **Job** to view the test results
