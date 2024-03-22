@@ -159,7 +159,8 @@ Function Invoke-Maester {
     if ($pesterResults) {
         Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
         Write-Output "Test file generated at $htmlFileName"
-        if ([Environment]::UserInteractive) {
+
+        if ([Environment]::UserInteractive -and !([Environment]::GetCommandLineArgs() |? {$_ -like '-NonI*'})) {
             # Open test results in default browser
             Invoke-Item $htmlFileName
         }
