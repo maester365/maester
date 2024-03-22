@@ -11,6 +11,14 @@ import TabItem from '@theme/TabItem';
 
 This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests using Azure DevOps Pipelines.
 
+## Why Azure DevOps?
+
+Azure DevOps is a great way to automate the daily running of Maester tests. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
+
+Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
+
+Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for conditional access policies.
+
 ## Set up the Maester repository in Azure DevOps
 
 ### Pre-requisites
@@ -18,7 +26,7 @@ This guide will walk you through setting up Maester in Azure DevOps and automate
 - If this is your first time using Azure DevOps, you will first need to create an organization.
   - [Azure DevOps - Create an organization](https://learn.microsoft.com/azure/devops/organizations/accounts/create-organization)
     :::tip
-    To enable the free tier of Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few hours before you can use the pipeline)
+    To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
     :::
 - Create a new project to host your Maester tests and Azure Pipeline.
   - [Azure DevOps - Create a project](https://learn.microsoft.com/azure/devops/organizations/projects/create-project)
@@ -36,8 +44,8 @@ There are many ways to authenticate with Microsoft Entra in Azure DevOps. We rec
 
 If you’re unable to use more advanced options like certificates stored in Azure Key Vault, which need an Azure subscription, there’s also guidance available for using client secrets.
 
-- **Workload identity federation** uses OpenID Connect (OIDC) to authenticate with Microsoft Entra protected resources without using secrets.
-- **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
+- <IIcon icon="gravity-ui:nut-hex" height="18" /> **Workload identity federation** (recommended) uses OpenID Connect (OIDC) to authenticate with Microsoft Entra protected resources without using secrets.
+- <IIcon icon="material-symbols:password" height="18" /> **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
 
 <Tabs>
   <TabItem value="wif" label="Workload identity federation (recommended)" default>
@@ -237,6 +245,35 @@ steps:
 
   </TabItem>
   </Tabs>
+
+## Viewing test results
+
+- Click **Pipelines** > **Runs** to view the status of the pipeline
+- Click on a run to view the test results
+
+### Summary view
+
+The summary view shows the status of the pipeline run, the duration, and the number of tests that passed, failed, and were skipped.
+
+![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-summary-page.png)
+
+### Maester report
+
+The Maester report can be downloaded and viewed by selecting the **Published** artifact.
+
+![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-maester-report.png)
+
+### Tests view
+
+The **Tests** tab shows a detailed view of each test, including the test name, duration, and status.
+
+## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-tests-page.png)
+
+### Logs view
+
+In the **Summary** tab click on any of the errors to view the raw logs from Maester.
+
+## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-logs-page.png)
 
 ## Keeping your Maester tests up to date
 
