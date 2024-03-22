@@ -18,7 +18,6 @@ Function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
@@ -35,7 +34,6 @@ Function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

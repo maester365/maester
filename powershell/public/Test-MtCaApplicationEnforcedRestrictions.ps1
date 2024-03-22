@@ -17,7 +17,6 @@ Function Test-MtCaApplicationEnforcedRestrictions {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
@@ -34,7 +33,6 @@ Function Test-MtCaApplicationEnforcedRestrictions {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

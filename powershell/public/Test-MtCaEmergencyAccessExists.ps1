@@ -18,7 +18,6 @@ Function Test-MtCaEmergencyAccessExists {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     # Only check policies that are not related to authentication context
     $policies = Get-MtConditionalAccessPolicies | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
 
@@ -40,8 +39,6 @@ Function Test-MtCaEmergencyAccessExists {
             Write-Warning "Conditional Access policy $_ does not exclude emergency access account or group"
         }
     }
-
-    Set-StrictMode -Version Latest
 
     return $result
 }

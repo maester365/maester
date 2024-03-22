@@ -17,7 +17,6 @@ Function Test-MtCaRequirePasswordChangeForHighUserRisk {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
     # Only check policies that have password change as a grant control
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -contains 'passwordChange' }
@@ -36,7 +35,6 @@ Function Test-MtCaRequirePasswordChangeForHighUserRisk {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

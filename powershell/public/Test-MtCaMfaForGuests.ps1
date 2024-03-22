@@ -17,7 +17,6 @@ Function Test-MtCaMfaForGuests {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
@@ -45,7 +44,6 @@ Function Test-MtCaMfaForGuests {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

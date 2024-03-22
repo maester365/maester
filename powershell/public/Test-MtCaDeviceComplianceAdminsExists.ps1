@@ -18,7 +18,6 @@ Function Test-MtCaDeviceComplianceAdminsExists {
   [OutputType([bool])]
   param ()
 
-  Set-StrictMode -Off
   $AdministrativeRolesToCheck = @(
     "62e90394-69f5-4237-9190-012177145e10",
     "194ae4cb-b126-40b2-bd5b-6091b380977d",
@@ -55,7 +54,6 @@ Function Test-MtCaDeviceComplianceAdminsExists {
       $result = $true
     }
   }
-  Set-StrictMode -Version Latest
 
   return $result
 }

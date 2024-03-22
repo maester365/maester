@@ -17,7 +17,6 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $KnownPlatforms = @(
@@ -48,7 +47,6 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

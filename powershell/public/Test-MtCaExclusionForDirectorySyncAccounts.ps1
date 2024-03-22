@@ -20,7 +20,6 @@ Function Test-MtCaExclusionForDirectorySyncAccounts {
     [OutputType([bool])]
     param ()
 
-    Set-StrictMode -Off
     $DirectorySynchronizationAccountRoleTemplateId = "d29b2b05-8046-44ba-8758-1e26182fcf32"
     $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
     $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
@@ -64,7 +63,6 @@ Function Test-MtCaExclusionForDirectorySyncAccounts {
 
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }

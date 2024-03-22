@@ -29,7 +29,6 @@ Function Test-MtCaAllAppsExists {
     [switch] $SkipCheckAllUsers = $false
   )
 
-  Set-StrictMode -Off
   $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
   $result = $false

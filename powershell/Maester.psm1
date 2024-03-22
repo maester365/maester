@@ -8,9 +8,6 @@
 	Copyright (c) Microsoft Corporation. All rights reserved.
 #>
 
-## Set Strict Mode for Module. https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/set-strictmode
-Set-StrictMode -Version 3.0
-
 ## Initialize Module Configuration
 #Requires -Module Pester
 

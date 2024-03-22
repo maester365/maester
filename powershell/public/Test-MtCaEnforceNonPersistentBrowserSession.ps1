@@ -20,7 +20,6 @@ Function Test-MtCaEnforceNonPersistentBrowserSession {
         [switch]$AllDevices
     )
 
-    Set-StrictMode -Off
     $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
@@ -59,7 +58,6 @@ Function Test-MtCaEnforceNonPersistentBrowserSession {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
-    Set-StrictMode -Version Latest
 
     return $result
 }
