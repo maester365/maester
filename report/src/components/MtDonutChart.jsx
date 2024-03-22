@@ -23,10 +23,6 @@ export default function MtDonutChart(props) {
                         {
                             name: 'Failed',
                             count: props.FailedCount,
-                        },
-                        {
-                            name: 'Not tested',
-                            count: props.SkippedCount,
                         }
                     ]}
                     category="count"
@@ -48,13 +44,6 @@ export default function MtDonutChart(props) {
                             <span className="truncate">Failed</span>
                         </div>
                         <span>{getPercentage(props.FailedCount)}</span>
-                    </ListItem>
-                    <ListItem className="space-x-2">
-                        <div className="flex items-center space-x-2 truncate">
-                            <span className="h-2.5 w-2.5 rounded-sm flex-shrink-0 bg-gray-500" />
-                            <span className="truncate">Not tested</span>
-                        </div>
-                        <span>{getPercentage(props.SkippedCount)}</span>
                     </ListItem>
                 </List>
             </div>
