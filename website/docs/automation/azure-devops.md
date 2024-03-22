@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 # <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Configure Maester in Azure DevOps
 
-This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests on your Azure DevOps pipeline.
+This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests using Azure DevOps Pipelines.
 
 ## Set up the Maester repository in Azure DevOps
 
@@ -32,14 +32,12 @@ This guide will walk you through setting up Maester in Azure DevOps and automate
 
 ## Set up the Azure Pipeline
 
-- [**Workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) uses OpenID Connect (OIDC) to authenticate with Microsoft Entra protected resources without using secrets.
+There are many ways to authenticate with Microsoft Entra in Azure DevOps. We recommend using [**workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) as it is more secure, requires less maintenance and is the easiest to set up.
+
+If you’re unable to use more advanced options like certificates stored in Azure Key Vault, which need an Azure subscription, there’s also guidance available for using client secrets.
+
+- **Workload identity federation** uses OpenID Connect (OIDC) to authenticate with Microsoft Entra protected resources without using secrets.
 - **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
-
-:::note
-Workload identity federation requires an Azure subscription where you are the owner and connections are limited to the Entra tenant associated with your Azure DevOps organization.
-
-Client secret does not require an Azure subscription but is less secure.
-:::
 
 <Tabs>
   <TabItem value="wif" label="Workload identity federation (recommended)" default>
@@ -98,49 +96,48 @@ This empty resource group is required to set up workload identity federation aut
 trigger:
   - main
 
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight build
+    branches:
+      include:
+        - main
+
 pool:
   vmImage: ubuntu-latest
 
 steps:
-  - task: AzureCLI@2
-    displayName: "Get Graph token for workload identity federation"
+  - task: AzurePowerShell@5
+    displayName: "Run Maester"
     inputs:
       azureSubscription: "Maester Service Connection"
-      scriptType: "pscore"
-      scriptLocation: "inlineScript"
-      inlineScript: |
-        $token = az account get-access-token --resource-type ms-graph
-        $accessToken = ($token | ConvertFrom-Json).accessToken
-        Write-Host "##vso[task.setvariable variable=secretToken;issecret=true]$accessToken"
-  - pwsh: |
-      # Convert the secure variable to a secure string
-      $secureToken = ConvertTo-SecureString -String $(secretToken) -AsPlainText
+      pwsh: true
+      azurePowerShellVersion: LatestVersion
+      ScriptType: InlineScript
+      Inline: |
+        # Connect to Microsoft Graph
+        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+        Connect-MgGraph $accessToken
 
-      # Connect to Microsoft Graph
-      Connect-MgGraph $secureToken
+        # Install Maester
+        Install-Module Maester -Force
 
-      # Install Maester
-      Install-Module Maester -Force
+        # Configure test results
+        $PesterConfiguration = New-PesterConfiguration
+        $PesterConfiguration.TestResult.Enabled = $true
+        $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
 
-      # Configure test results
-      $PesterConfiguration = New-PesterConfiguration
-      $PesterConfiguration.TestResult.Enabled = $true
-      $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
-
-      # Run Maester tests
-      Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
-    env:
-      PS_ClientSecret: $(CLIENTSECRET)
-    continueOnError: true
-    displayName: Run Maester Tests
+        # Run Maester tests
+        Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
   - publish: $(System.DefaultWorkingDirectory)/test-results
-    artifact: TestResults
     displayName: Publish Maester Html Report
+    artifact: TestResults
   - task: PublishTestResults@2
+    displayName: Publish Pester Test Results
     inputs:
       testResultsFormat: "NUnit"
       testResultsFiles: "**/test-results.xml"
-    displayName: Publish Pester Test Results
+      failTaskOnFailedTests: true
 ```
 
   </TabItem>
@@ -196,6 +193,13 @@ steps:
 
 trigger:
   - main
+
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight build
+    branches:
+      include:
+        - main
 
 pool:
   vmImage: ubuntu-latest
