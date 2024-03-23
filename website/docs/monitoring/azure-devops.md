@@ -8,13 +8,15 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
 
+import CreateEntraApp from '../sections/create-entra-app.md';
+
 # <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Monitoring your tenant using Maester in Azure DevOps
 
 This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests using Azure DevOps Pipelines.
 
 ## Why Azure DevOps?
 
-Azure DevOps is a great way to automate the daily running of Maester tests. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
+Azure DevOps is a great way to automate the daily running of Maester tests to monitor your tenant. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
 
 Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
 
@@ -50,6 +52,11 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 <Tabs>
   <TabItem value="wif" label="Workload identity federation (recommended)" default>
+
+### Pre-requisites
+
+- An Azure subscription is required for this method.
+  - If you don't have an Azure subscription, you can create one by following [Create a Microsoft Customer Agreement subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) or ask your Azure administrator to create one.
 
 ### Create an empty Azure Resource Group
 
@@ -151,24 +158,7 @@ steps:
   </TabItem>
   <TabItem value="cert" label="Client secret">
 
-### Create an Entra Application
-
-- Open [Entra admin center](https://entra.microsoft.com) > **Identity** > **Applications** > **App registrations**
-  - Tip: [enappreg.cmd.ms](https://enappreg.cmd.ms) is a shortcut to the App registrations page.
-- Click **New registration**
-- Enter a name for the application (e.g. `Maester DevOps Account`)
-- Click **Register**
-
-### Grant permissions to Microsoft Graph
-
-- Open the application you created in the previous step
-- Click **API permissions** > **Add a permission**
-- Select **Microsoft Graph** > **Application permissions**
-- Search for each of the permissions and check the box next to each permission:
-  <GraphPermissions/>
-- Click **Add permissions**
-- Click **Grant admin consent for [your organization]**
-- Click **Yes** to confirm
+<CreateEntraApp/>
 
 ### Create a client secret
 

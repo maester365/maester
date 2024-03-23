@@ -7,6 +7,7 @@ title: GitHub Actions
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
+import CreateEntraApp from '../sections/create-entra-app.md';
 
 # <IIcon icon="mdi:github" height="48" /> Configure Maester in GitHub
 
@@ -14,34 +15,26 @@ This guide will walk you through setting up Maester in GitHub and automate the r
 
 ## Why GitHub?
 
-GitHub Actions is a great way to automate the daily running of Maester tests. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
+GitHub is the quickest and easiest way to get started with automating Maester. The [free tier](https://github.com/pricing) includes 2,000 minutes per month for private repositories which is more than enough to run your Maester tests daily.
 
-Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
-
-Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for conditional access policies.
-
-## Set up the Maester repository in Azure DevOps
+## Set up your Maester tests repository in GitHub
 
 ### Pre-requisites
 
-- If this is your first time using Azure DevOps, you will first need to create an organization.
-  - [Azure DevOps - Create an organization](https://learn.microsoft.com/azure/devops/organizations/accounts/create-organization)
-    :::tip
-    To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
-    :::
-- Create a new project to host your Maester tests and Azure Pipeline.
-  - [Azure DevOps - Create a project](https://learn.microsoft.com/azure/devops/organizations/projects/create-project)
+- If you are new to GitHub, create an account at [github.com](https://github.com/join)
 
-### Import the Maester Tests repository
+### Create a new repository and import the Maester Tests repository
 
-- Select **Repos** from the left-hand menu
-- Click the **Import** button in the **Import a repository** section
-- Enter the URL of the Maester repository `https://github.com/maester365/maester-tests`
-- Click **Import** to import the repository into your Azure DevOps project.
+- Open [https://github.com/new/import](https://github.com/new/import)
+- Fill in the following fields:
+  - **Your old repository’s clone URL**: `https://github.com/maester365/maester-tests`
+  - **Repository name**: E.g. `maester-tests`
+  - **Private**: Select this option to keep your tests private
+- Click **Begin Import**
 
-## Set up the Azure Pipeline
+## Set up the GitHub Actions workflow
 
-There are many ways to authenticate with Microsoft Entra in Azure DevOps. We recommend using [**workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) as it is more secure, requires less maintenance and is the easiest to set up.
+There are many ways to authenticate with Microsoft Entra from GitHub Actions. We recommend using [**workload identity federation**](https://learn.microsoft.com/entra/workload-id/workload-identity-federation) as it is more secure, requires less maintenance and is the easiest to set up.
 
 If you’re unable to use more advanced options like certificates stored in Azure Key Vault, which need an Azure subscription, there’s also guidance available for using client secrets.
 
@@ -51,92 +44,102 @@ If you’re unable to use more advanced options like certificates stored in Azur
 <Tabs>
   <TabItem value="wif" label="Workload identity federation (recommended)" default>
 
-### Create an empty Azure Resource Group
+This guide is based on [Use GitHub Actions to connect to Azure](https://learn.microsoft.com/azure/developer/github/connect-from-azure)
 
-This empty resource group is required to set up workload identity federation authentication. No Azure resources will be created in this resource group and there are no costs associated with it.
+### Pre-requisites
 
-- Open the [Azure portal](https://portal.azure.com)
-- Click **Create a resource** > **Resource group**
-- Enter a name for the resource group (e.g. `Maester Resource Group`)
-- Select any region
-- Click **Review + create** > **Create**
+- An Azure subscription is required for this method.
+  - If you don't have an Azure subscription, you can create one by following [Create a Microsoft Customer Agreement subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) or ask your Azure administrator to create one.
 
-### Create a new workload identity federation service connection
+  <CreateEntraApp/>
 
-- In the Azure DevOps project, go to **Project settings** > **Service connections**.
-- Select **New service connection**, and then select **Azure Resource Manager**.
-- Select **Workload identity federation (automatic)**.
-- Specify the following parameters:
-  - **Subscription**: Select an existing Azure subscription.
-  - **Resource Group**: Select the resource group created in the previous step. (e.g. `Maester Resource Group`) Leaving this field empty will grant Contribute access to all resources in the subscription.
-  - **Service connection name**: A name for this connection (e.g. `Maester Service Connection`)
-- Click **Save** to create the connection.
+### Add federated credentials
 
-### Grant permissions to Microsoft Graph
+- Select **Certificates & secrets** > **Client secrets** > **New client secret**
+- Select **Federated credentials**, select **Add credential**
+- For **Federated credential scenario**, select **GitHub Actions deploying Azure resources**
+- Fill in the following fields
+  - **Organization**: Your GitHub organization name or GitHub username. E.g. `jasonf`
+  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-tests`
+  - **Entity type**: `Branch`
+  - **GitHub branch name**: `main`
+  - **Credential details** > **Name**: E.g. `maester-devops`
+- Select **Add**
 
-- Select the service connection you created in the previous step (e.g. `Maester Service Connection`)
-  - Service connections are listed under **Project settings** > **Service connections**.
-- Select **Manage Service Principal** to open the Service Principal in the Entra portal.
-- Click **API permissions** > **Add a permission**
-- Select **Microsoft Graph** > **Application permissions**
-- Search for each of the permissions and check the box next to each permission:
-  <GraphPermissions/>
-- Click **Add permissions**
-- Click **Grant admin consent for [your organization]**
-- Click **Yes** to confirm
+### Create GitHub secrets
 
-### Create Azure Pipeline
+- Open your `maester-tests` GitHub repository and go to **Settings**
+- Select **Security** > **Secrets and variables** > **Actions**
+- Add the three secrets listed below by selecting **New repository secret**
+- To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
+  - Name: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
+  - Name: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
+  - Name: **AZURE_SUBSCRIPTION_ID**, Value: Provide the ID of a subscription you own. Open the [Subscriptions](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2) blade in the Azure portal
+- Save each secret by selecting **Add secret**.
 
-- Open your Azure DevOps project
-- Click **Pipelines** > **New pipeline**
-- Select **Azure Repos Git** as the location of your code
-- Select the repository where you imported the Maester tests
-- Click **Starter pipeline**
-- Replace the content of the `azure-pipelines.yml` file with the code below
-- Verify the `azureSubscription` value is set to the service connection you created in the previous step (e.g. `Maester Service Connection`)
-- Click **Validate and save** > **Save**
-- Click **Run** to run the pipeline
-- Click **Job** to view the test results
+### Enable GitHub Actions
+
+- Open your `maester-tests` GitHub repository and go to **Settings**
+- Select **Actions** > **General** > **Actions permissions**
+- Select **Allow all actions**
+- Select **Save**
+
+### Create GitHub Action
+
+- Open your `maester-tests` GitHub repository and go to **Actions**
+- Select **Skip this and set up a workflow yourself**
+- Copy and paste the code below into the editor
 
 ```yaml
-# Maester Daily Tests
+name: maester-daily-tests
 
-trigger:
-  - main
+on:
+  push:
+    branches: ["main"]
+  # Run once day at midnight
+  schedule:
+    - cron: "0 0 * * *"
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Daily midnight build
-    branches:
-      include:
-        - main
+permissions:
+      id-token: write
+      contents: read
 
-pool:
-  vmImage: ubuntu-latest
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: Run Maester
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          # Get Token
+          $token = az account get-access-token --resource-type ms-graph
 
-steps:
-  - task: AzurePowerShell@5
-    displayName: "Run Maester"
-    inputs:
-      azureSubscription: "Maester Service Connection"
-      pwsh: true
-      azurePowerShellVersion: LatestVersion
-      ScriptType: InlineScript
-      Inline: |
-        # Connect to Microsoft Graph
-        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
-        Connect-MgGraph $accessToken
+          # Connect to Microsoft Graph
+          $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
+          Connect-MgGraph -AccessToken $accessToken
 
-        # Install Maester
-        Install-Module Maester -Force
+          # Install Maester
+          Install-Module Maester -Force
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.TestResult.Enabled = $true
-        $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+          # Configure test results
+          $PesterConfiguration = New-PesterConfiguration
+          $PesterConfiguration.TestResult.Enabled = $true
+          $PesterConfiguration.TestResult.OutputPath = '/test-results/test-results.xml'
 
-        # Run Maester tests
-        Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+          # Run Maester tests
+          Invoke-Maester -Path /tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '/test-results'
+        azPSVersion: "latest"
+
+
   - publish: $(System.DefaultWorkingDirectory)/test-results
     displayName: Publish Maester Html Report
     artifact: TestResults
@@ -147,28 +150,13 @@ steps:
       testResultsFiles: "**/test-results.xml"
       failTaskOnFailedTests: true
 ```
+- Select **Commit changes...** to save the workflow
+- Select **Actions** > **maester-daily-tests** to view the status of the pipeline
 
   </TabItem>
   <TabItem value="cert" label="Client secret">
 
-### Create an Entra Application
-
-- Open [Entra admin center](https://entra.microsoft.com) > **Identity** > **Applications** > **App registrations**
-  - Tip: [enappreg.cmd.ms](https://enappreg.cmd.ms) is a shortcut to the App registrations page.
-- Click **New registration**
-- Enter a name for the application (e.g. `Maester DevOps Account`)
-- Click **Register**
-
-### Grant permissions to Microsoft Graph
-
-- Open the application you created in the previous step
-- Click **API permissions** > **Add a permission**
-- Select **Microsoft Graph** > **Application permissions**
-- Search for each of the permissions and check the box next to each permission:
-  <GraphPermissions/>
-- Click **Add permissions**
-- Click **Grant admin consent for [your organization]**
-- Click **Yes** to confirm
+<CreateEntraApp/>
 
 ### Create a client secret
 
