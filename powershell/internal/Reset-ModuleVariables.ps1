@@ -12,4 +12,5 @@
 Function Reset-ModuleVariables {
     Clear-MtGraphCache
     $MtGraphBaseUri = $null
+    $MtTestResultDetail = @{}
 }

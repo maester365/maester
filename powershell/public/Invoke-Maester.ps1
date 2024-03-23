@@ -144,15 +144,14 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green -Object $motd
 
+    Reset-ModuleVariables # Reset the graph cache and urls to avoid stale data
+
     if (!(Get-MgContext)) {
         Write-Error "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'.`nFor more information, use 'Get-Help Connect-MtGraph'."
         return
     }
 
     $htmlFileName = GetOutputFilePath
-
-    Reset-ModuleVariables # Reset the graph cache and urls to avoid stale data
-
     $pesterConfig = GetPesterConfiguration
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 

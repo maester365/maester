@@ -55,6 +55,7 @@ Function Export-MtHtmlReport {
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.Name
+            ResultDetail    = $MtTestResultDetail[$test.Name]
         }
         $mtTests += $mtTestInfo
     }
