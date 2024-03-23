@@ -11,9 +11,10 @@
 
 Function Get-MtGraphScopes {
 
+    # Any changes made to these permission scopes should be reflected in the documentation.
+    # /maester/website/docs/sections/permissions.md
     return @(
         'Policy.Read.All'
         'Directory.Read.All'
-        'Policy.Read.ConditionalAccess'
     )
 }

@@ -1,0 +1,2 @@
+- **Directory.Read.All**
+- **Policy.Read.All**

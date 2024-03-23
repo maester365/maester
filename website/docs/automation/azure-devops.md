@@ -6,6 +6,7 @@ title: Azure DevOps
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import GraphPermissions from '../sections/permissions.md';
 
 # <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Configure Maester in Azure DevOps
 
@@ -79,8 +80,7 @@ This empty resource group is required to set up workload identity federation aut
 - Click **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
-  - **Directory.Read.All**
-  - **Policy.Read.All**
+  <GraphPermissions/>
 - Click **Add permissions**
 - Click **Grant admin consent for [your organization]**
 - Click **Yes** to confirm
@@ -165,8 +165,7 @@ steps:
 - Click **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
-  - **Directory.Read.All**
-  - **Policy.Read.All**
+  <GraphPermissions/>
 - Click **Add permissions**
 - Click **Grant admin consent for [your organization]**
 - Click **Yes** to confirm
