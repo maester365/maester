@@ -91,12 +91,12 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 - Copy and paste the code below into the editor
 
 ```yaml
-name: maester-daily-tests
+name: Maester Daily Tests
 
 on:
   push:
     branches: ["main"]
-  # Run once day at midnight
+  # Run once a day at midnight
   schedule:
     - cron: "0 0 * * *"
   # Allows to run this workflow manually from the Actions tab
@@ -105,12 +105,16 @@ on:
 permissions:
       id-token: write
       contents: read
+      checks: write
 
 jobs:
-  build-and-deploy:
+  run-maester-tests:
+    name: Run Maester Tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Set current date as env variable
+      run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
     - name: 'Az CLI login'
       uses: azure/login@v1
       with:
@@ -134,23 +138,27 @@ jobs:
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
           $PesterConfiguration.TestResult.Enabled = $true
-          $PesterConfiguration.TestResult.OutputPath = "test-results.xml"
+          $PesterConfiguration.TestResult.OutputFormat = "JUnitXml"
+          $PesterConfiguration.TestResult.OutputPath = "test-results/test-results.xml"
 
           # Run Maester tests
-          Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFile maester-test-results.html
+          Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
       with:
-        name: maester-test-results.html
-        path: maester-test-results.html
+        name: maester-test-results-${{ env.NOW }}
+        path: test-results
 
-    - name: Archive Pester Results
-      uses: actions/upload-artifact@v4
+    - name: Report
+      uses: dorny/test-reporter@v1
+      if: always()
       with:
-        name: test-results.xml
-        path: test-results.xml
+        name: Maester Test Results
+        path: test-results/*.xml
+        reporter: java-junit
+        fail-on-error: true
 ```
 - Select **Commit changes...** to save the workflow
 - Select **Actions** > **maester-daily-tests** to view the status of the pipeline
