@@ -12,9 +12,11 @@ Start testing your Microsoft 365 cloud configuration **in less than 5 minutes**.
 To get started install the Maester PowerShell module and clone the pre-defined repository of tests that we've created for you to get started.
 
 ```powershell
-Install-Module Maester
 git clone https://github.com/maester365/maester-tests
 cd maester-tests
+
+Install-Module Maester
+Connect-MtMaester
 Invoke-Maester
 ```
 
