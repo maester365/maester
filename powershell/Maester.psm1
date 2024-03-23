@@ -12,7 +12,9 @@
 #Requires -Module Pester
 
 ## Initialize Module Variables
+## Update Reset-ModuleVariables function in internal/Reset-ModuleVariables.ps1 if you add new variables here
 $MtGraphCache = @{}
+$MtGraphBaseUri = $null
 
 # Import private and public scripts and expose the public ones
 $privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1")

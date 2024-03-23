@@ -151,7 +151,7 @@ Function Invoke-Maester {
 
     $htmlFileName = GetOutputFilePath
 
-    Clear-MtGraphCache # Reset the cache to avoid stale data
+    Reset-ModuleVariables # Reset the graph cache and urls to avoid stale data
 
     $pesterConfig = GetPesterConfiguration
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
@@ -160,7 +160,7 @@ Function Invoke-Maester {
         Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
         Write-Output "Test file generated at $htmlFileName"
 
-        if ([Environment]::UserInteractive -and !([Environment]::GetCommandLineArgs() |? {$_ -like '-NonI*'})) {
+        if ([Environment]::UserInteractive -and !([Environment]::GetCommandLineArgs() | Where-Object { $_ -like '-NonI*' })) {
             # Open test results in default browser
             Invoke-Item $htmlFileName
         }
