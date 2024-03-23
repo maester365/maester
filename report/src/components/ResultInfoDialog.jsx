@@ -5,6 +5,7 @@ import { ExternalLinkIcon, DotsHorizontalIcon } from "@heroicons/react/outline";
 import { Divider } from "@tremor/react";
 import StatusLabel from "./StatusLabel";
 import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function ResultInfoDialog(props) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -19,7 +20,7 @@ export default function ResultInfoDialog(props) {
         <Button size="xs" variant="secondary" color="gray" tooltip="View details" icon={DotsHorizontalIcon} onClick={() => setIsOpen(true)}></Button>
       </div>
       <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
-        <DialogPanel className="max-w-3xl">
+        <DialogPanel className="max-w-4xl">
           <div className="grid grid-cols-1">
             <div className="text-right">
               <StatusLabel Result={props.Item.Result} />
@@ -37,12 +38,12 @@ export default function ResultInfoDialog(props) {
             {props.Item.ResultDetail &&
               <>
                 <Card>
-                  <Title>Test</Title>
-                  <Markdown>{props.Item.ResultDetail.TestDescription}</Markdown>
+                  <Title>Overview</Title>
+                  <Markdown className="prose max-w-fit" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestDescription}</Markdown>
                 </Card>
                 <Card className="mt-4 break-words">
-                  <Title>Details</Title>
-                  <Markdown>{props.Item.ResultDetail.TestResult}</Markdown>
+                  <Title>Test Results</Title>
+                  <Markdown className="prose max-w-fit" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestResult}</Markdown>
                 </Card>
               </>
             }

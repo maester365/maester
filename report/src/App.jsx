@@ -17,7 +17,7 @@ const testResults = {
   "PassedCount": 5,
   "SkippedCount": 0,
   "TotalCount": 19,
-  "ExecutedAt": "2024-03-23T13:44:28.769249+11:00",
+  "ExecutedAt": "2024-03-23T14:25:29.432648+11:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora",
   "Account": "merill@elapora.com",
@@ -84,7 +84,7 @@ const testResults = {
       "Block": "Conditional Access Baseline Policies",
       "ResultDetail": {
         "TestResult": "These conditional access policies don't have the emergency access account or group excluded:\n\n- ACSC - L2\n- AppProtect\n- Block Device Code\n- Device compliance #1\n- Device compliancy\n- Force Password Change\n- Guest 10 hr MFA\n- Guest-Meferna-Woodgrove-PhishingResistantAuthStrength\n- j-test admin\n- MFA - All users\n- MFA CA Policy\n- nestedgroup count\n- No persistence\n- O365\n- Register device\n- Require multifactor authentication for Microsoft admin portals\n- SPO\n- TestEntraExporterNullCA Issue\n",
-        "TestDescription": "An emergency access account or group should be excluded from all conditional access policies"
+        "TestDescription": "It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.\n        This allows for emergency access to the tenant in case of a misconfiguration or other issues.\n\nSee [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)"
       }
     },
     {
@@ -356,8 +356,6 @@ const testResults = {
     }
   ]
 };
-
-
 /* Note: DO NOT place any code between the line 'const testResults = {' and 'function App'.
     They will be stripped away new New-MtReport cmdlet generates the user's content */
 
