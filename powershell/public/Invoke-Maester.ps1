@@ -146,10 +146,7 @@ Function Invoke-Maester {
 
     Reset-ModuleVariables # Reset the graph cache and urls to avoid stale data
 
-    if (!(Get-MgContext)) {
-        Write-Error "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'.`nFor more information, use 'Get-Help Connect-MtGraph'."
-        return
-    }
+    if (!(Test-MtContext)) { return }
 
     $htmlFileName = GetOutputFilePath
     $pesterConfig = GetPesterConfiguration
@@ -159,7 +156,7 @@ Function Invoke-Maester {
         Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
         Write-Output "Test file generated at $htmlFileName"
 
-        if ([Environment]::UserInteractive -and !([Environment]::GetCommandLineArgs() | Where-Object { $_ -like '-NonI*' })) {
+        if (Get-MtUserInteractive) {
             # Open test results in default browser
             Invoke-Item $htmlFileName
         }
