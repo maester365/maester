@@ -110,6 +110,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: 'Az CLI login'
       uses: azure/login@v1
       with:
@@ -133,22 +134,23 @@ jobs:
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
           $PesterConfiguration.TestResult.Enabled = $true
-          $PesterConfiguration.TestResult.OutputPath = '/test-results/test-results.xml'
+          $PesterConfiguration.TestResult.OutputPath = "test-results.xml"
 
           # Run Maester tests
-          Invoke-Maester -Path /tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '/test-results'
+          Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFile maester-test-results.html
         azPSVersion: "latest"
 
+    - name: Archive Maester Html Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: maester-test-results.html
+        path: maester-test-results.html
 
-  - publish: $(System.DefaultWorkingDirectory)/test-results
-    displayName: Publish Maester Html Report
-    artifact: TestResults
-  - task: PublishTestResults@2
-    displayName: Publish Pester Test Results
-    inputs:
-      testResultsFormat: "NUnit"
-      testResultsFiles: "**/test-results.xml"
-      failTaskOnFailedTests: true
+    - name: Archive Pester Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results.xml
+        path: test-results.xml
 ```
 - Select **Commit changes...** to save the workflow
 - Select **Actions** > **maester-daily-tests** to view the status of the pipeline
