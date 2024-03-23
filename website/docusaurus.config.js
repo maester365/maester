@@ -10,7 +10,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 const config = {
   title: "Maester",
   tagline:
-    "Your Microsoft 365 test automation framework to continously validate your Microsoft cloud configuration!",
+    "Continuously monitor your Microsoft 365 tenant's security configuration!",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here

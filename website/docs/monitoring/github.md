@@ -1,20 +1,20 @@
 ---
-sidebar_label: Azure DevOps
+sidebar_label: GitHub Actions
 sidebar_position: 2
-title: Azure DevOps
+title: GitHub Actions
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
 
-# <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Configure Maester in Azure DevOps
+# <IIcon icon="mdi:github" height="48" /> Configure Maester in GitHub
 
-This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests using Azure DevOps Pipelines.
+This guide will walk you through setting up Maester in GitHub and automate the running of tests using GitHub Actions.
 
-## Why Azure DevOps?
+## Why GitHub?
 
-Azure DevOps is a great way to automate the daily running of Maester tests. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
+GitHub Actions is a great way to automate the daily running of Maester tests. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
 
 Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
 
