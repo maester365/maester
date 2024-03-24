@@ -245,19 +245,19 @@ The summary view shows the status of the pipeline run, the duration, and the num
 
 The Maester report can be downloaded and viewed by selecting the **Published** artifact.
 
-![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-maester-report.png)
+![Screenshot of the downloaded Maester report](assets/azure-devops-maester-report.png)
 
 ### Tests view
 
 The **Tests** tab shows a detailed view of each test, including the test name, duration, and status.
 
-## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-tests-page.png)
+![Screenshot of Azure DevOps Pipeline Tests Page](assets/azure-devops-tests-page.png)
 
 ### Logs view
 
 In the **Summary** tab select on any of the errors to view the raw logs from Maester.
 
-## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-logs-page.png)
+![Screenshot of Azure DevOps Pipeline Logs Page](assets/azure-devops-logs-page.png)
 
 ## Keeping your Maester tests up to date
 

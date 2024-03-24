@@ -259,34 +259,44 @@ jobs:
   </TabItem>
   </Tabs>
 
+## Manually running the Maester tests
+
+To manually run the Maester tests workflow
+
+- Open your `maester-tests` GitHub repository and go to **Actions**
+- Select **Maester Daily Tests** from the left pane
+- Select **Run workflow** drop-down from the right pane
+- Select **Run workflow** button to start the workflow
+- Select the running workflow to view the status
+
 ## Viewing test results
 
-- Select **Pipelines** > **Runs** to view the status of the pipeline
-- Select on a run to view the test results
+- Open your `maester-tests` GitHub repository and go to **Actions**
+- Select a workflow run to view the results e.g. `Maester Daily Tests`
 
 ### Summary view
 
-The summary view shows the status of the pipeline run, the duration, and the number of tests that passed, failed, and were skipped.
+The summary view shows the status of the workflow run, the duration, and the number of tests that passed, failed, and were skipped.
 
-![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-summary-page.png)
+![Screenshot of GitHub worklflow run summary Page](assets/github-summary-page.png)
 
 ### Maester report
 
-The Maester report can be downloaded and viewed by selecting the **Published** artifact.
+The detailed Maester report can be downloaded by selecting the **maester-test-results...** file from the **Artifacts** section and opening the `test-results.html` page.
 
-![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-maester-report.png)
+![Screenshot of the downloaded Maester report](assets/github-maester-report.png)
 
-### Tests view
+### Summary Maester report
 
-The **Tests** tab shows a detailed view of each test, including the test name, duration, and status.
+A detailed summary of the Maester report can be viewed by scrolling down **Summary** page.
 
-## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-tests-page.png)
+![Screenshot of Maester report in the GitHub Summary Page](assets/github-summary-details.png)
 
 ### Logs view
 
-In the **Summary** tab select on any of the errors to view the raw logs from Maester.
+Select the **Run Maester Tests** job from **Jobs** in the left pane to view the raw logs.
 
-## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-logs-page.png)
+![Screenshot of GitHub workflow logs page](assets/github-logs-page.png)
 
 ## Keeping your Maester tests up to date
 
