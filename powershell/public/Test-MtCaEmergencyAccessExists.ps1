@@ -43,7 +43,7 @@ See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](h
         # Check if the emergency access account or group is excluded from all policies and write verbose output
         $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups } | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
             $testResult += "  - [$_](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($_.id)?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
-            Write-Warning "Conditional Access policy $_ does not exclude emergency access account or group"
+            Write-Verbose "Conditional Access policy $_ does not exclude emergency access account or group"
         }
         Add-MtTestResultDetail -Description $testDescription -Result $testResult
     }

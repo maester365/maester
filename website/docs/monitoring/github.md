@@ -135,11 +135,11 @@ jobs:
     name: Run Maester Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set current date as env variable
       run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
     - name: 'Az CLI login'
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -160,28 +160,27 @@ jobs:
 
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
-          $PesterConfiguration.TestResult.Enabled = $true
-          $PesterConfiguration.TestResult.OutputFormat = "JUnitXml"
-          $PesterConfiguration.TestResult.OutputPath = "test-results/test-results.xml"
+          $PesterConfiguration.Output.Verbosity = 'None'
 
           # Run Maester tests
-          Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results
+          $results = Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+
+          # Add step summary
+          $summary = Get-Content test-results/test-results.md
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+
+          # Flag status to GitHub
+          if ($results.Result -ne 'Passed'){
+            Write-Error "Status = $($results.Result): See Maester Test Report below for details."
+          }
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
-
-    - name: Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Maester Test Results
-        path: test-results/*.xml
-        reporter: java-junit
-        fail-on-error: true
 ```
 
   </TabItem>
