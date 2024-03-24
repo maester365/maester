@@ -13,14 +13,6 @@ This is a summary of the test results from the Maester test run.
 |**%TotalCount%**|**%PassedCount%**|**%FailedCount%**|**%NotRunCount%**|
 
 
-## Test status
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#10b981', 'pie2': '#f43f5d', 'pie3': '#6b7280'}}}%%
-pie showData
-    "Passed" : %PassedCount%
-    "Failed" : %FailedCount%
-```
-
 ## Test summary
 
 %TestSummary%
