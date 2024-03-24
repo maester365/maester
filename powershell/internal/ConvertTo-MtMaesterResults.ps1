@@ -19,10 +19,10 @@ function ConvertTo-MtMaesterResults {
     function GetTestsSorted()
     {
         # Show passed and failed tests first by name then show not run tests
-        $sortedTests = $PesterResults.Tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
-        $sortedTests += $PesterResults.Tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
+        $activeTests = $tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
+        $inactiveTests = $tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
 
-        return $sortedTests
+        return @($activeTests, $inactiveTests)
     }
 
     $mgContext = Get-MgContext
