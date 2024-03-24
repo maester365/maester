@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.32'
+ModuleVersion = '0.0.33'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -70,8 +70,8 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph', 
-               'Export-MtHtmlReport', 'Get-MtConditionalAccessPolicies', 
-               'Get-MtGraphScopes', 'Invoke-Maester', 'Invoke-MtGraphRequest', 
+               'Get-MtConditionalAccessPolicies', 'Get-MtGraphScopes', 
+               'Invoke-Maester', 'Invoke-MtGraphRequest', 
                'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists', 
                'Test-MtCaApplicationEnforcedRestrictions', 
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
