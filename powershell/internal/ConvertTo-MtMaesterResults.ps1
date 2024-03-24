@@ -16,6 +16,15 @@ function ConvertTo-MtMaesterResults {
         return $org.DisplayName
     }
 
+    function GetTestsSorted()
+    {
+        # Show passed and failed tests first by name then show not run tests
+        $sortedTests = $PesterResults.Tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
+        $sortedTests += $PesterResults.Tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
+
+        return $sortedTests
+    }
+
     $mgContext = Get-MgContext
 
     $tenantId = $mgContext.TenantId
@@ -23,7 +32,8 @@ function ConvertTo-MtMaesterResults {
     $account = $mgContext.Account
 
     $mtTests = @()
-    foreach ($test in $PesterResults.Tests) {
+    $sortedTests = GetTestsSorted
+    foreach ($test in $sortedTests) {
 
         $name = $test.Name
         $helpUrl = ''

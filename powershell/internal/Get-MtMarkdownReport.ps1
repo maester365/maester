@@ -18,9 +18,17 @@ Function Get-MtMarkdownReport {
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [psobject] $MaesterResults
     )
-    $passedIcon = '<img src="https://maester.dev/img/test-result/pill-passed.png" height="25" alt="Passed"/>'
-    $failedIcon = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
-    $notRunIcon = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+    $StatusIcon = @{
+        Passed = '<img src="https://maester.dev/img/test-result/pill-passed.png" height="25" alt="Passed"/>'
+        Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
+        NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+    }
+
+    $StatusIconSm = @{
+        Passed = '<img src="https://maester.dev/img/test-result/icon-passed.png" alt="Passed icon" height="18" />'
+        Failed = '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
+        NotRun = '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
+    }
 
     function GetTestSummary() {
         $summary = @'
@@ -29,14 +37,7 @@ Function Get-MtMarkdownReport {
 
 '@
         foreach ($test in $MaesterResults.Tests) {
-            $status = $notRunIcon
-            if ($test.Result -eq 'Passed') {
-                $status = $passedIcon
-            } elseif ($test.Result -eq 'Failed') {
-                $status = $failedIcon
-            }
-
-            $summary += "| $($test.Name) | $status |`n"
+            $summary += "| $($test.Name) | $($StatusIcon[$test.Result]) |`n"
         }
         return $summary
     }
@@ -44,15 +45,11 @@ Function Get-MtMarkdownReport {
     function GetTestDetails() {
 
         foreach ($test in $MaesterResults.Tests) {
-            $status = $notRunIcon
-            if ($test.Result -eq 'Passed') {
-                $status = $passedIcon
-            } elseif ($test.Result -eq 'Failed') {
-                $status = $failedIcon
-            }
 
-            $details += "`n## $($test.Name)"
-            $details += "`n$status"
+            $details += "`n`n## $($StatusIconSm[$test.Result]) $($test.Name)`n`n`n"
+
+            $details += $StatusIcon[$test.Result] -replace 'src', 'align="right" src'
+            $details += "`n`n"
 
             if (![string]::IsNullOrEmpty($test.ResultDetail)) {
                 # Test author has provided details
@@ -60,11 +57,13 @@ Function Get-MtMarkdownReport {
                 $details += "`n#### Test Results`n`n$($test.ResultDetail.TestResult)"
             } else {
                 # Test author has not provided details, use default code in script
-                $details += "`n`n#### Test`n`n$($test.ScriptBlock.Trim())"
-                $details += "`n`n#### Reason for failure`n`n$($test.ErrorRecord)"
+                $details += "`n`n#### Overview`n`n> $($test.ScriptBlock.Trim())"
+                if (![string]::IsNullOrEmpty($test.ErrorRecord)) {
+                    $details += "`n`n#### Reason for failure`n`n$($test.ErrorRecord)"
+                }
             }
 
-            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "`n`n[Learn more]($($test.HelpUrl))" }
+            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "`n`n**Learn more**:[$($test.HelpUrl)]($($test.HelpUrl))" }
             if (![string]::IsNullOrEmpty($test.Tag)) {
                 $tags = '`{0}`' -f ($test.Tag -join '` `')
                 $details += "`n`n**Tag**: $tags"
@@ -76,8 +75,11 @@ Function Get-MtMarkdownReport {
             }
 
 
-            if (![string]::IsNullOrEmpty($test.ScriptBlockFile)) { $details += "`n`n**Source**: ``$($test.ScriptBlockFile)```n`n" }
+            if (![string]::IsNullOrEmpty($test.ScriptBlockFile)) { $details += "`n`n**Source**: ``$($test.ScriptBlockFile)``" }
+
+            $details += "`n`n---`n`n"
         }
+
         return $details
     }
 
