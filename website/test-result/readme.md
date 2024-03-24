@@ -1,0 +1,1 @@
+The images in this folder are used in the GitHub actions results pages.

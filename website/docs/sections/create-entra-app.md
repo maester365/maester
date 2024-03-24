@@ -4,17 +4,17 @@ import GraphPermissions from '../sections/permissions.md';
 
 - Open [Entra admin center](https://entra.microsoft.com) > **Identity** > **Applications** > **App registrations**
   - Tip: [enappreg.cmd.ms](https://enappreg.cmd.ms) is a shortcut to the App registrations page.
-- Click **New registration**
+- Select **New registration**
 - Enter a name for the application (e.g. `Maester DevOps Account`)
-- Click **Register**
+- Select **Register**
 
 ### Grant permissions to Microsoft Graph
 
 - Open the application you created in the previous step
-- Click **API permissions** > **Add a permission**
+- Select **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
   <GraphPermissions/>
-- Click **Add permissions**
-- Click **Grant admin consent for [your organization]**
-- Click **Yes** to confirm
+- Select **Add permissions**
+- Select **Grant admin consent for [your organization]**
+- Select **Yes** to confirm

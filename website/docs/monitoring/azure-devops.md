@@ -10,7 +10,7 @@ import GraphPermissions from '../sections/permissions.md';
 
 import CreateEntraApp from '../sections/create-entra-app.md';
 
-# <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Monitoring your tenant using Maester in Azure DevOps
+# <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Set up Maester in Azure DevOps
 
 This guide will walk you through setting up Maester in Azure DevOps and automate the running of tests using Azure DevOps Pipelines.
 
@@ -37,9 +37,9 @@ Azure DevOps has native integration with Microsoft Entra including single sign o
 ### Import the Maester Tests repository
 
 - Select **Repos** from the left-hand menu
-- Click the **Import** button in the **Import a repository** section
+- Select the **Import** button in the **Import a repository** section
 - Enter the URL of the Maester repository `https://github.com/maester365/maester-tests`
-- Click **Import** to import the repository into your Azure DevOps project.
+- Select **Import** to import the repository into your Azure DevOps project.
 
 ## Set up the Azure Pipeline
 
@@ -63,10 +63,10 @@ If you’re unable to use more advanced options like certificates stored in Azur
 This empty resource group is required to set up workload identity federation authentication. No Azure resources will be created in this resource group and there are no costs associated with it.
 
 - Open the [Azure portal](https://portal.azure.com)
-- Click **Create a resource** > **Resource group**
-- Enter a name for the resource group (e.g. `Maester Resource Group`)
+- Select **Create a resource** > **Resource group**
+- Enter a name for the resource group (e.g. `Maester-Resource-Group`)
 - Select any region
-- Click **Review + create** > **Create**
+- Select **Review + create** > **Create**
 
 ### Create a new workload identity federation service connection
 
@@ -77,33 +77,33 @@ This empty resource group is required to set up workload identity federation aut
   - **Subscription**: Select an existing Azure subscription.
   - **Resource Group**: Select the resource group created in the previous step. (e.g. `Maester Resource Group`) Leaving this field empty will grant Contribute access to all resources in the subscription.
   - **Service connection name**: A name for this connection (e.g. `Maester Service Connection`)
-- Click **Save** to create the connection.
+- Select **Save** to create the connection.
 
 ### Grant permissions to Microsoft Graph
 
 - Select the service connection you created in the previous step (e.g. `Maester Service Connection`)
   - Service connections are listed under **Project settings** > **Service connections**.
 - Select **Manage Service Principal** to open the Service Principal in the Entra portal.
-- Click **API permissions** > **Add a permission**
+- Select **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
   <GraphPermissions/>
-- Click **Add permissions**
-- Click **Grant admin consent for [your organization]**
-- Click **Yes** to confirm
+- Select **Add permissions**
+- Select **Grant admin consent for [your organization]**
+- Select **Yes** to confirm
 
 ### Create Azure Pipeline
 
 - Open your Azure DevOps project
-- Click **Pipelines** > **New pipeline**
+- Select **Pipelines** > **New pipeline**
 - Select **Azure Repos Git** as the location of your code
 - Select the repository where you imported the Maester tests
-- Click **Starter pipeline**
+- Select **Starter pipeline**
 - Replace the content of the `azure-pipelines.yml` file with the code below
 - Verify the `azureSubscription` value is set to the service connection you created in the previous step (e.g. `Maester Service Connection`)
-- Click **Validate and save** > **Save**
-- Click **Run** to run the pipeline
-- Click **Job** to view the test results
+- Select **Validate and save** > **Save**
+- Select **Run** to run the pipeline
+- Select **Job** to view the test results
 
 ```yaml
 # Maester Daily Tests
@@ -162,28 +162,28 @@ steps:
 
 ### Create a client secret
 
-- Click **Certificates & secrets** > **Client secrets** > **New client secret**
+- Select **Certificates & secrets** > **Client secrets** > **New client secret**
 - Enter a description for the secret (e.g. `Maester DevOps Secret`)
-- Click **Add**
+- Select **Add**
 - Copy the value of the secret, we will use this value in the Azure Pipeline
 
 ### Create Azure Pipeline
 
 - Open your Azure DevOps project
-- Click **Pipelines** > **New pipeline**
+- Select **Pipelines** > **New pipeline**
 - Select **Azure Repos Git** as the location of your code
 - Select the repository where you imported the Maester tests
-- Click **Starter pipeline**
-- Click **Variable** to open the variables editor and add the following variables.
+- Select **Starter pipeline**
+- Select **Variable** to open the variables editor and add the following variables.
 - In the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
   - Name: **TENANTID**, Value: The Directory (tenant) ID of the Entra tenant
   - Name: **CLIENTID**, Value: The Application (client) ID of the Entra application you created
   - Name: **CLIENTSECRET**, Value: The client secret you copied in the previous step
     - _Important: Tick the **Keep this value secret** checkbox_
 - Replace the content of the `azure-pipelines.yml` file with the code below
-- Click **Validate and save** > **Save**
-- Click **Run** to run the pipeline
-- Click **Job** to view the test results
+- Select **Validate and save** > **Save**
+- Select **Run** to run the pipeline
+- Select **Job** to view the test results
 
 ```yaml
 # Maester Daily Tests
@@ -237,8 +237,8 @@ steps:
 
 ## Viewing test results
 
-- Click **Pipelines** > **Runs** to view the status of the pipeline
-- Click on a run to view the test results
+- Select **Pipelines** > **Runs** to view the status of the pipeline
+- Select on a run to view the test results
 
 ### Summary view
 
@@ -260,7 +260,7 @@ The **Tests** tab shows a detailed view of each test, including the test name, d
 
 ### Logs view
 
-In the **Summary** tab click on any of the errors to view the raw logs from Maester.
+In the **Summary** tab select on any of the errors to view the raw logs from Maester.
 
 ## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-logs-page.png)
 

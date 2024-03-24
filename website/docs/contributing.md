@@ -11,7 +11,7 @@ import TOCInline from '@theme/TOCInline';
 
 ## Contributing to docs
 
-Simple edits can be made in the GitHub UI by clicking the 'Edit this page' at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
+Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
 
 For more complex changes, you can fork the repository and submit a pull request.
 

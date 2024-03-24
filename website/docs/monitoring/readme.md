@@ -1,7 +1,7 @@
 ---
 sidebar_label: Overview
 sidebar_position: 1
-title: Monitoring your tenant with Maester
+title: Monitoring your Microsoft 365 tenant with Maester
 ---
 
 Maester can be set up to continuously monitor your tenant's configuration using your favorite DevOps service.

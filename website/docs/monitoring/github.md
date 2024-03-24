@@ -1,7 +1,7 @@
 ---
-sidebar_label: GitHub Actions
+sidebar_label: GitHub
 sidebar_position: 2
-title: GitHub Actions
+title: Set up Maester in GitHub
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
 import CreateEntraApp from '../sections/create-entra-app.md';
 
-# <IIcon icon="mdi:github" height="48" /> Configure Maester in GitHub
+# <IIcon icon="mdi:github" height="48" /> Set up Maester in GitHub
 
 This guide will walk you through setting up Maester in GitHub and automate the running of tests using GitHub Actions.
 
@@ -30,7 +30,7 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
   - **Your old repository’s clone URL**: `https://github.com/maester365/maester-tests`
   - **Repository name**: E.g. `maester-tests`
   - **Private**: Select this option to keep your tests private
-- Click **Begin Import**
+- Select **Begin Import**
 
 ## Set up the GitHub Actions workflow
 
@@ -48,10 +48,10 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 
 ### Pre-requisites
 
-- An Azure subscription is required for this method.
+- An Azure subscription is required for this method. This Azure subscription is required to set up workload identity federation authentication. No Azure resources will be created and there are no costs associated with it.
   - If you don't have an Azure subscription, you can create one by following [Create a Microsoft Customer Agreement subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) or ask your Azure administrator to create one.
 
-  <CreateEntraApp/>
+<CreateEntraApp/>
 
 ### Add federated credentials
 
@@ -65,6 +65,27 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
   - **GitHub branch name**: `main`
   - **Credential details** > **Name**: E.g. `maester-devops`
 - Select **Add**
+
+### Create an empty resource group
+In order for workload identity federation to work, the Entra application needs to have read-only access to an Azure subscription. The least privilege option is to create a new, empty resource group and grant read-only access to it.
+
+- Open the [Azure portal](https://portal.azure.com)
+- Select **Create a resource** > **Resource group**
+- Enter a name for the resource group (e.g. `Maester-Resource-Group`)
+- Select any region
+- Select **Review + create** > **Create**
+
+### Grant the Entra application read-only access to the resource group
+- Open the [Azure portal](https://portal.azure.com)
+- Select the Notifications bell in the top right corner and select **Go to resource group** for the resource group you just created.
+  - You should also be able to open it by searching for the name in the search bar (e.g. `Maester-Resource-Group`)
+- Select **Access control (IAM)** > **Add role assignment**
+- Select **Reader** from the **Job function roles** table (usually the first one)
+- Select **Next**
+- Select **Members** > **+ Select members**
+- Search for the name of the Entra application you created earlier (e.g. `Maester DevOps Account`)
+- Select the application and click **Select**
+- Select **Review + assign**
 
 ### Create GitHub secrets
 
@@ -84,11 +105,13 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 - Select **Allow all actions**
 - Select **Save**
 
-### Create GitHub Action
+### Create GitHub Action worklow for Maester
 
 - Open your `maester-tests` GitHub repository and go to **Actions**
 - Select **Skip this and set up a workflow yourself**
 - Copy and paste the code below into the editor
+- Select **Commit changes...** to save the workflow
+- Select **Actions** > **maester-daily-tests** to view the status of the pipeline
 
 ```yaml
 name: Maester Daily Tests
@@ -160,8 +183,6 @@ jobs:
         reporter: java-junit
         fail-on-error: true
 ```
-- Select **Commit changes...** to save the workflow
-- Select **Actions** > **maester-daily-tests** to view the status of the pipeline
 
   </TabItem>
   <TabItem value="cert" label="Client secret">
@@ -170,28 +191,28 @@ jobs:
 
 ### Create a client secret
 
-- Click **Certificates & secrets** > **Client secrets** > **New client secret**
+- Select **Certificates & secrets** > **Client secrets** > **New client secret**
 - Enter a description for the secret (e.g. `Maester DevOps Secret`)
-- Click **Add**
+- Select **Add**
 - Copy the value of the secret, we will use this value in the Azure Pipeline
 
 ### Create Azure Pipeline
 
 - Open your Azure DevOps project
-- Click **Pipelines** > **New pipeline**
+- Select **Pipelines** > **New pipeline**
 - Select **Azure Repos Git** as the location of your code
 - Select the repository where you imported the Maester tests
-- Click **Starter pipeline**
-- Click **Variable** to open the variables editor and add the following variables.
+- Select **Starter pipeline**
+- Select **Variable** to open the variables editor and add the following variables.
 - In the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
   - Name: **TENANTID**, Value: The Directory (tenant) ID of the Entra tenant
   - Name: **CLIENTID**, Value: The Application (client) ID of the Entra application you created
   - Name: **CLIENTSECRET**, Value: The client secret you copied in the previous step
     - _Important: Tick the **Keep this value secret** checkbox_
 - Replace the content of the `azure-pipelines.yml` file with the code below
-- Click **Validate and save** > **Save**
-- Click **Run** to run the pipeline
-- Click **Job** to view the test results
+- Select **Validate and save** > **Save**
+- Select **Run** to run the pipeline
+- Select **Job** to view the test results
 
 ```yaml
 # Maester Daily Tests
@@ -245,8 +266,8 @@ steps:
 
 ## Viewing test results
 
-- Click **Pipelines** > **Runs** to view the status of the pipeline
-- Click on a run to view the test results
+- Select **Pipelines** > **Runs** to view the status of the pipeline
+- Select on a run to view the test results
 
 ### Summary view
 
@@ -268,7 +289,7 @@ The **Tests** tab shows a detailed view of each test, including the test name, d
 
 ### Logs view
 
-In the **Summary** tab click on any of the errors to view the raw logs from Maester.
+In the **Summary** tab select on any of the errors to view the raw logs from Maester.
 
 ## ![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-logs-page.png)
 
