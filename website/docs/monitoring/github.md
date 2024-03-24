@@ -8,6 +8,8 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
 import CreateEntraApp from '../sections/create-entra-app.md';
+import CreateEntraClientSecret from '../sections/create-entra-client-secret.md';
+import EnableGitHubActionsCreateWorkflow from '../sections/enable-github-actions-workflow.md';
 
 # <IIcon icon="mdi:github" height="48" /> Set up Maester in GitHub
 
@@ -98,20 +100,7 @@ In order for workload identity federation to work, the Entra application needs t
   - Name: **AZURE_SUBSCRIPTION_ID**, Value: Provide the ID of a subscription you own. Open the [Subscriptions](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2) blade in the Azure portal
 - Save each secret by selecting **Add secret**.
 
-### Enable GitHub Actions
-
-- Open your `maester-tests` GitHub repository and go to **Settings**
-- Select **Actions** > **General** > **Actions permissions**
-- Select **Allow all actions**
-- Select **Save**
-
-### Create GitHub Action worklow for Maester
-
-- Open your `maester-tests` GitHub repository and go to **Actions**
-- Select **Skip this and set up a workflow yourself**
-- Copy and paste the code below into the editor
-- Select **Commit changes...** to save the workflow
-- Select **Actions** > **maester-daily-tests** to view the status of the pipeline
+<EnableGitHubActionsCreateWorkflow/>
 
 ```yaml
 name: Maester Daily Tests
@@ -141,8 +130,8 @@ jobs:
     - name: 'Az CLI login'
       uses: azure/login@v2
       with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     - name: Run Maester
       uses: azure/powershell@v1
@@ -188,76 +177,83 @@ jobs:
 
 <CreateEntraApp/>
 
-### Create a client secret
+<CreateEntraClientSecret/>
 
-- Select **Certificates & secrets** > **Client secrets** > **New client secret**
-- Enter a description for the secret (e.g. `Maester DevOps Secret`)
-- Select **Add**
-- Copy the value of the secret, we will use this value in the Azure Pipeline
+### Create GitHub secrets
 
-### Create Azure Pipeline
+- Open your `maester-tests` GitHub repository and go to **Settings**
+- Select **Security** > **Secrets and variables** > **Actions**
+- Add the three secrets listed below by selecting **New repository secret**
+- To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
+  - Name: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
+  - Name: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
+  - Name: **AZURE_CLIENT_SECRET**, Value: The client secret you copied in the previous step
+- Save each secret by selecting **Add secret**.
 
-- Open your Azure DevOps project
-- Select **Pipelines** > **New pipeline**
-- Select **Azure Repos Git** as the location of your code
-- Select the repository where you imported the Maester tests
-- Select **Starter pipeline**
-- Select **Variable** to open the variables editor and add the following variables.
-- In the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
-  - Name: **TENANTID**, Value: The Directory (tenant) ID of the Entra tenant
-  - Name: **CLIENTID**, Value: The Application (client) ID of the Entra application you created
-  - Name: **CLIENTSECRET**, Value: The client secret you copied in the previous step
-    - _Important: Tick the **Keep this value secret** checkbox_
-- Replace the content of the `azure-pipelines.yml` file with the code below
-- Select **Validate and save** > **Save**
-- Select **Run** to run the pipeline
-- Select **Job** to view the test results
+<EnableGitHubActionsCreateWorkflow/>
 
 ```yaml
-# Maester Daily Tests
+name: Maester Daily Tests
 
-trigger:
-  - main
+on:
+  push:
+    branches: ["main"]
+  # Run once a day at midnight
+  schedule:
+    - cron: "0 0 * * *"
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
-schedules:
-  - cron: "0 0 * * *"
-    displayName: Daily midnight build
-    branches:
-      include:
-        - main
+permissions:
+      id-token: write
+      contents: read
+      checks: write
 
-pool:
-  vmImage: ubuntu-latest
+jobs:
+  run-maester-tests:
+    name: Run Maester Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set current date as env variable
+      run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
+    - name: Run Maester
+      shell: pwsh
+      env:
+        TENANTID: ${{ secrets.AZURE_TENANT_ID }}
+        CLIENTID: ${{ secrets.AZURE_CLIENT_ID }}
+        CLIENTSECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      run: |
+        # Connect to Microsoft Graph
+        $clientSecret = ConvertTo-SecureString -AsPlainText $env:CLIENTSECRET -Force
+        [pscredential]$clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:CLIENTID, $clientSecret)
+        Connect-MgGraph -TenantId $env:TENANTID -ClientSecretCredential $clientSecretCredential
 
-steps:
-  - pwsh: |
-      # Connect to Microsoft Graph
-      $clientSecret = ConvertTo-SecureString -AsPlainText $env:PS_ClientSecret -Force
-      [pscredential]$clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:CLIENTID, $clientSecret)
-      Connect-MgGraph -TenantId $env:TENANTID -ClientSecretCredential $clientSecretCredential
+        # Install Maester
+        Install-Module Maester -Force
 
-      # Install Maester
-      Install-Module Maester -Force
+        # Configure test results
+        $PesterConfiguration = New-PesterConfiguration
+        $PesterConfiguration.Output.Verbosity = 'None'
 
-      # Configure test results
-      $PesterConfiguration = New-PesterConfiguration
-      $PesterConfiguration.TestResult.Enabled = $true
-      $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+        # Run Maester tests
+        $results = Invoke-Maester -Path tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
 
-      # Run Maester tests
-      Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
-    env:
-      PS_ClientSecret: $(CLIENTSECRET)
-    continueOnError: true
-    displayName: Run Maester Tests
-  - publish: $(System.DefaultWorkingDirectory)/test-results
-    artifact: TestResults
-    displayName: Publish Maester Html Report
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: "NUnit"
-      testResultsFiles: "**/test-results.xml"
-    displayName: Publish Pester Test Results
+        # Add step summary
+        $summary = Get-Content test-results/test-results.md
+        Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+
+        # Flag status to GitHub
+        if ($results.Result -ne 'Passed'){
+          Write-Error "Status = $($results.Result): See Maester Test Report below for details."
+        }
+
+    - name: Archive Maester Html Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: maester-test-results-${{ env.NOW }}
+        path: test-results
 ```
 
   </TabItem>

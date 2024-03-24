@@ -7,8 +7,8 @@ title: Azure DevOps
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
-
 import CreateEntraApp from '../sections/create-entra-app.md';
+import CreateEntraClientSecret from '../sections/create-entra-client-secret.md';
 
 # <IIcon icon="vscode-icons:file-type-azurepipelines" height="48" /> Set up Maester in Azure DevOps
 
@@ -160,12 +160,7 @@ steps:
 
 <CreateEntraApp/>
 
-### Create a client secret
-
-- Select **Certificates & secrets** > **Client secrets** > **New client secret**
-- Enter a description for the secret (e.g. `Maester DevOps Secret`)
-- Select **Add**
-- Copy the value of the secret, we will use this value in the Azure Pipeline
+<CreateEntraClientSecret/>
 
 ### Create Azure Pipeline
 
