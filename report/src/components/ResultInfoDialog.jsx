@@ -59,9 +59,6 @@ export default function ResultInfoDialog(props) {
                   <Card className="mt-4 break-words">
                     <Title>Reason for failure</Title>
                     <Text>{props.Item.ErrorRecord}</Text>
-                    {props.Item.ResultDetail &&
-                      <Markdown>{props.Item.ResultDetail.TestResult}</Markdown>
-                    }
                   </Card>
                 }
               </>

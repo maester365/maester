@@ -11,18 +11,15 @@
     Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath ./testResults.html
 #>
 
-Function Export-MtHtmlReport {
+Function Get-MtHtmlReport {
     [CmdletBinding()]
     param(
-        # The Pester test results returned from Invoke-Pester -PassThru
+        # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResults`
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [psobject] $PesterResults,
-        # The path to the html file to be generated
-        [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true)]
-        [string] $OutputHtmlPath
+        [psobject] $MaesterResults
     )
 
-    $json = ConvertTo-MtMaesterResults $PesterResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
+    $json = $MaesterResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
 
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.html'
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
@@ -35,6 +32,5 @@ Function Export-MtHtmlReport {
     $outputHtml += "const testResults = $json;`n"
     $outputHtml += $templateHtml.Substring($insertLocationEnd)
 
-    # Create the html file
-    Out-File -FilePath $OutputHtmlPath -InputObject $outputHtml -Encoding UTF8
+    return $outputHtml
 }

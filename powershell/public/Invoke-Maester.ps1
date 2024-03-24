@@ -14,7 +14,7 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 .EXAMPLE
 Invoke-Maester
 
-Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
+Runs all the Pester tests and generates a report of the results in the ./test-results folder.
 
 .EXAMPLE
 Invoke-Maester ./tests/Maester
@@ -60,41 +60,42 @@ Runs all the Pester tests in the EIDSCA folder.
 #>
 Function Invoke-Maester {
     [Alias('Invoke-MtMaester')]
-    [CmdletBinding(DefaultParameterSetName = 'OutputFolder')]
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
-        [Parameter(Position = 0, ParameterSetName = "OutputFile")]
-        [Parameter(Position = 0, ParameterSetName = "OutputFolder")]
+        [Parameter(Position = 0)]
         [string] $Path,
 
         # Only run the tests that match this tag(s).
-        [Parameter(ParameterSetName = "OutputFile")]
-        [Parameter(ParameterSetName = "OutputFolder")]
         [string[]] $Tag,
 
         # Exclude the tests that match this tag(s).
-        [Parameter(ParameterSetName = "OutputFile")]
-        [Parameter(ParameterSetName = "OutputFolder")]
         [string[]] $ExcludeTag,
 
         # The path to the file to save the test results in html format. The filename should include an .html extension.
-        [Parameter(ParameterSetName = "Advanced")]
-        [Parameter(Mandatory = $true, ParameterSetName = "OutputFile")]
-        [string] $OutputFile,
+        [string] $OutputHtmlFile,
 
-        # The folder to save the test results. Default is "./test-results". The file name will be automatically generated with the current date and time.
-        [Parameter(ParameterSetName = "Advanced")]
-        [Parameter(ParameterSetName = "OutputFolder")]
-        [string] $OutputFolder = "./test-results",
+        # The path to the file to save the test results in markdown format. The filename should include a .md extension.
+        [string] $OutputMarkdownFile,
+
+        # The path to the file to save the test results in json format. The filename should include a .json extension.
+        [string] $OutputJsonFile,
+
+        # The folder to save the test results. If PassThru and no -Output* is set, defaults to ./test-results.
+        # If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json)
+        # with a timestamp and saved in the folder.
+        [string] $OutputFolder,
+
+        # The filename to use for all the files in the output folder. e.g. 'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
+        [string] $OutputFolderFileName,
 
         # [PesterConfiguration] object for Advanced Configuration
         # Default is New-PesterConfiguration
         # For help on each option see New-PesterConfiguration, or inspect the object it returns.
         # See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
-        [Parameter(ParameterSetName = "OutputFile")]
-        [Parameter(ParameterSetName = "OutputFolder")]
-        [Parameter(Mandatory = $true, ParameterSetName = "Advanced")]
-        [PesterConfiguration] $PesterConfiguration
+        [PesterConfiguration] $PesterConfiguration,
+
+        # Passes the output of the Maester tests to the console.
+        [switch] $PassThru
     )
 
     function GetDefaultFileName() {
@@ -102,20 +103,45 @@ Function Invoke-Maester {
         return "TestResults-$timestamp.html"
     }
 
-    # Validates the parameter sets and returns the output file path
-    function GetOutputFilePath() {
-        if ($PSCmdlet.ParameterSetName -eq "OutputFile") {
-            if ($OutputFile.EndsWith(".html") -eq $false) {
-                Write-Error "The OutputFile parameter must include an .html extension."
-                exit
-            }
-            $htmlFileName = $OutputFile
-        } else {
-            New-Item -Path $OutputFolder -ItemType Directory -Force | Out-Null # Create the output folder if it doesn't exist
+    function ValidateAndSetOutputFiles($out) {
 
-            $htmlFileName = Join-Path $OutputFolder (GetDefaultFileName)
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            if ($out.OutputFile.EndsWith(".html") -eq $false) {
+                $result = "The OutputHtmlFile parameter must have an .html extension."
+            }
         }
-        return $htmlFileName
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            if ($out.OutputMarkdownFile.EndsWith(".md") -eq $false) {
+                $result = "The OutputMarkdownFile parameter must have an .md extension."
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            if ($out.OutputJsonFile.EndsWith(".json") -eq $false) {
+                $result = "The OutputJsonFile parameter must have a .json extension."
+            }
+        }
+        if ([string]::IsNullOrEmpty($out.OutputFolder) -or `
+            (!$PassThru -and [string]::IsNullOrEmpty($out.OutputFolder) -and [string]::IsNullOrEmpty($out.OutputHtmlFile) `
+                    -and [string]::IsNullOrEmpty($out.OutputMarkdownFile) -and [string]::IsNullOrEmpty($out.OutputJsonFile))) {
+            # No outputs specified. Set default folder.
+            $out.OutputFolder = "./test-results"
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputFolder)) {
+            # Create the output folder if it doesn't exist and generate filenames
+            New-Item -Path $out.OutputFolder -ItemType Directory -Force | Out-Null # Create the output folder if it doesn't exist
+
+            if ([string]::IsNullOrEmpty($out.OutputFolderFileName)) {
+                # Generate a default filename
+                $timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
+                $out.OutputFolderFileName = "TestResults-$timestamp"
+            }
+
+            $out.OutputHtmlFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).html"
+            $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
+            $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
+        }
+        return $result
     }
 
     function GetPesterConfiguration() {
@@ -148,17 +174,49 @@ Function Invoke-Maester {
 
     if (!(Test-MtContext)) { return }
 
-    $htmlFileName = GetOutputFilePath
+    $out = [PSCustomObject]@{
+        OutputFolder = $OutputFolder
+        OutputFolderFileName = $OutputFolderFileName
+        OutputHtmlFile = $OutputHtmlFile
+        OutputMarkdownFile = $OutputMarkdownFile
+        OutputJsonFile = $OutputJsonFile
+    }
+
+    $result = ValidateAndSetOutputFiles $out
+
+    if ($result) {
+        Write-Error -Message $result
+        return
+    }
+
     $pesterConfig = GetPesterConfiguration
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
-        Export-MtHtmlReport -PesterResults $pesterResults -OutputHtmlPath $htmlFileName # Export test results to HTML
-        Write-Output "Test file generated at $htmlFileName"
+        $maesterResults = ConvertTo-MtMaesterResults $PesterResults
 
-        if (Get-MtUserInteractive) {
-            # Open test results in default browser
-            Invoke-Item $htmlFileName
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            $maesterResults | ConvertTo-Json -Depth 3 | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            $output = Get-MtMarkdownReport -MaesterResults $maesterResults
+            $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            $output = Get-MtHtmlReport -MaesterResults $maesterResults
+            $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
+            Write-Output "Test file generated at $($out.OutputHtmlFile)"
+
+            if (Get-MtUserInteractive) {
+                # Open test results in default browser
+                Invoke-Item $out.OutputHtmlFile | Out-Null
+            }
+        }
+
+        if ($PassThru) {
+            return $maesterResults
         }
     }
 }
