@@ -94,6 +94,9 @@ Function Invoke-Maester {
         # See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
         [PesterConfiguration] $PesterConfiguration,
 
+        # Run the tests in non-interactive mode. This will prevent the test results from being opened in the default browser.
+        [switch] $NonInteractive,
+
         # Passes the output of the Maester tests to the console.
         [switch] $PassThru
     )
@@ -175,11 +178,11 @@ Function Invoke-Maester {
     if (!(Test-MtContext)) { return }
 
     $out = [PSCustomObject]@{
-        OutputFolder = $OutputFolder
+        OutputFolder         = $OutputFolder
         OutputFolderFileName = $OutputFolderFileName
-        OutputHtmlFile = $OutputHtmlFile
-        OutputMarkdownFile = $OutputMarkdownFile
-        OutputJsonFile = $OutputJsonFile
+        OutputHtmlFile       = $OutputHtmlFile
+        OutputMarkdownFile   = $OutputMarkdownFile
+        OutputJsonFile       = $OutputJsonFile
     }
 
     $result = ValidateAndSetOutputFiles $out
@@ -196,7 +199,7 @@ Function Invoke-Maester {
         $maesterResults = ConvertTo-MtMaesterResults $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+            $maesterResults | ConvertTo-Json -Depth 10 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
@@ -209,7 +212,7 @@ Function Invoke-Maester {
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
             Write-Output "Test file generated at $($out.OutputHtmlFile)"
 
-            if (Get-MtUserInteractive) {
+            if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
                 # Open test results in default browser
                 Invoke-Item $out.OutputHtmlFile | Out-Null
             }

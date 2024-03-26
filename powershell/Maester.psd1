@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.41'
+ModuleVersion = '0.0.44'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -82,9 +82,9 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtG
                'Test-MtCaEnforceNonPersistentBrowserSession', 
                'Test-MtCaEnforceSignInFrequency', 
                'Test-MtCaExclusionForDirectorySyncAccounts', 
-               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAdmins', 
-               'Test-MtCaMfaForAllUsers', 'Test-MtCaMfaForGuests', 
-               'Test-MtCaMfaForRiskySignIns', 
+               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdminManagement', 
+               'Test-MtCaMfaForAdmins', 'Test-MtCaMfaForAllUsers', 
+               'Test-MtCaMfaForGuests', 'Test-MtCaMfaForRiskySignIns', 
                'Test-MtCaRequirePasswordChangeForHighUserRisk', 
                'Test-MtCaSecureSecurityInfoRegistration', 
                'Test-MtConditionalAccessWhatIf'
