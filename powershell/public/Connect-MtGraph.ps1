@@ -18,10 +18,11 @@ Function Connect-MtGraph {
    [CmdletBinding()]
    param(
       # If specified, the cmdlet will include the scope to send email (Mail.Send).
-      [Parameter(Mandatory = $false)]
-      [switch] $SendMail
+      [switch] $SendMail,
+
+      [switch] $UseDeviceCode
 
    )
 
-   Connect-MgGraph -Scopes (Get-MtGraphScopes -SendMail:$SendMail) -NoWelcome
+   Connect-MgGraph -Scopes (Get-MtGraphScopes -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode
 }
