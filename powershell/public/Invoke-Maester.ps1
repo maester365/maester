@@ -199,7 +199,7 @@ Function Invoke-Maester {
         $maesterResults = ConvertTo-MtMaesterResults $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            $maesterResults | ConvertTo-Json -Depth 10 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+            $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
