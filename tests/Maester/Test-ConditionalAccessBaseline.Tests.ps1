@@ -1,5 +1,15 @@
-﻿
-Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
+﻿BeforeDiscovery {
+    $AvailablePlans = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/organization" | Select-Object -ExpandProperty value | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
+    if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
+        $EntraIDPlan = "P2"
+    } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d)" -in $AvailablePlans ) {
+        $EntraIDPlan = "P1"
+    } else {
+        $EntraIDPlan = "Free"
+    }
+}
+
+Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }
@@ -30,10 +40,10 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "MT.1011: At least one Conditional Access policy is configured to secure security info registration only from a trusted location. See https://maester.dev/docs/tests/MT.1011" {
         Test-MtCaSecureSecurityInfoRegistration | Should -Be $true -Because "there is no policy that secures security info registration"
     }
-    It "MT.1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/docs/tests/MT.1012" {
+    It "MT.1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/docs/tests/MT.1012" -Skip:( $EntraIDPlan -eq "P1" ) {
         Test-MtCaMfaForRiskySignIns | Should -Be $true -Because "there is no policy that requires MFA for risky sign-ins"
     }
-    It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" {
+    It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" -Skip:( $EntraIDPlan -eq "P1" ) {
         Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "there is no policy that requires new password when user risk is high"
     }
     It "MT.1014: At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. See https://maester.dev/docs/tests/MT.1014" {
@@ -56,5 +66,12 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     }
     It "MT.1020: All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them. See https://maester.dev/docs/tests/MT.1020" {
         Test-MtCaExclusionForDirectorySyncAccounts | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
+    }
+}
+
+Describe "Security Defaults" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -ne "Free" ) {
+    It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" {
+        $SecurityDefaults = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/identitySecurityDefaultsEnforcementPolicy" | Select-Object -ExpandProperty isEnabled
+        $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
     }
 }
