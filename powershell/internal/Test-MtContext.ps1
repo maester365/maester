@@ -24,13 +24,13 @@ function Test-MtContext {
         if ($missingScopes) {
             $message = "These Graph permissions are missing in the current connection => ($($missingScopes))."
             $authType = (Get-MgContext).AuthType
-            if ($authType -eq 'AppOnly' -or $authType -eq 'ManagedIdentity') {
+            if ($authType -eq  'Delegated') {
+                $message += " Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
+            } else {
                 $clientId = (Get-MgContext).ClientId
                 $urlTemplate = "https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/$clientId/isMSAApp~/false"
                 $message += " Add the missing 'Application' permissions in the Microsoft Entra portal and grant consent. You will also need to Disconnect-Graph to refresh the permissions."
                 $message += " Click here to open the 'API Permissions' blade for this app: $urlTemplate"
-            } else {
-                $message += " Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
             }
             $validContext = $false
         }
