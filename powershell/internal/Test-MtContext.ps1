@@ -6,14 +6,18 @@
 function Test-MtContext {
     [CmdletBinding()]
     [OutputType([bool])]
-    param ()
+    param (
+        # If specified, the scope will be checked to send email.
+        [Parameter(Mandatory = $false)]
+        [switch] $SendMail
+    )
 
     $validContext = $true
     if (!(Get-MgContext)) {
         $message = "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
         $validContext = $false
     } else {
-        $requiredScopes = Get-MtGraphScopes
+        $requiredScopes = Get-MtGraphScopes -SendMail:$SendMail
         $currentScopes = Get-MgContext | Select-Object -ExpandProperty Scopes
         $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ }
 

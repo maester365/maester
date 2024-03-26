@@ -19,13 +19,13 @@ Function Get-MtMarkdownReport {
         [psobject] $MaesterResults
     )
     $StatusIcon = @{
-        Passed = '<img src="https://maester.dev/img/test-result/pill-passed.png" height="25" alt="Passed"/>'
+        Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
     }
 
     $StatusIconSm = @{
-        Passed = '<img src="https://maester.dev/img/test-result/icon-passed.png" alt="Passed icon" height="18" />'
+        Passed = '<img src="https://maester.dev/img/test-result/icon-pass.png" alt="Passed icon" height="18" />'
         Failed = '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
         NotRun = '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
     }
