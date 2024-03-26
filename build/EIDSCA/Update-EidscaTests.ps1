@@ -7,7 +7,7 @@
   * Generates Maester tests for each test defined in the JSON file
 
   .EXAMPLE
-    ./build/EIDSCA/Update-EidscaTests.ps1 -Verbose -TestFilePath ./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1 -DocsPath ./docs/docs/tests/EIDSCA
+    ./build/EIDSCA/Update-EidscaTests.ps1 -TestFilePath ./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1 -DocsPath ./website/docs/tests/EIDSCA
 #>
 
 param (
@@ -16,7 +16,11 @@ param (
     [string] $TestFilePath,
     # Folder where docs should be generated
     [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 1, Mandatory = $true)]
-    [string] $DocsPath
+    [string] $DocsPath,
+    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 2, Mandatory = $false)]
+    [string] $ControlName = "*",
+    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 3, Mandatory = $false)]
+    [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
 )
 
 Function GetRelativeUri($graphUri) {
@@ -35,11 +39,6 @@ Function GetVersion($graphUri) {
 
 Function GetRecommendedValue($RecommendedValue) {
     return "'$RecommendedValue'"
-}
-
-Function GetPropertyName($CurrentValue) {
-    $CurrentValue = $CurrentValue.Replace('value.', '')
-    return $CurrentValue
 }
 
 Function GetPageTitle($uri) {
@@ -192,7 +191,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $apiVersion = GetVersion($control.GraphUri)
 
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
-    $currentValue = GetPropertyName($controlItem.CurrentValue)
+    $currentValue = $controlItem.CurrentValue
 
     $portalDeepLink = ''
     if ($controlItem.PortalDeepLink -ne '') {
@@ -214,11 +213,13 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $template
         $output = $output -replace '%DocName%', $docName
         $output = $output -replace '%ControlName%', $control.ControlName
+        $output = $output -replace '%ControlId%', $control.ControlName
         $output = $output -replace '%Description%', $control.Description
         $output = $output -replace '%ControlItemDescription%', $controlItem.Description
         $output = $output -replace '%Severity%', $controlItem.Severity
         $output = $output -replace '%DisplayName%', $controlItem.DisplayName
         $output = $output -replace '%Name%', $controlItem.Name
+        $output = $output -replace '%CheckId%', $controlItem.CheckId
         $output = $output -replace '%Recommendation%', $recommendation
         $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
         $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
@@ -238,12 +239,13 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     return $output
 }
 
-$aadsc = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv3/config/AadSecConfig.json' | ConvertFrom-Json
+$aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
+$aadsc = $aadsc[0].ControlArea
 
 $testTemplate = @'
-    It "EIDSCA: %ControlName% - %DisplayName%. See https://maester.dev/test/%DocName%" {
+    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
         $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
-        $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue% but was $($result.%CurrentValue%)"
+        $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue%"
     }
 '@
 
@@ -252,20 +254,29 @@ $docsTemplate = Get-Content $docsTemplateFilePath -Raw
 
 $sb = [System.Text.StringBuilder]::new()
 
+if ($null -ne $ControlName) {
+    $aadsc = $aadsc | Where-Object { $_.ControlName -like $ControlName }
+}
+
 foreach ($control in $aadsc) {
     Write-Verbose "Generating test for $($control.ControlName)"
 
     $testOutputList = [System.Text.StringBuilder]::new()
     foreach ($controlItem in $control.Controls) {
-        $docName = "EIDSCA.$($control.GraphEndpoint).$($controlItem.Name)"
-        $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
-        $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+        # Export check only if RecommendedValue is set
+        if (($null -ne $controlItem.RecommendedValue -and $controlItem.RecommendedValue -ne "")) {
+            $docName = "EIDSCA.$($control.GraphEndpoint).$($controlItem.Name)"
+            $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
+            $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
 
-        if ($testOutput -ne '') {
-            [void]$testOutputList.AppendLine($testOutput)
+            if ($testOutput -ne '') {
+                [void]$testOutputList.AppendLine($testOutput)
 
-            $docFilePath = Join-Path $DocsPath "$docName.md"
-            $docsOutput | Out-File $docFilePath -Encoding utf8
+                $docFilePath = Join-Path $DocsPath "$docName.md"
+                $docsOutput | Out-File $docFilePath -Encoding utf8
+            }
+        } else {
+            Write-Warning "$($controlItem.CheckId) - $($controlItem.DisplayName) has no recommended value!"
         }
     }
     if ($testOutputList.Length -ne 0) {

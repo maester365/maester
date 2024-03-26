@@ -20,7 +20,7 @@ Prevents all non-admins from reading user information from the directory. This f
 |-|-|
 | **Recommendation** | Restrict this default permissions for members have huge impact on collaboration features and user lookup. |
 | **Configuration** | policies/authorizationPolicy |
-| **Setting** | `allowedToReadOtherUsers` |
+| **Setting** | `defaultUserRolePermissions.allowedToReadOtherUsers` |
 | **Recommended Value** | 'true' |
 | **Default Value** | true |
 | **Graph API Docs** | [authorizationPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy) |

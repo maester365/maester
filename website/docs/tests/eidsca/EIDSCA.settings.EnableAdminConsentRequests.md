@@ -20,7 +20,7 @@ If this option is set to enabled, then users request admin consent to any app th
 |-|-|
 | **Recommendation** | CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |
 | **Configuration** | settings |
-| **Setting** | `values.EnableAdminConsentRequests` |
+| **Setting** | `values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value` |
 | **Recommended Value** | 'true' |
 | **Default Value** | false |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
@@ -36,13 +36,13 @@ mindmap
       TA0001 - Initial Access - Initial Access
     (Mitigation)
       M1017 - User Training
-       M1018 - User Account Management
-       M1047 - Audit
+      M1018 - User Account Management
+      M1047 - Audit
     (Technique)
       T1566.002 - Phishing: Spearphishing Link
       T1078 - Valid Accounts
 ```
 |Tactic|Technique|Mitigation|
 |---|---|---|
-|[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[ M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[ M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
+|[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
 

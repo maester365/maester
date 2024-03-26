@@ -6,25 +6,25 @@ sidebar_class_name: hidden
 
 # State
 
-Whether the CBA is enabled in the tenant.
+Whether the Voice call is enabled in the tenant.
 
 | | |
 |-|-|
 | **Name** | state |
-| **Control** | Authentication Method - Certificate-based authentication |
-| **Description** | Define configuration settings and users or groups that are enabled to use certificate-based authentication. |
+| **Control** | Authentication Method - Voice call |
+| **Description** | Define configuration settings and users or groups that are enabled to use voice call for authentication. Voice call is not usable as a first-factor authentication method. |
 | **Severity** | High |
 
 ## How to fix
 | | |
 |-|-|
-| **Recommendation** |  |
-| **Configuration** | policies/authenticationMethodsPolicy/authenticationMethodConfigurations('X509Certificate') |
+| **Recommendation** | Choose authentication methods with number matching (Authenticator)  |
+| **Configuration** | policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice') |
 | **Setting** | `state` |
-| **Recommended Value** | '' |
+| **Recommended Value** | 'disabled' |
 | **Default Value** | disabled |
-| **Graph API Docs** | [certificateBasedAuthConfiguration resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/certificatebasedauthconfiguration) |
-| **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('X509Certificate')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+| **Graph API Docs** |  |
+| **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
 
 
 
