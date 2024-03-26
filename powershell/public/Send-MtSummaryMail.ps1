@@ -15,6 +15,11 @@
 
     When running in a non-interactive environment (Azure DevOps, GitHub) the Mail.Send permission
     must be granted to the application in the Microsoft Entra portal.
+
+.EXAMPLE
+    Send-MtSummaryMail -MaesterResults $MaesterResults -Recipients john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+
+    Sends an email with the summary of the Maester test results to two users along with the link to the detailed test results.
 #>
 
 Function Send-MtSummaryMail {
@@ -24,9 +29,9 @@ Function Send-MtSummaryMail {
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [psobject] $MaesterResults,
 
-        # The email address of the recipient.
+        # The email addresses of the recipients. e.g. john@contoso.com
         [Parameter(Mandatory = $true, Position = 1)]
-        [string[]] $Recipient,
+        [string[]] $Recipients,
 
         # The subject of the email. Defaults to 'Maester Test Results'.
         [string] $Subject,
@@ -101,6 +106,7 @@ Function Send-MtSummaryMail {
     }
     $emailTemplate = $emailTemplate -replace "%TestResultsLink%", $testResultsLink
 
+
     $mailRequestBody = @{
         message         = @{
             subject      = "$Subject"
@@ -108,15 +114,17 @@ Function Send-MtSummaryMail {
                 contentType = "HTML"
                 content     = "$emailTemplate"
             }
-            toRecipients = @(
-                @{
-                    emailAddress = @{
-                        address = "merill@elapora.com"
-                    }
-                }
-            )
+            toRecipients = @()
         }
         saveToSentItems = "false"
+    }
+
+    foreach ($email in $Recipients) {
+        $mailRequestBody.message.toRecipients += @{
+            emailAddress = @{
+                address = $email
+            }
+        }
     }
 
     $sendMailUri = "https://graph.microsoft.com/v1.0/me/sendMail"
