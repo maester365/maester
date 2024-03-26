@@ -36,6 +36,7 @@ Function Get-MtGraphScopes {
     $scopes = @(
         'Directory.Read.All'
         'Policy.Read.All'
+        'Reports.Read.All'
     )
 
     if ($SendMail) {
