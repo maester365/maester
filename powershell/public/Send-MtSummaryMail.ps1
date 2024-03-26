@@ -15,7 +15,6 @@
 
     When running in a non-interactive environment (Azure DevOps, GitHub) the Mail.Send permission
     must be granted to the application in the Microsoft Entra portal.
-
 #>
 
 Function Send-MtSummaryMail {
@@ -33,7 +32,11 @@ Function Send-MtSummaryMail {
         [string] $Subject,
 
         # Uri to the detailed test results page.
-        [string] $TestResultsUri
+        [string] $TestResultsUri,
+
+        # The user id of the sender of the mail. Defaults to the current user.
+        # This is required when using application permissions.
+        [string] $UserId
     )
 
     <#
@@ -93,7 +96,7 @@ Function Send-MtSummaryMail {
     $emailTemplate = $emailTemplate -replace "%TestSummary%", $table
 
     $testResultsLink = ""
-    if($TestResultsUri) {
+    if ($TestResultsUri) {
         $testResultsLink = "<a href='$TestResultsUri'>View detailed test results</a>"
     }
     $emailTemplate = $emailTemplate -replace "%TestResultsLink%", $testResultsLink
@@ -116,9 +119,13 @@ Function Send-MtSummaryMail {
         saveToSentItems = "false"
     }
 
+    $sendMailUri = "https://graph.microsoft.com/v1.0/me/sendMail"
+
+    if($UserId) {
+        $sendMailUri = "https://graph.microsoft.com/v1.0/users/$UserId/sendMail"
+    }
 
     # Construct the message body
-    Invoke-MgGraphRequest -Method POST -Uri "https://graph.microsoft.com/v1.0/me/sendMail" -Body $mailRequestBody
-
+    Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
 
 }
