@@ -30,7 +30,7 @@ function Test-MtContext {
                 $clientId = (Get-MgContext).ClientId
                 $urlTemplate = "https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/$clientId/isMSAApp~/false"
                 $message += " Add the missing 'Application' permissions in the Microsoft Entra portal and grant consent. You will also need to Disconnect-Graph to refresh the permissions."
-                $message += " Click here to open the 'API Permissions' blade for this app: $urlTemplate"
+                $message += " Click here to open the 'API Permissions' blade for this app (GitHub/Azure DevOps might prevent this link from working): $urlTemplate"
             }
             $validContext = $false
         }

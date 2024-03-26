@@ -56,12 +56,10 @@ Send-MtSummaryMail $results -Recipients $recipients -UserId $userId -TestResults
 ```
 
 ## Azure DevOps
-**Link:** `$(resources.pipeline.{Alias}.runURI)`
-
-Replace `Alias` with the ID of the pipeline resource.
+**Link:** `$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)`
 
 ```powershell
-$testResultsUri = "$(resources.pipeline.{Alias}.runURI)"
+$testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
 Send-MtSummaryMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
