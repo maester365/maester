@@ -22,7 +22,8 @@ function ConvertTo-MtMaesterResults {
         $activeTests = $PesterResults.Tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
         $inactiveTests = $PesterResults.Tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
 
-        return @($activeTests, $inactiveTests)
+        # Convert to array and add, if not when only one object is returned it doesn't create an array with all items.
+        return @($activeTests) + @($inactiveTests)
     }
 
     $mgContext = Get-MgContext
