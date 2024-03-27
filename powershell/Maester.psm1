@@ -9,7 +9,7 @@
 #>
 
 ## Initialize Module Configuration
-Requires -Module Pester
+#Requires -Modules Pester, Microsoft.Graph.Authentication
 
 ## Initialize Module Variables
 ## Update Reset-ModuleVariables function in internal/Reset-ModuleVariables.ps1 if you add new variables here
