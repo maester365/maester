@@ -15,20 +15,22 @@ To get started install the Maester PowerShell module and clone the pre-defined r
 git clone https://github.com/maester365/maester-tests
 cd maester-tests
 
-Install-Module Maester
+Install-Module Maester -Scope CurrentUser
 Connect-MtMaester
 Invoke-Maester
 ```
+
+:::info Prerequisites
+
+* Install git from [https://git-scm.com/](https://git-scm.com/)
+
+:::
 
 ## Reporting Test Results
 
 [TBD]
 
 ### Daily Mail alerts
-
-[TBD]
-
-### Posting to a Teams channel
 
 [TBD]
 
@@ -43,18 +45,8 @@ Here's how you can do this.
 
 Follow the guides here to setup daily automated tests.
 
-### Azure DevOps
-
-[TBD]
-
-### Azure Automation
-
-[TBD]
-
 ### GitHub Actions
 
-[TBD]
+### Azure DevOps
 
-### Octopus Deploy
 
-[TBD]
