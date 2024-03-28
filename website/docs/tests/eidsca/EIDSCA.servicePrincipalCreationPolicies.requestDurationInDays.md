@@ -1,17 +1,17 @@
 ---
-title: Consent request expires after (days)??? (requestDurationInDays)
+title: Consent request duration (days)??? (requestDurationInDays)
 slug: /tests/EIDSCA.servicePrincipalCreationPolicies.requestDurationInDays
 sidebar_class_name: hidden
 ---
 
-# Consent request expires after (days)???
+# Consent request duration (days)???
 
 Specifies the duration the request is active before it automatically expires if no decision is applied
 
 | | |
 |-|-|
 | **Name** | requestDurationInDays |
-| **Control** | Consent Framework - Admin Consent Request (Coming soon) |
+| **Control** | Consent Framework - Admin Consent Request |
 | **Description** | Represents the policy for enabling or disabling the Azure AD admin consent workflow. The admin consent workflow allows users to request access for apps that they wish to use and that require admin authorization before users can use the apps to access organizational data.  |
 | **Severity** |  |
 

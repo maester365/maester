@@ -20,7 +20,7 @@ If set to Yes, password protection is turned on for Active Directory domain cont
 |-|-|
 | **Recommendation** | [Azure identity & access security best practices - Microsoft Learn](https://learn.microsoft.com/en-us/azure/security/fundamentals/identity-management-best-practices#enable-password-management) |
 | **Configuration** | settings |
-| **Setting** | `EnableBannedPasswordCheckOnPremises` |
+| **Setting** | `values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value` |
 | **Recommended Value** | 'True' |
 | **Default Value** | False |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
@@ -35,12 +35,12 @@ mindmap
     (Tactic)
       TA0006 - Credential Access - Credential Access
     (Mitigation)
-       M1018 - User Account Management
+      M1018 - User Account Management
       M1027 - Password Policies
     (Technique)
       T1110 - Brute Force
 ```
 |Tactic|Technique|Mitigation|
 |---|---|---|
-|[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[ M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|
+|[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|
 

@@ -20,7 +20,7 @@ Defines if user consent to apps is allowed, and if it is, which app consent poli
 |-|-|
 | **Recommendation** | Microsoft recommends to allow to user consent for apps from verified publisher for selected permissions. CISA SCuBA 2.7 defines that all Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |
 | **Configuration** | policies/authorizationPolicy |
-| **Setting** | `permissionGrantPolicyIdsAssignedToDefaultUserRole` |
+| **Setting** | `permissionGrantPolicyIdsAssignedToDefaultUserRole[2]` |
 | **Recommended Value** | 'ManagePermissionGrantsForSelf.microsoft-user-default-low' |
 | **Default Value** | ManagePermissionGrantsForSelf.microsoft-user-default-legacy |
 | **Graph API Docs** | [authorizationPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy) |

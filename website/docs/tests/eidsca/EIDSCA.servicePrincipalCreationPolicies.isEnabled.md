@@ -11,7 +11,7 @@ Defines if admin consent request feature is enabled or disabled
 | | |
 |-|-|
 | **Name** | isEnabled |
-| **Control** | Consent Framework - Admin Consent Request (Coming soon) |
+| **Control** | Consent Framework - Admin Consent Request |
 | **Description** | Represents the policy for enabling or disabling the Azure AD admin consent workflow. The admin consent workflow allows users to request access for apps that they wish to use and that require admin authorization before users can use the apps to access organizational data.  |
 | **Severity** |  |
 

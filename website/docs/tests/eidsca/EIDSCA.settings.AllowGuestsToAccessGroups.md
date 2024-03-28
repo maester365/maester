@@ -20,7 +20,7 @@ Indicating whether or not a guest user can have access to Microsoft 365 groups c
 |-|-|
 | **Recommendation** | Manages if guest accounts can access resources through Microsoft 365 Group membership and could break collaboration if you disable it. |
 | **Configuration** | settings |
-| **Setting** | `AllowGuestsToAccessGroups` |
+| **Setting** | `values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value` |
 | **Recommended Value** | 'True' |
 | **Default Value** | True |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |

@@ -20,7 +20,7 @@ How many failed sign-ins are allowed on an account before its first lockout. If 
 |-|-|
 | **Recommendation** | [Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-password-smart-lockout) |
 | **Configuration** | settings |
-| **Setting** | `LockoutThreshold` |
+| **Setting** | `values | where-object name -eq 'LockoutThreshold' | select-object -expand value` |
 | **Recommended Value** | '10' |
 | **Default Value** | 10 |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
@@ -35,12 +35,12 @@ mindmap
     (Tactic)
       TA0006 - Credential Access - Credential Access
     (Mitigation)
-       M1018 - User Account Management
+      M1018 - User Account Management
       M1027 - Password Policies
     (Technique)
       T1110 - Brute Force
 ```
 |Tactic|Technique|Mitigation|
 |---|---|---|
-|[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[ M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|
+|[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)|[T1110 - Brute Force](https://attack.mitre.org/techniques/T1110)|[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1027 - Password Policies](https://attack.mitre.org/mitigations/M1027)|
 

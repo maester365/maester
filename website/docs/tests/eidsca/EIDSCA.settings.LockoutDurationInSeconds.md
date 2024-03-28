@@ -20,7 +20,7 @@ The minimum length in seconds of each lockout. If an account locks repeatedly, t
 |-|-|
 | **Recommendation** | [Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-password-smart-lockout) |
 | **Configuration** | settings |
-| **Setting** | `LockoutDurationInSeconds` |
+| **Setting** | `values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value` |
 | **Recommended Value** | '60' |
 | **Default Value** | 60 |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |

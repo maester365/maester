@@ -20,7 +20,7 @@ Object Id or scope of users which will be included to report suspicious activiti
 |-|-|
 | **Recommendation** | Apply this feature to all users. |
 | **Configuration** | policies/authenticationMethodsPolicy |
-| **Setting** | `reportSuspiciousActivitySettings.includeTargets.id` |
+| **Setting** | `reportSuspiciousActivitySettings.includeTarget.id` |
 | **Recommended Value** | 'all_users' |
 | **Default Value** | all_users |
 | **Graph API Docs** | [Get authenticationMethodsPolicy - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/authenticationmethodspolicy-get) |
