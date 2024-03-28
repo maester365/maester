@@ -20,7 +20,7 @@ Defines whether user consent will be blocked when a risky request is detected
 |-|-|
 | **Recommendation** | [Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/configure-risk-based-step-up-consent) |
 | **Configuration** | settings |
-| **Setting** | `values.BlockUserConsentForRiskyApps` |
+| **Setting** | `values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value` |
 | **Recommended Value** | 'true' |
 | **Default Value** | true |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |

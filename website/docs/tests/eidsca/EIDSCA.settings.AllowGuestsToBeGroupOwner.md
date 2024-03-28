@@ -20,7 +20,7 @@ Indicating whether or not a guest user can be an owner of groups
 |-|-|
 | **Recommendation** | CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory objects |
 | **Configuration** | settings |
-| **Setting** | `AllowGuestsToBeGroupOwner` |
+| **Setting** | `values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value` |
 | **Recommended Value** | 'false' |
 | **Default Value** | false |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
