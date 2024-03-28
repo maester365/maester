@@ -29,4 +29,11 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 	}
 }
 
-Export-ModuleMember -Function $publicScripts.BaseName -Alias 'Invoke-MtMaester'
+# Export public functions and aliases
+New-Alias -Name 'Invoke-Maester' -Value 'Invoke-MtMaester'
+New-Alias -Name 'Connect-Maester' -Value 'Connect-MtGraph'
+New-Alias -Name 'Connect-MtMaester' -Value 'Connect-MtGraph'
+
+Export-ModuleMember -Function 'Invoke-MtMaester' -Alias 'Invoke-Maester'
+Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-Maester'
+Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-MtMaester'

@@ -16,7 +16,9 @@ git clone https://github.com/maester365/maester-tests
 cd maester-tests
 
 Install-Module Maester -Scope CurrentUser
-Connect-MtMaester
+
+Connect-Maester
+
 Invoke-Maester
 ```
 
