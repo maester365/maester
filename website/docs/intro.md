@@ -5,11 +5,22 @@ title: Introduction
 
 # Introduction
 
-Start testing your Microsoft 365 cloud configuration **in less than 5 minutes**.
+Start testing your Microsoft 365 security configuration **in less than 3 minutes**.
 
 ## Getting Started
 
-To get started install the Maester PowerShell module and clone the pre-defined repository of tests that we've created for you to get started.
+To get started
+
+#### Clone the **maester-tests** repository
+    - This is a collection of tests that we've created for you to get started.
+
+```powershell
+git clone https://github.com/maester365/maester-tests
+cd maester-tests
+```
+
+- Install the **Maester** PowerShell module.
+- Connect
 
 ```powershell
 git clone https://github.com/maester365/maester-tests
@@ -22,11 +33,10 @@ Connect-Maester
 Invoke-Maester
 ```
 
-:::info Prerequisites
+### Prerequisites
 
 * Install git from [https://git-scm.com/](https://git-scm.com/)
 
-:::
 
 ## Reporting Test Results
 
