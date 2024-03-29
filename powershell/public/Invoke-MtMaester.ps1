@@ -147,7 +147,7 @@ Function Invoke-MtMaester {
         return $result
     }
 
-    function GetPesterConfiguration() {
+    function GetPesterConfiguration($Path, $Tag, $ExcludeTag, $PesterConfiguration) {
         if (!$PesterConfiguration) {
             $PesterConfiguration = New-PesterConfiguration
         }
@@ -171,9 +171,9 @@ Function Invoke-MtMaester {
 
 
 "@
-    Write-Host -ForegroundColor Green -Object $motd
+    Write-Output $motd -ForegroundColor Green
 
-    Reset-ModuleVariables # Reset the graph cache and urls to avoid stale data
+    Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     if (!(Test-MtContext)) { return }
 
@@ -192,11 +192,11 @@ Function Invoke-MtMaester {
         return
     }
 
-    $pesterConfig = GetPesterConfiguration
+    $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
-        $maesterResults = ConvertTo-MtMaesterResults $PesterResults
+        $maesterResults = ConvertTo-MtMaesterResult $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8

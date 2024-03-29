@@ -11,8 +11,6 @@
 Function Add-MtTestResultDetail {
     [CmdletBinding()]
     param(
-        # Pass in the $MyInvocation object to get the test name.
-        $Invocation,
         # Brief description of what this test is checking.
         [Parameter(Mandatory = $true)]
         [string] $Description,
@@ -26,8 +24,8 @@ Function Add-MtTestResultDetail {
     $testName = $____Pester.CurrentTest.Name # Get the test name from the Pester context.
 
     $testInfo = @{
-        TestDescription = $TestDescription
-        TestResult      = $TestResult
+        TestDescription = $Description
+        TestResult      = $Result
     }
     $MtTestResultDetail[$testName] = $testInfo
 }

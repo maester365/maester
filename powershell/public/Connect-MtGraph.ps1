@@ -7,7 +7,7 @@
 
     This cmdlet is a helper method for running the following command.
     ```
-    Connect-MgGraph -Scopes (Get-MtGraphScopes)
+    Connect-MgGraph -Scopes (Get-MtGraphScope)
     ```
 
  .Example
@@ -24,5 +24,5 @@ Function Connect-MtGraph {
 
    )
 
-   Connect-MgGraph -Scopes (Get-MtGraphScopes -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode
+   Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode
 }

@@ -6,17 +6,17 @@
     Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 
  .Example
-    Connect-MgGraph -Scopes (Get-MtGraphScopes)
+    Connect-MgGraph -Scopes (Get-MtGraphScope)
 
     Connects to Microsoft Graph with the required scopes to run Maester.
 
  .Example
-    Connect-MgGraph -Scopes (Get-MtGraphScopes -SendMail)
+    Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send email.
 #>
 
-Function Get-MtGraphScopes {
+Function Get-MtGraphScope {
 
     [CmdletBinding()]
     param(

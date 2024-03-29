@@ -3,7 +3,7 @@
   Converts Pester results to the Maester test results format which includes additional information.
 #>
 
-function ConvertTo-MtMaesterResults {
+function ConvertTo-MtMaesterResult {
     [CmdletBinding()]
     param(
         # The Pester test results returned from Invoke-Pester -PassThru

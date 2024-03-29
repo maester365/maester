@@ -41,7 +41,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaSecureSecurityInfoRegistration | Should -Be $true -Because "there is no policy that secures security info registration"
     }
     It "MT.1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/docs/tests/MT.1012" -Skip:( $EntraIDPlan -eq "P1" ) {
-        Test-MtCaMfaForRiskySignIns | Should -Be $true -Because "there is no policy that requires MFA for risky sign-ins"
+        Test-MtCaMfaForRiskySignIn | Should -Be $true -Because "there is no policy that requires MFA for risky sign-ins"
     }
     It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" -Skip:( $EntraIDPlan -eq "P1" ) {
         Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "there is no policy that requires new password when user risk is high"
@@ -50,10 +50,10 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaDeviceComplianceAdminsExists | Should -Be $true -Because "there is no policy that requires compliant or Entra hybrid joined devices for admins"
     }
     It "MT.1015: At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms. See https://maester.dev/docs/tests/MT.1015" {
-        Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms | Should -Be $true -Because "there is no policy that blocks access for unknown or unsupported device platforms"
+        Test-MtCaBlockUnknownOrUnsupportedDevicePlatform | Should -Be $true -Because "there is no policy that blocks access for unknown or unsupported device platforms"
     }
     It "MT.1016: At least one Conditional Access policy is configured to require MFA for guest access. See https://maester.dev/docs/tests/MT.1016" {
-        Test-MtCaMfaForGuests | Should -Be $true -Because "there is no policy that requires MFA for guest access"
+        Test-MtCaMfaForGuest | Should -Be $true -Because "there is no policy that requires MFA for guest access"
     }
     It "MT.1017: At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices. See https://maester.dev/docs/tests/MT.1017" {
         Test-MtCaEnforceNonPersistentBrowserSession | Should -Be $true -Because "there is no policy that enforces non persistent browser session for non-corporate devices"
@@ -62,10 +62,10 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaEnforceSignInFrequency | Should -Be $true -Because "there is no policy that enforces sign-in frequency for non-corporate devices"
     }
     It "MT.1019: At least one Conditional Access policy is configured to enable application enforced restrictions. See https://maester.dev/docs/tests/MT.1019" {
-        Test-MtCaApplicationEnforcedRestrictions | Should -Be $true -Because "there is no policy that enables application enforced restrictions"
+        Test-MtCaApplicationEnforcedRestriction | Should -Be $true -Because "there is no policy that enables application enforced restrictions"
     }
     It "MT.1020: All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them. See https://maester.dev/docs/tests/MT.1020" {
-        Test-MtCaExclusionForDirectorySyncAccounts | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
+        Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
     }
     Context "License utilization" {
         It "MT.1022: All users covered by a P1 license are utilizing this license. See https://maester.dev/docs/tests/MT.1022" {

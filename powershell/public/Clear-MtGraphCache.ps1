@@ -13,5 +13,7 @@
     Use this function to clear the cache and force a refresh of the data from Microsoft Graph.
 #>
 function Clear-MtGraphCache {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]
+
     $MtGraphCache = @{}
 }

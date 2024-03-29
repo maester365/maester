@@ -14,12 +14,13 @@
 #>
 
 Function Test-MtCaEmergencyAccessExists {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
     # Only check policies that are not related to authentication context
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
 
     $result = $false
     $PolicyCount = $policies | Measure-Object | Select-Object -ExpandProperty Count

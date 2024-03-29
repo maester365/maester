@@ -28,12 +28,12 @@
         # The sign in risk level of the user sign-in. Default: None
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [ValidateSet("None", "Low", "Medium", "High")]
-        [string]$SignInRiskLevel = "None",
+        [string]$SignInRiskLevel = "None"
 
-        # The user risk level of the user signing in. Default: None
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("None", "Low", "Medium", "High")]
-        $UserRiskLevel = "None"
+        # # The user risk level of the user signing in. Default: None
+        # [Parameter(ValueFromPipelineByPropertyName = $true)]
+        # [ValidateSet("None", "Low", "Medium", "High")]
+        # $UserRiskLevel = "None"
     )
 
     process {

@@ -7,15 +7,15 @@
 
  .Example
     $pesterResults = Invoke-Pester -PassThru
-    $maesterResults = ConvertTo-MtMaesterResults -PesterResults $pesterResults
+    $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
     Get-MtMarkdownReport $maesterResults
 #>
 
 Function Get-MtMarkdownReport {
     [CmdletBinding()]
     param(
-        # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResults`
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
+        [Parameter(Mandatory = $true, Position = 0)]
         [psobject] $MaesterResults
     )
     $StatusIcon = @{

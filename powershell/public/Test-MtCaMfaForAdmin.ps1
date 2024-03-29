@@ -9,10 +9,11 @@
   https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
  .Example
-  Test-MtCaMfaForAdmins
+  Test-MtCaMfaForAdmin
 #>
 
-Function Test-MtCaMfaForAdmins {
+Function Test-MtCaMfaForAdmin {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PolicyIncludesAllRoles is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -34,7 +35,7 @@ Function Test-MtCaMfaForAdmins {
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
 w
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     foreach ($policy in $policies) {

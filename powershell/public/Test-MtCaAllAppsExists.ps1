@@ -21,15 +21,16 @@
 #>
 
 Function Test-MtCaAllAppsExists {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plurality')]
   [CmdletBinding()]
   [OutputType([bool])]
   param (
 
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0)]
+    [Parameter(Position = 0)]
     [switch] $SkipCheckAllUsers = $false
   )
 
-  $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
   $result = $false
   foreach ($policy in $policies) {

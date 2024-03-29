@@ -14,6 +14,8 @@
 #>
 
 Function Test-MtCaDeviceComplianceAdminsExists {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PSScriptAnalyzer bug is not detecting usage of PolicyIncludesAllRoles')]
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
@@ -35,7 +37,7 @@ Function Test-MtCaDeviceComplianceAdminsExists {
     "e8611ab8-c189-46e8-94e1-60213ab1f814"
   )
 
-  $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
   $result = $false
   foreach ($policy in $policies) {

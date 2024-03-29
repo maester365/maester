@@ -9,15 +9,15 @@
   https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device
 
  .Example
-  Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms
+  Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
 #>
 
-Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms {
+Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $KnownPlatforms = @(
         "android",

@@ -1,11 +1,11 @@
 ---
 sidebar_class_name: hidden
 description: Returns the list of Graph scopes required to run Maester.
-id: Get-MtGraphScopes
-title: Get-MtGraphScopes
+id: Get-MtGraphScope
+title: Get-MtGraphScope
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtGraphScopes.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtGraphScope.ps1
 ---
 
 ## SYNOPSIS
@@ -15,7 +15,7 @@ Returns the list of Graph scopes required to run Maester.
 ## SYNTAX
 
 ```powershell
-Get-MtGraphScopes
+Get-MtGraphScope
 ```
 
 ## DESCRIPTION
@@ -27,7 +27,7 @@ Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 ### EXAMPLE 1
 
 ```powershell
-Connect-MgGraph -Scopes (Get-MtGraphScopes)
+Connect-MgGraph -Scopes (Get-MtGraphScope)
 ```
 
 ## PARAMETERS

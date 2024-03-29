@@ -5,10 +5,10 @@
  .Description
 
  .Example
-  Get-MtConditionalAccessPolicies
+  Get-MtConditionalAccessPolicy
 #>
 
-Function Get-MtConditionalAccessPolicies {
+Function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
   param()
 

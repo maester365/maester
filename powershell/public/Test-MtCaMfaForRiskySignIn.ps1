@@ -9,15 +9,15 @@
   https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk
 
  .Example
-  Test-MtCaMfaForRiskySignIns
+  Test-MtCaMfaForRiskySignIn
 #>
 
-Function Test-MtCaMfaForRiskySignIns {
+Function Test-MtCaMfaForRiskySignIn {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
 

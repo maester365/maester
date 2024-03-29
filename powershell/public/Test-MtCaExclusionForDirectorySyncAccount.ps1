@@ -12,10 +12,11 @@
   https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
  .Example
-  Test-MtCaExclusionForDirectorySyncAccounts
+  Test-MtCaExclusionForDirectorySyncAccount
 #>
 
-Function Test-MtCaExclusionForDirectorySyncAccounts {
+Function Test-MtCaExclusionForDirectorySyncAccount {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -24,7 +25,7 @@ Function Test-MtCaExclusionForDirectorySyncAccounts {
     $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
     $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $result = $true
     foreach ($policy in ( $policies | Sort-Object -Property displayName ) ) {

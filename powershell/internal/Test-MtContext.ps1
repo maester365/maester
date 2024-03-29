@@ -17,7 +17,7 @@ function Test-MtContext {
         $message = "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
         $validContext = $false
     } else {
-        $requiredScopes = Get-MtGraphScopes -SendMail:$SendMail
+        $requiredScopes = Get-MtGraphScope -SendMail:$SendMail
         $currentScopes = Get-MgContext | Select-Object -ExpandProperty Scopes
         $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ }
 
@@ -37,7 +37,7 @@ function Test-MtContext {
     }
 
     if (!$validContext) {
-        Write-Error $message
+        throw $message
     }
     return $validContext
 }

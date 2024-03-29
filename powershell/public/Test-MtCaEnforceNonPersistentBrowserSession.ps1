@@ -20,7 +20,7 @@ Function Test-MtCaEnforceNonPersistentBrowserSession {
         [switch]$AllDevices
     )
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     foreach ($policy in $policies) {

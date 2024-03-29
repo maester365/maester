@@ -9,15 +9,15 @@
   https://aka.ms/CATemplatesAppRestrictions
 
  .Example
-  Test-MtCaApplicationEnforcedRestrictions
+  Test-MtCaApplicationEnforcedRestriction
 #>
 
-Function Test-MtCaApplicationEnforcedRestrictions {
+Function Test-MtCaApplicationEnforcedRestriction {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicies | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $result = $false
     foreach ($policy in $policies) {

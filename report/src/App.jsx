@@ -194,7 +194,7 @@ const testResults = {
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        Test-MtCaMfaForRiskySignIns | Should -Be $true -Because \"there is no policy that requires MFA for risky sign-ins\"\n    ",
+      "ScriptBlock": "\n        Test-MtCaMfaForRiskySignIn | Should -Be $true -Because \"there is no policy that requires MFA for risky sign-ins\"\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [
         "Expected $true, because there is no policy that requires MFA for risky sign-ins, but got $false."
@@ -245,7 +245,7 @@ const testResults = {
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        Test-MtCaBlockUnknownOrUnsupportedDevicePlatforms | Should -Be $true -Because \"there is no policy that blocks access for unknown or unsupported device platforms\"\n    ",
+      "ScriptBlock": "\n        Test-MtCaBlockUnknownOrUnsupportedDevicePlatform | Should -Be $true -Because \"there is no policy that blocks access for unknown or unsupported device platforms\"\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [
         "Expected $true, because there is no policy that blocks access for unknown or unsupported device platforms, but got $false."
@@ -262,7 +262,7 @@ const testResults = {
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        Test-MtCaMfaForGuests | Should -Be $true -Because \"there is no policy that requires MFA for guest access\"\n    ",
+      "ScriptBlock": "\n        Test-MtCaMfaForGuest | Should -Be $true -Because \"there is no policy that requires MFA for guest access\"\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [
         "Expected $true, because there is no policy that requires MFA for guest access, but got $false."
@@ -313,7 +313,7 @@ const testResults = {
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        Test-MtCaApplicationEnforcedRestrictions | Should -Be $true -Because \"there is no policy that enables application enforced restrictions\"\n    ",
+      "ScriptBlock": "\n        Test-MtCaApplicationEnforcedRestriction | Should -Be $true -Because \"there is no policy that enables application enforced restrictions\"\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [
         "Expected $true, because there is no policy that enables application enforced restrictions, but got $false."
@@ -330,7 +330,7 @@ const testResults = {
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        Test-MtCaExclusionForDirectorySyncAccounts | Should -Be $true -Because \"there is no policy that excludes directory synchronization accounts\"\n    ",
+      "ScriptBlock": "\n        Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because \"there is no policy that excludes directory synchronization accounts\"\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [
         "Expected $true, because there is no policy that excludes directory synchronization accounts, but got $false."

@@ -14,8 +14,8 @@
 Function Get-MtHtmlReport {
     [CmdletBinding()]
     param(
-        # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResults`
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
+        [Parameter(Mandatory = $true, Position = 0)]
         [psobject] $MaesterResults
     )
 

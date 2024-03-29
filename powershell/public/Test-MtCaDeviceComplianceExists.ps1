@@ -13,11 +13,12 @@
 #>
 
 Function Test-MtCaDeviceComplianceExists {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
 
-  $policies = Get-MtConditionalAccessPolicies
+  $policies = Get-MtConditionalAccessPolicy
 
   $result = $false
   foreach ($policy in $policies) {

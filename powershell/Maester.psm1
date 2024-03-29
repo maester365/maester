@@ -12,7 +12,7 @@
 #Requires -Modules Pester, Microsoft.Graph.Authentication
 
 ## Initialize Module Variables
-## Update Reset-ModuleVariables function in internal/Reset-ModuleVariables.ps1 if you add new variables here
+## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
 $MtGraphCache = @{}
 $MtGraphBaseUri = $null
 $MtTestResultDetail = @{}
@@ -30,11 +30,11 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 }
 
 # Export public functions and aliases
-New-Alias -Name 'Invoke-Maester' -Value 'Invoke-MtMaester'
-New-Alias -Name 'Connect-Maester' -Value 'Connect-MtGraph'
-New-Alias -Name 'Connect-MtMaester' -Value 'Connect-MtGraph'
-New-Alias -Name 'Disconnect-Maester' -Value 'Disconnect-MtGraph'
-New-Alias -Name 'Disconnect-MtMaester' -Value 'Disconnect-MtGraph'
+New-Alias -Name 'Invoke-Maester' -Value 'Invoke-MtMaester' -Force
+New-Alias -Name 'Connect-Maester' -Value 'Connect-MtGraph' -Force
+New-Alias -Name 'Connect-MtMaester' -Value 'Connect-MtGraph' -Force
+New-Alias -Name 'Disconnect-Maester' -Value 'Disconnect-MtGraph' -Force
+New-Alias -Name 'Disconnect-MtMaester' -Value 'Disconnect-MtGraph' -Force
 
 Export-ModuleMember -Function 'Invoke-MtMaester' -Alias 'Invoke-Maester'
 Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-Maester'
