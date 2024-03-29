@@ -39,9 +39,7 @@ function Test-MtCaLicenseUtilization {
     $P1FeatureUtilizations = $EIDPremiumLicenseInsight.p1FeatureUtilizations.conditionalAccess.userCount + $EIDPremiumLicenseInsight.p1FeatureUtilizations.conditionalAccessGuestUsers.userCount
     $P2FeatureUtilizations = $EIDPremiumLicenseInsight.p2FeatureUtilizations.riskBasedConditionalAccess.userCount + $EIDPremiumLicenseInsight.p2FeatureUtilizations.riskBasedConditionalAccessGuestUsers.userCount
 
-    Write-Verbose -Message "Total user count: $TotalUserCount & " `
-        "Entitled P1 license count: $entitledP1LicenseCount & " `
-        "Entitled P2 license count: $entitledP2LicenseCount"
+    Write-Verbose -Message "Total user count: $TotalUserCount & Entitled P1 license count: $entitledP1LicenseCount & Entitled P2 license count: $entitledP2LicenseCount"
 
     if ($License -eq "P1") {
         # Calculate the maximum number of users that can be covered by the P1 license
