@@ -69,24 +69,24 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph', 
-               'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy', 
-               'Get-MtGraphScope', 'Invoke-MtGraphRequest', 'Invoke-MtMaester', 
-               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled', 
-               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
-               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
-               'Test-MtCaBlockLegacyOtherAuthentication', 
-               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
-               'Test-MtCaDeviceComplianceAdminsExists', 
-               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists', 
-               'Test-MtCaEnforceNonPersistentBrowserSession', 
-               'Test-MtCaEnforceSignInFrequency', 
-               'Test-MtCaExclusionForDirectorySyncAccount', 
-               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 
-               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers', 
-               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 
-               'Test-MtCaRequirePasswordChangeForHighUserRisk', 
-               'Test-MtCaSecureSecurityInfoRegistration', 
+FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph',
+               'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy',
+               'Get-MtGraphScope', 'Get-MtLicenseInformation', 'Invoke-MtGraphRequest', 'Invoke-MtMaester',
+               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled',
+               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction',
+               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+               'Test-MtCaBlockLegacyOtherAuthentication',
+               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
+               'Test-MtCaDeviceComplianceAdminsExists',
+               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
+               'Test-MtCaEnforceNonPersistentBrowserSession',
+               'Test-MtCaEnforceSignInFrequency',
+               'Test-MtCaExclusionForDirectorySyncAccount',
+               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
+               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
+               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
+               'Test-MtCaRequirePasswordChangeForHighUserRisk',
+               'Test-MtCaSecureSecurityInfoRegistration',
                'Test-MtConditionalAccessWhatIf'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -96,7 +96,7 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'Invoke-Maester', 'Connect-Maester', 'Connect-MtMaester', 
+AliasesToExport = 'Invoke-Maester', 'Connect-Maester', 'Connect-MtMaester',
                'Disconnect-Maester', 'Disconnect-MtMaester'
 
 # DSC resources to export from this module
