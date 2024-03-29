@@ -9,7 +9,28 @@ import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc} />
 
-## Contributing to docs
+## Maester PowerShell module dev guide
+
+### Simple debugging
+
+- Set a breakpoint anywhere in the code and hit F5
+- The launch.json has been configured to re-load the module
+
+### Manual editing
+
+- Load the PowerShell module. This needs to be done anytime you make changes to the code in `./powershell`.
+  - `Import-Module ./powershell/Maester.psd1 -Force`
+- Run Maester
+  - `Invoke-Maester`
+
+### Pester Tests
+
+- Tests for the Maester module are at /powershell/tests
+- When making changes to the module you can run the test locally by running `/powershell/tests/pester.ps1`
+- The **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment`
+- The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
+
+## Contributing to Maester docs
 
 Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
 
@@ -19,7 +40,7 @@ For more complex changes, you can fork the repository and submit a pull request.
 
 The [Maester.dev](https://maester.dev) website is built using [Docusaurus](https://docusaurus.io/).
 
-Follow the guide if you want to run the documentation locally and view changes in real-time.
+Follow this guide if you want to run the documentation locally and view changes in real-time.
 
 #### Pre-requisites
 
@@ -49,16 +70,3 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://measter.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
 
-## Maester cmdlet dev guide
-
-### Simple debugging
-
-- Set a breakpoint anywhere in the code and hit F5
-- The launch.json has been configured to re-load the module
-
-### Manual editing
-
-- Load the PowerShell module. This needs to be done anytime you make changes to the code in `./powershell`.
-  - `Import-Module ./powershell/Maester.psd1 -Force`
-- Run the tests
-  - `Invoke-Maester`
