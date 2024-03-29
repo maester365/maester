@@ -3,6 +3,10 @@ name: publish-module
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yaml
