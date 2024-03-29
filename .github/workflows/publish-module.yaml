@@ -1,12 +1,7 @@
-name: publish-module
+name: Create PowerShell module release artifacts and publish them to GitHub and PowerShell Gallery
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: read
-  checks: write
-  id-token: write
 
 jobs:
   build-validation:
@@ -14,7 +9,12 @@ jobs:
 
   create-release:
     needs: build-validation
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    permissions:
+      id-token: write
+      contents: write
+      checks: write
+
     steps:
 
       - uses: actions/checkout@v3
@@ -24,12 +24,12 @@ jobs:
         shell: pwsh
         run: |
           $ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"
-          $ManifestPath = "$($ModuleRoot)/Maester.psd1"
-          if ( -not (Test-Path $ManifestPath )) {
-              Write-Error "Could not find PowerShell module manifest ($ManifestPath)"
+          $ManfifestPath = "$($ModuleRoot)/maester.psd1"
+          if ( -not (Test-Path $ManfifestPath )) {
+              Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
               throw
           } else {
-              $CurrentVersion = Import-PowerShellDataFile $ManifestPath | Select-Object -ExpandProperty ModuleVersion
+              $CurrentVersion = Import-PowerShellDataFile $ManfifestPath | Select-Object -ExpandProperty ModuleVersion
               Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$CurrentVersion"
           }
 
