@@ -3,6 +3,11 @@ name: publish-module
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: write
+  checks: write
+
 jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yaml
@@ -10,13 +15,8 @@ jobs:
   create-release:
     needs: build-validation
     runs-on: windows-latest
-    permissions:
-      id-token: write
-      contents: write
-      checks: write
 
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Get PowerShell module version
