@@ -22,17 +22,13 @@ jobs:
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
-          # Configure test results
-          $PesterConfiguration = New-PesterConfiguration
-          $PesterConfiguration.TestResult.Enabled = $true
-          $PesterConfiguration.TestResult.OutputFormat = "JUnitXml"
-          $PesterConfiguration.TestResult.OutputPath = "test-results/test-results.xml"
+          ./powershell/tests/pester.ps1
 
       - name: Publish Pester test results
         uses: dorny/test-reporter@v1
         if: always()
         with:
           name: Maester Test Results
-          path: test-results/*.xml
+          path: TestResults/*.xml
           reporter: java-junit
           fail-on-error: true

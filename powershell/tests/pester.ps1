@@ -51,6 +51,7 @@ if ($TestGeneral)
 
 		Write-PSFMessage -Level Significant -Message "  Executing <c='em'>$($file.Name)</c>"
 		$config.TestResult.OutputPath = Join-Path "$PSScriptRoot\..\..\TestResults" "TEST-$($file.BaseName).xml"
+		$config.TestResult.OutputFormat = "JUnitXml"
 		$config.Run.Path = $file.FullName
 		$config.Run.PassThru = $true
 		$config.Output.Verbosity = $Output
