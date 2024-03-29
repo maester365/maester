@@ -1,6 +1,6 @@
 # Updates the maester-tests repository with the latest tests
 #
-name: Publish Maester Tests
+name: publish-tests
 
 on:
   # Runs on pushes targeting the default branch
@@ -13,7 +13,11 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-validation:
+    uses: ./.github/workflows/build-validation.yaml
+
   build:
+    needs: build-validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

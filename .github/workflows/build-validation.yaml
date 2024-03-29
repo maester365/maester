@@ -1,0 +1,34 @@
+﻿# Run pester tests
+name: build-validation
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
+          Install-Module Pester
+          Install-Module PSFramework
+          Install-Module PSModuleDevelopment
+
+          # Configure test results
+          $PesterConfiguration = New-PesterConfiguration
+          $PesterConfiguration.TestResult.Enabled = $true
+          $PesterConfiguration.TestResult.OutputFormat = "JUnitXml"
+          $PesterConfiguration.TestResult.OutputPath = "test-results/test-results.xml"
+
+      - name: Publish Pester test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maester Test Results
+          path: test-results/*.xml
+          reporter: java-junit
+          fail-on-error: true

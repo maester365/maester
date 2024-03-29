@@ -1,4 +1,4 @@
-name: Update PowerShell module manifest
+name: minor-version-update
 
 on:
   push:
