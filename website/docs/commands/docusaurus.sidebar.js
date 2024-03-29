@@ -9,30 +9,7 @@
  */
 
 module.exports = [
-    'commands/Clear-MtGraphCache',
     'commands/Connect-MtGraph',
-    'commands/Export-MtHtmlReport',
-    'commands/Get-MtConditionalAccessPolicy',
-    'commands/Get-MtGraphScope',
-    'commands/Invoke-Maester',
-    'commands/Invoke-MtGraphRequest',
-    'commands/Test-MtAppManagementPolicyEnabled',
-    'commands/Test-MtCaAllAppsExists',
-    'commands/Test-MtCaApplicationEnforcedRestriction',
-    'commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
-    'commands/Test-MtCaBlockLegacyOtherAuthentication',
-    'commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
-    'commands/Test-MtCaDeviceComplianceAdminsExists',
-    'commands/Test-MtCaDeviceComplianceExists',
-    'commands/Test-MtCaEmergencyAccessExists',
-    'commands/Test-MtCaEnforceNonPersistentBrowserSession',
-    'commands/Test-MtCaEnforceSignInFrequency',
-    'commands/Test-MtCaExclusionForDirectorySyncAccount',
-    'commands/Test-MtCaMfaForAdminManagement',
-    'commands/Test-MtCaMfaForAdmin',
-    'commands/Test-MtCaMfaForAllUsers',
-    'commands/Test-MtCaMfaForGuest',
-    'commands/Test-MtCaMfaForRiskySignIn',
-    'commands/Test-MtCaRequirePasswordChangeForHighUserRisk',
-    'commands/Test-MtCaSecureSecurityInfoRegistration'
+    'commands/Disconnect-MtGraph',
+    'commands/Invoke-MtMaester'
 ];

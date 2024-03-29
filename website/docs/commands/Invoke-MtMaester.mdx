@@ -1,11 +1,11 @@
 ---
 sidebar_class_name: hidden
 description: Runs the Pester tests and generates a report of the results.
-id: Invoke-Maester
-title: Invoke-Maester
+id: Invoke-MtMaester
+title: Invoke-MtMaester
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Invoke-Maester.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtMaester.ps1
 ---
 
 ## SYNOPSIS
@@ -14,24 +14,10 @@ Runs the Pester tests and generates a report of the results.
 
 ## SYNTAX
 
-### OutputFolder (Default)
-
 ```powershell
-Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-OutputFolder <String>]
- [-PesterConfiguration <PesterConfiguration>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### OutputFile
-
-```powershell
-Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] -OutputFile <String>
- [-PesterConfiguration <PesterConfiguration>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### Advanced
-
-```powershell
-Invoke-Maester [-OutputFile <String>] [-OutputFolder <String>] -PesterConfiguration <PesterConfiguration>
+Invoke-MtMaester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-OutputHtmlFile <String>]
+ [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
+ [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-NonInteractive] [-PassThru]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -53,7 +39,7 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 Invoke-Maester
 ```
 
-Runs all the Pester tests and generates a report of the results in the default ./test-results folder.
+Runs all the Pester tests and generates a report of the results in the ./test-results folder.
 
 ### EXAMPLE 2
 
@@ -125,7 +111,7 @@ Wildcards are permitted.
 
 ```yaml
 Type: String
-Parameter Sets: OutputFolder, OutputFile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -141,7 +127,7 @@ Only run the tests that match this tag(s).
 
 ```yaml
 Type: String[]
-Parameter Sets: OutputFolder, OutputFile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -157,7 +143,7 @@ Exclude the tests that match this tag(s).
 
 ```yaml
 Type: String[]
-Parameter Sets: OutputFolder, OutputFile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -167,26 +153,48 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -OutputFile
+### -OutputHtmlFile
 
 The path to the file to save the test results in html format.
 The filename should include an .html extension.
 
 ```yaml
 Type: String
-Parameter Sets: OutputFile
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputMarkdownFile
+
+The path to the file to save the test results in markdown format.
+The filename should include a .md extension.
+
 ```yaml
 Type: String
-Parameter Sets: Advanced
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputJsonFile
+
+The path to the file to save the test results in json format.
+The filename should include a .json extension.
+
+```yaml
+Type: String
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -199,17 +207,36 @@ Accept wildcard characters: False
 ### -OutputFolder
 
 The folder to save the test results.
-Default is "./test-results".
-The file name will be automatically generated with the current date and time.
+If PassThru and no -Output* is set, defaults to ./test-results.
+If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json)
+with a timestamp and saved in the folder.
 
 ```yaml
 Type: String
-Parameter Sets: OutputFolder, Advanced
+Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: Named
-Default value: ./test-results
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFolderFileName
+
+The filename to use for all the files in the output folder.
+e.g.
+'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -223,7 +250,7 @@ See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more
 
 ```yaml
 Type: PesterConfiguration
-Parameter Sets: OutputFolder, OutputFile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -233,14 +260,35 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -NonInteractive
+
+Run the tests in non-interactive mode.
+This will prevent the test results from being opened in the default browser.
+
 ```yaml
-Type: PesterConfiguration
-Parameter Sets: Advanced
+Type: SwitchParameter
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
-Default value: None
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PassThru
+
+Passes the output of the Maester tests to the console.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

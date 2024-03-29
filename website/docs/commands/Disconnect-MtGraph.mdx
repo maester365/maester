@@ -1,36 +1,51 @@
 ---
 sidebar_class_name: hidden
-description: Checks if the tenant has at least one conditional access policy requiring device compliance.
-id: Test-MtCaDeviceComplianceExists
-title: Test-MtCaDeviceComplianceExists
+description: Helper method to sign out of the current Microsoft Graph session.
+id: Disconnect-MtGraph
+title: Disconnect-MtGraph
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaDeviceComplianceExists.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Disconnect-MtGraph.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if the tenant has at least one conditional access policy requiring device compliance.
+Helper method to sign out of the current Microsoft Graph session.
+Alternate for Disconnect-MgGraph.
 
 ## SYNTAX
 
 ```powershell
-Test-MtCaDeviceComplianceExists [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Disconnect-MtGraph [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Device compliance conditional access policy can be used to require devices to be compliant with the tenant's device compliance policy.
+Use this cmdlet to sign out of the current Microsoft Graph session.
 
-Learn more:
-https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device
+This cmdlet is a helper method for running the following command.
+```
+Disconnnect-MgGraph
+```
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCaDeviceComplianceExists
+Disconnect-MtGraph
+```
+
+### EXAMPLE 2
+
+```powershell
+Disconnect-Maester
+```
+
+### EXAMPLE 3
+
+```powershell
+Disconnect-MtMaester
 ```
 
 ## PARAMETERS
@@ -58,8 +73,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
-
-### System.Boolean
 
 ## NOTES
 
