@@ -1,4 +1,4 @@
-name: Create PowerShell module release artifacts and publish them to GitHub and PowerShell Gallery
+name: publish-module
 
 on:
   workflow_dispatch:
