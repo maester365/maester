@@ -1,4 +1,4 @@
-name: Create PowerShell module release artifacts and publish them to GitHub and PowerShell Gallery
+name: Build and publish Maester to PowerShell Gallery
 
 on:
   workflow_dispatch:
@@ -27,6 +27,28 @@ jobs:
               $CurrentVersion = Import-PowerShellDataFile $ManfifestPath | Select-Object -ExpandProperty ModuleVersion
               Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$CurrentVersion"
           }
+
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
+          Install-Module Pester
+          Install-Module PSFramework
+          Install-Module PSModuleDevelopment
+
+          # Configure test results
+          $PesterConfiguration = New-PesterConfiguration
+          $PesterConfiguration.TestResult.Enabled = $true
+          $PesterConfiguration.TestResult.OutputFormat = "JUnitXml"
+          $PesterConfiguration.TestResult.OutputPath = "test-results/test-results.xml"
+
+      - name: Publish Pester test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maester Test Results
+          path: test-results/*.xml
+          reporter: java-junit
+          fail-on-error: true
 
       - name: Azure CLI login
         uses: azure/login@v1
