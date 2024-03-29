@@ -10,8 +10,7 @@ on:
     branches: ["main"]
 
 permissions:
-  contents: write
-  id-token: write
+  checks: write
 
 jobs:
   build-validation:
