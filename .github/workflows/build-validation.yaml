@@ -14,9 +14,9 @@ jobs:
       - name: Run Pester tests
         shell: pwsh
         run: |
-          Install-Module Pester -Force -SkipPublisherCheck
-          Install-Module PSFramework -Force -SkipPublisherCheck
-          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck
+          Install-Module Pester -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
