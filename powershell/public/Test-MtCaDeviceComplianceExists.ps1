@@ -23,7 +23,7 @@ Function Test-MtCaDeviceComplianceExists {
   $result = $false
 
   $testDescription = "
-It is recommended to have at least one conditional access policy that enforces the use of a compliant.
+It is recommended to have at least one conditional access policy that enforces the use of a compliant device.
 
 See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device)"
   $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"

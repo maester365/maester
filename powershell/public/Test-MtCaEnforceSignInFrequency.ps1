@@ -22,6 +22,12 @@ Function Test-MtCaEnforceSignInFrequency {
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
+    $testDescription = "
+Microsoft recommends disabling browser persistence for users accessing the tenant from a unmanaged device.
+
+See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)"
+    $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
+
     $result = $false
     foreach ($policy in $policies) {
         # Check if device filter for compliant or hybrid Azure AD joined devices is present
@@ -51,11 +57,17 @@ Function Test-MtCaEnforceSignInFrequency {
         ) {
             $result = $true
             $currentresult = $true
+            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ($result -eq $false) {
+        $testResult = "There was no conditional access policy enforcing sign-in frequency for non-corporate devices."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
     return $result
 }

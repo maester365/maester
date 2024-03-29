@@ -34,8 +34,30 @@ Function Test-MtCaMfaForAdmin {
         "7be44c8a-adaf-4e2a-84d6-ab2649e08a13",
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
-w
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+
+    $testDescription = "
+This test checks if the tenant has at least one conditional access policy requiring MFA for admins.
+The following roles are considered as admin roles:
+
+- Global Administrator
+- Application Administrator
+- Authentication Administrator
+- Billing Administrator
+- Cloud Application Administrator
+- Conditional Access Administrator
+- Exchange Administrator
+- Helpdesk Administrator
+- Password Administrator
+- Privileged Authentication Administrator
+- Privileged Role Administrator
+- Security Administrator
+- SharePoint Administrator
+- User Administrator
+
+See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa)"
+    $testResult = "The following conditional access policies require multi-factor authentication for admins:`n`n"
+
 
     $result = $false
     foreach ($policy in $policies) {
@@ -52,11 +74,17 @@ w
         ) {
             $result = $true
             $currentresult = $true
+            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result -eq $false ) {
+        $testResult = "No conditional access policy requires multi-factor authentication for all admin roles."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
     return $result
 }
