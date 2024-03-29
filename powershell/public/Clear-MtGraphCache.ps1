@@ -11,9 +11,17 @@
     By default all graph responses are cached and re-used for the duration of the session.
 
     Use this function to clear the cache and force a refresh of the data from Microsoft Graph.
+
+.EXAMPLE
+    Clear-MtGraphCache
+
+    This example clears the cache of all Graph API calls.
 #>
 function Clear-MtGraphCache {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]
+    param()
+
+    Write-Verbose -Message "Clearing the results cached from Graph API calls in this session"
 
     $MtGraphCache = @{}
 }

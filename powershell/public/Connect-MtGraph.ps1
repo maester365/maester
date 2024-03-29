@@ -21,8 +21,8 @@ Function Connect-MtGraph {
       [switch] $SendMail,
 
       [switch] $UseDeviceCode
-
    )
 
+   Write-Verbose "Connecting to Microsoft Graph"
    Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode
 }

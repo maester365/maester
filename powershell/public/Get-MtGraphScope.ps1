@@ -40,6 +40,7 @@ Function Get-MtGraphScope {
     )
 
     if ($SendMail) {
+        Write-Verbose -Message "Adding SendMail scope."
         $scopes += 'Mail.Send'
     }
 

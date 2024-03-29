@@ -12,6 +12,7 @@ Function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
   param()
 
+  Write-Verbose -Message "Getting conditional access policies."
   return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta
 
 }

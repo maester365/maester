@@ -193,6 +193,7 @@ Function Invoke-MtMaester {
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {

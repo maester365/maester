@@ -1,4 +1,19 @@
-﻿function Test-MtConditionalAccessWhatIf {
+﻿<#
+.SYNOPSIS
+    Test Conditional Access What If scenario.
+
+.DESCRIPTION
+    This function tests a Conditional Access evaluation with What If for a given scenario.
+
+    The function uses the Microsoft Graph API to evaluate the Conditional Access policies.
+
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
+
+.EXAMPLE
+    TODO
+#>
+function Test-MtConditionalAccessWhatIf {
     [CmdletBinding(DefaultParameterSetName = 'ApplicationBasedCA')]
     [OutputType([object])]
     param (

@@ -67,6 +67,7 @@ Function Invoke-MtGraphRequest {
     begin {
         if ([string]::IsNullOrEmpty($GraphBaseUri)) {
             if ([string]::IsNullOrEmpty($MtGraphBaseUri)) {
+                Write-Verbose -Message "Setting GraphBaseUri to default value from MgContext."
                 $MtGraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
             }
         }

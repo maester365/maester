@@ -133,6 +133,7 @@ Function Send-MtSummaryMail {
         $sendMailUri = "https://graph.microsoft.com/v1.0/users/$UserId/sendMail"
     }
 
+    Write-Verbose -Message "Uri: $sendMailUri"
     # Construct the message body
     Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
 

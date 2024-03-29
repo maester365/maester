@@ -1,6 +1,28 @@
+<#
+.SYNOPSIS
+    Test Conditional Access License Utilization and fail if the utilization is above the limit.
+
+.DESCRIPTION
+    Utilization is validated using the insights provided by Microsoft Graph.
+
+    Learn more:
+    https://techcommunity.microsoft.com/t5/microsoft-entra-blog/introducing-microsoft-entra-license-utilization-insights/ba-p/3796393
+
+.EXAMPLE
+    Test-MtCaLicenseUtilization -License P1
+
+    This example tests the utilization of P1 licenses in the tenant.
+
+    Test-MtCaLicenseUtilization -License P2
+
+    This example tests the utilization of P2 licenses in the tenant.
+#>
 function Test-MtCaLicenseUtilization {
     [CmdletBinding()]
     param (
+        # The type of license to check. Currently supports 'P1' and 'P2'
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("P1", "P2")]
         [string]$License
     )
 
@@ -17,6 +39,10 @@ function Test-MtCaLicenseUtilization {
     $P1FeatureUtilizations = $EIDPremiumLicenseInsight.p1FeatureUtilizations.conditionalAccess.userCount + $EIDPremiumLicenseInsight.p1FeatureUtilizations.conditionalAccessGuestUsers.userCount
     $P2FeatureUtilizations = $EIDPremiumLicenseInsight.p2FeatureUtilizations.riskBasedConditionalAccess.userCount + $EIDPremiumLicenseInsight.p2FeatureUtilizations.riskBasedConditionalAccessGuestUsers.userCount
 
+    Write-Verbose -Message "Total user count: $TotalUserCount & " `
+        "Entitled P1 license count: $entitledP1LicenseCount & " `
+        "Entitled P2 license count: $entitledP2LicenseCount"
+
     if ($License -eq "P1") {
         # Calculate the maximum number of users that can be covered by the P1 license
         $MaxP1UserCount = $entitledP1LicenseCount -ge $TotalUserCount ? $TotalUserCount : $entitledP1LicenseCount
@@ -31,9 +57,6 @@ function Test-MtCaLicenseUtilization {
             EntitledLicenseCount  = $MaxP2UserCount
             TotalLicensesUtilized = $P2FeatureUtilizations
         }
-    } else {
-        Write-Warning "Invalid license type. Please specify either 'P1' or 'P2'"
-        $Result = $false
     }
     Return $Result
 }

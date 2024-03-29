@@ -25,6 +25,7 @@ Function Test-MtCaDeviceComplianceExists {
     if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' `
         -and $policy.state -eq 'enabled' `
     ) {
+      Write-Verbose -Message "Found a conditional access policy requiring device compliance: $($policy.displayname)"
       $result = $true
     }
   }

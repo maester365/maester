@@ -25,5 +25,6 @@ Function Disconnect-MtGraph {
     [CmdletBinding()]
     param()
 
+    Write-Verbose -Message "Disconnecting from Microsoft Graph."
     Disconnect-MgGraph
  }

@@ -53,6 +53,7 @@ Function Test-MtCaDeviceComplianceAdminsExists {
         -and $PolicyIncludesAllRoles `
         -and $policy.conditions.applications.includeApplications -eq "All" `
     ) {
+      Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayname)"
       $result = $true
     }
   }

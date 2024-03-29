@@ -36,7 +36,7 @@ Param (
 	$SkipTest,
 
 	[string[]]
-	$CommandPath = @("$global:testroot\..\functions", "$global:testroot\..\internal\functions"),
+	$CommandPath = @("$global:testroot\..\public", "$global:testroot\..\internal"),
 
 	[string]
 	$ModuleName = "PSFramework",
