@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.51'
+ModuleVersion = '0.0.52'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -69,25 +69,24 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph',
-               'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy',
-               'Get-MtGraphScope', 'Invoke-MtGraphRequest', 'Invoke-MtMaester',
-               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled',
-               'Test-MtCaAllAppsExists',
-               'Test-MtCaApplicationEnforcedRestriction',
-               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
-               'Test-MtCaBlockLegacyOtherAuthentication',
-               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
-               'Test-MtCaDeviceComplianceAdminsExists',
-               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
-               'Test-MtCaEnforceNonPersistentBrowserSession',
-               'Test-MtCaEnforceSignInFrequency',
-               'Test-MtCaExclusionForDirectorySyncAccount',
-               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdminManagement',
-               'Test-MtCaMfaForAdmin', 'Test-MtCaMfaForAllUsers',
-               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
-               'Test-MtCaRequirePasswordChangeForHighUserRisk',
-               'Test-MtCaSecureSecurityInfoRegistration',
+FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph', 
+               'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy', 
+               'Get-MtGraphScope', 'Invoke-MtGraphRequest', 'Invoke-MtMaester', 
+               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled', 
+               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
+               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
+               'Test-MtCaBlockLegacyOtherAuthentication', 
+               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
+               'Test-MtCaDeviceComplianceAdminsExists', 
+               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists', 
+               'Test-MtCaEnforceNonPersistentBrowserSession', 
+               'Test-MtCaEnforceSignInFrequency', 
+               'Test-MtCaExclusionForDirectorySyncAccount', 
+               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 
+               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers', 
+               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 
+               'Test-MtCaRequirePasswordChangeForHighUserRisk', 
+               'Test-MtCaSecureSecurityInfoRegistration', 
                'Test-MtConditionalAccessWhatIf'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
