@@ -64,7 +64,7 @@ Function Invoke-MtMaester {
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]
-        [string] $Path,
+        [string] $Path = "./tests",
 
         # Only run the tests that match this tag(s).
         [string[]] $Tag,
@@ -172,7 +172,7 @@ Function Invoke-MtMaester {
 
 
 "@
-    Write-Output $motd -ForegroundColor Green
+    Write-Host -ForegroundColor Green $motd
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
