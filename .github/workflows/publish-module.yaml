@@ -6,6 +6,7 @@ on:
 permissions:
   contents: read
   checks: write
+  id-token: write
 
 jobs:
   build-validation:
