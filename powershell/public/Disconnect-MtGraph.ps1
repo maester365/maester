@@ -22,9 +22,10 @@
 #>
 
 Function Disconnect-MtGraph {
-    [CmdletBinding()]
-    param()
+   [Alias("Disconnect-Maester", "Disconnect-MtMaester")]
+   [CmdletBinding()]
+   param()
 
-    Write-Verbose -Message "Disconnecting from Microsoft Graph."
-    Disconnect-MgGraph
- }
+   Write-Verbose -Message "Disconnecting from Microsoft Graph."
+   Disconnect-MgGraph
+}

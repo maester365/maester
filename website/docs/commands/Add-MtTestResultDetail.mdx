@@ -1,0 +1,116 @@
+---
+sidebar_class_name: hidden
+description: Add detailed information about a test so that it can be displayed in the test results report.
+id: Add-MtTestResultDetail
+title: Add-MtTestResultDetail
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1
+---
+
+## SYNOPSIS
+
+Add detailed information about a test so that it can be displayed in the test results report.
+
+## SYNTAX
+
+```powershell
+Add-MtTestResultDetail [-Description] <String> [-Result] <String> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function is used to add detailed information about a test so that it can be displayed in the test results report.
+
+All parameters support Markdown format.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Add-MtTestResultDetail -Description 'Test description' -Result 'Test result'
+```
+
+This example adds detailed information about a test with a brief description and the result of the test.
+
+```powershell
+        # Markdown should start from the beginning of the line with no leading spaces
+        $testDescription = "
+It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
+This allows for emergency access to the tenant in case of a misconfiguration or other issues.
+
+See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)"
+    $testResult = "These conditional access policies don't have the emergency access account or group excluded:`n`n"
+    # Check if the emergency access account or group is excluded from all policies and write verbose output
+    $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups } | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
+        $testResult += "  - [$_](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($_.id)?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+        Write-Verbose "Conditional Access policy $_ does not exclude emergency access account or group"
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+```
+
+## PARAMETERS
+
+### -Description
+
+Brief description of what this test is checking.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Result
+
+Detailed information of the test result to provide additional context to the user.
+This can be a summary of the items that caused the test to fail (e.g.
+list of user names, conditional access policies, etc.).
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS

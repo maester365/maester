@@ -28,16 +28,3 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 		Write-Error -Message ("Failed to import function {0}: {1}" -f $script, $_)
 	}
 }
-
-# Export public functions and aliases
-New-Alias -Name 'Invoke-Maester' -Value 'Invoke-MtMaester' -Force
-New-Alias -Name 'Connect-Maester' -Value 'Connect-MtGraph' -Force
-New-Alias -Name 'Connect-MtMaester' -Value 'Connect-MtGraph' -Force
-New-Alias -Name 'Disconnect-Maester' -Value 'Disconnect-MtGraph' -Force
-New-Alias -Name 'Disconnect-MtMaester' -Value 'Disconnect-MtGraph' -Force
-
-Export-ModuleMember -Function 'Invoke-MtMaester' -Alias 'Invoke-Maester'
-Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-Maester'
-Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-MtMaester'
-Export-ModuleMember -Function 'Disconnect-MtGraph' -Alias 'Disconnect-Maester'
-Export-ModuleMember -Function 'Disconnect-MtGraph' -Alias 'Disconnect-MtMaester'

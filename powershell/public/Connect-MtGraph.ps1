@@ -15,6 +15,7 @@
 #>
 
 Function Connect-MtGraph {
+   [Alias("Connect-Maester", "Connect-MtMaester")]
    [CmdletBinding()]
    param(
       # If specified, the cmdlet will include the scope to send email (Mail.Send).

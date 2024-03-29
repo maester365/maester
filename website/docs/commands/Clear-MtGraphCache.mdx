@@ -1,0 +1,46 @@
+---
+sidebar_class_name: hidden
+description: Resets the local cache of Graph API calls.
+id: Clear-MtGraphCache
+title: Clear-MtGraphCache
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Clear-MtGraphCache.ps1
+---
+
+## SYNOPSIS
+
+Resets the local cache of Graph API calls.
+Use this if you need to force a refresh of the cache in the current session.
+
+## SYNTAX
+
+```powershell
+Clear-MtGraphCache
+```
+
+## DESCRIPTION
+
+By default all graph responses are cached and re-used for the duration of the session.
+
+Use this function to clear the cache and force a refresh of the data from Microsoft Graph.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Clear-MtGraphCache
+```
+
+This example clears the cache of all Graph API calls.
+
+## PARAMETERS
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
