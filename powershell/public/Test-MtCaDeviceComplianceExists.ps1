@@ -41,7 +41,6 @@ See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - 
   if ($result -eq $false) {
     $testResult = "There was no conditional access policy requiring device compliance."
   }
-
   Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
   return $result
