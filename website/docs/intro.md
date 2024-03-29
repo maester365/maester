@@ -3,11 +3,9 @@ sidebar_position: 1
 title: Introduction
 ---
 
-# Introduction
+# Quick Start
 
-Start testing your Microsoft 365 security configuration **in less than 3 minutes**.
-
-## Getting Started
+## What is Maester?
 
 To get started
 

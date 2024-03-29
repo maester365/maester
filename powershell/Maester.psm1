@@ -33,7 +33,11 @@ foreach ($script in ($privateScripts + $publicScripts)) {
 New-Alias -Name 'Invoke-Maester' -Value 'Invoke-MtMaester'
 New-Alias -Name 'Connect-Maester' -Value 'Connect-MtGraph'
 New-Alias -Name 'Connect-MtMaester' -Value 'Connect-MtGraph'
+New-Alias -Name 'Disconnect-Maester' -Value 'Disconnect-MtGraph'
+New-Alias -Name 'Disconnect-MtMaester' -Value 'Disconnect-MtGraph'
 
 Export-ModuleMember -Function 'Invoke-MtMaester' -Alias 'Invoke-Maester'
 Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-Maester'
 Export-ModuleMember -Function 'Connect-MtGraph' -Alias 'Connect-MtMaester'
+Export-ModuleMember -Function 'Disconnect-MtGraph' -Alias 'Disconnect-Maester'
+Export-ModuleMember -Function 'Disconnect-MtGraph' -Alias 'Disconnect-MtMaester'
