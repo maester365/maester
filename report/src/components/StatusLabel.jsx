@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Badge } from "@tremor/react";
-import { CheckCircleIcon, ExclamationIcon, ArchiveIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon } from "@heroicons/react/24/solid";
 
 export default function StatusLabel(props) {
 
@@ -13,12 +13,12 @@ export default function StatusLabel(props) {
                 </Badge>
             }
             {props.Result === "Failed" &&
-                <Badge color="rose" size="xs" icon={ExclamationIcon}>
+                <Badge color="rose" size="xs" icon={ExclamationTriangleIcon}>
                     {props.Result}
                 </Badge>
             }
             {props.Result != "Passed" && props.Result != "Failed" &&
-                <Badge color="gray" size="xs" icon={ArchiveIcon}>
+                <Badge color="gray" size="xs" icon={ArchiveBoxIcon}>
                     {props.Result}
                 </Badge>
             }

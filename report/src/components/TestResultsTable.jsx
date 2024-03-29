@@ -3,6 +3,7 @@ import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, Tab
 import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
 
+
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed']);
   const [selectedBlock, setSelectedBlock] = useState([]);
@@ -49,7 +50,6 @@ export default function TestResultsTable(props) {
             <TableHeaderCell>Test</TableHeaderCell>
             <TableHeaderCell className="text-center">Status</TableHeaderCell>
             <TableHeaderCell className="text-center">Info</TableHeaderCell>
-
           </TableRow>
         </TableHead>
 
@@ -59,11 +59,12 @@ export default function TestResultsTable(props) {
             .sort((a, b) => a.Name > b.Name ? 1 : -1)
             .map((item) => (
               <TableRow>
-                <TableCell className="whitespace-normal">{item.Name}</TableCell>
+                <TableCell className="whitespace-normal">
+                  <ResultInfoDialog Title={true} Item={item} /></TableCell>
                 <TableCell className="text-center">
                   <StatusLabel Result={item.Result} />
                 </TableCell>
-                <TableCell className="text-center"><ResultInfoDialog Item={item} /></TableCell>
+                <TableCell className="text-center"><ResultInfoDialog Button={true} Item={item} /></TableCell>
               </TableRow>
             ))}
         </TableBody>

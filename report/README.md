@@ -42,6 +42,9 @@ npm run build
 
 - This will generate the report.html file in the /dist folder.
 - Copy it to the /powershell/assets folder and rename it to ReportTemplate.html (overwrite the existing file).
+```powershell
+Copy-Item ./dist/index.html ../powershell/assets/ReportTemplate.html -Force
+```
 - Now PowerShell will package and use the new report template.
 
 ### Updating the sample data in the report

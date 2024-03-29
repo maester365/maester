@@ -14,7 +14,7 @@ function Test-MtContext {
 
     $validContext = $true
     if (!(Get-MgContext)) {
-        $message = "Not connected to Microsoft Graph. Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
+        $message = "Not connected to Microsoft Graph. Please use 'Connect-Maester' or 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
         $validContext = $false
     } else {
         $requiredScopes = Get-MtGraphScope -SendMail:$SendMail
@@ -25,7 +25,7 @@ function Test-MtContext {
             $message = "These Graph permissions are missing in the current connection => ($($missingScopes))."
             $authType = (Get-MgContext).AuthType
             if ($authType -eq  'Delegated') {
-                $message += " Please use 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
+                $message += " Please use 'Connect-Maester' or 'Connect-MtGraph'. For more information, use 'Get-Help Connect-MtGraph'."
             } else {
                 $clientId = (Get-MgContext).ClientId
                 $urlTemplate = "https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/$clientId/isMSAApp~/false"

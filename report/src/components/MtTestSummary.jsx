@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
-import { CheckCircleIcon, ExclamationIcon, ArchiveIcon } from "@heroicons/react/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon } from "@heroicons/react/24/solid";
 
 export default function MtTestSummary(props) {
 
@@ -47,7 +47,7 @@ export default function MtTestSummary(props) {
             <Card>
                 <Flex alignItems="start">
                     <Text>Failed</Text>
-                    <Icon icon={ExclamationIcon} color="rose" size="md" className="ml-2 w-4 h-4" />
+                    <Icon icon={ExclamationTriangleIcon} color="rose" size="md" className="ml-2 w-4 h-4" />
                 </Flex>
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.FailedCount}</Metric>
@@ -57,7 +57,7 @@ export default function MtTestSummary(props) {
             <Card>
                 <Flex alignItems="start">
                     <Text>Not tested</Text>
-                    <Icon icon={ArchiveIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
+                    <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
                 </Flex>
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.SkippedCount}</Metric>

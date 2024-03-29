@@ -44663,14 +44663,14 @@ const c$c = s$o("DateRangePicker"), f$3 = (t3, e4, r2, o3) => {
       if (o3)
         return `${format(t3, o3)} - ${format(e4, o3)}`;
       const r3 = { month: "short", day: "numeric" };
-      return `${t3.toLocaleDateString(n2, r3)} -
+      return `${t3.toLocaleDateString(n2, r3)} - 
                     ${e4.getDate()}, ${e4.getFullYear()}`;
     }
     {
       if (o3)
         return `${format(t3, o3)} - ${format(e4, o3)}`;
       const r3 = { year: "numeric", month: "short", day: "numeric" };
-      return `${t3.toLocaleDateString(n2, r3)} -
+      return `${t3.toLocaleDateString(n2, r3)} - 
                     ${e4.toLocaleDateString(n2, r3)}`;
     }
   }
@@ -45213,156 +45213,236 @@ const p$1 = React.forwardRef((r2, o3) => {
   }));
 });
 p$1.displayName = "Tracker";
-function DotsHorizontalIcon(props, svgRef) {
+function ArrowTopRightOnSquareIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
     fill: "none",
     viewBox: "0 0 24 24",
-    strokeWidth: 2,
+    strokeWidth: 1.5,
     stroke: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     strokeLinecap: "round",
     strokeLinejoin: "round",
-    d: "M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+    d: "M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
   }));
 }
-const ForwardRef$9 = reactExports.forwardRef(DotsHorizontalIcon);
-const DotsHorizontalIcon$1 = ForwardRef$9;
-function ExternalLinkIcon(props, svgRef) {
+const ForwardRef$9 = reactExports.forwardRef(ArrowTopRightOnSquareIcon);
+const ArrowTopRightOnSquareIcon$1 = ForwardRef$9;
+function WindowIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
     fill: "none",
     viewBox: "0 0 24 24",
-    strokeWidth: 2,
+    strokeWidth: 1.5,
     stroke: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     strokeLinecap: "round",
     strokeLinejoin: "round",
-    d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+    d: "M3 8.25V18a2.25 2.25 0 0 0 2.25 2.25h13.5A2.25 2.25 0 0 0 21 18V8.25m-18 0V6a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 6v2.25m-18 0h18M5.25 6h.008v.008H5.25V6ZM7.5 6h.008v.008H7.5V6Zm2.25 0h.008v.008H9.75V6Z"
   }));
 }
-const ForwardRef$8 = reactExports.forwardRef(ExternalLinkIcon);
-const ExternalLinkIcon$1 = ForwardRef$8;
-function ArchiveIcon(props, svgRef) {
+const ForwardRef$8 = reactExports.forwardRef(WindowIcon);
+const WindowIcon$1 = ForwardRef$8;
+function ArchiveBoxIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
-    d: "M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
+    d: "M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z"
   }), /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z",
+    d: "m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087Zm6.163 3.75A.75.75 0 0 1 10 12h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$7 = reactExports.forwardRef(ArchiveIcon);
-const ArchiveIcon$1 = ForwardRef$7;
-function CalendarIcon(props, svgRef) {
+const ForwardRef$7 = reactExports.forwardRef(ArchiveBoxIcon);
+const ArchiveBoxIcon$1 = ForwardRef$7;
+function BuildingOfficeIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z",
+    d: "M4.5 2.25a.75.75 0 0 0 0 1.5v16.5h-.75a.75.75 0 0 0 0 1.5h16.5a.75.75 0 0 0 0-1.5h-.75V3.75a.75.75 0 0 0 0-1.5h-15ZM9 6a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm-.75 3.75A.75.75 0 0 1 9 9h1.5a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM9 12a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H9Zm3.75-5.25A.75.75 0 0 1 13.5 6H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM13.5 9a.75.75 0 0 0 0 1.5H15A.75.75 0 0 0 15 9h-1.5Zm-.75 3.75a.75.75 0 0 1 .75-.75H15a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9 19.5v-2.25a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 9 19.5Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$6 = reactExports.forwardRef(CalendarIcon);
-const CalendarIcon$1 = ForwardRef$6;
-function CheckCircleIcon(props, svgRef) {
+const ForwardRef$6 = reactExports.forwardRef(BuildingOfficeIcon);
+const BuildingOfficeIcon$1 = ForwardRef$6;
+function CalendarIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z",
+    d: "M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$5 = reactExports.forwardRef(CheckCircleIcon);
-const CheckCircleIcon$1 = ForwardRef$5;
-function DesktopComputerIcon(props, svgRef) {
+const ForwardRef$5 = reactExports.forwardRef(CalendarIcon);
+const CalendarIcon$1 = ForwardRef$5;
+function CheckCircleIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z",
+    d: "M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$4 = reactExports.forwardRef(DesktopComputerIcon);
-const DesktopComputerIcon$1 = ForwardRef$4;
-function ExclamationIcon(props, svgRef) {
+const ForwardRef$4 = reactExports.forwardRef(CheckCircleIcon);
+const CheckCircleIcon$1 = ForwardRef$4;
+function ComputerDesktopIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z",
+    d: "M2.25 5.25a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3V15a3 3 0 0 1-3 3h-3v.257c0 .597.237 1.17.659 1.591l.621.622a.75.75 0 0 1-.53 1.28h-9a.75.75 0 0 1-.53-1.28l.621-.622a2.25 2.25 0 0 0 .659-1.59V18h-3a3 3 0 0 1-3-3V5.25Zm1.5 0v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$3 = reactExports.forwardRef(ExclamationIcon);
-const ExclamationIcon$1 = ForwardRef$3;
-function MoonIcon(props, svgRef) {
+const ForwardRef$3 = reactExports.forwardRef(ComputerDesktopIcon);
+const ComputerDesktopIcon$1 = ForwardRef$3;
+function ExclamationTriangleIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
-    d: "M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-  }));
-}
-const ForwardRef$2 = reactExports.forwardRef(MoonIcon);
-const MoonIcon$1 = ForwardRef$2;
-function OfficeBuildingIcon(props, svgRef) {
-  return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
-    xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
-    fill: "currentColor",
-    "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z",
+    d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z",
     clipRule: "evenodd"
   }));
 }
-const ForwardRef$1 = reactExports.forwardRef(OfficeBuildingIcon);
-const OfficeBuildingIcon$1 = ForwardRef$1;
-function SunIcon(props, svgRef) {
+const ForwardRef$2 = reactExports.forwardRef(ExclamationTriangleIcon);
+const ExclamationTriangleIcon$1 = ForwardRef$2;
+function MoonIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
   return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
     xmlns: "http://www.w3.org/2000/svg",
-    viewBox: "0 0 20 20",
+    viewBox: "0 0 24 24",
     fill: "currentColor",
     "aria-hidden": "true",
-    ref: svgRef
-  }, props), /* @__PURE__ */ reactExports.createElement("path", {
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
     fillRule: "evenodd",
-    d: "M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z",
+    d: "M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z",
     clipRule: "evenodd"
+  }));
+}
+const ForwardRef$1 = reactExports.forwardRef(MoonIcon);
+const MoonIcon$1 = ForwardRef$1;
+function SunIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
+  return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
+    d: "M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z"
   }));
 }
 const ForwardRef = reactExports.forwardRef(SunIcon);
@@ -45370,8 +45450,8 @@ const SunIcon$1 = ForwardRef;
 function StatusLabel(props) {
   return /* @__PURE__ */ jsxRuntimeExports$1.jsxs(jsxRuntimeExports$1.Fragment, { children: [
     props.Result === "Passed" && /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { color: "emerald", size: "xs", icon: CheckCircleIcon$1, children: props.Result }),
-    props.Result === "Failed" && /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { color: "rose", size: "xs", icon: ExclamationIcon$1, children: props.Result }),
-    props.Result != "Passed" && props.Result != "Failed" && /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { color: "gray", size: "xs", icon: ArchiveIcon$1, children: props.Result })
+    props.Result === "Failed" && /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { color: "rose", size: "xs", icon: ExclamationTriangleIcon$1, children: props.Result }),
+    props.Result != "Passed" && props.Result != "Failed" && /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { color: "gray", size: "xs", icon: ArchiveBoxIcon$1, children: props.Result })
   ] });
 }
 function ok$1() {
@@ -57832,20 +57912,21 @@ function ResultInfoDialog(props) {
     window.open(url, "_blank", "noreferrer");
   };
   return /* @__PURE__ */ jsxRuntimeExports$1.jsxs(jsxRuntimeExports$1.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(h$9, { size: "xs", variant: "secondary", color: "gray", tooltip: "View details", icon: DotsHorizontalIcon$1, onClick: () => setIsOpen(true) }) }),
+    props.Title && /* @__PURE__ */ jsxRuntimeExports$1.jsx("button", { onClick: () => setIsOpen(true), class: "text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx("span", { className: "truncate whitespace-normal tremor-Button-text text-tremor-default", children: props.Item.Name }) }),
+    props.Button && /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(h$9, { size: "xs", variant: "secondary", color: "gray", tooltip: "View details", icon: WindowIcon$1, onClick: () => setIsOpen(true) }) }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(l$5, { open: isOpen, onClose: (val) => setIsOpen(val), static: true, children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$5, { className: "max-w-4xl", children: /* @__PURE__ */ jsxRuntimeExports$1.jsxs("div", { className: "grid grid-cols-1", children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(StatusLabel, { Result: props.Item.Result }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: props.Item.Name }),
-      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(h$9, { icon: ExternalLinkIcon$1, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: "Learn more" }) }),
+      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(h$9, { icon: ArrowTopRightOnSquareIcon$1, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: "Learn more" }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(o$6, {}),
       props.Item.ResultDetail && /* @__PURE__ */ jsxRuntimeExports$1.jsxs(jsxRuntimeExports$1.Fragment, { children: [
         /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { children: [
           /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: "Overview" }),
-          /* @__PURE__ */ jsxRuntimeExports$1.jsx(Markdown, { className: "prose max-w-fit", remarkPlugins: [remarkGfm], children: props.Item.ResultDetail.TestDescription })
+          /* @__PURE__ */ jsxRuntimeExports$1.jsx(Markdown, { className: "prose max-w-fit dark:prose-invert", remarkPlugins: [remarkGfm], children: props.Item.ResultDetail.TestDescription })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { className: "mt-4 break-words", children: [
           /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: "Test Results" }),
-          /* @__PURE__ */ jsxRuntimeExports$1.jsx(Markdown, { className: "prose max-w-fit", remarkPlugins: [remarkGfm], children: props.Item.ResultDetail.TestResult })
+          /* @__PURE__ */ jsxRuntimeExports$1.jsx(Markdown, { className: "prose max-w-fit dark:prose-invert", remarkPlugins: [remarkGfm], children: props.Item.ResultDetail.TestResult })
         ] })
       ] }),
       !props.Item.ResultDetail && /* @__PURE__ */ jsxRuntimeExports$1.jsxs(jsxRuntimeExports$1.Fragment, { children: [
@@ -57853,10 +57934,9 @@ function ResultInfoDialog(props) {
           /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: "Test" }),
           /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { className: "break-words", children: props.Item.ScriptBlock })
         ] }),
-        props.Item.ErrorRecord && props.Item.ErrorRecord.length !== 0 && /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { className: "mt-4 break-words", children: [
+        props.Item.ErrorRecord && /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { className: "mt-4 break-words", children: [
           /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: "Reason for failure" }),
-          /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { children: props.Item.ErrorRecord }),
-          props.Item.ResultDetail && /* @__PURE__ */ jsxRuntimeExports$1.jsx(Markdown, { children: props.Item.ResultDetail.TestResult })
+          /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { children: props.Item.ErrorRecord })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { className: "mt-4", children: [
@@ -57912,9 +57992,9 @@ function TestResultsTable(props) {
         /* @__PURE__ */ jsxRuntimeExports$1.jsx(o$1, { className: "text-center", children: "Info" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$3, { children: testResults2.Tests.filter((item) => isStatusSelected(item)).sort((a4, b3) => a4.Name > b3.Name ? 1 : -1).map((item) => /* @__PURE__ */ jsxRuntimeExports$1.jsxs(m$5, { children: [
-        /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$7, { className: "whitespace-normal", children: item.Name }),
+        /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$7, { className: "whitespace-normal", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(ResultInfoDialog, { Title: true, Item: item }) }),
         /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(StatusLabel, { Result: item.Result }) }),
-        /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(ResultInfoDialog, { Item: item }) })
+        /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(ResultInfoDialog, { Button: true, Item: item }) })
       ] })) })
     ] })
   ] });
@@ -58534,7 +58614,7 @@ function ThemeSwitch() {
       setTheme("light");
   }
   return /* @__PURE__ */ jsxRuntimeExports$1.jsx(jsxRuntimeExports$1.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$9, { index: selectedIndex, onIndexChange: handleThemeChange, children: /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$8, { variant: "solid", children: [
-    /* @__PURE__ */ jsxRuntimeExports$1.jsx(u$3, { value: "system", icon: DesktopComputerIcon$1 }),
+    /* @__PURE__ */ jsxRuntimeExports$1.jsx(u$3, { value: "system", icon: ComputerDesktopIcon$1 }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(u$3, { value: "dark", icon: MoonIcon$1 }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(u$3, { value: "light", icon: SunIcon$1 })
   ] }) }) });
@@ -58622,7 +58702,7 @@ function MtTestSummary(props) {
     /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { alignItems: "start", children: [
         /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { children: "Failed" }),
-        /* @__PURE__ */ jsxRuntimeExports$1.jsx(g$7, { icon: ExclamationIcon$1, color: "rose", size: "md", className: "ml-2 w-4 h-4" })
+        /* @__PURE__ */ jsxRuntimeExports$1.jsx(g$7, { icon: ExclamationTriangleIcon$1, color: "rose", size: "md", className: "ml-2 w-4 h-4" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(a$m, { justifyContent: "start", alignItems: "baseline", className: "truncate space-x-3", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$2, { children: props.FailedCount }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$1, { value: getPercentage(props.FailedCount), color: "rose", className: "mt-3", showAnimation: true })
@@ -58630,7 +58710,7 @@ function MtTestSummary(props) {
     /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { alignItems: "start", children: [
         /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { children: "Not tested" }),
-        /* @__PURE__ */ jsxRuntimeExports$1.jsx(g$7, { icon: ArchiveIcon$1, size: "md", color: "gray", className: "ml-2 w-4 h-4" })
+        /* @__PURE__ */ jsxRuntimeExports$1.jsx(g$7, { icon: ArchiveBoxIcon$1, size: "md", color: "gray", className: "ml-2 w-4 h-4" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(a$m, { justifyContent: "start", alignItems: "baseline", className: "truncate space-x-3", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$2, { children: props.SkippedCount }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$1, { value: getPercentage(props.SkippedCount), color: "gray", className: "mt-3", showAnimation: true })
@@ -58657,15 +58737,785 @@ function MtBlocksArea(props) {
 }
 const testResults = {
   "Result": "Failed",
-  "FailedCount": 14,
-  "PassedCount": 5,
-  "SkippedCount": 0,
-  "TotalCount": 19,
-  "ExecutedAt": "2024-03-23T14:25:29.432648+11:00",
+  "FailedCount": 33,
+  "PassedCount": 30,
+  "SkippedCount": 1,
+  "TotalCount": 64,
+  "ExecutedAt": "2024-03-30T01:09:47.304111+11:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora",
   "Account": "merill@elapora.com",
   "Tests": [
+    {
+      "Name": "EIDSCA.AF01: Authentication Method - FIDO2 security key - State.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.state",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
+        $result.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')/state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - FIDO2 security key",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AF02: Authentication Method - FIDO2 security key - Allow self-service set up.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.isSelfServiceRegistrationAllowed",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
+        $result.isSelfServiceRegistrationAllowed | Should -Be 'true' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')/isSelfServiceRegistrationAllowed should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - FIDO2 security key",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AF03: Authentication Method - FIDO2 security key - Enforce attestation.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.isAttestationEnforced",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
+        $result.isAttestationEnforced | Should -Be 'true' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')/isAttestationEnforced should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - FIDO2 security key",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AF06: Authentication Method - FIDO2 security key - Restrict specific keys.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.keyRestrictions.enforcementType",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
+        $result.keyRestrictions.enforcementType | Should -Be 'block' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')/keyRestrictions.enforcementType should be 'block'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - FIDO2 security key",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AG01: Authentication Method - General Settings - Manage migration.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.policyMigrationState",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
+        $result.policyMigrationState | Should -Be 'migrationComplete' -Because "policies/authenticationMethodsPolicy/policyMigrationState should be 'migrationComplete'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because policies/authenticationMethodsPolicy/policyMigrationState should be 'migrationComplete', but they were different.\nExpected length: 17\nActual length:   19\nStrings differ at index 9.\nExpected: 'migrationComplete'\nBut was:  'migrationInProgress'\n           ---------^"
+      ],
+      "Block": "Authentication Method - General Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AG02: Authentication Method - General Settings - Report suspicious activity - State.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsState",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
+        $result.reportSuspiciousActivitySettings.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/reportSuspiciousActivitySettings.state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because policies/authenticationMethodsPolicy/reportSuspiciousActivitySettings.state should be 'enabled', but they were different.\nString lengths are both 7.\nStrings differ at index 0.\nExpected: 'enabled'\nBut was:  'default'\n           ^"
+      ],
+      "Block": "Authentication Method - General Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AG03: Authentication Method - General Settings - Report suspicious activity - Included users/groups.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.reportSuspiciousActivitySettingsIncluded",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
+        $result.reportSuspiciousActivitySettings.includeTarget.id | Should -Be 'all_users' -Because "policies/authenticationMethodsPolicy/reportSuspiciousActivitySettings.includeTarget.id should be 'all_users'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - General Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM01: Authentication Method - Microsoft Authenticator - State.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.state",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM02: Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.isSoftwareOathEnabled",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM03: Authentication Method - Microsoft Authenticator - Require number matching for push notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredState",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.numberMatchingRequiredState.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.numberMatchingRequiredState.state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM04: Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.numberMatchingRequiredStateIncluded",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.numberMatchingRequiredState.includeTarget.id | Should -Be 'all_users' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.numberMatchingRequiredState.includeTarget.id should be 'all_users'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM06: Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredState",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.displayAppInformationRequiredState.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.displayAppInformationRequiredState.state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM07: Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.displayAppInformationRequiredStateIncluded",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.displayAppInformationRequiredState.includeTarget.id | Should -Be 'all_users' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.displayAppInformationRequiredState.includeTarget.id should be 'all_users'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM09: Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredState",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.displayLocationInformationRequiredState.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.displayLocationInformationRequiredState.state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AM10: Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.displayLocationInformationRequiredStateIncluded",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
+        $result.featureSettings.displayLocationInformationRequiredState.includeTarget.id | Should -Be 'all_users' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')/featureSettings.displayLocationInformationRequiredState.includeTarget.id should be 'all_users'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Microsoft Authenticator",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowedToUseSSPR",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.allowedToUseSSPR | Should -Be 'true' -Because "policies/authorizationPolicy/allowedToUseSSPR should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP04: Default Authorization Settings - Guest invite restrictions.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowInvitesFrom",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.allowInvitesFrom | Should -Be 'adminsAndGuestInviters' -Because "policies/authorizationPolicy/allowInvitesFrom should be 'adminsAndGuestInviters'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because policies/authorizationPolicy/allowInvitesFrom should be 'adminsAndGuestInviters', but they were different.\nExpected length: 22\nActual length:   8\nStrings differ at index 0.\nExpected: 'adminsAndGuestInviters'\nBut was:  'everyone'\n           ^"
+      ],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP05: Default Authorization Settings - Sign-up for email based subscription.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowedToSignUpEmailBasedSubscriptions",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.allowedToSignUpEmailBasedSubscriptions | Should -Be 'false' -Because "policies/authorizationPolicy/allowedToSignUpEmailBasedSubscriptions should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'false', because policies/authorizationPolicy/allowedToSignUpEmailBasedSubscriptions should be 'false', but got $true."
+      ],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP06: Default Authorization Settings - User can joint the tenant by email validation.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.allowEmailVerifiedUsersToJoinOrganization | Should -Be 'false' -Because "policies/authorizationPolicy/allowEmailVerifiedUsersToJoinOrganization should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'false', because policies/authorizationPolicy/allowEmailVerifiedUsersToJoinOrganization should be 'false', but got $true."
+      ],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP07: Default Authorization Settings - Guest user access.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.guestUserRoleId",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.guestUserRoleId | Should -Be '2af84b1e-32c8-42b7-82bc-daa82404023b' -Because "policies/authorizationPolicy/guestUserRoleId should be '2af84b1e-32c8-42b7-82bc-daa82404023b'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because policies/authorizationPolicy/guestUserRoleId should be '2af84b1e-32c8-42b7-82bc-daa82404023b', but they were different.\nString lengths are both 36.\nStrings differ at index 0.\nExpected: '2af84b1e-32c8-42b7-82bc-daa82404023b'\nBut was:  '10dae51f-b6af-4016-8d66-8c2a99b929b3'\n           ^"
+      ],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP08: Default Authorization Settings - User consent policy assigned for applications.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] | Should -Be 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -Because "policies/authorizationPolicy/permissionGrantPolicyIdsAssignedToDefaultUserRole[2] should be 'ManagePermissionGrantsForSelf.microsoft-user-default-low'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because policies/authorizationPolicy/permissionGrantPolicyIdsAssignedToDefaultUserRole[2] should be 'ManagePermissionGrantsForSelf.microsoft-user-default-low', but they were different.\nExpected length: 56\nActual length:   89\nStrings differ at index 25.\nExpected: 'ManagePermissionGrantsForSelf.microsoft-user-default-low'\nBut was:  'ManagePermissionGrantsForOwnedResource.microsoft-dynamically-managed-permissions-for-chat'\n           -------------------------^"
+      ],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP09: Default Authorization Settings - Risk-based step-up consent.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowUserConsentForRiskyApps",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.allowUserConsentForRiskyApps | Should -Be 'false' -Because "policies/authorizationPolicy/allowUserConsentForRiskyApps should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP10: Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowedToCreateApps",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.defaultUserRolePermissions.allowedToCreateApps | Should -Be 'false' -Because "policies/authorizationPolicy/defaultUserRolePermissions.allowedToCreateApps should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AP14: Default Authorization Settings - Default User Role Permissions - Allowed to read other users.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authorizationPolicy.allowedToReadOtherUsers",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
+        $result.defaultUserRolePermissions.allowedToReadOtherUsers | Should -Be 'true' -Because "policies/authorizationPolicy/defaultUserRolePermissions.allowedToReadOtherUsers should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Authorization Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AT01: Authentication Method - Temporary Access Pass - State.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.state",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
+        $result.state | Should -Be 'enabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')/state should be 'enabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Temporary Access Pass",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AT02: Authentication Method - Temporary Access Pass - One-time.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.isUsableOnce",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
+        $result.isUsableOnce | Should -Be 'false' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')/isUsableOnce should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Temporary Access Pass",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.AV01: Authentication Method - Voice call - State.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.authenticationMethodsPolicy.state",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
+        $result.state | Should -Be 'disabled' -Because "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')/state should be 'disabled'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Authentication Method - Voice call",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CP01: Default Settings - Consent Policy Settings - Group owner consent for apps accessing data.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.EnableGroupSpecificConsent",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value | Should -Be 'False' -Because "settings/values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value should be 'False'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because settings/values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value should be 'False', but they were different.\nExpected length: 5\nActual length:   0\nStrings differ at index 0.\nExpected: 'False'\nBut was:  ''\n           ^"
+      ],
+      "Block": "Default Settings - Consent Policy Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.BlockUserConsentForRiskyApps",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value | Should -Be 'true' -Because "settings/values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Settings - Consent Policy Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to???.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.EnableAdminConsentRequests",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value | Should -Be 'true' -Because "settings/values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because settings/values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value should be 'true', but they were different.\nExpected length: 4\nActual length:   5\nStrings differ at index 0.\nExpected: 'true'\nBut was:  'false'\n           ^"
+      ],
+      "Block": "Default Settings - Consent Policy Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CR01: Consent Framework - Admin Consent Request - Users can request admin consent to apps they are unable to consent to.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.servicePrincipalCreationPolicies.isEnabled",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
+        $result.isEnabled | Should -Be 'true' -Because "policies/adminConsentRequestPolicy/isEnabled should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'true', because policies/adminConsentRequestPolicy/isEnabled should be 'true', but got $false."
+      ],
+      "Block": "Consent Framework - Admin Consent Request",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests???.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.servicePrincipalCreationPolicies.notifyReviewers",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
+        $result.notifyReviewers | Should -Be 'true' -Because "policies/adminConsentRequestPolicy/notifyReviewers should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'true', because policies/adminConsentRequestPolicy/notifyReviewers should be 'true', but got $false."
+      ],
+      "Block": "Consent Framework - Admin Consent Request",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire???.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.servicePrincipalCreationPolicies.notifyReviewers",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
+        $result.notifyReviewers | Should -Be 'true' -Because "policies/adminConsentRequestPolicy/notifyReviewers should be 'true'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'true', because policies/adminConsentRequestPolicy/notifyReviewers should be 'true', but got $false."
+      ],
+      "Block": "Consent Framework - Admin Consent Request",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days)???.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.servicePrincipalCreationPolicies.requestDurationInDays",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
+        $result.requestDurationInDays | Should -Be '30' -Because "policies/adminConsentRequestPolicy/requestDurationInDays should be '30'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected '30', because policies/adminConsentRequestPolicy/requestDurationInDays should be '30', but got 0."
+      ],
+      "Block": "Consent Framework - Admin Consent Request",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.BannedPasswordCheckOnPremisesMode",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value | Should -Be 'Enforce' -Because "settings/values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value should be 'Enforce'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected strings to be the same, because settings/values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value should be 'Enforce', but they were different.\nExpected length: 7\nActual length:   5\nStrings differ at index 0.\nExpected: 'Enforce'\nBut was:  'Audit'\n           ^"
+      ],
+      "Block": "Default Settings - Password Rule Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.PR02: Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.EnableBannedPasswordCheckOnPremises",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value | Should -Be 'True' -Because "settings/values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value should be 'True'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Settings - Password Rule Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.EnableBannedPasswordCheck",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value | Should -Be 'True' -Because "settings/values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value should be 'True'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Settings - Password Rule Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.LockoutDurationInSeconds",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value | Should -Be '60' -Because "settings/values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value should be '60'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Settings - Password Rule Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.LockoutThreshold",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Passed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value | Should -Be '10' -Because "settings/values | where-object name -eq 'LockoutThreshold' | select-object -expand value should be '10'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Default Settings - Password Rule Settings",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.ST08: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.AllowGuestsToBeGroupOwner",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value | Should -Be 'false' -Because "settings/values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value should be 'false'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'false', because settings/values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value should be 'false', but got $null."
+      ],
+      "Block": "Default Settings - Classification and M365 Groups",
+      "ResultDetail": null
+    },
+    {
+      "Name": "EIDSCA.ST09: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content.",
+      "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.settings.AllowGuestsToAccessGroups",
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": `
+        $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+        $result.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value | Should -Be 'True' -Because "settings/values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value should be 'True'"
+    `,
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+      "ErrorRecord": [
+        "Expected 'True', because settings/values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value should be 'True', but got $null."
+      ],
+      "Block": "Default Settings - Classification and M365 Groups",
+      "ResultDetail": null
+    },
     {
       "Name": "MT.1001: At least one Conditional Access policy is configured with device compliance.",
       "HelpUrl": "https://maester.dev/docs/tests/MT.1001",
@@ -58679,6 +59529,23 @@ const testResults = {
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
       "ErrorRecord": [],
       "Block": "Conditional Access Baseline Policies",
+      "ResultDetail": null
+    },
+    {
+      "Name": "MT.1002: App management restrictions on applications and service principals is configured and enabled.",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1002",
+      "Tag": [
+        "App",
+        "Security",
+        "All"
+      ],
+      "Result": "Failed",
+      "ScriptBlock": '\n        Test-MtAppManagementPolicyEnabled | Should -Be $true -Because "an app policy for workload identities should be defined to enforce strong credentials instead of passwords and a maximum expiry period (e.g. credential should be renewed every six months)"\n    ',
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-AppManagementPolicies.Tests.ps1",
+      "ErrorRecord": [
+        "Expected $true, because an app policy for workload identities should be defined to enforce strong credentials instead of passwords and a maximum expiry period (e.g. credential should be renewed every six months), but got $false."
+      ],
+      "Block": "App Management Policies",
       "ResultDetail": null
     },
     {
@@ -58727,8 +59594,8 @@ const testResults = {
       ],
       "Block": "Conditional Access Baseline Policies",
       "ResultDetail": {
-        "TestResult": "These conditional access policies don't have the emergency access account or group excluded:\n\n- ACSC - L2\n- AppProtect\n- Block Device Code\n- Device compliance #1\n- Device compliancy\n- Force Password Change\n- Guest 10 hr MFA\n- Guest-Meferna-Woodgrove-PhishingResistantAuthStrength\n- j-test admin\n- MFA - All users\n- MFA CA Policy\n- nestedgroup count\n- No persistence\n- O365\n- Register device\n- Require multifactor authentication for Microsoft admin portals\n- SPO\n- TestEntraExporterNullCA Issue\n",
-        "TestDescription": "It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.\n        This allows for emergency access to the tenant in case of a misconfiguration or other issues.\n\nSee [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)"
+        "TestResult": "These conditional access policies don't have the emergency access account or group excluded:\n\n  - [ACSC - L2](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [AppProtect](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Block Device Code](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Device compliance #1](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Device compliancy](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Force Password Change](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Guest 10 hr MFA](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Guest-Meferna-Woodgrove-PhishingResistantAuthStrength](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [j-test admin](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [MFA - All users](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [MFA CA Policy](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [nestedgroup count](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [No persistence](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [O365](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Register device](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [Require multifactor authentication for Microsoft admin portals](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [SPO](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n  - [TestEntraExporterNullCA Issue](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)\n",
+        "TestDescription": "\nIt is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.\nThis allows for emergency access to the tenant in case of a misconfiguration or other issues.\n\nSee [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)"
       }
     },
     {
@@ -58981,17 +59848,226 @@ const testResults = {
       ],
       "Block": "Conditional Access Baseline Policies",
       "ResultDetail": null
+    },
+    {
+      "Name": "MT.1022: All users covered by a P1 license are utilizing this license.",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1022",
+      "Tag": [],
+      "Result": "Failed",
+      "ScriptBlock": '\n            $LicenseReport = Test-MtCaLicenseUtilization -License "P1"\n            $LicenseReport.TotalLicensesUtilized | Should -BeGreaterOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"\n        ',
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
+      "ErrorRecord": [
+        "A positional parameter cannot be found that accepts argument 'Entitled P1 license count: 25 & '."
+      ],
+      "Block": "License utilization",
+      "ResultDetail": null
+    },
+    {
+      "Name": "MT.1023: All users covered by a P2 license are utilizing this license.",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1023",
+      "Tag": [],
+      "Result": "Failed",
+      "ScriptBlock": '\n            $LicenseReport = Test-MtCaLicenseUtilization -License "P2"\n            $LicenseReport.TotalLicensesUtilized | Should -BeGreaterOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P2 license"\n        ',
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
+      "ErrorRecord": [
+        "A positional parameter cannot be found that accepts argument 'Entitled P1 license count: 25 & '."
+      ],
+      "Block": "License utilization",
+      "ResultDetail": null
+    },
+    {
+      "Name": "MT.1021: Security Defaults are enabled.",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1021",
+      "Tag": [
+        "CA",
+        "Security",
+        "All"
+      ],
+      "Result": "Skipped",
+      "ScriptBlock": '\n        $SecurityDefaults = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/identitySecurityDefaultsEnforcementPolicy" | Select-Object -ExpandProperty isEnabled\n        $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"\n    ',
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Test-ConditionalAccessBaseline.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Security Defaults",
+      "ResultDetail": null
     }
   ],
   "Blocks": [
     {
+      "Name": "Default Authorization Settings",
+      "Result": "Failed",
+      "FailedCount": 5,
+      "PassedCount": 4,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 9,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Default Settings - Consent Policy Settings",
+      "Result": "Failed",
+      "FailedCount": 2,
+      "PassedCount": 1,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 3,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Default Settings - Password Rule Settings",
+      "Result": "Failed",
+      "FailedCount": 1,
+      "PassedCount": 4,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 5,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Default Settings - Classification and M365 Groups",
+      "Result": "Failed",
+      "FailedCount": 2,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 2,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Authentication Method - General Settings",
+      "Result": "Failed",
+      "FailedCount": 2,
+      "PassedCount": 1,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 3,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Authentication Method - Microsoft Authenticator",
+      "Result": "Passed",
+      "FailedCount": 0,
+      "PassedCount": 8,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 8,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Authentication Method - FIDO2 security key",
+      "Result": "Passed",
+      "FailedCount": 0,
+      "PassedCount": 4,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 4,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Authentication Method - Temporary Access Pass",
+      "Result": "Passed",
+      "FailedCount": 0,
+      "PassedCount": 2,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 2,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Authentication Method - Voice call",
+      "Result": "Passed",
+      "FailedCount": 0,
+      "PassedCount": 1,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 1,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Consent Framework - Admin Consent Request",
+      "Result": "Failed",
+      "FailedCount": 4,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 4,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "App Management Policies",
+      "Result": "Failed",
+      "FailedCount": 1,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 1,
+      "Tag": [
+        "App",
+        "Security",
+        "All"
+      ]
+    },
+    {
       "Name": "Conditional Access Baseline Policies",
       "Result": "Failed",
-      "FailedCount": 14,
+      "FailedCount": 16,
       "PassedCount": 5,
       "SkippedCount": 0,
       "NotRunCount": 0,
-      "TotalCount": 19,
+      "TotalCount": 21,
+      "Tag": [
+        "CA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Security Defaults",
+      "Result": "Skipped",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 1,
+      "NotRunCount": 0,
+      "TotalCount": 1,
       "Tag": [
         "CA",
         "Security",
@@ -59015,7 +60091,7 @@ function App() {
       /* @__PURE__ */ jsxRuntimeExports$1.jsx("h1", { className: "text-3xl font-bold self-end", children: "Maester Test Results" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { children: [
-      /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { className: "bg-blue-200", icon: OfficeBuildingIcon$1, children: getTenantName() }),
+      /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { className: "bg-blue-200", icon: BuildingOfficeIcon$1, children: getTenantName() }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { className: "bg-blue-200", icon: CalendarIcon$1, children: testDateLocal })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(o$6, {}),
@@ -66697,6 +67773,26 @@ video {
 }
 .\[scrollbar-width\:none\] {
   scrollbar-width: none;
+}
+:is(.dark .dark\:prose-invert) {
+  --tw-prose-body: var(--tw-prose-invert-body);
+  --tw-prose-headings: var(--tw-prose-invert-headings);
+  --tw-prose-lead: var(--tw-prose-invert-lead);
+  --tw-prose-links: var(--tw-prose-invert-links);
+  --tw-prose-bold: var(--tw-prose-invert-bold);
+  --tw-prose-counters: var(--tw-prose-invert-counters);
+  --tw-prose-bullets: var(--tw-prose-invert-bullets);
+  --tw-prose-hr: var(--tw-prose-invert-hr);
+  --tw-prose-quotes: var(--tw-prose-invert-quotes);
+  --tw-prose-quote-borders: var(--tw-prose-invert-quote-borders);
+  --tw-prose-captions: var(--tw-prose-invert-captions);
+  --tw-prose-kbd: var(--tw-prose-invert-kbd);
+  --tw-prose-kbd-shadows: var(--tw-prose-invert-kbd-shadows);
+  --tw-prose-code: var(--tw-prose-invert-code);
+  --tw-prose-pre-code: var(--tw-prose-invert-pre-code);
+  --tw-prose-pre-bg: var(--tw-prose-invert-pre-bg);
+  --tw-prose-th-borders: var(--tw-prose-invert-th-borders);
+  --tw-prose-td-borders: var(--tw-prose-invert-td-borders);
 }
 .placeholder\:text-tremor-content::-moz-placeholder {
   --tw-text-opacity: 1;

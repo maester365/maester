@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { TabGroup, TabList, Tab } from "@tremor/react";
-import { DesktopComputerIcon, MoonIcon, SunIcon } from "@heroicons/react/solid";
+import { ComputerDesktopIcon, MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import { useTheme } from 'next-themes'
 
 export default function ThemeSwitch() {
@@ -31,7 +31,7 @@ export default function ThemeSwitch() {
         <>
             <TabGroup index={selectedIndex} onIndexChange={handleThemeChange}>
                 <TabList variant="solid">
-                    <Tab value="system" icon={DesktopComputerIcon}></Tab>
+                    <Tab value="system" icon={ComputerDesktopIcon}></Tab>
                     <Tab value="dark" icon={MoonIcon}></Tab>
                     <Tab value="light" icon={SunIcon}></Tab>
                 </TabList>
