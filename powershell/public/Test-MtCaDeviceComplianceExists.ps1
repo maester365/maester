@@ -13,7 +13,7 @@
 #>
 
 Function Test-MtCaDeviceComplianceExists {
-  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
@@ -21,14 +21,28 @@ Function Test-MtCaDeviceComplianceExists {
   $policies = Get-MtConditionalAccessPolicy
 
   $result = $false
+
+  $testDescription = "
+It is recommended to have at least one conditional access policy that enforces the use of a compliant.
+
+See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device)"
+  $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
+
   foreach ($policy in $policies) {
     if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' `
         -and $policy.state -eq 'enabled' `
     ) {
       Write-Verbose -Message "Found a conditional access policy requiring device compliance: $($policy.displayname)"
       $result = $true
+      $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
     }
   }
+
+  if ($result -eq $false) {
+    $testResult = "There was no conditional access policy requiring device compliance."
+  }
+
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
   return $result
 }
