@@ -196,6 +196,13 @@ Function Invoke-MtMaester {
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
+
+        foreach($test in $pesterResults.TestResult) {
+            if ($test.err -eq 'Failed') {
+                Write-Error -Message "Test $($test.Describe) failed. See the test results for more information."
+            }
+        }
+
         $maesterResults = ConvertTo-MtMaesterResults $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {

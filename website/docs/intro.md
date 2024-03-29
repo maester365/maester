@@ -7,7 +7,7 @@ title: Introduction
 
 ## What is Maester?
 
-To get started
+Maester is a test automation framework PowerShell module that helps you automate the testing of your APIs. It provides a simple way to write tests and run them on a schedule.
 
 #### Clone the **maester-tests** repository
     - This is a collection of tests that we've created for you to get started.
