@@ -2,8 +2,13 @@
 name: build-validation
 
 on:
-  workflow_call:
   workflow_dispatch:
+  workflow_call:
+
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
 
 jobs:
   build-validation:
