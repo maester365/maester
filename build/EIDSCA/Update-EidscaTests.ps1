@@ -71,7 +71,7 @@ Function GetPageMarkdownLink($uri) {
 
 Function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
     $graphExplorerUrl = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
-    return "[View in Graph Explorer]($graphExplorerUrl)"
+    return "[Open in Graph Explorer]($graphExplorerUrl)"
 }
 
 Function GetMitreUrl($item) {
@@ -189,6 +189,32 @@ mindmap
     return $mermaid
 }
 
+Function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
+    if([string]::IsNullOrEmpty($uri)) { return '' }
+    if($lookupTitle) {
+        $pageTitle = GetPageTitle($uri)
+        if(![string]::IsNullOrEmpty($pageTitle)) {
+            $title = $pageTitle
+        }
+    }
+    return "- [$title]($uri)"
+}
+
+Function GetPortalDeepLinkMarkdown($portalDeepLink) {
+    $result = $portalDeepLink
+    if (![string]::IsNullOrEmpty($portalDeepLink)) {
+        $domain = ($uri -as [System.URI]).Host
+        $result =  GetMarkdownLink -uri $portalDeepLink -title "[View in $domain]" # Set default markdown
+
+        if ($portalDeepLink -like "*entra.microsoft.com*" -or $portalDeepLink -like "*Microsoft_AAD_IAM*") {
+            $result = GetMarkdownLink -uri $portalDeepLink -title "View in Microsoft Entra admin center"
+        } elseif ($portalDeepLink -like "*admin.microsoft.com*") {
+            $result = GetMarkdownLink -uri $portalDeepLink -title "Open in Microsoft 365 admin center"
+        }
+    }
+    return $result
+}
+
 Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $relativeUri = GetRelativeUri($control.GraphUri)
     $apiVersion = GetVersion($control.GraphUri)
@@ -197,50 +223,51 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $currentValue = $controlItem.CurrentValue
 
     $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
-    $portalDeepLink = ''
-    if ($controlItem.PortalDeepLink -ne '') {
-        $portalDeepLink = "| **Azure Portal** | [View in Azure Portal]($($controlItem.PortalDeepLink)) | "
-    }
-    $output = ''
-    if ($currentValue -eq '' -or $control.ControlName -eq '') {
-        Write-Warning 'Skipping'
-    } else {
+    $portalDeepLinkMarkdown = GetPortalDeepLinkMarkdown -portalDeepLink $controlItem.PortalDeepLink
+    $graphDocsUrlMarkdown = GetMarkdownLink -uri $control.GraphDocsUrl -title "Graph Docs" -lookupTitle
 
-        if ($isDoc) {
-            # Only do this for docs
-            $graphDocsUrl = GetPageMarkdownLink($control.GraphDocsUrl)
-            $recommendation = GetPageMarkdownLink($controlItem.Recommendation)
-            $graphExplorerUrl = GetGraphExplorerMarkDownLink -relativeUri $relativeUri -apiVersion $apiVersion
-            #$mitreDiagram = GetMitreDiagram -controlItem $controlItem
-        }
+$output = ''
+if ($currentValue -eq '' -or $control.ControlName -eq '') {
+    Write-Warning 'Skipping'
+} else {
+    $graphExplorerUrl = GetGraphExplorerMarkDownLink -relativeUri $relativeUri -apiVersion $apiVersion
 
-        $output = $template
-        $output = $output -replace '%DocName%', $docName
-        $output = $output -replace '%ControlName%', $control.ControlName
-        $output = $output -replace '%Description%', $control.Description
-        $output = $output -replace '%ControlItemDescription%', $controlItem.Description
-        $output = $output -replace '%Severity%', $controlItem.Severity
-        $output = $output -replace '%DisplayName%', $controlItem.DisplayName
-        $output = $output -replace '%Name%', $controlItem.Name
-        $output = $output -replace '%CheckId%', $controlItem.CheckId
-        $output = $output -replace '%Recommendation%', $recommendation
-        $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
-        $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
-        $output = $output -replace '%MitreMitigation%', $controlItem.MitreMitigation
-        $output = $output -replace '%PortalDeepLink%', $portalDeepLink
-        $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
-        $output = $output -replace '%RelativeUri%', $relativeUri
-        $output = $output -replace '%ApiVersion%', $apiVersion
-        $output = $output -replace '%RecommendedValue%', $recommendedValue
-        $output = $output -replace '%CurrentValue%', $CurrentValue
-        $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
-        $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
-        $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
-        $output = $output -replace '%MitreDiagram%', $mitreDiagram
-        $output = $output -replace '%PSFunctionName%', $psFunctionName
+    if ($isDoc) {
+        # Only do this for docs
+        $graphDocsUrl = GetPageMarkdownLink($control.GraphDocsUrl)
+        $recommendation = GetPageMarkdownLink($controlItem.Recommendation)
+        $mitreDiagram = GetMitreDiagram -controlItem $controlItem
     }
 
-    return $output
+    $output = $template
+    $output = $output -replace '%DocName%', $docName
+    $output = $output -replace '%ControlName%', $control.ControlName
+    $output = $output -replace '%Description%', $control.Description
+    $output = $output -replace '%ControlItemDescription%', $controlItem.Description
+    $output = $output -replace '%Severity%', $controlItem.Severity
+    $output = $output -replace '%DisplayName%', $controlItem.DisplayName
+    $output = $output -replace '%Name%', $controlItem.Name
+    $output = $output -replace '%CheckId%', $controlItem.CheckId
+    $output = $output -replace '%Recommendation%', $recommendation
+    $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
+    $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
+    $output = $output -replace '%MitreMitigation%', $controlItem.MitreMitigation
+    $output = $output -replace '%PortalDeepLink%', $portalDeepLink
+    $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
+    $output = $output -replace '%RelativeUri%', $relativeUri
+    $output = $output -replace '%ApiVersion%', $apiVersion
+    $output = $output -replace '%RecommendedValue%', $recommendedValue
+    $output = $output -replace '%CurrentValue%', $CurrentValue
+    $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
+    $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
+    $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
+    $output = $output -replace '%MitreDiagram%', $mitreDiagram
+    $output = $output -replace '%PSFunctionName%', $psFunctionName
+    $output = $output -replace '%PortalDeepLinkMarkdown%', $portalDeepLinkMarkdown
+    $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
+}
+
+return $output
 }
 
 # Returns the contents of a file named @template.txt at the given folder path
@@ -249,14 +276,13 @@ Function GetTemplate($folderPath, $templateFileName = "@template.txt") {
     return Get-Content $templateFilePath -Raw
 }
 
-Function CreateFile($folderPath, $fileName, $content)
-{
+Function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
     $content | Out-File $filePath -Encoding utf8
 }
 
 Function GetEidscaPsFunctionName($controlItem) {
-    $powerShellFunctionName = "Test-$($controlItem.CheckId)"
+    $powerShellFunctionName = "Test-Mt$($controlItem.CheckId)"
     $powerShellFunctionName = $powerShellFunctionName.Replace("EIDSCA.", "Eidsca")
     return $powerShellFunctionName
 }
@@ -272,7 +298,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
          Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
          .%CurrentValue% = %RecommendedValue%
       #>
-      %PSFunctionName% | Should -BeTrue
+      %PSFunctionName% | Should -Be %RecommendedValue%
    }
 }
 '@
@@ -301,8 +327,8 @@ foreach ($control in $aadsc) {
             $docName = $controlItem.CheckId
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
-            $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $false
-            $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $false
+            $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
+            $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
 
 
             if ($testOutput -ne '') {

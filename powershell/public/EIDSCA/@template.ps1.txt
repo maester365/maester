@@ -34,5 +34,5 @@ Function %PSFunctionName% {
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+    return $tenantValue
 }

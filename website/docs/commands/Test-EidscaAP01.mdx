@@ -1,0 +1,69 @@
+---
+sidebar_class_name: hidden
+description: Checks if Default Authorization Settings - Enabled Self service password reset is set to 'true'
+id: Test-EidscaAP01
+title: Test-EidscaAP01
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-EidscaAP01.ps1
+---
+
+## SYNOPSIS
+
+Checks if Default Authorization Settings - Enabled Self service password reset is set to 'true'
+
+## SYNTAX
+
+```powershell
+Test-EidscaAP01 [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Designates whether users in this directory can reset their own password.
+
+Queries policies/authorizationPolicy
+and returns the result of
+ graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'true'
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-EidscaAP01
+```
+
+Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'true'
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS

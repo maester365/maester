@@ -24,7 +24,7 @@ Whether the Voice call is enabled in the tenant.
 | **Recommended Value** | 'disabled' |
 | **Default Value** | disabled |
 | **Graph API Docs** |  |
-| **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
+| **Graph Explorer** | [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
 
 
 
