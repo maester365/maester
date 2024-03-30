@@ -5,7 +5,17 @@
 .DESCRIPTION
     This function is used to add detailed information about a test so that it can be displayed in the test results report.
 
-    All parameters support Markdown format.
+    The description and result support markdown format.
+
+    If the calling script/cmdlet has a markdown file with the same name as the script/cmdlet,
+    it will be used to populate the description and result fields.
+
+    A good example is the markdown for the Test-MtCaEmergencyAccessExists cmdlet:
+        - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
+        - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
+
+    The markdown file can include a seperator `<!--- Results --->` to split the description and result sections.
+    This allows for the overview and detailed information to be displayes separately in the Test results.
 
 .EXAMPLE
     Add-MtTestResultDetail -Description 'Test description' -Result 'Test result'
@@ -19,6 +29,7 @@
     ```
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
+
 #>
 
 Function Add-MtTestResultDetail {
