@@ -308,7 +308,7 @@ Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item 
 Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
 
 $docsTemplate = GetTemplate $DocsPath
-$psTemplate = GetTemplate $PowerShellFunctionsPath "@template.ps1.txt" # Use the .txt extension to avoid running the script
+$psTemplate = GetTemplate $PowerShellFunctionsPath "@templateps1.txt" # Use the .txt extension to avoid running the script
 $psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
 
 $sb = [System.Text.StringBuilder]::new()
