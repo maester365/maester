@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.64'
+ModuleVersion = '0.0.65'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -72,22 +72,8 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph', 
                'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy', 
                'Get-MtGraphScope', 'Invoke-MtGraphRequest', 'Invoke-MtMaester', 
-               'Send-MtSummaryMail', 'Test-EidscaAF01', 'Test-EidscaAF02', 
-               'Test-EidscaAF03', 'Test-EidscaAF06', 'Test-EidscaAG01', 
-               'Test-EidscaAG02', 'Test-EidscaAG03', 'Test-EidscaAM01', 
-               'Test-EidscaAM02', 'Test-EidscaAM03', 'Test-EidscaAM04', 
-               'Test-EidscaAM06', 'Test-EidscaAM07', 'Test-EidscaAM09', 
-               'Test-EidscaAM10', 'Test-EidscaAP01', 'Test-EidscaAP04', 
-               'Test-EidscaAP05', 'Test-EidscaAP06', 'Test-EidscaAP07', 
-               'Test-EidscaAP08', 'Test-EidscaAP09', 'Test-EidscaAP10', 
-               'Test-EidscaAP14', 'Test-EidscaAT01', 'Test-EidscaAT02', 
-               'Test-EidscaAV01', 'Test-EidscaCP01', 'Test-EidscaCP03', 
-               'Test-EidscaCP04', 'Test-EidscaCR01', 'Test-EidscaCR02', 
-               'Test-EidscaCR03', 'Test-EidscaCR04', 'Test-EidscaPR01', 
-               'Test-EidscaPR02', 'Test-EidscaPR03', 'Test-EidscaPR05', 
-               'Test-EidscaPR06', 'Test-EidscaST08', 'Test-EidscaST09', 
-               'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists', 
-               'Test-MtCaApplicationEnforcedRestriction', 
+               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled', 
+               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
                'Test-MtCaBlockLegacyOtherAuthentication', 
                'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
@@ -101,7 +87,21 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtG
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 
                'Test-MtCaRequirePasswordChangeForHighUserRisk', 
                'Test-MtCaSecureSecurityInfoRegistration', 
-               'Test-MtConditionalAccessWhatIf'
+               'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01', 
+               'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06', 
+               'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03', 
+               'Test-MtEidscaAM01', 'Test-MtEidscaAM02', 'Test-MtEidscaAM03', 
+               'Test-MtEidscaAM04', 'Test-MtEidscaAM06', 'Test-MtEidscaAM07', 
+               'Test-MtEidscaAM09', 'Test-MtEidscaAM10', 'Test-MtEidscaAP01', 
+               'Test-MtEidscaAP04', 'Test-MtEidscaAP05', 'Test-MtEidscaAP06', 
+               'Test-MtEidscaAP07', 'Test-MtEidscaAP08', 'Test-MtEidscaAP09', 
+               'Test-MtEidscaAP10', 'Test-MtEidscaAP14', 'Test-MtEidscaAT01', 
+               'Test-MtEidscaAT02', 'Test-MtEidscaAV01', 'Test-MtEidscaCP01', 
+               'Test-MtEidscaCP03', 'Test-MtEidscaCP04', 'Test-MtEidscaCR01', 
+               'Test-MtEidscaCR02', 'Test-MtEidscaCR03', 'Test-MtEidscaCR04', 
+               'Test-MtEidscaPR01', 'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 
+               'Test-MtEidscaPR05', 'Test-MtEidscaPR06', 'Test-MtEidscaST08', 
+               'Test-MtEidscaST09'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
