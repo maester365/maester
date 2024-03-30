@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.62'
+ModuleVersion = '0.0.63'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -72,8 +72,22 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-MtGraph', 
                'Disconnect-MtGraph', 'Get-MtConditionalAccessPolicy', 
                'Get-MtGraphScope', 'Invoke-MtGraphRequest', 'Invoke-MtMaester', 
-               'Send-MtSummaryMail', 'Test-MtAppManagementPolicyEnabled', 
-               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
+               'Send-MtSummaryMail', 'Test-EidscaAF01', 'Test-EidscaAF02', 
+               'Test-EidscaAF03', 'Test-EidscaAF06', 'Test-EidscaAG01', 
+               'Test-EidscaAG02', 'Test-EidscaAG03', 'Test-EidscaAM01', 
+               'Test-EidscaAM02', 'Test-EidscaAM03', 'Test-EidscaAM04', 
+               'Test-EidscaAM06', 'Test-EidscaAM07', 'Test-EidscaAM09', 
+               'Test-EidscaAM10', 'Test-EidscaAP01', 'Test-EidscaAP04', 
+               'Test-EidscaAP05', 'Test-EidscaAP06', 'Test-EidscaAP07', 
+               'Test-EidscaAP08', 'Test-EidscaAP09', 'Test-EidscaAP10', 
+               'Test-EidscaAP14', 'Test-EidscaAT01', 'Test-EidscaAT02', 
+               'Test-EidscaAV01', 'Test-EidscaCP01', 'Test-EidscaCP03', 
+               'Test-EidscaCP04', 'Test-EidscaCR01', 'Test-EidscaCR02', 
+               'Test-EidscaCR03', 'Test-EidscaCR04', 'Test-EidscaPR01', 
+               'Test-EidscaPR02', 'Test-EidscaPR03', 'Test-EidscaPR05', 
+               'Test-EidscaPR06', 'Test-EidscaST08', 'Test-EidscaST09', 
+               'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists', 
+               'Test-MtCaApplicationEnforcedRestriction', 
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
                'Test-MtCaBlockLegacyOtherAuthentication', 
                'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
