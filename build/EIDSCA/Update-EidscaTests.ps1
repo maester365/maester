@@ -3,7 +3,7 @@
   Generates Maester tests for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
   .DESCRIPTION
-  * Downloads the latest version from https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv3/config/AadSecConfig.json
+  * Downloads the latest version from https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json
   * Generates Maester tests for each test defined in the JSON file
 
   .EXAMPLE
@@ -12,14 +12,14 @@
 
 param (
     # Folder where generated test file should be written to.
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory = $true)]
+    [Parameter(Position = 0, Mandatory = $true)]
     [string] $TestFilePath,
     # Folder where docs should be generated
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 1, Mandatory = $true)]
+    [Parameter(Position = 1, Mandatory = $true)]
     [string] $DocsPath,
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 2, Mandatory = $false)]
+    [Parameter(Position = 2, Mandatory = $false)]
     [string] $ControlName = "*",
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 3, Mandatory = $false)]
+    [Parameter(Position = 3, Mandatory = $false)]
     [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
 )
 
@@ -213,7 +213,6 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $template
         $output = $output -replace '%DocName%', $docName
         $output = $output -replace '%ControlName%', $control.ControlName
-        $output = $output -replace '%ControlId%', $control.ControlName
         $output = $output -replace '%Description%', $control.Description
         $output = $output -replace '%ControlItemDescription%', $controlItem.Description
         $output = $output -replace '%Severity%', $controlItem.Severity
@@ -243,11 +242,16 @@ $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
 $aadsc = $aadsc[0].ControlArea
 
 $testTemplate = @'
+Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
         $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
         $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue%"
     }
+}
 '@
+
+# remove all .md files in $docsTemplateFilePath
+Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
 
 $docsTemplateFilePath = Join-Path $DocsPath '@template.txt'
 $docsTemplate = Get-Content $docsTemplateFilePath -Raw
@@ -265,7 +269,7 @@ foreach ($control in $aadsc) {
     foreach ($controlItem in $control.Controls) {
         # Export check only if RecommendedValue is set
         if (($null -ne $controlItem.RecommendedValue -and $controlItem.RecommendedValue -ne "")) {
-            $docName = "EIDSCA.$($control.GraphEndpoint).$($controlItem.Name)"
+            $docName = $controlItem.CheckId
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
 
@@ -280,10 +284,7 @@ foreach ($control in $aadsc) {
         }
     }
     if ($testOutputList.Length -ne 0) {
-        $header = 'Describe "%ControlName%" -Tag "EIDSCA", "Security", "All" {'.Replace("%ControlName%", $control.ControlName)
-        [void]$sb.AppendLine($header)
         [void]$sb.AppendLine($testOutputList)
-        [void]$sb.AppendLine("}")
     }
 }
 $output = $sb.ToString()
