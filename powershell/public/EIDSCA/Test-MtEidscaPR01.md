@@ -2,7 +2,7 @@ If set to Enforce, users will be prevented from setting banned passwords and the
 
 [Microsoft Entra Password Protection - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-password-ban-bad-on-premises)
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value = 'Enforce'

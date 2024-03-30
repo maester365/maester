@@ -2,7 +2,7 @@ Specifies whether reviewers will receive reminder emails
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
 .notifyReviewers = 'true'

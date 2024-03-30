@@ -2,7 +2,7 @@ Group and team owners can authorize applications, such as applications published
 
 CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value = 'False'

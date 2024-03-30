@@ -2,7 +2,7 @@ Defines if number matching is required for MFA notifications.
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.numberMatchingRequiredState.state = 'enabled'

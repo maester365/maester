@@ -2,7 +2,7 @@ Defines if list of AADGUID will be used to allow or block registration.
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .keyRestrictions.enforcementType = 'block'

@@ -2,7 +2,7 @@ Whether the Temporary Access Pass is enabled in the tenant.
 
 Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
 .state = 'enabled'

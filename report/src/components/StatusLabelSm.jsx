@@ -8,13 +8,13 @@ export default function StatusLabelSm(props) {
     return (
         <>
             {props.Result === "Passed" &&
-                <Icon icon={CheckCircleIcon} color="emerald" size="md" className="ml-2 w-4 h-4" />
+                <Icon icon={CheckCircleIcon} color="emerald" size="sm" />
             }
             {props.Result === "Failed" &&
-                <Icon icon={ExclamationTriangleIcon} color="rose" size="md" className="ml-2 w-4 h-4" />
+                <Icon icon={ExclamationTriangleIcon} color="rose" size="sm" />
             }
             {props.Result != "Passed" && props.Result != "Failed" &&
-                <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
+                <Icon icon={ArchiveBoxIcon} size="md" color="gray" />
             }
         </>
     );

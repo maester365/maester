@@ -2,7 +2,7 @@ Indicates whether users can sign up for email based subscriptions.
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .allowedToSignUpEmailBasedSubscriptions = 'false'

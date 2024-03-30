@@ -2,7 +2,7 @@ Prevents all non-admins from reading user information from the directory. This f
 
 Restrict this default permissions for members have huge impact on collaboration features and user lookup.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .defaultUserRolePermissions.allowedToReadOtherUsers = 'true'

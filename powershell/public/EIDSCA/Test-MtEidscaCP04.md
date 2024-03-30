@@ -2,7 +2,7 @@ If this option is set to enabled, then users request admin consent to any app th
 
 CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value = 'true'

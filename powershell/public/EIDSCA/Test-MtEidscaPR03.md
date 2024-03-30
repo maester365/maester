@@ -2,7 +2,7 @@ When enabled, the words in the list below are used in the banned password system
 
 [Password protection in Microsoft Entra ID - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-password-ban-bad#global-banned-password-list)
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value = 'True'

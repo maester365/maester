@@ -2,7 +2,7 @@ Defines whether user consent will be blocked when a risky request is detected
 
 [Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/configure-risk-based-step-up-consent)
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value = 'true'

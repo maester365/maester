@@ -16,8 +16,7 @@ function ConvertTo-MtMaesterResult {
         return $org.DisplayName
     }
 
-    function GetTestsSorted()
-    {
+    function GetTestsSorted() {
         # Show passed and failed tests first by name then show not run tests
         $activeTests = $PesterResults.Tests | Where-Object { $_.Result -eq 'Passed' -or $_.Result -eq 'Failed' } | Sort-Object -Property Name
         $inactiveTests = $PesterResults.Tests | Where-Object { $_.Result -ne 'Passed' -and $_.Result -ne 'Failed' } | Sort-Object -Property Name
@@ -34,6 +33,9 @@ function ConvertTo-MtMaesterResult {
 
     $mtTests = @()
     $sortedTests = GetTestsSorted
+
+    $categorySummary = @()
+
     foreach ($test in $sortedTests) {
 
         $name = $test.Name
@@ -63,17 +65,26 @@ function ConvertTo-MtMaesterResult {
     foreach ($container in $PesterResults.Containers) {
 
         foreach ($block in $container.Blocks) {
-            $mtBlockInfo = [PSCustomObject]@{
-                Name         = $block.Name
-                Result       = $block.Result
-                FailedCount  = $block.FailedCount
-                PassedCount  = $block.PassedCount
-                SkippedCount = $block.SkippedCount
-                NotRunCount  = $block.NotRunCount
-                TotalCount   = $block.TotalCount
-                Tag          = $block.Tag
+            $mtBlockInfo = $mtBlocks | Where-Object { $_.Name -eq $block.Name }
+            if ($null -eq $mtBlockInfo) {
+                $mtBlockInfo = [PSCustomObject]@{
+                    Name         = $block.Name
+                    Result       = $block.Result
+                    FailedCount  = $block.FailedCount
+                    PassedCount  = $block.PassedCount
+                    SkippedCount = $block.SkippedCount
+                    NotRunCount  = $block.NotRunCount
+                    TotalCount   = $block.TotalCount
+                    Tag          = $block.Tag
+                }
+                $mtBlocks += $mtBlockInfo
+            } else {
+                $mtBlockInfo.FailedCount += $block.FailedCount
+                $mtBlockInfo.PassedCount += $block.PassedCount
+                $mtBlockInfo.SkippedCount += $block.SkippedCount
+                $mtBlockInfo.NotRunCount += $block.NotRunCount
+                $mtBlockInfo.TotalCount += $block.TotalCount
             }
-            $mtBlocks += $mtBlockInfo
         }
     }
 

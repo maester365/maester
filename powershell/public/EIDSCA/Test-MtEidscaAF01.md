@@ -2,7 +2,7 @@ Whether the FIDO2 security keys is enabled in the tenant.
 
 enabled
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .state = 'enabled'

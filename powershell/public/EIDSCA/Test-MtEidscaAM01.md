@@ -2,7 +2,7 @@ Whether the Authenticator App is enabled in the tenant.
 
 enabled
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .state = 'enabled'

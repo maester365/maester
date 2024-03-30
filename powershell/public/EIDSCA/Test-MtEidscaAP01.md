@@ -2,7 +2,7 @@ Designates whether users in this directory can reset their own password.
 
 [Azure identity & access security best practices - Microsoft Learn](https://learn.microsoft.com/en-us/azure/security/fundamentals/identity-management-best-practices#enable-password-management)
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
 .allowedToUseSSPR = 'true'

@@ -2,7 +2,7 @@ Indicating whether or not a guest user can have access to Microsoft 365 groups c
 
 Manages if guest accounts can access resources through Microsoft 365 Group membership and could break collaboration if you disable it.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/settings
 .values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value = 'True'

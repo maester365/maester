@@ -2,7 +2,7 @@ Object Id or scope of users which will be included to report suspicious activiti
 
 Apply this feature to all users.
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 .reportSuspiciousActivitySettings.includeTarget.id = 'all_users'

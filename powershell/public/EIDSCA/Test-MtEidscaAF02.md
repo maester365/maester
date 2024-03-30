@@ -2,7 +2,7 @@ Allows users to register a FIDO key through the MySecurityInfo portal, even if e
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
 .isSelfServiceRegistrationAllowed = 'true'

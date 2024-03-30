@@ -2,7 +2,7 @@
 
 %Recommendation%
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
 .%CurrentValue% = %RecommendedValue%

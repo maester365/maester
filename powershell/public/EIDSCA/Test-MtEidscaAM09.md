@@ -2,7 +2,7 @@ Determines whether the user's Authenticator app will show them the geographic lo
 
 
 
-#### Test details
+#### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
 .featureSettings.displayLocationInformationRequiredState.state = 'enabled'

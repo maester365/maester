@@ -21,6 +21,20 @@ export default function ResultInfoDialog(props) {
     return truncated;
   }
 
+  //Set bgcolor based on result
+  function getBgColor(result) {
+    if (result === "Passed") {
+      return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";
+    }
+    if (result === "Failed") {
+      return "bg-red-100 dark:bg-red-900 dark:bg-opacity-30";
+    }
+    if (result === "Skipped") {
+      return "bg-yellow-100";
+    }
+    return "bg-gray-100";
+  }
+
   return (
     <>
       {props.Title &&
@@ -41,9 +55,9 @@ export default function ResultInfoDialog(props) {
             </div>
             <Title>{props.Item.Name}</Title>
             {props.Item.HelpUrl &&
-              <div className="text-left">
+              <div className="text-left mt-2">
                 <Button icon={ArrowTopRightOnSquareIcon} variant="light" onClick={() => openInNewTab(props.Item.HelpUrl)}>
-                  Learn more
+                  Learn more @ maester.dev
                 </Button>
               </div>
             }
@@ -51,30 +65,39 @@ export default function ResultInfoDialog(props) {
 
             {props.Item.ResultDetail &&
               <>
-                <Card>
-                  <Title>Overview</Title>
-                  <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestDescription}</Markdown>
-                </Card>
-                <Card className="mt-4 break-words">
-                  <Title>Test Results</Title>
+                <Card className={"break-words " + getBgColor(props.Item.Result)}>
+                  <div class="flex flex-row items-center">
+                    <Title>Test result</Title><StatusLabelSm Result={props.Item.Result} />
+                  </div>
                   <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestResult}</Markdown>
+                </Card>
+                <Card className="mt-4">
+                  <Title>Test details</Title>
+                  <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestDescription}</Markdown>
                 </Card>
               </>
             }
 
             {!props.Item.ResultDetail &&
               <>
-                <Card>
-                  <Title>Test</Title>
+                <Card className={"break-words " + getBgColor(props.Item.Result)}>
+                  <div class="flex flex-row items-center">
+                    <Title>Test result</Title><StatusLabelSm Result={props.Item.Result} />
+                  </div>
+                  {props.Item.ErrorRecord &&
+                    <Text>{props.Item.ErrorRecord}</Text>
+                  }
+                  {props.Item.ErrorRecord.length === 0 &&
+                    <Text>Tested succesfully</Text>
+                  }
+                </Card>
+
+                <Card className="mt-4">
+                  <Title>Test details</Title>
                   <Text className="break-words">{props.Item.ScriptBlock}</Text>
 
                 </Card>
-                {props.Item.ErrorRecord &&
-                  <Card className="mt-4 break-words">
-                    <Title>Reason for failure</Title>
-                    <Text>{props.Item.ErrorRecord}</Text>
-                  </Card>
-                }
+
               </>
             }
             <Card className="mt-4">
