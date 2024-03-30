@@ -34,8 +34,6 @@ function ConvertTo-MtMaesterResult {
     $mtTests = @()
     $sortedTests = GetTestsSorted
 
-    $categorySummary = @()
-
     foreach ($test in $sortedTests) {
 
         $name = $test.Name
