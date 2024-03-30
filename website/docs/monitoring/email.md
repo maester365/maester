@@ -28,7 +28,7 @@ The app that sends the email alerts needs the `Mail.Send` permission to send ema
 
 ## Add the email alert step to your workflow
 
-Update your GitHub/Azure DevOps daily monitoring workflow to send the email alert using `Send-MtSummaryMail` after the Maester tests have been run.
+Update your GitHub/Azure DevOps daily monitoring workflow to send the email alert using `Send-MtMail` after the Maester tests have been run.
 
 **Note:** A UserId is required when running under an application context. This can be the UserId of any user or mailbox account in the tenant and will be the mailbox from where this message is sent from.
 
@@ -37,12 +37,12 @@ Update your GitHub/Azure DevOps daily monitoring workflow to send the email aler
 $results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
 
 # Send the email summary using the results
-Send-MtSummaryMail $results -Recipients john@contoso.com -UserId <guid>
+Send-MtMail $results -Recipients john@contoso.com -UserId <guid>
 ```
 
 ## Adding a link to detailed Maester results in the email
 
-The Send-MtSummaryMail cmdlet has a `-TestResultsUri` parameter that can be used to include a link to the detailed Maester results in the email.
+The Send-MtMail cmdlet has a `-TestResultsUri` parameter that can be used to include a link to the detailed Maester results in the email.
 
 To use this parameter, you need to provide the URL of the Maester results page. Use the appropriate url format based on the CI/CD system you are using.
 
@@ -52,7 +52,7 @@ To use this parameter, you need to provide the URL of the Maester results page. 
 
 ```powershell
 $testResultsUri = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-Send-MtSummaryMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
+Send-MtMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
 ## Azure DevOps
@@ -60,7 +60,7 @@ Send-MtSummaryMail $results -Recipients $recipients -UserId $userId -TestResults
 
 ```powershell
 $testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
-Send-MtSummaryMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
+Send-MtMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
 :::info Important
