@@ -60,12 +60,12 @@ Runs all the Pester tests in the EIDSCA folder.
 #>
 
 Function Invoke-MtMaester {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification='Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Alias("Invoke-Maester")]
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]
-        [string] $Path = "./tests",
+        [string] $Path,
 
         # Only run the tests that match this tag(s).
         [string[]] $Tag,
@@ -156,6 +156,12 @@ Function Invoke-MtMaester {
 
         $PesterConfiguration.Run.PassThru = $true
         if ($Path) { $PesterConfiguration.Run.Path = $Path }
+        else {
+            if (Test-Path -Path "./powershell/tests/pester.ps1") {
+                # Internal dev, exclude Maester's core tests
+                $PesterConfiguration.Run.Path = "./tests"
+            }
+        }
         if ($Tag) { $PesterConfiguration.Filter.Tag = $Tag }
         if ($ExcludeTag) { $PesterConfiguration.Filter.ExcludeTag = $ExcludeTag }
 
