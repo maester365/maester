@@ -1,0 +1,28 @@
+﻿<#
+.SYNOPSIS
+    Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
+
+.DESCRIPTION
+
+    %ControlItemDescription%
+
+    Queries %RelativeUri%
+    and returns the result of
+     graph/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+
+.EXAMPLE
+    %PSFunctionName%
+
+    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+#>
+
+Function %PSFunctionName% {
+    [CmdletBinding()]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
+
+    $testResult = $result.%CurrentValue% -eq %RecommendedValue%
+
+    Add-MtTestResultDetail -Result $testResult
+}

@@ -7,19 +7,22 @@
   * Generates Maester tests for each test defined in the JSON file
 
   .EXAMPLE
-    ./build/EIDSCA/Update-EidscaTests.ps1 -TestFilePath ./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1 -DocsPath ./website/docs/tests/EIDSCA
+    ./build/EIDSCA/Update-EidscaTests.ps1
 #>
 
 param (
     # Folder where generated test file should be written to.
-    [Parameter(Position = 0, Mandatory = $true)]
-    [string] $TestFilePath,
+    [string] $TestFilePath = "./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+
     # Folder where docs should be generated
-    [Parameter(Position = 1, Mandatory = $true)]
-    [string] $DocsPath,
-    [Parameter(Position = 2, Mandatory = $false)]
+    [string] $DocsPath = "./website/docs/tests/EIDSCA",
+
+    [string] $PowerShellFunctionsPath = "./powershell/public/EIDSCA",
+
+    # Control name to filter on
     [string] $ControlName = "*",
-    [Parameter(Position = 3, Mandatory = $false)]
+
+    # URL to the EIDSCA config file
     [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
 )
 
@@ -193,6 +196,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
+    $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
     $portalDeepLink = ''
     if ($controlItem.PortalDeepLink -ne '') {
         $portalDeepLink = "| **Azure Portal** | [View in Azure Portal]($($controlItem.PortalDeepLink)) | "
@@ -207,7 +211,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
             $graphDocsUrl = GetPageMarkdownLink($control.GraphDocsUrl)
             $recommendation = GetPageMarkdownLink($controlItem.Recommendation)
             $graphExplorerUrl = GetGraphExplorerMarkDownLink -relativeUri $relativeUri -apiVersion $apiVersion
-            $mitreDiagram = GetMitreDiagram -controlItem $controlItem
+            #$mitreDiagram = GetMitreDiagram -controlItem $controlItem
         }
 
         $output = $template
@@ -233,11 +237,31 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
         $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
         $output = $output -replace '%MitreDiagram%', $mitreDiagram
+        $output = $output -replace '%PSFunctionName%', $psFunctionName
     }
 
     return $output
 }
 
+# Returns the contents of a file named @template.txt at the given folder path
+Function GetTemplate($folderPath, $templateFileName = "@template.txt") {
+    $templateFilePath = Join-Path $folderPath $templateFileName
+    return Get-Content $templateFilePath -Raw
+}
+
+Function CreateFile($folderPath, $fileName, $content)
+{
+    $filePath = Join-Path $folderPath $fileName
+    $content | Out-File $filePath -Encoding utf8
+}
+
+Function GetEidscaPsFunctionName($controlItem) {
+    $powerShellFunctionName = "Test-$($controlItem.CheckId)"
+    $powerShellFunctionName = $powerShellFunctionName.Replace("EIDSCA.", "Eidsca")
+    return $powerShellFunctionName
+}
+
+# Start by getting the latest EIDSCA config
 $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
 $aadsc = $aadsc[0].ControlArea
 
@@ -250,11 +274,13 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 }
 '@
 
-# remove all .md files in $docsTemplateFilePath
+# Remove previously generated files
 Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
+Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
 
-$docsTemplateFilePath = Join-Path $DocsPath '@template.txt'
-$docsTemplate = Get-Content $docsTemplateFilePath -Raw
+$docsTemplate = GetTemplate $DocsPath
+$psTemplate = GetTemplate $PowerShellFunctionsPath
+$psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
 
 $sb = [System.Text.StringBuilder]::new()
 
@@ -272,12 +298,17 @@ foreach ($control in $aadsc) {
             $docName = $controlItem.CheckId
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+            $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $false
+            $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $false
+
 
             if ($testOutput -ne '') {
                 [void]$testOutputList.AppendLine($testOutput)
 
-                $docFilePath = Join-Path $DocsPath "$docName.md"
-                $docsOutput | Out-File $docFilePath -Encoding utf8
+                CreateFile $DocsPath "$docName.md" $docsOutput
+                $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
+                CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
+                CreateFile $PowerShellFunctionsPath "$psFunctionName.md" $psMarkdownOutput
             }
         } else {
             Write-Warning "$($controlItem.CheckId) - $($controlItem.DisplayName) has no recommended value!"

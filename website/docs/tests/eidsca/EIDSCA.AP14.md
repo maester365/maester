@@ -27,19 +27,4 @@ Prevents all non-admins from reading user information from the directory. This f
 | **Graph Explorer** | [View in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
 
 
-## MITRE ATT&CK
-
-```mermaid
-mindmap
-  root{{MITRE ATT&CK}}
-    (Tactic)
-      TA0043 - Reconnaissance - Reconnaissance
-    (Mitigation)
-
-    (Technique)
-
-```
-|Tactic|Technique|Mitigation|
-|---|---|---|
-|[TA0043 - Reconnaissance - Reconnaissance](https://attack.mitre.org/tactics/TA0043)|||
 

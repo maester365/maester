@@ -1,0 +1,28 @@
+<#
+.SYNOPSIS
+    Checks if Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory is set to 'True'
+
+.DESCRIPTION
+
+    If set to Yes, password protection is turned on for Active Directory domain controllers when the appropriate agent is installed.
+
+    Queries settings
+    and returns the result of
+     graph/settings.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
+
+.EXAMPLE
+    Test-EidscaPR02
+
+    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
+#>
+
+Function Test-EidscaPR02 {
+    [CmdletBinding()]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
+
+    $testResult = $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
+
+    Add-MtTestResultDetail -Result $testResult
+}
