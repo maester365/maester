@@ -18,11 +18,21 @@
 
 Function Test-EidscaAV01 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
-    $testResult = $result.state -eq 'disabled'
+    $tenantValue = $result.state
+    $testResult = $tenantValue -eq 'disabled'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

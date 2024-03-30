@@ -18,11 +18,21 @@
 
 Function Test-EidscaPR03 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $testResult = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
+    $tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value
+    $testResult = $tenantValue -eq 'True'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'True'** for **settings**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'True'** for **settings**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

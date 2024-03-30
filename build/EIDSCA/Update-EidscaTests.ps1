@@ -267,10 +267,13 @@ $aadsc = $aadsc[0].ControlArea
 
 $testTemplate = @'
 Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
-    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
-        $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
-        $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue%"
-    }
+   It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
+      <#
+         Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
+         .%CurrentValue% = %RecommendedValue%
+      #>
+      %PSFunctionName% | Should -BeTrue
+   }
 }
 '@
 
@@ -279,7 +282,7 @@ Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item 
 Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
 
 $docsTemplate = GetTemplate $DocsPath
-$psTemplate = GetTemplate $PowerShellFunctionsPath
+$psTemplate = GetTemplate $PowerShellFunctionsPath "@template.ps1.txt" # Use the .txt extension to avoid running the script
 $psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
 
 $sb = [System.Text.StringBuilder]::new()

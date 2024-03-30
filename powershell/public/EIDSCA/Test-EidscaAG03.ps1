@@ -18,11 +18,21 @@
 
 Function Test-EidscaAG03 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
-    $testResult = $result.reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
+    $tenantValue = $result.reportSuspiciousActivitySettings.includeTarget.id
+    $testResult = $tenantValue -eq 'all_users'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'all_users'** for **policies/authenticationMethodsPolicy**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'all_users'** for **policies/authenticationMethodsPolicy**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

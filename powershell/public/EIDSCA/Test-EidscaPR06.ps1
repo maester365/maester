@@ -18,11 +18,21 @@
 
 Function Test-EidscaPR06 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $testResult = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+    $tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
+    $testResult = $tenantValue -eq '10'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'10'** for **settings**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'10'** for **settings**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

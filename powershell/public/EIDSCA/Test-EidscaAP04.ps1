@@ -18,11 +18,21 @@
 
 Function Test-EidscaAP04 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $testResult = $result.allowInvitesFrom -eq 'adminsAndGuestInviters'
+    $tenantValue = $result.allowInvitesFrom
+    $testResult = $tenantValue -eq 'adminsAndGuestInviters'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'adminsAndGuestInviters'** for **policies/authorizationPolicy**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'adminsAndGuestInviters'** for **policies/authorizationPolicy**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

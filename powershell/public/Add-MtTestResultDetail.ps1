@@ -58,6 +58,8 @@ Function Add-MtTestResultDetail {
 
     $testName = $____Pester.CurrentTest.Name # Get the test name from the Pester context.
 
+    $hasGraphResults = $GraphObjects -and $GraphObjectType
+
     if ([string]::IsNullOrEmpty($Description)) {
         # Check if a markdown file exists for the cmdlet and parse the content
         $cmdletPath = $MyInvocation.PSCommandPath
@@ -69,12 +71,17 @@ Function Add-MtTestResultDetail {
             $mdDescription = $splitContent[0]
             $mdResult = $splitContent[1]
 
+            if (!$hasGraphResults -and ![string]::IsNullOrEmpty($Result)) {
+                # If a result was provided in the parameter insert it into the markdown content
+                $mdResult = $mdResult -replace "%TestResult%", $Result
+            }
+
             $Description = $mdDescription
             $Result = $mdResult
         }
     }
 
-    if($GraphObjects -and $GraphObjectType) {
+    if ($hasGraphResults) {
         $graphResultMarkdown = Get-GraphObjectMarkdown -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType
         $Result = $Result -replace "%TestResult%", $graphResultMarkdown
     }

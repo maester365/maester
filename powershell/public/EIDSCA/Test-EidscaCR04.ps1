@@ -18,11 +18,21 @@
 
 Function Test-EidscaCR04 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    $testResult = $result.requestDurationInDays -eq '30'
+    $tenantValue = $result.requestDurationInDays
+    $testResult = $tenantValue -eq '30'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'30'** for **policies/adminConsentRequestPolicy**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'30'** for **policies/adminConsentRequestPolicy**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

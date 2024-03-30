@@ -3,7 +3,4 @@ Default Settings - Classification and M365 Groups - M365 groups - Allow Guests t
 Indicating whether or not a guest user can have access to Microsoft 365 groups content. This setting does not require an Azure Active Directory Premium P1 license.
 
 <!--- Results --->
-
-In your tenant `graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value` was **%TestResult%**
-
-The recommended value is **'True'**
+%TestResult%

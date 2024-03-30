@@ -18,11 +18,21 @@
 
 Function Test-EidscaAF06 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $testResult = $result.keyRestrictions.enforcementType -eq 'block'
+    $tenantValue = $result.keyRestrictions.enforcementType
+    $testResult = $tenantValue -eq 'block'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'block'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'block'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }

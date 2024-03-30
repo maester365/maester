@@ -18,11 +18,21 @@
 
 Function Test-EidscaAG01 {
     [CmdletBinding()]
+    [OutputType([bool])]
     param()
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
-    $testResult = $result.policyMigrationState -eq 'migrationComplete'
+    $tenantValue = $result.policyMigrationState
+    $testResult = $tenantValue -eq 'migrationComplete'
 
-    Add-MtTestResultDetail -Result $testResult
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
 }
