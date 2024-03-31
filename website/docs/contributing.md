@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-title: Contributing
+title: ✨ Contributing
 ---
 
 import TOCInline from '@theme/TOCInline';

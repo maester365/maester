@@ -1,10 +1,8 @@
 ﻿<#
 .SYNOPSIS
-Runs the Pester tests and generates a report of the results.
+This is the main Maester command that runs the tests and generates a report of the results.
 
 .DESCRIPTION
-This helper script runs Pester tests and generates a report of the results in HTML format.
-
 Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
 For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
@@ -14,10 +12,10 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 .EXAMPLE
 Invoke-Maester
 
-Runs all the Pester tests and generates a report of the results in the ./test-results folder.
+Runs all the Pester test files under the current folder and generates a report of the results in the ./test-results folder.
 
 .EXAMPLE
-Invoke-Maester ./tests/Maester
+Invoke-Maester ./maester-tests
 
 Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
 
@@ -37,7 +35,7 @@ Invoke-Maester -OutputFolder "./my-test-results"
 Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
 
 .EXAMPLE
-Invoke-Maester -OutputFile "./test-results/TestResults.html"
+Invoke-Maester -OutputHtmlFile "./test-results/TestResults.html"
 
 Runs all the Pester tests and generates a report of the results in the specified file.
 
