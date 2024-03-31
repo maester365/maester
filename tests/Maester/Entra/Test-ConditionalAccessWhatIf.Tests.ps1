@@ -8,7 +8,7 @@ BeforeDiscovery {
 }
 
 
-Describe "Conditional Access WhatIf" -Tag "CA", "Security", "All", "TTT" -Skip:( $EntraIDPlan -eq "Free" ) {
+Describe "Conditional Access WhatIf" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
 
     It "User should be blocked from using legacy authentication" -ForEach @( $RegularUsers ) {
         $Result = Test-MtCaWIFBlockLegacyAuthentication -UserId $_.id
