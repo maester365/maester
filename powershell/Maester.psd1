@@ -33,7 +33,7 @@ Copyright = 'Maester. All rights reserved.'
 Description = 'This cmdlets in this module help you write Pester tests for your Microsoft 365 tenant configuration.'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '7.0'
+PowerShellVersion = '5.1'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
