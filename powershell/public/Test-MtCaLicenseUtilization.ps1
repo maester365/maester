@@ -45,7 +45,8 @@ function Test-MtCaLicenseUtilization {
 
     if ($License -eq "P1") {
         # Calculate the maximum number of users that can be covered by the P1 license
-        $MaxP1UserCount = $entitledP1LicenseCount -ge $TotalUserCount ? $TotalUserCount : $entitledP1LicenseCount
+        $MaxP1UserCount = $entitledP1LicenseCount
+        if ($entitledP1LicenseCount -ge $TotalUserCount) { $MaxP1UserCount = $TotalUserCount }
         $Result = [PSCustomObject]@{
             EntitledLicenseCount  = $MaxP1UserCount
             TotalLicensesUtilized = $P1FeatureUtilizations

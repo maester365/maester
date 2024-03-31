@@ -9,27 +9,40 @@ title: Introduction
 
 Maester is a test automation framework PowerShell module that helps you automate the testing of your APIs. It provides a simple way to write tests and run them on a schedule.
 
-#### Clone the **maester-tests** repository
-    - This is a collection of tests that we've created for you to get started.
-
-```powershell
-git clone https://github.com/maester365/maester-tests
-cd maester-tests
-```
 
 - Install the **Maester** PowerShell module.
 - Connect
 
 ```powershell
-git clone https://github.com/maester365/maester-tests
+md maester-tests
 cd maester-tests
 
 Install-Module Maester -Scope CurrentUser
+
+Install-MaesterTests
 
 Connect-Maester
 
 Invoke-Maester
 ```
+
+FAQ
+
+### Previously install 'Pester' version '3.4.0' conflicts with new module.
+
+If you see the following error when installing Maester, it means that you have an older version of Pester installed.
+
+```
+A Microsoft-signed module named 'Pester' with version '3.4.0' that was previously installed conflicts with the new module 'Pester'
+```
+
+Run the following command to install the latest version of Pester and then retry installing Maester.
+
+```powershell
+Install-Module Pester -Scope CurrentUser -SkipPublisherCheck -Force
+```
+
+
 
 ### Prerequisites
 

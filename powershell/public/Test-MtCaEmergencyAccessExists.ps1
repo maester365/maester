@@ -33,7 +33,8 @@ Function Test-MtCaEmergencyAccessExists {
         $result = $true
     } else {
         # If the number of excluded users is higher than the number of excluded groups, check the user object GUID
-        $CheckId = $ExcludedUsers -gt $ExcludedGroups ? $ExcludedUserObjectGUID : $ExcludedGroupObjectGUID
+        $CheckId = $ExcludedGroupObjectGUID
+        if ($ExcludedUsers -gt $ExcludedGroups) { $CheckId = $ExcludedUserObjectGUID }
         Write-Verbose "Emergency access account or group: $CheckId"
 
         $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }

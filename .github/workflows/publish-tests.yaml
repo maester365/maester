@@ -1,6 +1,6 @@
 # Updates the maester-tests repository with the latest tests
-#
-name: Publish Maester Tests
+# This is still required since we use it for the GitHub action and Azure DevOPs starter guide.
+name: publish-tests
 
 on:
   # Runs on pushes targeting the default branch

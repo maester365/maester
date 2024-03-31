@@ -70,7 +70,8 @@ Function Send-MtMail {
     $emailTemplate = $emailTemplate -replace "cid:image004.png@01DA7FCF.9FB97420", $imgFailedIcon
     $emailTemplate = $emailTemplate -replace "cid:image005.png@01DA7FCF.9FB97420", $imgNotRunIcon
 
-    $notRunCount = [string]::IsNullOrEmpty($MaesterResults.SkippedCount) ? "-" : $MaesterResults.SkippedCount
+    $notRunCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $notRunCount = "-" }
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
@@ -93,7 +94,7 @@ Function Send-MtMail {
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
-        if($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
+        if ($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
         $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Status)</td></tr>"
         $counter++
     }
@@ -130,7 +131,7 @@ Function Send-MtMail {
 
     $sendMailUri = "https://graph.microsoft.com/v1.0/me/sendMail"
 
-    if($UserId) {
+    if ($UserId) {
         $sendMailUri = "https://graph.microsoft.com/v1.0/users/$UserId/sendMail"
     }
 

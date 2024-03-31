@@ -10,7 +10,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 const config = {
   title: "Maester",
   tagline:
-    "Continuously monitor your Microsoft 365 tenant's security configuration!",
+    "Continuously monitor your Microsoft 365 security configuration!",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
