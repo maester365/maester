@@ -2,6 +2,9 @@
 
 #>
 Function Update-MtMaesterTests {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param(
         # The path to install the Maester tests to, defaults to the current directory.
@@ -22,7 +25,7 @@ Function Update-MtMaesterTests {
 
     $targetFolderExists = (Test-Path -Path $Path)
 
-    $installOrUpdate = if ($IsInstall) { "installed" } else { "updated" }
+    $installOrUpdate = if ($Install) { "installed" } else { "updated" }
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
         $itemsToDelete = Get-ChildItem -Path $Path -Exclude "Custom"
