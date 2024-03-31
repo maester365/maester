@@ -12,6 +12,7 @@
     Get-MtLicenseInformation -Product EntraID
 #>
 function Get-MtLicenseInformation {
+    [OutputType([string])]
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
@@ -19,8 +20,10 @@ function Get-MtLicenseInformation {
         $Product
     )
 
+    Write-Verbose "Retrieving license information for $Product"
     switch ($Product) {
         "EntraID" {
+            Write-Verbose "Retrieving license information for Entra ID"
             $AvailablePlans = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/organization" | Select-Object -ExpandProperty value | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
             if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
                 $LicenseType = "P2"
@@ -29,6 +32,7 @@ function Get-MtLicenseInformation {
             } else {
                 $LicenseType = "Free"
             }
+            Write-Information "The license type for Entra ID is $LicenseType"
             return $LicenseType
             Break
         }
