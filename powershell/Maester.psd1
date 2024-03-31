@@ -71,7 +71,7 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester',
-               'Disconnect-Maester', 'Get-MtConditionalAccessPolicy', 'Get-MtEntraUser',
+               'Disconnect-Maester', 'Get-MtConditionalAccessPolicy', 'Get-MtUser',
                'Get-MtGraphScope', 'Get-MtLicenseInformation',
                'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest',
                'Send-MtMail', 'Test-MtAppManagementPolicyEnabled',
@@ -88,7 +88,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
                'Test-MtCaRequirePasswordChangeForHighUserRisk',
-               'Test-MtCaSecureSecurityInfoRegistration',
+               'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication',
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01',
                'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06',
                'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03',

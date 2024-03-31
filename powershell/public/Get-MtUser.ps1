@@ -1,4 +1,5 @@
-function Get-MtEntraUser {
+function Get-MtUser {
+    [OutputType([System.Collections.ArrayList])]
     [CmdletBinding()]
     param (
         [Parameter()]
