@@ -19,11 +19,14 @@ function Test-MtConditionalAccessWhatIf {
     param (
         # The UserId to test the Conditional Acccess policie with
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
+        [ValidateScript({ $_ -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' })]
         [string]$UserId,
 
         # The applications that should be tested Default: All
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ApplicationBasedCA")]
-        [string[]]$IncludeApplications = "All",
+        # Must be a valid application ID (GUID)
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ApplicationBasedCA", Mandatory)]
+        [ValidateScript({ $_ -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' })]
+        [string[]]$IncludeApplications,
 
         # The user action that should be tested. Default: registerOrJoinDevices
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "UserActionBasedCA")]
@@ -74,7 +77,7 @@ function Test-MtConditionalAccessWhatIf {
         $ConditionalAccessWhatIfDefinition = @{
             "conditionalAccessWhatIfSubject"    = @{
                 "@odata.type" = "#microsoft.graph.userSubject"
-                "userId"      = "$userId"
+                "userId"      = $UserId
             }
             "conditionalAccessContext"          = $CAContext
             "conditionalAccessWhatIfConditions" = @{
