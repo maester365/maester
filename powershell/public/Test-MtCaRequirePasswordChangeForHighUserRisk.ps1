@@ -20,6 +20,7 @@ Function Test-MtCaRequirePasswordChangeForHighUserRisk {
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Only check policies that have password change as a grant control
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -contains 'passwordChange' }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -30,11 +31,19 @@ Function Test-MtCaRequirePasswordChangeForHighUserRisk {
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies require password change for risky users`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy requires a password change for risky users."
+    }
+    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result
 }
