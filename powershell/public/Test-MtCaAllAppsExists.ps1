@@ -21,7 +21,7 @@
 #>
 
 Function Test-MtCaAllAppsExists {
-  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plurality')]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
   [CmdletBinding()]
   [OutputType([bool])]
   param (
@@ -30,7 +30,17 @@ Function Test-MtCaAllAppsExists {
     [switch] $SkipCheckAllUsers = $false
   )
 
-  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" } | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
+
+  $testDescription = "
+  Microsoft recommends creating at least one conditional access policy targetting all cloud apps and ideally all users.
+
+  See [Plan a Conditional Access deployment - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app)"
+  if ($SkipCheckAllUsers.IsPresent) {
+    $testResult = "These conditional access policies target all cloud apps:`n`n"
+  } else {
+    $testResult = "These conditional access policies target all cloud apps and all users:`n`n"
+  }
 
   $result = $false
   foreach ($policy in $policies) {
@@ -39,11 +49,21 @@ Function Test-MtCaAllAppsExists {
     ) {
       $result = $true
       $currentresult = $true
+      $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
     } else {
       $currentresult = $false
     }
     Write-Verbose "$($policy.displayName) - $currentresult"
   }
+
+  if ($result -eq $false) {
+    if ($SkipCheckAllUsers.IsPresent) {
+      $testResult = "There was no conditional access policy targeting all cloud apps."
+    } else {
+      $testResult = "There was no conditional access policy targeting all cloud apps and all users."
+    }
+  }
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
   return $result
 }

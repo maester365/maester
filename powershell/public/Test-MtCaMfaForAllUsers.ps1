@@ -13,7 +13,7 @@
 #>
 
 Function Test-MtCaMfaForAllUsers {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='AllUsers is a well known term for conditional access policies.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'AllUsers is a well known term for conditional access policies.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -21,6 +21,7 @@ Function Test-MtCaMfaForAllUsers {
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -31,11 +32,19 @@ Function Test-MtCaMfaForAllUsers {
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies require multi-factor authentication for all users:`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy requires multi-factor authentication for all users."
+    }
+    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result
 }

@@ -20,6 +20,7 @@ Function Test-MtCaSecureSecurityInfoRegistration {
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -31,11 +32,19 @@ Function Test-MtCaSecureSecurityInfoRegistration {
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies secure security info registration.`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy securing security info registration."
+    }
+    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result
 }

@@ -20,6 +20,7 @@ Function Test-MtCaMfaForGuest {
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $GuestTypes = @( "internalGuest", "b2bCollaborationGuest", "b2bCollaborationMember", "b2bDirectConnectUser", "otherExternalUser", "serviceProvider" )
 
@@ -39,11 +40,19 @@ Function Test-MtCaMfaForGuest {
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies require multi-factor authentication for guest accounts:`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy requires multi-factor authentication for guest accounts."
+    }
+    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result
 }
