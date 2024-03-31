@@ -196,8 +196,6 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green $motd
 
-    Get-IsNewMaesterVersionAvailable
-
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient
@@ -248,6 +246,9 @@ Function Invoke-Maester {
         if ($MailRecipient) {
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
+
+        Get-IsNewMaesterVersionAvailable | Out-Null
+
         if ($PassThru) {
             return $maesterResults
         }
