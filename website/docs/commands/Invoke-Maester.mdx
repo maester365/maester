@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Runs the Pester tests and generates a report of the results.
+description: This is the main Maester command that runs the tests and generates a report of the results.
 id: Invoke-Maester
 title: Invoke-Maester
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Runs the Pester tests and generates a report of the results.
+This is the main Maester command that runs the tests and generates a report of the results.
 
 ## SYNTAX
 
@@ -18,12 +18,11 @@ Runs the Pester tests and generates a report of the results.
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-OutputHtmlFile <String>]
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-NonInteractive] [-PassThru]
+ [-MailRecipient <String[]>] [-MailTestResultsUri <String>] [-MailUserId <String>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-This helper script runs Pester tests and generates a report of the results in HTML format.
 
 Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
@@ -39,12 +38,12 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 Invoke-Maester
 ```
 
-Runs all the Pester tests and generates a report of the results in the ./test-results folder.
+Runs all the Pester test files under the current folder and generates a report of the results in the ./test-results folder.
 
 ### EXAMPLE 2
 
 ```powershell
-Invoke-Maester ./tests/Maester
+Invoke-Maester ./maester-tests
 ```
 
 Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
@@ -76,7 +75,7 @@ Runs all the Pester tests and generates a report of the results in the ./my-test
 ### EXAMPLE 6
 
 ```powershell
-Invoke-Maester -OutputFile "./test-results/TestResults.html"
+Invoke-Maester -OutputHtmlFile "./test-results/TestResults.html"
 ```
 
 Runs all the Pester tests and generates a report of the results in the specified file.
@@ -90,6 +89,14 @@ Invoke-Maester -Path ./tests/EIDSCA
 Runs all the Pester tests in the EIDSCA folder.
 
 ### EXAMPLE 8
+
+```powershell
+Invoke-Maester -MailRecipient john@contoso.com
+```
+
+Runs all the Pester tests in the EIDSCA folder.
+
+### EXAMPLE 9
 
 ```powershell
 $configuration = [PesterConfiguration]::Default
@@ -289,6 +296,60 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MailRecipient
+
+Optional.
+The email addresses of the recipients.
+e.g.
+john@contoso.com
+No email will be sent if this parameter is not provided.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MailTestResultsUri
+
+Uri to the detailed test results page.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MailUserId
+
+The user id of the sender of the mail.
+Defaults to the current user.
+This is required when using application permissions.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

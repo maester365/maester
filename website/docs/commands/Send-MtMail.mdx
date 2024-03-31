@@ -15,8 +15,8 @@ Send an email with the summary of the Maester test results
 ## SYNTAX
 
 ```powershell
-Send-MtMail [-MaesterResults] <PSObject> [-Recipients] <String[]> [-Subject <String>]
- [-TestResultsUri <String>] [-UserId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Send-MtMail [-MaesterResults] <PSObject> [-Recipient] <String[]> [-Subject <String>] [-TestResultsUri <String>]
+ [-UserId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,7 +39,7 @@ must be granted to the application in the Microsoft Entra portal.
 ### EXAMPLE 1
 
 ```powershell
-Send-MtMail -MaesterResults $MaesterResults -Recipients john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 ```
 
 Sends an email with the summary of the Maester test results to two users along with the link to the detailed test results.
@@ -62,7 +62,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Recipients
+### -Recipient
 
 The email addresses of the recipients.
 e.g.
