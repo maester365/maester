@@ -16,7 +16,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaEmergencyAccessExists | Should -Be $true -Because "there is no emergency access account or group present in all enabled policies"
     }
     It "MT.1006: At least one Conditional Access policy is configured to require MFA for admins. See https://maester.dev/docs/tests/MT.1006" {
-        Test-MtCaAllAppsExists | Should -Be $true -Because "there is no policy that requires MFA for admins"
+        Test-MtCaMfaForAdmin | Should -Be $true -Because "there is no policy that requires MFA for admins"
     }
     It "MT.1007: At least one Conditional Access policy is configured to require MFA for all users. See https://maester.dev/docs/tests/MT.1007" {
         Test-MtCaMfaForAllUsers | Should -Be $true -Because "there is no policy that requires MFA for all users"

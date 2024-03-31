@@ -28,6 +28,12 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
         "windowsPhone"
     )
 
+    $testDescription = "
+Microsoft recommends blocking access for unknown or unsupported device platforms.
+
+See [Block access for unknown or unsupported device platform - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device)"
+    $testResult = "These conditional access policies block access for unknown or unsupported device platforms:`n`n"
+
     $result = $false
     foreach ($policy in $policies) {
         try {
@@ -42,11 +48,17 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
         ) {
             $result = $true
             $currentresult = $true
+            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ($result -eq $false) {
+        $testResult = "There was no conditional access policy blocking access for unknown or unsupported device platforms."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
     return $result
 }
