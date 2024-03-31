@@ -72,7 +72,7 @@
       It's recommended to use managed identities for Service Principals with high privileges."
     }
     UserMailbox {
-      $DirectAssignments | Where-Object { $_.principal.provisionedPlans -contains "exchange" }
+      $DirectAssignments | Where-Object { $_.principal.provisionedPlans.service -contains "exchange" }
       $testDescription = "
       Take attention of mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
       It's recommended to use mail forwarding to regular work account and avoiding direct mail access from the privileged user."
@@ -80,9 +80,9 @@
   }
 
   if ($PermDirRoleAssignments.Count -eq "0") {
-    $result = $true
-  }  else {
     $result = $false
+  }  else {
+    $result = $true
 
     if ($PermDirRoleAssignment.directoryScopeId -eq "/") {
       $PermDirRoleAssignment.directoryScopeId = "Directory-level"
@@ -90,8 +90,16 @@
 
     $testResult = "These directory role assignments for $($FilterPrincipal) exists:`n`n"
     foreach ($PermDirRoleAssignment in $PermDirRoleAssignments) {
+
+      #region Portal Deep Link
+      switch ($PermDirRoleAssignment.principal.'@odata.type') {
+        "#microsoft.graph.user" { $PortalDeepLink = "https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/" }
+        "#microsoft.graph.servicePrincipal" { $PortalDeepLink = "https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/" }
+        "#microsoft.graph.group" { $PortalDeepLink = "https://portal.azure.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/" }
+      }
+
       $Role = $RoleDefinitions | where-object { $_.templateId -eq $PermDirRoleAssignment.roleDefinitionId }
-      $testResult += "  - $($PermDirRoleAssignment.principal.displayName) is $($FilterPrincipal) as $($Role.displayName) on $($PermDirRoleAssignment.directoryScopeId)"
+      $testResult += "  - [$($PermDirRoleAssignment.principal.displayName)]($($PortalDeepLink)$($PermDirRoleAssignment.principal.id)) with $($FilterPrincipal) as $($Role.displayName) on $($PermDirRoleAssignment.directoryScopeId)`n`n"
       Write-Verbose "Directory Role Assignment of $($FilterPrincipal) exists $($PermDirRoleAssignment.principal.displayName) is $($FilterPrincipal) as $($Role.displayName) on $($PermDirRoleAssignment.directoryScopeId)"
     }
     Add-MtTestResultDetail -Description $testDescription -Result $testResult

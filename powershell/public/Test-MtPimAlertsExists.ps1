@@ -48,6 +48,8 @@
 
   if ($Alerts.Count -gt "0") {
 
+    Write-Warning "HAFDJADFSKDFKSFKJFD"
+
     $testDescription = "
 
     ## Security Impact
@@ -67,14 +69,8 @@
     See [alert details of $($Alerts.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId))
     "
 
-    <#
-    foreach ($AffectedRoleAssignments in $Alerts.additionalData) {
-
-      Write-Host $_.item
-      $testResult += "  - $($_.item)"
-      Write-Host "$($_.item)"
-    }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult#>
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Write-Verbose "$testdescription - $testresult"
   }
   return $Alerts
 }
