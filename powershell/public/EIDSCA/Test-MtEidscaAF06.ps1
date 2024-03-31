@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Authentication Method - FIDO2 security key - Restrict specific keys is set to 'block'
+    Checks if Authentication Method - FIDO2 security key - Restrict specific keys is set to 'true'
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.enforcementType -eq 'block'
+     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
 
 .EXAMPLE
     Test-MtEidscaAF06
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.enforcementType -eq 'block'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
 #>
 
 Function Test-MtEidscaAF06 {
@@ -23,14 +23,14 @@ Function Test-MtEidscaAF06 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $tenantValue = $result.keyRestrictions.enforcementType
-    $testResult = $tenantValue -eq 'block'
+    $tenantValue = $result.keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block')
+    $testResult = $tenantValue -eq 'true'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'block'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
     }
     else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'block'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 

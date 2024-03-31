@@ -305,9 +305,9 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
    It "EIDSCA.AF06: Authentication Method - FIDO2 security key - Restrict specific keys. See https://maester.dev/docs/tests/EIDSCA.AF06" {
       <#
          Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
-         .keyRestrictions.enforcementType = 'block'
+         .keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') = 'true'
       #>
-      Test-MtEidscaAF06 | Should -Be 'block'
+      Test-MtEidscaAF06 | Should -Be 'true'
    }
 }
 
@@ -350,7 +350,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
    }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" {
-   It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests???. See https://maester.dev/docs/tests/EIDSCA.CR02" {
+   It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" {
       <#
          Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
          .notifyReviewers = 'true'
@@ -359,7 +359,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
    }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" {
-   It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire???. See https://maester.dev/docs/tests/EIDSCA.CR03" {
+   It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" {
       <#
          Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
          .notifyReviewers = 'true'
@@ -368,7 +368,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
    }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" {
-   It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days)???. See https://maester.dev/docs/tests/EIDSCA.CR04" {
+   It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" {
       <#
          Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
          .requestDurationInDays = '30'

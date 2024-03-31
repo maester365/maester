@@ -1,10 +1,10 @@
 ---
-title: EIDSCA.CR02 - Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests???
+title: EIDSCA.CR02 - Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests
 slug: /tests/EIDSCA.CR02
 sidebar_class_name: hidden
 ---
 
-# Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests???
+# Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests
 
 Specifies whether reviewers will receive notifications
 

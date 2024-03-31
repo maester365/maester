@@ -289,7 +289,7 @@ Function GetEidscaPsFunctionName($controlItem) {
 
 # Start by getting the latest EIDSCA config
 $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
-$aadsc = $aadsc[0].ControlArea
+$aadsc = ($aadsc | Where-Object {$_.CollectedBy -eq "Maester"}).ControlArea
 
 $testTemplate = @'
 Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {

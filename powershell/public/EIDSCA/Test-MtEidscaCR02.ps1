@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests??? is set to 'true'
+    Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is set to 'true'
 
 .DESCRIPTION
 
