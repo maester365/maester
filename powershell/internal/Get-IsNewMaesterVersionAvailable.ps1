@@ -15,6 +15,7 @@
 
 Function Get-IsNewMaesterVersionAvailable {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [OutputType([bool])]
     [CmdletBinding()]
     param()
 
@@ -27,6 +28,6 @@ Function Get-IsNewMaesterVersionAvailable {
             Write-Host "Run 'Update-Module Maester' to install the latest version." -ForegroundColor Yellow
             return $true
         }
-    } catch {}
+    } catch { Write-Verbose -Message $_}
     return $false
 }
