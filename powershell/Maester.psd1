@@ -69,39 +69,39 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester', 
-               'Disconnect-Maester', 'Get-MtConditionalAccessPolicy', 
-               'Get-MtGraphScope', 'Invoke-Maester', 'Invoke-MtGraphRequest', 
-               'Send-MtMail', 'Test-MtAppManagementPolicyEnabled', 
-               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
-               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
-               'Test-MtCaBlockLegacyOtherAuthentication', 
-               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
-               'Test-MtCaDeviceComplianceAdminsExists', 
-               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists', 
-               'Test-MtCaEnforceNonPersistentBrowserSession', 
-               'Test-MtCaEnforceSignInFrequency', 
-               'Test-MtCaExclusionForDirectorySyncAccount', 
-               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 
-               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers', 
-               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 
-               'Test-MtCaRequirePasswordChangeForHighUserRisk', 
-               'Test-MtCaSecureSecurityInfoRegistration', 
-               'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01', 
-               'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06', 
-               'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03', 
-               'Test-MtEidscaAM01', 'Test-MtEidscaAM02', 'Test-MtEidscaAM03', 
-               'Test-MtEidscaAM04', 'Test-MtEidscaAM06', 'Test-MtEidscaAM07', 
-               'Test-MtEidscaAM09', 'Test-MtEidscaAM10', 'Test-MtEidscaAP01', 
-               'Test-MtEidscaAP04', 'Test-MtEidscaAP05', 'Test-MtEidscaAP06', 
-               'Test-MtEidscaAP07', 'Test-MtEidscaAP08', 'Test-MtEidscaAP09', 
-               'Test-MtEidscaAP10', 'Test-MtEidscaAP14', 'Test-MtEidscaAT01', 
-               'Test-MtEidscaAT02', 'Test-MtEidscaAV01', 'Test-MtEidscaCP01', 
-               'Test-MtEidscaCP03', 'Test-MtEidscaCP04', 'Test-MtEidscaCR01', 
-               'Test-MtEidscaCR02', 'Test-MtEidscaCR03', 'Test-MtEidscaCR04', 
-               'Test-MtEidscaPR01', 'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 
-               'Test-MtEidscaPR05', 'Test-MtEidscaPR06', 'Test-MtEidscaST08', 
-               'Test-MtEidscaST09'
+FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester',
+               'Disconnect-Maester', 'Get-MtConditionalAccessPolicy',
+               'Get-MtGraphScope', 'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest',
+               'Send-MtMail', 'Test-MtAppManagementPolicyEnabled',
+               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction',
+               'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+               'Test-MtCaBlockLegacyOtherAuthentication',
+               'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
+               'Test-MtCaDeviceComplianceAdminsExists',
+               'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
+               'Test-MtCaEnforceNonPersistentBrowserSession',
+               'Test-MtCaEnforceSignInFrequency',
+               'Test-MtCaExclusionForDirectorySyncAccount',
+               'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
+               'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
+               'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
+               'Test-MtCaRequirePasswordChangeForHighUserRisk',
+               'Test-MtCaSecureSecurityInfoRegistration',
+               'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01',
+               'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06',
+               'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03',
+               'Test-MtEidscaAM01', 'Test-MtEidscaAM02', 'Test-MtEidscaAM03',
+               'Test-MtEidscaAM04', 'Test-MtEidscaAM06', 'Test-MtEidscaAM07',
+               'Test-MtEidscaAM09', 'Test-MtEidscaAM10', 'Test-MtEidscaAP01',
+               'Test-MtEidscaAP04', 'Test-MtEidscaAP05', 'Test-MtEidscaAP06',
+               'Test-MtEidscaAP07', 'Test-MtEidscaAP08', 'Test-MtEidscaAP09',
+               'Test-MtEidscaAP10', 'Test-MtEidscaAP14', 'Test-MtEidscaAT01',
+               'Test-MtEidscaAT02', 'Test-MtEidscaAV01', 'Test-MtEidscaCP01',
+               'Test-MtEidscaCP03', 'Test-MtEidscaCP04', 'Test-MtEidscaCR01',
+               'Test-MtEidscaCR02', 'Test-MtEidscaCR03', 'Test-MtEidscaCR04',
+               'Test-MtEidscaPR01', 'Test-MtEidscaPR02', 'Test-MtEidscaPR03',
+               'Test-MtEidscaPR05', 'Test-MtEidscaPR06', 'Test-MtEidscaST08',
+               'Test-MtEidscaST09', 'Update-MaesterTests'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -110,7 +110,7 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'Invoke-MtMaester', 'Connect-MtMaester', 'Connect-MtGraph', 
+AliasesToExport = 'Invoke-MtMaester', 'Connect-MtMaester', 'Connect-MtGraph',
                'Disconnect-MtGraph', 'Disconnect-MtMaester'
 
 # DSC resources to export from this module
