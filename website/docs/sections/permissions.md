@@ -1,2 +1,3 @@
 - **Directory.Read.All**
 - **Policy.Read.All**
+- **Reports.Read.All**

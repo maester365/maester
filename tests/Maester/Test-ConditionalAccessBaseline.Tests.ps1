@@ -74,7 +74,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
 
 Describe "Security Defaults" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -ne "Free" ) {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" {
-        $SecurityDefaults = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/identitySecurityDefaultsEnforcementPolicy" | Select-Object -ExpandProperty isEnabled
+        $SecurityDefaults = Invoke-MtGraphRequest -RelativeUri "policies/identitySecurityDefaultsEnforcementPolicy" -ApiVersion beta | Select-Object -ExpandProperty isEnabled
         $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
     }
 }

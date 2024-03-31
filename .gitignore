@@ -491,3 +491,4 @@ test.json
 test-results
 
 website/build/
+/powershell/maester-tests

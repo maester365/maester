@@ -14,7 +14,7 @@
 #>
 
 Function Test-MtCaEmergencyAccessExists {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -33,23 +33,17 @@ Function Test-MtCaEmergencyAccessExists {
         $result = $true
     } else {
         # If the number of excluded users is higher than the number of excluded groups, check the user object GUID
-        $CheckId = $ExcludedUsers -gt $ExcludedGroups ? $ExcludedUserObjectGUID : $ExcludedGroupObjectGUID
+        $CheckId = $ExcludedGroupObjectGUID
+        if ($ExcludedUsers -gt $ExcludedGroups) { $CheckId = $ExcludedUserObjectGUID }
         Write-Verbose "Emergency access account or group: $CheckId"
-        $testDescription = "
-It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
-This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
-Detected emergency access account or group: $CheckId
+        $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
 
-See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)"
-        $testResult = "These conditional access policies don't have the emergency access account or group excluded:`n`n"
-        # Check if the emergency access account or group is excluded from all policies and write verbose output
-        $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups } | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
-            $testResult += "  - [$_](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($_.id)?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+        $policiesWithoutEmergency | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
             Write-Verbose "Conditional Access policy $_ does not exclude emergency access account or group"
         }
-        Add-MtTestResultDetail -Description $testDescription -Result $testResult
     }
 
+    Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
     return $result
 }

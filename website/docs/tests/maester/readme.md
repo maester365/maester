@@ -1,5 +1,5 @@
 ---
-title: Maester Tests
+title: 🔥 Maester Tests
 description: Overview of the Maester tests
 ---
 

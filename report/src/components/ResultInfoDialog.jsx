@@ -14,17 +14,61 @@ export default function ResultInfoDialog(props) {
   const openInNewTab = (url) => {
     window.open(url, "_blank", "noreferrer");
   };
-  function truncateText(text) {
-    var maxLength = 120;
-    if (text.length <= maxLength) return text;
-    var truncated = text.substring(0, 120) + "...";
-    return truncated;
+
+  function getTestResult() {
+
+    if (props.Item.ResultDetail) {
+      return props.Item.ResultDetail.TestResult;
+    }
+    else if (props.Item.ResultDetail) {
+      return props.Item.ResultDetail;
+    }
+    else {
+      if (props.Item.Result === "Passed") {
+        return "Tested succesfully.";
+      }
+      if (props.Item.Result === "Failed") {
+        return "Test failed.";
+      }
+      if (props.Item.Result === "Skipped") {
+        return "Test skipped.";
+      }
+    }
+    return "";
+  }
+
+  function getTestDetails() {
+    if (props.Item.ResultDetail) {
+      return props.Item.ResultDetail.TestDescription;
+    }
+    else {
+      //trim the scriptblock whitespace at the beginning and end
+      if (props.Item.ScriptBlock) {
+        return props.Item.ScriptBlock.replace(/^\s+|\s+$/g, '');
+      }
+    }
+    return "";
+  }
+
+  //Set bgcolor based on result
+  function getBgColor(result) {
+
+    if (result === "Passed") {
+      return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";
+    }
+    if (result === "Failed") {
+      return "bg-red-100 dark:bg-red-900 dark:bg-opacity-30";
+    }
+    if (result === "Skipped") {
+      return "bg-yellow-100";
+    }
+    return "bg-gray-100";
   }
 
   return (
     <>
       {props.Title &&
-        <button onClick={() => setIsOpen(true)} class="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate">
+        <button onClick={() => setIsOpen(true)} className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate">
           <span className="truncate whitespace-normal tremor-Button-text text-tremor-default" >{props.Item.Name}</span>
         </button>
       }
@@ -41,42 +85,25 @@ export default function ResultInfoDialog(props) {
             </div>
             <Title>{props.Item.Name}</Title>
             {props.Item.HelpUrl &&
-              <div className="text-left">
+              <div className="text-left mt-2">
                 <Button icon={ArrowTopRightOnSquareIcon} variant="light" onClick={() => openInNewTab(props.Item.HelpUrl)}>
-                  Learn more
+                  Learn more @ maester.dev
                 </Button>
               </div>
             }
             <Divider></Divider>
 
-            {props.Item.ResultDetail &&
-              <>
-                <Card>
-                  <Title>Overview</Title>
-                  <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestDescription}</Markdown>
-                </Card>
-                <Card className="mt-4 break-words">
-                  <Title>Test Results</Title>
-                  <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{props.Item.ResultDetail.TestResult}</Markdown>
-                </Card>
-              </>
-            }
+            <Card className={"break-words " + getBgColor(props.Item.Result)}>
+              <div className="flex flex-row items-center">
+                <Title>Test result</Title><StatusLabelSm Result={props.Item.Result} />
+              </div>
+              <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestResult()}</Markdown>
+            </Card>
+            <Card className="mt-4 bg-slate-50">
+              <Title>Test details</Title>
+              <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestDetails()}</Markdown>
+            </Card>
 
-            {!props.Item.ResultDetail &&
-              <>
-                <Card>
-                  <Title>Test</Title>
-                  <Text className="break-words">{props.Item.ScriptBlock}</Text>
-
-                </Card>
-                {props.Item.ErrorRecord &&
-                  <Card className="mt-4 break-words">
-                    <Title>Reason for failure</Title>
-                    <Text>{props.Item.ErrorRecord}</Text>
-                  </Card>
-                }
-              </>
-            }
             <Card className="mt-4">
               <Title>Category</Title>
               <Text>{props.Item.Block}</Text>

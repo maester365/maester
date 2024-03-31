@@ -33,7 +33,7 @@ Function Get-MtGraphScope {
 
 
     # Default read-only scopes required for Maester.
-    $scopes = @(
+    $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
         'Directory.Read.All'
         'Policy.Read.All'
         'Reports.Read.All'

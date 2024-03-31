@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Package ./tests to PowerShell module
+        id: package-tests
+        shell: pwsh
+        run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
+
       - name: Get PowerShell module version
         id: moduleversion
         shell: pwsh

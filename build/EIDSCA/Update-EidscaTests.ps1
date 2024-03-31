@@ -3,23 +3,26 @@
   Generates Maester tests for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
   .DESCRIPTION
-  * Downloads the latest version from https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv3/config/AadSecConfig.json
+  * Downloads the latest version from https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json
   * Generates Maester tests for each test defined in the JSON file
 
   .EXAMPLE
-    ./build/EIDSCA/Update-EidscaTests.ps1 -TestFilePath ./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1 -DocsPath ./website/docs/tests/EIDSCA
+    ./build/EIDSCA/Update-EidscaTests.ps1
 #>
 
 param (
     # Folder where generated test file should be written to.
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory = $true)]
-    [string] $TestFilePath,
+    [string] $TestFilePath = "./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
+
     # Folder where docs should be generated
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 1, Mandatory = $true)]
-    [string] $DocsPath,
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 2, Mandatory = $false)]
+    [string] $DocsPath = "./website/docs/tests/EIDSCA",
+
+    [string] $PowerShellFunctionsPath = "./powershell/public/EIDSCA",
+
+    # Control name to filter on
     [string] $ControlName = "*",
-    [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 3, Mandatory = $false)]
+
+    # URL to the EIDSCA config file
     [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
 )
 
@@ -68,7 +71,7 @@ Function GetPageMarkdownLink($uri) {
 
 Function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
     $graphExplorerUrl = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
-    return "[View in Graph Explorer]($graphExplorerUrl)"
+    return "[Open in Graph Explorer]($graphExplorerUrl)"
 }
 
 Function GetMitreUrl($item) {
@@ -186,6 +189,32 @@ mindmap
     return $mermaid
 }
 
+Function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
+    if([string]::IsNullOrEmpty($uri)) { return '' }
+    if($lookupTitle) {
+        $pageTitle = GetPageTitle($uri)
+        if(![string]::IsNullOrEmpty($pageTitle)) {
+            $title = $pageTitle
+        }
+    }
+    return "- [$title]($uri)"
+}
+
+Function GetPortalDeepLinkMarkdown($portalDeepLink) {
+    $result = $portalDeepLink
+    if (![string]::IsNullOrEmpty($portalDeepLink)) {
+        $domain = ($uri -as [System.URI]).Host
+        $result =  GetMarkdownLink -uri $portalDeepLink -title "[View in $domain]" # Set default markdown
+
+        if ($portalDeepLink -like "*entra.microsoft.com*" -or $portalDeepLink -like "*Microsoft_AAD_IAM*") {
+            $result = GetMarkdownLink -uri $portalDeepLink -title "View in Microsoft Entra admin center"
+        } elseif ($portalDeepLink -like "*admin.microsoft.com*") {
+            $result = GetMarkdownLink -uri $portalDeepLink -title "Open in Microsoft 365 admin center"
+        }
+    }
+    return $result
+}
+
 Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $relativeUri = GetRelativeUri($control.GraphUri)
     $apiVersion = GetVersion($control.GraphUri)
@@ -193,64 +222,94 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
-    $portalDeepLink = ''
-    if ($controlItem.PortalDeepLink -ne '') {
-        $portalDeepLink = "| **Azure Portal** | [View in Azure Portal]($($controlItem.PortalDeepLink)) | "
-    }
-    $output = ''
-    if ($currentValue -eq '' -or $control.ControlName -eq '') {
-        Write-Warning 'Skipping'
-    } else {
+    $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
+    $portalDeepLinkMarkdown = GetPortalDeepLinkMarkdown -portalDeepLink $controlItem.PortalDeepLink
+    $graphDocsUrlMarkdown = GetMarkdownLink -uri $control.GraphDocsUrl -title "Graph Docs" -lookupTitle
 
-        if ($isDoc) {
-            # Only do this for docs
-            $graphDocsUrl = GetPageMarkdownLink($control.GraphDocsUrl)
-            $recommendation = GetPageMarkdownLink($controlItem.Recommendation)
-            $graphExplorerUrl = GetGraphExplorerMarkDownLink -relativeUri $relativeUri -apiVersion $apiVersion
-            $mitreDiagram = GetMitreDiagram -controlItem $controlItem
-        }
+$output = ''
+if ($currentValue -eq '' -or $control.ControlName -eq '') {
+    Write-Warning 'Skipping'
+} else {
+    $graphExplorerUrl = GetGraphExplorerMarkDownLink -relativeUri $relativeUri -apiVersion $apiVersion
 
-        $output = $template
-        $output = $output -replace '%DocName%', $docName
-        $output = $output -replace '%ControlName%', $control.ControlName
-        $output = $output -replace '%ControlId%', $control.ControlName
-        $output = $output -replace '%Description%', $control.Description
-        $output = $output -replace '%ControlItemDescription%', $controlItem.Description
-        $output = $output -replace '%Severity%', $controlItem.Severity
-        $output = $output -replace '%DisplayName%', $controlItem.DisplayName
-        $output = $output -replace '%Name%', $controlItem.Name
-        $output = $output -replace '%CheckId%', $controlItem.CheckId
-        $output = $output -replace '%Recommendation%', $recommendation
-        $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
-        $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
-        $output = $output -replace '%MitreMitigation%', $controlItem.MitreMitigation
-        $output = $output -replace '%PortalDeepLink%', $portalDeepLink
-        $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
-        $output = $output -replace '%RelativeUri%', $relativeUri
-        $output = $output -replace '%ApiVersion%', $apiVersion
-        $output = $output -replace '%RecommendedValue%', $recommendedValue
-        $output = $output -replace '%CurrentValue%', $CurrentValue
-        $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
-        $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
-        $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
-        $output = $output -replace '%MitreDiagram%', $mitreDiagram
+    if ($isDoc) {
+        # Only do this for docs
+        $graphDocsUrl = GetPageMarkdownLink($control.GraphDocsUrl)
+        $recommendation = GetPageMarkdownLink($controlItem.Recommendation)
+        $mitreDiagram = GetMitreDiagram -controlItem $controlItem
     }
 
-    return $output
+    $output = $template
+    $output = $output -replace '%DocName%', $docName
+    $output = $output -replace '%ControlName%', $control.ControlName
+    $output = $output -replace '%Description%', $control.Description
+    $output = $output -replace '%ControlItemDescription%', $controlItem.Description
+    $output = $output -replace '%Severity%', $controlItem.Severity
+    $output = $output -replace '%DisplayName%', $controlItem.DisplayName
+    $output = $output -replace '%Name%', $controlItem.Name
+    $output = $output -replace '%CheckId%', $controlItem.CheckId
+    $output = $output -replace '%Recommendation%', $recommendation
+    $output = $output -replace '%MitreTactic%', $controlItem.MitreTactic
+    $output = $output -replace '%MitreTechnique%', $controlItem.MitreTechnique
+    $output = $output -replace '%MitreMitigation%', $controlItem.MitreMitigation
+    $output = $output -replace '%PortalDeepLink%', $portalDeepLink
+    $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
+    $output = $output -replace '%RelativeUri%', $relativeUri
+    $output = $output -replace '%ApiVersion%', $apiVersion
+    $output = $output -replace '%RecommendedValue%', $recommendedValue
+    $output = $output -replace '%CurrentValue%', $CurrentValue
+    $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
+    $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
+    $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
+    $output = $output -replace '%MitreDiagram%', $mitreDiagram
+    $output = $output -replace '%PSFunctionName%', $psFunctionName
+    $output = $output -replace '%PortalDeepLinkMarkdown%', $portalDeepLinkMarkdown
+    $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
 }
 
+return $output
+}
+
+# Returns the contents of a file named @template.txt at the given folder path
+Function GetTemplate($folderPath, $templateFileName = "@template.txt") {
+    $templateFilePath = Join-Path $folderPath $templateFileName
+    return Get-Content $templateFilePath -Raw
+}
+
+Function CreateFile($folderPath, $fileName, $content) {
+    $filePath = Join-Path $folderPath $fileName
+    $content | Out-File $filePath -Encoding utf8
+}
+
+Function GetEidscaPsFunctionName($controlItem) {
+    $powerShellFunctionName = "Test-Mt$($controlItem.CheckId)"
+    $powerShellFunctionName = $powerShellFunctionName.Replace("EIDSCA.", "Eidsca")
+    return $powerShellFunctionName
+}
+
+# Start by getting the latest EIDSCA config
 $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
 $aadsc = $aadsc[0].ControlArea
 
 $testTemplate = @'
-    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
-        $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
-        $result.%CurrentValue% | Should -Be %RecommendedValue% -Because "%RelativeUri%/%CurrentValue% should be %RecommendedValue%"
-    }
+Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
+   It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
+      <#
+         Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
+         .%CurrentValue% = %RecommendedValue%
+      #>
+      %PSFunctionName% | Should -Be %RecommendedValue%
+   }
+}
 '@
 
-$docsTemplateFilePath = Join-Path $DocsPath '@template.txt'
-$docsTemplate = Get-Content $docsTemplateFilePath -Raw
+# Remove previously generated files
+Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
+Get-ChildItem -Path $PowerShellFunctionsPath -Filter "*" -Exclude "@template*" | Remove-Item -Force
+
+$docsTemplate = GetTemplate $DocsPath
+$psTemplate = GetTemplate $PowerShellFunctionsPath "@templateps1.txt" # Use the .txt extension to avoid running the script
+$psMarkdownTemplate = GetTemplate $PowerShellFunctionsPath "@template.md"
 
 $sb = [System.Text.StringBuilder]::new()
 
@@ -265,25 +324,27 @@ foreach ($control in $aadsc) {
     foreach ($controlItem in $control.Controls) {
         # Export check only if RecommendedValue is set
         if (($null -ne $controlItem.RecommendedValue -and $controlItem.RecommendedValue -ne "")) {
-            $docName = "EIDSCA.$($control.GraphEndpoint).$($controlItem.Name)"
+            $docName = $controlItem.CheckId
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+            $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
+            $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
+
 
             if ($testOutput -ne '') {
                 [void]$testOutputList.AppendLine($testOutput)
 
-                $docFilePath = Join-Path $DocsPath "$docName.md"
-                $docsOutput | Out-File $docFilePath -Encoding utf8
+                CreateFile $DocsPath "$docName.md" $docsOutput
+                $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
+                CreateFile $PowerShellFunctionsPath "$psFunctionName.ps1" $psOutput
+                CreateFile $PowerShellFunctionsPath "$psFunctionName.md" $psMarkdownOutput
             }
         } else {
             Write-Warning "$($controlItem.CheckId) - $($controlItem.DisplayName) has no recommended value!"
         }
     }
     if ($testOutputList.Length -ne 0) {
-        $header = 'Describe "%ControlName%" -Tag "EIDSCA", "Security", "All" {'.Replace("%ControlName%", $control.ControlName)
-        [void]$sb.AppendLine($header)
         [void]$sb.AppendLine($testOutputList)
-        [void]$sb.AppendLine("}")
     }
 }
 $output = $sb.ToString()

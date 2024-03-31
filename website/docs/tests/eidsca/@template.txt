@@ -1,10 +1,10 @@
 ---
-title: %DisplayName% (%Name%)
-slug: /tests/%DocName%
+title: %CheckId% - %ControlName% - %DisplayName%
+slug: /tests/%CheckId%
 sidebar_class_name: hidden
 ---
 
-# %DisplayName%
+# %ControlName% - %DisplayName%
 
 %ControlItemDescription%
 
