@@ -2,7 +2,7 @@
 
 **Monitor your Microsoft 365 tenant's security configuration using Maester!**
 
-Maester is a PowerShell based test automation framework to help you monitor your Microsoft 365 tenant's security configuration.
+Maester is a PowerShell based test automation framework to help you monitor your Microsoft 365 security configuration.
 
 To learn more about Maester and to get started see [Maester.dev](https://maester.dev)
 
