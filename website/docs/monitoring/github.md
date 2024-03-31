@@ -300,16 +300,16 @@ Select the **Run Maester Tests** job from **Jobs** in the left pane to view the 
 
 ## Keeping your Maester tests up to date
 
-The Maester team will add new tests over time. To get the latest updates, use the commands below to sync your Azure repository with [maester-tests](https://github.com/maester365/maester-tests).
+The Maester team will add new tests over time. To get the latest updates, use the commands below to update your GitHub repository with the latest tests.
 
-Run this command once in your repository to add the maester-tests repository as a remote:
+- Clone your fork of the **maester-tests** repository to your local computer. See [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
+- Update the `Maester` PowerShell module to the latest version.
+- Change to the `maester-tests\tests` directory.
+- Run `Update-MaesterTests`.
 
-```bash
-git remote add public https://github.com/maester365/maester-tests
-```
+```powershell
+cd maester-tests\tests
 
-Run the following command to pull in updates from the maester-tests repository:
-
-```bash
-git pull public main
+Update-Module Maester -Force
+Update-MaesterTests
 ```

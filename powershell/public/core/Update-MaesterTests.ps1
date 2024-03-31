@@ -30,6 +30,7 @@ Function Update-MaesterTests {
         [Parameter(Mandatory = $false)]
         [string] $Path = ".\"
     )
+    Get-IsNewMaesterVersionAvailable | Out-Null
 
     Update-MtMaesterTests -Path $Path
 }

@@ -33,7 +33,7 @@ Function Update-MtMaesterTests {
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
             $itemsToDelete | ForEach-Object { $message += "  $($_.FullName)`n" }
-            $message += "Do you want to continue? (Y/n)"
+            $message += "Do you want to continue? (y/n): "
             $continue = Get-MtConfirmation $message
             if ($continue) {
                 $itemsToDelete | Remove-Item -Force
@@ -51,6 +51,11 @@ Function Update-MtMaesterTests {
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
     Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
-    Write-Host "Maester tests $installOrUpdate successfully. Run Invoke-Maester to start testing." -ForegroundColor Green
 
+    $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
+    if(Get-MgContext) {
+        $message = "Run Invoke-Maester to start testing."
+    }
+
+    Write-Host "Maester tests $installOrUpdate successfully!`n$message" -ForegroundColor Green
 }

@@ -196,6 +196,8 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green $motd
 
+    Get-IsNewMaesterVersionAvailable
+
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient

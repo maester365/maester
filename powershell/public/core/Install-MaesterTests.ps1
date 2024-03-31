@@ -27,6 +27,7 @@ Function Install-MaesterTests {
         [Parameter(Mandatory = $false)]
         [string] $Path = ".\"
     )
+    Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Installing Maester tests to $Path"
 
@@ -34,7 +35,7 @@ Function Install-MaesterTests {
 
     # Check if current folder is empty and prompt user to continue if it is not
     if ($targetFolderExists -and (Get-ChildItem -Path $Path).Count -gt 0) {
-        $message = "`nThe folder $Path is not empty.`nWe recommend installing the tests in an empty folder.`nDo you want to continue with this folder? (Y/n)"
+        $message = "`nThe folder $Path is not empty.`nWe recommend installing the tests in an empty folder.`nDo you want to continue with this folder? (y/n): "
         $continue = Get-MtConfirmation $message
         if (!$continue) {
             Write-Host "Maester tests not installed." -ForegroundColor Red
