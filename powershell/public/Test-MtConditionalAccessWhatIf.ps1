@@ -43,12 +43,16 @@ function Test-MtConditionalAccessWhatIf {
         # The sign in risk level of the user sign-in. Default: None
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [ValidateSet("None", "Low", "Medium", "High")]
-        [string]$SignInRiskLevel = "None"
+        [string]$SignInRiskLevel = "None",
 
-        # # The user risk level of the user signing in. Default: None
-        # [Parameter(ValueFromPipelineByPropertyName = $true)]
-        # [ValidateSet("None", "Low", "Medium", "High")]
-        # $UserRiskLevel = "None"
+        # The user risk level of the user signing in. Default: None
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [ValidateSet("None", "Low", "Medium", "High")]
+        [string]$UserRiskLevel = "None",
+
+        # Output all results
+        [Parameter()]
+        [switch]$AllResults
     )
 
     process {
@@ -74,6 +78,7 @@ function Test-MtConditionalAccessWhatIf {
             }
             "conditionalAccessContext"          = $CAContext
             "conditionalAccessWhatIfConditions" = @{
+                "userRiskLevel"   = $UserRiskLevel
                 "signInRiskLevel" = $SignInRiskLevel
                 "clientAppType"   = $ClientAppType
                 "devicePlatform"  = $DevicePlatform
@@ -84,11 +89,10 @@ function Test-MtConditionalAccessWhatIf {
 
         try {
             $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri "https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate" -Body ( $ConditionalAccessWhatIfDefinition | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
-            # Output raw result for debugging
-            Write-Verbose ( $ConditionalAccessWhatIfResult | ConvertTo-Json -Depth 99 | Out-String )
             # Filter out policies that do not apply
-            $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }
-            # Output filtered results
+            if (!$AllResults) {
+                $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }
+            }
             return $ConditionalAccessWhatIfResult
         } catch {
             Write-Error $_.Exception.Message
