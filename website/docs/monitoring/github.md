@@ -303,7 +303,7 @@ Select the **Run Maester Tests** job from **Jobs** in the left pane to view the 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update your GitHub repository with the latest tests.
 
 - Clone your fork of the **maester-tests** repository to your local computer. See [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
-- Update the `Maester` PowerShell module to the latest version.
+- Update the `Maester` PowerShell module to the latest version and load it.
 - Change to the `maester-tests\tests` directory.
 - Run `Update-MaesterTests`.
 
@@ -311,5 +311,6 @@ The Maester team will add new tests over time. To get the latest updates, use th
 cd maester-tests\tests
 
 Update-Module Maester -Force
+Import-Module Maester
 Update-MaesterTests
 ```

@@ -264,7 +264,7 @@ In the **Summary** tab select on any of the errors to view the raw logs from Mae
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update your Azure repository with the latest tests.
 
 - Clone your fork of the **maester-tests** from Azure DevOps to your local machine. See [Clone an existing Git repo](https://learn.microsoft.com/azure/devops/repos/git/clone).
-- Update the `Maester` PowerShell module to the latest version.
+- Update the `Maester` PowerShell module to the latest version and load it.
 - Change to the `maester-tests\tests` directory.
 - Run `Update-MaesterTests`.
 
@@ -272,5 +272,6 @@ The Maester team will add new tests over time. To get the latest updates, use th
 cd maester-tests\tests
 
 Update-Module Maester -Force
+Import-Module Maester
 Update-MaesterTests
 ```

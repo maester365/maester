@@ -53,7 +53,8 @@ function Test-MtCaLicenseUtilization {
         }
     } elseif ($License -eq "P2") {
         # Calculate the maximum number of users that can be covered by the P2 license
-        $MaxP2UserCount = $entitledP2LicenseCount -ge $TotalUserCount ? $TotalUserCount : $entitledP2LicenseCount
+        $MaxP2UserCount = $entitledP2LicenseCount
+        if ($entitledP2LicenseCount -ge $TotalUserCount) { $MaxP2UserCount = $TotalUserCount }
         $Result = [PSCustomObject]@{
             EntitledLicenseCount  = $MaxP2UserCount
             TotalLicensesUtilized = $P2FeatureUtilizations
