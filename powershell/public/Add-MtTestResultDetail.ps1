@@ -71,7 +71,7 @@ Function Add-MtTestResultDetail {
             $mdDescription = $splitContent[0]
             $mdResult = $splitContent[1]
 
-            if (!$hasGraphResults -and ![string]::IsNullOrEmpty($Result)) {
+            if (![string]::IsNullOrEmpty($Result)) {
                 # If a result was provided in the parameter insert it into the markdown content
                 $mdResult = $mdResult -replace "%TestResult%", $Result
             }
