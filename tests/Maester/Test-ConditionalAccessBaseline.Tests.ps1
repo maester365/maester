@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    $AvailablePlans = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/organization" | Select-Object -ExpandProperty value | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
+    $AvailablePlans = Invoke-MtGraphRequest -RelativeUri "organization" -ApiVersion beta | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
     if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
         $EntraIDPlan = "P2"
     } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d)" -in $AvailablePlans ) {
@@ -81,7 +81,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
 
 Describe "Security Defaults" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -ne "Free" ) {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" {
-        $SecurityDefaults = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/beta/policies/identitySecurityDefaultsEnforcementPolicy" | Select-Object -ExpandProperty isEnabled
+        $SecurityDefaults = Invoke-MtGraphRequest -RelativeUri "policies/identitySecurityDefaultsEnforcementPolicy" -ApiVersion beta | Select-Object -ExpandProperty isEnabled
         $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
     }
 }
