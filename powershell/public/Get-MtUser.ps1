@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+  Get a list of users from the tenant
+
+.DESCRIPTION
+    This function retrieves a list of users from the tenant.
+    You can specify the number of users to retrieve, the type of users (Member, Guest, Admin) and the role the users are member of.
+
+.PARAMETER Count
+    The number of users to retrieve. Default is 1.
+
+.PARAMETER UserType
+    The type of users to retrieve. Default is Member. Valid values are Member, Guest, Admin.
+
+.PARAMETER MemberOfRole
+    The role the users are member of. Default is None. Valid values are Global administrator, Application administrator, Authentication Administrator, Billing administrator, Cloud application administrator, Conditional Access administrator, Exchange administrator, Helpdesk administrator, Password administrator, Privileged authentication administrator, Privileged Role Administrator, Security administrator, SharePoint administrator, User administrator.
+
+.EXAMPLE
+    Get-MtUser -Count 5 -UserType Member
+    # Get 5 Member users from the tenant.
+
+#>
 function Get-MtUser {
     [OutputType([System.Collections.ArrayList])]
     [CmdletBinding()]
