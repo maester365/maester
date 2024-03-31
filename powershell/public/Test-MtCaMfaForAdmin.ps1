@@ -13,7 +13,7 @@
 #>
 
 Function Test-MtCaMfaForAdmin {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PolicyIncludesAllRoles is used in the condition.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllRoles is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -35,29 +35,7 @@ Function Test-MtCaMfaForAdmin {
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-
-    $testDescription = "
-This test checks if the tenant has at least one conditional access policy requiring MFA for admins.
-The following roles are considered as admin roles:
-
-- Global Administrator
-- Application Administrator
-- Authentication Administrator
-- Billing Administrator
-- Cloud Application Administrator
-- Conditional Access Administrator
-- Exchange Administrator
-- Helpdesk Administrator
-- Password Administrator
-- Privileged Authentication Administrator
-- Privileged Role Administrator
-- Security Administrator
-- SharePoint Administrator
-- User Administrator
-
-See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa)"
-    $testResult = "The following conditional access policies require multi-factor authentication for admins:`n`n"
-
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -74,17 +52,19 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
         ) {
             $result = $true
             $currentresult = $true
-            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
 
-    if ( $result -eq $false ) {
+    if ( $result ) {
+        $testResult = "The following conditional access policies require multi-factor authentication for admins:`n`n%TestResult%"
+    } else {
         $testResult = "No conditional access policy requires multi-factor authentication for all admin roles."
     }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 
     return $result
 }
