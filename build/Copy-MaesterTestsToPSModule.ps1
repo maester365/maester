@@ -14,8 +14,8 @@ param(
     [Parameter(Mandatory = $false)]
     [switch] $Force
 )
-$sourcePath = Join-Path $PSScriptRoot -ChildPath "..\tests"
-$destinationPath = Get-MtMaesterTestFolderPath
+$sourcePath = Join-Path $PSScriptRoot -ChildPath "../tests"
+$destinationPath = Join-Path -Path $PSScriptRoot -ChildPath "../powershell/maester-tests"
 
 if (-not (Test-Path -Path $sourcePath)) {
     Write-Error "The source path $sourcePath does not exist."
