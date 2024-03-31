@@ -45,6 +45,12 @@ Invoke-Maester -Path ./tests/EIDSCA
 Runs all the Pester tests in the EIDSCA folder.
 
 .EXAMPLE
+Invoke-Maester -MailRecipient john@contoso.com
+
+Runs all the Pester tests in the EIDSCA folder.
+
+
+.EXAMPLE
 ```
 $configuration = [PesterConfiguration]::Default
 $configuration.Run.Path = './tests/Maester'
@@ -98,7 +104,18 @@ Function Invoke-Maester {
         [switch] $NonInteractive,
 
         # Passes the output of the Maester tests to the console.
-        [switch] $PassThru
+        [switch] $PassThru,
+
+        # Optional. The email addresses of the recipients. e.g. john@contoso.com
+        # No email will be sent if this parameter is not provided.
+        [string[]] $MailRecipient,
+
+        # Uri to the detailed test results page.
+        [string] $MailTestResultsUri,
+
+        # The user id of the sender of the mail. Defaults to the current user.
+        # This is required when using application permissions.
+        [string] $MailUserId
     )
 
     function GetDefaultFileName() {
@@ -181,7 +198,8 @@ Function Invoke-Maester {
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
-    if (!(Test-MtContext)) { return }
+    $isMail = $null -ne $MailRecipient
+    if (!(Test-MtContext -SendMail:$isMail)) { return }
 
     $out = [PSCustomObject]@{
         OutputFolder         = $OutputFolder
@@ -225,6 +243,9 @@ Function Invoke-Maester {
             }
         }
 
+        if ($MailRecipient) {
+            Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
+        }
         if ($PassThru) {
             return $maesterResults
         }

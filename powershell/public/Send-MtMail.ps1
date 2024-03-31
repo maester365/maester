@@ -17,7 +17,7 @@
     must be granted to the application in the Microsoft Entra portal.
 
 .EXAMPLE
-    Send-MtMail -MaesterResults $MaesterResults -Recipients john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+    Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an email with the summary of the Maester test results to two users along with the link to the detailed test results.
 #>
@@ -31,7 +31,7 @@ Function Send-MtMail {
 
         # The email addresses of the recipients. e.g. john@contoso.com
         [Parameter(Mandatory = $true, Position = 1)]
-        [string[]] $Recipients,
+        [string[]] $Recipient,
 
         # The subject of the email. Defaults to 'Maester Test Results'.
         [string] $Subject,
@@ -70,7 +70,7 @@ Function Send-MtMail {
     $emailTemplate = $emailTemplate -replace "cid:image004.png@01DA7FCF.9FB97420", $imgFailedIcon
     $emailTemplate = $emailTemplate -replace "cid:image005.png@01DA7FCF.9FB97420", $imgNotRunIcon
 
-    $notRunCount = [string]::IsNullOrEmpty($MaesterResults.NotRunCount) ? "-" : $MaesterResults.NotRunCount
+    $notRunCount = [string]::IsNullOrEmpty($MaesterResults.SkippedCount) ? "-" : $MaesterResults.SkippedCount
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
@@ -93,6 +93,7 @@ Function Send-MtMail {
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
+        if($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
         $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Status)</td></tr>"
         $counter++
     }
@@ -119,7 +120,7 @@ Function Send-MtMail {
         saveToSentItems = "false"
     }
 
-    foreach ($email in $Recipients) {
+    foreach ($email in $Recipient) {
         $mailRequestBody.message.toRecipients += @{
             emailAddress = @{
                 address = $email

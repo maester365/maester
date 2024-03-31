@@ -37,7 +37,7 @@ Update your GitHub/Azure DevOps daily monitoring workflow to send the email aler
 $results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
 
 # Send the email summary using the results
-Send-MtMail $results -Recipients john@contoso.com -UserId <guid>
+Send-MtMail $results -Recipient john@contoso.com -UserId <guid>
 ```
 
 ## Adding a link to detailed Maester results in the email
@@ -52,7 +52,7 @@ To use this parameter, you need to provide the URL of the Maester results page. 
 
 ```powershell
 $testResultsUri = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-Send-MtMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
+Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
 ## Azure DevOps
@@ -60,7 +60,7 @@ Send-MtMail $results -Recipients $recipients -UserId $userId -TestResultsUri $te
 
 ```powershell
 $testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
-Send-MtMail $results -Recipients $recipients -UserId $userId -TestResultsUri $testResultsUri
+Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
 :::info Important
