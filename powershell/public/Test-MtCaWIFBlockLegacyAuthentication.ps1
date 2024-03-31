@@ -13,10 +13,10 @@
 #>
 function Test-MtCaWIFBlockLegacyAuthentication {
     [CmdletBinding()]
-    [OutputType([object])]
+    [OutputType([bool])]
     param (
         # The UserId to test the Conditional Acccess policie with
-        [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
+        [Parameter(Mandatory)]
         [string]$UserId
     )
 
