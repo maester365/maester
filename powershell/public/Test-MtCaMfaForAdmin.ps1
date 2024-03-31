@@ -13,7 +13,7 @@
 #>
 
 Function Test-MtCaMfaForAdmin {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PolicyIncludesAllRoles is used in the condition.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllRoles is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -34,8 +34,8 @@ Function Test-MtCaMfaForAdmin {
         "7be44c8a-adaf-4e2a-84d6-ab2649e08a13",
         "e8611ab8-c189-46e8-94e1-60213ab1f814"
     )
-w
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -52,11 +52,19 @@ w
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies require multi-factor authentication for admins:`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy requires multi-factor authentication for all admin roles."
+    }
+    Add-MtTestResultDetail -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 
     return $result
 }

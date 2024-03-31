@@ -1,22 +1,19 @@
 <#
  .Synopsis
-  Checks if all conditional access policies scoped to all cloud apps exclude the directory synchronization accounts
+    Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 
  .Description
     The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-    These accounts should be excluded from all conditional access policies scoped to all cloud apps.
+    These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
     Entra ID connect does not support multifactor authentication.
     Restrict access with these accounts to trusted networks.
-
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
  .Example
   Test-MtCaExclusionForDirectorySyncAccount
 #>
 
 Function Test-MtCaExclusionForDirectorySyncAccount {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PolicyIncludesAllUsers is used in the condition.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -26,6 +23,9 @@ Function Test-MtCaExclusionForDirectorySyncAccount {
     $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+
+    $testDescription = "It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps."
+    $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
 
     $result = $true
     foreach ($policy in ( $policies | Sort-Object -Property displayName ) ) {
@@ -59,11 +59,17 @@ Function Test-MtCaExclusionForDirectorySyncAccount {
                 # Directory synchronization accounts are not excluded
                 $currentresult = $false
                 $result = $false
+                $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
             }
         }
 
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "All conditional access policies scoped to all cloud apps exclude the directory synchronization accounts."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
     return $result
 }

@@ -14,8 +14,8 @@
 #>
 
 Function Test-MtCaDeviceComplianceAdminsExists {
-  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification='Exists is not a plural.')]
-  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='PSScriptAnalyzer bug is not detecting usage of PolicyIncludesAllRoles')]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PSScriptAnalyzer bug is not detecting usage of PolicyIncludesAllRoles')]
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
@@ -39,6 +39,27 @@ Function Test-MtCaDeviceComplianceAdminsExists {
 
   $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
+  $testDescription = "
+Microsoft recommends requiring device compliance for administrators that are members of the following roles:
+
+* Global administrator
+* Application administrator
+* Authentication Administrator
+* Billing administrator
+* Cloud application administrator
+* Conditional Access administrator
+* Exchange administrator
+* Helpdesk administrator
+* Password administrator
+* Privileged authentication administrator
+* Privileged Role Administrator
+* Security administrator
+* SharePoint administrator
+* User administrator
+
+See [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)"
+  $testResult = "These conditional access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
+
   $result = $false
   foreach ($policy in $policies) {
     $PolicyIncludesAllRoles = $true
@@ -54,9 +75,15 @@ Function Test-MtCaDeviceComplianceAdminsExists {
         -and $policy.conditions.applications.includeApplications -eq "All" `
     ) {
       Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayname)"
+      $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
       $result = $true
     }
   }
+
+  if ($result -eq $false) {
+    $testResult = "There was no conditional access policy blocking access for unknown or unsupported device platforms."
+  }
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
   return $result
 }

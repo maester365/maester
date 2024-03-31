@@ -1,12 +1,5 @@
 ﻿BeforeDiscovery {
-    $AvailablePlans = Invoke-MtGraphRequest -RelativeUri "organization" -ApiVersion beta | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
-    if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
-        $EntraIDPlan = "P2"
-    } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d)" -in $AvailablePlans ) {
-        $EntraIDPlan = "P1"
-    } else {
-        $EntraIDPlan = "Free"
-    }
+    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
 }
 
 Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
@@ -23,7 +16,7 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaEmergencyAccessExists | Should -Be $true -Because "there is no emergency access account or group present in all enabled policies"
     }
     It "MT.1006: At least one Conditional Access policy is configured to require MFA for admins. See https://maester.dev/docs/tests/MT.1006" {
-        Test-MtCaAllAppsExists | Should -Be $true -Because "there is no policy that requires MFA for admins"
+        Test-MtCaMfaForAdmin | Should -Be $true -Because "there is no policy that requires MFA for admins"
     }
     It "MT.1007: At least one Conditional Access policy is configured to require MFA for all users. See https://maester.dev/docs/tests/MT.1007" {
         Test-MtCaMfaForAllUsers | Should -Be $true -Because "there is no policy that requires MFA for all users"

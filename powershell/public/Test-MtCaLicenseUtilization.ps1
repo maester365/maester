@@ -58,5 +58,10 @@ function Test-MtCaLicenseUtilization {
             TotalLicensesUtilized = $P2FeatureUtilizations
         }
     }
+
+    $testDescription = "This test checks the utilization of Entra ID $License licenses in the tenant."
+    $testResult = "Total users entitled for Entra ID $($License): **$($Result.EntitledLicenseCount)**`n`nTotal $License licenses utilized: **$($Result.TotalLicensesUtilized)**"
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+
     Return $Result
 }

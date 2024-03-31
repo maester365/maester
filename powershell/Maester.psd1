@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.82'
+ModuleVersion = '0.0.86'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -72,10 +72,10 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester', 
                'Disconnect-Maester', 'Get-MtConditionalAccessPolicy', 
-               'Get-MtGraphScope', 'Install-MaesterTests', 'Invoke-Maester', 
-               'Invoke-MtGraphRequest', 'Send-MtMail', 
-               'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists', 
-               'Test-MtCaApplicationEnforcedRestriction', 
+               'Get-MtGraphScope', 'Get-MtLicenseInformation', 'Get-MtUser', 
+               'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest', 
+               'Send-MtMail', 'Test-MtAppManagementPolicyEnabled', 
+               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
                'Test-MtCaBlockLegacyOtherAuthentication', 
                'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
@@ -89,6 +89,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 
                'Test-MtCaRequirePasswordChangeForHighUserRisk', 
                'Test-MtCaSecureSecurityInfoRegistration', 
+               'Test-MtCaWIFBlockLegacyAuthentication', 
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01', 
                'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06', 
                'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03', 
@@ -112,8 +113,8 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'Invoke-MtMaester', 'Connect-MtMaester', 'Connect-MtGraph', 
-               'Disconnect-MtGraph', 'Disconnect-MtMaester'
+AliasesToExport = 'Invoke-Maester', 'Connect-Maester', 'Connect-MtMaester', 
+               'Disconnect-Maester', 'Disconnect-MtMaester'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
