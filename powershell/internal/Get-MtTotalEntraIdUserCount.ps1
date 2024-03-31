@@ -3,7 +3,8 @@ function Get-MtTotalEntraIdUserCount {
     [OutputType([int])]
     param ()
 
-    $TotalUserCount = Invoke-MgGraphRequest -Uri 'https://graph.microsoft.com/beta/users?$count=true' -Headers @{"ConsistencyLevel" = "eventual" } | Select-Object -ExpandProperty '@odata.count'
+    $result = Invoke-MgGraphRequest -Uri 'https://graph.microsoft.com/beta/users?$count=true' -Headers @{"ConsistencyLevel" = "eventual" }
+    $TotalUserCount = $result.'@odata.count'
 
     return $TotalUserCount
 }

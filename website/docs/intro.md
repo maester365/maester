@@ -19,7 +19,7 @@ cd maester-tests
 
 Install-Module Maester -Scope CurrentUser
 
-Install-MaesterTests
+Install-MaesterTests .\tests
 
 Connect-Maester
 
