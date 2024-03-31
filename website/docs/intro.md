@@ -7,7 +7,7 @@ title: Introduction
 
 ## What is Maester?
 
-Maester is a test automation framework PowerShell module that helps you automate the testing of your APIs. It provides a simple way to write tests and run them on a schedule.
+Maester is a PowerShell based test automation framework to help you monitor your Microsoft 365 security configuration.
 
 
 - Install the **Maester** PowerShell module.
