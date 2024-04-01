@@ -209,6 +209,9 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green $motd
 
+    $oldStyle = $PSStyle.Progress.Style
+    $PSStyle.Progress.View = 'Classic' # Set to classic to show progress consistently across platforms
+
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient
@@ -277,6 +280,8 @@ Function Invoke-Maester {
         Get-IsNewMaesterVersionAvailable | Out-Null
 
         Write-Progress -Activity "🔥 Completed tests" -Completed # Clear progress bar
+
+        $PSStyle.Progress.Style = $oldStyle # Reset the progress style
         if ($PassThru) {
             return $maesterResults
         }
