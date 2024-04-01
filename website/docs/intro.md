@@ -17,6 +17,7 @@ Maester is a PowerShell based test automation framework to help you monitor your
 md maester-tests
 cd maester-tests
 
+Install-Module Pester -SkipPublisherCheck -Force
 Install-Module Maester -Scope CurrentUser
 
 Install-MaesterTests .\tests
