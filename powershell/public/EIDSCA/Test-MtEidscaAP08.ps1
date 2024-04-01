@@ -8,12 +8,12 @@
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
 .EXAMPLE
     Test-MtEidscaAP08
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 #>
 
 Function Test-MtEidscaAP08 {
@@ -23,7 +23,7 @@ Function Test-MtEidscaAP08 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole[2]
+    $tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
     if($testResult){

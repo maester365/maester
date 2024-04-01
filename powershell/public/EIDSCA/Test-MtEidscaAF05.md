@@ -1,11 +1,11 @@
-Defines if list of AADGUID will be used to allow or block registration.
+You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage.
 
-You should use Block or Allow as value to allow- or blocklisting of AAGuids.
+
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') = 'true'
+.keyRestrictions.aaGuids -notcontains $null = 'true'
 ```
 
 #### Related links

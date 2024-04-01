@@ -1,11 +1,11 @@
-Defines if list of AADGUID will be used to allow or block registration.
+Manages if registration of FIDO2 keys should be restricted.
 
-You should use Block or Allow as value to allow- or blocklisting of AAGuids.
+Restrict usage of FIDO2 from unauthorized vendors or platforms
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') = 'true'
+.keyRestrictions.isEnforced = 'true'
 ```
 
 #### Related links
