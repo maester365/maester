@@ -24,7 +24,7 @@ Defines if user consent to apps is allowed, and if it is, which app consent poli
 
 Queries policies/authorizationPolicy
 and returns the result of
- graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+ graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ and returns the result of
 Test-MtEidscaAP08
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
 ## PARAMETERS
 
