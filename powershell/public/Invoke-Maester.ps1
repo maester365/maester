@@ -254,7 +254,7 @@ Function Invoke-Maester {
             Write-MtProgress -Activity "Creating html report" -Status $out.OutputHtmlFile
             $output = Get-MtHtmlReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
-            Write-Output "Measter test report generated at $($out.OutputHtmlFile)"
+            Write-Host "🔥 Measter test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
 
             if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
                 # Open test results in default browser
@@ -276,6 +276,7 @@ Function Invoke-Maester {
 
         Get-IsNewMaesterVersionAvailable | Out-Null
 
+        Write-Progress -Activity "" -Completed # Clear progress bar
         if ($PassThru) {
             return $maesterResults
         }

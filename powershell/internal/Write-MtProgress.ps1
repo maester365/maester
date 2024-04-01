@@ -15,11 +15,12 @@ Function Write-MtProgress {
         [string]$Activity,
 
         [Parameter(Mandatory = $false)]
-        [string]$Status
+        [object]$Status
     )
 
     if($Status){
-        Write-Progress -Activity $Activity -Status $Status
+        $statusString = Out-String -InputObject $Status
+        Write-Progress -Activity $Activity -Status $statusString
     }
     else{
         Write-Progress -Activity $Activity
