@@ -91,6 +91,7 @@ Function Add-MtTestResultDetail {
         TestResult      = $Result
     }
 
+    Write-MtProgress -Activity "Running test" -Status $testName
     Write-Verbose "Adding test result detail for $testName"
     Write-Verbose "Description: $Description"
     Write-Verbose "Result: $Result"

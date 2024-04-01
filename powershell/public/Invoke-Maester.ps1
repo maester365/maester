@@ -100,6 +100,14 @@ Function Invoke-Maester {
         # See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
         [PesterConfiguration] $PesterConfiguration,
 
+        # Set the Pester verbosity level. Default is 'None'.
+        # None: Shows only the final summary.
+        # Normal: Focus on successful containers and failed tests/blocks. Shows basic discovery information and the summary of all tests.
+        # Detailed: Similar to Normal, but this level shows all blocks and tests, including successful.
+        # Diagnostic: Very verbose, but useful when troubleshooting tests. This level behaves like Detailed, but also enables debug-messages.
+        [ValidateSet('None', 'Normal', 'Detailed', 'Diagnostic')]
+        [string] $Verbosity = 'None',
+
         # Run the tests in non-interactive mode. This will prevent the test results from being opened in the default browser.
         [switch] $NonInteractive,
 
@@ -170,6 +178,7 @@ Function Invoke-Maester {
         }
 
         $PesterConfiguration.Run.PassThru = $true
+        $PesterConfiguration.Output.Verbosity = $Verbosity
         if ($Path) { $PesterConfiguration.Run.Path = $Path }
         else {
             if (Test-Path -Path "./powershell/tests/pester.ps1") {
@@ -218,9 +227,13 @@ Function Invoke-Maester {
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
+
+    Write-MtProgress "Starting tests"
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
+
+        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) tests"
         $maesterResults = ConvertTo-MtMaesterResult $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
@@ -228,14 +241,16 @@ Function Invoke-Maester {
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            Write-MtProgress -Activity "Creating markdown report" -Status $out.OutputMarkdownFile
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            Write-MtProgress -Activity "Creating html report" -Status $out.OutputHtmlFile
             $output = Get-MtHtmlReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
-            Write-Output "Test file generated at $($out.OutputHtmlFile)"
+            Write-Output "Measter test report generated at $($out.OutputHtmlFile)"
 
             if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
                 # Open test results in default browser
@@ -244,7 +259,15 @@ Function Invoke-Maester {
         }
 
         if ($MailRecipient) {
+            Write-MtProgress -Activity "Sending mail"  -Status $MailRecipient
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
+        }
+
+        if($Verbosity -eq 'None') {
+            # Show final summary
+            Write-Host "`nTests Passed ✅: $($pesterResults.PassedCount), " -NoNewline -ForegroundColor Green
+            Write-Host "Failed ❌: $($pesterResults.FailedCount), " -NoNewline -ForegroundColor Red
+            Write-Host "Skipped ⚫: $($pesterResults.SkippedCount)`n" -ForegroundColor DarkGray
         }
 
         Get-IsNewMaesterVersionAvailable | Out-Null
