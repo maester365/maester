@@ -20,6 +20,11 @@ Function Write-MtProgress {
 
     if($Status){
         $statusString = Out-String -InputObject $Status
+        # Reduce the length of the status string to 50 characters
+        if($statusString.Length -gt 50){
+            $statusString = $statusString.Substring(0, [Math]::Min($statusString.Length, 80)) + "..."
+        }
+
         Write-Progress -Activity $Activity -Status $statusString
     }
     else{
