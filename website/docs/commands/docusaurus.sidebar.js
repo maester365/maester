@@ -21,6 +21,7 @@ module.exports = [
     'commands/Install-MaesterTests',
     'commands/Invoke-Maester',
     'commands/Invoke-MtGraphRequest',
+    'commands/Reset-MtProgressView',
     'commands/Send-MtMail',
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtCaAllAppsExists',
