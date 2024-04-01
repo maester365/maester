@@ -60,6 +60,11 @@ Describe -Tags ('Unit', 'Acceptance') "$module Module Tests" {
             $null = [System.Management.Automation.PSParser]::Tokenize($psFile, [ref]$errors)
             $errors.Count | Should -Be 0
         }
+
+        It "$_ should run without exceptions" {
+            $scriptBlock = [scriptblock]::Create((Get-Content "$moduleRoot/public/$_.ps1" -Raw))
+            { & $scriptBlock } | Should -Not -Throw
+        }
     }
 
     Context "Test Function" -ForEach $functionsWithTests {
