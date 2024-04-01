@@ -65,25 +65,37 @@ function Get-MtUser {
             } else {
                 Write-Verbose "Getting $UserType users that are member of any admin role."
             }
-            $AzureADRoles = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/directoryRoles" | Select-Object -ExpandProperty value | Where-Object { $_.displayName -in $AdminRoles } | Select-Object id, displayName
+            $AzureADRoles = Invoke-MtGraphRequest -ApiVersion beta 'directoryRoles' | Where-Object { $_.displayName -in $AdminRoles } | Select-Object id, displayName
             foreach ( $AzureADRole in $AzureADRoles ) {
-                $TmpUsers = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/v1.0/directoryRoles/$($AzureADRole.id)/members?`$select=id,userPrincipalName,userType" | Select-Object -ExpandProperty value
-                Write-Verbose "Setting userType to Admin for $($TmpUsers.Count) users that are member of $($AzureADRole.displayName)."
-                $TmpUsers | ForEach-Object {
-                    $_.userType = "Admin"
-                }
-                if ( $TmpUsers ) {
-                    $Users.AddRange($TmpUsers) | Out-Null
-                }
-                if ($TmpUsers.Count -ge $Count) {
-                    Write-Verbose "Found $Count $UserType users."
-                    break
+                $TmpUsers = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$($AzureADRole.id)/members" -Select id, userPrincipalName, userType
+                if ( [bool]($TmpUsers.PSobject.Properties.Name -match 'userType') ) {
+                    Write-Verbose "Setting userType to Admin for $($TmpUsers.Count) users that are member of $($AzureADRole.displayName)."
+                    $TmpUsers | ForEach-Object {
+                        $_.userType = "Admin"
+                        $Users.Add($_) | Out-Null
+                    }
+                    if ($Users.Count -ge $Count) {
+                        Write-Verbose "Found $Count $UserType users."
+                        break
+                    }
                 }
             }
         } else {
-            $Users = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/v1.0/users?`$top=$($Count)&`$select=id,userPrincipalName,userType&`$filter=userType+eq+'$UserType'" | Select-Object -ExpandProperty value
+            if ($Count -gt 999) {
+                Write-Verbose "The maximum number of users that can be retrieved on one page is 999. Using paging to retrieve $Count users."
+                $TmpUsers = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = 999 }
+                $Count = if ( $TmpUsers.Count -lt $Count ) { $TmpUsers.Count } else { $Count }
+                Write-Verbose "Retrieved $($TmpUsers.Count) users"
+                for ($i = 0; $i -lt $Count; $i++) {
+                    $Users.Add($TmpUsers[$i]) | Out-Null
+                }
+            } else {
+                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging
+                if ( [bool]($Users.PSobject.Properties.Name -match 'value') ) {
+                    $Users = $Users | Select-Object -ExpandProperty value
+                }
+            }
         }
         Return $Users
     }
-
 }
