@@ -1,42 +1,53 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is set to 'true'
-id: Test-MtEidscaCR02
-title: Test-MtEidscaCR02
+description: Get details of authentication methods
+id: Get-MtAuthenticationMethodPolicyConfig
+title: Get-MtAuthenticationMethodPolicyConfig
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEidscaCR02.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtAuthenticationMethodPolicyConfig.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is set to 'true'
+Get details of authentication methods
 
 ## SYNTAX
 
 ```powershell
-Test-MtEidscaCR02 [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtAuthenticationMethodPolicyConfig [[-State] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Specifies whether reviewers will receive notifications
-
-Queries policies/adminConsentRequestPolicy
-and returns the result of
- graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+This function retrieves the configuration of authentication methods with specific state.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtEidscaCR02
+Get-MtAuthenticationMethodPolicyConfig -State Enabled
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
-
 ## PARAMETERS
+
+### -State
+
+\{\{ Fill State Description \}\}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
@@ -61,8 +72,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
-
-### System.Boolean
 
 ## NOTES
 
