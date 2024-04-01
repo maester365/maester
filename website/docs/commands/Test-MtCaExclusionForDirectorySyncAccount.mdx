@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if all conditional access policies scoped to all cloud apps exclude the directory synchronization accounts
+description: Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 id: Test-MtCaExclusionForDirectorySyncAccount
 title: Test-MtCaExclusionForDirectorySyncAccount
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if all conditional access policies scoped to all cloud apps exclude the directory synchronization accounts
+Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 
 ## SYNTAX
 
@@ -21,12 +21,9 @@ Test-MtCaExclusionForDirectorySyncAccount [-ProgressAction <ActionPreference>] [
 ## DESCRIPTION
 
 The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-These accounts should be excluded from all conditional access policies scoped to all cloud apps.
+These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
 Entra ID connect does not support multifactor authentication.
 Restrict access with these accounts to trusted networks.
-
-Learn more:
-https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
 ## EXAMPLES
 
