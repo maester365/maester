@@ -1,11 +1,11 @@
-Requires the FIDO security key metadata to be published and verified with the FIDO Alliance Metadata Service, and also pass Microsoft's additional set of validation testing.
+You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage.
 
 
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.isAttestationEnforced = 'true'
+.keyRestrictions.aaGuids -notcontains $null = 'true'
 ```
 
 #### Related links

@@ -1,11 +1,11 @@
-Requires the FIDO security key metadata to be published and verified with the FIDO Alliance Metadata Service, and also pass Microsoft's additional set of validation testing.
+Manages if registration of FIDO2 keys should be restricted.
 
-
+Restrict usage of FIDO2 from unauthorized vendors or platforms
 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.isAttestationEnforced = 'true'
+.keyRestrictions.isEnforced = 'true'
 ```
 
 #### Related links
