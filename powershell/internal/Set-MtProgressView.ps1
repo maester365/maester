@@ -4,6 +4,7 @@
 #>
 
 Function Set-MtProgressView {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param ()
 
