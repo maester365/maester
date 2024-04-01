@@ -65,11 +65,11 @@ function Get-MtUser {
             } else {
                 Write-Verbose "Getting $UserType users that are member of any admin role."
             }
-            $AzureADRoles = Invoke-MtGraphRequest -ApiVersion beta 'directoryRoles' | Where-Object { $_.displayName -in $AdminRoles } | Select-Object id, displayName
-            foreach ( $AzureADRole in $AzureADRoles ) {
-                $TmpUsers = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$($AzureADRole.id)/members" -Select id, userPrincipalName, userType
-                if ( [bool]($TmpUsers.PSobject.Properties.Name -match 'userType') ) {
-                    Write-Verbose "Setting userType to Admin for $($TmpUsers.Count) users that are member of $($AzureADRole.displayName)."
+            $EntraIDRoles = Invoke-MtGraphRequest -ApiVersion beta 'directoryRoles' | Where-Object { $_.displayName -in $AdminRoles } | Select-Object id, displayName
+            foreach ( $EntraIDRole in $EntraIDRoles ) {
+                $TmpUsers = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$($EntraIDRole.id)/members" -Select id, userPrincipalName, userType -OutputType Hashtable
+                if ( $TmpUsers.ContainsKey('userType') ) {
+                    Write-Verbose "Setting userType to Admin for $($TmpUsers.Count) users that are member of $($EntraIDRole.displayName)."
                     $TmpUsers | ForEach-Object {
                         $_.userType = "Admin"
                         $Users.Add($_) | Out-Null
@@ -83,16 +83,16 @@ function Get-MtUser {
         } else {
             if ($Count -gt 999) {
                 Write-Verbose "The maximum number of users that can be retrieved on one page is 999. Using paging to retrieve $Count users."
-                $TmpUsers = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = 999 }
+                $TmpUsers = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = 999 } -OutputType Hashtable
                 $Count = if ( $TmpUsers.Count -lt $Count ) { $TmpUsers.Count } else { $Count }
                 Write-Verbose "Retrieved $($TmpUsers.Count) users"
                 for ($i = 0; $i -lt $Count; $i++) {
                     $Users.Add($TmpUsers[$i]) | Out-Null
                 }
             } else {
-                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging
-                if ( [bool]($Users.PSobject.Properties.Name -match 'value') ) {
-                    $Users = $Users | Select-Object -ExpandProperty value
+                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging -OutputType Hashtable
+                if ( $EntraIDRoles.ContainsKey('value') ) {
+                    $Users = $Users['value']
                 }
             }
         }
