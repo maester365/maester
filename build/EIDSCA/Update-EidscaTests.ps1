@@ -355,14 +355,6 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
         [void]$sb.AppendLine($testOutputList)
     }
 }
-$output = @'
-BeforeDiscovery {
-    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
-    $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
-    $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
-}
-
-'@
 
 $output = @'
 BeforeDiscovery {
@@ -370,9 +362,8 @@ BeforeDiscovery {
 
 '@
 
-
+# Replace placeholder with Discovery checks from definition in EIDSCA JSON
 $output = $output.Replace('<DiscoveryFromJson>',($Discovery | Out-String))
 
 $output += $sb.ToString()
-
 $output | Out-File $TestFilePath -Encoding utf8
