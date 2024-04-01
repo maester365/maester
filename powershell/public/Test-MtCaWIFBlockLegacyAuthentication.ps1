@@ -20,9 +20,9 @@ function Test-MtCaWIFBlockLegacyAuthentication {
         [string]$UserId
     )
 
-    $policiesResult = Test-MtConditionalAccessWhatIf -UserId "e7417ac7-0485-4014-9100-33163bd6211f" -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
+    $policiesResult = Test-MtConditionalAccessWhatIf -UserId $UserId -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
 
-    if ( $policiesResult.Count -gt 0 ) {
+    if ( $null -ne $policiesResult ) {
         $testResult = "Well done. The following conditional access policies are currently blocking legacy authentication.`n`n%TestResult%"
         $Result = $true
     } else {
