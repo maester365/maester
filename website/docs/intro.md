@@ -10,20 +10,21 @@ title: Introduction
 Maester is a PowerShell based test automation framework to help you monitor your Microsoft 365 security configuration.
 
 
-- Install the **Maester** PowerShell module.
-- Connect
+- Install the **Maester** PowerShell module, Pester and the out of the box tests.
 
 ```powershell
-md maester-tests
-cd maester-tests
-
-Install-Module Pester -SkipPublisherCheck -Force
+Install-Module Pester -SkipPublisherCheck -Force -Scope CurrentUser
 Install-Module Maester -Scope CurrentUser
 
+md maester-tests
+cd maester-tests
 Install-MaesterTests .\tests
+```
 
+- Sign in and run the tests.
+
+```powershell
 Connect-Maester
-
 Invoke-Maester
 ```
 
