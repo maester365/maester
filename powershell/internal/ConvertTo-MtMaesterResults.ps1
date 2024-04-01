@@ -25,6 +25,15 @@ function ConvertTo-MtMaesterResult {
         return @($activeTests) + @($inactiveTests)
     }
 
+    function GetFormattedDate($date) {
+        if(!$IsCoreCLR) { # Prevent 5.1 date format to json issue
+            return $date.ToString("o")
+        }
+        else {
+            return $date
+        }
+    }
+
     $mgContext = Get-MgContext
 
     $tenantId = $mgContext.TenantId
@@ -92,7 +101,7 @@ function ConvertTo-MtMaesterResult {
         PassedCount  = $PesterResults.PassedCount
         SkippedCount = $PesterResults.SkippedCount
         TotalCount   = $PesterResults.TotalCount
-        ExecutedAt   = $PesterResults.ExecutedAt
+        ExecutedAt   = GetFormattedDate($PesterResults.ExecutedAt)
         TenantId     = $tenantId
         TenantName   = $tenantName
         Account      = $account

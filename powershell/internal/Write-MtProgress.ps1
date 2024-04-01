@@ -32,7 +32,6 @@ Function Write-MtProgress {
                     $statusString = $statusString.Substring(0, $length) + "..."
                 }
             }
-            if($statusString -eq "...") {$statusString = "Processing..."}
 
             Write-Progress -Activity $Activity -Status $statusString
         } else {
