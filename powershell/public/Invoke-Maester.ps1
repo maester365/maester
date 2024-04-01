@@ -209,8 +209,11 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green $motd
 
-    $oldStyle = $PSStyle.Progress.Style
-    $PSStyle.Progress.View = 'Classic' # Set to classic to show progress consistently across platforms
+    if ($PSEdition -eq 'Core') {
+        # $PSStyle is not available in Windows PowerShell
+        $oldStyle = $PSStyle.Progress.Style
+        $PSStyle.Progress.View = 'Classic' # Set to classic to show progress consistently across platforms
+    }
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
@@ -266,11 +269,11 @@ Function Invoke-Maester {
         }
 
         if ($MailRecipient) {
-            Write-MtProgress -Activity "Sending mail"  -Status $MailRecipient
+            Write-MtProgress -Activity "Sending mail" -Status $MailRecipient
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
 
-        if($Verbosity -eq 'None') {
+        if ($Verbosity -eq 'None') {
             # Show final summary
             Write-Host "`nTests Passed ✅: $($pesterResults.PassedCount), " -NoNewline -ForegroundColor Green
             Write-Host "Failed ❌: $($pesterResults.FailedCount), " -NoNewline -ForegroundColor Red
