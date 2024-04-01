@@ -58,7 +58,7 @@ Function Add-MtTestResultDetail {
         # Pester test name
         # Use the test name from the Pester context by default
         [Parameter(Mandatory = $false)]
-        [string] $TestName = $____Pester.CurrentTest.Name
+        [string] $TestName = $____Pester.CurrentTest.ExpandedName
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
