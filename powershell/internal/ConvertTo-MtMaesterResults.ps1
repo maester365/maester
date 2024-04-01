@@ -45,7 +45,7 @@ function ConvertTo-MtMaesterResult {
 
     foreach ($test in $sortedTests) {
 
-        $name = $test.Name
+        $name = $test.ExpandedName
         $helpUrl = ''
 
         $start = $name.IndexOf("See https")
@@ -63,7 +63,7 @@ function ConvertTo-MtMaesterResult {
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.Name
-            ResultDetail    = $MtTestResultDetail[$test.Name]
+            ResultDetail    = $MtTestResultDetail[$test.ExpandedName]
         }
         $mtTests += $mtTestInfo
     }
