@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.99'
+ModuleVersion = '0.0.101'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -71,11 +71,12 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester', 
-               'Disconnect-Maester', 'Get-MtConditionalAccessPolicy', 
-               'Get-MtGraphScope', 'Get-MtLicenseInformation', 'Get-MtUser', 
-               'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest', 
-               'Send-MtMail', 'Test-MtAppManagementPolicyEnabled', 
-               'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 
+               'Disconnect-Maester', 'Get-MtAuthenticationMethodPolicyConfig', 
+               'Get-MtConditionalAccessPolicy', 'Get-MtGraphScope', 
+               'Get-MtLicenseInformation', 'Get-MtUser', 'Install-MaesterTests', 
+               'Invoke-Maester', 'Invoke-MtGraphRequest', 'Send-MtMail', 
+               'Test-MtAppManagementPolicyEnabled', 'Test-MtCaAllAppsExists', 
+               'Test-MtCaApplicationEnforcedRestriction', 
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication', 
                'Test-MtCaBlockLegacyOtherAuthentication', 
                'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform', 
@@ -91,20 +92,21 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaSecureSecurityInfoRegistration', 
                'Test-MtCaWIFBlockLegacyAuthentication', 
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01', 
-               'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF06', 
-               'Test-MtEidscaAG01', 'Test-MtEidscaAG02', 'Test-MtEidscaAG03', 
-               'Test-MtEidscaAM01', 'Test-MtEidscaAM02', 'Test-MtEidscaAM03', 
-               'Test-MtEidscaAM04', 'Test-MtEidscaAM06', 'Test-MtEidscaAM07', 
-               'Test-MtEidscaAM09', 'Test-MtEidscaAM10', 'Test-MtEidscaAP01', 
-               'Test-MtEidscaAP04', 'Test-MtEidscaAP05', 'Test-MtEidscaAP06', 
-               'Test-MtEidscaAP07', 'Test-MtEidscaAP08', 'Test-MtEidscaAP09', 
-               'Test-MtEidscaAP10', 'Test-MtEidscaAP14', 'Test-MtEidscaAT01', 
-               'Test-MtEidscaAT02', 'Test-MtEidscaAV01', 'Test-MtEidscaCP01', 
-               'Test-MtEidscaCP03', 'Test-MtEidscaCP04', 'Test-MtEidscaCR01', 
-               'Test-MtEidscaCR02', 'Test-MtEidscaCR03', 'Test-MtEidscaCR04', 
-               'Test-MtEidscaPR01', 'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 
-               'Test-MtEidscaPR05', 'Test-MtEidscaPR06', 'Test-MtEidscaST08', 
-               'Test-MtEidscaST09', 'Update-MaesterTests'
+               'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF04', 
+               'Test-MtEidscaAF05', 'Test-MtEidscaAF06', 'Test-MtEidscaAG01', 
+               'Test-MtEidscaAG02', 'Test-MtEidscaAG03', 'Test-MtEidscaAM01', 
+               'Test-MtEidscaAM02', 'Test-MtEidscaAM03', 'Test-MtEidscaAM04', 
+               'Test-MtEidscaAM06', 'Test-MtEidscaAM07', 'Test-MtEidscaAM09', 
+               'Test-MtEidscaAM10', 'Test-MtEidscaAP01', 'Test-MtEidscaAP04', 
+               'Test-MtEidscaAP05', 'Test-MtEidscaAP06', 'Test-MtEidscaAP07', 
+               'Test-MtEidscaAP08', 'Test-MtEidscaAP09', 'Test-MtEidscaAP10', 
+               'Test-MtEidscaAP14', 'Test-MtEidscaAT01', 'Test-MtEidscaAT02', 
+               'Test-MtEidscaAV01', 'Test-MtEidscaCP01', 'Test-MtEidscaCP03', 
+               'Test-MtEidscaCP04', 'Test-MtEidscaCR01', 'Test-MtEidscaCR02', 
+               'Test-MtEidscaCR03', 'Test-MtEidscaCR04', 'Test-MtEidscaPR01', 
+               'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 'Test-MtEidscaPR05', 
+               'Test-MtEidscaPR06', 'Test-MtEidscaST08', 'Test-MtEidscaST09', 
+               'Update-MaesterTests'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

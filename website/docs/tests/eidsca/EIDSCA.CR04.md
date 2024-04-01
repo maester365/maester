@@ -1,10 +1,10 @@
 ---
-title: EIDSCA.CR04 - Consent Framework - Admin Consent Request - Consent request duration (days)???
+title: EIDSCA.CR04 - Consent Framework - Admin Consent Request - Consent request duration (days)
 slug: /tests/EIDSCA.CR04
 sidebar_class_name: hidden
 ---
 
-# Consent Framework - Admin Consent Request - Consent request duration (days)???
+# Consent Framework - Admin Consent Request - Consent request duration (days)
 
 Specifies the duration the request is active before it automatically expires if no decision is applied
 

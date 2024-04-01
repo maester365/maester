@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Consent Framework - Admin Consent Request - Consent request duration (days)??? is set to '30'
+    Checks if Consent Framework - Admin Consent Request - Consent request duration (days) is set to '30'
 
 .DESCRIPTION
 

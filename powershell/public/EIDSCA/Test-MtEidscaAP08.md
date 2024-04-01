@@ -5,7 +5,7 @@ Microsoft recommends to allow to user consent for apps from verified publisher f
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.permissionGrantPolicyIdsAssignedToDefaultUserRole[2] = 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 = 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 ```
 
 #### Related links

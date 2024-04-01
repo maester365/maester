@@ -289,19 +289,8 @@ Function GetEidscaPsFunctionName($controlItem) {
 
 # Start by getting the latest EIDSCA config
 $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
-$aadsc = $aadsc[0].ControlArea
-
-$testTemplate = @'
-Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
-   It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
-      <#
-         Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-         .%CurrentValue% = %RecommendedValue%
-      #>
-      %PSFunctionName% | Should -Be %RecommendedValue%
-   }
-}
-'@
+$aadsc = ($aadsc | Where-Object {$_.CollectedBy -eq "Maester"}).ControlArea
+$Discovery = ($aadsc | where-Object {$_.discovery -ne ""}).Discovery
 
 # Remove previously generated files
 Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
@@ -321,10 +310,29 @@ foreach ($control in $aadsc) {
     Write-Verbose "Generating test for $($control.ControlName)"
 
     $testOutputList = [System.Text.StringBuilder]::new()
+
     foreach ($controlItem in $control.Controls) {
         # Export check only if RecommendedValue is set
         if (($null -ne $controlItem.RecommendedValue -and $controlItem.RecommendedValue -ne "")) {
             $docName = $controlItem.CheckId
+
+$testTemplate = @'
+Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
+    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
+        <#
+            Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
+            .%CurrentValue% = %RecommendedValue%
+        #>
+        %PSFunctionName% | Should -Be %RecommendedValue%
+    }
+}
+'@
+
+            # Add condition to test template if defined in EidscaTest
+            if ($controlItem.SkipCondition -ne "") {
+
+                $testTemplate = $testTemplate.Replace( '"%CheckId%"', '"%CheckId%" -Skip:( ' + $controlItem.SkipCondition + ' )')
+            }
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
             $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
@@ -347,6 +355,15 @@ foreach ($control in $aadsc) {
         [void]$sb.AppendLine($testOutputList)
     }
 }
-$output = $sb.ToString()
 
+$output = @'
+BeforeDiscovery {
+<DiscoveryFromJson>}
+
+'@
+
+# Replace placeholder with Discovery checks from definition in EIDSCA JSON
+$output = $output.Replace('<DiscoveryFromJson>',($Discovery | Out-String))
+
+$output += $sb.ToString()
 $output | Out-File $TestFilePath -Encoding utf8

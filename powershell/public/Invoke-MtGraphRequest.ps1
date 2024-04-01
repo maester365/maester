@@ -61,7 +61,11 @@ Function Invoke-MtGraphRequest {
         [uri] $GraphBaseUri,
         # Specify if this request should skip cache and go directly to Graph.
         [Parameter(Mandatory = $false)]
-        [switch] $DisableCache
+        [switch] $DisableCache,
+        # Specify the output type
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('PSObject', 'PSCustomObject', 'Hashtable')]
+        [string] $OutputType = 'PSObject'
     )
 
     begin {
@@ -96,7 +100,7 @@ Function Invoke-MtGraphRequest {
         function Complete-Result ($results, $DisablePaging) {
             if (!$DisablePaging -and $results) {
                 while (Get-ObjectProperty $results '@odata.nextLink') {
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject -DisableCache:$DisableCache
+                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
                     Format-Result $results $DisablePaging
                 }
             }
@@ -146,7 +150,7 @@ Function Invoke-MtGraphRequest {
                     $listRequests.Add($request)
                 } else {
 
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType PSObject -DisableCache:$DisableCache
+                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
 
                     Format-Result $results $DisablePaging
                     Complete-Result $results $DisablePaging
@@ -163,7 +167,7 @@ Function Invoke-MtGraphRequest {
                 $jsonRequests = New-Object psobject -Property @{ requests = $listRequests[$iRequest..$indexEnd] } | ConvertTo-Json -Depth 5
                 Write-Debug $jsonRequests
 
-                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType PSObject -DisableCache:$DisableCache
+                $resultsBatch = Invoke-MtGraphRequestCache -Method POST -Uri $uriQueryEndpoint.Uri.AbsoluteUri -Body $jsonRequests -OutputType $OutputType -DisableCache:$DisableCache
                 $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
 
                 foreach ($results in ($resultsBatch.body)) {
