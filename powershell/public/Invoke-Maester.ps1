@@ -276,7 +276,7 @@ Function Invoke-Maester {
 
         Get-IsNewMaesterVersionAvailable | Out-Null
 
-        Write-Progress -Activity "" -Completed # Clear progress bar
+        Write-Progress -Activity "🔥 Completed tests" -Completed # Clear progress bar
         if ($PassThru) {
             return $maesterResults
         }
