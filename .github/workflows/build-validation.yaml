@@ -33,7 +33,7 @@ jobs:
 
       - name: Install PowerShell dependencies (Windows PowerShell)
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: powershell
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
