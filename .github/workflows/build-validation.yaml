@@ -23,20 +23,51 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Run Pester tests
+
+      - name: Install PowerShell dependencies
         shell: pwsh
         run: |
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
+      - name: Install PowerShell dependencies (Windows PowerShell)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+
+      - name: Run Pester tests
+        shell: pwsh
+        run: |
           ./powershell/tests/pester.ps1
 
       - name: Publish Pester test results
         uses: dorny/test-reporter@v1
         if: always()
         with:
-          name: Maester Test Results
+          name: Maester Test Results (${{ runner.os }}/PowerShell)
+          path: TestResults/*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+      - name: Run Tests using Windows PowerShell
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # Remove old test results
+          Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
+          # Run Pester tests on Windows PowerShell
+          ./powershell/tests/pester.ps1
+
+      - name: Publish Pester test results (Windows PowerShell)
+        uses: dorny/test-reporter@v1
+        if: runner.os == 'Windows'
+        with:
+          name: Maester Test Results Windows PowerShell
           path: TestResults/*.xml
           reporter: java-junit
           fail-on-error: true
