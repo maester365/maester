@@ -18,16 +18,18 @@ Function Write-MtProgress {
         [object]$Status
     )
 
-    if($Status){
+    if ($Status) {
         $statusString = Out-String -InputObject $Status
         # Reduce the length of the status string to 50 characters
-        if($statusString.Length -gt 50){
-            $statusString = $statusString.Substring(0, [Math]::Min($statusString.Length, 80)) + "..."
+        $hostWidth = $Host.UI.RawUI.WindowSize.Width
+        $buffer = 5
+        $totalWidth = $Activity.Length + $statusString.Length + $buffer # 10 for buffer
+        if ($totalWidth -gt $hostWidth) {
+            $statusString = $statusString.Substring(0, [Math]::Min($statusString.Length, $hostWidth - $Activity.Length - $buffer)) + "..."
         }
 
         Write-Progress -Activity $Activity -Status $statusString
-    }
-    else{
+    } else {
         Write-Progress -Activity $Activity
     }
 
