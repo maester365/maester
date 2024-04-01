@@ -1,10 +1,15 @@
 BeforeDiscovery {
     $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
-    $EntraRecommendations = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'directory/recommendations' -OutputType Hashtable
+    $EntraRecommendations = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations' -OutputType Hashtable
+    Write-Verbose "Found $($EntraRecommendations.Count) Entra recommendations"
 }
 
-Describe "Entra Recommendations" {
-    Context "<displayName>" -Tag "Entra", "Security", "All" -ForEach @( $EntraRecommendations ){
-        $_.insights | Should -BeNullOrEmpty
+Describe "Entra Recommendations" -Tag "Entra", "Security", "All" -ForEach $EntraRecommendations {
+    It "Entra Recommendation: <displayName>" {
+        $ActionSteps = $actionSteps | Sort-Object -Property 'stepNumber' | Select-Object -ExpandProperty text -EA SilentlyContinue
+        $ActionSteps = $ActionSteps -join "`n`n"
+        $ResultMarkdown = $insights + "`n`nRemediation actions:`n`n" + $ActionSteps
+        Add-MtTestResultDetail -TestName "Entra Recommendation: $($displayName)" -Description $benefits -Result $ResultMarkdown
+        $status | Should -Be "completedBySystem" -Because $benefits
     }
 }
