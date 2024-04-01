@@ -1,53 +1,50 @@
 ---
 sidebar_class_name: hidden
-description: Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
-id: Test-MtCaEnforceNonPersistentBrowserSession
-title: Test-MtCaEnforceNonPersistentBrowserSession
+description: Checks if the user is blocked from using legacy authentication
+id: Test-MtCaWIFBlockLegacyAuthentication
+title: Test-MtCaWIFBlockLegacyAuthentication
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEnforceNonPersistentBrowserSession.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaWIFBlockLegacyAuthentication.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
+Checks if the user is blocked from using legacy authentication
 
 ## SYNTAX
 
 ```powershell
-Test-MtCaEnforceNonPersistentBrowserSession [-AllDevices] [-ProgressAction <ActionPreference>]
+Test-MtCaWIFBlockLegacyAuthentication [-UserId] <String> [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
-
-Learn more:
-https://aka.ms/CATemplatesBrowserSession
+Checks if the user is blocked from using legacy authentication using the Conditional Access WhatIf Graph API endpoint.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCaEnforceNonPersistentBrowserSession
+Test-MtCaWIFBlockLegacyAuthentication -UserId "e7417ac7-0485-4014-9100-33163bd6211f"
 ```
 
 ## PARAMETERS
 
-### -AllDevices
+### -UserId
 
-\{\{ Fill AllDevices Description \}\}
+The UserId to test the Conditional Acccess policie with
 
 ```yaml
-Type: SwitchParameter
+Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
-Default value: False
+Required: True
+Position: 1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

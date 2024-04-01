@@ -17,17 +17,17 @@ Test Conditional Access What If scenario.
 ### ApplicationBasedCA (Default)
 
 ```powershell
-Test-MtConditionalAccessWhatIf [-UserId] <String> [-IncludeApplications <String[]>] [-DevicePlatform <String>]
- [-ClientAppType <String>] [-SignInRiskLevel <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Test-MtConditionalAccessWhatIf [-UserId] <String> -IncludeApplications <String[]> [-DevicePlatform <String>]
+ [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-AllResults]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### UserActionBasedCA
 
 ```powershell
 Test-MtConditionalAccessWhatIf [-UserId] <String> [-UserAction <String[]>] [-DevicePlatform <String>]
- [-ClientAppType <String>] [-SignInRiskLevel <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-AllResults]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -68,15 +68,16 @@ Accept wildcard characters: False
 ### -IncludeApplications
 
 The applications that should be tested Default: All
+Must be a valid application ID (GUID)
 
 ```yaml
 Type: String[]
 Parameter Sets: ApplicationBasedCA
 Aliases:
 
-Required: False
+Required: True
 Position: Named
-Default value: All
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -136,11 +137,6 @@ Accept wildcard characters: False
 
 The sign in risk level of the user sign-in.
 Default: None
-# The user risk level of the user signing in.
-Default: None
-[Parameter(ValueFromPipelineByPropertyName = $true)]
-[ValidateSet("None", "Low", "Medium", "High")]
-$UserRiskLevel = "None"
 
 ```yaml
 Type: String
@@ -151,6 +147,39 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -UserRiskLevel
+
+The user risk level of the user signing in.
+Default: None
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -AllResults
+
+Output all results
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

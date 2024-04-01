@@ -17,9 +17,9 @@ This is the main Maester command that runs the tests and generates a report of t
 ```powershell
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-OutputHtmlFile <String>]
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
- [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-NonInteractive] [-PassThru]
- [-MailRecipient <String[]>] [-MailTestResultsUri <String>] [-MailUserId <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
+ [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
+ [-MailUserId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -97,6 +97,14 @@ Invoke-Maester -MailRecipient john@contoso.com
 Runs all the Pester tests in the EIDSCA folder.
 
 ### EXAMPLE 9
+
+```powershell
+Invoke-Maester -Verbosity Normal
+```
+
+Shows results of tests as they are run including details on failed tests.
+
+### EXAMPLE 10
 
 ```powershell
 $configuration = [PesterConfiguration]::Default
@@ -257,6 +265,29 @@ See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more
 
 ```yaml
 Type: PesterConfiguration
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Verbosity
+
+Set the Pester verbosity level.
+Default is 'None'.
+None: Shows only the final summary.
+Normal: Focus on successful containers and failed tests/blocks.
+Shows basic discovery information and the summary of all tests.
+Detailed: Similar to Normal, but this level shows all blocks and tests, including successful.
+Diagnostic: Very verbose, but useful when troubleshooting tests.
+This level behaves like Detailed, but also enables debug-messages.
+
+```yaml
+Type: String
 Parameter Sets: (All)
 Aliases:
 
