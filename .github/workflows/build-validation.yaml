@@ -28,7 +28,7 @@ jobs:
         run: |
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication
+          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
           ./powershell/tests/pester.ps1
 
