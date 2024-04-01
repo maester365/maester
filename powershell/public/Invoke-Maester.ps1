@@ -209,9 +209,6 @@ Function Invoke-Maester {
 "@
     Write-Host -ForegroundColor Green $motd
 
-    $oldStyle = $PSStyle.Progress.Style
-    $PSStyle.Progress.View = 'Classic' # Set to classic to show progress consistently across platforms
-
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient
@@ -235,6 +232,9 @@ Function Invoke-Maester {
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
+    $maesterResults = $null
+
+    Set-MtProgressView
     Write-MtProgress "Starting tests"
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
@@ -248,13 +248,13 @@ Function Invoke-Maester {
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            Write-MtProgress -Activity "Creating markdown report" -Status $out.OutputMarkdownFile
+            Write-MtProgress -Activity "Creating markdown report"
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            Write-MtProgress -Activity "Creating html report" -Status $out.OutputHtmlFile
+            Write-MtProgress -Activity "Creating html report"
             $output = Get-MtHtmlReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
             Write-Host "🔥 Measter test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
@@ -266,11 +266,11 @@ Function Invoke-Maester {
         }
 
         if ($MailRecipient) {
-            Write-MtProgress -Activity "Sending mail"  -Status $MailRecipient
+            Write-MtProgress -Activity "Sending mail"
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
 
-        if($Verbosity -eq 'None') {
+        if ($Verbosity -eq 'None') {
             # Show final summary
             Write-Host "`nTests Passed ✅: $($pesterResults.PassedCount), " -NoNewline -ForegroundColor Green
             Write-Host "Failed ❌: $($pesterResults.FailedCount), " -NoNewline -ForegroundColor Red
@@ -280,10 +280,9 @@ Function Invoke-Maester {
         Get-IsNewMaesterVersionAvailable | Out-Null
 
         Write-Progress -Activity "🔥 Completed tests" -Completed # Clear progress bar
-
-        $PSStyle.Progress.Style = $oldStyle # Reset the progress style
-        if ($PassThru) {
-            return $maesterResults
-        }
+    }
+    Reset-MtProgressView
+    if ($PassThru) {
+        return $maesterResults
     }
 }

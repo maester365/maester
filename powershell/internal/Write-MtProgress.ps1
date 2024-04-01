@@ -4,7 +4,6 @@
 
 .DESCRIPTION
    Show updates to the user on the current activity.
-
 #>
 
 Function Write-MtProgress {
@@ -18,19 +17,28 @@ Function Write-MtProgress {
         [object]$Status
     )
 
-    if ($Status) {
-        $statusString = Out-String -InputObject $Status
-        # Reduce the length of the status string to 50 characters
-        $hostWidth = $Host.UI.RawUI.WindowSize.Width
-        $buffer = 5
-        $totalWidth = $Activity.Length + $statusString.Length + $buffer # 10 for buffer
-        if ($totalWidth -gt $hostWidth) {
-            $statusString = $statusString.Substring(0, [Math]::Min($statusString.Length, $hostWidth - $Activity.Length - $buffer)) + "..."
+    try {
+        $Activity = "🔥 $Activity"
+
+        if ($Status) {
+            $statusString = Out-String -InputObject $Status
+            # Reduce the length of the status string to fit within host
+            $hostWidth = $Host.UI.RawUI.WindowSize.Width
+            $buffer = 20
+            $totalWidth = $Activity.Length + $statusString.Length + $buffer # 10 for buffer
+            if ($totalWidth -gt $hostWidth) {
+                $length = $hostWidth - $Activity.Length - $buffer
+                if($length -lt $statusString.Length -and $length -gt 0) {
+                    $statusString = $statusString.Substring(0, $length) + "..."
+                }
+            }
+            if($statusString -eq "...") {$statusString = "Processing..."}
+
+            Write-Progress -Activity $Activity -Status $statusString
+        } else {
+            Write-Progress -Activity $Activity
         }
-
-        Write-Progress -Activity $Activity -Status $statusString
-    } else {
-        Write-Progress -Activity $Activity
+    } catch {
+        Write-Verbose $_
     }
-
 }
