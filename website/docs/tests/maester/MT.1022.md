@@ -1,19 +1,19 @@
 ---
-title: P1 license usage is above the number of available licences
-description: More users are using P1 features than the number of available licenses
+title: All users covered by a P1 license are utilizing this license
+description: Checks if all users entitled to a P1 license are actively being protected by it.
 slug: /docs/tests/MT.1022
 sidebar_class_name: hidden
 ---
 
-# P1 license usage is above the number of available licences
+# All users covered by a P1 license are utilizing this license
 
 ## Description
 
-More users are using P1 features than the number of available licenses.
+Checks if all users entitled to a P1 license are actively being protected by it.
 
 ## How to fix
 
-Ensure adequate P1 licenses are available for all users using P1 features.
+Ensure users are licensed appropriately.
 
 ## Learn more
 

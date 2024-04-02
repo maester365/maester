@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Test Conditional Access License Utilization and fail if the utilization is above the limit.
+    Test Conditional Access License Utilization and return stats on usage for the specific license.
 
 .DESCRIPTION
     Utilization is validated using the insights provided by Microsoft Graph.
@@ -59,6 +59,7 @@ function Test-MtCaLicenseUtilization {
         }
     }
 
+    $testDescription =
     $testDescription = "This test checks the utilization of Entra ID $License licenses in the tenant."
     $testResult = "Total users entitled for Entra ID $($License): **$($Result.EntitledLicenseCount)**`n`nTotal $License licenses utilized: **$($Result.TotalLicensesUtilized)**"
     Add-MtTestResultDetail -Description $testDescription -Result $testResult
