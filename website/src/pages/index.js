@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Your Microsoft 365 test automation framework to continously validate your Microsoft cloud configuration!"
+      description="Your Microsoft Security test automation framework!"
     >
       <HomepageHeader />
       <main>

@@ -115,6 +115,6 @@ html[data-theme="dark"] .navbar--github-link:before {
 }
 
 img.rounded-corners {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   margin-top: 10px;
 }
