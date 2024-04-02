@@ -24,9 +24,12 @@ Function Get-IsNewMaesterVersionAvailable {
         $latestVersion = (Find-Module -Name Maester).Version
 
         if ($currentVersion -lt $latestVersion) {
-            Write-Host "🔥 FYI: A newer version of the Maester module is available. Installed version: $currentVersion, Latest version: $latestVersion" -ForegroundColor Yellow
-            Write-Host "✨ Run 'Update-Module Maester' to install the latest version." -ForegroundColor Yellow
-            Write-Host "💫 Run 'Update-MtMaesterTests' to get the latest tests built by the Maester team." -ForegroundColor Yellow
+            Write-Host "🔥 FYI: A newer version of Maester is available! Run the commands below to update to the latest version."
+            Write-Host "💥 Installed version: $currentVersion → Latest version: $latestVersion" -ForegroundColor DarkGray
+            Write-Host "✨ Update-Module Maester" -NoNewline -ForegroundColor Green
+            Write-Host " → Install the latest version of Maester." -ForegroundColor Yellow
+            Write-Host "💫 Update-MtMaesterTests" -NoNewline -ForegroundColor Green
+            Write-Host " → Get the latest tests built by the Maester team." -ForegroundColor Yellow
             return $true
         }
     } catch { Write-Verbose -Message $_}
