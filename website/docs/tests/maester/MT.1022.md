@@ -1,5 +1,5 @@
 ---
-title: All users covered by a P1 license are utilizing this license
+title: MT.1022 - All users covered by a P1 license are utilizing this license
 description: Checks if all users entitled to a P1 license are actively being protected by it.
 slug: /docs/tests/MT.1022
 sidebar_class_name: hidden

@@ -102,9 +102,9 @@ html[data-theme="dark"] .navbar--github-link:before {
   white-space: nowrap;
 }
 
-.hidden {
+/* .hidden {
   display: none !important;
-}
+} */
 
 /* Override non-category links to be horizonally compact */
 

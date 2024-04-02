@@ -1,5 +1,5 @@
 ---
-title: Microsoft Entra recommendations
+title: MT.1024 - Microsoft Entra recommendations
 description: These recommendations help ensure your tenant is in a secure and healthy state
 slug: /docs/tests/MT.1024
 sidebar_class_name: hidden

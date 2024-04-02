@@ -1,6 +1,7 @@
 ---
-title: 🔥 Maester Tests
+title: 🔥 Maester Tests Overview
 description: Overview of the Maester tests
+sidebar_position: 1
 ---
 
 ```mdx-code-block

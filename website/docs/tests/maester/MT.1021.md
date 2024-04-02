@@ -1,5 +1,5 @@
 ---
-title: Security Defaults are enabled
+title: MT.1021 - Security Defaults are enabled
 description: Security defaults make it easier to help protect your organization from identity-related attacks like password spray, replay, and phishing.
 slug: /tests/MT.1021
 sidebar_class_name: hidden

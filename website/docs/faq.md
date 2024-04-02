@@ -7,7 +7,7 @@ title: ❓ FAQ
 
 If you see the following error when installing Maester, it means that you have an older version of Pester installed.
 
-`A Microsoft-signed module named 'Pester' with version '3.4.0' that was previously installed conflicts with the new module 'Pester'`
+**A Microsoft-signed module named 'Pester' with version '3.4.0' that was previously installed conflicts with the new module 'Pester'**
 
 Run the following command to install the latest version of Pester and then retry installing Maester.
 

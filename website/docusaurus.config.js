@@ -9,8 +9,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Maester",
-  tagline:
-    "Continuously monitor your Microsoft 365 security configuration!",
+  tagline: "Continuously monitor your Microsoft 365 security configuration!",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -142,6 +141,8 @@ const config = {
         respectPrefersColorScheme: true,
       },
     }),
+
+  plugins: [require.resolve("@cmfcmf/docusaurus-search-local")],
 };
 
 export default config;
