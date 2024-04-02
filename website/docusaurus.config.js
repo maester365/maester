@@ -37,7 +37,10 @@ const config = {
   markdown: {
     mermaid: true,
   },
-  themes: ["@docusaurus/theme-mermaid"],
+  themes: [
+    "@docusaurus/theme-mermaid",
+    "@easyops-cn/docusaurus-search-local",
+  ],
 
   presets: [
     [
@@ -141,8 +144,6 @@ const config = {
         respectPrefersColorScheme: true,
       },
     }),
-
-  plugins: [require.resolve("@cmfcmf/docusaurus-search-local")],
 };
 
 export default config;
