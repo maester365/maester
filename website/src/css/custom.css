@@ -113,3 +113,8 @@ html[data-theme="dark"] .navbar--github-link:before {
   margin-top: 0.2rem;
   content: url(/static/img/icons/mdi--powershell.svg);
 }
+
+img.rounded-corners {
+  border-radius: 10px !important;
+  margin-top: 10px;
+}

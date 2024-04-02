@@ -9,7 +9,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Maester",
-  tagline: "Continuously monitor your Microsoft 365 security configuration!",
+  tagline: "Your Microsoft Security test automation framework!",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
