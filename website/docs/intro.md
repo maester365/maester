@@ -21,34 +21,14 @@ cd maester-tests
 Install-MaesterTests .\tests
 ```
 
-- Sign in and run the tests.
+- Sign into your Microsoft 365 tenant and run the tests.
 
 ```powershell
 Connect-Maester
 Invoke-Maester
 ```
 
-FAQ
 
-### Previously install 'Pester' version '3.4.0' conflicts with new module.
-
-If you see the following error when installing Maester, it means that you have an older version of Pester installed.
-
-```
-A Microsoft-signed module named 'Pester' with version '3.4.0' that was previously installed conflicts with the new module 'Pester'
-```
-
-Run the following command to install the latest version of Pester and then retry installing Maester.
-
-```powershell
-Install-Module Pester -Scope CurrentUser -SkipPublisherCheck -Force
-```
-
-
-
-### Prerequisites
-
-* Install git from [https://git-scm.com/](https://git-scm.com/)
 
 
 ## Reporting Test Results
