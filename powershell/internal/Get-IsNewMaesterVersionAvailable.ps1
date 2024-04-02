@@ -25,7 +25,8 @@ Function Get-IsNewMaesterVersionAvailable {
 
         if ($currentVersion -lt $latestVersion) {
             Write-Host "🔥 FYI: A newer version of the Maester module is available. Installed version: $currentVersion, Latest version: $latestVersion" -ForegroundColor Yellow
-            Write-Host "Run 'Update-Module Maester' to install the latest version." -ForegroundColor Yellow
+            Write-Host "✨ Run 'Update-Module Maester' to install the latest version." -ForegroundColor Yellow
+            Write-Host "💫 Run 'Update-MtMaesterTests' to get the latest tests built by the Maester team." -ForegroundColor Yellow
             return $true
         }
     } catch { Write-Verbose -Message $_}
