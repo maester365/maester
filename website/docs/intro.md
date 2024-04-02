@@ -28,30 +28,11 @@ Connect-Maester
 Invoke-Maester
 ```
 
+## Next Steps
 
-
-
-## Reporting Test Results
-
-[TBD]
-
-### Daily Mail alerts
-
-[TBD]
-
-## Writing Custom Tests
-
-While you can use the pre-defined tests that we've created for you, you can also write your own custom tests.
-
-Here's how you can do this.
-[TBD]
-
-## Setting up daily automated tests
-
-Follow the guides here to setup daily automated tests.
-
-### GitHub Actions
-
-### Azure DevOps
-
+- [Writing Custom Tests](/docs/writing-tests)
+- Monitoring with Maester
+  - [Set up Maester on GitHub](/docs/monitoring/github)
+  - [Set up Maester on Azure DevOps](/docs/monitoring/azure-devops)
+  - [Set up Maester email alerts](/docs/monitoring/email)
 
