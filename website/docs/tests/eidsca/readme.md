@@ -1,8 +1,8 @@
 ---
+id: overview
 title: Entra ID - Security Config Analyzer Tests
 sidebar_label: 🛡️ Entra ID SCA Tests Overview
 description: Overview of the Entra ID Security Config Analyzer tests
-sidebar_position: 1
 ---
 
 ```mdx-code-block
