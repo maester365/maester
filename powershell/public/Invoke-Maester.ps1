@@ -235,12 +235,13 @@ Function Invoke-Maester {
     $maesterResults = $null
 
     Set-MtProgressView
-    Write-MtProgress "Starting tests"
+    Write-MtProgress -Activity "Starting Maester" -Status "Discovering tests to run..." -Force
+
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
 
-        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) tests"
+        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) tests" -Force
         $maesterResults = ConvertTo-MtMaesterResult $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
@@ -279,7 +280,7 @@ Function Invoke-Maester {
 
         Get-IsNewMaesterVersionAvailable | Out-Null
 
-        Write-Progress -Activity "🔥 Completed tests" -Completed # Clear progress bar
+        Write-MtProgress -Activity "🔥 Completed tests" -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar
     }
     Reset-MtProgressView
     if ($PassThru) {
