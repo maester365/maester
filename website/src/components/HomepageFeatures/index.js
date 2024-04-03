@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 const FeatureList = [
   {
     title: "Ready made tests",
-    Svg: require("@site/static/img/feature_tests.svg").default,
+    Svg: require("@site/static/img/home/feature_tests.svg").default,
     description: (
       <>
         Maester comes with a collection of ready to use tests to help you get
@@ -15,7 +15,7 @@ const FeatureList = [
   },
   {
     title: "Confidently make changes",
-    Svg: require("@site/static/img/feature_regression.svg").default,
+    Svg: require("@site/static/img/home/feature_regression.svg").default,
     description: (
       <>
         Worried about introducing changes that might break your tenant's
@@ -25,7 +25,7 @@ const FeatureList = [
   },
   {
     title: "Continous monitoring",
-    Svg: require("@site/static/img/feature_monitor.svg").default,
+    Svg: require("@site/static/img/home/feature_monitor.svg").default,
     description: (
       <>
         Set up continous monitoring of your tenant configuration using your
@@ -35,7 +35,7 @@ const FeatureList = [
   },
   {
     title: "Easy to customize",
-    Svg: require("@site/static/img/feature_customize.svg").default,
+    Svg: require("@site/static/img/home/feature_customize.svg").default,
     description: (
       <>
         Since Maester is built using Pester and Microsoft Graph, you can write
@@ -45,7 +45,7 @@ const FeatureList = [
   },
   {
     title: "Configuration guidance",
-    Svg: require("@site/static/img/feature_guidance.svg").default,
+    Svg: require("@site/static/img/home/feature_guidance.svg").default,
     description: (
       <>
         Each test in Maester comes with details of the configuration settings
@@ -55,11 +55,11 @@ const FeatureList = [
   },
   {
     title: "Entra ID Security Config Analyzer",
-    Svg: require("@site/static/img/feature_eidsca.svg").default,
+    Svg: require("@site/static/img/home/feature_eidsca.svg").default,
     description: (
       <>
         Maester natively integrates Entra ID Security Config Analyzer to provide
-        a comprehensive set of tests that map to the MITRE ATT&CK framework.
+        a comprehensive set of Entra ID checks that map to the MITRE ATT&CK framework.
       </>
     ),
   },
