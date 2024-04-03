@@ -12,66 +12,67 @@
   #>
 
   param (
-    # The AlertId that should be use as filter: All
-    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
     [ValidateSet("RedundantAssignmentAlert", "RolesAssignedOutsidePimAlert", "SequentialActivationRenewalsAlert", "TooManyGlobalAdminsAssignedToTenantAlert", "StaleSignInAlert")]
-    [string[]]$AlertId = "All",
+    [string[]]$AlertId,
 
-    # The Enterprise Access Model level which should be considered for the filter
-    [Parameter(ValueFromPipelineByPropertyName = $true)]
+    [Parameter(ValueFromPipelineByPropertyName = $true, Position = 1)]
     [ValidateSet("ControlPlane", "ManagementPlane")]
     [string[]]$FilteredAccessLevel = $null,
 
-    # The Enterprise Access Model level which should be considered for the filter
-    [Parameter(ValueFromPipelineByPropertyName = $true)]
-    [object[]]$FilteredBreakGlassObjectIds = $null
+    [Parameter(ValueFromPipelineByPropertyName = $true, Position = 2)]
+    [object[]]$FilteredBreakGlassUpn = (Get-MtUser -UserType EmergencyAccess).userPrincipalName
   )
 
   $mgContext = Get-MgContext
   $tenantId = $mgContext.TenantId
 
-  $Alerts = Invoke-MtGraphRequest -RelativeUri "privilegedAccess/aadroles/resources/$($tenantId)/alerts" -ApiVersion beta | Where-Object { $_.status -eq "Active" }
+  $Alert = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/privilegedAccess/aadroles/resources/$($tenantId)/alerts" `
+            | Select-Object -ExpandProperty value -ErrorAction SilentlyContinue | Where-Object { $_.id -eq $AlertId }
 
-  if ($AlertId -ne "All") {
-    $Alerts = $Alerts | Where-Object { $_.id -eq $AlertId }
+  $AffectedRoleAssignments = $Alert.additionalData | ForEach-Object {
+    $CurrentItem = $_['item']
+    $result = New-Object psobject;
+    foreach ($entry in $CurrentItem.GetEnumerator()) {
+        $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
+      }
+      $result
   }
 
+  # Filtering based on (EntraOps) Enterprise Access Model Tiering
   if ($null -ne $FilteredAccessLevel) {
     $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
     $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
-    $AffectedRoleAssignments = $alerts.additionalData | ForEach-Object { $_.item }
-    $Alerts = $Alerts.additionalData | ForEach-Object { $_.item | Where-Object { $_.RoleTemplateId -in $FilteredClassification } }
-
-    $Alerts.additionalData | ForEach-Object { $_.item | Where-Object { $_.RoleTemplateId -eq "62e90394-69f5-4237-9190-012177145e10" } }
-    $AffectedRoleAssignments | ForEach-Object { $_ | Where-Object { $_.RoleTemplateId -eq "62e90394-69f5-4237-9190-012177145e10" } }
+    $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
   }
 
-  if ($Alerts.Count -gt "0") {
+  # Exclude Break Glass from Alerts
+  if ($null -ne $FilteredBreakGlassUpn -and $null -eq $AffectedRoleAssignments) {
+    $AffectedRoleAssignments | Where-Object {$_.AssigneeUserPrincipalName -in $($FilteredBreakGlassUpn)} | ForEach-Object {
+      Write-Warning "$($_.AssigneeDisplayName) has been defined as Break Glass and removed from $($Alert.id)"
+    }
+    $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object {$_.AssigneeUserPrincipalName -notin $($FilteredBreakGlassUpn)}
+  }
 
-    Write-Warning "HAFDJADFSKDFKSFKJFD"
-
+  if ($Alert.Count -gt "0" -and $AffectedRoleAssignments.Count -gt 0) {
     $testDescription = "
 
-    ## Security Impact
-    $($Alerts.securityImpact)
+**Security Impact**`n`n
+$($Alert.securityImpact)
 
-    ## Mitigation steps
-    $($Alerts.mitigationSteps)
+**Mitigation steps**`n`n
+$($Alert.mitigationSteps)
 
-    ## How to prevent
-    $($Alerts.howToPrevent)
+**How to prevent**`n`n
+$($Alert.howToPrevent)
+"
 
-    ## Details of the alert in Azure Portal
-    $($Alerts.howToPrevent)
-    "
+$testResult = "$($Alert.alertDescription):`n`n
+$($AffectedRoleAssignments | Format-List) `n`n
+See [alert details of $($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId))
+"
 
-    $testResult = "$($Alerts.alertDescription):`n`n
-    See [alert details of $($Alerts.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId))
-    "
-
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
-    Write-Verbose "$testdescription - $testresult"
+  Add-MtTestResultDetail -Description $testDescription -Result $testResult
   }
-  return $Alerts
+  return $Alert
 }
-

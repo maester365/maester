@@ -13,16 +13,13 @@
 
   param (
 
-    # The Enterprise Access Model level which should be considered for the filter
     [Parameter(ValueFromPipelineByPropertyName = $true)]
     [ValidateSet("ControlPlane", "ManagementPlane")]
     [string[]]$FilteredAccessLevel = $null,
 
-    # The Enterprise Access Model level which should be considered for the filter
     [Parameter(ValueFromPipelineByPropertyName = $true)]
-    [object[]]$FilteredBreakGlassObjectIds = $null,
+    [object[]]$FilteredBreakGlassObjectIds = (Get-MtUser -UserType EmergencyAccess).id,
 
-    # The Enterprise Access Model level which should be considered for the filter
     [Parameter(ValueFromPipelineByPropertyName = $true, Mandatory)]
     [ValidateSet("ExternalUser", "HybridUser", "ServicePrincipalClientSecret", "ServicePrincipalObject", "UserMailbox")]
     [object[]]$FilterPrincipal
@@ -44,38 +41,38 @@
   $PermDirRoleAssignments = switch ( $FilterPrincipal ) {
     ExternalUser {
       $DirectAssignments | Where-Object { $_.principal.userType -eq "Guest" }
-      $testDescription = "
-      Take attention on B2B collaboration user (outside of MSSP/partner relationsship) with $($FilteredAccessLevel) privileges.
-      Ensure the external users are from authorized external tenants and passes your requirements for Conditional Access, Lifecycle Workflow and Identity Protection like your internal users.
-      Learn more about the best practices for privileges users:
-       - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
+$testDescription = "
+Take attention on B2B collaboration user (outside of MSSP/partner relationsship) with $($FilteredAccessLevel) privileges.
+Ensure the external users are from authorized external tenants and passes your requirements for Conditional Access, Lifecycle Workflow and Identity Protection like your internal users.
+Learn more about the best practices for privileges users:
+  - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
     }
     HybridUser {
       $DirectAssignments | Where-Object { $null -ne $_.principal.onPremisesImmutableId }
-      $testDescription = "
-      It's recommended to use cloud-only accounts for privileges with $($FilteredAccessLevel) privileges to avoid attack paths from on-premises environment.
-      Learn more about the best practices for privileges users:
-       - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
-       - [Protecting Microsoft 365 from on-premises attacks](https://learn.microsoft.com/en-us/entra/architecture/protect-m365-from-on-premises-attacks#isolate-privileged-identities)
-      "
+$testDescription = "
+It's recommended to use cloud-only accounts for privileges with $($FilteredAccessLevel) privileges to avoid attack paths from on-premises environment.
+Learn more about the best practices for privileges users:
+  - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)
+  - [Protecting Microsoft 365 from on-premises attacks](https://learn.microsoft.com/en-us/entra/architecture/protect-m365-from-on-premises-attacks#isolate-privileged-identities)
+"
     }
     ServicePrincipalClientSecret {
       $DirectAssignments | Where-Object { $_.principal.keyCredentials -eq "Symmetric" }
-      $testDescription = "
-      Take attention on Service Principals with Client Secrets and $($FilteredAccessLevel) privileges.
-      It's recommended to use at least certificates for Service Principals with high privileges. Review if you can use managed identities instead of a Service Principal."
+$testDescription = "
+Take attention on Service Principals with Client Secrets and $($FilteredAccessLevel) privileges.
+It's recommended to use at least certificates for Service Principals with high privileges. Review if you can use managed identities instead of a Service Principal."
     }
     ServicePrincipal {
       $DirectAssignments | Where-Object { $_.principal.servicePrincipalType -eq "Application" }
-      $testDescription = "
-      Take attention on Service Principals with $($FilteredAccessLevel) privileges.
-      It's recommended to use managed identities for Service Principals with high privileges."
+$testDescription = "
+Take attention on Service Principals with $($FilteredAccessLevel) privileges.
+It's recommended to use managed identities for Service Principals with high privileges."
     }
     UserMailbox {
       $DirectAssignments | Where-Object { $_.principal.provisionedPlans.service -contains "exchange" }
-      $testDescription = "
-      Take attention of mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
-      It's recommended to use mail forwarding to regular work account and avoiding direct mail access from the privileged user."
+$testDescription = "
+Take attention of mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
+It's recommended to use mail forwarding to regular work account and avoiding direct mail access from the privileged user."
     }
   }
 
@@ -106,5 +103,3 @@
   }
   return $result
 }
-
-
