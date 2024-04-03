@@ -134,6 +134,11 @@ img.rounded-corners {
   }
 }
 
+.RightText {
+  padding-left: 40px;
+}
+
+
 @media only screen and (max-width: 960px) {
   .CrossPlatform .TwoColumns {
     grid-gap: 2rem;
@@ -151,6 +156,7 @@ img.rounded-corners {
     margin: 0 auto;
     text-align: center;
   }
+
 }
 
 /* Section */

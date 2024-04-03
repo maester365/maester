@@ -20,7 +20,14 @@ Maester can be integrated with Azure DevOps Pipelines and scheduled to be run da
 and when changes are introduced in your Microsoft 365 tenant.
 <br/><br/>
 <strong>Follow the step-by-step guide</strong> in the Maester docs to set up
-an automation account with Workload Identify Federation (no more secrets or credential rotation!).`,
+an automation account with Workload Identify Federation.`,
+  gitHub: `
+Integrate Maester with GitHub Actions to continously monitor your tenant configuration.
+<br/><br/>
+<strong>Build an archive history</strong> of Maester test runs against your tenant with the native
+workflow integration in Maester.
+<br/><br/>
+<strong>Use Workload Identify Federation</strong> for your automation account to connect to Microsoft Graph (no more secrets or credential rotation!).`,
   codeExample: `
 import React from 'react';
 import {Text, View} from 'react-native';
@@ -134,7 +141,7 @@ export function Section({
 
 function TextColumn({ title, text, moreContent }) {
   return (
-    <div className="align-middle">
+    <div className="RightText">
       <Heading2 text={title} />
       <div dangerouslySetInnerHTML={{ __html: text }} />
       {moreContent}
@@ -152,6 +159,22 @@ function TwoColumns({ columnOne, columnTwo, reverse }) {
         {columnTwo}
       </div>
     </div>
+  );
+}
+
+function GitHub() {
+  return (
+    <Section className="CrossPlatform LeftImage">
+      <TwoColumns
+        reverse
+        columnOne={
+          <TextColumn title="Integrate with GitHub" text={textContent.gitHub} />
+        }
+        columnTwo={
+          <img alt="GitHub reports" src="img/home/github-maester-report.png" />
+        }
+      />
+    </Section>
   );
 }
 
@@ -206,6 +229,7 @@ export default function Home() {
       <main>
         <HomepageFeatures />
       </main>
+      <GitHub />
       <AzureDevOps />
       <EmailAlert />
     </Layout>
