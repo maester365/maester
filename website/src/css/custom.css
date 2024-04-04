@@ -122,16 +122,19 @@ img.rounded-corners {
 }
 
 /* Cross Platform */
-
 .CrossPlatform {
   img {
-    max-width: 500px;
     margin: -20px 0;
 
     text {
       fill: var(--ifm-color-content-secondary);
     }
   }
+}
+
+.FeatureImageLeft {
+  max-width: 550px;
+  margin: -20px -60px !important;
 }
 
 .RightText {
