@@ -121,6 +121,16 @@ img.rounded-corners {
   margin-top: 10px;
 }
 
+/* Feature image */
+.FeatureImageLeft {
+  max-width: 550px;
+  margin: -20px -60px !important;
+}
+
+.FeatureImageRight {
+  max-width: 550px;
+}
+
 /* Cross Platform */
 .CrossPlatform {
   img {
@@ -132,10 +142,6 @@ img.rounded-corners {
   }
 }
 
-.FeatureImageLeft {
-  max-width: 550px;
-  margin: -20px -60px !important;
-}
 
 .RightText {
   padding-left: 40px;

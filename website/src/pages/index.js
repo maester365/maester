@@ -8,7 +8,6 @@ import Heading from "@theme/Heading";
 import styles from "./index.module.css";
 
 const textContent = {
-
   customTests: `
   Write Pester tests that encode your organization's business and security policies.<br/><br/>
   <strong>Apply modern DevSecOps practices</strong> and continously monitor critical aspects of your Microsoft cloud.
@@ -19,11 +18,11 @@ Get a quick snapshot of your tenant's security posture with the report generated
 <strong>The interactive click-through</strong> report let's you drill down to the details of
 each test.
 <br/><br/>`,
-quickFix: `
+  quickFix: `
 Test details include direct links to the admins portals.<br/><br/>
 <strong>Jump straight</strong> into the conditional access policy that needs to be fixed or the group that needs to be reviewed.
 <br/><br/>`,
-eidsca: `
+  eidsca: `
 Maester includes over 40+ out of the box tests from <a href="/docs/tests/eidsca/">Entra ID Security Config Analyzer (EIDSCA).</a><br/><br/>
 EIDSCA is a part of the <strong>Microsoft Entra ID - Attack and Defense Playbook</strong> and is a collection of common attack scenarios on Microsoft Entra ID and how they can be mitigated.
 <br/><br/>`,
@@ -186,10 +185,14 @@ function CustomTests() {
       <TwoColumns
         reverse
         columnOne={
-          <TextColumn title="Security as Code (SaC)" text={textContent.customTests} />
+          <TextColumn
+            title="Security as Code (SaC)"
+            text={textContent.customTests}
+          />
         }
         columnTwo={
-          <img className="FeatureImageLeft"
+          <img
+            className="FeatureImageLeft"
             alt="Code snippet for a custom test"
             src="img/home/custom-test.png"
           />
@@ -201,7 +204,7 @@ function CustomTests() {
 
 function MaesterReport() {
   return (
-    <Section className="CrossPlatform" >
+    <Section className="CrossPlatform">
       <TwoColumns
         columnOne={
           <TextColumn
@@ -210,10 +213,8 @@ function MaesterReport() {
           />
         }
         columnTwo={
-          <img
-            alt="Maester summary report"
-            src="img/home/maester-report.png"
-          />
+          <img className="FeatureImageRight"
+          alt="Maester summary report" src="img/home/maester-report.png" />
         }
       />
     </Section>
@@ -229,7 +230,11 @@ function GitHub() {
           <TextColumn title="Maester ❤️ GitHub" text={textContent.gitHub} />
         }
         columnTwo={
-          <img alt="GitHub reports" src="img/home/github-maester-report.png" />
+          <img
+            className="FeatureImageLeft"
+            alt="GitHub reports"
+            src="img/home/github-maester-report.png"
+          />
         }
       />
     </Section>
@@ -247,7 +252,7 @@ function AzureDevOps() {
           />
         }
         columnTwo={
-          <img
+          <img className="FeatureImageRight"
             alt="Azure DevOps Screenshot"
             src="img/home/azure-devops-maester-report.png"
           />
@@ -267,6 +272,7 @@ function EmailAlert() {
         }
         columnTwo={
           <img
+            className="FeatureImageLeft"
             alt="Outlook email alerts"
             src="img/home/email-alert-test-results.png"
           />
@@ -280,12 +286,11 @@ function Eidsca() {
   return (
     <Section className="CrossPlatform">
       <TwoColumns
-
         columnOne={
           <TextColumn title="40+ EIDSCA Tests" text={textContent.eidsca} />
         }
         columnTwo={
-          <img
+          <img className="FeatureImageRight"
             alt="Screenshot of an EIDSCA test result"
             src="img/home/maester-report-eidsca.png"
           />
