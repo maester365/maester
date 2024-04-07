@@ -55,6 +55,7 @@
   }
 
   if ($Alert.Count -gt "0" -and $AffectedRoleAssignments.Count -gt 0) {
+
     $testDescription = "
 
 **Security Impact**`n`n
@@ -67,9 +68,18 @@ $($Alert.mitigationSteps)
 $($Alert.howToPrevent)
 "
 
-$testResult = "$($Alert.alertDescription):`n`n
-$($AffectedRoleAssignments | Format-List) `n`n
-See [alert details of $($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId))
+$AffectedRoleAssignmentSummary = @()
+$AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
+  if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
+    "  -  $($AffectedRoleAssignment.AssigneeDisplayName) with $($AffectedRoleAssignment.RoleDisplayName) by AssigneeId $($AffectedRoleAssignment.AssigneeId)`n"
+  } else {
+    "  -  $($AffectedRoleAssignment.AssigneeName) ($($AffectedRoleAssignment.AssigneeUserPrincipalName))`n"
+  }
+}
+
+$testResult = "$($Alert.alertDescription)`n`n
+$($AffectedRoleAssignmentSummary)
+Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
 "
 
   Add-MtTestResultDetail -Description $testDescription -Result $testResult
