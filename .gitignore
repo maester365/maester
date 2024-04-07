@@ -492,3 +492,6 @@ test-results
 
 website/build/
 /powershell/maester-tests
+
+# Don't add any test files to this folder
+tests/Custom/*.ps1
