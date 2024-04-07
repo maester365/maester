@@ -113,7 +113,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                href: "https://discord.entra.news",
+                href: "https://discord.maester.dev",
               },
               {
                 label: "Twitter",
