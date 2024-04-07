@@ -122,9 +122,11 @@ img.rounded-corners {
 }
 
 /* Feature image */
-.FeatureImageLeft {
-  max-width: 550px;
-  margin: -20px -60px !important;
+@media only screen and (min-width: 481px) {
+  .FeatureImageLeft {
+    max-width: 550px;
+    margin: -20px -60px !important;
+  }
 }
 
 .FeatureImageRight {
