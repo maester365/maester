@@ -1,5 +1,71 @@
 ---
-sidebar_position: 2
+title: Writing custom tests
 ---
 
-# Writing Maester Tests
+## Introduction
+
+Maester is built on top of [Pester](https://pester.dev) which uses an English-like format to define tests.
+
+In this guide we will show you how to write custom tests using Pester and Microsoft Graph PowerShell.
+
+## Pre-requisites
+
+- You have set up Maester following the [installation guide](/docs/installation).
+- Successfully run **Invoke-Maester** and tested with the out of the box tests.
+
+## Creating the custom test file
+
+In your Maester folder you should have a folder called **Custom**. This is where you can create your custom test files.
+
+To get started create an empty file called **ContosoEntra.Tests.ps1** in the **Custom** folder (replace **Contoso** with your company name).
+
+It is important to use the .Tests.ps1 suffix in the file name so that your test file can be automatically discovered and tested when you run **Invoke-Maester**.
+
+Once you've created the file you can add multiple tests to it.
+
+## Adding a test to the file
+
+Let's create a simple test that checks if a specific security group exists and is not empty.
+
+A common scenario for this test would be a security group that is used in a critical conditional access policy or to assign Microsoft 365 licenses.
+
+```powershell
+Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
+    It "Check 'Contoso MFA Users' group" {
+
+        $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
+
+        $memberCount = Get-MgGroupTransitiveMemberCount -GroupId $groupId -ConsistencyLevel eventual
+
+        # Test if the group exists and has members
+        $memberCount | Should -BeGreaterThan 0
+    }
+}
+```
+
+Copy the code above and paste it into your **ContosoEntra.Tests.ps1** file.
+
+- Replace the **Contoso** tag with your company name.
+- Replace the **Contoso MFA Users** label for the test with the name of the group you want to test.
+- Replace the groupID GUID with the **Object ID** of a group in your tenant.
+- Save the file.
+
+## Running the custom test
+
+To run the test, open PowerShell and navigate to the Maester folder.
+
+Run the following command to execute the test you just created.
+
+```powershell
+Invoke-Maester .\tests\Custom\
+```
+
+You should now see the output of your test.
+
+**Congratulations. You've just created your first Maester test!**
+
+You can continue to add more tests to the file or create new test files as needed.
+
+If you followed the Monitoring and email alert guides, these new tests you created will also be included in the monitoring and alerting (assuming you add this test file to GitHub or Azure DevOps).
+
+In the future, if someone deletes this group or removes the members you will be alerted about a security risk in your environment.

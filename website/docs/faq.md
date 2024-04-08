@@ -3,6 +3,14 @@ sidebar_position: 6
 title: ❓ FAQ
 ---
 
+## Is this a Microsoft product?
+
+No. Maester is an open-source, community led project and is not affiliated with Microsoft.
+
+## How do I report issues?
+
+If you encounter an issue with Maester, please [open an issue on GitHub](https://github.com/maester365/maester/issues).
+
 ## Previously installed 'Pester' version '3.4.0' conflicts with new module
 
 If you see the following error when installing Maester, it means that you have an older version of Pester installed.

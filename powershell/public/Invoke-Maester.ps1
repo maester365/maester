@@ -241,7 +241,7 @@ Function Invoke-Maester {
 
     if ($pesterResults) {
 
-        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) tests" -Force
+        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) test(s)" -Force
         $maesterResults = ConvertTo-MtMaesterResult $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {

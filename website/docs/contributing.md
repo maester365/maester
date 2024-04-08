@@ -9,6 +9,12 @@ import TOCInline from '@theme/TOCInline';
 
 <TOCInline toc={toc} />
 
+## Introduction
+
+This guide is for anyone who wants to contribute to the Maester project. Whether you want to contribute to the code, documentation, or just have an idea for a new feature, we welcome your input.
+
+Follow the guide below to set up Maester for development on your local machine, make changes, and submit a pull request.
+
 ## Maester PowerShell module dev guide
 
 ### Simple debugging
