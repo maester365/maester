@@ -33,7 +33,7 @@ Follow the guide below to set up Maester for development on your local machine, 
 
 - Tests for the Maester module are at /powershell/tests
 - When making changes to the module you can run the test locally by running `/powershell/tests/pester.ps1`
-- The **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment`
+- The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
 ## Contributing to Maester docs
