@@ -1,6 +1,4 @@
-﻿Function Test-MtPimAlertsExists {
-  [OutputType([object])]
-  <#
+﻿<#
  .Synopsis
   Checks if PIM alerts exists
 
@@ -9,7 +7,11 @@
 
  .Example
   Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
-  #>
+#>
+Function Test-MtPimAlertsExists {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
+  [OutputType([object])]
+  [CmdletBinding()]
 
   param (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
@@ -30,15 +32,15 @@
   # Get PIM Alerts and store as object to be used in the test
   Write-Verbose "Getting PIM Alerts"
   $Alert = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/privilegedAccess/aadroles/resources/$($tenantId)/alerts" `
-            | Select-Object -ExpandProperty value -ErrorAction SilentlyContinue | Where-Object { $_.id -eq $AlertId }
+  | Select-Object -ExpandProperty value -ErrorAction SilentlyContinue | Where-Object { $_.id -eq $AlertId }
 
   $AffectedRoleAssignments = $Alert.additionalData | ForEach-Object {
     $CurrentItem = $_['item']
-    $result = New-Object psobject;
+    $result = New-Object psobject
     foreach ($entry in $CurrentItem.GetEnumerator()) {
-        $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
-      }
-      $result
+      $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
+    }
+    $result
   }
 
   # Filtering based on (EntraOps) Enterprise Access Model Tiering
@@ -51,10 +53,10 @@
 
   # Exclude Break Glass from Alerts
   if ($null -ne $FilteredBreakGlass -and $null -ne $AffectedRoleAssignments) {
-    $AffectedRoleAssignments | Where-Object {$_.AssigneeId -in $($FilteredBreakGlass).Id} | ForEach-Object {
+    $AffectedRoleAssignments | Where-Object { $_.AssigneeId -in $($FilteredBreakGlass).Id } | ForEach-Object {
       Write-Warning "$($_.AssigneeUserPrincipalName) has been defined as Break Glass and removed from $($Alert.id)"
     }
-    $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object {$_.AssigneeId -notin $($FilteredBreakGlass).Id}
+    $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.AssigneeId -notin $($FilteredBreakGlass).Id }
 
     # Set number of affected Items to value of filtered items (for example, original alert has two affected items, but all of them are break glass and excluded from the test)
     $Alert.numberOfAffectedItems = $AffectedRoleAssignments.Count
@@ -75,21 +77,21 @@ $($Alert.mitigationSteps)
 $($Alert.howToPrevent)
 "
 
-$AffectedRoleAssignmentSummary = @()
-$AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
-  if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
-    "  -  $($AffectedRoleAssignment.AssigneeDisplayName) with $($AffectedRoleAssignment.RoleDisplayName) by AssigneeId $($AffectedRoleAssignment.AssigneeId)`n"
-  } else {
-    "  -  $($AffectedRoleAssignment.AssigneeName) ($($AffectedRoleAssignment.AssigneeUserPrincipalName))`n"
-  }
-}
+    $AffectedRoleAssignmentSummary = @()
+    $AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
+      if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
+        "  -  $($AffectedRoleAssignment.AssigneeDisplayName) with $($AffectedRoleAssignment.RoleDisplayName) by AssigneeId $($AffectedRoleAssignment.AssigneeId)`n"
+      } else {
+        "  -  $($AffectedRoleAssignment.AssigneeName) ($($AffectedRoleAssignment.AssigneeUserPrincipalName))`n"
+      }
+    }
 
-$testResult = "$($Alert.alertDescription)`n`n
+    $testResult = "$($Alert.alertDescription)`n`n
 $($AffectedRoleAssignmentSummary)
 Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
 "
 
-  Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
   }
 
   return $Alert

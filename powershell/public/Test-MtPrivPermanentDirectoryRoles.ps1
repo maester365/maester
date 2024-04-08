@@ -1,5 +1,6 @@
-﻿Function Test-MtPrivPermanentDirectoryRoles {
+﻿Function Test-MtPrivPermanentDirectoryRole {
   [OutputType([object])]
+  [CmdletBinding()]
   <#
  .Synopsis
   Checks if Permanent Assignments for Entra ID roles exists
@@ -8,7 +9,7 @@
   GET /beta/roleManagement/directory/roleAssignments?$expand=principal
 
  .Example
-  Test-MtPrivPermanentDirectoryRoles -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
+  Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
   #>
 
   param (
