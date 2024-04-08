@@ -1,10 +1,10 @@
 ---
-title: EIDSCA.AP06 - Default Authorization Settings - User can joint the tenant by email validation
+title: EIDSCA.AP06 - Default Authorization Settings - User can join the tenant by email validation
 slug: /tests/EIDSCA.AP06
 sidebar_class_name: hidden
 ---
 
-# Default Authorization Settings - User can joint the tenant by email validation
+# Default Authorization Settings - User can join the tenant by email validation
 
 Controls whether users can join the tenant by email validation. To join, the user must have an email address in a domain which matches one of the verified domains in the tenant.
 
