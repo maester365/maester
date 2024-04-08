@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.108'
+ModuleVersion = '0.0.109'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -106,6 +106,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtEidscaCR03', 'Test-MtEidscaCR04', 'Test-MtEidscaPR01', 
                'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 'Test-MtEidscaPR05', 
                'Test-MtEidscaPR06', 'Test-MtEidscaST08', 'Test-MtEidscaST09', 
+               'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRoles', 
                'Update-MaesterTests'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
