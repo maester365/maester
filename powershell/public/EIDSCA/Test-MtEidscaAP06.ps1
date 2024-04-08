@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Default Authorization Settings - User can joint the tenant by email validation is set to 'false'
+    Checks if Default Authorization Settings - User can join the tenant by email validation is set to 'false'
 
 .DESCRIPTION
 

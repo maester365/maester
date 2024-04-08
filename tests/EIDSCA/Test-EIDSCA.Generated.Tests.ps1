@@ -30,7 +30,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP06" {
-    It "EIDSCA.AP06: Default Authorization Settings - User can joint the tenant by email validation. See https://maester.dev/docs/tests/EIDSCA.AP06" {
+    It "EIDSCA.AP06: Default Authorization Settings - User can join the tenant by email validation. See https://maester.dev/docs/tests/EIDSCA.AP06" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowEmailVerifiedUsersToJoinOrganization = 'false'
