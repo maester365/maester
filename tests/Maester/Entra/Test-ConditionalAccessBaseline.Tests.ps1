@@ -61,13 +61,13 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
         Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
     }
     Context "License utilization" {
-        It "MT.1022: All users covered by a P1 license are utilizing this license. See https://maester.dev/docs/tests/MT.1022" {
+        It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
-            $LicenseReport.TotalLicensesUtilized | Should -BeGreaterOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
+            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
         }
-        It "MT.1023: All users covered by a P2 license are utilizing this license. See https://maester.dev/docs/tests/MT.1023" -Skip:( $EntraIDPlan -ne "P2" ) {
+        It "MT.1023: All users utilizing a P2 license should be licensed. See https://maester.dev/docs/tests/MT.1023" -Skip:( $EntraIDPlan -ne "P2" ) {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P2"
-            $LicenseReport.TotalLicensesUtilized | Should -BeGreaterOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P2 license"
+            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P2 license"
         }
     }
 }

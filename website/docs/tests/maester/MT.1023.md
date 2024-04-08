@@ -1,15 +1,15 @@
 ---
-title: MT.1023 - All users covered by a P1 license are utilizing this license
-description: Checks if all users entitled to a P2 license are actively being protected by it.
+title: MT.1023 - All users utilizing a P2 license should be licensed
+description: Checks if all users utilizing a P1 license are properly licensed.
 slug: /docs/tests/MT.1023
 sidebar_class_name: hidden
 ---
 
-# All users covered by a P2 license are utilizing this license
+# All users utilizing a P2 license should be licensed
 
 ## Description
 
-Checks if all users entitled to a P2 license are actively being protected by it.
+Checks if all users utilizing a P2 license are properly licensed.
 
 ## How to fix
 
