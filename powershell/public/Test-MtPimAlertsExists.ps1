@@ -28,6 +28,7 @@
   $tenantId = $mgContext.TenantId
 
   # Get PIM Alerts and store as object to be used in the test
+  Write-Verbose "Getting PIM Alerts"
   $Alert = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/privilegedAccess/aadroles/resources/$($tenantId)/alerts" `
             | Select-Object -ExpandProperty value -ErrorAction SilentlyContinue | Where-Object { $_.id -eq $AlertId }
 
@@ -42,6 +43,7 @@
 
   # Filtering based on (EntraOps) Enterprise Access Model Tiering
   if ($null -ne $FilteredAccessLevel) {
+    Write-Verbose "Filtering based on Enterprise Access Model Tiering"
     $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
     $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
     $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
