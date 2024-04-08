@@ -18,9 +18,6 @@
     [ValidateSet("ControlPlane", "ManagementPlane")]
     [string[]]$FilteredAccessLevel = $null,
 
-    [Parameter(ValueFromPipelineByPropertyName = $true)]
-    [object[]]$FilteredBreakGlassObjectIds = (Get-MtUser -UserType EmergencyAccess).id,
-
     [Parameter(ValueFromPipelineByPropertyName = $true, Mandatory)]
     [ValidateSet("ExternalUser", "HybridUser", "ServicePrincipalClientSecret", "ServicePrincipalObject", "UserMailbox")]
     [object[]]$FilterPrincipal
