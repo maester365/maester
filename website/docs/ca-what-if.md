@@ -2,5 +2,6 @@
 title: Conditional Access What-If Tests
 ---
 
-Conditional Access What-If
-
+```powershell
+Test-WhatIf
+```
