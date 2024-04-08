@@ -88,5 +88,7 @@ module.exports = [
     'commands/Test-MtEidscaPR06',
     'commands/Test-MtEidscaST08',
     'commands/Test-MtEidscaST09',
+    'commands/Test-MtPimAlertsExists',
+    'commands/Test-MtPrivPermanentDirectoryRole',
     'commands/Update-MaesterTests'
 ];
