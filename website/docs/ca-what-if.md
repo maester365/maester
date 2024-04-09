@@ -25,12 +25,43 @@ Please make sure you have the latest version of Maester installed.
 
 The Maester PowerShell module includes the **Test-MtConditionalAccessWhatIf** cmdlet that allows you to run What-If tests against your Conditional Access policies.
 
-## Usage
+Here is a sample test that uses the **Test-MtConditionalAccessWhatIf** cmdlet to test a user sign-in against a Conditional Access policy.
+The sign in is simulated for a user **john@contoso.com** who is signing into **Office 365** from **France** from a specific **IP address** using a **browser** on a **Windows** device.
+
+The test will return all Conditional Access policies that are in scope for the user sign-in.
 
 ```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
+$userId = (Get-MgUser -UserId 'john@contoso.com').Id
+$Office365AppId = '67ad5377-2d78-4ac2-a867-6300cda00e85'
+Test-MtConditionalAccessWhatIf -UserId $userId `
+    -IncludeApplications $Office365AppId `
+    -Country FR -IpAddress '92.205.185.202' `
+    -SignInRiskLevel High `
+    -UserRiskLevel Low `
+    -ClientAppType browser `
+    -DevicePlatform Windows
 ```
 
-This request will return all conditional access policies that are in scope when user **7a6da1c3-616a-416b-a820-cbe4fa8e225e** signs into  **Office 365 Exchange Online** using a **Exchange Active Sync** client.
+A Maester test can be written to simulate a user sign in and check if a specific Conditional Access policy is enforced.
 
-<!-- ![Conditional Access Policies returned by Test-MtConditionalAccessWhatIf](assets/Test-MtConditionalAccessWhatIf.png) -->
+In the following example, the test checks if the Conditional Access policy enforces MFA for the user sign-in to Office 365.
+
+```powershell
+Describe "Contoso.ConditionalAccess" {
+    It "Microsoft 365 access requires MFA" {
+
+        $userId = (Get-MgUser -UserId 'john@contoso.com').Id
+        $Microsoft365AppId = '67ad5377-2d78-4ac2-a867-6300cda00e85'
+
+        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId `
+            -IncludeApplications $Microsoft365AppId `
+
+        $policiesEnforced.grantControls.builtInControls | Should -Contain "mfa"
+    }
+}
+```
+
+## Next steps
+
+* To learn more about the **Test-MtConditionalAccessWhatIf** cmdlet, including the supported parameters and examples see [Test-MtConditionalAccessWhatIf | Maester Reference](https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf).
+* For a step by step guide on writing custom Maester tests and running them see [Writing Maester tests](/docs/writing-tests).
