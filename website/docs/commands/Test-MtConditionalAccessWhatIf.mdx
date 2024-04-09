@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Tests Conditional Access evaluation with What If for a given scenario.
+description: Test Conditional Access What If scenario.
 id: Test-MtConditionalAccessWhatIf
 title: Test-MtConditionalAccessWhatIf
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Tests Conditional Access evaluation with What If for a given scenario.
+Test Conditional Access What If scenario.
 
 ## SYNTAX
 
@@ -44,60 +44,20 @@ https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
 ### EXAMPLE 1
 
 ```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
-    -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" `
-    -ClientAppType exchangeActiveSync
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
 ```
 
 This example tests the Conditional Access policies for a user signing into Exchange Online using a legacy Mail client that relies on basic authentication.
 
-### EXAMPLE 2
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e -UserAction registerOrJoinDevices
 
-```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
-    -UserAction registerOrJoinDevices
-```
-
-This example tests the Conditional Access policies for a user registering or joining a device to Microsoft Entra.
-
-### EXAMPLE 3
-
-```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
-    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
-    -Country FR -IpAddress '92.205.185.202'
-```
-
-This example tests the Conditional Access policies for a user signing into **Office 365** from **France** with a specific **IP address**.
-
-### EXAMPLE 4
-
-```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
-    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
-    -SignInRiskLevel High -DevicePlatform iOS
-```
-
-This example tests the Conditional Access policies for a user signing into **Office 365** from an **iOS** device with a **High** sign-in risk level.
-
-### EXAMPLE 5
-
-```powershell
-Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
-    -UserAction registerSecurityInformation `
-    -DevicePlatform Android `
-    -UserRiskLevel High
-```
-
-This example tests the Conditional Access policies for a user accessing the My Security Info page from an **Android** device with a **High** user risk level.
+This example tests the Conditional Access policies for a user signing into Exchange Online using a legacy Mail client that relies on basic authentication.
 
 ## PARAMETERS
 
 ### -UserId
 
-The id of the user sign-in that is being tested.
-Must be a valid userId (GUID).
-UserId can be looked up by `$id = (Get-MgUser -UserId 'john@contoso.com').id`
+The UserId to test the Conditional Acccess policie with
 
 ```yaml
 Type: String
@@ -113,10 +73,8 @@ Accept wildcard characters: False
 
 ### -IncludeApplications
 
-The id of the application the user is signing into.
+The applications that should be tested
 Must be a valid application ID (GUID)
-Application ID can be looked up from from the sign in logs.
-The id of the Office 365 application is '67ad5377-2d78-4ac2-a867-6300cda00e85'
 
 ```yaml
 Type: String[]
@@ -133,7 +91,6 @@ Accept wildcard characters: False
 ### -UserAction
 
 The user action that should be tested.
-Values can be registerOrJoinDevices or registerSecurityInformation
 
 ```yaml
 Type: String[]
@@ -149,8 +106,7 @@ Accept wildcard characters: False
 
 ### -DevicePlatform
 
-Device platform to be used for the test.
-Values can be all, Android, iOS, windows, windowsPhone, macOS, linux
+The device platform that should be tested.
 
 ```yaml
 Type: String
@@ -167,7 +123,6 @@ Accept wildcard characters: False
 ### -ClientAppType
 
 The client app used by the user.
-Values can be browser, mobileAppsAndDesktopClients, exchangeActiveSync, easSupported, other
 
 ```yaml
 Type: String
@@ -183,8 +138,7 @@ Accept wildcard characters: False
 
 ### -SignInRiskLevel
 
-Sign-in risk level for the test.
-Values can be None, Low, Medium, High
+The sign in risk level of the user sign-in.
 
 ```yaml
 Type: String
@@ -200,8 +154,7 @@ Accept wildcard characters: False
 
 ### -UserRiskLevel
 
-User risk level for the test.
-Values can be None, Low, Medium, High
+The user risk level of the user signing in.
 
 ```yaml
 Type: String
@@ -217,8 +170,7 @@ Accept wildcard characters: False
 
 ### -Country
 
-Country to be used for the test.
-The two-letter country code.
+The country of the user signing in.
 
 ```yaml
 Type: String
@@ -234,9 +186,7 @@ Accept wildcard characters: False
 
 ### -IpAddress
 
-IP address to be used for the test.
-e.g.
-10.142.84.49
+The ipAddress of the user signing in.
 
 ```yaml
 Type: String
