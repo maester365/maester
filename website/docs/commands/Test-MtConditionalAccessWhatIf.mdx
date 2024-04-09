@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Test Conditional Access What If scenario.
+description: Tests Conditional Access evaluation with What If for a given scenario.
 id: Test-MtConditionalAccessWhatIf
 title: Test-MtConditionalAccessWhatIf
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Test Conditional Access What If scenario.
+Tests Conditional Access evaluation with What If for a given scenario.
 
 ## SYNTAX
 
@@ -18,16 +18,16 @@ Test Conditional Access What If scenario.
 
 ```powershell
 Test-MtConditionalAccessWhatIf [-UserId] <String> -IncludeApplications <String[]> [-DevicePlatform <String>]
- [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-AllResults]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-Country <String>]
+ [-IpAddress <String>] [-AllResults] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### UserActionBasedCA
 
 ```powershell
 Test-MtConditionalAccessWhatIf [-UserId] <String> [-UserAction <String[]>] [-DevicePlatform <String>]
- [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-AllResults]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-ClientAppType <String>] [-SignInRiskLevel <String>] [-UserRiskLevel <String>] [-Country <String>]
+ [-IpAddress <String>] [-AllResults] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,14 +44,60 @@ https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
 ### EXAMPLE 1
 
 ```powershell
-TODO
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
+    -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" `
+    -ClientAppType exchangeActiveSync
 ```
+
+This example tests the Conditional Access policies for a user signing into Exchange Online using a legacy Mail client that relies on basic authentication.
+
+### EXAMPLE 2
+
+```powershell
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
+    -UserAction registerOrJoinDevices
+```
+
+This example tests the Conditional Access policies for a user registering or joining a device to Microsoft Entra.
+
+### EXAMPLE 3
+
+```powershell
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
+    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
+    -Country FR -IpAddress '92.205.185.202'
+```
+
+This example tests the Conditional Access policies for a user signing into **Office 365** from **France** with a specific **IP address**.
+
+### EXAMPLE 4
+
+```powershell
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
+    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
+    -SignInRiskLevel High -DevicePlatform iOS
+```
+
+This example tests the Conditional Access policies for a user signing into **Office 365** from an **iOS** device with a **High** sign-in risk level.
+
+### EXAMPLE 5
+
+```powershell
+Test-MtConditionalAccessWhatIf -UserId 7a6da1c3-616a-416b-a820-cbe4fa8e225e `
+    -UserAction registerSecurityInformation `
+    -DevicePlatform Android `
+    -UserRiskLevel High
+```
+
+This example tests the Conditional Access policies for a user accessing the My Security Info page from an **Android** device with a **High** user risk level.
 
 ## PARAMETERS
 
 ### -UserId
 
-The UserId to test the Conditional Acccess policie with
+The id of the user sign-in that is being tested.
+Must be a valid userId (GUID).
+UserId can be looked up by `$id = (Get-MgUser -UserId 'john@contoso.com').id`
 
 ```yaml
 Type: String
@@ -67,8 +113,10 @@ Accept wildcard characters: False
 
 ### -IncludeApplications
 
-The applications that should be tested Default: All
+The id of the application the user is signing into.
 Must be a valid application ID (GUID)
+Application ID can be looked up from from the sign in logs.
+The id of the Office 365 application is '67ad5377-2d78-4ac2-a867-6300cda00e85'
 
 ```yaml
 Type: String[]
@@ -85,7 +133,7 @@ Accept wildcard characters: False
 ### -UserAction
 
 The user action that should be tested.
-Default: registerOrJoinDevices
+Values can be registerOrJoinDevices or registerSecurityInformation
 
 ```yaml
 Type: String[]
@@ -94,15 +142,15 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: RegisterOrJoinDevices
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -DevicePlatform
 
-The device platform that should be tested.
-Default: windows
+Device platform to be used for the test.
+Values can be all, Android, iOS, windows, windowsPhone, macOS, linux
 
 ```yaml
 Type: String
@@ -111,7 +159,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: Windows
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -119,7 +167,7 @@ Accept wildcard characters: False
 ### -ClientAppType
 
 The client app used by the user.
-Default: all
+Values can be browser, mobileAppsAndDesktopClients, exchangeActiveSync, easSupported, other
 
 ```yaml
 Type: String
@@ -128,15 +176,15 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: All
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -SignInRiskLevel
 
-The sign in risk level of the user sign-in.
-Default: None
+Sign-in risk level for the test.
+Values can be None, Low, Medium, High
 
 ```yaml
 Type: String
@@ -152,8 +200,43 @@ Accept wildcard characters: False
 
 ### -UserRiskLevel
 
-The user risk level of the user signing in.
-Default: None
+User risk level for the test.
+Values can be None, Low, Medium, High
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Country
+
+Country to be used for the test.
+The two-letter country code.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -IpAddress
+
+IP address to be used for the test.
+e.g.
+10.142.84.49
 
 ```yaml
 Type: String
