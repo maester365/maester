@@ -1,7 +1,7 @@
 ---
 title: MT.1030 - Eligible role assignments on Control Plane are in use by administrators
 description: Checks if PIM alert for unused privileged roles exists
-slug: /docs/tests/MT.1030
+slug: /tests/MT.1030
 sidebar_class_name: hidden
 ---
 

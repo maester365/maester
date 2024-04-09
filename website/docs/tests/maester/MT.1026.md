@@ -1,7 +1,7 @@
 ---
 title: MT.1026 - No hybrid user with permanent role assignment on Control Plane
 description: Checks if External user have no high-privileged roles
-slug: /docs/tests/MT.1026
+slug: /tests/MT.1026
 sidebar_class_name: hidden
 ---
 

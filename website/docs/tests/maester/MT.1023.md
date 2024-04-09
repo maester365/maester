@@ -1,7 +1,7 @@
 ---
 title: MT.1023 - All users utilizing a P2 license should be licensed
 description: Checks if all users utilizing a P1 license are properly licensed.
-slug: /docs/tests/MT.1023
+slug: /tests/MT.1023
 sidebar_class_name: hidden
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: MT.1029 - Stale accounts are not assigned to privileged roles
 description: Checks if PIM alert for users with stale sign-in exists
-slug: /docs/tests/MT.1029
+slug: /tests/MT.1029
 sidebar_class_name: hidden
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: MT.1028 - No user with mailbox and permanent role assignment on Control Plane
 description: Checks if privileged user with assignment to high-privileged roles is mail-enabled
-slug: /docs/tests/MT.1028
+slug: /tests/MT.1028
 sidebar_class_name: hidden
 ---
 

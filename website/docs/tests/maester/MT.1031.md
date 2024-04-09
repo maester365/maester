@@ -1,7 +1,7 @@
 ---
 title: MT.1031 - Privileged role on Control Plane are managed by PIM only
 description: Checks if PIM alert for role assignments outside of Privileged Identity Management (PIM) exists
-slug: /docs/tests/MT.1031
+slug: /tests/MT.1031
 sidebar_class_name: hidden
 ---
 

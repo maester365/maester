@@ -1,7 +1,7 @@
 ---
 title: MT.1027 - No Service Principal with Client Secret and permanent role assignment on Control Plane
 description: Checks if External user have no high-privileged roles
-slug: /docs/tests/MT.1027
+slug: /tests/MT.1027
 sidebar_class_name: hidden
 ---
 

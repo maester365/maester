@@ -1,7 +1,7 @@
 ---
 title: MT.1033 - User should be blocked from using legacy authentication
 description: Checks if a users is actually blocked from using legacy authentication
-slug: /docs/tests/MT.1033
+slug: /tests/MT.1033
 sidebar_class_name: hidden
 ---
 

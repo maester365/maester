@@ -1,7 +1,7 @@
 ---
 title: MT.1025 - No external user with permanent role assignment on Control Plane
 description: Checks if external user have no high-privileged roles
-slug: /docs/tests/MT.1025
+slug: /tests/MT.1025
 sidebar_class_name: hidden
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: MT.1034 - Emergency access users should not be blocked
 description: Checks if emergency access users are not blocked by any conditional access policy
-slug: /docs/tests/MT.1034
+slug: /tests/MT.1034
 sidebar_class_name: hidden
 ---
 

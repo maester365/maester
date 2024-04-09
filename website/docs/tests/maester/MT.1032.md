@@ -1,7 +1,7 @@
 ---
 title: MT.1031 - Limited number of Global Admins are assigned
 description: Checks if PIM alert for too many Global Admins exists
-slug: /docs/tests/MT.1031
+slug: /tests/MT.1032
 sidebar_class_name: hidden
 ---
 
