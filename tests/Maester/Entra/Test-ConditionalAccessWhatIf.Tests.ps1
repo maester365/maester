@@ -17,7 +17,7 @@ Describe "Conditional Access WhatIf" -Tag "CA", "CAWhatIf", "Security", "All" -S
 
     Context "Regular users" -ForEach @( $RegularUsers ) {
 
-        It "MT.1025: User should be blocked from using legacy authentication (<userPrincipalName>)" {
+        It "MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)" {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 
@@ -25,7 +25,7 @@ Describe "Conditional Access WhatIf" -Tag "CA", "CAWhatIf", "Security", "All" -S
 
     Context "Emergency access users" -ForEach @( $EmergencyAccessUsers ) {
 
-        It "MT.1026: Emergency access users should not be blocked (<userPrincipalName>)" {
+        It "MT.1034: Emergency access users should not be blocked (<userPrincipalName>)" {
             Test-MtConditionalAccessWhatIf -UserId $id -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync | Should -BeNullOrEmpty
         }
 

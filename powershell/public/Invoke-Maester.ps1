@@ -229,6 +229,11 @@ Function Invoke-Maester {
         return
     }
 
+    # Only run CAWhatIf tests if explicitly requested
+    if ("CAWhatIf" -notin $Tag) {
+        $ExcludeTag += "CAWhatIf"
+    }
+
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
