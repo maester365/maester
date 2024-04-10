@@ -57,7 +57,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 
 ### Add federated credentials
 
-- Select **Certificates & secrets** > **Client secrets** > **New client secret**
+- Select **Certificates & secrets**
 - Select **Federated credentials**, select **Add credential**
 - For **Federated credential scenario**, select **GitHub Actions deploying Azure resources**
 - Fill in the following fields
