@@ -16,11 +16,13 @@
     Returns the result of (graph.microsoft.com/v1.0/identity/conditionalAccess/policies?$filter=(grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -eq 1
 #>
 
+#Test-MtCisaLegacyAuth
 Function Test-MS.AAD.1.1v1 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
+    #Get-MtConditionalAccessPolicy
     $result = Invoke-MtGraphRequest -RelativeUri "identity/conditionalAccess/policies" -ApiVersion "v1.0"
 
     $tenantValue = ($result|?{`
