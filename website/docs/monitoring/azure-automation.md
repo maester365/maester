@@ -10,6 +10,10 @@ This guide will walk you through setting up Maester in Azure Automation and auto
 ## Why Azure Automation?
 Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost. 
 
+### Pre-requisites
+- If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
+- You must also have access to a **Global Administrator** account in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity you will create.
+
 ## Create an Azure Automation Account
 - Log in to **[portal.azure.com](https://portal.azure.com)**.
 - Search for and select **Automation Accounts**.
@@ -113,3 +117,6 @@ Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputF
 - Click **Schedules** > **Add a schedule**.
 - Choose your schedule and click **OK**.
 
+## Viewing test results
+Insert picture of email reports
+Maybe some add some code samples for exporting the reports to Teams or SharePoint
