@@ -23,7 +23,7 @@ Function Test-MtCisaLegacyAuth {
 
     $result = Get-MtConditionalAccessPolicy
 
-    $tenantValue = ($result|?{`
+    $tenantValue = ($result|Where-Object {`
         $_.state -eq "enabled" -and `
         $_.grantControls.builtInControls -contains "block" -and `
         $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and `
