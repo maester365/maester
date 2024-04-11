@@ -6,7 +6,7 @@ legacy protocols reduces the impact of user credential theft.
 #### Test script
 ```
 https://graph.microsoft.com/v1.0/identity/conditionalAccess/policies?$filter=(grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true
-.@odata.count = 1
+.'@odata.count' = 1
 ```
 
 #### Related links
