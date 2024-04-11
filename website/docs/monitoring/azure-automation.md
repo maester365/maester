@@ -8,6 +8,7 @@ title: Azure Automation
 This guide will walk you through setting up Maester in Azure Automation and automate the running of tests using Runbooks.
 
 ## Why Azure Automation?
+Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost. 
 
 ## Create an Azure Automation Account
 - Log in to **[portal.azure.com](https://portal.azure.com)**.
