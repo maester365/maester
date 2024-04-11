@@ -55,7 +55,7 @@ foreach ($perm in $getPerms){
     -PrincipalId $ManagedIdentity.Id -ResourceId $GraphID -AppRoleId $perm.id
 }
 ```
-#  Load the required PowerShell modules
+##  Load the required PowerShell modules
 - Open your Automation Account from the Azure portal.
 - Select **Runtime Environments**.
 - Click **Create**.
@@ -69,7 +69,7 @@ foreach ($perm in $getPerms){
 - Click **Next**.
 - Click **Create**.
 
-# Create a new Runbook
+## Create a new Runbook
 - Under **Process Automation** click **Create**.
 - Select **Create new** next to Runbook.
 - Define a name for the Runbook.
@@ -100,3 +100,15 @@ Install-MaesterTests .\tests
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
 - Click **Save**, then **Publish**.
+
+## Create a schedule
+- From the Azure Portal, open your Automation Account.
+- Under **Shared Resources** select **Schedules**.
+- Click **Add a schedule** and define a name.
+- Set the Recurrence to **Recurring**.
+- Select **Recur every 1 Month** and set **Run on last day of month** to **Yes**.
+- Click **Create**.
+- Under **Process Automation**, select **Runbooks** and open your Runbook.
+- Click **Schedules** > **Add a schedule**.
+- Choose your schedule and click **OK**.
+
