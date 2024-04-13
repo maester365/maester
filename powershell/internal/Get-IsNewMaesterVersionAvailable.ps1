@@ -28,7 +28,7 @@ Function Get-IsNewMaesterVersionAvailable {
             Write-Host "💥 Installed version: $currentVersion → Latest version: $latestVersion" -ForegroundColor DarkGray
             Write-Host "✨ Update-Module Maester" -NoNewline -ForegroundColor Green
             Write-Host " → Install the latest version of Maester." -ForegroundColor Yellow
-            Write-Host "💫 Update-MtMaesterTests" -NoNewline -ForegroundColor Green
+            Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
             Write-Host " → Get the latest tests built by the Maester team." -ForegroundColor Yellow
             return $true
         }
