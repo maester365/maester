@@ -17,6 +17,7 @@ permissions:
   actions: read
   checks: write
   pull-requests: write
+  statuses: write
 
 jobs:
   build-validation:
