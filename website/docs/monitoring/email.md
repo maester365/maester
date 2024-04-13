@@ -25,6 +25,11 @@ The app that sends the email alerts needs the `Mail.Send` permission to send ema
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 
+:::info Important
+It is recommended to limit the scope of the `Mail.Send` permission to only the mailbox that will be used to send the email alerts.
+
+This can be done by configuring an Application Access Policy in Exchange Online. For more information, see [Limiting application permissions to specific Exchange Online mailboxes](https://learn.microsoft.com/graph/auth-limit-mailbox-access).
+:::
 
 ## Add the email alert step to your workflow
 
@@ -62,9 +67,3 @@ Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $tes
 $testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
 Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
-
-:::info Important
-It is recommended to limit the scope of the `Mail.Send` permission to only the mailbox that will be used to send the email alerts.
-
-This can be done by configuring an Application Access Policy in Exchange Online. For more information, see [Limiting application permissions to specific Exchange Online mailboxes](https://learn.microsoft.com/graph/auth-limit-mailbox-access).
-:::
