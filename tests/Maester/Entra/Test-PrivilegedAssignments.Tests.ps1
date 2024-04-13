@@ -1,12 +1,5 @@
 ﻿BeforeDiscovery {
-    $AvailablePlans = Invoke-MtGraphRequest -RelativeUri "organization" | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
-    if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
-        $EntraIDPlan = "P2"
-    } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d)" -in $AvailablePlans ) {
-        $EntraIDPlan = "P1"
-    } else {
-        $EntraIDPlan = "Free"
-    }
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
 }
 
 Describe "Directory Roles - Permanent assignments" -Tag "Privileged", "Security", "All" {
