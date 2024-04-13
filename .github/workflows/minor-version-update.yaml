@@ -9,10 +9,6 @@ on:
       - "!powershell/Maester.psd1"
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   CreateRelease:
     runs-on: ubuntu-latest
@@ -28,7 +24,7 @@ jobs:
         run: |
           & ./.github/workflows/minor-version-update.ps1
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+      - name: Commit updated manifest file to repo
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          title: Update PowerShell module version
+          commit_message: ${{ steps.updatemodule.outputs.newtag }}
