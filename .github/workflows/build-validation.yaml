@@ -8,13 +8,9 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-    paths:
-      - "powershell/**"
 
   pull_request:
     branches: ["main"]
-    paths:
-      - "powershell/**"
 
 permissions:
   contents: read
@@ -30,8 +26,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pwshmodule:
+              - 'powershell/**''
 
       - name: Install PowerShell dependencies
+        if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
@@ -39,7 +42,7 @@ jobs:
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
       - name: Install PowerShell dependencies (Windows PowerShell)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
         shell: powershell
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -48,13 +51,14 @@ jobs:
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
       - name: Run Pester tests
+        if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
           ./powershell/tests/pester.ps1
 
       - name: Publish Pester test results
         uses: dorny/test-reporter@v1
-        if: always()
+        if: always() && steps.filter.outputs.pwshmodule == 'true'
         with:
           name: Maester Test Results (${{ runner.os }}/PowerShell)
           path: TestResults/*.xml
@@ -62,7 +66,7 @@ jobs:
           fail-on-error: true
 
       - name: Run Tests using Windows PowerShell
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
         shell: powershell
         run: |
           # Remove old test results
@@ -72,7 +76,7 @@ jobs:
 
       - name: Publish Pester test results (Windows PowerShell)
         uses: dorny/test-reporter@v1
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
         with:
           name: Maester Test Results Windows PowerShell
           path: TestResults/*.xml
