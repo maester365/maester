@@ -31,7 +31,7 @@ jobs:
         with:
           filters: |
             pwshmodule:
-              - 'powershell/**''
+              - 'powershell/**'
 
       - name: Install PowerShell dependencies
         if: steps.filter.outputs.pwshmodule == 'true'
