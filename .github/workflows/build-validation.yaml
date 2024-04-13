@@ -56,15 +56,6 @@ jobs:
         run: |
           ./powershell/tests/pester.ps1
 
-      - name: Publish Pester test results
-        uses: dorny/test-reporter@v1
-        if: always() && steps.filter.outputs.pwshmodule == 'true'
-        with:
-          name: Maester Test Results (${{ runner.os }}/PowerShell)
-          path: TestResults/*.xml
-          reporter: java-junit
-          fail-on-error: true
-
       - name: Run Tests using Windows PowerShell
         if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
         shell: powershell
@@ -74,11 +65,11 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - name: Publish Pester test results (Windows PowerShell)
+      - name: Publish Pester test results
         uses: dorny/test-reporter@v1
-        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
+        if: always() && steps.filter.outputs.pwshmodule == 'true'
         with:
-          name: Maester Test Results Windows PowerShell
+          name: Maester Test Results (${{ runner.os }}/PowerShell)
           path: TestResults/*.xml
           reporter: java-junit
           fail-on-error: true
