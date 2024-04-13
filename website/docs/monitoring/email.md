@@ -51,7 +51,7 @@ The Send-MtMail cmdlet has a `-TestResultsUri` parameter that can be used to inc
 
 To use this parameter, you need to provide the URL of the Maester results page. Use the appropriate url format based on the CI/CD system you are using.
 
-## GitHub
+### GitHub
 
 **Link:** `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
 
@@ -60,7 +60,7 @@ $testResultsUri = "${{ github.server_url }}/${{ github.repository }}/actions/run
 Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
-## Azure DevOps
+### Azure DevOps
 **Link:** `$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)`
 
 ```powershell
