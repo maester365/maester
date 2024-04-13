@@ -35,6 +35,7 @@ jobs:
           filters: |
             pwshmodule:
               - 'powershell/**'
+              - "!powershell/Maester.psd1"
 
       - name: Install PowerShell dependencies
         if: steps.filter.outputs.pwshmodule == 'true'
