@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.118'
+ModuleVersion = '0.0.119'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
