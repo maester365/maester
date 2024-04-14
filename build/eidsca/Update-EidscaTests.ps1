@@ -7,7 +7,7 @@
   * Generates Maester tests for each test defined in the JSON file
 
   .EXAMPLE
-    ./build/EIDSCA/Update-EidscaTests.ps1
+    ./build/eidsca/Update-EidscaTests.ps1
 #>
 
 param (
@@ -15,7 +15,7 @@ param (
     [string] $TestFilePath = "./tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
 
     # Folder where docs should be generated
-    [string] $DocsPath = "./website/docs/tests/EIDSCA",
+    [string] $DocsPath = "./website/docs/tests/eidsca",
 
     [string] $PowerShellFunctionsPath = "./powershell/public/eidsca",
 
