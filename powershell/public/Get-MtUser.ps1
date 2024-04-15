@@ -143,7 +143,8 @@ function Get-MtUser {
                     $Users.Add($TmpUsers[$i]) | Out-Null
                 }
             } else {
-                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging -OutputType Hashtable | Select-Object -ExpandProperty Value
+                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging -OutputType Hashtable
+                $Users = $Users['value']
             }
         }
         Return $Users

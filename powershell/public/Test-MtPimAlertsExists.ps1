@@ -35,8 +35,7 @@ Function Test-MtPimAlertsExists {
 
     # Get PIM Alerts and store as object to be used in the test
     Write-Verbose "Getting PIM Alerts"
-    $Alert = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/beta/privilegedAccess/aadroles/resources/$($tenantId)/alerts" `
-  | Select-Object -ExpandProperty value -ErrorAction SilentlyContinue | Where-Object { $_.id -eq $AlertId }
+    $Alert = Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "privilegedAccess/aadroles/resources/$($tenantId)/alerts" | Where-Object { $_.id -eq $AlertId }
 
     $AffectedRoleAssignments = $Alert.additionalData | ForEach-Object {
       $CurrentItem = $_['item']

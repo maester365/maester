@@ -34,16 +34,29 @@ Function Test-MtCaEmergencyAccessExists {
     } else {
         # If the number of excluded users is higher than the number of excluded groups, check the user object GUID
         $CheckId = $ExcludedGroupObjectGUID
-        if ($ExcludedUsers -gt $ExcludedGroups) { $CheckId = $ExcludedUserObjectGUID }
+        $EmergencyAccessUUIDType = "group"
+        if ($ExcludedUsers -gt $ExcludedGroups) {
+            $EmergencyAccessUUIDType = "user"
+            $CheckId = $ExcludedUserObjectGUID
+        }
+        # Get displayName of the emergency access account or group
+        if ($EmergencyAccessUUIDType -eq "user") {
+            $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+        } else {
+            $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+        }
+
         Write-Verbose "Emergency access account or group: $CheckId"
+        $testResult = "Automatically detected emergency access $($EmergencyAccessUUIDType): $DisplayName ($CheckId)`n`n"
 
         $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
 
         $policiesWithoutEmergency | Select-Object -ExpandProperty displayName | Sort-Object | ForEach-Object {
-            Write-Verbose "Conditional Access policy $_ does not exclude emergency access account or group"
+            Write-Verbose "Conditional Access policy $_ does not exclude emergency access $EmergencyAccessUUIDType"
         }
     }
 
-    Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
+    $testResult += "These conditional access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
+    Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
     return $result
 }

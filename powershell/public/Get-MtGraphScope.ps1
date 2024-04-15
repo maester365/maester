@@ -38,6 +38,7 @@ Function Get-MtGraphScope {
         'Policy.Read.All'
         'Reports.Read.All'
         'DirectoryRecommendations.Read.All'
+        'PrivilegedAccess.Read.AzureAD'
     )
 
     if ($SendMail) {
