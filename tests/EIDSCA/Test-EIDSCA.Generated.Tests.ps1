@@ -314,7 +314,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF04 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF05" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -and (Test-MtEidscaAF04) -eq $false ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF05" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
     It "EIDSCA.AF05: Authentication Method - FIDO2 security key - Restricted. See https://maester.dev/docs/tests/EIDSCA.AF05" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -323,7 +323,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF05 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF06" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -and (Test-MtEidscaAF04) -eq $false ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF06" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
     It "EIDSCA.AF06: Authentication Method - FIDO2 security key - Restrict specific keys. See https://maester.dev/docs/tests/EIDSCA.AF06" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -363,7 +363,7 @@ Describe "Authentication Method - Voice call" -Tag "EIDSCA", "Security", "All", 
 }
 
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR01" {
-    It "EIDSCA.CR01: Consent Framework - Admin Consent Request - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CR01" {
+    It "EIDSCA.CR01: Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature. See https://maester.dev/docs/tests/EIDSCA.CR01" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .isEnabled = 'true'
