@@ -65,11 +65,8 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - name: Publish Pester test results
-        uses: dorny/test-reporter@v1
-        if: always() && steps.filter.outputs.pwshmodule == 'true'
+      - uses: actions/upload-artifact@v3  # upload test results
+        if: success() || failure()        # run this step even if previous step failed
         with:
-          name: Maester Test Results (${{ runner.os }}/PowerShell)
+          name: test-results
           path: TestResults/*.xml
-          reporter: java-junit
-          fail-on-error: true

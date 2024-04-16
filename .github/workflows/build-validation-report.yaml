@@ -1,0 +1,21 @@
+name: build-validation-report
+on:
+  workflow_run:
+    workflows: ['build-validation']                     # runs after build-validation workflow
+    types:
+      - completed
+permissions:
+  contents: read
+  actions: read
+  checks: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dorny/test-reporter@v1
+      with:
+        artifact: test-results
+        name: Maester Test Results
+        path: TestResults/*.xml
+        reporter: java-junit
+        fail-on-error: true
