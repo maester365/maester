@@ -134,7 +134,7 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
     - name: Run Maester
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       with:
         inlineScript: |
           # Get Token
