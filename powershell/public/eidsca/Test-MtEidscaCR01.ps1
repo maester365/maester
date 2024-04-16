@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Consent Framework - Admin Consent Request - Users can request admin consent to apps they are unable to consent to is set to 'true'
+    Checks if Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature is set to 'true'
 
 .DESCRIPTION
 
