@@ -117,5 +117,10 @@ Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputF
 - Click **Schedules** > **Add a schedule**.
 - Choose your schedule and click **OK**.
 
-## Viewing test results
-![Screenshot of the Maester report email](assets/azureautomation-test-results.png)
+## Viewing the test results
+![Screenshot of the Maester report email](assets/azureautomation-test-result.png)
+
+## Contributors
+Author:
+- [Daniel Bradley](https://www.linkedin.com/in/danielbradley2/) | Microsoft MVP
+
