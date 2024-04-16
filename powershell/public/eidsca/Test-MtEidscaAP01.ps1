@@ -23,7 +23,7 @@ Function Test-MtEidscaAP01 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.allowedToUseSSPR).ToString()
+    $tenantValue = $result.allowedToUseSSPR | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

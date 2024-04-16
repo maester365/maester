@@ -23,7 +23,7 @@ Function Test-MtEidscaAP09 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.allowUserConsentForRiskyApps).ToString()
+    $tenantValue = $result.allowUserConsentForRiskyApps | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'false'
 
     if($testResult){

@@ -23,7 +23,7 @@ Function Test-MtEidscaAT01 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 
-    $tenantValue = ($result.state).ToString()
+    $tenantValue = $result.state | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'enabled'
 
     if($testResult){

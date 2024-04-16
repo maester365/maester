@@ -23,7 +23,7 @@ Function Test-MtEidscaAF04 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $tenantValue = ($result.keyRestrictions.isEnforced).ToString()
+    $tenantValue = $result.keyRestrictions.isEnforced | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

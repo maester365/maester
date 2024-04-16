@@ -23,7 +23,7 @@ Function Test-MtEidscaAP10 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.defaultUserRolePermissions.allowedToCreateApps).ToString()
+    $tenantValue = $result.defaultUserRolePermissions.allowedToCreateApps | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'false'
 
     if($testResult){

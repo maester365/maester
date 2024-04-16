@@ -23,7 +23,7 @@ Function Test-MtEidscaST08 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $tenantValue = ($result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value).ToString()
+    $tenantValue = $result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'false'
 
     if($testResult){

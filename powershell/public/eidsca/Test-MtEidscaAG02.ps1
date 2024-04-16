@@ -23,7 +23,7 @@ Function Test-MtEidscaAG02 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.reportSuspiciousActivitySettings.state).ToString()
+    $tenantValue = $result.reportSuspiciousActivitySettings.state | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'enabled'
 
     if($testResult){

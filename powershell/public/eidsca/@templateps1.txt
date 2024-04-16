@@ -23,7 +23,7 @@ Function %PSFunctionName% {
 
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
-    $tenantValue = ($result.%CurrentValue%).ToString()
+    $tenantValue = $result.%CurrentValue% | Out-String -NoNewLine
     $testResult = $tenantValue -eq %RecommendedValue%
 
     if($testResult){

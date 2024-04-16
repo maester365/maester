@@ -23,7 +23,7 @@ Function Test-MtEidscaCR01 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.isEnabled).ToString()
+    $tenantValue = $result.isEnabled | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

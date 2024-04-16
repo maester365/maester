@@ -23,7 +23,7 @@ Function Test-MtEidscaAM07 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    $tenantValue = ($result.featureSettings.displayAppInformationRequiredState.includeTarget.id).ToString()
+    $tenantValue = $result.featureSettings.displayAppInformationRequiredState.includeTarget.id | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'all_users'
 
     if($testResult){

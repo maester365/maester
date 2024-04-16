@@ -23,7 +23,7 @@ Function Test-MtEidscaAP06 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = ($result.allowEmailVerifiedUsersToJoinOrganization).ToString()
+    $tenantValue = $result.allowEmailVerifiedUsersToJoinOrganization | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'false'
 
     if($testResult){

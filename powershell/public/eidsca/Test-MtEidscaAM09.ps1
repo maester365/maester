@@ -23,7 +23,7 @@ Function Test-MtEidscaAM09 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    $tenantValue = ($result.featureSettings.displayLocationInformationRequiredState.state).ToString()
+    $tenantValue = $result.featureSettings.displayLocationInformationRequiredState.state | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'enabled'
 
     if($testResult){

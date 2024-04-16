@@ -23,7 +23,7 @@ Function Test-MtEidscaAV01 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
-    $tenantValue = ($result.state).ToString()
+    $tenantValue = $result.state | Out-String -NoNewLine
     $testResult = $tenantValue -eq 'disabled'
 
     if($testResult){
