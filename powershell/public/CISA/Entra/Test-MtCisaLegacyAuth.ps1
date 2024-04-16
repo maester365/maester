@@ -23,21 +23,21 @@ Function Test-MtCisaLegacyAuth {
 
     $result = Get-MtConditionalAccessPolicy
 
-    $tenantValue = ($result|Where-Object {`
-        $_.state -eq "enabled" -and `
-        $_.grantControls.builtInControls -contains "block" -and `
-        $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and `
-        $_.conditions.clientAppTypes -contains "other" -and `
-        $_.conditions.users.includeUsers -contains "All"}).count
-    $testResult = $tenantValue -eq 1
+    $blockPolicies = $result | Where-Object {`
+            $_.state -eq "enabled" -and `
+            $_.grantControls.builtInControls -contains "block" -and `
+            $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and `
+            $_.conditions.clientAppTypes -contains "other" -and `
+            $_.conditions.users.includeUsers -contains "All" }
 
-    if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **1** for **identity/conditionalAccess/policies**"
-    }
-    else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **1** for **identity/conditionalAccess/policies**"
-    }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    $testResult = $blockPolicies.Count -ge 1
 
-    return $tenantValue
+    if ($testResult) {
+        $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Your tenant does not have any conditional access policies that block legacy authentication."
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $blockPolicies
+
+    return $testResult
 }
