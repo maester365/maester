@@ -31,6 +31,7 @@ Function Invoke-MtGraphRequestCache {
     }
 
     if (!$results) {
+        Write-Verbose ("Invoking Graph: $($Uri.AbsoluteUri)")
         $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType
         if (!$isBatch -and $isMethodGet) {
             # Update cache
