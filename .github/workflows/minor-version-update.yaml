@@ -26,6 +26,11 @@ jobs:
         run: |
           & ./.github/workflows/minor-version-update.ps1
 
+      - uses: actions/checkout@v4
+      - name: Update maester.dev command ref docs
+        run: ./build/Update-CommandReference.ps1
+        shell: pwsh
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
