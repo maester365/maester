@@ -16,6 +16,6 @@ jobs:
       with:
         artifact: test-results
         name: Maester Test Results
-        path: *.xml
+        path: '*.xml'
         reporter: java-junit
         fail-on-error: true
