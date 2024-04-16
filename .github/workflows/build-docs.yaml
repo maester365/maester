@@ -2,17 +2,13 @@
 name: build-docs
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow updates to the repository
 permissions:
   contents: write
-  id-token: write
-  checks: write
+  pull-requests: write
 
 jobs:
   build:
