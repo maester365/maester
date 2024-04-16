@@ -32,7 +32,7 @@ Function Get-MtHtmlReport {
 
     $json = $MaesterResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
 
-    $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.html'
+    $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
     # Insert the test results json into the template
