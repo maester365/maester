@@ -1,0 +1,31 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README for image at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
+{
+	"name": "Measter",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye",
+	"features": {
+		"ghcr.io/devcontainers/features/powershell:1": {
+			"modules": "Microsoft.Graph.Authentication, Pester, PSFramework, PSModuleDevelopment, PSScriptAnalyzer"
+		}
+	},
+	"forwardPorts": [3000, 5173],
+	"postCreateCommand": "cd ./website && npm i && cd ../report && npm i",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "pwsh"
+			},
+			"extensions": [
+				"ms-vscode.powershell",
+				"github.vscode-github-actions",
+				"dbaeumer.vscode-eslint",
+				"streetsidesoftware.code-spell-checker"
+			]
+		},
+		"codespaces": {
+			"openFiles": [
+				"website/docs/contributing.md"
+			]
+		}
+	}
+}
