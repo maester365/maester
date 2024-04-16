@@ -1,0 +1,38 @@
+﻿<#
+.SYNOPSIS
+    Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
+
+.DESCRIPTION
+
+    %ControlItemDescription%
+
+    Queries %RelativeUri%
+    and returns the result of
+     graph/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+
+.EXAMPLE
+    %PSFunctionName%
+
+    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+#>
+
+Function %PSFunctionName% {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
+
+    $tenantValue = $result.%CurrentValue%
+    $testResult = $tenantValue -eq %RecommendedValue%
+
+    if($testResult){
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **%RecommendedValue%** for **%RelativeUri%**"
+    }
+    else {
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **%RecommendedValue%** for **%RelativeUri%**"
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $tenantValue
+}
