@@ -1,0 +1,69 @@
+---
+sidebar_class_name: hidden
+description: Checks if Baseline Policies Legacy Authentication - MS.AAD.1.1v1 is set to 'blocked'
+id: Test-MtCisaLegacyAuth
+title: Test-MtCisaLegacyAuth
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaLegacyAuth.ps1
+---
+
+## SYNOPSIS
+
+Checks if Baseline Policies Legacy Authentication - MS.AAD.1.1v1 is set to 'blocked'
+
+## SYNTAX
+
+```powershell
+Test-MtCisaLegacyAuth [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Legacy authentication SHALL be blocked.
+
+Queries /identity/conditionalAccess/policies
+and returns the result of
+ (graph/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -eq 1
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCisaLegacyAuth
+```
+
+Returns the result of (graph.microsoft.com/v1.0/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -eq 1
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
