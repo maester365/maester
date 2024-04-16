@@ -39,9 +39,9 @@ mindmap
       TA0008 - Lateral Movement - Lateral Movement
     (Mitigation)
       M1017 - User Training
-       M1018 - User Account Management
-       M1024 - Restrict Registry Permissions
-       M1047 - Audit
+      M1018 - User Account Management
+      M1024 - Restrict Registry Permissions
+      M1047 - Audit
     (Technique)
       T1566.002 - Phishing: Spearphishing Link
       T1078 - Valid Accounts
@@ -50,5 +50,5 @@ mindmap
 ```
 |Tactic|Technique|Mitigation|
 |---|---|---|
-|[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)<br/>[TA0005 - Defense Evasion - Defense Evasion](https://attack.mitre.org/tactics/TA0005)<br/>[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)<br/>[TA0008 - Lateral Movement - Lateral Movement](https://attack.mitre.org/tactics/TA0008)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)<br/>[T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550)<br/>[T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[ M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[ M1024 - Restrict Registry Permissions](https://attack.mitre.org/mitigations/M1024)<br/>[ M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
+|[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)<br/>[TA0005 - Defense Evasion - Defense Evasion](https://attack.mitre.org/tactics/TA0005)<br/>[TA0006 - Credential Access - Credential Access](https://attack.mitre.org/tactics/TA0006)<br/>[TA0008 - Lateral Movement - Lateral Movement](https://attack.mitre.org/tactics/TA0008)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)<br/>[T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550)<br/>[T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1024 - Restrict Registry Permissions](https://attack.mitre.org/mitigations/M1024)<br/>[M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
 
