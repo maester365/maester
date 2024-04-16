@@ -118,5 +118,4 @@ Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputF
 - Choose your schedule and click **OK**.
 
 ## Viewing test results
-Insert picture of email reports
-Maybe some add some code samples for exporting the reports to Teams or SharePoint
+![Screenshot of the Maester report email](assets/azureautomation-test-results.png)
