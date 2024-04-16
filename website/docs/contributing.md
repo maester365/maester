@@ -54,7 +54,7 @@ Follow this guide if you want to run the documentation locally and view changes 
 
 #### Installation
 
-When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./docs folder.
+When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
 
 ```
 npm install
@@ -62,7 +62,7 @@ npm install
 
 #### Starting the site
 
-While in the ./docs folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
+While in the ./website folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
 
 ```
 npm start

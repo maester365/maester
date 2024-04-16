@@ -25,6 +25,11 @@ The app that sends the email alerts needs the `Mail.Send` permission to send ema
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 
+:::info Important
+It is recommended to limit the scope of the `Mail.Send` permission to only the mailbox that will be used to send the email alerts.
+
+This can be done by configuring an Application Access Policy in Exchange Online. For more information, see [Limiting application permissions to specific Exchange Online mailboxes](https://learn.microsoft.com/graph/auth-limit-mailbox-access).
+:::
 
 ## Add the email alert step to your workflow
 
@@ -46,7 +51,7 @@ The Send-MtMail cmdlet has a `-TestResultsUri` parameter that can be used to inc
 
 To use this parameter, you need to provide the URL of the Maester results page. Use the appropriate url format based on the CI/CD system you are using.
 
-## GitHub
+### GitHub
 
 **Link:** `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
 
@@ -55,16 +60,10 @@ $testResultsUri = "${{ github.server_url }}/${{ github.repository }}/actions/run
 Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
 
-## Azure DevOps
+### Azure DevOps
 **Link:** `$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)`
 
 ```powershell
 $testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
 Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $testResultsUri
 ```
-
-:::info Important
-It is recommended to limit the scope of the `Mail.Send` permission to only the mailbox that will be used to send the email alerts.
-
-This can be done by configuring an Application Access Policy in Exchange Online. For more information, see [Limiting application permissions to specific Exchange Online mailboxes](https://learn.microsoft.com/graph/auth-limit-mailbox-access).
-:::
