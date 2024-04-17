@@ -115,6 +115,9 @@ Function Invoke-Maester {
         # Run the tests in non-interactive mode. This will prevent the test results from being opened in the default browser.
         [switch] $NonInteractive,
 
+        # Skips checking the current graph connection for required scopes. Can be used when your application has the reqiored access through different scopes.
+        [switch] $SkipScopeCheck,
+
         # Passes the output of the Maester tests to the console.
         [switch] $PassThru,
 
@@ -212,7 +215,7 @@ Function Invoke-Maester {
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient
-    if (!(Test-MtContext -SendMail:$isMail)) { return }
+    if (!(Test-MtContext -SendMail:$isMail) -or ($SkipScopeCheck)) { return }
 
     $out = [PSCustomObject]@{
         OutputFolder         = $OutputFolder
