@@ -1,12 +1,12 @@
 ---
-title: EIDSCA.AP01 - Default Authorization Settings - Enabled Self service password reset
+title: EIDSCA.AP01 - Default Authorization Settings - Enabled Self service password reset for administrators
 slug: /tests/EIDSCA.AP01
 sidebar_class_name: hidden
 ---
 
-# Default Authorization Settings - Enabled Self service password reset
+# Default Authorization Settings - Enabled Self service password reset for administrators
 
-Designates whether users in this directory can reset their own password.
+Designates whether administrators in this directory can reset their own password.
 
 | | |
 |-|-|
