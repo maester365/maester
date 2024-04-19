@@ -42,6 +42,20 @@ Simple edits can be made in the GitHub UI by selecting the `Edit this page` link
 
 For more complex changes, you can fork the repository and submit a pull request.
 
+## Updating EIDSCA tests and documentation
+
+The EIDSCA tests and documentation are maintained in the [EIDSCA repository → EidscaConfig.json](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv4/config/EidscaConfig.json) file.
+
+The [/build/eidsca/Update-EidscaTests.ps1](https://github.com/maester365/maester/blob/main/build/eidsca/Update-EidscaTests.ps1) script is used to generate the EIDSCA commands in the Maester module along with the EIDSCA tests and documentation.
+
+The script is currently run manually and is not automated as part of the build process as we need to verify the changes before they are committed.
+
+The illustration below shows the workflow for integrating EIDSCA tests and documentation into Maester.
+
+![EIDSCA and Maester integration workflow](assets/eidcsa-maester-workflow.png)
+
+When generating the EIDSCA commands and tests, manual verification should be performed to ensure the EIDSCA tests are being run correctly and the results are accurate.
+
 ### Running documentation locally
 
 The [Maester.dev](https://maester.dev) website is built using [Docusaurus](https://docusaurus.io/).

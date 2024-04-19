@@ -3,12 +3,13 @@ sidebar_label: Azure Automation
 sidebar_position: 3
 title: Azure Automation
 ---
+import GraphPermissions from '../sections/permissions.md';
 
-# <IIcon icon="devicon:azure" height="18" /> Setup Maester in Azure Automation
+# <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Automation
 This guide will walk you through setting up Maester in Azure Automation and automate the running of tests using Runbooks.
 
 ## Why Azure Automation?
-Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost. 
+Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost.
 
 ### Pre-requisites
 - If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
@@ -24,13 +25,13 @@ Azure Automation provides a simple and effective method to automate email report
 - Click **Create**.
 
 ##  Assign permissions to the System-assigned Managed Identity
-The necessary permissions must be assigned to the Managed Identity associated with the Automation Account. These are: 
-- Directory.Read.All
-- Policy.Read.All
-- Reports.Read.All
-- DirectoryRecommendations.Read.All
-- Mail.Send
-  
+The necessary permissions must be assigned to the Managed Identity associated with the Automation Account. These are:
+
+<GraphPermissions/>
+
+If the automation needs to email the Maester report, the **Mail.Send** permission is also required.
+
+```powershell
 To do this, you will use the Microsoft Graph PowerShell SDK. Ensure you modify the first line with the name of your Automation Account.
 
 ```powershell
@@ -48,6 +49,7 @@ $permissions =  @(
     "Policy.Read.All",
     "Reports.Read.All",
     "DirectoryRecommendations.Read.All",
+    "PrivilegedAccess.Read.AzureAD",
     "Mail.Send"
 )
 
