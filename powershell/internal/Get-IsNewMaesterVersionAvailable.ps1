@@ -20,7 +20,7 @@ Function Get-IsNewMaesterVersionAvailable {
     param()
 
     try {
-        $currentVersion = (Get-Module -Name Maester).Version
+        $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
         $latestVersion = (Find-Module -Name Maester).Version
 
         if ($currentVersion -lt $latestVersion) {
