@@ -18,7 +18,7 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 ## How to fix
 | | |
 |-|-|
-| **Recommendation** | Administrators with sensitive roles should use pishing-resistant authentication methods only and therefore not able to reset their password using SSPR. |
+| **Recommendation** | Administrators with sensitive roles should use phishing-resistant authentication methods only and therefore not able to reset their password using SSPR. |
 | **Configuration** | policies/authorizationPolicy |
 | **Setting** | `allowedToUseSSPR` |
 | **Recommended Value** | 'false' |

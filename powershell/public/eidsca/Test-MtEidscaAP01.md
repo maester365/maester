@@ -1,6 +1,6 @@
 Indicates whether administrators of the tenant can use the Self-Service Password Reset (SSPR). The policy applies to some critical critical roles in Microsoft Entra ID.
 
-Administrators with sensitive roles should use pishing-resistant authentication methods only and therefore not able to reset their password using SSPR.
+Administrators with sensitive roles should use phishing-resistant authentication methods only and therefore not able to reset their password using SSPR.
 
 #### Test script
 ```
