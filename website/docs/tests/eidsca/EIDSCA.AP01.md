@@ -22,7 +22,7 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 | **Configuration** | policies/authorizationPolicy |
 | **Setting** | `allowedToUseSSPR` |
 | **Recommended Value** | 'false' |
-| **Default Value** | enabled |
+| **Default Value** | true |
 | **Graph API Docs** | [authorizationPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy) |
 | **Graph Explorer** | [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
 
