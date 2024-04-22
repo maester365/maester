@@ -3,12 +3,12 @@ $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
 $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP01" {
-    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset. See https://maester.dev/docs/tests/EIDSCA.AP01" {
+    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
-            .allowedToUseSSPR = 'true'
+            .allowedToUseSSPR = 'false'
         #>
-        Test-MtEidscaAP01 | Should -Be 'true'
+        Test-MtEidscaAP01 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP04" {
@@ -346,9 +346,9 @@ Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Securit
     It "EIDSCA.AT02: Authentication Method - Temporary Access Pass - One-time. See https://maester.dev/docs/tests/EIDSCA.AT02" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')"
-            .isUsableOnce = 'false'
+            .isUsableOnce = 'true'
         #>
-        Test-MtEidscaAT02 | Should -Be 'false'
+        Test-MtEidscaAT02 | Should -Be 'true'
     }
 }
 
