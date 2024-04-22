@@ -26,7 +26,7 @@ Function Test-MtCisaBlockHighRisk {
     $blockPolicies = $result | Where-Object {`
             $_.state -eq "enabled" -and `
             $_.grantControls.builtInControls -contains "block" -and `
-            $_.applications.includeApplications -contains "all" -and `
+            $_.conditions.applications.includeApplications -contains "all" -and `
             $_.conditions.userRiskLevels -contains "high" -and `
             $_.conditions.users.includeUsers -contains "All" }
 
