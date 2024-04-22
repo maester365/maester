@@ -1,6 +1,6 @@
-Legacy authentication SHALL be blocked.
+Users detected as high risk SHALL be blocked.
 
-Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft.
+Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant.
 
 #### Remediation action:
 
@@ -10,8 +10,8 @@ Follow the guide below to create a conditional access policy that blocks legacy 
 
 #### Related links
 
-- [CISA Legacy Authentication - MS.AAD.1.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#1-legacy-authentication)
-- [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L47)
+- [CISA Risk Based Policies - MS.AAD.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad21v1)
+- [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L85)
 
 <!--- Results --->
 %TestResult%
