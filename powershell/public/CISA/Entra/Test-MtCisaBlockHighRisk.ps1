@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Checks if Risk Based Policies - MS.AAD.2.1v1 is set to 'blocked'
+    Checks if Risk Based Policies - MS.AAD.2.1v1 & MS.AAD.2.3v1 is set to 'blocked'
 
 .DESCRIPTION
 
