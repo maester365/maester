@@ -21,6 +21,8 @@ Function Test-MtCisaBlockHighRisk {
     [OutputType([bool])]
     param()
 
+    $result = Get-MtConditionalAccessPolicy
+
     $blockPolicies = $result | Where-Object {`
             $_.state -eq "enabled" -and `
             $_.grantControls.builtInControls -contains "block" -and `
