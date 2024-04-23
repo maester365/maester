@@ -1,19 +1,19 @@
 <#
 .SYNOPSIS
-    Checks if Default Authorization Settings - Enabled Self service password reset is set to 'true'
+    Checks if Default Authorization Settings - Enabled Self service password reset for administrators is set to 'false'
 
 .DESCRIPTION
 
-    Designates whether users in this directory can reset their own password.
+    Indicates whether administrators of the tenant can use the Self-Service Password Reset (SSPR). The policy applies to some critical critical roles in Microsoft Entra ID.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'true'
+     graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
 
 .EXAMPLE
     Test-MtEidscaAP01
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'true'
+    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
 #>
 
 Function Test-MtEidscaAP01 {
@@ -24,12 +24,12 @@ Function Test-MtEidscaAP01 {
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     $tenantValue = $result.allowedToUseSSPR | Out-String -NoNewLine
-    $testResult = $tenantValue -eq 'true'
+    $testResult = $tenantValue -eq 'false'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'true'** for **policies/authorizationPolicy**"
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'false'** for **policies/authorizationPolicy**"
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authorizationPolicy**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authorizationPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
