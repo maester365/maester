@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Authentication Method - Temporary Access Pass - One-time is set to 'false'
+    Checks if Authentication Method - Temporary Access Pass - One-time is set to 'true'
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'false'
+     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'true'
 
 .EXAMPLE
     Test-MtEidscaAT02
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'false'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'true'
 #>
 
 Function Test-MtEidscaAT02 {
@@ -24,12 +24,12 @@ Function Test-MtEidscaAT02 {
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 
     $tenantValue = $result.isUsableOnce | Out-String -NoNewLine
-    $testResult = $tenantValue -eq 'false'
+    $testResult = $tenantValue -eq 'true'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
+        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
