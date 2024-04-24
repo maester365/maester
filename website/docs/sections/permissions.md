@@ -3,3 +3,4 @@
 - **Reports.Read.All**
 - **DirectoryRecommendations.Read.All**
 - **PrivilegedAccess.Read.AzureAD**
+- **IdentityRiskEvent.Read.All**
