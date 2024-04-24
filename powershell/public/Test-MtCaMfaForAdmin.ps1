@@ -41,7 +41,10 @@ Function Test-MtCaMfaForAdmin {
     foreach ($policy in $policies) {
         $PolicyIncludesAllRoles = $true
         $AdministrativeRolesToCheck | ForEach-Object {
-            if ( $_ -notin $policy.conditions.users.includeRoles  ) {
+            if ( ( $_ -notin $policy.conditions.users.includeRoles `
+              -and $policy.conditions.users.includeUsers -ne 'All' ) `
+              -or $_ -in $policy.conditions.users.excludeRoles `
+            ) {
                 $PolicyIncludesAllRoles = $false
             }
         }
