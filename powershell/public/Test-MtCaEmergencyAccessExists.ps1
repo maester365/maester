@@ -40,14 +40,16 @@ Function Test-MtCaEmergencyAccessExists {
             $CheckId = $ExcludedUserObjectGUID
         }
         # Get displayName of the emergency access account or group
-        if ($EmergencyAccessUUIDType -eq "user") {
-            $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
-        } else {
-            $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
-        }
+        if ($CheckId) {
+            if ($EmergencyAccessUUIDType -eq "user") {
+                $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+            } else {
+                $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+            }
 
-        Write-Verbose "Emergency access account or group: $CheckId"
-        $testResult = "Automatically detected emergency access $($EmergencyAccessUUIDType): $DisplayName ($CheckId)`n`n"
+            Write-Verbose "Emergency access account or group: $CheckId"
+            $testResult = "Automatically detected emergency access $($EmergencyAccessUUIDType): $DisplayName ($CheckId)`n`n"
+        }
 
         $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
 
