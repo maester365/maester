@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Authentication Method - Temporary Access Pass - One-time is set to 'false'
+description: Checks if Authentication Method - Temporary Access Pass - One-time is set to 'true'
 id: Test-MtEidscaAT02
 title: Test-MtEidscaAT02
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if Authentication Method - Temporary Access Pass - One-time is set to 'false'
+Checks if Authentication Method - Temporary Access Pass - One-time is set to 'true'
 
 ## SYNTAX
 
@@ -24,7 +24,7 @@ Determines whether the pass is limited to a one-time use.
 
 Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
 and returns the result of
- graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'false'
+ graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'true'
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ and returns the result of
 Test-MtEidscaAT02
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'false'
+Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').isUsableOnce -eq 'true'
 
 ## PARAMETERS
 

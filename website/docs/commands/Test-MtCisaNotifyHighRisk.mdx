@@ -1,41 +1,40 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Default Authorization Settings - Enabled Self service password reset for administrators is set to 'false'
-id: Test-MtEidscaAP01
-title: Test-MtEidscaAP01
+description: Checks if Risk Based Policies - MS.AAD.2.2v1 has recipients
+id: Test-MtCisaNotifyHighRisk
+title: Test-MtCisaNotifyHighRisk
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEidscaAP01.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaNotifyHighRisk.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if Default Authorization Settings - Enabled Self service password reset for administrators is set to 'false'
+Checks if Risk Based Policies - MS.AAD.2.2v1 has recipients
 
 ## SYNTAX
 
 ```powershell
-Test-MtEidscaAP01 [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaNotifyHighRisk [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Indicates whether administrators of the tenant can use the Self-Service Password Reset (SSPR).
-The policy applies to some critical critical roles in Microsoft Entra ID.
+A notification SHOULD be sent to the administrator when high-risk users are detected.
 
-Queries policies/authorizationPolicy
+Queries /identityProtection/settings/notifications
 and returns the result of
- graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
+ (graph/identityProtection/settings/notifications)
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtEidscaAP01
+Test-MtCisaNotifyHighRisk
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
+Returns the result of (graph.microsoft.com/beta/identityProtection/settings/notifications)
 
 ## PARAMETERS
 
