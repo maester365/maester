@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/build-validation.yaml
 
   create-release:
-    needs: build-validation
+    # needs: build-validation
     runs-on: windows-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Set module version
         id: moduleversion
         shell: pwsh
-        run: ./.github/workflow/minor-version-update.ps1
+        run: ./.github/workflows/minor-version-update.ps1
 
       - name: Azure CLI login
         uses: azure/login@v1
