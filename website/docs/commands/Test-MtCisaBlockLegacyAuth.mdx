@@ -1,11 +1,11 @@
 ---
 sidebar_class_name: hidden
 description: Checks if Baseline Policies Legacy Authentication - MS.AAD.1.1v1 is set to 'blocked'
-id: Test-MtCisaLegacyAuth
-title: Test-MtCisaLegacyAuth
+id: Test-MtCisaBlockLegacyAuth
+title: Test-MtCisaBlockLegacyAuth
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaLegacyAuth.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaBlockLegacyAuth.ps1
 ---
 
 ## SYNOPSIS
@@ -15,26 +15,22 @@ Checks if Baseline Policies Legacy Authentication - MS.AAD.1.1v1 is set to 'bloc
 ## SYNTAX
 
 ```powershell
-Test-MtCisaLegacyAuth [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaBlockLegacyAuth [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Legacy authentication SHALL be blocked.
 
-Queries /identity/conditionalAccess/policies
-and returns the result of
- (graph/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -ge 1
-
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaLegacyAuth
+Test-MtCisaBlockLegacyAuth
 ```
 
-Returns the result of (graph.microsoft.com/v1.0/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -ge 1
+Returns true if a CA policy exists that blocks legacy authentication.
 
 ## PARAMETERS
 
