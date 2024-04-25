@@ -63,7 +63,7 @@ function ConvertTo-MtMaesterResult {
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.Name
-            ResultDetail    = $MtTestResultDetail[$test.ExpandedName]
+            ResultDetail    = $__MtSession.TestResultDetail[$test.ExpandedName]
         }
         $mtTests += $mtTestInfo
     }

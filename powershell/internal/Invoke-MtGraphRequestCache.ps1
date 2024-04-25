@@ -20,14 +20,14 @@ Function Invoke-MtGraphRequestCache {
 
     $results = $null
     $isBatch = $uri.AbsoluteUri.EndsWith('$batch')
-    $isInCache = $MtGraphCache.ContainsKey($Uri.AbsoluteUri)
+    $isInCache = $__MtSession.GraphCache.ContainsKey($Uri.AbsoluteUri)
     $cacheKey = $Uri.AbsoluteUri
     $isMethodGet = $Method -eq 'GET'
 
     if (!$DisableCache -and !$isBatch -and $isInCache -and $isMethodGet) {
         # Don't read from cache for batch requests.
-        Write-Verbose ("Checking cache: $($cacheKey)")
-        $results = $MtGraphCache[$cacheKey]
+        Write-Verbose ("Using graph cache: $($cacheKey)")
+        $results = $__MtSession.GraphCache[$cacheKey]
     }
 
     if (!$results) {
@@ -36,9 +36,9 @@ Function Invoke-MtGraphRequestCache {
         if (!$isBatch -and $isMethodGet) {
             # Update cache
             if ($isInCache) {
-                $MtGraphCache[$cacheKey] = $results
+                $__MtSession.GraphCache[$cacheKey] = $results
             } else {
-                $MtGraphCache.Add($cacheKey, $results)
+                $__MtSession.GraphCache.Add($cacheKey, $results)
             }
         }
     }

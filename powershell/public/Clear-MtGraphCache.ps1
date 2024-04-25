@@ -23,5 +23,5 @@ function Clear-MtGraphCache {
 
     Write-Verbose -Message "Clearing the results cached from Graph API calls in this session"
 
-    $MtGraphCache = @{}
+    $__MtSession.GraphCache = @{}
 }

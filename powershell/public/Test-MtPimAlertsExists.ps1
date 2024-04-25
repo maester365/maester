@@ -38,7 +38,7 @@ Function Test-MtPimAlertsExists {
     $Alert = Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "privilegedAccess/aadroles/resources/$($tenantId)/alerts" | Where-Object { $_.id -eq $AlertId }
 
     $AffectedRoleAssignments = $Alert.additionalData | ForEach-Object {
-      $CurrentItem = $_['item']
+      $CurrentItem = $_.item
       $result = New-Object psobject
       foreach ($entry in $CurrentItem.GetEnumerator()) {
         $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force

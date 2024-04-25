@@ -96,11 +96,13 @@ Function Add-MtTestResultDetail {
 
     Write-MtProgress -Activity "Running tests" -Status $testName
     Write-Verbose "Adding test result detail for $testName"
-    Write-Verbose "Description: $Description"
+    # Write-Verbose "Description: $Description" # Makes it VERY verbose
     Write-Verbose "Result: $Result"
 
-    if ($null -ne $MtTestResultDetail -and ![string]::IsNullOrEmpty($testName)) {
-        # Only set if we are running in the context of Maester
-        $MtTestResultDetail[$testName] = $testInfo
+    if ($__MtSession -and $__MtSession.TestResultDetail) {
+        if (![string]::IsNullOrEmpty($testName)) {
+            # Only set if we are running in the context of Maester
+            $__MtSession.TestResultDetail[$testName] = $testInfo
+        }
     }
 }

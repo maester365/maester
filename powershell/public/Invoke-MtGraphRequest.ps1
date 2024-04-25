@@ -70,12 +70,12 @@ Function Invoke-MtGraphRequest {
 
     begin {
         if ([string]::IsNullOrEmpty($GraphBaseUri)) {
-            if ([string]::IsNullOrEmpty($MtGraphBaseUri)) {
+            if ([string]::IsNullOrEmpty($__MtSession.GraphBaseUri)) {
                 Write-Verbose -Message "Setting GraphBaseUri to default value from MgContext."
-                $MtGraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
+                $__MtSession.GraphBaseUri = $((Get-MgEnvironment -Name (Get-MgContext).Environment).GraphEndpoint)
             }
         }
-        $GraphBaseUri = $MtGraphBaseUri
+        $GraphBaseUri = $__MtSession.GraphBaseUri
 
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
