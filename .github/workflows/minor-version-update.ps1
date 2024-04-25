@@ -21,3 +21,4 @@ if ( -not (Test-Path $ManfifestPath )) {
 }
 
 Add-Content -Path $env:GITHUB_OUTPUT -Value "newtag=$NewVersion"
+Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$NewVersion"
