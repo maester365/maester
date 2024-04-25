@@ -6,17 +6,13 @@
 
     Legacy authentication SHALL be blocked.
 
-    Queries /identity/conditionalAccess/policies
-    and returns the result of
-     (graph/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -ge 1
-
 .EXAMPLE
-    Test-MtCisaLegacyAuth
+    Test-MtCisaBlockLegacyAuth
 
-    Returns the result of (graph.microsoft.com/v1.0/identity/conditionalAccess/policies?$filter=(state eq 'enabled') and (grantControls/builtInControls/any(c:c eq 'block')) and (conditions/clientAppTypes/any(c:c eq 'exchangeActiveSync')) and (conditions/clientAppTypes/any(c:c eq 'other')) and (conditions/users/includeUsers/any(c:c eq 'All'))&$count=true).'@odata.count' -ge 1
+    Returns true if a CA policy exists that blocks legacy authentication.
 #>
 
-Function Test-MtCisaLegacyAuth {
+Function Test-MtCisaBlockLegacyAuth {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
