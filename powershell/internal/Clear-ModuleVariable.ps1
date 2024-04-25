@@ -14,6 +14,6 @@ Function Clear-ModuleVariable {
     param()
 
     Clear-MtGraphCache
-    $MtGraphBaseUri = $null
-    $MtTestResultDetail = @{}
+    $__MtSession.GraphBaseUri = $null
+    $__MtSession.TestResultDetail = @{}
 }

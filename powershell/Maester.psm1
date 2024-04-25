@@ -13,9 +13,12 @@
 
 ## Initialize Module Variables
 ## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
-$MtGraphCache = @{}
-$MtGraphBaseUri = $null
-$MtTestResultDetail = @{}
+$__MtSession = @{
+	GraphCache = @{}
+	GraphBaseUri = $null
+	TestResultDetail = @{}
+}
+New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 
 # Import private and public scripts and expose the public ones
 $privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1")

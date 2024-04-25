@@ -14,7 +14,6 @@ Function Get-MtConditionalAccessPolicy {
 
   Write-Verbose -Message "Getting conditional access policies."
 
-  # Note Graph v1.0 appears to return updates faster than beta
-  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion v1.0
+  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta
 
 }
