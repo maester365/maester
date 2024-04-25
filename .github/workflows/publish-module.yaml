@@ -27,19 +27,10 @@ jobs:
         shell: pwsh
         run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
 
-      - name: Get PowerShell module version
+      - name: Set module version
         id: moduleversion
         shell: pwsh
-        run: |
-          $ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"
-          $ManfifestPath = "$($ModuleRoot)/maester.psd1"
-          if ( -not (Test-Path $ManfifestPath )) {
-              Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
-              throw
-          } else {
-              $CurrentVersion = Import-PowerShellDataFile $ManfifestPath | Select-Object -ExpandProperty ModuleVersion
-              Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$CurrentVersion"
-          }
+        run: ./.github/workflow/minor-version-update.ps1
 
       - name: Azure CLI login
         uses: azure/login@v1
