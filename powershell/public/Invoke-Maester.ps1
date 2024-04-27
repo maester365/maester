@@ -47,7 +47,7 @@ Runs all the Pester tests in the EIDSCA folder.
 .EXAMPLE
 Invoke-Maester -MailRecipient john@contoso.com
 
-Runs all the Pester tests in the EIDSCA folder.
+Runs all the Pester tests and sends a report of the results to mail recipient.
 
 .EXAMPLE
 Invoke-Maester -Verbosity Normal
