@@ -17,6 +17,7 @@ Function Test-MtCisaMethodsMigration {
     [OutputType([bool])]
     param()
 
+    #4/28/2024 - Select OData query option not supported
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationmethodspolicy" -ApiVersion "v1.0"
 
     $migrationState = $result.policyMigrationState
