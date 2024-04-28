@@ -34,9 +34,9 @@ Connect-Maester
 Invoke-Maester
 ```
 
-### Running Maester in a Nation Cloud Environment
+### Running Maester in a National Cloud Environment
 
-An optional parameter, `-Environment`, can be utilized to specify the name of the national cloud environment to connect to. By default global cloud is used.
+An optional parameter, `-Environment`, can be utilized on `Connect-Maester` to specify the name of the national cloud environment to connect to. By default global cloud is used.
 
 Allowed values include:
 
