@@ -94,6 +94,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaBlockHighRiskUser', 'Test-MtCisaBlockHighRiskSignIn',
                'Test-MtCisaNotifyHighRisk', 'Test-MtCisaPhishResistant',
                'Test-MtCisaMfa', 'Test-MtCisaAuthenticatorContext',
+               'Test-MtCisaMethodsMigration',
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01',
                'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF04',
                'Test-MtEidscaAF05', 'Test-MtEidscaAF06', 'Test-MtEidscaAG01',
