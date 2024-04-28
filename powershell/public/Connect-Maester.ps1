@@ -21,9 +21,12 @@ Function Connect-Maester {
       # If specified, the cmdlet will include the scope to send email (Mail.Send).
       [switch] $SendMail,
 
-      [switch] $UseDeviceCode
+      [switch] $UseDeviceCode,
+
+      [ValidateSet("China", "Germany", "Global", "USGov", "USGovDOD")]
+      [string]$Environment = $Global
    )
 
    Write-Verbose "Connecting to Microsoft Graph"
-   Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode
+   Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
 }

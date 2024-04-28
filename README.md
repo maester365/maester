@@ -34,6 +34,23 @@ Connect-Maester
 Invoke-Maester
 ```
 
+### Running Maester in a Nation Cloud Environment
+
+An optional parameter, `-Environment`, can be utilized to specify the name of the national cloud environment to connect to. By default global cloud is used.
+
+Allowed values include:
+
+- Global (default, if parameter is not specified)
+- China
+- Germany
+- USGov
+- USGovDOD
+
+```powershell
+Connect-Maester -Environment USGov
+```
+
+
 ## Keeping your Maester tests up to date
 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
