@@ -12,7 +12,7 @@ Create a conditional access policy enforcing phishing-resistant MFA for all user
 
 #### Related links
 
-* [CISA Risk Based Policies - MS.AAD.3.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad31v1)
+* [CISA Strong Authentication & Secure Registration - MS.AAD.3.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad31v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L181)
 
 <!--- Results --->

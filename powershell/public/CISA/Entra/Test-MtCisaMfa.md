@@ -12,7 +12,7 @@ If phishing-resistant MFA has not been enforced for all users yet, create a cond
 
 #### Related links
 
-* [CISA Risk Based Policies - MS.AAD.3.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad32v1)
+* [CISA Strong Authentication & Secure Registration - MS.AAD.3.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad32v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L214)
 
 <!--- Results --->

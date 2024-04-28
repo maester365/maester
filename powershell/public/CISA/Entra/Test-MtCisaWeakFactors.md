@@ -11,7 +11,7 @@ If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator 
 
 #### Related links
 
-* [CISA Risk Based Policies - MS.AAD.3.5](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad35v1)
+* [CISA Strong Authentication & Secure Registration - MS.AAD.3.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad35v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L307)
 
 <!--- Results --->
