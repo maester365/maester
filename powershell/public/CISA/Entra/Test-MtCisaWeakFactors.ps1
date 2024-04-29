@@ -36,7 +36,7 @@ Function Test-MtCisaWeakFactors {
     } else {
         $testResultMarkdown = "Your tenant does not have SMS, Voice Call, and Email One-Time Passcode (OTP) authentication methods disabled."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthenticationMethod -GraphObjects $policies
 
     return $testResult
 }

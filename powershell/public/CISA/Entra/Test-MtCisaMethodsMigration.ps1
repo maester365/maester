@@ -29,7 +29,7 @@ Function Test-MtCisaMethodsMigration {
     } else {
         $testResultMarkdown = "Your tenant has not completed the migration to Authentication Methods."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $migrationState
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthenticationMethod -GraphObjects $migrationState
 
     return $testResult
 }

@@ -36,7 +36,7 @@ Function Test-MtCisaAuthenticatorContext {
     } else {
         $testResultMarkdown = "Your tenant does not have the Authentication Methods policy for Microsoft Authenticator set appropriately."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthenticationMethod -GraphObjects $policies
 
     return $testResult
 }
