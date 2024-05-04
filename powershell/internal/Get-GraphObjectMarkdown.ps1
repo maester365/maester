@@ -22,7 +22,9 @@ Function Get-GraphObjectMarkdown {
 
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         [Parameter(Mandatory = $true)]
-        [ValidateSet('ConditionalAccess', 'User', 'Group', 'Device', 'IdentityProtection', 'AuthenticationMethod')]
+        [ValidateSet('ConditionalAccess', 'Users',
+            'Groups', 'IdentityProtection', 'AuthenticationMethod',
+            'AuthorizationPolicy')]
         [string] $GraphObjectType
     )
 
@@ -33,6 +35,7 @@ Function Get-GraphObjectMarkdown {
         Device               = "https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
         IdentityProtection   = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"
         AuthenticationMethod = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
+        AuthorizationPolicy  = "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
     }
 
     # This will work for now, will need to add switch as we add support for complex urls like Applications blade, etc..
