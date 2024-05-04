@@ -5,10 +5,10 @@
  .Description
 
  .Example
-  Get-MtRoles
+  Get-MtRole
 #>
 
-Function Get-MtRoles {
+Function Get-MtRole {
   [CmdletBinding()]
   param()
 

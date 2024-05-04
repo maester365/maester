@@ -27,7 +27,7 @@ Function Test-MtCisaPhishResistant {
         "Cloud Application Administrator"
     )
 
-    $roles = Get-MtRoles
+    $roles = Get-MtRole
 
     $highlyPrivilegedRoles = $roles | Where-Object {`
         $_.displayName -in $highlyPrivilegedRoles }
