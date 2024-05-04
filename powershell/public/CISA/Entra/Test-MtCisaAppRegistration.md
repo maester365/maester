@@ -4,9 +4,9 @@ Rationale: Application access for the tenant presents a heightened security risk
 
 #### Remediation action:
 
-1. In Entra, under Identity and Users, select **User settings**.
-2. For Users can register applications, select No.
-3. Click Save.
+1. In **Entra**, under **Identity** and **Users**, select **User settings**.
+2. For **Users can register applications**, select **No**.
+3. Click **Save**.
 
 #### Related links
 
