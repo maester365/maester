@@ -24,7 +24,7 @@ Function Get-GraphObjectMarkdown {
         [Parameter(Mandatory = $true)]
         [ValidateSet('ConditionalAccess', 'Users',
             'Groups', 'IdentityProtection', 'AuthenticationMethod',
-            'AuthorizationPolicy')]
+            'AuthorizationPolicy', 'ConsentPolicy')]
         [string] $GraphObjectType
     )
 
@@ -36,6 +36,7 @@ Function Get-GraphObjectMarkdown {
         IdentityProtection   = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"
         AuthenticationMethod = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
         AuthorizationPolicy  = "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
+        ConsentPolicy        = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
     }
 
     # This will work for now, will need to add switch as we add support for complex urls like Applications blade, etc..

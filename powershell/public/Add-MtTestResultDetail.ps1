@@ -54,7 +54,7 @@ Function Add-MtTestResultDetail {
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         [ValidateSet('ConditionalAccess', 'Users',
             'Groups', 'IdentityProtection', 'AuthenticationMethod',
-            'AuthorizationPolicy')]
+            'AuthorizationPolicy', 'ConsentPolicy')]
         [string] $GraphObjectType,
 
         # Pester test name
