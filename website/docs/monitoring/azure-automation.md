@@ -58,7 +58,7 @@ $ManagedIdentity = (Get-MgServicePrincipal -Filter "DisplayName eq '$ManagedIden
 $GraphID = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").id
 
 foreach ($perm in $getPerms){
-    New-MgBetaServicePrincipalAppRoleAssignment -ServicePrincipalId $ManagedIdentity.Id `
+    New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $ManagedIdentity.Id `
     -PrincipalId $ManagedIdentity.Id -ResourceId $GraphID -AppRoleId $perm.id
 }
 ```
