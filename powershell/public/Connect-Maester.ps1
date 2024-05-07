@@ -21,10 +21,12 @@ Function Connect-Maester {
       # If specified, the cmdlet will include the scope to send email (Mail.Send).
       [switch] $SendMail,
 
+      # If specified, the cmdlet will use the device code flow to authenticate.
       [switch] $UseDeviceCode,
 
-      [ValidateSet("China", "Germany", "Global", "USGov", "USGovDOD")]
-      [string]$Environment = $Global
+      # The environment to connect to. Default is Global.
+      [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
+      [string]$Environment = "Global"
    )
 
    Write-Verbose "Connecting to Microsoft Graph"

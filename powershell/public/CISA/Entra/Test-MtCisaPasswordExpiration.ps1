@@ -38,11 +38,12 @@ Function Test-MtCisaPasswordExpiration {
     $testResult = $managedDomains.Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has at least 1 managed domain with a password validity of 100 years or greater:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire."
     } else {
-        $testResultMarkdown = "Your tenant does not prevent password expiration."
+        $testResultMarkdown = "Your tenant does not have password expiration set to never expire."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Domains -GraphObjects $managedDomains
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

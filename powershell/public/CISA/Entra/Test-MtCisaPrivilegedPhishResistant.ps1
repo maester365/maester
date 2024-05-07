@@ -11,7 +11,7 @@
     Returns true if at least one policy requires phishing resistant methods for the specific roles
 #>
 
-Function Test-MtCisaPhishResistant {
+Function Test-MtCisaPrivilegedPhishResistant {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

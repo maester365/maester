@@ -27,10 +27,10 @@ Function Test-MtCisaAppAdminConsent {
     $testResult = $reviewers.Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant admin consent request policy has at least 1 reviewer:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant admin consent request policy has at least 1 reviewer."
     } else {
         $testResultMarkdown = "Your tenant admin consent request policy is not configured."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthorizationPolicy -GraphObjects "Admin consent"
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
