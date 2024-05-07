@@ -25,10 +25,10 @@ Function Test-MtCisaAppGroupOwnerConsent {
         Select-Object -ExpandProperty value) -eq $false
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant admin consent request policy has at least 1 reviewer:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Groups owners cannot consent to applications."
     } else {
-        $testResultMarkdown = "Your tenant admin consent request policy is not configured."
+        $testResultMarkdown = "Your tenant allows group owners to consent to applications."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConsentPolicy -GraphObjects "Group owner consent"
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

@@ -25,11 +25,11 @@ Function Test-MtCisaMethodsMigration {
     $testResult = $migrationState -eq "migrationComplete"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has completed the migration to Authentication Methods:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has completed the migration to Authentication Methods."
     } else {
         $testResultMarkdown = "Your tenant has not completed the migration to Authentication Methods."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthenticationMethod -GraphObjects $migrationState
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

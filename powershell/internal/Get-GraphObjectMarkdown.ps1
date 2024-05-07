@@ -24,7 +24,7 @@ Function Get-GraphObjectMarkdown {
         [Parameter(Mandatory = $true)]
         [ValidateSet('ConditionalAccess', 'Users',
             'Groups', 'IdentityProtection', 'AuthenticationMethod',
-            'AuthorizationPolicy', 'ConsentPolicy')]
+            'AuthorizationPolicy', 'ConsentPolicy', 'Domains')]
         [string] $GraphObjectType
     )
 

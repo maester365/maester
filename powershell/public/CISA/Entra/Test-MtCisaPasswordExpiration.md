@@ -4,7 +4,7 @@ The National Institute of Standards and Technology (NIST), OMB, and Microsoft ha
 
 #### Remediation action:
 
-If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator is in use, configure Authenticator to display context information to users when they log in.
+Configure password policies to set passwords to never expire.
 
 1. [Configure the **Password expiration policy** to **Set passwords to never expire**](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/set-password-expiration-policy?view=o365-worldwide#set-password-expiration-policy).
 
