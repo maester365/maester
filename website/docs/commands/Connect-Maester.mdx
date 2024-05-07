@@ -56,7 +56,7 @@ Accept wildcard characters: False
 
 ### -UseDeviceCode
 
-\{\{ Fill UseDeviceCode Description \}\}
+If specified, the cmdlet will use the device code flow to authenticate.
 
 ```yaml
 Type: SwitchParameter
@@ -72,7 +72,8 @@ Accept wildcard characters: False
 
 ### -Environment
 
-\{\{ Fill Environment Description \}\}
+The environment to connect to.
+Default is Global.
 
 ```yaml
 Type: String
@@ -81,7 +82,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: $Global
+Default value: Global
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
