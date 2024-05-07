@@ -87,7 +87,7 @@ export default function ResultInfoDialog(props) {
             {props.Item.HelpUrl &&
               <div className="text-left mt-2">
                 <Button icon={ArrowTopRightOnSquareIcon} variant="light" onClick={() => openInNewTab(props.Item.HelpUrl)}>
-                  Learn more @ maester.dev
+                  Learn more @ {new URL(props.Item.HelpUrl).hostname}
                 </Button>
               </div>
             }
