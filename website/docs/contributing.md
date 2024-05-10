@@ -42,6 +42,8 @@ Simple edits can be made in the GitHub UI by selecting the `Edit this page` link
 
 For more complex changes, you can fork the repository and submit a pull request.
 
+The docs/commands folder is auto-generated based on the comments in the PowerShell cmdlets. If you want to update the documentation for a command, you will need to update the comment-based help in the .ps1 file for the command.
+
 ## Updating EIDSCA tests and documentation
 
 The EIDSCA tests and documentation are maintained in the [EIDSCA repository → EidscaConfig.json](https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/AADSCAv4/config/EidscaConfig.json) file.
