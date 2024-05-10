@@ -127,7 +127,11 @@ Function Invoke-Maester {
 
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
-        [string] $MailUserId
+        [string] $MailUserId,
+
+        # Skip the graph connection check.
+        # This is used for running tests that does not require a graph connection.
+        [switch] $SkipGraphConnect
     )
 
     function GetDefaultFileName() {
@@ -212,7 +216,12 @@ Function Invoke-Maester {
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
     $isMail = $null -ne $MailRecipient
-    if (!(Test-MtContext -SendMail:$isMail)) { return }
+
+    if ($SkipGraphConnect) {
+        Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
+    } else {
+        if (!(Test-MtContext -SendMail:$isMail)) { return }
+    }
 
     $out = [PSCustomObject]@{
         OutputFolder         = $OutputFolder
