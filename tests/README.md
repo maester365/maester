@@ -20,6 +20,7 @@ Invoke-Maester
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
 
 - Update the `Maester` PowerShell module to the latest version and load it.
+- Change to the folder that has the tests.
 - Run `Update-MaesterTests`.
 
 ```powershell
