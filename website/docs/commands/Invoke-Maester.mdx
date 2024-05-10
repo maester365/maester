@@ -19,7 +19,7 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
- [-MailUserId <String>] [-ProgressAction <ActionPreference>] [-SkipGraphConnect <Switch>] [<CommonParameters>]
+ [-MailUserId <String>] [-SkipGraphConnect] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -385,6 +385,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -SkipGraphConnect
+
+Skip the graph connection check.
+This is used for running tests that does not require a graph connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ProgressAction
 
 \{\{ Fill ProgressAction Description \}\}
@@ -397,22 +414,6 @@ Aliases: proga
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SkipGraphConnect
-
-This switch allows you to bypass the Microsoft Graph connection check.
-
-```yaml
-Type: Switch
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
