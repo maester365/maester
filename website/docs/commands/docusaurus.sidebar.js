@@ -61,6 +61,7 @@ module.exports = [
     'commands/Test-MtCisaNotifyHighRisk',
     'commands/Test-MtCisaPasswordExpiration',
     'commands/Test-MtCisaPhishResistant',
+    'commands/Test-MtCisaPrivilegedPhishResistant',
     'commands/Test-MtCisaWeakFactor',
     'commands/Test-MtConditionalAccessWhatIf',
     'commands/Test-MtEidscaAF01',
