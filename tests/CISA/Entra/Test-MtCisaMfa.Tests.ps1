@@ -1,5 +1,11 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.2", "CISA", "Security", "All" {
-    It "MS.AAD.7.2: Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator." {
-        Test-MtCisaGlobalAdminRatio | Should -Be $true -Because "more granular role assignments exist than global admin assignments."
+BeforeDiscovery {
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+}
+
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.3.2", "CISA", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
+    It "MS.AAD.3.2: If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users." {
+        if(-not (Test-MtCisaPhishResistant)) {
+            Test-MtCisaMfa | Should -Be $true -Because "an enabled conditional access policy requires MFA for all apps."
+        }
     }
 }
