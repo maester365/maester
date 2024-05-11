@@ -20,7 +20,7 @@ Function Test-MtCisaCloudGlobalAdmin {
     $role = Get-MtRole | Where-Object {`
         $_.displayName -eq "Global Administrator" }
 
-    $assignments = Get-MtRoleMember -roleId $role.id
+    $assignments = Get-MtRoleMember -roleId $role.id -All
 
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"
@@ -33,9 +33,9 @@ Function Test-MtCisaCloudGlobalAdmin {
     $i = 0
     foreach($admin in $globalAdministrators){
         $request = @{
-            id = "$i"
+            id     = "$i"
             method = "GET"
-            url = "/users/$($admin.id)?`$select=id,displayName,onPremisesSyncEnabled"
+            url    = "/users/$($admin.id)?`$select=id,displayName,onPremisesSyncEnabled"
         }
         $requests += $request
         $i++

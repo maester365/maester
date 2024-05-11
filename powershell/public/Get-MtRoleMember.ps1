@@ -12,28 +12,44 @@ Function Get-MtRoleMember {
   [CmdletBinding()]
   param(
     [Parameter(Position=0,mandatory=$true)]
-    [guid]$roleId
+    [guid]$roleId,
+    [switch]$Eligible,
+    [switch]$Active,
+    [switch]$All
   )
+
+  if($All){
+    $Eligible = $Active = $true
+  }
+  elseif(-not $Eligible -and -not $Active){
+    throw "Choose to return -Eligibile, -Active, or -All role members."
+  }
 
   $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
   $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
 
   $assignments = @()
   $groups = @()
-  $types = @(
-    "roleManagement/directory/roleAssignments",
-    "roleManagement/directory/roleEligibilityScheduleRequests"
-  )
+  $types = @()
+  if($Active){
+    $types += @{active   = "roleManagement/directory/roleAssignments"}
+  }
+  if($Eligible){
+    $types += @{eligible = "roleManagement/directory/roleEligibilityScheduleRequests"}
+  }
 
   foreach($type in $types){
-    if(-not $pim -and $type -eq "roleManagement/directory/roleEligibilityScheduleRequests"){
+    if(-not $pim -and $type.Keys -eq "eligible"){
       continue
     }
 
     $dirAssignmentsSplat = @{
-      ApiVersion  = "v1.0"
-      RelativeUri = "$type"
-      Filter      = "roleDefinitionId eq '$roleId'"
+      ApiVersion      = "v1.0"
+      RelativeUri     = "$($type.Values)"
+      Filter          = "roleDefinitionId eq '$roleId'"
+      QueryParameters = @{
+        expand="principal"
+      }
     }
     $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
 
@@ -41,17 +57,12 @@ Function Get-MtRoleMember {
       #No role assignments found
       continue
     }
-
-    $dirAssignments | ForEach-Object {`
-        $obj = $null
-        $obj = Invoke-MtGraphRequest -ApiVersion v1.0 -RelativeUri "directoryObjects/$($_.principalId)"
-        $assignments += $obj
-    }
+    $assignments += $dirAssignments.principal
 
     $groups = $assignments | Where-Object {$_.'@odata.type' -eq "#microsoft.graph.group"}
     $groups | ForEach-Object {`
-        #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-        $assignments += Get-MtGroupMember -groupId $_.id
+      #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
+      $assignments += Get-MtGroupMember -groupId $_.id
     }
   }
 

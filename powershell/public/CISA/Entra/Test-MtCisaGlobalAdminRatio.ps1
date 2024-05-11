@@ -23,10 +23,10 @@ Function Test-MtCisaGlobalAdminRatio {
     foreach($role in $roles){
         $assignments = $null
         $roleAssignment = [PSCustomObject]@{
-            role = $role.displayName
+            role        = $role.displayName
             assignments = $assignments
         }
-        $assignments = Get-MtRoleMember -roleId $role.id
+        $assignments = Get-MtRoleMember -roleId $role.id -All
         $roleAssignment.assignments = $assignments
         $roleAssignments += $roleAssignment
     }
