@@ -11,7 +11,7 @@ When counting the number of users assigned to the Global Administrator role, cou
 
 #### Related links
 
-* [CISA Strong Authentication & Secure Registration - MS.AAD.7.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad71v1)
+* [CISA 7. Highly Privileged User Access - MS.AAD.7.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad71v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L761)
 
 <!--- Results --->

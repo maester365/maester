@@ -17,44 +17,10 @@ Function Test-MtCisaGlobalAdminCount {
     [OutputType([bool])]
     param()
 
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-
     $role = Get-MtRole | Where-Object {`
         $_.displayName -eq "Global Administrator" }
-    $assignments = @()
 
-    $dirAssignmentsSplat = @{
-        ApiVersion  = "v1.0"
-        RelativeUri = "roleManagement/directory/roleAssignments"
-        Filter      = "roleDefinitionId eq '$($role.ID)'"
-    }
-    $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
-    $dirAssignments | ForEach-Object {`
-        $obj = $null
-        $obj = Invoke-MtGraphRequest -ApiVersion v1.0 -RelativeUri "directoryObjects/$($_.principalId)"
-        $assignments += $obj
-    }
-
-    if ($pim) {
-        $pimAssignmentsSplat = @{
-            ApiVersion  = "v1.0"
-            RelativeUri = "roleManagement/directory/roleEligibilityScheduleRequests"
-            Filter      = "roleDefinitionId eq '$($role.ID)'"
-        }
-        $pimAssignments = Invoke-MtGraphRequest @pimAssignmentsSplat
-        $pimAssignments | ForEach-Object {`
-            $obj = $null
-            $obj = Invoke-MtGraphRequest -ApiVersion v1.0 -RelativeUri "directoryObjects/$($_.principalId)"
-            $assignments += $obj
-        }
-    }
-
-    $groups = $assignments | Where-Object {$_.'@odata.type' -eq "#microsoft.graph.group"}
-    $groups | ForEach-Object {`
-        #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-        $assignments += Get-MtGroupMember -groupId $_.id
-    }
+    $assignments = Get-MtRoleMember -roleId $role.id
 
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"
