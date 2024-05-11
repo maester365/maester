@@ -27,6 +27,8 @@ function Get-MtLicenseInformation {
                 $AvailablePlans = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'organization' | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
                 if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
                     $LicenseType = "P2"
+                } elseif ( "e866a266-3cff-43a3-acca-0c90a7e00c8b" -in $AvailablePlans ) {
+                    $LicenseType = "Governance"
                 } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d" -in $AvailablePlans ) {
                     $LicenseType = "P1"
                 } else {
