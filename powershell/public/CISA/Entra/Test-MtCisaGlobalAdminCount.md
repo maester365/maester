@@ -6,7 +6,7 @@ Rationale: The Global Administrator role provides unfettered access to the tenan
 
 When counting the number of users assigned to the Global Administrator role, count each user only once.
 
-1. In **Entra ID** count the number of users assigned to the **Global Administrator** role. Count users that are assigned directly to the role and users assigned via group membership. If you have Azure AD PIM, count both the **Eligible assignments** and **Active assignments**. If any of the groups assigned to Global Administrator are enrolled in PIM for Groups, also count the number of group members from the PIM for Groups portal **Eligible** assignments.
+1. In **Entra ID** count the number of users assigned to the **Global Administrator** role. Count users that are assigned directly to the role and users assigned via group membership. If you have Entra ID PIM, count both the **Eligible assignments** and **Active assignments**. If any of the groups assigned to Global Administrator are enrolled in PIM for Groups, also count the number of group members from the PIM for Groups portal **Eligible** assignments.
 2. Validate that there are a total of two to eight users assigned to the Global Administrator role.
 
 #### Related links
