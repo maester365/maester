@@ -14,7 +14,7 @@ This policy is based on the ratio below:
 
 #### Related links
 
-* [CISA 7. Highly Privileged User Access - MS.AAD.7.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad72v1)
+* [CISA 7.2 Highly Privileged User Access - MS.AAD.7.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad72v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L792)
 
 <!--- Results --->

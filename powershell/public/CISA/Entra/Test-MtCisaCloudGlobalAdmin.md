@@ -15,7 +15,7 @@ Get-MgBetaUser -Filter "userPrincipalName eq 'username@somedomain.com'" | FL
 
 #### Related links
 
-* [CISA 7. Highly Privileged User Access - MS.AAD.7.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad73v1)
+* [CISA 7.3 Highly Privileged User Access - MS.AAD.7.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad73v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L833)
 
 <!--- Results --->

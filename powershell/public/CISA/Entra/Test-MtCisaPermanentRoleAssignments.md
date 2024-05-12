@@ -15,7 +15,7 @@ Note: Exceptions to this policy are:
 
 #### Related links
 
-* [CISA 7. Highly Privileged User Access - MS.AAD.7.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad74v1)
+* [CISA 7.4 Highly Privileged User Access - MS.AAD.7.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad74v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L856)
 
 <!--- Results --->

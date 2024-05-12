@@ -11,7 +11,7 @@ Rationale: Provisioning users to privileged roles within a PAM system enables en
 
 #### Related links
 
-* [CISA 7. Highly Privileged User Access - MS.AAD.7.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad75v1)
+* [CISA 7.5 Highly Privileged User Access - MS.AAD.7.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad75v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L907)
 
 <!--- Results --->
