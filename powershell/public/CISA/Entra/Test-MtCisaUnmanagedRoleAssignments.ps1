@@ -41,8 +41,8 @@ Function Test-MtCisaUnmanagedRoleAssignments {
             }
         }
         $assignments = Invoke-MtGraphRequest @assignmentsSplat | Where-Object {`
-            $_.createdUsing -eq $null -or `
-            $_.scheduleInfo.startDateTime -eq $null }
+            $null -eq $_.createdUsing -or `
+            $null -eq $_.scheduleInfo.startDateTime}
 
         $roleAssignment.principal = $assignments.principal
 
