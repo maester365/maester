@@ -40,6 +40,7 @@ Function Get-MtRoleMember {
 
   foreach($type in $types){
     if(-not $pim -and $type.Keys -eq "eligible"){
+      Write-Verbose "Tenant not licensed for Entra ID PIM eligible assignments"
       continue
     }
 
@@ -54,7 +55,7 @@ Function Get-MtRoleMember {
     $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
 
     if($dirAssignments.id.Count -eq 0){
-      #No role assignments found
+      Write-Verbose "No role assignments found"
       continue
     }
     $assignments += $dirAssignments.principal
