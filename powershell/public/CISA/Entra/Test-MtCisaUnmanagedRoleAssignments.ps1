@@ -7,12 +7,12 @@
     Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
 
 .EXAMPLE
-    Test-MtCisaUnmanagedRoleAssignments
+    Test-MtCisaUnmanagedRoleAssignment
 
     Returns true if all role assignments have a start time
 #>
 
-Function Test-MtCisaUnmanagedRoleAssignments {
+Function Test-MtCisaUnmanagedRoleAssignment {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

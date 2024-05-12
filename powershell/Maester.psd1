@@ -101,7 +101,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaAppGroupOwnerConsent', 'Test-MtCisaPasswordExpiration',
                'Test-MtCisaGlobalAdminCount', 'Test-MtCisaGlobalAdminRatio',
                'Test-MtCisaCloudGlobalAdmin', 'Test-MtCisaPermanentRoleAssignment',
-               'Test-MtCisaUnmanagedRoleAssignments', 'Test-MtCisaRequireActivationApproval',
+               'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaRequireActivationApproval',
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01',
