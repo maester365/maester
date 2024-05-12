@@ -7,12 +7,12 @@
     Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
 .EXAMPLE
-    Test-MtCisaPermanentRoleAssignments
+    Test-MtCisaPermanentRoleAssignment
 
     Returns true if no roles have permanent active assignments
 #>
 
-Function Test-MtCisaPermanentRoleAssignments {
+Function Test-MtCisaPermanentRoleAssignment {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
