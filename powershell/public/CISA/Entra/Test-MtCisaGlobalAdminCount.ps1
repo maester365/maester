@@ -18,7 +18,7 @@ Function Test-MtCisaGlobalAdminCount {
     param()
 
     $role = Get-MtRole | Where-Object {`
-        $_.displayName -eq "Global Administrator" }
+        $_.id -eq "62e90394-69f5-4237-9190-012177145e10" }
 
     $assignments = Get-MtRoleMember -roleId $role.id -All
 

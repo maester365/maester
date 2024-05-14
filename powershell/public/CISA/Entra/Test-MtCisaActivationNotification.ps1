@@ -34,11 +34,11 @@ Function Test-MtCisaActivationNotification {
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
     if($GlobalAdminOnly){
         $roles = $roles | Where-Object {`
-            $_.displayName -eq "Global Administrator"
+            $_.id -eq "62e90394-69f5-4237-9190-012177145e10"
         }
     }else{
         $roles = $roles | Where-Object {`
-            $_.displayName -ne "Global Administrator"
+            $_.id -ne "62e90394-69f5-4237-9190-012177145e10"
         }
     }
 

@@ -23,7 +23,7 @@ Function Test-MtCisaGlobalAdminRatio {
     foreach($role in $roles){
         $assignments = $null
         $roleAssignment = [PSCustomObject]@{
-            role        = $role.displayName
+            role        = $role.id
             assignments = $assignments
         }
         $assignments = Get-MtRoleMember -roleId $role.id -All
@@ -32,12 +32,12 @@ Function Test-MtCisaGlobalAdminRatio {
     }
 
     $globalAdministrators = $roleAssignments | Where-Object {`
-        $_.role -eq "Global Administrator"} | `
+        $_.role -eq "62e90394-69f5-4237-9190-012177145e10"} | `
         Select-Object -ExpandProperty assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
     $otherAssignments = $roleAssignments | Where-Object {`
-        $_.role -ne "Global Administrator"} | `
+        $_.role -ne "62e90394-69f5-4237-9190-012177145e10"} | `
         Select-Object -ExpandProperty assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
