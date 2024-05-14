@@ -36,7 +36,7 @@ Function Get-MtRole {
 
   if ($CisaHighlyPrivilegedRoles){
     return $roles | Where-Object {`
-      $_.displayName -in $highlyPrivilegedRoles
+      $_.id -in $highlyPrivilegedRoles
     }
   }
 
