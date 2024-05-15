@@ -2,9 +2,9 @@ Guest users SHOULD have limited or restricted access to Azure AD directory objec
 
 Rationale: Limiting the amount of object information available to guest users in the tenant, reduces malicious reconnaissance exposure, should a guest account become compromised or be created by an adversary.
 
-#### Remediation action:
+#### Remediation action
 
-1. In **Entra ID** select **External Identities** > **External collaboration settings**.
+1. In **Entra ID** select **External Identities** > [**External collaboration settings**](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings).
 2. Under **Guest user access**, select either **Guest users have limited access to properties and memberships of directory objects** or **Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)**.
 3. Click **Save**.
 
