@@ -4,3 +4,4 @@
 - **DirectoryRecommendations.Read.All**
 - **PrivilegedAccess.Read.AzureAD**
 - **IdentityRiskEvent.Read.All**
+- **RoleEligibilitySchedule.Read.Directory**
