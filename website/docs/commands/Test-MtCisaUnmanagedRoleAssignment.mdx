@@ -1,53 +1,38 @@
 ---
 sidebar_class_name: hidden
-description: Returns all the role definitions in the tenant.
-id: Get-MtRole
-title: Get-MtRole
+description: Checks for active role assingments with no start time
+id: Test-MtCisaUnmanagedRoleAssignment
+title: Test-MtCisaUnmanagedRoleAssignment
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtRole.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaUnmanagedRoleAssignment.ps1
 ---
 
 ## SYNOPSIS
 
-Returns all the role definitions in the tenant.
+Checks for active role assingments with no start time
 
 ## SYNTAX
 
 ```powershell
-Get-MtRole [-CisaHighlyPrivilegedRoles] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaUnmanagedRoleAssignment [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtRole
+Test-MtCisaUnmanagedRoleAssignment
 ```
+
+Returns true if all role assignments have a start time
 
 ## PARAMETERS
-
-### -CisaHighlyPrivilegedRoles
-
-Filters the returned roles to only those described
-by CISA as highly privieleged.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ProgressAction
 
@@ -72,6 +57,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
+
+### System.Boolean
 
 ## NOTES
 
