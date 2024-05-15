@@ -1,41 +1,51 @@
 ---
 sidebar_class_name: hidden
-description: Returns all the role definitions in the tenant.
-id: Get-MtRole
-title: Get-MtRole
+description: Checks for notification on role activation
+id: Test-MtCisaActivationNotification
+title: Test-MtCisaActivationNotification
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtRole.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaActivationNotification.ps1
 ---
 
 ## SYNOPSIS
 
-Returns all the role definitions in the tenant.
+Checks for notification on role activation
 
 ## SYNTAX
 
 ```powershell
-Get-MtRole [-CisaHighlyPrivilegedRoles] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaActivationNotification [-GlobalAdminOnly] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+User activation of the Global Administrator role SHALL trigger an alert.
+User activation of other highly privileged roles SHOULD trigger an alert.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtRole
+Test-MtCisaActivationNotification
 ```
+
+Returns true if notifications are set for activation of the highly privileged roles other than Global Admin
+
+### EXAMPLE 2
+
+```powershell
+Test-MtCisaActivationNotification -GlobalAdminOnly
+```
+
+Returns true if notifications are set for activation of the Global Admin role
 
 ## PARAMETERS
 
-### -CisaHighlyPrivilegedRoles
+### -GlobalAdminOnly
 
-Filters the returned roles to only those described
-by CISA as highly privieleged.
+\{\{ Fill GlobalAdminOnly Description \}\}
 
 ```yaml
 Type: SwitchParameter
@@ -72,6 +82,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
+
+### System.Boolean
 
 ## NOTES
 

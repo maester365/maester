@@ -1,53 +1,38 @@
 ---
 sidebar_class_name: hidden
-description: Returns all the role definitions in the tenant.
-id: Get-MtRole
-title: Get-MtRole
+description: Checks if guests use proper role template
+id: Test-MtCisaGuestUserAccess
+title: Test-MtCisaGuestUserAccess
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtRole.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaGuestUserAccess.ps1
 ---
 
 ## SYNOPSIS
 
-Returns all the role definitions in the tenant.
+Checks if guests use proper role template
 
 ## SYNTAX
 
 ```powershell
-Get-MtRole [-CisaHighlyPrivilegedRoles] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaGuestUserAccess [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Guest users SHOULD have limited or restricted access to Azure AD directory objects.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtRole
+Test-MtCisaGuestUserAccess
 ```
+
+Returns true if guests use proper role template
 
 ## PARAMETERS
-
-### -CisaHighlyPrivilegedRoles
-
-Filters the returned roles to only those described
-by CISA as highly privieleged.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ProgressAction
 
@@ -72,6 +57,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ## OUTPUTS
+
+### System.Boolean
 
 ## NOTES
 
