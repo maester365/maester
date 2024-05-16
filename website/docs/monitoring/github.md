@@ -72,7 +72,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 
 - Open your `maester-tests` GitHub repository and go to **Settings**
 - Select **Security** > **Secrets and variables** > **Actions**
-- Add the three secrets listed below by selecting **New repository secret**
+- Add the secrets listed below by selecting **New repository secret**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
   - Name: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
   - Name: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
