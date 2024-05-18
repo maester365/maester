@@ -140,7 +140,7 @@ Function Invoke-Maester {
     }
 
     function ValidateAndSetOutputFiles($out) {
-
+        $result = $null
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
             if ($out.OutputFile.EndsWith(".html") -eq $false) {
                 $result = "The OutputHtmlFile parameter must have an .html extension."
