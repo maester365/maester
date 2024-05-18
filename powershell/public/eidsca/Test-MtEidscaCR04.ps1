@@ -23,7 +23,7 @@ Function Test-MtEidscaCR04 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    $tenantValue = $result.requestDurationInDays | Out-String -NoNewLine
+    [string]$tenantValue = $result.requestDurationInDays
     $testResult = $tenantValue -eq '30'
 
     if($testResult){

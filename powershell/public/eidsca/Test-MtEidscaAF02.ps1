@@ -23,7 +23,7 @@ Function Test-MtEidscaAF02 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $tenantValue = $result.isSelfServiceRegistrationAllowed | Out-String -NoNewLine
+    [string]$tenantValue = $result.isSelfServiceRegistrationAllowed
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

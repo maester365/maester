@@ -23,7 +23,7 @@ Function Test-MtEidscaAP04 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = $result.allowInvitesFrom | Out-String -NoNewLine
+    [string]$tenantValue = $result.allowInvitesFrom
     $testResult = $tenantValue -eq 'adminsAndGuestInviters'
 
     if($testResult){
