@@ -23,7 +23,7 @@ Function Test-MtEidscaAP08 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 | Out-String -NoNewLine
+    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
     if($testResult){

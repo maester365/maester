@@ -23,7 +23,7 @@ Function Test-MtEidscaAF03 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    $tenantValue = $result.isAttestationEnforced | Out-String -NoNewLine
+    [string]$tenantValue = $result.isAttestationEnforced
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

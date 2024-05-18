@@ -23,7 +23,7 @@ Function Test-MtEidscaCP04 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $tenantValue = $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value | Out-String -NoNewLine
+    [string]$tenantValue = $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value
     $testResult = $tenantValue -eq 'true'
 
     if($testResult){

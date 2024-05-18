@@ -23,7 +23,7 @@ Function Test-MtEidscaAP05 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = $result.allowedToSignUpEmailBasedSubscriptions | Out-String -NoNewLine
+    [string]$tenantValue = $result.allowedToSignUpEmailBasedSubscriptions
     $testResult = $tenantValue -eq 'false'
 
     if($testResult){
