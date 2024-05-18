@@ -18,14 +18,23 @@ Function Test-MtCaExclusionForDirectorySyncAccount {
     [OutputType([bool])]
     param ()
 
-    $DirectorySynchronizationAccountRoleTemplateId = "d29b2b05-8046-44ba-8758-1e26182fcf32"
-    $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
-    $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
-
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-
     $testDescription = "It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps."
     $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
+
+    $DirectorySynchronizationAccountRoleTemplateId = "d29b2b05-8046-44ba-8758-1e26182fcf32"
+    try {
+        $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
+        $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Select-Object -ExpandProperty id
+        if ( $null -eq $DirectorySynchronizationAccounts ) {
+            throw "Directory synchronization accounts not found"
+        }
+    } catch {
+        # Directory synchronization account role not found, this tenant does not have directory synchronization accounts
+        Add-MtTestResultDetail -Description $testDescription -Result "This tenant does not have directory synchronization accounts and therefor this test is not applicable."
+        return $true
+    }
+
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $result = $true
     foreach ($policy in ( $policies | Sort-Object -Property displayName ) ) {
