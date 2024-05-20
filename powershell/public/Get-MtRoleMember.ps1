@@ -11,18 +11,20 @@
 Function Get-MtRoleMember {
   [CmdletBinding()]
   param(
-    [Parameter(Position=0,mandatory=$true)]
+    [Parameter(ParameterSetName="All",Position=0,Mandatory=$true)]
+    [Parameter(ParameterSetName="Active",Position=0,Mandatory=$true)]
+    [Parameter(ParameterSetName="Eligible",Position=0,Mandatory=$true)]
     [guid]$roleId,
+    [Parameter(ParameterSetName="Eligible",Mandatory=$true)]
     [switch]$Eligible,
+    [Parameter(ParameterSetName="Active",Mandatory=$true)]
     [switch]$Active,
+    [Parameter(ParameterSetName="All",Mandatory=$true)]
     [switch]$All
   )
 
   if($All){
     $Eligible = $Active = $true
-  }
-  elseif(-not $Eligible -and -not $Active){
-    throw "Choose to return -Eligibile, -Active, or -All role members."
   }
 
   $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
