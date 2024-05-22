@@ -14,12 +14,12 @@
     # Get the mfa mthods for $userId
 
 #>
-Function Get-MtMFAMethods {
+Function Get-MtMFAMethod {
   param(
     [Parameter(Mandatory = $true)] $UserId
   )
   process{
-    # Get MFA details for each user
+    Write-Verbose "Get authentication methods for user"
     [array]$mfaData = Get-MgUserAuthenticationMethod -UserId $userId
 
     $returnData = [PSCustomObject][Ordered]@{
@@ -30,7 +30,7 @@ Function Get-MtMFAMethods {
 
     ForEach ($method in $mfaData){
       if(-not ($method.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.passwordAuthenticationMethod")){
-        # This is not password authentication so some form of MFA is setup on the user.
+        Write-Verbose "The user has a non-password authentication method attached to thier account."
         $returnData.enabled = $true
       }
 
