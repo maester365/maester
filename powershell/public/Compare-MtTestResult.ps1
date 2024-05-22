@@ -24,7 +24,7 @@ function Compare-MtTestResult {
         $NewTest
     )
 
-    if(-not ($NewFile -and $PriorFile)){
+    if(-not ($NewTest -and $PriorTest)){
         $reportProperties = @("Account","Blocks","ExecutedAt","FailedCount","PassedCount","Result","SkippedCount","TenantId","TenantName","Tests","TotalCount")
         $reports = @()
         $files = Get-ChildItem "$BaseDir\TestResults-*.json"
