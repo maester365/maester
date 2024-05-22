@@ -16,21 +16,7 @@ Function Test-MtCisaPrivilegedPhishResistant {
     [OutputType([bool])]
     param()
 
-    $highlyPrivilegedRoles = @(
-        "Global Administrator",
-        "Privileged Role Administrator",
-        "User Administrator",
-        "SharePoint Administrator",
-        "Exchange Administrator",
-        "Hybrid Identity Administrator",
-        "Application Administrator",
-        "Cloud Application Administrator"
-    )
-
-    $roles = Get-MtRole
-
-    $highlyPrivilegedRoles = $roles | Where-Object {`
-        $_.displayName -in $highlyPrivilegedRoles }
+    $highlyPrivilegedRoles = Get-MtRole -CisaHighlyPrivilegedRoles
 
     $result = Get-MtConditionalAccessPolicy
 

@@ -15,7 +15,7 @@ Returns all the role definitions in the tenant.
 ## SYNTAX
 
 ```powershell
-Get-MtRole [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtRole [-CisaHighlyPrivilegedRoles] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,6 +31,23 @@ Get-MtRole
 ```
 
 ## PARAMETERS
+
+### -CisaHighlyPrivilegedRoles
+
+Filters the returned roles to only those described
+by CISA as highly privieleged.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 

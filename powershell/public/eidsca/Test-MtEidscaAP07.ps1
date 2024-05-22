@@ -23,7 +23,7 @@ Function Test-MtEidscaAP07 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    $tenantValue = $result.guestUserRoleId | Out-String -NoNewLine
+    [string]$tenantValue = $result.guestUserRoleId
     $testResult = $tenantValue -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
 
     if($testResult){

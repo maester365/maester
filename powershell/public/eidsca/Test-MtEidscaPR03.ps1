@@ -23,7 +23,7 @@ Function Test-MtEidscaPR03 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value | Out-String -NoNewLine
+    [string]$tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value
     $testResult = $tenantValue -eq 'True'
 
     if($testResult){

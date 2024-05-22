@@ -23,7 +23,7 @@ Function Test-MtEidscaPR06 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    $tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value | Out-String -NoNewLine
+    [string]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
     $testResult = $tenantValue -eq '10'
 
     if($testResult){

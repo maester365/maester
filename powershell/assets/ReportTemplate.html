@@ -57965,7 +57965,10 @@ function ResultInfoDialog(props) {
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(l$5, { open: isOpen, onClose: (val) => setIsOpen(val), static: true, children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$5, { className: "max-w-4xl", children: /* @__PURE__ */ jsxRuntimeExports$1.jsxs("div", { className: "grid grid-cols-1", children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(StatusLabel, { Result: props.Item.Result }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(s$1, { children: props.Item.Name }),
-      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-left mt-2", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(h$9, { icon: ArrowTopRightOnSquareIcon$1, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: "Learn more @ maester.dev" }) }),
+      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "text-left mt-2", children: /* @__PURE__ */ jsxRuntimeExports$1.jsxs(h$9, { icon: ArrowTopRightOnSquareIcon$1, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: [
+        "Learn more @ ",
+        new URL(props.Item.HelpUrl).hostname
+      ] }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(o$6, {}),
       /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { className: "break-words " + getBgColor(props.Item.Result), children: [
         /* @__PURE__ */ jsxRuntimeExports$1.jsxs("div", { className: "flex flex-row items-center", children: [

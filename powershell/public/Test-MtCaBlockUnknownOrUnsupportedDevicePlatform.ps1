@@ -19,15 +19,6 @@ Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
-    $KnownPlatforms = @(
-        "android",
-        "iOS",
-        "windows",
-        "macOS",
-        "linux",
-        "windowsPhone"
-    )
-
     $testDescription = "
 Microsoft recommends blocking access for unknown or unsupported device platforms.
 
@@ -36,15 +27,8 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
 
     $result = $false
     foreach ($policy in $policies) {
-        try {
-            # Check if all known platforms are excluded from the policy
-            $AllKnownPlatformsExcluded = ( Compare-Object -ReferenceObject $KnownPlatforms -DifferenceObject $policy.conditions.platforms.excludePlatforms -IncludeEqual -ExcludeDifferent -PassThru | Measure-Object | Select-Object -ExpandProperty Count ) -eq $KnownPlatforms.Count
-        } catch {
-            $AllKnownPlatformsExcluded = $false
-        }
         if ( $policy.grantcontrols.builtincontrols -eq 'block' `
-                -and $policy.conditions.platforms.includePlatforms -eq "All" `
-                -and $AllKnownPlatformsExcluded -ne $false `
+                -and $policy.conditions.platforms.includePlatforms -eq "All"
         ) {
             $result = $true
             $currentresult = $true

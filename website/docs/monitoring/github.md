@@ -68,36 +68,14 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
   - **Credential details** > **Name**: E.g. `maester-devops`
 - Select **Add**
 
-### Create an empty resource group
-In order for workload identity federation to work, the Entra application needs to have read-only access to an Azure subscription. The least privilege option is to create a new, empty resource group and grant read-only access to it.
-
-- Open the [Azure portal](https://portal.azure.com)
-- Select **Create a resource** > **Resource group**
-- Enter a name for the resource group (e.g. `Maester-Resource-Group`)
-- Select any region
-- Select **Review + create** > **Create**
-
-### Grant the Entra application read-only access to the resource group
-- Open the [Azure portal](https://portal.azure.com)
-- Select the Notifications bell in the top right corner and select **Go to resource group** for the resource group you just created.
-  - You should also be able to open it by searching for the name in the search bar (e.g. `Maester-Resource-Group`)
-- Select **Access control (IAM)** > **Add role assignment**
-- Select **Reader** from the **Job function roles** table (usually the first one)
-- Select **Next**
-- Select **Members** > **+ Select members**
-- Search for the name of the Entra application you created earlier (e.g. `Maester DevOps Account`)
-- Select the application and click **Select**
-- Select **Review + assign**
-
 ### Create GitHub secrets
 
 - Open your `maester-tests` GitHub repository and go to **Settings**
 - Select **Security** > **Secrets and variables** > **Actions**
-- Add the three secrets listed below by selecting **New repository secret**
+- Add the secrets listed below by selecting **New repository secret**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
   - Name: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
   - Name: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
-  - Name: **AZURE_SUBSCRIPTION_ID**, Value: Provide the ID of a subscription you own. Open the [Subscriptions](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2) blade in the Azure portal
 - Save each secret by selecting **Add secret**.
 
 <EnableGitHubActionsCreateWorkflow/>
@@ -132,7 +110,7 @@ jobs:
       with:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          allow-no-subscriptions: true
     - name: Run Maester
       uses: azure/powershell@v2
       with:

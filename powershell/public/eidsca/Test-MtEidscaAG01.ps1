@@ -23,7 +23,7 @@ Function Test-MtEidscaAG01 {
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
-    $tenantValue = $result.policyMigrationState | Out-String -NoNewLine
+    [string]$tenantValue = $result.policyMigrationState
     $testResult = $tenantValue -eq 'migrationComplete'
 
     if($testResult){
