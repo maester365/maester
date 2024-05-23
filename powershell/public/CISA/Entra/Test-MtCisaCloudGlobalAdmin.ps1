@@ -20,7 +20,7 @@ Function Test-MtCisaCloudGlobalAdmin {
     $role = Get-MtRole | Where-Object {`
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10" }
 
-    $assignments = Get-MtRoleMember -roleId $role.id -All
+    $assignments = Get-MtRoleMember -roleId $role.id -Active
 
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"
@@ -57,9 +57,9 @@ Function Test-MtCisaCloudGlobalAdmin {
     $testResult = $result.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators."
     } else {
-        $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators."
+        $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators:`n`n%TestResult%"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $result
 

@@ -25,9 +25,9 @@ Function Test-MtCisaAppUserConsent {
     $testResult = $permissions.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant default user role permissions prevent app consent:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant default user role permissions prevent app consent."
     } else {
-        $testResultMarkdown = "Your tenant default user role permissions allow app consent."
+        $testResultMarkdown = "Your tenant default user role permissions allow app consent:`n`n%TestResult%"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConsentPolicy -GraphObjects $permissions
     return $testResult

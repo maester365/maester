@@ -41,7 +41,7 @@ Function Get-MtGraphScope {
         'PrivilegedAccess.Read.AzureAD'
         'IdentityRiskEvent.Read.All'
         'RoleEligibilitySchedule.Read.Directory'
-        'Policy.Read.ConditionalAccess'
+        'RoleManagement.Read.All'
     )
 
     if ($SendMail) {
