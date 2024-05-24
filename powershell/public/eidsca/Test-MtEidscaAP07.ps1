@@ -27,7 +27,7 @@ Function Test-MtEidscaAP07 {
     $testResult = $tenantValue -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
     }

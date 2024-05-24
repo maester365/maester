@@ -27,7 +27,7 @@ Function Test-MtEidscaAV01 {
     $testResult = $tenantValue -eq 'disabled'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
     }

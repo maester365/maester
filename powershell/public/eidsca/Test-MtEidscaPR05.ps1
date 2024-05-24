@@ -8,12 +8,12 @@
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -eq '60'
+     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -gt '60'
 
 .EXAMPLE
     Test-MtEidscaPR05
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -eq '60'
+    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -gt '60'
 #>
 
 Function Test-MtEidscaPR05 {
@@ -24,12 +24,12 @@ Function Test-MtEidscaPR05 {
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
-    $testResult = $tenantValue -eq '60'
+    $testResult = $tenantValue -gt '60'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'60'** for **settings**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is greater than **'60'** for **settings**"
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'60'** for **settings**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is greater than **'60'** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 

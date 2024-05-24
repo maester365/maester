@@ -41,43 +41,47 @@ Function GetVersion($graphUri) {
 }
 
 Function GetRecommendedValue($RecommendedValue) {
-    $shouldOperators = @(">",">=","<")
-    foreach ($shouldOperator in $shouldOperators) {
-        if ($RecommendedValue.StartsWith($shouldOperator)) {
-            $RecommendedValue = $RecommendedValue.Replace($shouldOperator, "")
+    $compareOperators = @(">",">=","<")
+    foreach ($compareOperator in $compareOperators) {
+        if ($RecommendedValue.StartsWith($compareOperator)) {
+            $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
         }
     }
     return "'$RecommendedValue'"
 }
 
-Function GetShouldOperator($RecommendedValue) {
+Function GetCompareOperator($RecommendedValue) {
     if ($RecommendedValue.StartsWith(">")) {
-        $shouldOperator = [PSCustomObject]@{
+        $compareOperator = [PSCustomObject]@{
+            name       = '>'
             pester     = 'BeGreaterThan'
             powershell = 'gt'
-            text       = 'greater than'
+            text       = 'is greater than'
         }
     } elseif ($RecommendedValue.StartsWith(">=")) {
-        $shouldOperator = [PSCustomObject]@{
+        $compareOperator = [PSCustomObject]@{
+            name       = '>='
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
-            text       = 'greater than or equal to'
+            text       = 'is greater than or equal to'
         }
-        $shouldOperator = "BeGreaterOrEqual"
+        $compareOperator = "BeGreaterOrEqual"
     } elseif ($RecommendedValue.StartsWith("<")) {
-        $shouldOperator = [PSCustomObject]@{
+        $compareOperator = [PSCustomObject]@{
+            name       = '<'
             pester     = 'BeLessThan'
             powershell = 'lt'
-            text       = 'less than'
+            text       = 'is less than'
         }
     } else {
-        $shouldOperator = [PSCustomObject]@{
+        $compareOperator = [PSCustomObject]@{
+            name       = '='
             pester     = 'Be'
             powershell = 'eq'
             text       = 'is'
         }
     }
-    return $shouldOperator
+    return $compareOperator
 }
 
 Function GetPageTitle($uri) {
@@ -256,7 +260,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $apiVersion = GetVersion($control.GraphUri)
 
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
-    $shouldOperator = GetShouldOperator($controlItem.RecommendedValue)
+    $compareOperator = GetCompareOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
     $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
@@ -293,7 +297,10 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
     $output = $output -replace '%RelativeUri%', $relativeUri
     $output = $output -replace '%ApiVersion%', $apiVersion
-    $output = $output -replace '%ShouldOperator%', $shouldOperator.pester.Replace("'", "")
+    $output = $output -replace '%ShouldOperator%', $compareOperator.pester.Replace("'", "")
+    $output = $output -replace '%CompareOperatorText%', $compareOperator.Text
+    $output = $output -replace '%CompareOperator%', $compareOperator.Name
+    $output = $output -replace '%PwshCompareOperator%', $compareOperator.powershell.Replace("'", "")
     $output = $output -replace '%RecommendedValue%', $recommendedValue
     $output = $output -replace '%CurrentValue%', $CurrentValue
     $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
@@ -359,7 +366,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% = %RecommendedValue%
+            .%CurrentValue% %CompareOperator% %RecommendedValue%
         #>
         %PSFunctionName% | Should -%ShouldOperator% %RecommendedValue%
     }

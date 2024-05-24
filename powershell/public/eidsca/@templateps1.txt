@@ -8,12 +8,12 @@
 
     Queries %RelativeUri%
     and returns the result of
-     graph/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+     graph/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
 
 .EXAMPLE
     %PSFunctionName%
 
-    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -eq %RecommendedValue%
+    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
 #>
 
 Function %PSFunctionName% {
@@ -24,12 +24,12 @@ Function %PSFunctionName% {
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
     [string]$tenantValue = $result.%CurrentValue%
-    $testResult = $tenantValue -eq %RecommendedValue%
+    $testResult = $tenantValue -%PwshCompareOperator% %RecommendedValue%
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **%RecommendedValue%** for **%RelativeUri%**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value %CompareOperatorText% **%RecommendedValue%** for **%RelativeUri%**"
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **%RecommendedValue%** for **%RelativeUri%**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value %CompareOperatorText% **%RecommendedValue%** for **%RelativeUri%**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
