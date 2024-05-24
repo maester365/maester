@@ -6,7 +6,7 @@
   GET policies/featureRolloutPolicies
 
   .Example
-  Test-MtOnFeatureRolloutPolicies -FeaturedId "passthroughAuthentication"
+  Test-MtOnFeatureRolloutPolicies -FeaturedId "passthroughAuthentication" -Property isEnabled
 #>
 
 Function Test-MtOnFeatureRolloutPolicies {
