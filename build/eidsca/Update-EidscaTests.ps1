@@ -41,7 +41,43 @@ Function GetVersion($graphUri) {
 }
 
 Function GetRecommendedValue($RecommendedValue) {
+    $shouldOperators = @(">",">=","<")
+    foreach ($shouldOperator in $shouldOperators) {
+        if ($RecommendedValue.StartsWith($shouldOperator)) {
+            $RecommendedValue = $RecommendedValue.Replace($shouldOperator, "")
+        }
+    }
     return "'$RecommendedValue'"
+}
+
+Function GetShouldOperator($RecommendedValue) {
+    if ($RecommendedValue.StartsWith(">")) {
+        $shouldOperator = [PSCustomObject]@{
+            pester     = 'BeGreaterThan'
+            powershell = 'gt'
+            text       = 'greater than'
+        }
+    } elseif ($RecommendedValue.StartsWith(">=")) {
+        $shouldOperator = [PSCustomObject]@{
+            pester     = 'BeGreaterOrEqual'
+            powershell = 'ge'
+            text       = 'greater than or equal to'
+        }
+        $shouldOperator = "BeGreaterOrEqual"
+    } elseif ($RecommendedValue.StartsWith("<")) {
+        $shouldOperator = [PSCustomObject]@{
+            pester     = 'BeLessThan'
+            powershell = 'lt'
+            text       = 'less than'
+        }
+    } else {
+        $shouldOperator = [PSCustomObject]@{
+            pester     = 'Be'
+            powershell = 'eq'
+            text       = 'is'
+        }
+    }
+    return $shouldOperator
 }
 
 Function GetPageTitle($uri) {
@@ -220,6 +256,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $apiVersion = GetVersion($control.GraphUri)
 
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
+    $shouldOperator = GetShouldOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
     $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
@@ -256,6 +293,7 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
     $output = $output -replace '%RelativeUri%', $relativeUri
     $output = $output -replace '%ApiVersion%', $apiVersion
+    $output = $output -replace '%ShouldOperator%', $shouldOperator.pester.Replace("'", "")
     $output = $output -replace '%RecommendedValue%', $recommendedValue
     $output = $output -replace '%CurrentValue%', $CurrentValue
     $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
@@ -323,7 +361,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
             .%CurrentValue% = %RecommendedValue%
         #>
-        %PSFunctionName% | Should -Be %RecommendedValue%
+        %PSFunctionName% | Should -%ShouldOperator% %RecommendedValue%
     }
 }
 '@

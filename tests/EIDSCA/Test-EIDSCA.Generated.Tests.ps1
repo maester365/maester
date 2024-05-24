@@ -145,7 +145,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value = '60'
         #>
-        Test-MtEidscaPR05 | Should -Be '60'
+        Test-MtEidscaPR05 | Should -BeGreaterThan '60'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
