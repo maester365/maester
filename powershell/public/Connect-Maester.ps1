@@ -67,6 +67,6 @@ Function Connect-Maester {
 
    if($Azure){
       Write-Verbose "Connecting to Microsoft Azure"
-      Connect-AzAccount -SkipContextPopulation -UseDeviceCode:$UseDeviceCode -Environment $Environment -Identity:$Identity
+      Connect-AzAccount -SkipContextPopulation -UseDeviceCode:$UseDeviceCode -Environment $AzureEnvironment -Identity:$Identity
    }
 }
