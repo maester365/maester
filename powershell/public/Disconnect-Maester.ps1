@@ -28,4 +28,7 @@ Function Disconnect-Maester {
 
    Write-Verbose -Message "Disconnecting from Microsoft Graph."
    Disconnect-MgGraph
+
+   Write-Verbose -Message "Disconnecting from Microsoft Azure."
+   Disconnect-AzAccount
 }
