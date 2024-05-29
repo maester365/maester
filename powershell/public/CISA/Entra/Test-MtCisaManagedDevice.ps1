@@ -40,7 +40,7 @@ Function Test-MtCisaManagedDevice {
     $testResult = $policies.Count -ge 1
 
     if ($testResult -and $SkipHybridJoinCheck) {
-        $testResultMarkdown = "Well done, your security posture is more than CISA's control. Your tenant has one or more policies that require a compliant device:`n`n%TestResult%"
+        $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device:`n`n%TestResult%"
     } elseif ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device:`n`n%TestResult%"
     } else {
