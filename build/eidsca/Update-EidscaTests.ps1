@@ -41,7 +41,7 @@ Function GetVersion($graphUri) {
 }
 
 Function GetRecommendedValue($RecommendedValue) {
-    $compareOperators = @(">",">=","<")
+    $compareOperators = @(">=",">","<")
     foreach ($compareOperator in $compareOperators) {
         if ($RecommendedValue.StartsWith($compareOperator)) {
             $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
@@ -51,21 +51,20 @@ Function GetRecommendedValue($RecommendedValue) {
 }
 
 Function GetCompareOperator($RecommendedValue) {
-    if ($RecommendedValue.StartsWith(">")) {
-        $compareOperator = [PSCustomObject]@{
-            name       = '>'
-            pester     = 'BeGreaterThan'
-            powershell = 'gt'
-            text       = 'is greater than'
-        }
-    } elseif ($RecommendedValue.StartsWith(">=")) {
+    if ($RecommendedValue.StartsWith(">=")) {
         $compareOperator = [PSCustomObject]@{
             name       = '>='
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
         }
-        $compareOperator = "BeGreaterOrEqual"
+    } elseif ($RecommendedValue.StartsWith(">")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '>'
+            pester     = 'BeGreaterThan'
+            powershell = 'gt'
+            text       = 'is greater than'
+        }
     } elseif ($RecommendedValue.StartsWith("<")) {
         $compareOperator = [PSCustomObject]@{
             name       = '<'
