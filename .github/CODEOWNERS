@@ -1,0 +1,8 @@
+# We use CODEOWNERS as a way to give the community the chance to see who are the main contacts for certain tests
+# The persons added have no obligation to respond but will always try
+
+*                 @maester365/core-module
+tests/Maester/    @maester365/core-tests
+tests/EIDSCA/     @maester365/eidsca
+tests/CISA/       @maester365/cisa
+website/          @maester365/docs
