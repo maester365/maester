@@ -136,10 +136,10 @@ jobs:
           $summary = Get-Content test-results/test-results.md
           Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
 
-          # Flag status to GitHub
-          if ($results.Result -ne 'Passed'){
-            Write-Error "Status = $($results.Result): See Maester Test Report below for details."
-          }
+          # Flag status to GitHub - Uncomment the block below to fail the build if tests fail
+          #if ($results.Result -ne 'Passed'){
+          #  Write-Error "Status = $($results.Result): See Maester Test Report below for details."
+          #}
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
@@ -221,10 +221,10 @@ jobs:
         $summary = Get-Content test-results/test-results.md
         Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
 
-        # Flag status to GitHub
-        if ($results.Result -ne 'Passed'){
-          Write-Error "Status = $($results.Result): See Maester Test Report below for details."
-        }
+        # Flag status to GitHub - Uncomment the block below to fail the build if tests fail
+        #if ($results.Result -ne 'Passed'){
+        #  Write-Error "Status = $($results.Result): See Maester Test Report below for details."
+        #}
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
