@@ -227,6 +227,10 @@ steps:
     displayName: Publish Pester Test Results
 ```
 
+### Step-by-step video tutorial
+
+<iframe width="686" height="386" src="https://www.youtube.com/embed/42FADXWrDBo" title="Maester Azure DevOps integration" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
   </TabItem>
   </Tabs>
 
