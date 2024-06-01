@@ -14,9 +14,22 @@ Returns all the members of a role.
 
 ## SYNTAX
 
+### Eligible
+
 ```powershell
-Get-MtRoleMember [-roleId] <Guid> [-Eligible] [-Active] [-All] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-MtRoleMember [-roleId] <Guid> [-Eligible] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### Active
+
+```powershell
+Get-MtRoleMember [-roleId] <Guid> [-Active] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### All
+
+```powershell
+Get-MtRoleMember [-roleId] <Guid> [-All] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,10 +68,10 @@ Accept wildcard characters: False
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: Eligible
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: False
 Accept pipeline input: False
@@ -71,10 +84,10 @@ Accept wildcard characters: False
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: Active
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: False
 Accept pipeline input: False
@@ -87,10 +100,10 @@ Accept wildcard characters: False
 
 ```yaml
 Type: SwitchParameter
-Parameter Sets: (All)
+Parameter Sets: All
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: False
 Accept pipeline input: False

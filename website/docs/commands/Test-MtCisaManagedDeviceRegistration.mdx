@@ -15,7 +15,8 @@ Checks if a policy is enabled requiring a managed device for registration
 ## SYNTAX
 
 ```powershell
-Test-MtCisaManagedDeviceRegistration [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaManagedDeviceRegistration [-SkipHybridJoinCheck] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +34,22 @@ Test-MtCisaManagedDeviceRegistration
 Returns true if at least one policy requires MFA for registration
 
 ## PARAMETERS
+
+### -SkipHybridJoinCheck
+
+\{\{ Fill SkipHybridJoinCheck Description \}\}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
