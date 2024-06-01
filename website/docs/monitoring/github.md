@@ -234,6 +234,10 @@ jobs:
         path: test-results
 ```
 
+### Step-by-step video tutorial
+
+<iframe width="686" height="386" src="https://www.youtube.com/embed/SzIxCQg6CWA" title="Maester Github Actions integration" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
   </TabItem>
   </Tabs>
 
