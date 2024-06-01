@@ -24,9 +24,6 @@ Function Connect-Maester {
       # If specified, the cmdlet will use the device code flow to authenticate.
       [switch] $UseDeviceCode,
 
-      # If specified, the cmdlet will attempt to use the machine identity.
-      [switch] $Identity,
-
       [Parameter(ParameterSetName="All")]
       [switch]$All,
 
@@ -62,11 +59,11 @@ Function Connect-Maester {
    })
    if($Graph -or $default){
       Write-Verbose "Connecting to Microsoft Graph"
-      Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment -Identity:$Identity
+      Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
    }
 
    if($Azure){
       Write-Verbose "Connecting to Microsoft Azure"
-      Connect-AzAccount -SkipContextPopulation -UseDeviceCode:$UseDeviceCode -Environment $AzureEnvironment -Identity:$Identity
+      Connect-AzAccount -SkipContextPopulation -UseDeviceCode:$UseDeviceCode -Environment $AzureEnvironment
    }
 }
