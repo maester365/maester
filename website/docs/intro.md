@@ -35,3 +35,9 @@ Maester provides a framework for you to bring DevOps practices to managing your 
 * Write tests using [Pester](https://pester.dev/), a popular testing framework for PowerShell.
 * Use the built-in tests to quickly get started with monitoring your tenant.
 * Write custom tests as you introduce new configuration and codify your intent for the configuration.
+
+## Introducing Maester
+
+This introductory session on Maester is from the [PowerShell + DevOps Global Summit 2024](https://www.powershellsummit.org/) and provides an overview of the Maester framework.
+
+<iframe width="640" height="360" src="https://www.youtube.com/embed/xfs02tjSU24" title="Introducing Maester: Your Microsoft 365 test automation framework by Merill Fernando" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

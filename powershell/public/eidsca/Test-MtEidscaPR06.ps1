@@ -27,7 +27,7 @@ Function Test-MtEidscaPR06 {
     $testResult = $tenantValue -eq '10'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'10'** for **settings**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'10'** for **settings**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'10'** for **settings**"
     }

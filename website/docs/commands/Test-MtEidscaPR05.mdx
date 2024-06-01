@@ -25,7 +25,7 @@ If an account locks repeatedly, this duration increases.
 
 Queries settings
 and returns the result of
- graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -eq '60'
+ graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ and returns the result of
 Test-MtEidscaPR05
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -eq '60'
+Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
 
 ## PARAMETERS
 

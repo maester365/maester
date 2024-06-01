@@ -15,6 +15,7 @@ const sidebars = {
     "writing-tests",
     "ca-what-if",
     "updating-tests",
+    "watch",
     "contributing",
     "faq",
     {

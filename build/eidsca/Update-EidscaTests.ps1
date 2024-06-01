@@ -41,7 +41,46 @@ Function GetVersion($graphUri) {
 }
 
 Function GetRecommendedValue($RecommendedValue) {
+    $compareOperators = @(">=",">","<")
+    foreach ($compareOperator in $compareOperators) {
+        if ($RecommendedValue.StartsWith($compareOperator)) {
+            $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
+        }
+    }
     return "'$RecommendedValue'"
+}
+
+Function GetCompareOperator($RecommendedValue) {
+    if ($RecommendedValue.StartsWith(">=")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '>='
+            pester     = 'BeGreaterOrEqual'
+            powershell = 'ge'
+            text       = 'is greater than or equal to'
+        }
+    } elseif ($RecommendedValue.StartsWith(">")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '>'
+            pester     = 'BeGreaterThan'
+            powershell = 'gt'
+            text       = 'is greater than'
+        }
+    } elseif ($RecommendedValue.StartsWith("<")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '<'
+            pester     = 'BeLessThan'
+            powershell = 'lt'
+            text       = 'is less than'
+        }
+    } else {
+        $compareOperator = [PSCustomObject]@{
+            name       = '='
+            pester     = 'Be'
+            powershell = 'eq'
+            text       = 'is'
+        }
+    }
+    return $compareOperator
 }
 
 Function GetPageTitle($uri) {
@@ -220,6 +259,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $apiVersion = GetVersion($control.GraphUri)
 
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
+    $compareOperator = GetCompareOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
     $psFunctionName = GetEidscaPsFunctionName -controlItem $controlItem
@@ -256,6 +296,10 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%DefaultValue%', $controlItem.DefaultValue
     $output = $output -replace '%RelativeUri%', $relativeUri
     $output = $output -replace '%ApiVersion%', $apiVersion
+    $output = $output -replace '%ShouldOperator%', $compareOperator.pester.Replace("'", "")
+    $output = $output -replace '%CompareOperatorText%', $compareOperator.Text
+    $output = $output -replace '%CompareOperator%', $compareOperator.Name
+    $output = $output -replace '%PwshCompareOperator%', $compareOperator.powershell.Replace("'", "")
     $output = $output -replace '%RecommendedValue%', $recommendedValue
     $output = $output -replace '%CurrentValue%', $CurrentValue
     $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
@@ -321,9 +365,9 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% = %RecommendedValue%
+            .%CurrentValue% %CompareOperator% %RecommendedValue%
         #>
-        %PSFunctionName% | Should -Be %RecommendedValue%
+        %PSFunctionName% | Should -%ShouldOperator% %RecommendedValue%
     }
 }
 '@
