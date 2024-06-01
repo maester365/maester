@@ -27,7 +27,7 @@ Function Test-MtEidscaAG01 {
     $testResult = $tenantValue -eq 'migrationComplete'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
     }

@@ -27,7 +27,7 @@ Function Test-MtEidscaCR04 {
     $testResult = $tenantValue -eq '30'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'30'** for **policies/adminConsentRequestPolicy**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'30'** for **policies/adminConsentRequestPolicy**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'30'** for **policies/adminConsentRequestPolicy**"
     }
