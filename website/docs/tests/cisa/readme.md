@@ -1,7 +1,7 @@
 ---
 id: overview
 title: CISA Entra Controls
-sidebar_label: 🦅 CISA Entra
+sidebar_label: Entra
 description: Implementation of CISA Entra Controls
 ---
 

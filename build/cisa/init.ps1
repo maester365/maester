@@ -1,3 +1,5 @@
+# Script used to initialize the CISA Entra test docs
+
 gci *.md|%{$x=$_.Name;"";$x;gc $x}|?{$_ -match "(?<cmdlet>Test-MtCisa.*.md)" -or $_ -match ".*(?<url>https.*baselines.*)\)"}|%{$Matches['control'];$Matches['cmdlet'];$Matches['url']}|clip
 $x=@"
 Test-MtCisaActivationNotification,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad78v1;https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad78v1
