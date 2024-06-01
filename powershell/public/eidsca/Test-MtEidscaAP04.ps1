@@ -27,7 +27,7 @@ Function Test-MtEidscaAP04 {
     $testResult = $tenantValue -eq 'adminsAndGuestInviters'
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant has the recommended value of **'adminsAndGuestInviters'** for **policies/authorizationPolicy**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'adminsAndGuestInviters'** for **policies/authorizationPolicy**"
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'adminsAndGuestInviters'** for **policies/authorizationPolicy**"
     }

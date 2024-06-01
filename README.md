@@ -56,6 +56,7 @@ Connect-Maester -Environment USGov
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
 
 - Update the `Maester` PowerShell module to the latest version and load it.
+- Navigate to the folder where you have your Maester tests.
 - Run `Update-MaesterTests`.
 
 ```powershell

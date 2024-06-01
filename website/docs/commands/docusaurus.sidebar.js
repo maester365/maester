@@ -11,6 +11,7 @@
 module.exports = [
     'commands/Add-MtTestResultDetail',
     'commands/Clear-MtGraphCache',
+    'commands/Compare-MtTestResult',
     'commands/Connect-Maester',
     'commands/ConvertTo-MtMaesterResult',
     'commands/Disconnect-Maester',
