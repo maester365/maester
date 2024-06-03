@@ -16,4 +16,5 @@ Function Clear-ModuleVariable {
     Clear-MtGraphCache
     $__MtSession.GraphBaseUri = $null
     $__MtSession.TestResultDetail = @{}
+    $__MtSession.Connections = @()
 }

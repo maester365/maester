@@ -26,6 +26,13 @@ Function Disconnect-Maester {
    [CmdletBinding()]
    param()
 
-   Write-Verbose -Message "Disconnecting from Microsoft Graph."
-   Disconnect-MgGraph
+   if($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All"){
+      Write-Verbose -Message "Disconnecting from Microsoft Graph."
+      Disconnect-MgGraph
+   }
+
+   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "All"){
+      Write-Verbose -Message "Disconnecting from Microsoft Azure."
+      Disconnect-AzAccount
+   }
 }

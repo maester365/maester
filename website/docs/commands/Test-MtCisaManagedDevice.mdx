@@ -15,7 +15,7 @@ Checks if Conditional Access Policy requiring managed device is enabled
 ## SYNTAX
 
 ```powershell
-Test-MtCisaManagedDevice [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaManagedDevice [-SkipHybridJoinCheck] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,22 @@ Test-MtCisaManagedDevice
 Returns true if at least one policy requires managed devices
 
 ## PARAMETERS
+
+### -SkipHybridJoinCheck
+
+\{\{ Fill SkipHybridJoinCheck Description \}\}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
