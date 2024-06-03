@@ -15,11 +15,8 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ## SYNTAX
 
 ```powershell
-Connect-Maester [-SendMail] [-UseDeviceCode] [-Graph] [-Environment {China | Germany | Global | USGov | USGovDoD}] [<CommonParameters>]
-
-Connect-Maester [-SendMail] [-UseDeviceCode] [-All] [-Environment {China | Germany | Global | USGov | USGovDoD}] [-AzureEnvironment {AzureChinaCloud | AzureCloud | AzureUSGovernment}] [<CommonParameters>]
-
-Connect-Maester [-SendMail] [-UseDeviceCode] [-Azure] [-AzureEnvironment {AzureChinaCloud | AzureCloud | AzureUSGovernment}] [<CommonParameters>]
+Connect-Maester [-SendMail] [-UseDeviceCode] [[-Environment] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,20 +28,12 @@ This command is completely optional if you are already connected to Microsoft Gr
 Connect-MgGraph -Scopes (Get-MtGraphScope)
 ```
 
-Additional API connections beyond Graph are supported with switches. Such as Azure using Connect-AzAccount.
-
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
 Connect-Maester
-```
-
-### EXAMPLE 2
-
-```powershell
-Connect-Maester -All
 ```
 
 ## PARAMETERS
@@ -88,80 +77,12 @@ Default is Global.
 
 ```yaml
 Type: String
-Parameter Sets: All, Graph
+Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 1
 Default value: Global
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AzureEnvironment
-
-The Azure environment to connect to.
-Default is AzureCloud.
-
-```yaml
-Type: String
-Parameter Sets: All, Azure
-Aliases:
-
-Required: False
-Position: 1
-Default value: Global
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -All
-
-Utilize all connections available.
-Default is Graph only.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: All
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Graph
-
-Utilize the Graph connection.
-Default is Graph only.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Graph
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Azure
-
-Utilize the Az connection.
-Default is Graph only.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Azure
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
