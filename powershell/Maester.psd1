@@ -73,7 +73,7 @@ RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester',
                'Disconnect-Maester', 'Get-MtAuthenticationMethodPolicyConfig', 'Get-MtRoleMember',
                'Get-MtConditionalAccessPolicy', 'Get-MtGraphScope', 'Get-MtGroupMember',
-               'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMFAMethod', 'Get-MtUser', 'Get-MtRole',
+               'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtUserAuthMethod', 'Get-MtUser', 'Get-MtRole',
                'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest',
                'Send-MtMail', 'Test-MtAppManagementPolicyEnabled',
                'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction',

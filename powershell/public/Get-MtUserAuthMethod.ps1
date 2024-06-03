@@ -10,13 +10,17 @@
     The GUID of the user to get MFA Methods for.
 
 .EXAMPLE
-    Get-MtMFAMethods -UserId $userId
+    Get-MtUserAuthMethod -UserId $userId
     # Get the mfa mthods for $userId
 
 #>
-Function Get-MtMFAMethod {
+Function Get-MtUserAuthMethod {
   param(
-    [Parameter(Mandatory = $true)] $UserId
+    [Parameter(Mandatory = $true)] $UserId,
+    [Parameter()]
+    [String[]]$Exclude = @(),
+    [Parameter()]
+    [String[]]$NonMFAMethods = @("password")
   )
   process{
     Write-Verbose "Get authentication methods for user"
@@ -28,14 +32,30 @@ Function Get-MtMFAMethod {
       methods = @()
     }
 
+    $allMethods = @()
+
     ForEach ($method in $mfaData){
-      if(-not ($method.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.passwordAuthenticationMethod")){
+      <#if(-not ($method.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.passwordAuthenticationMethod")){
         Write-Verbose "The user has a non-password authentication method attached to thier account."
         $returnData.enabled = $true
+      }#>
+
+      $allMethods += $method.AdditionalProperties["@odata.type"] -replace "#microsoft.graph.", "" -replace "AuthenticationMethod", ""
+    }
+
+    $filtered = @()
+
+    ForEach($method in $allMethods){
+      if(-not ($Exclude -contains $method)){
+        $filtered += $method
       }
 
-      $returnData.methods += $method.AdditionalProperties["@odata.type"] -replace "#microsoft.graph.", "" -replace "AuthenticationMethod", ""
+      if(-not ($NonMFAMethods -contains $method)){
+        $returnData.enabled = $true
+      }
     }
+
+    $returnData.methods = $filtered
 
     return $returnData
   }
