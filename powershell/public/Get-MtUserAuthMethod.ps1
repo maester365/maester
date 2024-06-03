@@ -3,15 +3,24 @@
   Get the MFA Methods for the supplied user
 
 .DESCRIPTION
-    This function builds an object with the status of each type of MFA for the supplier user.
-    There is then an overall `status` that is "enabled" when a user has some form of MFA on their account.
+  This function builds an object with the status of each type of MFA for the supplier user.
+  There is then an overall `status` that is "enabled" when a user has some form of MFA on their account.
 
 .PARAMETER UserId
-    The GUID of the user to get MFA Methods for.
+  The GUID of the user to get Authentication Methods for.
+
+.PARAMETER Exclude
+  An array of authentication methods to exclude from the output.
+
+.PARAMETER NonMFAMethods
+  An array of authentication methods that don't count as MFA for the `enabled` flag in the return. Defaults to `"password"`
 
 .EXAMPLE
-    Get-MtUserAuthMethod -UserId $userId
-    # Get the mfa mthods for $userId
+  Get-MtUserAuthMethod -UserId $userId
+  # Get the mfa mthods for $userId
+
+  Get-MtUaserAuthMethod -UserId $userId -Exclude "phone"
+  # Get the auth methods fro $userId excluding "phone"
 
 #>
 Function Get-MtUserAuthMethod {
