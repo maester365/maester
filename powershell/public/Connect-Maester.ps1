@@ -12,11 +12,17 @@
 
  .Example
     Connect-Maester
+
+ .Example
+    Connect-Maester -Service All
+
+ .Example
+    Connect-Maester -Service Azure,Graph
 #>
 
 Function Connect-Maester {
    [Alias("Connect-MtGraph", "Connect-MtMaester")]
-   [CmdletBinding(DefaultParameterSetName="Graph")]
+   [CmdletBinding()]
    param(
       # If specified, the cmdlet will include the scope to send email (Mail.Send).
       [switch] $SendMail,
@@ -24,45 +30,25 @@ Function Connect-Maester {
       # If specified, the cmdlet will use the device code flow to authenticate.
       [switch] $UseDeviceCode,
 
-      [Parameter(ParameterSetName="All")]
-      [switch]$All,
-
-      [Parameter(ParameterSetName="Graph")]
-      [switch]$Graph,
-      [Parameter(ParameterSetName="All")]
-      [Parameter(ParameterSetName="Graph")]
       # The environment to connect to. Default is Global.
       [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
       [string]$Environment = "Global",
 
-      [Parameter(ParameterSetName="Azure")]
-      [switch]$Azure,
-      [Parameter(ParameterSetName="All")]
-      [Parameter(ParameterSetName="Azure")]
       [ValidateSet("AzureChinaCloud", "AzureCloud", "AzureUSGovernment")]
-      [string]$AzureEnvironment = "AzureCloud"
+      [string]$AzureEnvironment = "AzureCloud",
+
+      [ValidateSet("All","Azure","Graph")]
+      [string[]]$Service = "Graph"
    )
 
-   # Get all switch parameters that are differenct connections
-   $params = $MyInvocation.MyCommand.Parameters.Values | Where-Object {`
-      $_.ParameterSets.Keys -notcontains "All" -and`
-      $_.ParameterSets.Keys -notcontains "__AllParameterSets" -and`
-      $_.ParameterType.Name -eq "SwitchParameter"
-   }
-   if($All){
-      Set-Variable -Name $params.Name -Value $true
-   }
+   $__MtSession.Connections = $Service
 
-   # If no connection parameters are set use Graph
-   $default = -not (Get-Variable -Name $params.Name | Where-Object {`
-      $_.Value -eq $true
-   })
-   if($Graph -or $default){
+   if($Service -contains "Graph" -or $Service -contains "All"){
       Write-Verbose "Connecting to Microsoft Graph"
       Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
    }
 
-   if($Azure){
+   if($Service -contains "Azure" -or $Service -contains "All"){
       Write-Verbose "Connecting to Microsoft Azure"
       Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
    }
