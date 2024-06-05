@@ -14,6 +14,7 @@
 #>
 
 Function Test-MtCisaDiagnosticSettings {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Diagnostic Settings is a specific term')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
