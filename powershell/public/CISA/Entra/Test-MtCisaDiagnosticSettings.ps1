@@ -65,7 +65,7 @@ Function Test-MtCisaDiagnosticSettings {
     } else {
         $testResultMarkdown = "Your tenant does not have diagnostic settings configured for all logs:`n`n%unsetLogs%"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType DiagnosticSettings
 
     return $testResult
 }
