@@ -20,7 +20,10 @@
   # Get the mfa mthods for $userId
 
   Get-MtUaserAuthMethod -UserId $userId -Exclude "phone"
-  # Get the auth methods fro $userId excluding "phone"
+  # Get the auth methods for $userId excluding "phone"
+
+  Get-MtUaserAuthMethod -UserId $userId -NonMFAMethods "password", "email"
+  # Get the auth methods for $userId and only return `enabled` if they have auth methods that are not "password" and "email"
 
 #>
 Function Get-MtUserAuthMethod {
@@ -33,7 +36,7 @@ Function Get-MtUserAuthMethod {
   )
   process{
     Write-Verbose "Get authentication methods for user"
-    [array]$mfaData = Get-MgUserAuthenticationMethod -UserId $userId
+    $mfaData = Invoke-MtGraphRequest -RelativeUri "users/$UserId/authentication/methods" -ApiVersion v1.0
 
     $returnData = [PSCustomObject][Ordered]@{
       userId = $userId
@@ -44,12 +47,7 @@ Function Get-MtUserAuthMethod {
     $allMethods = @()
 
     ForEach ($method in $mfaData){
-      <#if(-not ($method.AdditionalProperties["@odata.type"] -eq "#microsoft.graph.passwordAuthenticationMethod")){
-        Write-Verbose "The user has a non-password authentication method attached to thier account."
-        $returnData.enabled = $true
-      }#>
-
-      $allMethods += $method.AdditionalProperties["@odata.type"] -replace "#microsoft.graph.", "" -replace "AuthenticationMethod", ""
+      $allMethods += $method."@odata.type" -replace "#microsoft.graph.", "" -replace "AuthenticationMethod", ""
     }
 
     $filtered = @()
