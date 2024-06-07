@@ -26,7 +26,7 @@ Function Test-MtCisaBlockLegacyAuth {
             $_.conditions.clientAppTypes -contains "other" -and `
             $_.conditions.users.includeUsers -contains "All" }
 
-    $testResult = $blockPolicies.Count -ge 1
+    $testResult = ($blockPolicies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
