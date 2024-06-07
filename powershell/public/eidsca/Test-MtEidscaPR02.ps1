@@ -25,7 +25,7 @@ Function Test-MtEidscaPR02 {
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value
     $testResult = $tenantValue -eq 'True'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'True' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'True' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'True'** for **settings**"

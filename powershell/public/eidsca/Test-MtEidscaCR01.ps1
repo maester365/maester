@@ -25,7 +25,7 @@ Function Test-MtEidscaCR01 {
 
     [string]$tenantValue = $result.isEnabled
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/adminConsentRequestPolicy**"

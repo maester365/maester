@@ -25,7 +25,7 @@ Function Test-MtEidscaAP07 {
 
     [string]$tenantValue = $result.guestUserRoleId
     $testResult = $tenantValue -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
-    $tenantValueNotSet = $tenantValue -eq $null -and '2af84b1e-32c8-42b7-82bc-daa82404023b' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and '2af84b1e-32c8-42b7-82bc-daa82404023b' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"

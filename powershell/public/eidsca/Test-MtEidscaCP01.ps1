@@ -25,7 +25,7 @@ Function Test-MtEidscaCP01 {
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
     $testResult = $tenantValue -eq 'False'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'False' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'False' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'False'** for **settings**"

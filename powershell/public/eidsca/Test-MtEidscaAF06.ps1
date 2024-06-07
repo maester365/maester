@@ -25,7 +25,7 @@ Function Test-MtEidscaAF06 {
 
     [string]$tenantValue = $result.keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block')
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"

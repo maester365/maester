@@ -25,7 +25,7 @@ Function Test-MtEidscaAP08 {
 
     [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'ManagePermissionGrantsForSelf.microsoft-user-default-low'** for **policies/authorizationPolicy**"

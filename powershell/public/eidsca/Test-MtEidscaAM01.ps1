@@ -25,7 +25,7 @@ Function Test-MtEidscaAM01 {
 
     [string]$tenantValue = $result.state
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"

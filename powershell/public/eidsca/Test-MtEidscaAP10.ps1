@@ -25,7 +25,7 @@ Function Test-MtEidscaAP10 {
 
     [string]$tenantValue = $result.defaultUserRolePermissions.allowedToCreateApps
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"

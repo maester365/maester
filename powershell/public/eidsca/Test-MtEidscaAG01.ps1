@@ -25,7 +25,7 @@ Function Test-MtEidscaAG01 {
 
     [string]$tenantValue = $result.policyMigrationState
     $testResult = $tenantValue -eq 'migrationComplete'
-    $tenantValueNotSet = $tenantValue -eq $null -and 'migrationComplete' -notlike '*$null*'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'migrationComplete' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
