@@ -25,9 +25,12 @@ Function Test-MtEidscaAV01 {
 
     [string]$tenantValue = $result.state
     $testResult = $tenantValue -eq 'disabled'
+    $tenantValueNotSet = $tenantValue -eq $null -and 'disabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
     }
