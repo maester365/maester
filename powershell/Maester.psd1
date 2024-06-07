@@ -104,6 +104,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaRequireActivationApproval',
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
+               'Test-MtCisaAutoExternalForwarding',
                'Test-MtConditionalAccessWhatIf', 'Test-MtEidscaAF01',
                'Test-MtEidscaAF02', 'Test-MtEidscaAF03', 'Test-MtEidscaAF04',
                'Test-MtEidscaAF05', 'Test-MtEidscaAF06', 'Test-MtEidscaAG01',
