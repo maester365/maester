@@ -68,3 +68,10 @@ runs:
           Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
 
         azPSVersion: "latest"
+
+    - name: Archive Maester Html Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: maester-test-results-${{ env.NOW }}
+        path: test-results
