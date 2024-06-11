@@ -10,6 +10,10 @@ inputs:
   client_id:
     description: "App Registration Client ID"
     required: true
+  use_public_tests:
+    description: "Use public test repository 'maester365/maester-tests'"
+    required: false
+    default: "true"
 
 runs:
   using: "composite"
@@ -25,10 +29,17 @@ runs:
       shell: bash
       run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
 
-    - name: Checkout latest Tests
+    - name: Checkout latest public tests
+      if: ${{ inputs.use_public_tests == 'true' }}
       uses: actions/checkout@v3
       with:
         repository: maester365/maester-tests
+        path: tests
+
+    - name: Checkout latest private tests
+      if: ${{ inputs.use_public_tests != 'true' }}
+      uses: actions/checkout@v3
+      with:
         path: tests
 
     - name: Run Maester
