@@ -72,7 +72,7 @@ Function Test-MtCisaActivationNotification {
         -not $_.activationNotify
     }
 
-    $testResult = $misconfigured.Count -eq 0
+    $testResult = ($misconfigured|Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has notifications for role activations:`n`n%TestResult%"

@@ -27,7 +27,7 @@ Function Test-MtCisaPrivilegedPhishResistant {
         $_.grantControls.authenticationStrength.displayName -eq "Phishing-resistant MFA" -and `
         ($_.conditions.users.includeRoles|Sort-Object) -join "," -like "*$(($highlyPrivilegedRoles.id|Sort-Object) -join "*")*" }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require phishing resistant MFA for highly privileged users:`n`n%TestResult%"
