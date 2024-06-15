@@ -15,8 +15,8 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ## SYNTAX
 
 ```powershell
-Connect-Maester [-SendMail] [-UseDeviceCode] [[-Environment] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Connect-Maester [-SendMail] [-UseDeviceCode] [[-Environment] <String>] [[-AzureEnvironment] <String>]
+ [[-Service] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,6 +34,18 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 
 ```powershell
 Connect-Maester
+```
+
+### EXAMPLE 2
+
+```powershell
+Connect-Maester -Service All
+```
+
+### EXAMPLE 3
+
+```powershell
+Connect-Maester -Service Azure,Graph
 ```
 
 ## PARAMETERS
@@ -83,6 +95,38 @@ Aliases:
 Required: False
 Position: 1
 Default value: Global
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AzureEnvironment
+
+\{\{ Fill AzureEnvironment Description \}\}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: AzureCloud
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Service
+
+\{\{ Fill Service Description \}\}
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: Graph
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

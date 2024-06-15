@@ -24,7 +24,7 @@ Function Test-MtCisaAppAdminConsent {
         $_.notifyReviewers -and `
         $_.reviewers.Count -ge 1 } | Select-Object -ExpandProperty reviewers
 
-    $testResult = $reviewers.Count -ge 1
+    $testResult = ($reviewers|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant admin consent request policy has at least 1 reviewer."

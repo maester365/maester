@@ -49,7 +49,7 @@ Function Test-MtCisaUnmanagedRoleAssignment {
         $roleAssignments += $roleAssignment
     }
 
-    $testResult = $roleAssignments.principal.Count -ge 1
+    $testResult = ($roleAssignments.principal|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has no unmanaged active role assignments."

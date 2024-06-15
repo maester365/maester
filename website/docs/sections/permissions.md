@@ -6,3 +6,5 @@
 - **IdentityRiskEvent.Read.All**
 - **RoleEligibilitySchedule.Read.Directory**
 - **RoleManagement.Read.All**
+- **Policy.Read.ConditionalAccess**
+- **UserAuthenticationMethod.Read.All**

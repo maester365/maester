@@ -27,7 +27,7 @@ Function Test-MtCisaNotifyHighRisk {
     $notficationRecipients = $result.notificationRecipients | Where-Object {`
             $_.isRiskyUsersAlertsRecipient }
 
-    $testResult = $notficationRecipients.Count -ge 1
+    $testResult = ($notficationRecipients|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more recipients for notifications of risky user logins:`n`n%TestResult%"

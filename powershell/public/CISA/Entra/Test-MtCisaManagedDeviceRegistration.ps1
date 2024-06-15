@@ -15,24 +15,36 @@
 Function Test-MtCisaManagedDeviceRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        [switch]$SkipHybridJoinCheck
+    )
 
     $result = Get-MtConditionalAccessPolicy
 
-    $policies = $result | Where-Object {`
-        $_.state -eq "enabled" -and `
-        $_.conditions.users.includeUsers -contains "All" -and `
-        $_.conditions.applications.includeUserActions -contains "urn:user:registersecurityinfo" -and `
-        $_.grantControls.builtInControls -contains "compliantDevice" -and `
-        $_.grantControls.builtInControls -contains "domainJoinedDevice" -and `
-        $_.grantControls.operator -eq "OR" }
+    if($SkipHybridJoinCheck){
+        $policies = $result | Where-Object {`
+            $_.state -eq "enabled" -and `
+            $_.conditions.applications.includeUserActions -contains "urn:user:registersecurityinfo" -and `
+            $_.conditions.users.includeUsers -contains "All" -and `
+            $_.grantControls.builtInControls -contains "compliantDevice" }
+    }else{
+        $policies = $result | Where-Object {`
+            $_.state -eq "enabled" -and `
+            $_.conditions.applications.includeUserActions -contains "urn:user:registersecurityinfo" -and `
+            $_.conditions.users.includeUsers -contains "All" -and `
+            $_.grantControls.builtInControls -contains "compliantDevice" -and `
+            $_.grantControls.builtInControls -contains "domainJoinedDevice" -and `
+            $_.grantControls.operator -eq "OR" }
+    }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has one or more policies that require managed devices for registration:`n`n%TestResult%"
+    if ($testResult -and $SkipHybridJoinCheck) {
+        $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device for registration:`n`n%TestResult%"
+    } elseif ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device for registration:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that requires managed devices for registration."
+        $testResultMarkdown = "Your tenant does not have any conditional access policies that require managed devices for registration."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
 

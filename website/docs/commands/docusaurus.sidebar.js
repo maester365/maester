@@ -11,6 +11,7 @@
 module.exports = [
     'commands/Add-MtTestResultDetail',
     'commands/Clear-MtGraphCache',
+    'commands/Compare-MtTestResult',
     'commands/Connect-Maester',
     'commands/ConvertTo-MtMaesterResult',
     'commands/Disconnect-Maester',
@@ -23,6 +24,8 @@ module.exports = [
     'commands/Get-MtRole',
     'commands/Get-MtRoleMember',
     'commands/Get-MtUser',
+    'commands/Get-MtUserAuthenticationMethod',
+    'commands/Get-MtUserAuthenticationMethodInfoByType',
     'commands/Install-MaesterTests',
     'commands/Invoke-Maester',
     'commands/Invoke-MtGraphRequest',
