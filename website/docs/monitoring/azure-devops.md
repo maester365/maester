@@ -105,8 +105,11 @@ This empty resource group is required to set up workload identity federation aut
 - Select **Run** to run the pipeline
 - Select **Job** to view the test results
 
+<Tabs>
+  <TabItem value="agent-MS" label="Microsoft-hosted agent" default>
+
 ```yaml
-# Maester Daily Tests (Microsoft-hosted agents for Azure Pipelines)
+# Maester Daily Tests
 
 trigger:
   - main
@@ -155,8 +158,11 @@ steps:
       failTaskOnFailedTests: true
 ```
 
+</TabItem>
+<TabItem value="agent-vmss" label="Virtual Machine Scale Set (VMSS) hosted agent" default>
+
 ```yaml
-# Maester Daily Tests (VMSS Azure DevOps Build agents)
+# Maester Daily Tests
 
 trigger:
   - main
@@ -172,76 +178,78 @@ pool:
   name: Maester-DevOps
 
 jobs:
-- job: InstallPowerShell
-  displayName: 'Running Maester on VMSS'
-  steps:
-  - script: |
-      # Update package list and install pre-requisites
-      sudo apt-get update
-      sudo apt-get install -y wget apt-transport-https software-properties-common
+  - job: InstallPowerShell
+    displayName: "Running Maester on VMSS"
+    steps:
+      - script: |
+          # Update package list and install pre-requisites
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https software-properties-common
 
-      # Import the public repository GPG keys
-      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-      sudo dpkg -i packages-microsoft-prod.deb
+          # Import the public repository GPG keys
+          wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
 
-      # Update the list of products
-      sudo apt-get update
+          # Update the list of products
+          sudo apt-get update
 
-      # Enable the "universe" repositories
-      sudo add-apt-repository universe
+          # Enable the "universe" repositories
+          sudo add-apt-repository universe
 
-      # Install PowerShell
-      sudo apt-get install -y powershell
+          # Install PowerShell
+          sudo apt-get install -y powershell
 
-      # Verify installation
-      pwsh -v
+          # Verify installation
+          pwsh -v
 
-      # Install Az and Microsoft Graph PowerShell
-      sudo /usr/bin/pwsh -Command 'Find-Module -Name Az -RequiredVersion '12.0.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/az_12.0.0' -Force -Verbose'
-      sudo /usr/bin/pwsh -Command 'Find-Module -Name Microsoft.Graph -RequiredVersion '2.19.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/microsoft.graph_2.19.0' -Force -Verbose'
+          # Install Az and Microsoft Graph PowerShell
+          sudo /usr/bin/pwsh -Command 'Find-Module -Name Az -RequiredVersion '12.0.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/az_12.0.0' -Force -Verbose'
+          sudo /usr/bin/pwsh -Command 'Find-Module -Name Microsoft.Graph -RequiredVersion '2.19.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/microsoft.graph_2.19.0' -Force -Verbose'
 
-    displayName: 'Install PowerShell'
-  - script: |
-      echo "PowerShell installed successfully"
-    displayName: 'Verify Installation'
-  - task: AzurePowerShell@5
-    displayName: "Run Maester"
-    inputs:
-      azureSubscription: "Maester Service Connection"
-      pwsh: true
-      azurePowerShellVersion: OtherVersion
-      preferredAzurePowerShellVersion: '12.0.0'
-      ScriptType: InlineScript
-      Inline: | 
-        # Load Modules
-        import-module /usr/share/az_12.0.0/Az.Accounts
-        import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
-        
-        # Connect to Microsoft Graph
-        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
-        Connect-MgGraph $accessToken
+        displayName: "Install PowerShell"
+      - script: |
+          echo "PowerShell installed successfully"
+        displayName: "Verify Installation"
+      - task: AzurePowerShell@5
+        displayName: "Run Maester"
+        inputs:
+          azureSubscription: "Maester Service Connection"
+          pwsh: true
+          azurePowerShellVersion: OtherVersion
+          preferredAzurePowerShellVersion: "12.0.0"
+          ScriptType: InlineScript
+          Inline: |
+            # Load Modules
+            import-module /usr/share/az_12.0.0/Az.Accounts
+            import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
 
-        # Install Maester
-        Install-Module Maester -Force
+            # Connect to Microsoft Graph
+            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+            Connect-MgGraph $accessToken
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.TestResult.Enabled = $true
-        $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+            # Install Maester
+            Install-Module Maester -Force
 
-        # Run Maester tests
-        Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
-  - publish: $(System.DefaultWorkingDirectory)/test-results
-    displayName: Publish Maester Html Report
-    artifact: TestResults
-  - task: PublishTestResults@2
-    displayName: Publish Pester Test Results
-    inputs:
-      testResultsFormat: "NUnit"
-      testResultsFiles: "**/test-results.xml"
-      failTaskOnFailedTests: true
+            # Configure test results
+            $PesterConfiguration = New-PesterConfiguration
+            $PesterConfiguration.TestResult.Enabled = $true
+            $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+
+            # Run Maester tests
+            Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+      - publish: $(System.DefaultWorkingDirectory)/test-results
+        displayName: Publish Maester Html Report
+        artifact: TestResults
+      - task: PublishTestResults@2
+        displayName: Publish Pester Test Results
+        inputs:
+          testResultsFormat: "NUnit"
+          testResultsFiles: "**/test-results.xml"
+          failTaskOnFailedTests: true
 ```
 
+</TabItem>
+</Tabs>
   </TabItem>
   <TabItem value="cert" label="Client secret">
 
@@ -266,6 +274,9 @@ jobs:
 - Select **Validate and save** > **Save**
 - Select **Run** to run the pipeline
 - Select **Job** to view the test results
+
+<Tabs>
+  <TabItem value="agent-MS-secret" label="Microsoft-hosted agent" default>
 
 ```yaml
 # Maester Daily Tests
@@ -314,8 +325,11 @@ steps:
     displayName: Publish Pester Test Results
 ```
 
+</TabItem>
+  <TabItem value="agent-VMSS-secret" label="Azure Virtual Machine Scale Set hosted agent" default>
+
 ```yaml
-# Maester Daily Tests (VMSS Azure DevOps Build agents)
+# Maester Daily Tests
 
 trigger:
   - main
@@ -331,76 +345,78 @@ pool:
   name: Maester-DevOps
 
 jobs:
-- job: InstallPowerShell
-  displayName: 'Running Maester on VMSS'
-  steps:
-  - script: |
-      # Update package list and install pre-requisites
-      sudo apt-get update
-      sudo apt-get install -y wget apt-transport-https software-properties-common
+  - job: InstallPowerShell
+    displayName: "Running Maester on VMSS"
+    steps:
+      - script: |
+          # Update package list and install pre-requisites
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https software-properties-common
 
-      # Import the public repository GPG keys
-      wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
-      sudo dpkg -i packages-microsoft-prod.deb
+          # Import the public repository GPG keys
+          wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
 
-      # Update the list of products
-      sudo apt-get update
+          # Update the list of products
+          sudo apt-get update
 
-      # Enable the "universe" repositories
-      sudo add-apt-repository universe
+          # Enable the "universe" repositories
+          sudo add-apt-repository universe
 
-      # Install PowerShell
-      sudo apt-get install -y powershell
+          # Install PowerShell
+          sudo apt-get install -y powershell
 
-      # Verify installation
-      pwsh -v
+          # Verify installation
+          pwsh -v
 
-      # Install Az and Microsoft Graph PowerShell
-      sudo /usr/bin/pwsh -Command 'Find-Module -Name Az -RequiredVersion '12.0.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/az_12.0.0' -Force -Verbose'
-      sudo /usr/bin/pwsh -Command 'Find-Module -Name Microsoft.Graph -RequiredVersion '2.19.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/microsoft.graph_2.19.0' -Force -Verbose'
+          # Install Az and Microsoft Graph PowerShell
+          sudo /usr/bin/pwsh -Command 'Find-Module -Name Az -RequiredVersion '12.0.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/az_12.0.0' -Force -Verbose'
+          sudo /usr/bin/pwsh -Command 'Find-Module -Name Microsoft.Graph -RequiredVersion '2.19.0' -Repository 'PSGallery' | Save-Module -Path '/usr/share/microsoft.graph_2.19.0' -Force -Verbose'
 
-    displayName: 'Install PowerShell'
-  - script: |
-      echo "PowerShell installed successfully"
-    displayName: 'Verify Installation'
-  - task: AzurePowerShell@5
-    displayName: "Run Maester"
-    inputs:
-      azureSubscription: "Maester Service Connection"
-      pwsh: true
-      azurePowerShellVersion: OtherVersion
-      preferredAzurePowerShellVersion: '12.0.0'
-      ScriptType: InlineScript
-      Inline: | 
-        # Load Modules
-        import-module /usr/share/az_12.0.0/Az.Accounts
-        import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
-        
-        # Connect to Microsoft Graph
-        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
-        Connect-MgGraph $accessToken
+        displayName: "Install PowerShell"
+      - script: |
+          echo "PowerShell installed successfully"
+        displayName: "Verify Installation"
+      - task: AzurePowerShell@5
+        displayName: "Run Maester"
+        inputs:
+          azureSubscription: "Maester Service Connection"
+          pwsh: true
+          azurePowerShellVersion: OtherVersion
+          preferredAzurePowerShellVersion: "12.0.0"
+          ScriptType: InlineScript
+          Inline: |
+            # Load Modules
+            import-module /usr/share/az_12.0.0/Az.Accounts
+            import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
 
-        # Install Maester
-        Install-Module Maester -Force
+            # Connect to Microsoft Graph
+            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+            Connect-MgGraph $accessToken
 
-        # Configure test results
-        $PesterConfiguration = New-PesterConfiguration
-        $PesterConfiguration.TestResult.Enabled = $true
-        $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+            # Install Maester
+            Install-Module Maester -Force
 
-        # Run Maester tests
-        Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
-  - publish: $(System.DefaultWorkingDirectory)/test-results
-    displayName: Publish Maester Html Report
-    artifact: TestResults
-  - task: PublishTestResults@2
-    displayName: Publish Pester Test Results
-    inputs:
-      testResultsFormat: "NUnit"
-      testResultsFiles: "**/test-results.xml"
-      failTaskOnFailedTests: true
+            # Configure test results
+            $PesterConfiguration = New-PesterConfiguration
+            $PesterConfiguration.TestResult.Enabled = $true
+            $PesterConfiguration.TestResult.OutputPath = '$(System.DefaultWorkingDirectory)/test-results/test-results.xml'
+
+            # Run Maester tests
+            Invoke-Maester -Path $(System.DefaultWorkingDirectory)/tests/Maester/ -PesterConfiguration $PesterConfiguration -OutputFolder '$(System.DefaultWorkingDirectory)/test-results'
+      - publish: $(System.DefaultWorkingDirectory)/test-results
+        displayName: Publish Maester Html Report
+        artifact: TestResults
+      - task: PublishTestResults@2
+        displayName: Publish Pester Test Results
+        inputs:
+          testResultsFormat: "NUnit"
+          testResultsFiles: "**/test-results.xml"
+          failTaskOnFailedTests: true
 ```
 
+  </TabItem>
+  </Tabs>
 ### Step-by-step video tutorial
 
 <iframe width="686" height="386" src="https://www.youtube.com/embed/42FADXWrDBo" title="Maester Azure DevOps integration" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
