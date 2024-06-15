@@ -54,7 +54,7 @@ Function Test-MtCisaCloudGlobalAdmin {
         $_.onPremisesSyncEnabled -eq $true
     }
 
-    $testResult = $result.Count -eq 0
+    $testResult = ($result|Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators:`n`n%TestResult%"

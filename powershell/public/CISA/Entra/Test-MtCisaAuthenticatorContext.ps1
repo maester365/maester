@@ -29,7 +29,7 @@ Function Test-MtCisaAuthenticatorContext {
         $_.featureSettings.displayLocationInformationRequiredState.state -eq "enabled" -and `
         $_.featureSettings.displayLocationInformationRequiredState.includeTarget.id -contains "all_users" }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has the Authentication Methods policy for Microsoft Authenticator set appropriately:`n`n%TestResult%"
