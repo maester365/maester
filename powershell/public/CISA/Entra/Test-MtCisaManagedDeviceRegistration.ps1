@@ -37,7 +37,7 @@ Function Test-MtCisaManagedDeviceRegistration {
             $_.grantControls.operator -eq "OR" }
     }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult -and $SkipHybridJoinCheck) {
         $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device for registration:`n`n%TestResult%"

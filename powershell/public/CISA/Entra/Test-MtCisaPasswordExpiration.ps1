@@ -35,7 +35,7 @@ Function Test-MtCisaPasswordExpiration {
         $_.authenticationType -eq "Managed" -and `
         $_.PasswordValidityPeriodInDays -ge 36500}
 
-    $testResult = $managedDomains.Count -ge 1
+    $testResult = ($managedDomains|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire."

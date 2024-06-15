@@ -25,7 +25,7 @@ Function Test-MtCisaMfa {
         $_.conditions.users.includeUsers -contains "All" -and `
         $_.grantControls.builtInControls -contains "mfa" }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require MFA:`n`n%TestResult%"
