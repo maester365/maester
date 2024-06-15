@@ -24,6 +24,8 @@ module.exports = [
     'commands/Get-MtRole',
     'commands/Get-MtRoleMember',
     'commands/Get-MtUser',
+    'commands/Get-MtUserAuthenticationMethod',
+    'commands/Get-MtUserAuthenticationMethodInfoByType',
     'commands/Install-MaesterTests',
     'commands/Invoke-Maester',
     'commands/Invoke-MtGraphRequest',
