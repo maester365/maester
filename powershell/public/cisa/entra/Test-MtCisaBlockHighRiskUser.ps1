@@ -26,7 +26,7 @@ Function Test-MtCisaBlockHighRiskUser {
         $_.conditions.userRiskLevels -contains "high" -and `
         $_.conditions.users.includeUsers -contains "All" }
 
-    $testResult = $blockPolicies.Count -ge 1
+    $testResult = ($blockPolicies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that block high risk users :`n`n%TestResult%"

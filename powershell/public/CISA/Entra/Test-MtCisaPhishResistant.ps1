@@ -25,7 +25,7 @@ Function Test-MtCisaPhishResistant {
         $_.conditions.users.includeUsers -contains "All" -and `
         $_.grantControls.authenticationStrength.displayName -eq "Phishing-resistant MFA" }
 
-    $testResult = $policies.Count -ge 1
+    $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require Phishing Resistant Authentication Strengths :`n`n%TestResult%"
