@@ -63,7 +63,7 @@ Function Get-MtMarkdownReport {
                 }
             }
 
-            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "`n`n**Learn more**:[$($test.HelpUrl)]($($test.HelpUrl))" }
+            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "`n`n**Learn more**: [$($test.HelpUrl)]($($test.HelpUrl))" }
             if (![string]::IsNullOrEmpty($test.Tag)) {
                 $tags = '`{0}`' -f ($test.Tag -join '` `')
                 $details += "`n`n**Tag**: $tags"
