@@ -43,6 +43,7 @@ Function Get-MtGraphScope {
         'RoleEligibilitySchedule.Read.Directory'
         'RoleManagement.Read.All'
         'Policy.Read.ConditionalAccess'
+        'UserAuthenticationMethod.Read.All'
     )
 
     if ($SendMail) {
