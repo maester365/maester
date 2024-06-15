@@ -11,7 +11,7 @@ description: Implementation of CISA Entra Controls
 
 ## Overview
 
-The tests in this section closely align to the Cybersecurity and Infrastructure Security Agency (CISA) Secure Cloud Business Applications (SCuBA) Project implementation.
+The tests in this section verifies that a Microsoft 365 tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](/baselines/README.md).
 
 ## Tests
 

@@ -3,7 +3,8 @@
 This folder contains the tests that Maester will run to validate your environment. The tests are organized into the following folders:
 
 - **Custom**: Place your custom Pester tests in this directory. The file name should end with `.Tests.ps1`.
-- **EIDSCA**: Contains the out of the box test for [Entra ID Security Config Analyzer](https://maester.dev/docs/tests/eidsca/).
+- **CISA**: Contains the tests that verifies the tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](/baselines/README.md).
+- **EIDSCA**: Contains tests based on the [Entra ID Security Config Analyzer](https://maester.dev/docs/tests/eidsca/).
 - **Maester**: Contains the tests that are built by the Maester team with contributions from the community. To learn more about the tests see [Maester Tests](https://maester.dev/docs/tests/maester).
 
 ## Running Maester
