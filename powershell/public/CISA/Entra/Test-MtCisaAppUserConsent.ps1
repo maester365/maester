@@ -22,13 +22,13 @@ Function Test-MtCisaAppUserConsent {
     $permissions = $result.defaultUserRolePermissions.permissionGrantPoliciesAssigned | Where-Object {`
         $_ -like "ManagePermissionGrantsForSelf.*" }
 
-    $testResult = $permissions.Count -eq 0
+    $testResult = ($permissions|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant default user role permissions prevent app consent:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. **[User consent for applications](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings)** is set to **Do not allow user consent** in your tenant."
     } else {
-        $testResultMarkdown = "Your tenant default user role permissions allow app consent."
+        $testResultMarkdown = "Your tenant [allows users to consent for applications](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings). The recommended setting is **Do not allow user consent**."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConsentPolicy -GraphObjects $permissions
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }

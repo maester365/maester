@@ -36,7 +36,13 @@ Function Update-MtMaesterTests {
             $message += "Do you want to continue? (y/n): "
             $continue = Get-MtConfirmation $message
             if ($continue) {
-                $itemsToDelete | Remove-Item -Force
+                foreach ($item in $itemsToDelete) {
+                    if ($item.Attributes -ne "Directory") {
+                        Remove-Item -Path $item.FullName -Force
+                    } else {
+                        Remove-Item -Path $item.FullName -Recurse -Force
+                    }
+                }
             } else {
                 Write-Host "Maester tests not $installOrUpdate." -ForegroundColor Red
                 exit
@@ -53,7 +59,7 @@ Function Update-MtMaesterTests {
     Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
 
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
-    if(Get-MgContext) {
+    if (Get-MgContext) {
         $message = "Run Invoke-Maester to start testing."
     }
 

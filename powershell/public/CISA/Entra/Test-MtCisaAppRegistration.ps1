@@ -22,10 +22,10 @@ Function Test-MtCisaAppRegistration {
     $testResult = $result.defaultUserRolePermissions.allowedToCreateApps -eq $false
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant default user role permissions prevent app creation:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. **[Users can register applications](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings)** is set to **No** in your tenant."
     } else {
-        $testResultMarkdown = "Your tenant default user role permissions allow app creation."
+        $testResultMarkdown = "Your tenant is configured with **[Users can register applications](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings)** set to **Yes**. The recommended setting is **No**."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthorizationPolicy -GraphObjects $result.displayName
+    Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
