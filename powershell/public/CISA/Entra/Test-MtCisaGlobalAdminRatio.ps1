@@ -26,7 +26,7 @@ Function Test-MtCisaGlobalAdminRatio {
             role        = $role.id
             assignments = $assignments
         }
-        $assignments = Get-MtRoleMember -roleId $role.id -All
+        $assignments = Get-MtRoleMember -roleId $role.id -Active
         $roleAssignment.assignments = $assignments
         $roleAssignments += $roleAssignment
     }
@@ -41,9 +41,12 @@ Function Test-MtCisaGlobalAdminRatio {
         Select-Object -ExpandProperty assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
-    $ratio = $globalAdministrators.Count / $otherAssignments.Count
-
-    $testResult = $ratio -le 1
+    If ($otherAssignments.Count) {
+        $ratio = $globalAdministrators.Count / $otherAssignments.Count
+        $testResult = $ratio -le 1
+    } Else {
+        $testResult = $false
+    }
 
     $users = $roleAssignments.assignments | Sort-Object id -Unique
 
