@@ -27,6 +27,7 @@ The tests in this section closely align to the Cybersecurity and Infrastructure 
 * Test-MtCisaBlockHighRiskUser - [MS.AAD.2.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad21v1)
 * Test-MtCisaBlockLegacyAuth - [MS.AAD.1.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#1-legacy-authentication)
 * Test-MtCisaCloudGlobalAdmin - [MS.AAD.7.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad73v1)
+* Test-MtCisaDiagnosticSettings - [MS.AAD.4.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad41v1)
 * Test-MtCisaGlobalAdminCount - [MS.AAD.7.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad71v1)
 * Test-MtCisaGlobalAdminRatio - [MS.AAD.7.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad72v1)
 * Test-MtCisaGuestInvitation - [MS.AAD.8.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad82v1)
