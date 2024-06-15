@@ -36,9 +36,10 @@ Function Get-MtUserAuthenticationMethod {
       $userAuthMethod | Add-Member -MemberType NoteProperty -Name "isMfa" -Value $authMethodInfo.IsMfa -ErrorAction SilentlyContinue
     }
 
-    Write-Verbose "Get authentication methods for user"
+    Write-Verbose "Querying graph for user authentication methods for $UserId"
     $userAuthMethods = Invoke-MtGraphRequest -RelativeUri "users/$UserId/authentication/methods"
 
+    Write-Verbose "Appending auth method displayname and isMfa properties to each auth method."
     $IsMfa = $false
     foreach ($method in $userAuthMethods) {
       AddAuthMethodInfo $method

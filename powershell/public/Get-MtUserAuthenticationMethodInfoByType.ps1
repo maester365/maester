@@ -118,8 +118,10 @@ Function Get-MtUserAuthenticationMethodInfoByType {
         }
 
         if ($AuthenticationMethod -is [array]) {
+            Write-Verbose "Processing multiple authentication methods"
             $AuthenticationMethod | ForEach-Object { GetMethodInfo $_ }
         } else {
+            Write-Verbose "Processing single authentication method"
             GetMethodInfo $AuthenticationMethod
         }
     }
