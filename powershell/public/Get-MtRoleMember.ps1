@@ -27,6 +27,8 @@ Function Get-MtRoleMember {
     $Eligible = $Active = $true
   }
 
+  $scopes = (Get-MgContext).Scopes
+
   $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
   $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
 
@@ -36,8 +38,10 @@ Function Get-MtRoleMember {
   if($Active){
     $types += @{active   = "roleManagement/directory/roleAssignments"}
   }
-  if($Eligible){
+  if($Eligible -and "RoleEligibilitySchedule.ReadWrite.Directory" -in $scopes){
     $types += @{eligible = "roleManagement/directory/roleEligibilityScheduleRequests"}
+  }elseif($Eligible){
+    Write-Warning "Skipping eligible roles as required Graph permission 'RoleEligibilitySchedule.ReadWrite.Directory' was not present."
   }
 
   foreach($type in $types){

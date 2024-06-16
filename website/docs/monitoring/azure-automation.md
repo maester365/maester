@@ -4,6 +4,7 @@ sidebar_position: 3
 title: Azure Automation
 ---
 import GraphPermissions from '../sections/permissions.md';
+import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
 # <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Automation
 This guide will walk you through setting up Maester in Azure Automation and automate the running of tests using Runbooks.
@@ -28,6 +29,10 @@ Azure Automation provides a simple and effective method to automate email report
 The necessary permissions must be assigned to the Managed Identity associated with the Automation Account. These are:
 
 <GraphPermissions/>
+
+## ℹ️ Optional Privileged Permissions
+
+<PrivilegedPermissions/>
 
 If the automation needs to email the Maester report, the **Mail.Send** permission is also required.
 
