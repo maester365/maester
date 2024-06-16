@@ -5,7 +5,7 @@ import StatusLabel from "./StatusLabel";
 
 
 export default function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed']);
+  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped']);
   const [selectedBlock, setSelectedBlock] = useState([]);
   const testResults = props.TestResults;
 
@@ -13,7 +13,7 @@ export default function TestResultsTable(props) {
     return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) && (selectedBlock.includes(item.Block) || selectedBlock.length === 0);
   }
 
-  const status = ['Passed', 'Failed', 'NotRun'];
+  const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
 
   return (
     <Card>
@@ -32,7 +32,7 @@ export default function TestResultsTable(props) {
             ))}
         </MultiSelect>
         <MultiSelect
-          defaultValue={['Passed', 'Failed']}
+          defaultValue={['Passed', 'Failed', 'Skipped']}
           onValueChange={setSelectedStatus}
           placeholder="Select status..."
           className="min-w-fit max-w-6"
