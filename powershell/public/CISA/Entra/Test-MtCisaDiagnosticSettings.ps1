@@ -19,21 +19,12 @@ Function Test-MtCisaDiagnosticSettings {
     [OutputType([bool])]
     param()
 
-    $actual = $logs = @{
-        "AuditLogs" = $false
-        "SignInLogs" = $false
-        "RiskyUsers" = $false
-        "UserRiskEvents" = $false
-        "NonInteractiveUserSignInLogs" = $false
-        "ServicePrincipalSignInLogs" = $false
-        "ADFSSignInLogs" = $false
-        "RiskyServicePrincipals" = $false
-        "ServicePrincipalRiskEvents" = $false
-        "EnrichedOffice365AuditLogs" = $false
-        "MicrosoftGraphActivityLogs" = $false
-        "ManagedIdentitySignInLogs" = $false
-        "ProvisioningLogs" = $false
-    }
+    $logs = Invoke-AzRestMethod -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
+    $logs = ($logs.Content|ConvertFrom-Json).value
+    $logs = ($logs | Where-Object { `
+        $_.properties.categoryType -eq "Logs"
+    }).name
+
     $configs = @()
 
     $settings = Invoke-AzRestMethod -Path "/providers/microsoft.aadiam/diagnosticSettings?api-version=2017-04-01-preview"
@@ -49,9 +40,11 @@ Function Test-MtCisaDiagnosticSettings {
         $configs += $config
     }
 
-    foreach($log in $logs.Keys){
+    foreach($log in $logs){
         if($configs.$log){
             $actual.$log = $true
+        } else {
+            $actual.$log = $false
         }
     }
 
