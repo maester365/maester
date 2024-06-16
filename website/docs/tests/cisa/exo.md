@@ -23,6 +23,15 @@ The [`Connect-Maester`](../../commands/Connect-Maester) cmdlet supports connecti
 Connect-Maester -Service ExchangeOnline
 ~~~
 
+## ⚠️ Permissions
+
+Exchange Online implements a [role-based access control model](https://learn.microsoft.com/en-us/exchange/permissions-exo/permissions-exo). The controls these cmdlets test require minimum roles of either of the following:
+
+* View-Only Configuration
+* O365SupportViewConfig
+
+> [Reference comment of GitHub.](https://github.com/maester365/maester/pull/219#issuecomment-2153706866)
+
 ## Tests
 
 * Test-MtCisaAutoExternalForwarding - [MS.EXO.1.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo11v1)
