@@ -1,0 +1,88 @@
+---
+sidebar_class_name: hidden
+description: Checks if the current session is connected to the specified service.
+id: Test-MtConnection
+title: Test-MtConnection
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtConnection.ps1
+---
+
+## SYNOPSIS
+
+Checks if the current session is connected to the specified service.
+Use -Verbose to see the connection status for each service.
+
+## SYNTAX
+
+```powershell
+Test-MtConnection [[-Service] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Tests the connection for each service and returns $true if the session is connected to the specified service.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtConnection
+```
+
+Checks if the current session is connected to Microsoft Graph.
+
+### EXAMPLE 2
+
+```powershell
+Test-MtConnection -Service All
+```
+
+Checks if the current session is connected to all services including Azure, Exchange and Microsoft Graph.
+
+## PARAMETERS
+
+### -Service
+
+Checks if the current session is connected to the specified service
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: Graph
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
