@@ -30,7 +30,7 @@ Function Test-MtConnection {
         $isConnected = $false
         try {
             $isConnected = $null -ne (Get-AzContext -ErrorAction SilentlyContinue)
-        } catch {}
+        } catch { $Error[0] }
         Write-Verbose "Azure: $isConnected"
         if (!$isConnected) { $connectionState = $false }
     }
@@ -39,7 +39,7 @@ Function Test-MtConnection {
         $isConnected = $false
         try {
             $isConnected = $null -ne ((Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' }))
-        } catch { }
+        } catch { $Error[0] }
         Write-Verbose "Exchange Online: $isConnected"
         if (!$isConnected) { $connectionState = $false }
     }
@@ -48,7 +48,7 @@ Function Test-MtConnection {
         $isConnected = $false
         try {
             $isConnected = $null -ne (Get-MgContext -ErrorAction SilentlyContinue)
-        } catch { }
+        } catch { $Error[0] }
         Write-Verbose "Graph: $isConnected"
         if (!$isConnected) { $connectionState = $false }
     }

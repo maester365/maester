@@ -40,6 +40,7 @@ Function Test-MtCisaDiagnosticSettings {
         $configs += $config
     }
 
+    $actual = @{}
     foreach($log in $logs){
         if($configs.$log){
             $actual.$log = $true
