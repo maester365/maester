@@ -16,7 +16,8 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 
 ```powershell
 Connect-Maester [-SendMail] [-UseDeviceCode] [[-Environment] <String>] [[-AzureEnvironment] <String>]
- [[-Service] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-ExchangeEnvironmentName] <String>] [[-Service] <String[]>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -101,7 +102,8 @@ Accept wildcard characters: False
 
 ### -AzureEnvironment
 
-\{\{ Fill AzureEnvironment Description \}\}
+The Azure environment to connect to.
+Default is AzureCloud.
 
 ```yaml
 Type: String
@@ -115,9 +117,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExchangeEnvironmentName
+
+The Exchange environment to connect to.
+Default is O365Default.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: O365Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Service
 
-\{\{ Fill Service Description \}\}
+The services to connect to such as Azure and EXO.
+Default is Graph.
 
 ```yaml
 Type: String[]
@@ -125,7 +145,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 4
 Default value: Graph
 Accept pipeline input: False
 Accept wildcard characters: False
