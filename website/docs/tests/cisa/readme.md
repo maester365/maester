@@ -13,6 +13,18 @@ description: Implementation of CISA Entra Controls
 
 The tests in this section verifies that a Microsoft 365 tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
 
+## ⚠️ Additional Modules
+
+The CISA controls include tests that require access to additional API endpoints not currently available through the Microsoft Graph API.
+
+* §4.1 requires the Az.Accounts Module.
+
+The [`Connect-Maester`](../../commands/Connect-Maester) cmdlet supports connecting to multiple modules. Please connect to Azure and Graph as shown below or manually create these connections for the cmdlets to function.
+
+~~~
+Connect-Maester -Service Azure,Graph
+~~~
+
 ## Tests
 
 * Test-MtCisaActivationNotification - [MS.AAD.7.9](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad79v1)
