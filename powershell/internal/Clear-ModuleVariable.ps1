@@ -16,5 +16,5 @@ Function Clear-ModuleVariable {
     Clear-MtGraphCache
     $__MtSession.GraphBaseUri = $null
     $__MtSession.TestResultDetail = @{}
-    $__MtSession.Connections = @()
+    # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
 }

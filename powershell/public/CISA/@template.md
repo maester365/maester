@@ -1,18 +1,15 @@
-%ControlItemDescription%
+Control Should/Must description
 
-%Recommendation%
+Rationale: ...
 
-#### Test script
-```
-https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
-.%CurrentValue% = %RecommendedValue%
-```
+#### Remediation action:
+
+
 
 #### Related links
 
-- %GraphExplorerUrl%
-%GraphDocsUrlMarkdown%
-%PortalDeepLinkMarkdown%
+* [CISA # Section - Control](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/...#)
+* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/...rego#)
 
 <!--- Results --->
 %TestResult%
