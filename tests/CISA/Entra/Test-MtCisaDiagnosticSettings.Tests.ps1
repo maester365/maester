@@ -1,5 +1,5 @@
 BeforeAll {
-    $azureSession = $__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "All"
+    $azureSession = Test-MtConnection -Service Azure
 }
 
 Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.4.1", "CISA", "Security", "All" -Skip:((-not $azureSession)) {
