@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $exoSession = $__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "All"
+    $exoSession = Test-MtConnection -Service ExchageOnline
 }
 
 Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.1.1", "CISA", "Security", "All" -Skip:((-not $exoSession)) {

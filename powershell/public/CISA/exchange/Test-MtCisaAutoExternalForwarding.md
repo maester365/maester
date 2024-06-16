@@ -7,7 +7,7 @@ Rationale: Adversaries can use automatic forwarding to gain persistent access to
 To disallow automatic forwarding to external domains:
 
 1. Sign in to the **Exchange admin center**.
-2. Select **Mail flow**, then **Remote domains**.
+2. Select **Mail flow**, then **[Remote domains](https://admin.exchange.microsoft.com/#/remotedomains)**.
 3. Select **Default**.
 4. Under **Email reply types**, select **Edit reply types**.
 5. Clear the checkbox next to **Allow automatic forwarding**, then click **Save**.
@@ -15,6 +15,7 @@ To disallow automatic forwarding to external domains:
 
 #### Related links
 
+* [Exchange admin center - Remote domains](https://admin.exchange.microsoft.com/#/remotedomains)
 * [CISA 1 Automatic Forwarding to External Domains - MS.EXO.1.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo11v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L28)
 
