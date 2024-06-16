@@ -52,9 +52,9 @@ Function Test-MtCisaUnmanagedRoleAssignment {
     $testResult = ($roleAssignments.principal|Measure-Object).Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no unmanaged active role assignments:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has no unmanaged active role assignments."
     } else {
-        $testResultMarkdown = "Your tenant has active assignments without a start date."
+        $testResultMarkdown = "Your tenant has active assignments without a start date:`n`n%TestResult%"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 

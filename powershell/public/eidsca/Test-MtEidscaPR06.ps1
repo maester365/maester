@@ -25,9 +25,12 @@ Function Test-MtEidscaPR06 {
 
     [string]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
     $testResult = $tenantValue -eq '10'
+    $tenantValueNotSet = $null -eq $tenantValue -and '10' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'10'** for **settings**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'10'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'10'** for **settings**"
     }
