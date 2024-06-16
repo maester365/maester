@@ -13,6 +13,18 @@ description: Implementation of CISA Entra Controls
 
 The tests in this section verifies that a Microsoft 365 tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
 
+## ⚠️ Additional Modules
+
+The CISA controls include tests that require access to additional API endpoints not currently available through the Microsoft Graph API.
+
+* §4.1 requires the Az.Accounts Module.
+
+The [`Connect-Maester`](../../commands/Connect-Maester) cmdlet supports connecting to multiple modules. Please connect to Azure and Graph as shown below or manually create these connections for the cmdlets to function.
+
+~~~
+Connect-Maester -Service Azure,Graph
+~~~
+
 ## Tests
 
 * Test-MtCisaActivationNotification - [MS.AAD.7.9](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad79v1)
@@ -27,6 +39,7 @@ The tests in this section verifies that a Microsoft 365 tenant’s configuration
 * Test-MtCisaBlockHighRiskUser - [MS.AAD.2.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad21v1)
 * Test-MtCisaBlockLegacyAuth - [MS.AAD.1.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#1-legacy-authentication)
 * Test-MtCisaCloudGlobalAdmin - [MS.AAD.7.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad73v1)
+* Test-MtCisaDiagnosticSettings - [MS.AAD.4.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad41v1)
 * Test-MtCisaGlobalAdminCount - [MS.AAD.7.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad71v1)
 * Test-MtCisaGlobalAdminRatio - [MS.AAD.7.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad72v1)
 * Test-MtCisaGuestInvitation - [MS.AAD.8.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad82v1)
