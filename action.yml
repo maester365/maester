@@ -10,8 +10,8 @@ inputs:
   client_id:
     description: "App Registration Client ID"
     required: true
-  use_public_tests:
-    description: "Use public test repository 'maester365/maester-tests'"
+  include_public_tests:
+    description: "Include public test repository 'maester365/maester-tests' as well as private tests in the test run"
     required: false
     default: "true"
 
@@ -34,13 +34,12 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: maester365/maester-tests
-        path: tests
+        path: public-tests
 
     - name: Checkout latest private tests
-      if: ${{ inputs.use_public_tests != 'true' }}
       uses: actions/checkout@v3
       with:
-        path: tests
+        path: private-tests
 
     - name: Run Maester
       uses: azure/powershell@v2
@@ -61,7 +60,7 @@ runs:
           $PesterConfiguration.Output.Verbosity = 'None'
 
           # Run Maester tests
-          $results = Invoke-Maester -Path ${{ github.workspace }}/tests/ -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+          $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
 
           # Add step summary
           $summary = Get-Content test-results/test-results.md
