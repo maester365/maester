@@ -14,6 +14,10 @@ inputs:
     description: "Include public test repository 'maester365/maester-tests' as well as private tests in the test run"
     required: false
     default: "true"
+  pester_verbosity:
+    description: "Pester verbosity level. Options: 'None', 'Normal', 'Detailed', 'Diagnostic'"
+    required: false
+    default: "None"
 
 runs:
   using: "composite"
@@ -57,7 +61,7 @@ runs:
 
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
-          $PesterConfiguration.Output.Verbosity = 'None'
+          $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
 
           # Run Maester tests
           $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
