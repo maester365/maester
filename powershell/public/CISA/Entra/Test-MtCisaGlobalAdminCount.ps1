@@ -20,13 +20,13 @@ Function Test-MtCisaGlobalAdminCount {
     $role = Get-MtRole | Where-Object {`
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10" }
 
-    $assignments = Get-MtRoleMember -roleId $role.id -All
+    $assignments = Get-MtRoleMember -roleId $role.id -Active
 
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"
     }
 
-    $testResult = $globalAdministrators.Count -ge 2 -and $globalAdministrators.Count -le 8
+    $testResult = ($globalAdministrators|Measure-Object).Count -ge 2 -and ($globalAdministrators|Measure-Object).Count -le 8
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has two or more and eight or fewer Global Administrators:`n`n%TestResult%"

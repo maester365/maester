@@ -25,9 +25,12 @@ Function Test-MtEidscaPR02 {
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value
     $testResult = $tenantValue -eq 'True'
+    $tenantValueNotSet = $null -eq $tenantValue -and 'True' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'True'** for **settings**"
+    } elseif ($tenantValueNotSet) {
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'True'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'True'** for **settings**"
     }

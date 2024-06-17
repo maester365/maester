@@ -57998,13 +57998,13 @@ function ResultInfoDialog(props) {
   ] });
 }
 function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = reactExports.useState(["Passed", "Failed"]);
+  const [selectedStatus, setSelectedStatus] = reactExports.useState(["Passed", "Failed", "Skipped"]);
   const [selectedBlock, setSelectedBlock] = reactExports.useState([]);
   const testResults2 = props.TestResults;
   const isStatusSelected = (item) => {
     return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) && (selectedBlock.includes(item.Block) || selectedBlock.length === 0);
   };
-  const status = ["Passed", "Failed", "NotRun"];
+  const status = ["Passed", "Failed", "NotRun", "Skipped"];
   return /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { children: [
     /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { justifyContent: "start", children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(
@@ -58019,7 +58019,7 @@ function TestResultsTable(props) {
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(
         h$2,
         {
-          defaultValue: ["Passed", "Failed"],
+          defaultValue: ["Passed", "Failed", "Skipped"],
           onValueChange: setSelectedStatus,
           placeholder: "Select status...",
           className: "min-w-fit max-w-6",

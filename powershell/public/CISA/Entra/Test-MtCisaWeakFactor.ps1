@@ -29,7 +29,7 @@ Function Test-MtCisaWeakFactor {
 
     $enabledWeakMethods = $weakAuthMethods | Where-Object { $_.state -eq "enabled" }
 
-    $testResult = $enabledWeakMethods.Count -eq 0
+    $testResult = ($enabledWeakMethods|Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. All weak authentication methods are disabled in your tenant.`n`n%TestResult%"

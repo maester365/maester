@@ -34,10 +34,16 @@ Function Connect-Maester {
       [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
       [string]$Environment = "Global",
 
+      # The Azure environment to connect to. Default is AzureCloud.
       [ValidateSet("AzureChinaCloud", "AzureCloud", "AzureUSGovernment")]
       [string]$AzureEnvironment = "AzureCloud",
 
-      [ValidateSet("All","Azure","Graph")]
+      # The Exchange environment to connect to. Default is O365Default.
+      [ValidateSet("O365China", "O365Default", "O365GermanyCloud", "O365USGovDoD", "O365USGovGCCHigh")]
+      [string]$ExchangeEnvironmentName = "O365Default",
+
+      # The services to connect to such as Azure and EXO. Default is Graph.
+      [ValidateSet("All","Azure","ExchageOnline","Graph")]
       [string[]]$Service = "Graph"
    )
 
@@ -51,5 +57,11 @@ Function Connect-Maester {
    if($Service -contains "Azure" -or $Service -contains "All"){
       Write-Verbose "Connecting to Microsoft Azure"
       Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+   }
+
+   if($Service -contains "ExchageOnline" -or $Service -contains "All"){
+      Write-Verbose "Connecting to Microsoft Exchage Online"
+
+      Connect-ExchangeOnline -ShowBanner:$false -Device:$UseDeviceCode -ExchangeEnvironmentName $ExchangeEnvironmentName
    }
 }
