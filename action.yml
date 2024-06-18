@@ -1,4 +1,4 @@
-name: "maester365"
+name: "Maester Action"
 description: "Monitor your Microsoft 365 tenant's security configuration using Maester THE PowerShell-based test automation framework"
 branding:
   icon: "check-circle"
