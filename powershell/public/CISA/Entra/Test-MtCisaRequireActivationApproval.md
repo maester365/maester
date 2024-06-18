@@ -6,7 +6,7 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 
 1. In **Entra admin center** select **Identity governance** and **Privileged Identity Management**.
 2. Under **Manage**, select **Microsoft Entra roles**.
-3. Under **Manage**, select **Roles**.
+3. Under **Manage**, select select **[Roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)**.
 4. Select the **Global Administrator** role in the list.
 5. Click **Settings**.
 6. Click **Edit**.
@@ -16,6 +16,7 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 
 #### Related links
 
+* [Entra admin center - Privileged Identity Management | Microsoft Entra roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)
 * [CISA 7.6 Highly Privileged User Access - MS.AAD.7.6v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad76v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L938)
 
