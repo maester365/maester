@@ -64,6 +64,7 @@ module.exports = [
     'commands/Test-MtCisaBlockHighRiskUser',
     'commands/Test-MtCisaBlockLegacyAuth',
     'commands/Test-MtCisaCloudGlobalAdmin',
+    'commands/Test-MtCisaDiagnosticSettings',
     'commands/Test-MtCisaGlobalAdminCount',
     'commands/Test-MtCisaGlobalAdminRatio',
     'commands/Test-MtCisaGuestInvitation',

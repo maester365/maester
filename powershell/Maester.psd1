@@ -92,7 +92,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
                'Test-MtCaRequirePasswordChangeForHighUserRisk',
-               'Test-MtCaSecureSecurityInfoRegistration',
+               'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCisaDiagnosticSettings',
                'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCisaBlockLegacyAuth',
                'Test-MtCisaBlockHighRiskUser', 'Test-MtCisaBlockHighRiskSignIn',
                'Test-MtCisaNotifyHighRisk', 'Test-MtCisaPhishResistant',
