@@ -4,12 +4,13 @@ Rationale: By only allowing an authorized group of individuals to invite externa
 
 #### Remediation action:
 
-1. In **Entra ID** select **External Identities** > **External collaboration settings**.
+1. In **Entra ID** and **External Identities**, select **[External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings)**.
 2. Under **Guest invite settings**, select **Only users assigned to specific admin roles can invite guest users**.
 3. Click **Save**.
 
 #### Related links
 
+* [External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings)
 * [CISA Guest User Access - MS.AAD.8.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad82v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L1157)
 
