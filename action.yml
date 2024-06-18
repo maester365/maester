@@ -1,0 +1,80 @@
+name: "Maester Action"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester THE PowerShell-based test automation framework"
+branding:
+  icon: "check-circle"
+  color: "red"
+inputs:
+  tenant_id:
+    description: "Entra ID Tenant ID"
+    required: true
+  client_id:
+    description: "App Registration Client ID"
+    required: true
+  include_public_tests:
+    description: "Include public test repository 'maester365/maester-tests' as well as private tests in the test run"
+    required: false
+    default: "true"
+  pester_verbosity:
+    description: "Pester verbosity level. Options: 'None', 'Normal', 'Detailed', 'Diagnostic'"
+    required: false
+    default: "None"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Sign in to Entra ID
+      uses: azure/login@v2
+      with:
+        client-id: ${{ inputs.client_id }}
+        tenant-id: ${{ inputs.tenant_id }}
+        allow-no-subscriptions: true
+
+    - name: Set current date as env variable
+      shell: bash
+      run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
+
+    - name: Checkout latest public tests
+      if: ${{ inputs.include_public_tests == 'true' }}
+      uses: actions/checkout@v3
+      with:
+        repository: maester365/maester-tests
+        path: public-tests
+
+    - name: Checkout latest private tests
+      uses: actions/checkout@v3
+      with:
+        path: private-tests
+
+    - name: Run Maester
+      uses: azure/powershell@v2
+      with:
+        inlineScript: |
+          # Get Token
+          $token = az account get-access-token --resource-type ms-graph
+
+          # Connect to Microsoft Graph
+          $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
+          Connect-MgGraph -AccessToken $accessToken
+
+          # Install Maester
+          Install-Module Maester -Force
+
+          # Configure test results
+          $PesterConfiguration = New-PesterConfiguration
+          $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
+
+          # Run Maester tests
+          $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+
+          # Add step summary
+          $summary = Get-Content test-results/test-results.md
+          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+
+        azPSVersion: "latest"
+
+    - name: Archive Maester Html Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: maester-test-results-${{ env.NOW }}
+        path: test-results
