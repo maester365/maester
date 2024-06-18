@@ -16,8 +16,8 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet("EntraID")]
-        $Product
+        [ValidateSet('EntraID', 'EntraWorkloadID')]
+        [string] $Product
     )
 
     process {
@@ -38,6 +38,21 @@ function Get-MtLicenseInformation {
                 return $LicenseType
                 Break
             }
+            "EntraWorkloadID" {
+                Write-Verbose "Retrieving license SKU"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                if ("84c289f0-efcb-486f-8581-07f44fc9efad" -in $skus) {
+                    $LicenseType = "P1"
+                } elseif ("7dc0e92d-bf15-401d-907e-0884efe7c760" -in $skus) {
+                    $LicenseType = "P2"
+                } else {
+                    $LicenseType = $null
+                }
+                Write-Information "The license type for Entra ID is $LicenseType"
+                return $LicenseType
+                Break
+            }
+
             Default {}
         }
     }
