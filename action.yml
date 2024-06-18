@@ -1,5 +1,5 @@
-name: "Maester"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester! Maester is a **PowerShell-based test automation framework** designed to help you monitor and maintain the security configuration of your Microsoft 365 environment."
+name: "maester365"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester THE PowerShell-based test automation framework"
 branding:
   icon: "check-circle"
   color: "red"
