@@ -20,6 +20,34 @@ Connect-Maester
 Invoke-Maester
 ```
 
+## Optional modules and permissions
+
+Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
+
+### Installing Azure and Exchange Online modules
+
+```powershell
+Install-Module Az -Scope CurrentUser
+Install-Module ExchangeOnlineManagement -Scope CurrentUser
+```
+
+### Connecting to Azure, Exchange and other services
+
+In order to run all the CISA tests, you need to connect to the Azure and Exchange Online modules.
+
+Run the following command to interactively connect to the Azure and Exchange Online modules. A sign in window will appear for each module.
+
+```powershell
+Connect-Maester -Service All
+```
+
+### Permissions
+
+Exchange Online implements a [role-based access control model](https://learn.microsoft.com/exchange/permissions-exo/permissions-exo). The controls these cmdlets test, require minimum roles of either of the following:
+
+* View-Only Configuration OR
+* O365SupportViewConfig
+
 ## Next Steps
 
 - Monitoring with Maester

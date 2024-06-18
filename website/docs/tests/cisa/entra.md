@@ -1,29 +1,19 @@
 ---
-id: overview
-title: CISA Entra Controls
 sidebar_label: Entra
 description: Implementation of CISA Entra Controls
 ---
 
-```mdx-code-block
-
-# CISA Entra Controls
+# CISA Controls for Microsoft Entra
 
 ## Overview
 
-The tests in this section verifies that a Microsoft 365 tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
+The tests in this section verifies that a Microsoft 365 tenant’s **Entra** configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
 
-## ⚠️ Additional Modules
+## Connecting to Azure, Exchange and other services
 
-The CISA controls include tests that require access to additional API endpoints not currently available through the Microsoft Graph API.
+In order to run all the CISA tests, you need to install and connect to the Azure and Exchange Online modules.
 
-* §4.1 requires the Az.Accounts Module.
-
-The [`Connect-Maester`](../../commands/Connect-Maester) cmdlet supports connecting to multiple modules. Please connect to Azure and Graph as shown below or manually create these connections for the cmdlets to function.
-
-~~~
-Connect-Maester -Service Azure,Graph
-~~~
+See the [Installation guide](/docs/installation#optional-modules-and-permissions) for more information.
 
 ## Tests
 
@@ -56,6 +46,3 @@ Connect-Maester -Service Azure,Graph
 * Test-MtCisaRequireActivationApproval - [MS.AAD.7.6](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad76v1)
 * Test-MtCisaUnmanagedRoleAssignment - [MS.AAD.7.5](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad75v1)
 * Test-MtCisaWeakFactor - [MS.AAD.3.5](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad35v1)
-
-
-```
