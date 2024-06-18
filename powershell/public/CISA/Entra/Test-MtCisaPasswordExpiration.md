@@ -5,11 +5,14 @@ The National Institute of Standards and Technology (NIST), OMB, and Microsoft ha
 #### Remediation action:
 
 Configure password policies to set passwords to never expire.
-
-1. [Configure the **Password expiration policy** to **Set passwords to never expire**](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/set-password-expiration-policy?view=o365-worldwide#set-password-expiration-policy).
+1. In **[Microsoft 365 admin center](https://admin.cloud.microsoft/)** under **Settings** and **Org settings**, select the tab **Security & privacy**.
+2. Under **[Password expiration policy](https://admin.cloud.microsoft/?#/Settings/SecurityPrivacy/:/Settings/L1/PasswordPolicy)**, set **Set passwords to never expire**.
+3. Click **Save**.
 
 #### Related links
 
+* [Microsoft 365 admin center - Org settings | Password expiration policy](https://admin.cloud.microsoft/?#/Settings/SecurityPrivacy/:/Settings/L1/PasswordPolicy)
+* [Configure the **Password expiration policy** ](https://learn.microsoft.com/en-us/microsoft-365/admin/manage/set-password-expiration-policy?view=o365-worldwide#set-password-expiration-policy)
 * [CISA Passwords - MS.AAD.6.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad61v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L723)
 
