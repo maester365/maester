@@ -64,6 +64,7 @@ runs:
           $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
 
           # Run Maester tests
+          Get-ChildItem ${{ github.workspace }} -Recurse | ForEach-Object { . $_.FullName }
           $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
 
           # Add step summary
