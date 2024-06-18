@@ -6,7 +6,10 @@ Rationale: Closely monitor assignment of the highest privileged roles for signs 
 
 1. In **Entra admin center** select **Identity governance** and **Privileged Identity Management**.
 2. Under **Manage**, select **Microsoft Entra roles**.
-3. Under **Manage**, select **Roles**. Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.
+3. Under **Manage**, select **[Roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)**.
+
+    Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.
+
 4. Click the **Global Administrator** role.
 5. Click **Settings** and then click **Edit**.
 6. Click the **Notifications** tab.
@@ -17,6 +20,7 @@ Rationale: Closely monitor assignment of the highest privileged roles for signs 
 
 #### Related links
 
+* [Entra admin center - Privileged Identity Management | Microsoft Entra roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)
 * [CISA 7.7 Highly Privileged User Access - MS.AAD.7.7v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad77v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L974)
 
