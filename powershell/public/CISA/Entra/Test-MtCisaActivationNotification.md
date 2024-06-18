@@ -11,7 +11,7 @@ Rationale: Closely monitor activation of high-risk roles for signs of compromise
 1. In **Entra admin center** select **Identity governance** and **Privileged Identity Management**.
 2. Under **Manage**, select **Microsoft Entra roles**.
 3. Under **Manage**, select **[Roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)**.
-4. Search on the role, then click on etc. the **Global Administrator** role.
+4. Search and click the **Global Administrator** role.
 
     For each of the highly privileged roles (other than Global Administrator), follow the same steps but enter a security monitoring mailbox different from the one used to monitor Global Administrator activations.
 
