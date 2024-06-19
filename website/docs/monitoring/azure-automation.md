@@ -31,7 +31,6 @@ The necessary permissions must be assigned to the Managed Identity associated wi
 
 If the automation needs to email the Maester report, the **Mail.Send** permission is also required.
 
-```powershell
 To do this, you will use the Microsoft Graph PowerShell SDK. Ensure you modify the first line with the name of your Automation Account.
 
 ```powershell
