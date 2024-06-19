@@ -41,7 +41,7 @@ $Scopes = @(
     "AppRoleAssignment.ReadWrite.All"
 )
 
-Connect-MgGraph -Scopes $Scopes
+Connect-MgGraph -Identity
 
 $permissions =  @(
     "Directory.Read.All",
