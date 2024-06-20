@@ -44,7 +44,71 @@ If you’re unable to use more advanced options like certificates stored in Azur
 - <IIcon icon="material-symbols:password" height="18" /> **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
 
 <Tabs>
-  <TabItem value="wif" label="Workload identity federation (recommended)" default>
+  <TabItem value="gha-wif" label="GitHub Action using Workload identity federation (recommended)" default>
+
+This guide is based on [Use GitHub Actions to connect to Azure](https://learn.microsoft.com/azure/developer/github/connect-from-azure) and uses the maester GitHub action.
+
+### Pre-requisites
+
+<CreateEntraApp/>
+
+### Add federated credentials
+
+- Select **Certificates & secrets**
+- Select **Federated credentials**, select **Add credential**
+- For **Federated credential scenario**, select **GitHub Actions deploying Azure resources**
+- Fill in the following fields
+  - **Organization**: Your GitHub organization name or GitHub username. E.g. `jasonf`
+  - **Repository**: Your GitHub repository name (from the previous step). E.g. `maester-tests`
+  - **Entity type**: `Branch`
+  - **GitHub branch name**: `main`
+  - **Credential details** > **Name**: E.g. `maester-devops`
+- Select **Add**
+
+### Create GitHub secrets
+
+- Open your `maester-tests` GitHub repository and go to **Settings**
+- Select **Security** > **Secrets and variables** > **Actions**
+- Add the secrets listed below by selecting **New repository secret**
+- To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
+  - Name: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
+  - Name: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
+- Save each secret by selecting **Add secret**.
+
+<EnableGitHubActionsCreateWorkflow/>
+
+```yaml
+name: Maester Daily Tests
+
+on:
+  push:
+    branches: ["main"]
+  # Run once a day at midnight
+  schedule:
+    - cron: "0 0 * * *"
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+      checks: write
+
+jobs:
+  run-maester-tests:
+    name: Run Maester Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Maester action
+      uses: maester365/maester@main
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+```
+
+  </TabItem>
+  <TabItem value="wif" label="Custom workflow using Workload identity federation" default>
 
 This guide is based on [Use GitHub Actions to connect to Azure](https://learn.microsoft.com/azure/developer/github/connect-from-azure)
 
@@ -151,7 +215,7 @@ jobs:
 ```
 
   </TabItem>
-  <TabItem value="cert" label="Client secret">
+  <TabItem value="cert" label="Custom workflow using Client secret">
 
 <CreateEntraApp/>
 
