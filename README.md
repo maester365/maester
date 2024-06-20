@@ -25,6 +25,14 @@ To learn more about Maester and to get started, visit [Maester.dev](https://maes
 Install-Module -Name Maester -Scope CurrentUser
 ```
 
+### Installing Maester Tests
+
+```powershell
+md maester-tests
+cd maester-tests
+Install-MaesterTests .\tests
+```
+
 ## Running Maester
 
 To run the tests in this folder run the following PowerShell commands. To learn more see [maester.dev](https://maester.dev).
@@ -49,7 +57,6 @@ Allowed values include:
 ```powershell
 Connect-Maester -Environment USGov
 ```
-
 
 ## Keeping your Maester tests up to date
 
