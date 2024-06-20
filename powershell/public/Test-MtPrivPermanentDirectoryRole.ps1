@@ -62,11 +62,11 @@ Learn more about the best practices for privileges users:
         # Looking for Service Principals with App Registrations (Application type from the same tenant)
         $PrivilegedAppIds = ($DirectAssignments | Where-Object { $_.principal.servicePrincipalType -eq "Application" -and $_.principal.appOwnerOrganizationId -eq $tenantId }).principal.appId
         # Check if any Service Principal has a Client Secret
-        $PrincipalWithSpSecret = ($DirectAssignments.principal | Where-Object { $_.principal.servicePrincipalType -eq "Application" -and $null -ne $_.principal.passwordCredentials } ).appId
+        $PrincipalWithSpSecret = ($DirectAssignments.principal | Where-Object { $_.principal.servicePrincipalType -eq "Application" -and $_.principal.passwordCredentials } ).appId
 
         # Check if any Service Principal with App Registration has a Client secret
         If ($PrivilegedAppIds) {
-          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } | Where-Object { $null -ne $_.passwordCredentials }).appId
+          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } | Where-Object { $_.passwordCredentials }).appId
         }
         # Return results filters Privileged Assignments with Client Secret
         $PrincipalWithSecrets = $PrincipalWithSpSecret + $PrincipalWithAppSecret
