@@ -50,7 +50,6 @@ Allowed values include:
 Connect-Maester -Environment USGov
 ```
 
-
 ## Keeping your Maester tests up to date
 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.
@@ -63,4 +62,42 @@ The Maester team will add new tests over time. To get the latest updates, use th
 Update-Module Maester -Force
 Import-Module Maester
 Update-MaesterTests
+```
+
+## Use as GitHub action
+
+Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/maester-action) and can be used directly in any GitHub workflow.
+
+Just provide the required client and tenant id. For more details please refer to the [docs](https://maester.dev/docs/monitoring/github/).
+
+```yaml
+name: Maester Daily Tests
+
+on:
+  push:
+    branches: ["main"]
+  # Run once a day at midnight
+  schedule:
+    - cron: "0 0 * * *"
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+      checks: write
+
+jobs:
+  run-maester-tests:
+    name: Run Maester Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Maester action
+      uses: maester365/maester@main
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        include_public_tests: true # Optional
+        pester_verbosity: None # Optional - 'None', 'Normal', 'Detailed', 'Diagnostic'
+
 ```
