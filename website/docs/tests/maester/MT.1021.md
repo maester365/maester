@@ -30,6 +30,7 @@ To enable security defaults:
 - Set **Security defaults** to **Enabled**.
 - Select **Save**.
 
-## Learn more
+## Related links
 
+- [Entra admin center - Security default settings](https://portal.azure.com/#view/Microsoft_AAD_ConditionalAccess/SecurityDefaults)
 - [Security defaults in Microsoft Entra ID](https://learn.microsoft.com/entra/fundamentals/security-defaults)
