@@ -27,8 +27,8 @@ Function Test-MtPrivPermanentDirectoryRole {
   }
 
   process {
-    $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta
-    $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta
+    $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta -DisableCache
+    $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta -DisableCache
 
     if ($null -eq $DirectAssignments) {
       Write-Error "No direct assignments found!"
@@ -66,7 +66,7 @@ Learn more about the best practices for privileges users:
 
         # Check if any Service Principal with App Registration has a Client secret
         If ($PrivilegedAppIds) {
-          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } | Where-Object { $_.passwordCredentials }).appId
+          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta -DisableCache } | Where-Object { $_.passwordCredentials }).appId
         }
         # Return results filters Privileged Assignments with Client Secret
         $PrincipalWithSecrets = $PrincipalWithSpSecret + $PrincipalWithAppSecret
@@ -105,6 +105,7 @@ Learn more about the best practices for securing privileged user accounts:
 
     if ($PermDirRoleAssignments.Count -eq "0") {
       $result = $false
+      $testResult = "Well done!"
     } else {
       $result = $true
 
@@ -127,8 +128,8 @@ Learn more about the best practices for securing privileged user accounts:
         $testResult += "  - [$($PermDirRoleAssignment.principal.displayName)]($($PortalDeepLink)$($PermDirRoleAssignment.principal.id)) with $($Role.displayName) on scope $($PermDirRoleAssignment.directoryScopeId)`n"
         Write-Verbose "Directory Role Assignment of $($FilterPrincipal) exists $($PermDirRoleAssignment.principal.displayName) is $($FilterPrincipal) as $($Role.displayName) on $($PermDirRoleAssignment.directoryScopeId)"
       }
-      Add-MtTestResultDetail -Description $testDescription -Result $testResult
     }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
     return $result
   }
 }
