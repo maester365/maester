@@ -14,6 +14,26 @@ inputs:
     description: "Include public test repository 'maester365/maester-tests' as well as private tests in the test run"
     required: false
     default: "true"
+  mail_recipients:
+    description: "A list of email addresses to send the test results to. Please separate multiple email addresses with a comma."
+    required: false
+    default: ""
+  mail_userid:
+    description: "The user id of the sender of the mail. This is required since the action is using application permissions."
+    required: false
+    default: ""
+  mail_testresultsuri:
+    description: "Uri to the detailed test results page."
+    required: false
+    default: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  include_tags:
+    description: "A list of tags to include in the test run. Please separate multiple tags with a comma."
+    required: false
+    default: ""
+  exclude_tags:
+    description: "A list of tags to exclude from the test run. Please separate multiple tags with a comma."
+    required: false
+    default: ""
   pester_verbosity:
     description: "Pester verbosity level. Options: 'None', 'Normal', 'Detailed', 'Diagnostic'"
     required: false
@@ -63,8 +83,41 @@ runs:
           $PesterConfiguration = New-PesterConfiguration
           $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
 
+          $MaesterParameters = @{
+              Path                 = '${{ github.workspace }}'
+              PesterConfiguration  = $PesterConfiguration
+              OutputFolder         = 'test-results'
+              OutputFolderFileName = 'test-results'
+              PassThru             = $true
+          }
+
+          # Check if test tags are provided
+          if ( [string]::IsNullOrWhiteSpace( $env:INPUT_INCLUDE_TAGS ) -eq $false ) {
+              $TestTags = $env:INPUT_INCLUDE_TAGS -split ','
+              $MaesterParameters.Add( 'Tag', $TestTags )
+          }
+
+          # Check if exclude test tags are provided
+          if ( [string]::IsNullOrWhiteSpace( $env:INPUT_EXCLUDE_TAGS ) -eq $false ) {
+              $ExcludeTestTags = $env:INPUT_EXCLUDE_TAGS -split ','
+              $MaesterParameters.Add( 'ExcludeTag ', $ExcludeTestTags )
+          }
+
+          # Check if mail recipients and mail userid are provided
+          if ( [string]::IsNullOrWhiteSpace( $env:INPUT_MAIL_USERID ) -eq $false ) {
+              if ( [string]::IsNullOrWhiteSpace( $env:INPUT_MAIL_RECIPIENTS ) -eq $false ) {
+                  # Add mail parameters
+                  $MaesterParameters.Add( 'MailUserId', $env:INPUT_MAIL_USERID )
+                  $Recipients = $env:INPUT_MAIL_RECIPIENTS -split ','
+                  $MaesterParameters.Add( 'MailRecipients', $Recipients )
+                  $MaesterParameters.Add( 'MailTestResultsUri', $env:INPUT_MAIL_TESTRESULTSURI )
+              } else {
+                  Write-Warning "Mail recipients are not provided. Skipping mail notification."
+              }
+          }
+
           # Run Maester tests
-          $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+          $results = Invoke-Maester @MaesterParameters
 
           # Add step summary
           $summary = Get-Content test-results/test-results.md
