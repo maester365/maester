@@ -27,8 +27,8 @@ Function Test-MtPrivPermanentDirectoryRole {
   }
 
   process {
-    $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta -DisableCache
-    $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta -DisableCache
+    $DirectAssignments = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleAssignments?$expand=principal' -ApiVersion beta
+    $RoleDefinitions = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/roleDefinitions' -ApiVersion beta
 
     if ($null -eq $DirectAssignments) {
       Write-Error "No direct assignments found!"
@@ -66,7 +66,7 @@ Learn more about the best practices for privileges users:
 
         # Check if any Service Principal with App Registration has a Client secret
         If ($PrivilegedAppIds) {
-          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta -DisableCache } | Where-Object { $_.passwordCredentials }).appId
+          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } | Where-Object { $_.passwordCredentials }).appId
         }
         # Return results filters Privileged Assignments with Client Secret
         $PrincipalWithSecrets = $PrincipalWithSpSecret + $PrincipalWithAppSecret
