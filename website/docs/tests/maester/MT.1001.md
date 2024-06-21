@@ -17,6 +17,6 @@ Create a conditional access policy that requires devices to have device complian
 
 Use this template and customize it to exclude MFA so that only device compliance is applied [Require a compliant device, Microsoft Entra hybrid joined device, or multi-factor authentication for all users](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device).
 
-## Learn more
+## Related links
 - [Entra admin center - Conditional Access | Policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Overview/fromNav/)
 - [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
