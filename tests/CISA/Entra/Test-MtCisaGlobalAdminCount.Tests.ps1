@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $scopes = (Get-MtContext).Scopes
+    $scopes = (Get-MgContext).Scopes
     $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes
 }
 

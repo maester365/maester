@@ -15,7 +15,8 @@ Function Invoke-MtGraphRequestCache {
         [System.Collections.IDictionary] $Headers,
         # Specify if this request should skip cache and go directly to Graph.
         [Parameter(Mandatory = $false)]
-        [switch] $DisableCache
+        [switch] $DisableCache,
+        [string] $Body
     )
 
     $results = $null
@@ -32,7 +33,7 @@ Function Invoke-MtGraphRequestCache {
 
     if (!$results) {
         Write-Verbose ("Invoking Graph: $($Uri.AbsoluteUri)")
-        $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType
+        $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
         if (!$isBatch -and $isMethodGet) {
             # Update cache
             if ($isInCache) {

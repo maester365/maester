@@ -58,6 +58,14 @@ Function Get-MtRoleMember {
         expand="principal"
       }
     }
+
+    if($dirAssignmentsSplat.RelativeUri -eq "roleManagement/directory/roleEligibilityScheduleRequests"){
+      # Exclude Revoked and other non-eligible states
+      # See full list of states at https://learn.microsoft.com/en-us/graph/api/resources/request?view=graph-rest-1.0#properties
+      $dirAssignmentsSplat.Filter += " and NOT(status eq 'Canceled' or status eq 'Denied' or status eq 'Failed' or status eq 'Revoked')"
+    }
+
+
     $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
 
     if($dirAssignments.id.Count -eq 0){
