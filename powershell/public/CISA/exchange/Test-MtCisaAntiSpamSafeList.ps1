@@ -4,15 +4,15 @@
 
 .DESCRIPTION
 
-    IP allow lists SHOULD NOT be created.
+    Safe lists SHOULD NOT be enabled.
 
 .EXAMPLE
-    Test-MtCisaAntiSpamAllowList
+    Test-MtCisaAntiSpamSafeList
 
-    Returns true if no allowed IPs in anti-spam policy
+    Returns true if Safe List is disabled in anti-spam policy
 #>
 
-Function Test-MtCisaAntiSpamAllowList {
+Function Test-MtCisaAntiSpamSafeList {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -20,7 +20,7 @@ Function Test-MtCisaAntiSpamAllowList {
     $policy = Get-HostedConnectionFilterPolicy
 
     $resultPolicy = $policy | Where-Object {`
-        ($_.IPAllowList|Measure-Object).Count -eq 0
+        -not $_.EnableSafeList
     }
 
     $testResult = ($resultPolicy|Measure-Object).Count -eq 1
@@ -28,14 +28,11 @@ Function Test-MtCisaAntiSpamAllowList {
     $portalLink = "https://security.microsoft.com/antispam?tid=344f7861-e82f-495d-8bf3-3898ef4b2ae2"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow IPs for bypass.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant does not allow Safe List.`n`n%TestResult%"
         $result = "[✅ Pass]($portalLink)"
     } else {
-        $testResultMarkdown = "Your tenant does allow IPs for bypass.`n`n%TestResult%"
-        $result = "[❌ Fail]($portalLink)`n`n"
-        $policy.IPAllowList|foreach {`
-            $result += "* $_`n"
-        }
+        $testResultMarkdown = "Your tenant does allow Safe List.`n`n%TestResult%"
+        $result = "[❌ Fail]($portalLink)"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
