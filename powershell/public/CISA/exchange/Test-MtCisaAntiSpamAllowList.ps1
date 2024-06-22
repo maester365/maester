@@ -33,7 +33,7 @@ Function Test-MtCisaAntiSpamAllowList {
     } else {
         $testResultMarkdown = "Your tenant does allow IPs for bypass.`n`n%TestResult%"
         $result = "[❌ Fail]($portalLink)`n`n"
-        $policy.IPAllowList|foreach {`
+        $policy.IPAllowList | ForEach-Object {`
             $result += "* $_`n"
         }
     }
