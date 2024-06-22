@@ -4,15 +4,15 @@
 
 .DESCRIPTION
 
-    Contact folders SHALL NOT be shared with all domains.
+    Calendar details SHALL NOT be shared with all domains.
 
 .EXAMPLE
-    Test-MtCisaContactSharing
+    Test-MtCisaCalendarSharing
 
-    Returns true if no sharing policies allow uncontrolled contact sharing.
+    Returns true if no sharing policies allow uncontrolled calendar sharing.
 #>
 
-Function Test-MtCisaContactSharing {
+Function Test-MtCisaCalendarSharing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -21,16 +21,16 @@ Function Test-MtCisaContactSharing {
 
     $resultPolicies = $policies | Where-Object {`
         $_.Enabled -and `
-        ($_.Domains -like "`*:*ContactsSharing*" -or `
-         $_.Domains -like "Anonymous:*ContactsSharing*")
+        ($_.Domains -like "`*:*CalendarSharing*" -or `
+         $_.Domains -like "Anonymous:*CalendarSharing*")
     }
 
     $testResult = ($resultPolicies|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled contact sharing.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant allows uncontrolled contact sharing.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%TestResult%"
     }
 
     $result = "| Policy Name | Test Result |`n"

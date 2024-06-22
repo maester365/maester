@@ -108,7 +108,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
                'Test-MtCisaAutoExternalForwarding', 'Test-MtCisaSmtpAuthentication',
-               'Test-MtCisaContactSharing',
+               'Test-MtCisaContactSharing', 'Test-MtCisaCalendarSharing',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaAF01',
