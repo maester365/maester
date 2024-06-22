@@ -25,7 +25,11 @@ Function Install-MaesterTests {
     param(
         # The path to install the Maester tests to, defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = ".\"
+        [string] $Path = ".\",
+
+        # Switch to optionally install Pester pre-requisites
+        [Parameter(Mandatory = $false)]
+        [switch] $Prerequisites
     )
     Get-IsNewMaesterVersionAvailable | Out-Null
 
@@ -44,5 +48,16 @@ Function Install-MaesterTests {
     }
 
     Update-MtMaesterTests -Path $Path -Install
+
+    if ( $PSBoundParameters.ContainsKey('Prerequisites') ) {
+        # If the minimum required version of Pester is not installed, install it for the current user.
+        $PesterMinVersion = ((Get-Module -Name Maester -ListAvailable).RequiredModules.Where({$_.Name -eq 'Pester'})).Version
+        if ( ((Get-Module -Name Pester -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $PesterMinVersion ) {
+            Write-Verbose "Installing Pester."
+            Install-Module -Name Pester -SkipPublisherCheck -Force -Scope CurrentUser
+        } else {
+            Write-Information -Message "The minimum required version of Pester is already installed." -InformationAction Continue
+        }
+    }
 
 }
