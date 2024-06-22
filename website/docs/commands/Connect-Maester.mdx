@@ -15,9 +15,9 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ## SYNTAX
 
 ```powershell
-Connect-Maester [-SendMail] [-UseDeviceCode] [[-Environment] <String>] [[-AzureEnvironment] <String>]
- [[-ExchangeEnvironmentName] <String>] [[-Service] <String[]>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Connect-Maester [-SendMail] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
+ [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-Service] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,6 +54,22 @@ Connect-Maester -Service Azure,Graph
 ### -SendMail
 
 If specified, the cmdlet will include the scope to send email (Mail.Send).
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Privileged
+
+If specified, the cmdlet will include the scopes for read write API endpoints.
 
 ```yaml
 Type: SwitchParameter
