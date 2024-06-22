@@ -14,6 +14,11 @@
     Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send email.
+
+ .Example
+    Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
+
+    Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
 #>
 
 Function Get-MtGraphScope {
@@ -22,7 +27,10 @@ Function Get-MtGraphScope {
     param(
         # If specified, the cmdlet will include the scope to send email (Mail.Send).
         [Parameter(Mandatory = $false)]
-        [switch] $SendMail
+        [switch] $SendMail,
+        # If specified, the cmdlet will include the scope for read write endpoints.
+        [Parameter(Mandatory = $false)]
+        [switch] $Privileged
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
@@ -45,6 +53,19 @@ Function Get-MtGraphScope {
         'Policy.Read.ConditionalAccess'
         'UserAuthenticationMethod.Read.All'
     )
+
+    # Any changes made to these permission scopes should be reflected in the documentation.
+    # /maester/website/docs/sections/privilegedPermissions.md
+    $privilegedScopes = @(
+        'RoleEligibilitySchedule.ReadWrite.Directory' #Ref https://github.com/maester365/maester/issues/195#issuecomment-2170879665
+    )
+
+    if ($Privileged) {
+        Write-Verbose -Message "Adding Privileged scopes."
+        $privilegedScopes | ForEach-Object { `
+            $scopes += $_
+        }
+    }
 
     if ($SendMail) {
         Write-Verbose -Message "Adding SendMail scope."

@@ -20,7 +20,7 @@ Function Test-MtCisaGlobalAdminCount {
     $role = Get-MtRole | Where-Object {`
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10" }
 
-    $assignments = Get-MtRoleMember -roleId $role.id -Active
+    $assignments = Get-MtRoleMember -roleId $role.id -All
 
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"

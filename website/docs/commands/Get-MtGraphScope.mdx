@@ -15,7 +15,7 @@ Returns the list of Graph scopes required to run Maester.
 ## SYNTAX
 
 ```powershell
-Get-MtGraphScope [-SendMail] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtGraphScope [-SendMail] [-Privileged] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,11 +40,35 @@ Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail)
 
 Connects to Microsoft Graph with the required scopes to run Maester and send email.
 
+### EXAMPLE 3
+
+```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
+```
+
+Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
+
 ## PARAMETERS
 
 ### -SendMail
 
 If specified, the cmdlet will include the scope to send email (Mail.Send).
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Privileged
+
+If specified, the cmdlet will include the scope for read write endpoints.
 
 ```yaml
 Type: SwitchParameter

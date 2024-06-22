@@ -27,6 +27,9 @@ Function Connect-Maester {
       # If specified, the cmdlet will include the scope to send email (Mail.Send).
       [switch] $SendMail,
 
+      # If specified, the cmdlet will include the scopes for read write API endpoints.
+      [switch] $Privileged,
+
       # If specified, the cmdlet will use the device code flow to authenticate.
       [switch] $UseDeviceCode,
 
@@ -51,7 +54,7 @@ Function Connect-Maester {
 
    if($Service -contains "Graph" -or $Service -contains "All"){
       Write-Verbose "Connecting to Microsoft Graph"
-      Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+      Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
    }
 
    if($Service -contains "Azure" -or $Service -contains "All"){

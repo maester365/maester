@@ -26,7 +26,7 @@ Function Test-MtCisaGlobalAdminRatio {
             role        = $role.id
             assignments = $assignments
         }
-        $assignments = Get-MtRoleMember -roleId $role.id -Active
+        $assignments = Get-MtRoleMember -roleId $role.id -All
         $roleAssignment.assignments = $assignments
         $roleAssignments += $roleAssignment
     }
