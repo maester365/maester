@@ -7,6 +7,7 @@ title: Azure DevOps
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
+import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 import CreateEntraApp from '../sections/create-entra-app.md';
 import CreateEntraClientSecret from '../sections/create-entra-client-secret.md';
 
@@ -88,6 +89,8 @@ This empty resource group is required to set up workload identity federation aut
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
   <GraphPermissions/>
+- Optionally, search for each of the permissions if you want to allow privileged permissions:
+  <PrivilegedPermissions/>
 - Select **Add permissions**
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
