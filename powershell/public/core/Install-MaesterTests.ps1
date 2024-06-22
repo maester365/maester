@@ -49,15 +49,21 @@ Function Install-MaesterTests {
 
     Update-MtMaesterTests -Path $Path -Install
 
+    # Optionally install any missing required module versions.
     if ( $PSBoundParameters.ContainsKey('Prerequisites') ) {
-        # If the minimum required version of Pester is not installed, install it for the current user.
-        $PesterMinVersion = ((Get-Module -Name Maester -ListAvailable).RequiredModules.Where({$_.Name -eq 'Pester'})).Version
-        if ( ((Get-Module -Name Pester -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $PesterMinVersion ) {
-            Write-Verbose "Installing Pester."
-            Install-Module -Name Pester -SkipPublisherCheck -Force -Scope CurrentUser
-        } else {
-            Write-Information -Message "The minimum required version of Pester is already installed." -InformationAction Continue
+        $RequiredModules = (Get-Module -Name 'Maester' -ListAvailable).RequiredModules
+        foreach ($module in $RequiredModules) {
+            $moduleMinVersion = $module.Version
+            $moduleName = $module.Name
+
+            if ( ((Get-Module $moduleName -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $moduleMinVersion ) {
+                Write-Verbose "Installing $moduleName."
+                Install-Module -Name $moduleName -SkipPublisherCheck -Force -Scope CurrentUser
+            } else {
+                Write-Information -Message "The minimum required version of $moduleName is already installed." -InformationAction Continue
+            }
         }
+        Remove-Variable moduleName,moduleMinVersion,RequiredModules
     }
 
 }
