@@ -37,10 +37,10 @@ Function Test-MtCisaExternalSenderWarning {
 
     $result = "| Policy Name | Test Result |`n"
     $result += "| --- | --- |`n"
-    foreach ($item in $policies | Sort-Object -Property Name) {
+    foreach ($item in $rules | Sort-Object -Property Name) {
         $portalLink = "https://admin.exchange.microsoft.com/#/transportrules/:/ruleDetails/$($item.Guid)/viewinflyoutpanel"
         $itemResult = "❌ Fail"
-        if ($item.Guid -in $resultRules.Guid) {
+        if ($resultRules.Guid -contains $item.Guid) {
             $itemResult = "✅ Pass"
         }
         $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
