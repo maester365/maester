@@ -23,10 +23,10 @@ Function Test-MtCisaMailboxAuditing {
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has mailbox auditing enabled.`n`n%TestResult%"
-        $result = "[✅ Pass]"
+        $result = "✅ Pass"
     } else {
         $testResultMarkdown = "Your tenant does not have mailbox auditing enabled.`n`n%TestResult%"
-        $result = "[❌ Fail]"
+        $result = "❌ Fail"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
