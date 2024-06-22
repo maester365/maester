@@ -7,81 +7,77 @@ import GraphPermissions from '../sections/permissions.md';
 import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
 # <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Automation
+
 This guide will walk you through setting up Maester in Azure Automation and automate the running of tests using Runbooks.
 
 ## Why Azure Automation?
+
 Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost.
 
 ### Pre-requisites
-- If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
-- You must also have access to a **Global Administrator** account in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity you will create.
+
+- If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
+- You must also have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity.
 
 ## Create an Azure Automation Account
-- Log in to **[portal.azure.com](https://portal.azure.com)**.
-- Search for and select **Automation Accounts**.
-- Click **Create**.
-- Select your **subscription** and **resource group**, then define the account **name** and **region**.
-- Click **Next**.
-- Leave **System assigned managed identity** selected and click **Next**.
-- Click **Create**.
 
-##  Assign permissions to the System-assigned Managed Identity
-The necessary permissions must be assigned to the Managed Identity associated with the Automation Account. These are:
+- Browse to the Azure portal and open the **[Automation Accounts](https://portal.azure.com/#browse/Microsoft.Automation%2FAutomationAccounts)** blade.
+- Select **+ Create**.
+  - Select a **Subscription** and **Resource Group**.
+  - Enter a name for the account (e.g. `Maester-Automation-Account`) and select a **region**.
+- Select **Next**.
+- Leave **System assigned** selected
+- Select **Next**.
+- Select **Create**.
 
-<GraphPermissions/>
+## Assign permissions to the System-assigned Managed Identity
 
-## ℹ️ Optional Privileged Permissions
+The script below will assign the required Graph permissions to the managed identity created in the previous step.
 
-<PrivilegedPermissions/>
+Copy and paste the script below to run it in your local PowerShell environment.
 
-If the automation needs to email the Maester report, the **Mail.Send** permission is also required.
+If required, make the following changes to the script before running it:
+
+- Replace the `$managedIdentityName` variable with the name of the Automation Account you created in the previous step.
+- Uncomment the **-SendMail** switch in the Get-MtGraphScope line, if the automation needs to email the Maester report.
+- Uncomment the **-Privileged** switch in the Get-MtGraphScope line, if the automation needs to run some of the tests that require privileged permission scopes.
 
 ```powershell
-To do this, you will use the Microsoft Graph PowerShell SDK. Ensure you modify the first line with the name of your Automation Account.
+$managedIdentityName = "Maester-Automation-Account" #Name of the Automation Account created in the previous step
 
-```powershell
-$ManagedIdentityName = "Automation Account Name Here"
+Connect-MgGraph -Scopes Application.Read.All, AppRoleAssignment.ReadWrite.All
 
-$Scopes = @(
-    "Application.Read.All",
-    "AppRoleAssignment.ReadWrite.All"
-)
+$permissions = Get-MtGraphScope #-SendMail -Privileged
 
-Connect-MgGraph -Scopes $Scopes
-
-$permissions =  @(
-    "Directory.Read.All",
-    "Policy.Read.All",
-    "Reports.Read.All",
-    "DirectoryRecommendations.Read.All",
-    "PrivilegedAccess.Read.AzureAD",
-    "Mail.Send"
-)
-
-$getPerms = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").approles | Where {$_.Value -in $permissions}
-$ManagedIdentity = (Get-MgServicePrincipal -Filter "DisplayName eq '$ManagedIdentityName'")
-$GraphID = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").id
+$managedIdentity = (Get-MgServicePrincipal -Filter "DisplayName eq '$managedIdentityName'")
+$managedIdentityId = $managedIdentity.Id
+$getPerms = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").AppRoles | Where {$_.Value -in $permissions}
+$graphAppId = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").Id
 
 foreach ($perm in $getPerms){
-    New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $ManagedIdentity.Id `
-    -PrincipalId $ManagedIdentity.Id -ResourceId $GraphID -AppRoleId $perm.id
+    New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $managedIdentityId `
+    -PrincipalId $managedIdentityId -ResourceId $graphAppId -AppRoleId $perm.id
 }
 ```
-##  Load the required PowerShell modules
-- Open your Automation Account from the Azure portal.
+
+## Load the required PowerShell modules
+
+- Open **[Automation Accounts](https://portal.azure.com/#browse/Microsoft.Automation%2FAutomationAccounts)** blade.
+- Select the Automation Account you created earlier.
 - Select **Runtime Environments**.
-- Click **Create**.
+- Select **Create**.
 - Define a name for the environment.
 - Select **PowerShell** for the language and set the **Runtime version** to **7.2**.
-- Click **Next**.
-- On the **Packages** tab, click **Add from gallery** and select the following packages:
-  - Maester
-  - Microsoft.Graph.Authentication
-  - Pester
-- Click **Next**.
-- Click **Create**.
+- Select **Next**.
+- On the **Packages** tab, select **Add from gallery** and select the following packages:
+  - **Maester**
+  - **Microsoft.Graph.Authentication**
+  - **Pester**
+- Select **Next**.
+- Select **Create**.
 
 ## Create a new Runbook
+
 - Under **Process Automation** click **Create**.
 - Select **Create new** next to Runbook.
 - Define a name for the Runbook.
@@ -96,7 +92,7 @@ Connect-MgGraph -Identity
 $MailRecipient = "Define Sender/Recipient"
 
 #create output folder
-$date = (Get-Date).tostring("yyyyMMdd-HHmm")
+$date = (Get-Date).ToString("yyyyMMdd-HHmm")
 $FileName = "MaesterReport" + $Date + ".zip"
 
 $TempOutputFolder = $env:TEMP + $date
@@ -111,9 +107,11 @@ cd maester-tests
 Install-MaesterTests .\tests
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
+
 - Click **Save**, then **Publish**.
 
 ## Create a schedule
+
 - From the Azure Portal, open your Automation Account.
 - Under **Shared Resources** select **Schedules**.
 - Click **Add a schedule** and define a name.
@@ -125,9 +123,17 @@ Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputF
 - Choose your schedule and click **OK**.
 
 ## Viewing the test results
+
 ![Screenshot of the Maester report email](assets/azureautomation-test-result.png)
 
-## Contributors
-Author:
-- [Daniel Bradley](https://www.linkedin.com/in/danielbradley2/) | Microsoft MVP
+## FAQ / Troubleshooting
 
+- You see a `The term 'Get-MgServicePrincipal' is not recognized` error message
+  - You don't have Graph PowerShell installed, you can install it by running `Install-Module Microsoft.Graph.Applications`.
+- You have more than one managed identity with the same name
+  - Search for the managed identity in [Enterprise Applications](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview) (Remove the **Application type == Enterprise Applications** filter)
+  - Copy the **Object ID** and set the `$managedIdentityId` variable in the script above (eg `$managedIdentityId = 'insert-object-id'`).
+
+## Contributors
+
+- Original author: [Daniel Bradley](https://www.linkedin.com/in/danielbradley2/) | Microsoft MVP

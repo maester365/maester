@@ -63,8 +63,8 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 This empty resource group is required to set up workload identity federation authentication. No Azure resources will be created in this resource group and there are no costs associated with it.
 
-- Open the [Azure portal](https://portal.azure.com)
-- Select **Create a resource** > **Resource group**
+- Browse to the Azure portal and open the **[Resource groups](https://portal.azure.com/#blade/HubsExtension/BrowseResourceGroups)** blade.
+- Select **+ Create**.
 - Enter a name for the resource group (e.g. `Maester-Resource-Group`)
 - Select any region
 - Select **Review + create** > **Create**
