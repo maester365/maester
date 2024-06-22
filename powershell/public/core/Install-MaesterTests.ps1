@@ -7,6 +7,12 @@
 
     The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 
+.PARAMETER Path
+    The path to install the Maester tests to. Defaults to the current directory.
+
+.Parameter Prerequisites
+    Install prerequisite PowerShell modules if the minimum required versions are not already installed.
+
 .EXAMPLE
     Install-MaesterTests
 
@@ -16,6 +22,12 @@
     Install-MaesterTests -Path .\maester-tests
 
     Installs the latest Maester tests in the specified directory.
+
+.EXAMPLE
+    Install-MaesterTests -Prerequisites
+
+    Installs the latest Maester tests in the current directory.
+    Installs the required PowerShell modules if the minimum required versions are not already installed.
 #>
 
 Function Install-MaesterTests {
