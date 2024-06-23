@@ -44,6 +44,7 @@
 #>
 
 Function Connect-Maester {
+   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
    [Alias("Connect-MtGraph", "Connect-MtMaester")]
    [CmdletBinding()]
    param(
