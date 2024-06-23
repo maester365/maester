@@ -62,7 +62,7 @@ Function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
-        [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotLicensed', 'NotLicensedEntraIDP1',
+        [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotLicensedEntraIDP1',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID'
         )]
         [string] $SkippedBecause
@@ -72,7 +72,8 @@ Function Add-MtTestResultDetail {
 
     if ($SkippedBecause) {
         $SkippedReason = Get-MtSkippedReason $SkippedBecause
-        if([string]::IsNullOrEmpty($Result)){
+
+        if ([string]::IsNullOrEmpty($Result)) {
             $Result = "Skipped. $SkippedReason"
         }
     }
@@ -90,7 +91,11 @@ Function Add-MtTestResultDetail {
 
             if (![string]::IsNullOrEmpty($Result)) {
                 # If a result was provided in the parameter insert it into the markdown content
-                $mdResult = $mdResult -replace "%TestResult%", $Result
+                if ($mdResult -match "%TestResult%") {
+                    $mdResult = $mdResult -replace "%TestResult%", $Result
+                } else {
+                    $mdResult = $Result
+                }
             }
 
             $Description = $mdDescription
@@ -122,7 +127,8 @@ Function Add-MtTestResultDetail {
         }
     }
 
-    if ($SkippedBecause) { #This needs to be set at the end.
+    if ($SkippedBecause) {
+        #This needs to be set at the end.
         Set-ItResult -Skipped -Because $SkippedReason
     }
 }

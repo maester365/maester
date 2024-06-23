@@ -11,11 +11,10 @@ function Get-MtSkippedReason {
     switch($SkippedBecause){
         "NotConnectedAzure" { "Not connected to Azure. See [Connecting to Azure](https://maester.dev/docs/installation#optional-modules-and-permissions)" ; break}
         "NotConnectedExchange" { "Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/installation#optional-modules-and-permissions)"; break}
-        "NotLicensed" { "Not licensed for the required workload"; break}
-        "NotLicensedEntraIDP1" { "Not licensed for Entra ID P1"; break}
-        "NotLicensedEntraIDP2" { "Not licensed for Entra ID P2"; break}
-        "NotLicensedEntraIDGovernance" { "Not licensed for Entra ID Governance"; break}
-        "NotLicensedEntraWorkloadID" { "Not licensed for Entra Workload ID"; break}
+        "NotLicensedEntraIDP1" { "This test is for tenants that are licensed for Entra ID P1. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break}
+        "NotLicensedEntraIDP2" { "This test is for tenants that are licensed for Entra ID P2. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break}
+        "NotLicensedEntraIDGovernance" { "This test is for tenants that are licensed for Entra ID Governance. See [Entra ID Governance licensing](https://learn.microsoft.com/entra/fundamentals/licensing#microsoft-entra-id-governance)"; break}
+        "NotLicensedEntraWorkloadID" { "This test is for tenants that are licensed for Entra Workload ID. See [Entra Workload ID licensing](https://learn.microsoft.com/entra/workload-id/workload-identities-faqs)"; break}
         default { $SkippedBecause; break}
     }
 }
