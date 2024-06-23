@@ -71,7 +71,7 @@ Function Install-MaesterTests {
             Write-Verbose "Installing Pester version $MinPesterVersion."
             Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
         } else {
-            Write-Information -Message "The minimum required version of Pester is already installed." -InformationAction Continue
+            Write-Verbose "The minimum required version of Pester is already installed."
         }
     }
 
