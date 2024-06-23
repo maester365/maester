@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Installs the latest ready-made Maester tests built by the Maester team.
+   Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
 
 .DESCRIPTION
     The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
@@ -10,24 +10,23 @@
 .PARAMETER Path
     The path to install the Maester tests to. Defaults to the current directory.
 
-.Parameter Prerequisites
-    Install prerequisite PowerShell modules if the minimum required versions are not already installed.
+.Parameter SkipPesterCheck
+    Skips the check and automatic installation of the required version of Pester.
 
 .EXAMPLE
     Install-MaesterTests
 
-    Install the latest set of Maester tests in the current directory.
+    Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
 
 .EXAMPLE
     Install-MaesterTests -Path .\maester-tests
 
-    Installs the latest Maester tests in the specified directory.
+    Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
 
 .EXAMPLE
-    Install-MaesterTests -Prerequisites
+    Install-MaesterTests -SkipPesterCheck
 
-    Installs the latest Maester tests in the current directory.
-    Installs the required PowerShell modules if the minimum required versions are not already installed.
+    Installs the latest Maester tests in the current directory. Skips the check for the required version of Pester.
 #>
 
 Function Install-MaesterTests {
@@ -39,10 +38,13 @@ Function Install-MaesterTests {
         [Parameter(Mandatory = $false)]
         [string] $Path = ".\",
 
-        # Switch to optionally install Pester pre-requisites
+        # Skip automatic installation of Pester
         [Parameter(Mandatory = $false)]
-        [switch] $Prerequisites
+        [switch] $SkipPesterCheck
     )
+
+    [version]$MinPesterVersion = '5.5.0'
+
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Installing Maester tests to $Path"
@@ -61,21 +63,16 @@ Function Install-MaesterTests {
 
     Update-MtMaesterTests -Path $Path -Install
 
-    # Optionally install any missing required module versions.
-    if ( $PSBoundParameters.ContainsKey('Prerequisites') ) {
-        $RequiredModules = (Get-Module -Name 'Maester' -ListAvailable).RequiredModules
-        foreach ($module in $RequiredModules) {
-            $moduleMinVersion = $module.Version
-            $moduleName = $module.Name
-
-            if ( ((Get-Module $moduleName -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $moduleMinVersion ) {
-                Write-Verbose "Installing $moduleName."
-                Install-Module -Name $moduleName -SkipPublisherCheck -Force -Scope CurrentUser
-            } else {
-                Write-Information -Message "The minimum required version of $moduleName is already installed." -InformationAction Continue
-            }
+    # The default action installs the minimum required version of Pester if not present. Opt out with -SkipPesterCheck.
+    if ( $PSBoundParameters.ContainsKey('SkipPesterCheck') ) {
+        Write-Verbose "Skipping Pester version check."
+    } else {
+        if ( ((Get-Module -Name 'Pester' -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $MinPesterVersion ) {
+            Write-Verbose "Installing Pester version $MinPesterVersion."
+            Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
+        } else {
+            Write-Information -Message "The minimum required version of Pester is already installed." -InformationAction Continue
         }
-        Remove-Variable moduleName,moduleMinVersion,RequiredModules
     }
 
 }
