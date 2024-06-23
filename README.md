@@ -27,12 +27,12 @@ Install-Module -Name Maester -Scope CurrentUser
 
 ### Installing Maester Tests
 
-To install the Maester tests and required modules run the following PowerShell commands. The prerequisites currently include Microsoft.Graph.Authentication and Pester.
+To install the Maester tests run the following PowerShell commands. Pester will be installed if needed.
 
 ```powershell
 md maester-tests
 cd maester-tests
-Install-MaesterTests -Path .\tests -Prerequisites
+Install-MaesterTests -Path .\tests
 ```
 
 ## Running Maester
