@@ -20,6 +20,7 @@ Function Test-MtAppManagementPolicyEnabled {
   }
 
   $defaultAppManagementPolicy = Invoke-MtGraphRequest -RelativeUri "policies/defaultAppManagementPolicy"
+  Write-Verbose -Message "Default App Management Policy: $($result.isEnabled)"
   $result = $defaultAppManagementPolicy.isEnabled -eq 'True'
 
   if ($result) {
