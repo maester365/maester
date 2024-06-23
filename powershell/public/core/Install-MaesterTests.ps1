@@ -8,10 +8,10 @@
     The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 
 .PARAMETER Path
-    The path to install the Maester tests to. Defaults to the current directory.
+    The path to install the Maester tests in. Defaults to the current directory.
 
 .Parameter SkipPesterCheck
-    Skips the check and automatic installation of the required version of Pester.
+    Skips the automatic installation check for Pester.
 
 .EXAMPLE
     Install-MaesterTests
