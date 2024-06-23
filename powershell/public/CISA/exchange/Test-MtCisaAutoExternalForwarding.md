@@ -4,7 +4,7 @@ Rationale: Adversaries can use automatic forwarding to gain persistent access to
 
 #### Remediation action:
 
-To disallow automatic forwarding to external domains:
+To disable automatic forwarding to external domains:
 
 1. Sign in to the **Exchange admin center**.
 2. Select **Mail flow**, then **[Remote domains](https://admin.exchange.microsoft.com/#/remotedomains)**.

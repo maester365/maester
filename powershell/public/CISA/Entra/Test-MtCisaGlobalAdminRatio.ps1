@@ -32,12 +32,12 @@ Function Test-MtCisaGlobalAdminRatio {
     }
 
     $globalAdministrators = $roleAssignments | Where-Object {`
-        $_.role -eq "62e90394-69f5-4237-9190-012177145e10"} | `
+        $_.role -eq "62e90394-69f5-4237-9190-012177145e10"} | ` # Global Administrator
         Select-Object -ExpandProperty assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
     $otherAssignments = $roleAssignments | Where-Object {`
-        $_.role -ne "62e90394-69f5-4237-9190-012177145e10"} | `
+        $_.role -ne "62e90394-69f5-4237-9190-012177145e10"} | ` # Global Administrator
         Select-Object -ExpandProperty assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
