@@ -20,21 +20,22 @@ Function Test-MtCisaAntiSpamAllowList {
     $policy = Get-HostedConnectionFilterPolicy
 
     $resultPolicy = $policy | Where-Object {`
-        ($_.IPAllowList|Measure-Object).Count -eq 0
+        ($_.IPAllowList | Measure-Object).Count -gt 0
     }
 
-    $testResult = ($resultPolicy|Measure-Object).Count -eq 1
+    $testResult = ($resultPolicy | Measure-Object).Count -eq 0
 
-    $portalLink = "https://security.microsoft.com/antispam?tid=344f7861-e82f-495d-8bf3-3898ef4b2ae2"
+    $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow IPs for bypass.`n`n%TestResult%"
-        $result = "[✅ Pass]($portalLink)"
+        $testResultMarkdown = "Well done. Your tenant does not have any [Anti-spam IP allow lists]($portalLink)."
     } else {
-        $testResultMarkdown = "Your tenant does allow IPs for bypass.`n`n%TestResult%"
-        $result = "[❌ Fail]($portalLink)`n`n"
-        $policy.IPAllowList | ForEach-Object {`
-            $result += "* $_`n"
+        $testResultMarkdown = "Your tenant has [Anti-spam IP allow lists]($portalLink).`n`n%TestResult%"
+        $resultPolicy | ForEach-Object {
+            $result = "* $($_.Name)`n"
+            $_.IPAllowList | ForEach-Object {`
+                    $result += "  * $_`n"
+            }
         }
     }
 

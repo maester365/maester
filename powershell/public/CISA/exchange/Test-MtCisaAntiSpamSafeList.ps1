@@ -25,14 +25,12 @@ Function Test-MtCisaAntiSpamSafeList {
 
     $testResult = ($resultPolicy|Measure-Object).Count -eq 1
 
-    $portalLink = "https://security.microsoft.com/antispam?tid=344f7861-e82f-495d-8bf3-3898ef4b2ae2"
+    $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow Safe List.`n`n%TestResult%"
-        $result = "[✅ Pass]($portalLink)"
+        $testResultMarkdown = "Well done. [Safe List]($portalLink) is disabled in your tenant."
     } else {
-        $testResultMarkdown = "Your tenant does allow Safe List.`n`n%TestResult%"
-        $result = "[❌ Fail]($portalLink)"
+        $testResultMarkdown = "[Safe List]($portalLink) is enabled in your tenant."
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

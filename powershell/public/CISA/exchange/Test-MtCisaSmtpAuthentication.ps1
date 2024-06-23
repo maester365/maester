@@ -1,15 +1,14 @@
 ﻿<#
 .SYNOPSIS
-    Checks state of SMTP AuthN
+    Checks state of SMTP authentication in Exchange Online.
 
 .DESCRIPTION
-
-    SMTP AUTH SHALL be disabled.
+    SMTP authentication SHALL be disabled.
 
 .EXAMPLE
     Test-MtCisaSmtpAuthentication
 
-    Returns true if SMTP AuthN is disabled
+    Returns true if SMTP authentication is disabled in Exchange Online.
 #>
 
 Function Test-MtCisaSmtpAuthentication {
@@ -21,22 +20,12 @@ Function Test-MtCisaSmtpAuthentication {
 
     $testResult = $config.SmtpClientAuthenticationDisabled
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has SMTP Authentication disabled.`n`n%TestResult%"
-    } else {
-        $testResultMarkdown = "Your tenant does not have SMTP Authentication disabled.`n`n%TestResult%"
-    }
-
     $portalLink = "https://admin.exchange.microsoft.com/#/settings"
-    $pass = "✅ Pass"
-    $fail = "❌ Fail"
-    $desc = "[Turn off SMTP AUTH protocol for your organization]($portalLink)"
-    if($testResult){
-        $result = "$pass | $desc`n"
-    }else{
-        $result = "$fail | $desc`n"
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant has [SMTP Authentication]($portalLink) disabled."
+    } else {
+        $testResultMarkdown = "Your tenant has [SMTP Authentication]($portalLink) enabled."
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

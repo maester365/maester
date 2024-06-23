@@ -8,14 +8,14 @@ To modify the connection filters, follow the instructions found in Use the Micro
 1. Sign in to **Microsoft 365 Defender portal**.
 2. From the left-hand menu, find **Email & collaboration** and select **Policies and Rules**.
 3. Select **Threat Policies** from the list of policy names.
-4. Under **Policies**, select [**Anti-spam**](https://security.microsoft.com/antispam?tid=344f7861-e82f-495d-8bf3-3898ef4b2ae2).
+4. Under **Policies**, select [**Anti-spam**](https://security.microsoft.com/antispam).
 5. Select **Connection filter policy (Default)**.
 6. Click **Edit connection filter policy**.
 7. Ensure no addresses are specified under **Always allow messages from the following IP addresses or address range**.
 
 #### Related links
 
-* [Defender admin center - Anti-spam policies](https://security.microsoft.com/antispam?tid=344f7861-e82f-495d-8bf3-3898ef4b2ae2)
+* [Defender admin center - Anti-spam policies](https://security.microsoft.com/antispam)
 * [CISA 12 IP Allow Lists - MS.EXO.12.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo121v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L683)
 
