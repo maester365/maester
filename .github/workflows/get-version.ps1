@@ -10,7 +10,9 @@ if ( -not (Test-Path $ManfifestPath )) {
     Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
     throw
 } else {
-    $Version = (Find-Module -Name Maester).Version
+    # Get the current version of the module from the module manifest
+    $Version = (Test-ModuleManifest $ManfifestPath).Version
+    $Version = '{0}.{1}.{2}' -f $Version.Major, $Version.Minor, $Version.Build
 }
 
 Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$Version"

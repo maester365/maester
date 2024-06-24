@@ -10,6 +10,7 @@ if ( -not (Test-Path $ManfifestPath )) {
     Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
     throw
 } else {
+    # Get the current version of the module from the PowerShell gallery
     $ver = [version](Find-Module -Name Maester).Version
     $newBuild = $ver.Build + 1
     $NewVersion = '{0}.{1}.{2}' -f $ver.Major, $ver.Minor, $newBuild
