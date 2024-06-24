@@ -40,16 +40,27 @@ Function Get-MailAuthenticationRecords {
             }
         }
 
+        #todo, check that all is always at end,
+        ###check that ptr isn't used,
+        ###check for repeat modifiers,
+        ###check for all and redirect,
+        ###check for unrecognized modifiers,
+        ###recommend exp if not found #https://datatracker.ietf.org/doc/html/rfc7208#section-6.2,
+        ###check for macros #https://datatracker.ietf.org/doc/html/rfc7208#section-7,
+        ###check for 10* include, a, mx, ptr, exists
         #[SPFRecordTerm]::new("include:_spf-a.microsoft.com")
         class SPFRecordTerm {
-            $term #term
-            $directive #directive
-            $qualifier #qual
-            $mechanism #mech
-            $mechanismTarget #mechTarget
-            $mechanismTargetCidr #cidr
-            $modifier #mod
-            $modifierTarget #modTarget
+            [string]$term #term
+            [string]$directive #directive
+            [ValidateSet("+","-","~","?")]
+            [string]$qualifier #qual
+            [ValidateSet("all","include","a","mx","ptr","ip4","ip6","exists")]
+            [string]$mechanism #mech
+            [string]$mechanismTarget #mechTarget
+            [string]$mechanismTargetCidr #cidr
+            [ValidateSet("redirect","exp")]
+            [string]$modifier #mod
+            [string]$modifierTarget #modTarget
 
             hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
             hidden $matchTerms = "\s*(?'term'(?'directive'(?'qual'\+|-|~|\?)?(?'mech'all|include|a|mx|ptr|ip4|ip6|exists)(?::?(?'mechTarget'[^\s]+?(?'cidr'\/[^\s]+)?))?)(?:\s|$)|(?'mod'redirect|exp)(?:=(?'modTarget'[^\s]+))(?:\s|$))"
@@ -254,6 +265,38 @@ Function Get-MailAuthenticationRecords {
                 }else{
                     $this.percentage = $Matches["pct"]
                 }
+            }
+        }
+
+        #TODO, add additional regexs for additional options
+
+        class DKIMRecord {
+            [string]$record
+            [string]$keyType = "rsa" #k
+            [string[]]$hash = @("sha1","sha256") #h
+            [string]$notes #n
+            [string]$publicKey #p
+            [bool]$validBase64
+            [string[]]$services = "*" #s (*,email)
+            [string[]]$flags #t (y,s)
+            [string[]]$warnings
+
+            hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
+            hidden $matchRecord = "^v\s*=\s*(?'v'DKIM1)\s*;\s*"
+            hidden $matchKeyType = "k\s*=\s*(?'k'[^;]+)\s*;\s*"
+            hidden $matchPublicKey = "p\s*=\s*(?'p'[^;]+)\s*;\s*"
+
+            DKIMRecord([string]$record){
+                $this.record = $record
+                $match = $record -match $this.matchRecord
+                if(-not $match){
+                    $this.warnings = "v: Record does not match version format"
+                    break
+                }
+                $p = [regex]::Match($record,$this.matchPublicKey,$this.option)
+                $this.publicKey = ($p.Groups|Where-Object{$_.Name -eq "p"}).Value
+                $bytes = [System.Convert]::FromBase64String(($p.Groups|Where-Object{$_.Name -eq "p"}).Value)
+                $this.validBase64 = $null -ne $bytes
             }
         }
     }
