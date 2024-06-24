@@ -268,8 +268,8 @@ Function Get-MailAuthenticationRecords {
             }
         }
 
-        #TODO, add additional regexs for additional options
-
+        #TODO, add additional regexs for additional options, pop selector on call
+        #[DKIMRecord]::new("v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;")
         class DKIMRecord {
             [string]$record
             [string]$keyType = "rsa" #k
