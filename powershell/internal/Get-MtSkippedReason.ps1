@@ -15,6 +15,7 @@ function Get-MtSkippedReason {
         "NotLicensedEntraIDP2" { "This test is for tenants that are licensed for Entra ID P2. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break}
         "NotLicensedEntraIDGovernance" { "This test is for tenants that are licensed for Entra ID Governance. See [Entra ID Governance licensing](https://learn.microsoft.com/entra/fundamentals/licensing#microsoft-entra-id-governance)"; break}
         "NotLicensedEntraWorkloadID" { "This test is for tenants that are licensed for Entra Workload ID. See [Entra Workload ID licensing](https://learn.microsoft.com/entra/workload-id/workload-identities-faqs)"; break}
+        "SecurityDefaultDisabled" { "Security defaults are disabled. See [Security defaults](https://learn.microsoft.com/en-us/entra/fundamentals/security-defaults)"; break}
         default { $SkippedBecause; break}
     }
 }
