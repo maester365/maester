@@ -12,6 +12,7 @@
 #>
 
 function Resolve-SPFRecord {
+    [OutputType([spfrecord[]])]
     [CmdletBinding()]
     param (
         # Domain Name
@@ -170,7 +171,7 @@ function Resolve-SPFRecord {
                     Write-Error "Too many DNS queries made ($DNSQuerySum).`nMust not exceed 10 DNS queries.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
                 }
 
-                $ReturnValues
+                return $ReturnValues
             }
         }
     }

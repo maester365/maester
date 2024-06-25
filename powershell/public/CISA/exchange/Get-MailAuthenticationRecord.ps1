@@ -19,6 +19,7 @@
 #>
 
 Function Get-MailAuthenticationRecord {
+    [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]

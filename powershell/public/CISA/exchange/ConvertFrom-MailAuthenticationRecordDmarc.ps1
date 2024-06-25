@@ -33,6 +33,7 @@ warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment se
 #>
 
 Function ConvertFrom-MailAuthenticationRecordDmarc {
+    [OutputType([DMARCRecord],[string])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]

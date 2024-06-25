@@ -15,6 +15,7 @@ microsoft.com                            MX     1731  Answer     microsoft-com.m
 #>
 
 Function ConvertFrom-MailAuthenticationRecordMx {
+    [OutputType([Microsoft.DnsClient.Commands.DnsRecord_MX],[string])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]

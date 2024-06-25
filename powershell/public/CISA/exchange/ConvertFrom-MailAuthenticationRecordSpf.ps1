@@ -22,6 +22,7 @@ warnings :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordSpf {
+    [OutputType([SPFRecord],[string])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
