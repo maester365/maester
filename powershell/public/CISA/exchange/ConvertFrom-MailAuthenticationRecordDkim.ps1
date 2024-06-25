@@ -31,9 +31,6 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateScript({
-            [uri]::CheckHostName($_) -eq "Dns"
-        })]
         [string]$DomainName,
 
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",

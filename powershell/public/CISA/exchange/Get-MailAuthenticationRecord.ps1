@@ -51,8 +51,9 @@ Function Get-MailAuthenticationRecord {
 
     process {
         $recordSet = [pscustomobject]@{
-            mxRecord    = $null
+            mxRecords   = $null
             spfRecord   = $null
+            spfLookups  = $null
             dmarcRecord = $null
             dkimRecord  = $null
         }
@@ -65,19 +66,19 @@ Function Get-MailAuthenticationRecord {
         }
 
         if($mx -or $all){
-            $recordSet.mxRecord = ConvertFrom-MailAuthenticationRecordMx @splat
+            $recordSet.mxRecords = ConvertFrom-MailAuthenticationRecordMx @splat
         }
 
         if($spf -or $all){
+            ###check for 10* include, a, mx, ptr, exists
             $recordSet.spfRecord = ConvertFrom-MailAuthenticationRecordSpf @splat
+            if($recordSet.spfRecord -ne "Failure to obtain record"){
+                $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName -Server $DnsServerIpAddress
+            }
         }
 
         if($dkim -or $all){
-            $dkimSplat = $splat
-            $dkimSplat += @{
-                DkimSelector = $DkimSelector
-            }
-            $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @dkimSplat
+            $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @splat -DkimSelector $DkimSelector
         }
 
         if($dmarc -or $all){
