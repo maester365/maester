@@ -28,7 +28,7 @@ warnings    :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordDkim {
-    [OutputType([DKIMRecord],[string])]
+    [OutputType([DKIMRecord],[System.String])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
