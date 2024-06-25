@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Checks ...
+    Returns structured RFC compliant object for a DMARC record
 
 .DESCRIPTION
 
@@ -8,106 +8,47 @@
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
     - https://xkln.net/blog/getting-mx-spf-dmarc-dkim-and-smtp-banners-with-powershell/
-    - SPF https://datatracker.ietf.org/doc/html/rfc7208
     - DMARC https://datatracker.ietf.org/doc/html/rfc7489
 
-.EXAMPLE
-    Test-MtCisaAutoExternalForwarding
+record               : v=DMARC1; p=reject; pct=100; rua=mailto:itex-rua@microsoft.com; ruf=mailto:itex-ruf@microsoft.com; fo=1
+valid                : True
+policy               : reject
+policySubdomain      :
+percentage           : 100
+reportAggregate      : {DMARCRecordUri}
+reportForensic       : {DMARCRecordUri}
+reportFailure        : {1}
+reportFailureFormats : {afrf}
+reportFrequency      : 86400
+alignmentDkim        : r
+alignmentSpf         : r
+version              : DMARC1
+warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment set, defaults to relaxed, aspf: No SPF alignment set, defaults to relaxed, ri: No
+                       report interval set, defaults to 86400 seconds…}
 
-    Returns true if no domain is enabled for auto forwarding
+.EXAMPLE
+    ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
+
+    Returns [DMARCRecord] or "Failure to obtain record"
 #>
 
-Function Get-MailAuthenticationRecords {
+Function ConvertFrom-MailAuthenticationRecordDmarc {
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        [ValidateScript({
+            [uri]::CheckHostName($_) -eq "Dns"
+        })]
         [string]$DomainName,
 
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
-        [string]$DkimSelector = "selector1",
+        [switch]$QuickTimeout,
 
-        [ValidateSetAttribute("All","DKIM","DMARC","MX","SPF")]
-        [string[]]$Records = "All"
+        [switch]$NoHostsFile
     )
 
     begin {
-        if($Records -contains "All"){
-            $all = $dkim = $dmarc = $mx = $spf = $true
-        }else{
-            foreach($record in $Records){
-                Set-Variable -Name $record -Value $true
-            }
-        }
-
-        #todo, check that all is always at end,
-        ###check that ptr isn't used,
-        ###check for repeat modifiers,
-        ###check for all and redirect,
-        ###check for unrecognized modifiers,
-        ###recommend exp if not found #https://datatracker.ietf.org/doc/html/rfc7208#section-6.2,
-        ###check for macros #https://datatracker.ietf.org/doc/html/rfc7208#section-7,
-        ###check for 10* include, a, mx, ptr, exists
-        #[SPFRecordTerm]::new("include:_spf-a.microsoft.com")
-        class SPFRecordTerm {
-            [string]$term #term
-            [string]$directive #directive
-            [ValidateSet("+","-","~","?")]
-            [string]$qualifier #qual
-            [ValidateSet("all","include","a","mx","ptr","ip4","ip6","exists")]
-            [string]$mechanism #mech
-            [string]$mechanismTarget #mechTarget
-            [string]$mechanismTargetCidr #cidr
-            [ValidateSet("redirect","exp")]
-            [string]$modifier #mod
-            [string]$modifierTarget #modTarget
-
-            hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
-            hidden $matchTerms = "\s*(?'term'(?'directive'(?'qual'\+|-|~|\?)?(?'mech'all|include|a|mx|ptr|ip4|ip6|exists)(?::?(?'mechTarget'[^\s]+?(?'cidr'\/[^\s]+)?))?)(?:\s|$)|(?'mod'redirect|exp)(?:=(?'modTarget'[^\s]+))(?:\s|$))"
-
-            SPFRecordTerm([string]$term){
-                $this.term = $term
-                $match = [regex]::Match($term,$this.matchTerms,$this.option)
-                $this.directive = ($match.Groups|Where-Object{$_.Name -eq "directive"}).Value
-                $this.qualifier = ($match.Groups|Where-Object{$_.Name -eq "qual"}).Value
-                $this.mechanism = ($match.Groups|Where-Object{$_.Name -eq "mech"}).Value
-                $this.mechanismTarget = ($match.Groups|Where-Object{$_.Name -eq "mechTarget"}).Value
-                $this.mechanismTargetCidr = ($match.Groups|Where-Object{$_.Name -eq "cidr"}).Value
-                $this.modifier = ($match.Groups|Where-Object{$_.Name -eq "mod"}).Value
-                $this.modifierTarget = ($match.Groups|Where-Object{$_.Name -eq "modTarget"}).Value
-            }
-        }
-
-        #[spfrecord]::new("v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com include:_spf1-meo.microsoft.com -all")
-        class SPFRecord {
-            [string]$record
-            [SPFRecordTerm[]]$terms
-            [string]$warnings
-
-
-            hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase# -bor [Text.RegularExpressions.RegexOptions]::Singleline
-            hidden $matchRecord = "^v=spf1 .*$"
-            #https://datatracker.ietf.org/doc/html/rfc7208#section-12
-            hidden $matchTerms = "\s*(?'term'(?'directive'(?'qual'\+|-|~|\?)?(?'mech'all|include|a|mx|ptr|ip4|ip6|exists)(?::?(?'mechTarget'[^\s]+?(?'cidr'\/[^\s]+)?))?)(?:\s|$)|(?'mod'redirect|exp)(?:=(?'modTarget'[^\s]+))(?:\s|$))"
-
-            SPFRecord([string]$inputRecord){
-                $this.record = $inputRecord
-                $match = [regex]::Matches($inputRecord,$this.matchRecord,$this.option)
-                if(-not $match){
-                    $this.warnings += "v: Record does not match spf1 version format"
-                    break
-                }
-                if(($match|Measure-Object).Count -gt 1){
-                    $this.warnings += "v: Multiple records match spf1 version format"
-                    break
-                }
-                $recordTerms = [regex]::Matches($inputRecord,$this.matchTerms,$this.option)
-                foreach($term in ($recordTerms.Groups|Where-Object{$_.Name -eq "term"})){
-                    $this.terms += [SPFRecordTerm]::new($term.Value)
-                }
-            }
-        }
-
         #[DMARCRecordUri]::new("mailto:itex-ruf@microsoft.com")
         class DMARCRecordUri {
             [string]$uri
@@ -267,41 +208,29 @@ Function Get-MailAuthenticationRecords {
                 }
             }
         }
-
-        #TODO, add additional regexs for additional options, pop selector on call
-        #[DKIMRecord]::new("v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;")
-        class DKIMRecord {
-            [string]$record
-            [string]$keyType = "rsa" #k
-            [string[]]$hash = @("sha1","sha256") #h
-            [string]$notes #n
-            [string]$publicKey #p
-            [bool]$validBase64
-            [string[]]$services = "*" #s (*,email)
-            [string[]]$flags #t (y,s)
-            [string[]]$warnings
-
-            hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
-            hidden $matchRecord = "^v\s*=\s*(?'v'DKIM1)\s*;\s*"
-            hidden $matchKeyType = "k\s*=\s*(?'k'[^;]+)\s*;\s*"
-            hidden $matchPublicKey = "p\s*=\s*(?'p'[^;]+)\s*;\s*"
-
-            DKIMRecord([string]$record){
-                $this.record = $record
-                $match = $record -match $this.matchRecord
-                if(-not $match){
-                    $this.warnings = "v: Record does not match version format"
-                    break
-                }
-                $p = [regex]::Match($record,$this.matchPublicKey,$this.option)
-                $this.publicKey = ($p.Groups|Where-Object{$_.Name -eq "p"}).Value
-                $bytes = [System.Convert]::FromBase64String(($p.Groups|Where-Object{$_.Name -eq "p"}).Value)
-                $this.validBase64 = $null -ne $bytes
-            }
-        }
     }
 
     process {
+        $dmarcPrefix = "_dmarc."
+        $matchRecord = "^v\s*=\s*(?'v'DMARC1)\s*;\s*p\s*=\s*(?'p'none|quarantine|reject)(?:$|\s*;\s*)"
 
+        $dmarcSplat = @{
+            Name         = "$dmarcPrefix$DomainName"
+            Type         = "TXT"
+            Server       = $DnsServerIpAddress
+            NoHostsFile  = $NoHostsFile
+            QuickTimeout = $QuickTimeout
+            ErrorAction  = "Stop"
+        }
+        try{
+            $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
+                Where-Object {$_.Type -eq "TXT"} | `
+                Where-Object {$_.Strings -match $matchRecord}).Strings)
+        }catch{
+            Write-Error $Error[0]
+            return "Failure to obtain record"
+        }
+
+        return $dmarcRecord
     }
 }
