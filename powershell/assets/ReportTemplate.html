@@ -44664,14 +44664,14 @@ const c$c = s$o("DateRangePicker"), f$3 = (t3, e4, r2, o3) => {
       if (o3)
         return `${format(t3, o3)} - ${format(e4, o3)}`;
       const r3 = { month: "short", day: "numeric" };
-      return `${t3.toLocaleDateString(n2, r3)} - 
+      return `${t3.toLocaleDateString(n2, r3)} -
                     ${e4.getDate()}, ${e4.getFullYear()}`;
     }
     {
       if (o3)
         return `${format(t3, o3)} - ${format(e4, o3)}`;
       const r3 = { year: "numeric", month: "short", day: "numeric" };
-      return `${t3.toLocaleDateString(n2, r3)} - 
+      return `${t3.toLocaleDateString(n2, r3)} -
                     ${e4.toLocaleDateString(n2, r3)}`;
     }
   }
@@ -58786,6 +58786,8 @@ const testResults = {
   "ExecutedAt": "2024-03-31T19:18:59.757294+11:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora",
+  "CurrentVersion": "0.0.129",
+  "LatestVersion": "0.1.0",
   "Account": "merill@elapora.com",
   "Tests": [
     {
@@ -60422,6 +60424,28 @@ function App() {
       return "Tenant ID: " + testResults.TenantId;
     return testResults.TenantName + " (" + testResults.TenantId + ")";
   }
+
+  function getModuleVersion() {
+    if (testResults.CurrentVersion !== testResults.LatestVersion) {
+      // Use jsxRuntimeExports$1.jsx to create a link element
+      return jsxRuntimeExports$1.jsx("span", {
+        children: [
+          "💥 Installed module version: ",
+          testResults.CurrentVersion,
+          " → ",
+          jsxRuntimeExports$1.jsx("a", {
+            href: "https://maester.dev/docs/updating-tests",
+            children: "Latest version: "+ testResults.LatestVersion,
+            target: "_blank",
+            rel: "noreferrer"
+          }),
+          "."
+        ]
+      });
+    }
+    // Return a simple text message if the current version is the latest
+    return `Module version: ${testResults.CurrentVersion}`;
+  }
   const NotRunCount = testResults.TotalCount - (testResults.PassedCount + testResults.FailedCount);
   const DonutTotalCount = testResults.PassedCount + testResults.FailedCount;
   return /* @__PURE__ */ jsxRuntimeExports$1.jsx($, { attribute: "class", children: /* @__PURE__ */ jsxRuntimeExports$1.jsxs("div", { className: "text-left", children: [
@@ -60462,10 +60486,13 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "grid grid-cols-2 gap-12" }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(TestResultsTable, { TestResults: testResults }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsx(o$6, {}),
+    /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { children: [
+      /* @__PURE__ */ jsxRuntimeExports$1.jsx(f$e, { className: "bg-orange-500 bg-opacity-10 text-orange-600 dark:bg-opacity-60 mb-6", children: getModuleVersion() })
+    ] }),
     /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$4, { numItemsSm: 2, numItemsLg: 2, className: "gap-6 mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(m$m, { children: /* @__PURE__ */ jsxRuntimeExports$1.jsx("a", { href: "https://maester.dev", target: "_blank", rel: "noreferrer", children: "Maester.dev" }) }),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx("div", { className: "place-self-end", children: /* @__PURE__ */ jsxRuntimeExports$1.jsx(ThemeSwitch, {}) })
-    ] })
+    ] }),
   ] }) });
 }
 client.createRoot(document.getElementById("root")).render(
@@ -80125,5 +80152,6 @@ code {
   </head>
   <body>
     <div id="root"></div>
+
   </body>
 </html>
