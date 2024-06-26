@@ -19,5 +19,5 @@ This is a summary of the test results from the Maester test run.
 
 %TestDetails%
 
-
+___
 Maester %ModuleVersion%
