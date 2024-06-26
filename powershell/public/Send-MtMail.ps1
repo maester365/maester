@@ -64,11 +64,11 @@ Function Send-MtMail {
     $imgFailedIcon = "https://maester.dev/img/test-result/icon-fail.png"
     $imgNotRunIcon = "https://maester.dev/img/test-result/icon-notrun.png"
 
-    $emailTemplate = $emailTemplate -replace "cid:image001.png@01DAC74F.2FD8EBA0", $imgMaesterLogo
-    $emailTemplate = $emailTemplate -replace "cid:image002.png@01DAC74F.2FD8EBA0", $imgMaesterLogo
-    $emailTemplate = $emailTemplate -replace "cid:image003.png@01DAC74F.2FD8EBA0", $imgPassedIcon
-    $emailTemplate = $emailTemplate -replace "cid:image004.png@01DAC74F.2FD8EBA0", $imgFailedIcon
-    $emailTemplate = $emailTemplate -replace "cid:image005.png@01DAC74F.2FD8EBA0", $imgNotRunIcon
+    $emailTemplate = $emailTemplate -replace "cid:image001.png@01DAC7D0.5D7D03D0", $imgMaesterLogo
+    $emailTemplate = $emailTemplate -replace "cid:image002.png@01DAC7D0.5D7D03D0", $imgMaesterLogo
+    $emailTemplate = $emailTemplate -replace "cid:image003.png@01DAC7D0.5D7D03D0", $imgPassedIcon
+    $emailTemplate = $emailTemplate -replace "cid:image004.png@01DAC7D0.5D7D03D0", $imgFailedIcon
+    $emailTemplate = $emailTemplate -replace "cid:image005.png@01DAC7D0.5D7D03D0", $imgNotRunIcon
 
     $CurrentVersion = $MaesterResults.CurrentVersion
     $LatestVersion = $MaesterResults.LatestVersion
