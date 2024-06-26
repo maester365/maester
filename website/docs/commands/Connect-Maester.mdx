@@ -24,7 +24,8 @@ Connect-Maester [-SendMail] [-Privileged] [-UseDeviceCode] [[-Environment] <Stri
 
 Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 
-This command is completely optional if you are already connected to Microsoft Graph using Connect-MgGraph with the required scopes.
+This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
+
 ```
 Connect-MgGraph -Scopes (Get-MtGraphScope)
 ```
@@ -37,17 +38,48 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 Connect-Maester
 ```
 
+Connects to Microsoft Graph using Connect-MgGraph with the required scopes.
+
 ### EXAMPLE 2
 
 ```powershell
 Connect-Maester -Service All
 ```
 
+Connects to Microsoft Graph, Azure, and Exchange Online.
+
 ### EXAMPLE 3
 
 ```powershell
 Connect-Maester -Service Azure,Graph
 ```
+
+Connects to Microsoft Graph and Azure.
+
+### EXAMPLE 4
+
+```powershell
+Connect-Maester -UseDeviceCode
+```
+
+Connects to Microsoft Graph and Azure using the device code flow.
+This will open a browser window to prompt for authentication.
+
+### EXAMPLE 5
+
+```powershell
+Connect-Maester -SendMail
+```
+
+Connects to Microsoft Graph with the Mail.Send scope.
+
+### EXAMPLE 6
+
+```powershell
+Connect-Maester -Privileged
+```
+
+Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
 ## PARAMETERS
 
@@ -70,6 +102,7 @@ Accept wildcard characters: False
 ### -Privileged
 
 If specified, the cmdlet will include the scopes for read write API endpoints.
+This is currently required for querying global admin roles in PIM.
 
 ```yaml
 Type: SwitchParameter
@@ -85,7 +118,8 @@ Accept wildcard characters: False
 
 ### -UseDeviceCode
 
-If specified, the cmdlet will use the device code flow to authenticate.
+If specified, the cmdlet will use the device code flow to authenticate to Graph and Azure.
+This will open a browser window to prompt for authentication and is useful for non-interactive sessions and on Windows when SSO is not desired.
 
 ```yaml
 Type: SwitchParameter

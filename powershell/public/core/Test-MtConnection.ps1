@@ -19,7 +19,7 @@ Function Test-MtConnection {
     [CmdletBinding()]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet("All", "Azure", "ExchageOnline", "Graph")]
+        [ValidateSet("All", "Azure", "ExchangeOnline", "Graph")]
         [Parameter(Position = 0, Mandatory = $false)]
         [string[]]$Service = "Graph"
     )
@@ -37,7 +37,7 @@ Function Test-MtConnection {
         if (!$isConnected) { $connectionState = $false }
     }
 
-    if ($Service -contains "ExchageOnline" -or $Service -contains "All") {
+    if ($Service -contains "ExchangeOnline" -or $Service -contains "All") {
         $isConnected = $false
         try {
             $isConnected = $null -ne ((Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' }))

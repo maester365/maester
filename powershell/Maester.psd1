@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.125'
+ModuleVersion = '0.1.0'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -107,7 +107,10 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaRequireActivationApproval',
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
-               'Test-MtCisaAutoExternalForwarding',
+               'Test-MtCisaAutoExternalForwarding', 'Test-MtCisaSmtpAuthentication',
+               'Test-MtCisaContactSharing', 'Test-MtCisaCalendarSharing',
+               'Test-MtCisaExternalSenderWarning', 'Test-MtCisaAntiSpamAllowList',
+               'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaMailboxAuditing',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaAF01',
