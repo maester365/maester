@@ -20,6 +20,11 @@ function Test-MtCaWIFBlockLegacyAuthentication {
         [string]$UserId
     )
 
+    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $policiesResult = Test-MtConditionalAccessWhatIf -UserId $UserId -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync
 
     if ( $null -ne $policiesResult ) {

@@ -63,7 +63,7 @@ Function Add-MtTestResultDetail {
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotLicensedEntraIDP1',
-            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "SecurityDefaultDisabled"
+            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium"
         )]
         [string] $SkippedBecause
     )
