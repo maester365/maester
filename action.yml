@@ -112,7 +112,7 @@ runs:
                   # Add mail parameters
                   $MaesterParameters.Add( 'MailUserId', '${{ inputs.mail_userid }}' )
                   $Recipients = '${{ inputs.mail_recipients }}' -split ','
-                  $MaesterParameters.Add( 'MailRecipients', $Recipients )
+                  $MaesterParameters.Add( 'MailRecipient', $Recipients )
                   $MaesterParameters.Add( 'MailTestResultsUri', '${{ inputs.mail_testresultsuri }}' )
                   Write-Host "Mail notification will be sent to: $Recipients"
               } else {
