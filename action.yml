@@ -95,12 +95,14 @@ runs:
           if ( [string]::IsNullOrWhiteSpace( $env:INPUT_INCLUDE_TAGS ) -eq $false ) {
               $TestTags = $env:INPUT_INCLUDE_TAGS -split ','
               $MaesterParameters.Add( 'Tag', $TestTags )
+              Write-Information "Running tests with tags: $TestTags"
           }
 
           # Check if exclude test tags are provided
           if ( [string]::IsNullOrWhiteSpace( $env:INPUT_EXCLUDE_TAGS ) -eq $false ) {
               $ExcludeTestTags = $env:INPUT_EXCLUDE_TAGS -split ','
               $MaesterParameters.Add( 'ExcludeTag ', $ExcludeTestTags )
+              Write-Information "Excluding tests with tags: $ExcludeTestTags"
           }
 
           # Check if mail recipients and mail userid are provided
@@ -111,6 +113,7 @@ runs:
                   $Recipients = $env:INPUT_MAIL_RECIPIENTS -split ','
                   $MaesterParameters.Add( 'MailRecipients', $Recipients )
                   $MaesterParameters.Add( 'MailTestResultsUri', $env:INPUT_MAIL_TESTRESULTSURI )
+                  Write-Information "Mail notification will be sent to: $Recipients"
               } else {
                   Write-Warning "Mail recipients are not provided. Skipping mail notification."
               }
