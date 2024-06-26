@@ -83,11 +83,23 @@ Function Get-MtMarkdownReport {
         return $details
     }
 
+    function Get-ModuleVersion(){
+        $currentVersion = $MaesterResults.CurrentVersion
+        $latestVersion = $MaesterResults.LatestVersion
+        if ($currentVersion -ne $latestVersion) {
+            return "💥 Installed version: $currentVersion → Latest version: $latestVersion`n ✨ `Update-Module Maester` → Install the latest version of Maester.`n💫 `Update-MaesterTests` → Get the latest tests built by the Maester team."
+        } else {
+            return "Installed version: $currentVersion"
+        }
+    }
+
     $markdownFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.md'
     $templateMarkdown = Get-Content -Path $markdownFilePath -Raw
 
     $templateMarkdown = $templateMarkdown -replace '%TenandId%', $MaesterResults.TenantId
     $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantName
+    $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantVersion
+    $templateMarkdown = $templateMarkdown -replace '%ModuleVersion%', (Get-ModuleVersion)
     $templateMarkdown = $templateMarkdown -replace '%TestDate%', $MaesterResults.ExecutedAt
     $templateMarkdown = $templateMarkdown -replace '%TotalCount%', $MaesterResults.TotalCount
     $templateMarkdown = $templateMarkdown -replace '%PassedCount%', $MaesterResults.PassedCount

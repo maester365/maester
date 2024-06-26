@@ -5,7 +5,9 @@ import { List, ListItem, Card, Title, DonutChart } from "@tremor/react";
 export default function MtDonutChart(props) {
 
     function getPercentage(count) {
-        return Math.round((count / props.TotalCount) * 100) + "%";
+        let percent = Math.round(count / (props.PassedCount + props.FailedCount) * 100);
+        if(isNaN(percent)) percent = "0";
+        return percent + "%";
     }
 
     return (

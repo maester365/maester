@@ -64,16 +64,26 @@ Function Send-MtMail {
     $imgFailedIcon = "https://maester.dev/img/test-result/icon-fail.png"
     $imgNotRunIcon = "https://maester.dev/img/test-result/icon-notrun.png"
 
-    $emailTemplate = $emailTemplate -replace "cid:image001.png@01DA7FCF.9FB97420", $imgMaesterLogo
-    $emailTemplate = $emailTemplate -replace "cid:image002.png@01DA7FCF.9FB97420", $imgMaesterLogo
-    $emailTemplate = $emailTemplate -replace "cid:image003.png@01DA7FCF.9FB97420", $imgPassedIcon
-    $emailTemplate = $emailTemplate -replace "cid:image004.png@01DA7FCF.9FB97420", $imgFailedIcon
-    $emailTemplate = $emailTemplate -replace "cid:image005.png@01DA7FCF.9FB97420", $imgNotRunIcon
+    $emailTemplate = $emailTemplate -replace "cid:image001.png@01DAC7D0.5D7D03D0", $imgMaesterLogo
+    $emailTemplate = $emailTemplate -replace "cid:image002.png@01DAC7D0.5D7D03D0", $imgMaesterLogo
+    $emailTemplate = $emailTemplate -replace "cid:image003.png@01DAC7D0.5D7D03D0", $imgPassedIcon
+    $emailTemplate = $emailTemplate -replace "cid:image004.png@01DAC7D0.5D7D03D0", $imgFailedIcon
+    $emailTemplate = $emailTemplate -replace "cid:image005.png@01DAC7D0.5D7D03D0", $imgNotRunIcon
+
+    $CurrentVersion = $MaesterResults.CurrentVersion
+    $LatestVersion = $MaesterResults.LatestVersion
+    $ModuleVersion =
+        if ($currentVersion -ne $latestVersion) {
+            "$currentVersion → Latest version: $latestVersion"
+        } else {
+            "$currentVersion"
+        }
 
     $notRunCount = $MaesterResults.SkippedCount
     if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $notRunCount = "-" }
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
+    $emailTemplate = $emailTemplate -replace "%ModuleVersion%", $ModuleVersion
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
     $emailTemplate = $emailTemplate -replace "%PassedCount%", $MaesterResults.PassedCount
     $emailTemplate = $emailTemplate -replace "%FailedCount%", $MaesterResults.FailedCount
