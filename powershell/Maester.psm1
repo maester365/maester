@@ -18,13 +18,7 @@ $__MtSession = @{
 	GraphBaseUri = $null
 	TestResultDetail = @{}
 	Connections = @()
-	DnsCache = [pscustomobject]@{
-		mxRecords   = $null
-		spfRecord   = $null
-		spfLookups  = $null
-		dmarcRecord = $null
-		dkimRecord  = $null
-	}
+	DnsCache = @()
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

@@ -18,11 +18,5 @@ function Clear-MtDnsCache {
 
     Write-Verbose -Message "Clearing the results cached from DNS lookups in this session"
 
-    $__MtSession.DnsCache = [pscustomobject]@{
-        mxRecords   = $null
-        spfRecord   = $null
-        spfLookups  = $null
-        dmarcRecord = $null
-        dkimRecord  = $null
-    }
+    $__MtSession.DnsCache = @()
 }
