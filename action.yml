@@ -102,7 +102,7 @@ runs:
           # Check if exclude test tags are provided
           if ( [string]::IsNullOrWhiteSpace( '${{ inputs.exclude_tags }}' ) -eq $false ) {
               $ExcludeTestTags = '${{ inputs.exclude_tags }}' -split ','
-              $MaesterParameters.Add( 'ExcludeTag ', $ExcludeTestTags )
+              $MaesterParameters.Add( 'ExcludeTag', $ExcludeTestTags )
               Write-Host "Excluding tests with tags: $ExcludeTestTags"
           }
 
