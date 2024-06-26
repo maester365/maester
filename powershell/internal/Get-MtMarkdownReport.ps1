@@ -74,7 +74,6 @@ Function Get-MtMarkdownReport {
                 $details += "`n`n**Category**: $category"
             }
 
-
             if (![string]::IsNullOrEmpty($test.ScriptBlockFile)) { $details += "`n`n**Source**: ``$($test.ScriptBlockFile)``" }
 
             $details += "`n`n---`n`n"
@@ -88,6 +87,8 @@ Function Get-MtMarkdownReport {
 
     $templateMarkdown = $templateMarkdown -replace '%TenandId%', $MaesterResults.TenantId
     $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantName
+    $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantVersion
+    $templateMarkdown = $templateMarkdown -replace '%ModuleVersion%', $MaesterResults.CurrentVersion
     $templateMarkdown = $templateMarkdown -replace '%TestDate%', $MaesterResults.ExecutedAt
     $templateMarkdown = $templateMarkdown -replace '%TotalCount%', $MaesterResults.TotalCount
     $templateMarkdown = $templateMarkdown -replace '%PassedCount%', $MaesterResults.PassedCount

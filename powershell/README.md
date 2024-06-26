@@ -7,7 +7,7 @@ The Maester project is structured to keep the code organized and maintainable. T
 This directory contains PowerShell-related scripts and modules.
 
 #### assets/
-A subdirectory for tempatetes and other related "general" files.
+A subdirectory for templates and other related "general" files.
 
 #### internal/
 A subdirectory for internal scripts and functions used by the Maester project. These scripts are not meant to be accessed directly by end users.

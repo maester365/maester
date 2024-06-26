@@ -7,6 +7,7 @@ title: Azure DevOps
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
+import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 import CreateEntraApp from '../sections/create-entra-app.md';
 import CreateEntraClientSecret from '../sections/create-entra-client-secret.md';
 
@@ -62,8 +63,8 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 This empty resource group is required to set up workload identity federation authentication. No Azure resources will be created in this resource group and there are no costs associated with it.
 
-- Open the [Azure portal](https://portal.azure.com)
-- Select **Create a resource** > **Resource group**
+- Browse to the Azure portal and open the **[Resource groups](https://portal.azure.com/#blade/HubsExtension/BrowseResourceGroups)** blade.
+- Select **+ Create**.
 - Enter a name for the resource group (e.g. `Maester-Resource-Group`)
 - Select any region
 - Select **Review + create** > **Create**
@@ -88,6 +89,8 @@ This empty resource group is required to set up workload identity federation aut
 - Select **Microsoft Graph** > **Application permissions**
 - Search for each of the permissions and check the box next to each permission:
   <GraphPermissions/>
+- Optionally, search for each of the permissions if you want to allow privileged permissions:
+  <PrivilegedPermissions/>
 - Select **Add permissions**
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
