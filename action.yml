@@ -74,7 +74,7 @@ runs:
 
           # Connect to Microsoft Graph
           $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
-          Connect-MgGraph -AccessToken $accessToken
+          Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
           # Install Maester
           Install-Module Maester -Force
