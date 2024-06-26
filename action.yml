@@ -14,6 +14,26 @@ inputs:
     description: "Include public test repository 'maester365/maester-tests' as well as private tests in the test run"
     required: false
     default: "true"
+  mail_recipients:
+    description: "A list of email addresses to send the test results to. Please separate multiple email addresses with a comma."
+    required: false
+    default: ""
+  mail_userid:
+    description: "The user id of the sender of the mail. This is required since the action is using application permissions."
+    required: false
+    default: ""
+  mail_testresultsuri:
+    description: "Uri to the detailed test results page."
+    required: false
+    default: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  include_tags:
+    description: "A list of tags to include in the test run. Please separate multiple tags with a comma."
+    required: false
+    default: ""
+  exclude_tags:
+    description: "A list of tags to exclude from the test run. Please separate multiple tags with a comma."
+    required: false
+    default: ""
   pester_verbosity:
     description: "Pester verbosity level. Options: 'None', 'Normal', 'Detailed', 'Diagnostic'"
     required: false
@@ -35,13 +55,13 @@ runs:
 
     - name: Checkout latest public tests
       if: ${{ inputs.include_public_tests == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: maester365/maester-tests
         path: public-tests
 
     - name: Checkout latest private tests
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: private-tests
 
@@ -54,7 +74,7 @@ runs:
 
           # Connect to Microsoft Graph
           $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
-          Connect-MgGraph -AccessToken $accessToken
+          Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
           # Install Maester
           Install-Module Maester -Force
@@ -62,9 +82,46 @@ runs:
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
           $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
+          Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
+
+          $MaesterParameters = @{
+              Path                 = '${{ github.workspace }}'
+              PesterConfiguration  = $PesterConfiguration
+              OutputFolder         = 'test-results'
+              OutputFolderFileName = 'test-results'
+              PassThru             = $true
+          }
+
+          # Check if test tags are provided
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.include_tags }}' ) -eq $false ) {
+              $TestTags = '${{ inputs.include_tags }}' -split ','
+              $MaesterParameters.Add( 'Tag', $TestTags )
+              Write-Host "Running tests with tags: $TestTags"
+          }
+
+          # Check if exclude test tags are provided
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.exclude_tags }}' ) -eq $false ) {
+              $ExcludeTestTags = '${{ inputs.exclude_tags }}' -split ','
+              $MaesterParameters.Add( 'ExcludeTag', $ExcludeTestTags )
+              Write-Host "Excluding tests with tags: $ExcludeTestTags"
+          }
+
+          # Check if mail recipients and mail userid are provided
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.mail_userid }}' ) -eq $false ) {
+              if ( [string]::IsNullOrWhiteSpace( '${{ inputs.mail_recipients }}' ) -eq $false ) {
+                  # Add mail parameters
+                  $MaesterParameters.Add( 'MailUserId', '${{ inputs.mail_userid }}' )
+                  $Recipients = '${{ inputs.mail_recipients }}' -split ','
+                  $MaesterParameters.Add( 'MailRecipient', $Recipients )
+                  $MaesterParameters.Add( 'MailTestResultsUri', '${{ inputs.mail_testresultsuri }}' )
+                  Write-Host "Mail notification will be sent to: $Recipients"
+              } else {
+                  Write-Warning "Mail recipients are not provided. Skipping mail notification."
+              }
+          }
 
           # Run Maester tests
-          $results = Invoke-Maester -Path ${{ github.workspace }} -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
+          $results = Invoke-Maester @MaesterParameters
 
           # Add step summary
           $summary = Get-Content test-results/test-results.md

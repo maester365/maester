@@ -102,8 +102,8 @@ jobs:
     - name: Run Maester action
       uses: maester365/maester@main
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        client_id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
 ```
 
