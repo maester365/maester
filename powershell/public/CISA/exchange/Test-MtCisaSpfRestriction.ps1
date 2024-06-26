@@ -59,9 +59,9 @@ Function Test-MtCisaSpfRestriction {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant domains have a restricted SPF, review authorized senders for accuracy.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have a restricted SPF, review authorized senders for accuracy.`n`n%TestResult%"
     }else{
-        $testResultMarkdown = "Your tenant does not restrict authorized senders with SPF fully. Ensure all domain's SPF records end in '-all'.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure all domain's SPF records end in '-all'.`n`n%TestResult%"
     }
 
     $passResult = "✅ Pass"
