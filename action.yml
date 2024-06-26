@@ -35,13 +35,13 @@ runs:
 
     - name: Checkout latest public tests
       if: ${{ inputs.include_public_tests == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: maester365/maester-tests
         path: public-tests
 
     - name: Checkout latest private tests
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: private-tests
 
