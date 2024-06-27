@@ -21,7 +21,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | - | - |
 | Test-MtCisaAutoExternalForwarding | [MS.EXO.1.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo11v1) |
 | Test-MtCisaSpfRestriction         | [MS.EXO.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo21v1) |
-| Test-MtCisaSpfDirectives          | [MS.EXO.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v1) |
+| Test-MtCisaSpfDirective           | [MS.EXO.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v1) |
 | Test-MtCisaDkim                   | [MS.EXO.3.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo31v1) |
 | Test-MtCisaSmtpAuthentication     | [MS.EXO.5.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo51v1) |
 | Test-MtCisaContactSharing         | [MS.EXO.6.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo61v1) |

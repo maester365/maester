@@ -7,12 +7,12 @@
     An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
 .EXAMPLE
-    Test-MtCisaSpfDirectives
+    Test-MtCisaSpfDirective
 
     Returns true if SPF record exists and has at least one directive
 #>
 
-Function Test-MtCisaSpfDirectives {
+Function Test-MtCisaSpfDirective {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
