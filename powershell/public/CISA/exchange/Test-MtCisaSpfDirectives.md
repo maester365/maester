@@ -14,7 +14,7 @@ If SPF is configured, you will see a response resembling `v=spf1 include:spf.pro
 
 #### Related links
 
-* [Defender admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
+* [Exchange admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
 * [CISA 2 Sender Policy Framework - MS.EXO.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L75)
 

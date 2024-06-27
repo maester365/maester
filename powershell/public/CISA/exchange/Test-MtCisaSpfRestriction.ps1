@@ -23,12 +23,14 @@ Function Test-MtCisaSpfRestriction {
     }
 
     $acceptedDomains = Get-AcceptedDomain
+    <# Parked domains should have SPF ending in -all too
     $sendingDomains = $acceptedDomains | Where-Object {`
         -not $_.SendingFromDomainDisabled
     }
+    #>
 
     $spfRecords = @()
-    foreach($domain in $sendingDomains){
+    foreach($domain in $acceptedDomains){
         $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF
         $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""

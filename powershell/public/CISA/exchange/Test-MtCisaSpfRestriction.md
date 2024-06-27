@@ -10,7 +10,7 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 
 #### Related links
 
-* [Defender admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
+* [Exchange admin center - Accepted domains](https://admin.exchange.microsoft.com/#/accepteddomains)
 * [CISA 2 Sender Policy Framework - MS.EXO.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo21v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L58)
 
