@@ -66,7 +66,8 @@ Learn more about the best practices for privileges users:
 
         # Check if any Service Principal with App Registration has a Client secret
         If ($PrivilegedAppIds) {
-          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } | Where-Object { $_.passwordCredentials }).appId
+          $PrincipalWithAppSecret = ($PrivilegedAppIds | ForEach-Object { Invoke-MtGraphRequest "applications(appId='$($_)')" -ApiVersion beta } `
+                                    |  Where-Object { $null -ne $_.passwordCredentials -and $_.passwordCredentials.Count -ne 0 }).appId
         }
         # Return results filters Privileged Assignments with Client Secret
         $PrincipalWithSecrets = $PrincipalWithSpSecret + $PrincipalWithAppSecret
@@ -93,7 +94,7 @@ Learn more about the different type and best practices for workload identities:
 "
       }
       UserMailbox {
-        $DirectAssignments | Where-Object { $_.principal.provisionedPlans.service -contains "exchange" }
+        $DirectAssignments | Where-Object { $_.principal.provisionedPlans.capabilityStatus -eq 'Enabled' -and $_.principal.provisionedPlans.service -contains "exchange" }
         $testDescription = "
 Take attention on mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
 It's recommended to use mail forwarding to regular work account which allows to avoid direct mail access and phishing attacks on privileged user.
