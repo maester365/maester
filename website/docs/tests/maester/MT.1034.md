@@ -11,7 +11,7 @@ sidebar_class_name: hidden
 The Conditional Access What If API is currently in public preview and is subject to change.
 Maester tests written using this API may need to be updated as the API moves towards General Availability.
 
-This check if only executed if you define the tag **CAWhatIf**
+This check is only executed if you define the tag **CAWhatIf**
 :::
 
 ## Description

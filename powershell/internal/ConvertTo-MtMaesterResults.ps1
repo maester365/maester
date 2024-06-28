@@ -40,6 +40,9 @@ function ConvertTo-MtMaesterResult {
     $tenantName = GetTenantName
     $account = $mgContext.Account
 
+    $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
+    $latestVersion = (Find-Module -Name Maester).Version
+
     $mtTests = @()
     $sortedTests = GetTestsSorted
 
@@ -96,17 +99,19 @@ function ConvertTo-MtMaesterResult {
     }
 
     $mtTestResults = [PSCustomObject]@{
-        Result       = $PesterResults.Result
-        FailedCount  = $PesterResults.FailedCount
-        PassedCount  = $PesterResults.PassedCount
-        SkippedCount = $PesterResults.SkippedCount
-        TotalCount   = $PesterResults.TotalCount
-        ExecutedAt   = GetFormattedDate($PesterResults.ExecutedAt)
-        TenantId     = $tenantId
-        TenantName   = $tenantName
-        Account      = $account
-        Tests        = $mtTests
-        Blocks       = $mtBlocks
+        Result         = $PesterResults.Result
+        FailedCount    = $PesterResults.FailedCount
+        PassedCount    = $PesterResults.PassedCount
+        SkippedCount   = $PesterResults.SkippedCount
+        TotalCount     = $PesterResults.TotalCount
+        ExecutedAt     = GetFormattedDate($PesterResults.ExecutedAt)
+        TenantId       = $tenantId
+        TenantName     = $tenantName
+        Account        = $account
+        CurrentVersion = $currentVersion
+        LatestVersion  = $latestVersion
+        Tests          = $mtTests
+        Blocks         = $mtBlocks
     }
 
     return $mtTestResults
