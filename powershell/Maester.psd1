@@ -112,6 +112,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaExternalSenderWarning', 'Test-MtCisaAntiSpamAllowList',
                'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaMailboxAuditing',
                'Test-MtCisaSpfRestriction', 'Test-MtCisaSpfDirective', 'Test-MtCisaDkim',
+               'Test-MtCisaDmarcRecordExist',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaAF01',

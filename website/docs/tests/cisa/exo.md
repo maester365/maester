@@ -23,6 +23,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaSpfRestriction         | [MS.EXO.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo21v1) |
 | Test-MtCisaSpfDirective           | [MS.EXO.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo22v1) |
 | Test-MtCisaDkim                   | [MS.EXO.3.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo31v1) |
+| Test-MtCisaDmarcRecordExist       | [MS.EXO.4.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo41v1) |
 | Test-MtCisaSmtpAuthentication     | [MS.EXO.5.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo51v1) |
 | Test-MtCisaContactSharing         | [MS.EXO.6.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo61v1) |
 | Test-MtCisaCalendarSharing        | [MS.EXO.6.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo62v1) |
