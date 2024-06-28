@@ -18,3 +18,6 @@ This is a summary of the test results from the Maester test run.
 # Test details
 
 %TestDetails%
+
+___
+Maester %ModuleVersion%
