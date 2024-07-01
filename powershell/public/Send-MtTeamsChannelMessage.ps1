@@ -88,6 +88,15 @@ Function Send-MtTeamsChannelMessage {
 
     }
 
+    # if $adaptiveCardData.run.TestResultURL is not set, remove the TestResultURL property from the adaptive card json template
+    if(!$TestResultsUri){
+        $adaptiveCardData.run.Remove("TestResultURL")
+        # Remove following string from the adaptive card json template
+        $adaptiveCardTemplate = $adaptiveCardTemplate | ConvertFrom-Json
+        $adaptiveCardTemplate.body = $adaptiveCardTemplate.body | Where-Object type -ne 'ActionSet'
+        $adaptiveCardTemplate = $adaptiveCardTemplate | ConvertTo-Json -Depth 10
+    }
+
     # Identify and replace variables because Inline Data is not supported by Microsoft Teams...
     # This regex matches placeholders like ${$root.run.TestResultURL}
     $pattern = '\$\{\$root\.([a-zA-Z0-9_.]+)\}'
