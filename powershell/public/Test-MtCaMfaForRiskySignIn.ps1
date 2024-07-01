@@ -17,6 +17,11 @@ Function Test-MtCaMfaForRiskySignIn {
     [OutputType([bool])]
     param ()
 
+    if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Remove policies that require password change, as they are related to user risk and not MFA on signin
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }

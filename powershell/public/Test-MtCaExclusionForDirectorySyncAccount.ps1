@@ -18,6 +18,11 @@ Function Test-MtCaExclusionForDirectorySyncAccount {
     [OutputType([bool])]
     param ()
 
+    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $testDescription = "It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps."
     $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
 

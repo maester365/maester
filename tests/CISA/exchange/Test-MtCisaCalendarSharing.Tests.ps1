@@ -1,9 +1,10 @@
-BeforeDiscovery {
-    $exoSession = Test-MtConnection -Service ExchangeOnline
-}
-
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.6.2", "CISA", "Security", "All" -Skip:((-not $exoSession)) {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.6.2", "CISA", "Security", "All" {
     It "MS.EXO.6.2: Calendar details SHALL NOT be shared with all domains." {
-        Test-MtCisaCalendarSharing | Should -Be $true -Because "calendar sharing is disabled."
+
+        $cisaCalendarSharing = Test-MtCisaCalendarSharing
+
+        if($null -eq $cisaCalendarSharing) {
+            $cisaCalendarSharing | Should -Be $true -Because "calendar sharing is disabled."
+        }
     }
 }

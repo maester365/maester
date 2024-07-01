@@ -17,6 +17,11 @@ Function Test-MtCaRequirePasswordChangeForHighUserRisk {
     [OutputType([bool])]
     param ()
 
+    if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     # Only check policies that have password change as a grant control
     $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -contains 'passwordChange' }

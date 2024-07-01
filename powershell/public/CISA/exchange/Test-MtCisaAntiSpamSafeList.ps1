@@ -17,6 +17,11 @@ Function Test-MtCisaAntiSpamSafeList {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $policy = Get-HostedConnectionFilterPolicy
 
     $resultPolicy = $policy | Where-Object {`

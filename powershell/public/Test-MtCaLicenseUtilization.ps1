@@ -26,6 +26,15 @@ function Test-MtCaLicenseUtilization {
         [string]$License
     )
 
+    if (( Get-MtLicenseInformation EntraID ) -eq "Free") {
+        if ($License -eq "P1") {
+            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        } elseif ($License -eq "P2") {
+            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        }
+        return $null
+    }
+
     # Get the total number of users in the tenant
     $TotalUserCount = Get-MtTotalEntraIdUserCount
 

@@ -17,6 +17,11 @@ Function Test-MtCisaMailboxAuditing {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $config = Get-OrganizationConfig
 
     $testResult = (-not $config.AuditDisabled)

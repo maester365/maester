@@ -17,6 +17,11 @@ Function Test-MtCisaExternalSenderWarning {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $rules = Get-TransportRule
 
     $resultRules = $rules | Where-Object {`

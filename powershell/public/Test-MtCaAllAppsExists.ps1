@@ -30,6 +30,11 @@ Function Test-MtCaAllAppsExists {
     [switch] $SkipCheckAllUsers = $false
   )
 
+  if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+    Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+    return $null
+  }
+
   $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" } | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
 
   $testDescription = "

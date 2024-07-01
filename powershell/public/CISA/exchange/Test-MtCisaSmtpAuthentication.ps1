@@ -16,6 +16,11 @@ Function Test-MtCisaSmtpAuthentication {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $config = Get-TransportConfig
 
     $testResult = $config.SmtpClientAuthenticationDisabled

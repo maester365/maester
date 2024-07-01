@@ -18,6 +18,11 @@ Function Test-MtCaMfaForAdmin {
     [OutputType([bool])]
     param ()
 
+    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $AdministrativeRolesToCheck = @(
         "62e90394-69f5-4237-9190-012177145e10",
         "194ae4cb-b126-40b2-bd5b-6091b380977d",
@@ -42,8 +47,8 @@ Function Test-MtCaMfaForAdmin {
         $PolicyIncludesAllRoles = $true
         $AdministrativeRolesToCheck | ForEach-Object {
             if ( ( $_ -notin $policy.conditions.users.includeRoles `
-              -and $policy.conditions.users.includeUsers -ne 'All' ) `
-              -or $_ -in $policy.conditions.users.excludeRoles `
+                        -and $policy.conditions.users.includeUsers -ne 'All' ) `
+                    -or $_ -in $policy.conditions.users.excludeRoles `
             ) {
                 $PolicyIncludesAllRoles = $false
             }

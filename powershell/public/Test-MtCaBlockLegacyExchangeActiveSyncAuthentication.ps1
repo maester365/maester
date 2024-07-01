@@ -18,6 +18,11 @@ Function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
     [OutputType([bool])]
     param ()
 
+    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $testDescription = "
