@@ -142,7 +142,7 @@ Function Invoke-Maester {
     function ValidateAndSetOutputFiles($out) {
         $result = $null
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            if ($out.OutputFile.EndsWith(".html") -eq $false) {
+            if ($out.OutputHtmlFile.EndsWith(".html") -eq $false) {
                 $result = "The OutputHtmlFile parameter must have an .html extension."
             }
         }
@@ -156,9 +156,11 @@ Function Invoke-Maester {
                 $result = "The OutputJsonFile parameter must have a .json extension."
             }
         }
-        if ([string]::IsNullOrEmpty($out.OutputFolder) -or `
-            (!$PassThru -and [string]::IsNullOrEmpty($out.OutputFolder) -and [string]::IsNullOrEmpty($out.OutputHtmlFile) `
-                    -and [string]::IsNullOrEmpty($out.OutputMarkdownFile) -and [string]::IsNullOrEmpty($out.OutputJsonFile))) {
+
+        $someOutputFileHasValue = ![string]::IsNullOrEmpty($out.OutputHtmlFile) -or `
+            ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile)
+
+        if ([string]::IsNullOrEmpty($out.OutputFolder) -and !$someOutputFileHasValue) {
             # No outputs specified. Set default folder.
             $out.OutputFolder = "./test-results"
         }
