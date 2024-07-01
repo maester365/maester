@@ -1,21 +1,32 @@
 ﻿<#
 .SYNOPSIS
-   Installs the latest ready-made Maester tests built by the Maester team.
+   Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
 
 .DESCRIPTION
     The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
 
     The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 
+.PARAMETER Path
+    The path to install the Maester tests in. Defaults to the current directory.
+
+.Parameter SkipPesterCheck
+    Skips the automatic installation check for Pester.
+
 .EXAMPLE
     Install-MaesterTests
 
-    Install the latest set of Maester tests in the current directory.
+    Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
 
 .EXAMPLE
     Install-MaesterTests -Path .\maester-tests
 
-    Installs the latest Maester tests in the specified directory.
+    Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
+
+.EXAMPLE
+    Install-MaesterTests -SkipPesterCheck
+
+    Installs the latest Maester tests in the current directory. Skips the check for the required version of Pester.
 #>
 
 Function Install-MaesterTests {
@@ -25,8 +36,15 @@ Function Install-MaesterTests {
     param(
         # The path to install the Maester tests to, defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = ".\"
+        [string] $Path = ".\",
+
+        # Skip automatic installation of Pester
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipPesterCheck
     )
+
+    [version]$MinPesterVersion = '5.5.0'
+
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Installing Maester tests to $Path"
@@ -44,5 +62,17 @@ Function Install-MaesterTests {
     }
 
     Update-MtMaesterTests -Path $Path -Install
+
+    # The default action installs the minimum required version of Pester if not present. Opt out with -SkipPesterCheck.
+    if ( $PSBoundParameters.ContainsKey('SkipPesterCheck') ) {
+        Write-Verbose "Skipping Pester version check."
+    } else {
+        if ( ((Get-Module -Name 'Pester' -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $MinPesterVersion ) {
+            Write-Verbose "Installing Pester version $MinPesterVersion."
+            Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
+        } else {
+            Write-Verbose "The minimum required version of Pester is already installed."
+        }
+    }
 
 }
