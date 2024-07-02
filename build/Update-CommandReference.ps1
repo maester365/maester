@@ -9,6 +9,7 @@ if (-not (Get-Module Pester -ListAvailable)) { Install-Module Pester -Scope Curr
 Import-Module Alt3.Docusaurus.Powershell
 Import-Module PlatyPS
 Import-Module Pester
+Import-Module DnsClient
 
 # Generate the command reference markdown
 $commandsIndexFile = "./website/docs/commands/readme.md"
