@@ -18,6 +18,7 @@ $__MtSession = @{
 	GraphBaseUri = $null
 	TestResultDetail = @{}
 	Connections = @()
+	DnsCache = @()
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 
