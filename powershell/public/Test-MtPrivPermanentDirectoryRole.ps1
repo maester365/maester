@@ -93,7 +93,7 @@ Learn more about the different type and best practices for workload identities:
 "
       }
       UserMailbox {
-        $DirectAssignments | Where-Object { $_.principal.provisionedPlans.service -contains "exchange" }
+        $DirectAssignments | Where-Object { $_.principal.provisionedPlans.capabilityStatus -eq 'Enabled' -and $_.principal.provisionedPlans.service -contains "exchange" }
         $testDescription = "
 Take attention on mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
 It's recommended to use mail forwarding to regular work account which allows to avoid direct mail access and phishing attacks on privileged user.
