@@ -95,12 +95,12 @@ Function Test-MtCisaSpfDirective {
                 $itemList = "$($itemDirectives)"
             }
             2 {
-                $itemList = "$($itemDirectives[0])<br>"
+                $itemList = "$($itemDirectives[0])<br />"
                 $itemList += "$($itemDirectives[1])"
             }
             Default {
-                $itemList = "$($itemDirectives[0])<br>"
-                $itemList += "$($itemDirectives[1])<br>"
+                $itemList = "$($itemDirectives[0])<br />"
+                $itemList += "$($itemDirectives[1])<br />"
                 $itemList += "...$($itemDirectiveCount) directives"
             }
         }

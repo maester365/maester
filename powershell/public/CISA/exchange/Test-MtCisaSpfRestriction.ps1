@@ -86,12 +86,12 @@ Function Test-MtCisaSpfRestriction {
                 $itemAddressList = "$($item.spfLookups.IPAddress[0])"
             }
             2 {
-                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br>"
+                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br />"
                 $itemAddressList += "$($item.spfLookups.IPAddress[1])"
             }
             Default {
-                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br>"
-                $itemAddressList += "$($item.spfLookups.IPAddress[1])<br>"
+                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br />"
+                $itemAddressList += "$($item.spfLookups.IPAddress[1])<br />"
                 $itemAddressList += "...$($itemAddressCount-2) addresses"
             }
         }

@@ -89,18 +89,18 @@ Function Test-MtCisaDmarcReport {
         $aggregates = $item.dmarcRecord.reportForensic.mailAddress
         $aggregatesCount = ($aggregates|Measure-Object).Count
         if($aggregatesCount -ge 3){
-            $aggregates = "$($aggregates[0])<br>$($aggregates[1])<br>"
+            $aggregates = "$($aggregates[0])<br>$($aggregates[1])<br />"
             $aggregates += "...$aggregatesCount targets"
         }elseif(aggregatesCount -gt 1){
-            $aggregates = $aggregates -join "<br>"
+            $aggregates = $aggregates -join "<br />"
         }
         $forensics = $item.dmarcRecord.reportForensic.mailAddress
         $forensicsCount = ($forensics|Measure-Object).Count
         if($forensicsCount -ge 3){
-            $forensics = "$($forensics[0])<br>$($forensics[1])<br>"
+            $forensics = "$($forensics[0])<br />$($forensics[1])<br />"
             $forensics += "...$forensicsCount targets"
         }elseif(aggregatesCount -gt 1){
-            $forensics = $forensics -join "<br>"
+            $forensics = $forensics -join "<br />"
         }
 
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | Aggregate Reports: $($aggregates) |`n"
