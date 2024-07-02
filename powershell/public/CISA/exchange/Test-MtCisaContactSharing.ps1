@@ -17,6 +17,11 @@ Function Test-MtCisaContactSharing {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $policies = Get-SharingPolicy
 
     $resultPolicies = $policies | Where-Object {`

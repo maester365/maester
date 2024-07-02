@@ -1,8 +1,4 @@
-﻿BeforeDiscovery {
-    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
-}
-
-Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
+﻿Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }
@@ -65,16 +61,20 @@ Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" -Sk
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
             $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
         }
-        It "MT.1023: All users utilizing a P2 license should be licensed. See https://maester.dev/docs/tests/MT.1023" -Skip:( $EntraIDPlan -ne "P2" ) -Tag "MT.1023" {
+        It "MT.1023: All users utilizing a P2 license should be licensed. See https://maester.dev/docs/tests/MT.1023" -Tag "MT.1023" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P2"
             $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P2 license"
         }
     }
 }
 
-Describe "Security Defaults" -Tag "CA", "Security", "All" -Skip:( $EntraIDPlan -ne "Free" ) {
+Describe "Security Defaults" -Tag "CA", "Security", "All" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
-        $SecurityDefaults = Invoke-MtGraphRequest -RelativeUri "policies/identitySecurityDefaultsEnforcementPolicy" -ApiVersion beta | Select-Object -ExpandProperty isEnabled
-        $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
+        if ($EntraIDPlan -ne "Free") {
+            Add-MtTestResultDetail -SkippedBecause LicensedEntraIDPremium
+        } else {
+            $SecurityDefaults = Invoke-MtGraphRequest -RelativeUri "policies/identitySecurityDefaultsEnforcementPolicy" -ApiVersion beta | Select-Object -ExpandProperty isEnabled
+            $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
+        }
     }
 }
