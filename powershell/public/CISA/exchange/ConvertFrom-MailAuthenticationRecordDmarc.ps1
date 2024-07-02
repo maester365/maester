@@ -224,6 +224,9 @@ Function ConvertFrom-MailAuthenticationRecordDmarc {
             $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
                 Where-Object {$_.Type -eq "TXT"} | `
                 Where-Object {$_.Strings -match $matchRecord}).Strings)
+        }catch [System.Management.Automation.CommandNotFoundException]{
+            Write-Error $Error[0]
+            return "Unsupported platform, Resolve-DnsName not available"
         }catch{
             Write-Error $Error[0]
             return "Failure to obtain record"

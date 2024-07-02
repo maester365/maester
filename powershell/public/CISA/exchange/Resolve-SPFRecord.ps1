@@ -12,7 +12,7 @@
 #>
 
 function Resolve-SPFRecord {
-    [OutputType([spfrecord[]])]
+    [OutputType([spfrecord[]],[System.String])]
     [CmdletBinding()]
     param (
         # Domain Name
@@ -66,7 +66,15 @@ function Resolve-SPFRecord {
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
         # Query DNS Record
-        $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
+        try{
+            $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
+        }catch [System.Management.Automation.CommandNotFoundException]{
+            Write-Error $Error[0]
+            return "Unsupported platform, Resolve-DnsName not available"
+        }catch{
+            Write-Error $Error[0]
+            return "Failure to obtain record"
+        }
         # Check SPF record
         $SPFRecord = $DNSRecords | Where-Object { $_.Strings -match "^v=spf1" }
         # Validate SPF record
