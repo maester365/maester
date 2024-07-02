@@ -1,9 +1,10 @@
-BeforeDiscovery {
-    $exoSession = Test-MtConnection -Service ExchangeOnline
-}
-
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.5.1", "CISA", "Security", "All" -Skip:((-not $exoSession)) {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.5.1", "CISA", "Security", "All" {
     It "MS.EXO.5.1: SMTP AUTH SHALL be disabled." {
-        Test-MtCisaSmtpAuthentication | Should -Be $true -Because "SMTP Authentication is disabled."
+
+        $cisaSmtpAuthentication = Test-MtCisaSmtpAuthentication
+
+        if ($null -ne $cisaSmtpAuthentication) {
+            $cisaSmtpAuthentication | Should -Be $true -Because "SMTP Authentication is disabled."
+        }
     }
 }
