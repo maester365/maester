@@ -16,7 +16,8 @@ Add detailed information about a test so that it can be displayed in the test re
 
 ```powershell
 Add-MtTestResultDetail [[-Description] <String>] [[-Result] <String>] [[-GraphObjects] <Object[]>]
- [[-GraphObjectType] <String>] [[-TestName] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-GraphObjectType] <String>] [[-TestName] <String>] [[-SkippedBecause] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -138,6 +139,22 @@ Aliases:
 Required: False
 Position: 5
 Default value: $____Pester.CurrentTest.ExpandedName
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkippedBecause
+
+\{\{ Fill SkippedBecause Description \}\}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
