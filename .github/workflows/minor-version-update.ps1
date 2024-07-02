@@ -14,7 +14,7 @@ if ( -not (Test-Path $ManfifestPath )) {
     throw
 } else {
     # Get the current version of the module from the PowerShell gallery
-    $ver = [version](Find-Module -Name Maester -AllowPrerelease:$Prerelease).Version
+    $ver = [version](Find-Module -Name Maester -AllowPrerelease:$preview).Version
     $newBuild = $ver.Build + 1
     $NewVersion = '{0}.{1}.{2}' -f $ver.Major, $ver.Minor, $newBuild
 
@@ -27,5 +27,6 @@ if ( -not (Test-Path $ManfifestPath )) {
 }
 
 $NewVersion += $previewLabel
+Write-Output "Version set to $NewVersion"
 Add-Content -Path $env:GITHUB_OUTPUT -Value "newtag=$NewVersion"
 Add-Content -Path $env:GITHUB_OUTPUT -Value "tag=$NewVersion"
