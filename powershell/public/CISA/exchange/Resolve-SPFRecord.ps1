@@ -12,7 +12,7 @@
 #>
 
 function Resolve-SPFRecord {
-    [OutputType([spfrecord[]])]
+    [OutputType([spfrecord[]],[System.String])]
     [CmdletBinding()]
     param (
         # Domain Name
