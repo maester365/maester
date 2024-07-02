@@ -48,3 +48,4 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaActivationNotification    | [MS.AAD.7.9](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad79v1) |
 | Test-MtCisaGuestUserAccess           | [MS.AAD.8.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad81v1) |
 | Test-MtCisaGuestInvitation           | [MS.AAD.8.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad82v1) |
+| Test-MtCisaCrossTenantInboundDefault | [MS.AAD.8.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad83v1)
