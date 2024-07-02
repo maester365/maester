@@ -111,6 +111,9 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaContactSharing', 'Test-MtCisaCalendarSharing',
                'Test-MtCisaExternalSenderWarning', 'Test-MtCisaAntiSpamAllowList',
                'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaMailboxAuditing',
+               'Test-MtCisaSpfRestriction', 'Test-MtCisaSpfDirective', 'Test-MtCisaDkim',
+               'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
+               'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcReport',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaAF01',
@@ -129,7 +132,10 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 'Test-MtEidscaPR05',
                'Test-MtEidscaPR06', 'Test-MtEidscaST08', 'Test-MtEidscaST09',
                'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
-               'Update-MaesterTests', 'Compare-MtTestResult'
+               'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
+               'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
+               'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordDkim',
+               'Resolve-SpfRecord', 'Clear-MtDnsCache'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
