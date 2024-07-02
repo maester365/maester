@@ -1,4 +1,4 @@
-name: Publish Module after manual version update
+name: publish-module-post-manual-version-update
 
 on:
   workflow_dispatch:
