@@ -75,6 +75,7 @@ module.exports = [
     'commands/Test-MtCisaCalendarSharing',
     'commands/Test-MtCisaCloudGlobalAdmin',
     'commands/Test-MtCisaContactSharing',
+    'commands/Test-MtCisaCrossTenantInboundDefault',
     'commands/Test-MtCisaDiagnosticSettings',
     'commands/Test-MtCisaDkim',
     'commands/Test-MtCisaDmarcAggregateCisa',
