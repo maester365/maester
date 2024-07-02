@@ -1,15 +1,13 @@
 name: publish-module-preview
 
 on:
-    workflow_dispatch:
-    workflow_run:
-      workflows: ['build-validation']                     # runs after build-validation workflow
-      types:
-        - completed
-    pull_request:
-        branches: ["main"]
-        paths:
-        - powershell/**
+  push:
+    branches:
+      - main
+    paths:
+      - "powershell/**"
+      - "!powershell/Maester.psd1"
+  workflow_dispatch:
 
 permissions:
   id-token: write
