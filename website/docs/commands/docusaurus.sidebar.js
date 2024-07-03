@@ -100,7 +100,7 @@ module.exports = [
     'commands/Test-MtCisaRequireActivationApproval',
     'commands/Test-MtCisaSmtpAuthentication',
     'commands/Test-MtCisaSpfDirective',
-    'commands/Test-MtCisaSpfRestriction',
+    'commands/Test-MtCisaSpfRestriction2',
     'commands/Test-MtCisaUnmanagedRoleAssignment',
     'commands/Test-MtCisaWeakFactor',
     'commands/Test-MtConditionalAccessWhatIf',
