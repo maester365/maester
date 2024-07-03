@@ -1,0 +1,21 @@
+---
+title: %CheckId% - %DisplayName%
+slug: /tests/%CheckId%
+sidebar_class_name: hidden
+---
+
+# %CheckId% - %DisplayName%
+
+%Description%
+
+| | |
+|-|-|
+| **Name** | %Name% |
+| **Category** | %Category% |
+| **Severity** | %Severity% |
+| **Description** | %Description% |
+
+## How to fix
+| | |
+|-|-|
+| Check the results of EntraOps and review the affected privileges from the test result |

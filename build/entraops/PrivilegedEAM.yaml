@@ -1,0 +1,202 @@
+- Name: Identity Governance role assignment on catalog with privileged objects outside from classification of the administrator
+  Id: EOPS-01
+  Category: Privileged Scope
+  SkipCondition: (!$EntraOpsPrivilegedEamData)
+  Severity: High
+  Description: Avoid the assignment of privileged objects to administrators outside the classification of the administrator.
+  Query: |
+    $ElmCatalogAssignments = $EntraOpsPrivilegedEamData | where-object {$_.RoleSystem -eq "IdentityGovernance"} `
+                                    | Select-Object -ExpandProperty RoleAssignments `
+                                    | Where-Object {$_.Classification.TaggedBy -contains "AssignedCatalogObjects"}
+        foreach($ElmCatalogAssignment in $ElmCatalogAssignments){
+            $PrincipalClassification = $EntraOpsPrivilegedEamData | Where-Object {$_.ObjectId -eq $ElmCatalogAssignment.ObjectId} `
+                                        | Where-Object {$_.RoleSystem -ne "IdentityGovernance"} `
+                                        | Select-Object -ExpandProperty RoleAssignments `
+                                        | Select-Object -ExpandProperty Classification `
+                                        | Select-Object -Unique AdminTierLevelName, Service `
+                                        | Sort-Object -Property AdminTierLevelName, Service
+            if ($null -eq $PrincipalClassification) {
+                Write-Warning "No Principal Classification found for $($ElmCatalogAssignment.ObjectId)"
+                $PrincipalClassification = @(
+                    [PSCustomObject]@{
+                        AdminTierLevelName = "User Access"
+                        Service = "No Classification"
+                    }
+                )
+            }
+            $ElmCatalogClassification = $ElmCatalogAssignment | Select-Object -ExpandProperty Classification `
+                                        | Where-Object {$_.TaggedBy -eq "AssignedCatalogObjects"} `
+                                        | Select-Object -Unique AdminTierLevelName, Service `
+                                        | Sort-Object -Property AdminTierLevelName, Service
+
+            $Differences = Compare-Object -ReferenceObject ($ElmCatalogClassification) `
+            -DifferenceObject ($PrincipalClassification) -Property AdminTierLevelName, Service `
+            | Where-Object {$_.SideIndicator -eq "<="} | Select-Object * -ExcludeProperty SideIndicator
+            if ($null -ne $Differences) {
+                try {
+                    $Principal = Get-EntraOpsEntraObject -AadObjectId $ElmCatalogAssignment.ObjectId
+                }
+                catch {
+                    $Principal = [PSCustomObject]@{
+                        ObjectDisplayName = "Unknown"
+                        ObjectType = "Unknown"
+                    }
+                }
+            }
+            if ($Differences) {
+                $QueryResult = $Differences | ForEach-Object {
+                        [PSCustomObject]@{
+                            "ObjectDisplayName"        = $Principal.ObjectDisplayName
+                            "ObjectType"               = $Principal.ObjectType
+                            "ObjectId"                 = $Principal.ObjectId
+                            "SignInName"               = $Principal.ObjectSignInName
+                            "RoleSystem"               = "IdentityGovernance"
+                            "RoleAssignmentId"         = $ElmCatalogAssignment.RoleAssignmentId
+                            "RoleDefinitionName"       = $ElmCatalogAssignment.RoleDefinitionName
+                            "RoleAssignmentScopeId"    = $ElmCatalogAssignment.RoleAssignmentScopeId
+                            "RoleAssignmentScopeName"  = $ElmCatalogAssignment.RoleAssignmentScopeName
+                            "AdminTierLevelName"       = $_.AdminTierLevelName
+                            "Description"              = "$($_.Service) is not included in users' permissions."
+                        }
+                }
+            }
+        }
+
+  EvaluateResult: |
+    ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
+  OutputResult: Summary
+- Name: Permanent and Direct Role Assignments in Azure RBAC on Management Groups without Restricted Management
+  Id: EOPS-02
+  Category: Privileged Scope
+  SkipCondition: (!(Get-AzContext) -and !(Get-Module EntraOps))
+  Severity: High
+  Description: Avoid the direct assignment of privileged objects without restricted management to Azure RBAC with High Privileged Roles on Tenant Root or Management Group.
+  Query: |
+    $AzPrivilegedRolesQuery = 'AuthorizationResources
+    | where type =~ "microsoft.authorization/roleassignments"
+    | extend ObjectType = tostring(properties["principalType"])
+    | extend ObjectId = tostring(properties["principalId"])
+    | extend roleDefinitionId = tolower(tostring(properties["roleDefinitionId"]))
+    | extend Scope = tolower(tostring(properties["scope"]))
+    | mv-expand parse_json(Scope)
+    | join kind=inner ( AuthorizationResources
+    | where type =~ "microsoft.authorization/roledefinitions"
+    | extend roleDefinitionId = tolower(id)
+    | extend Scope = tolower(properties.assignableScopes)
+    | extend RoleName = (properties.roleName)
+    | where RoleName in ("Owner",
+          "Access Review Operator Service Role",
+          "Contributor",
+          "Role Based Access Control Administrator",
+          "User Access Administrator")
+    ) on roleDefinitionId
+    | where Scope in (
+        "/"
+        )
+        or Scope startswith (
+        "/providers/microsoft.management/managementgroups/"
+        )
+    | project ObjectId, ObjectType, RoleName, Scope'
+    $AzPrivilegedRoles = Invoke-EntraOpsAzGraphQuery -KqlQuery $AzPrivilegedRolesQuery
+    $AzPrivilegedPrincipals = $AzPrivilegedRoles | Select-Object -unique ObjectId
+    $QueryResult = foreach ($AzPrivilegedPrincipal in $AzPrivilegedPrincipals) {
+            $UnprotectedAzureAdmin = Get-EntraOpsPrivilegedEntraObject -AadObjectId $AzPrivilegedPrincipal.ObjectId `
+                    | Where-Object {$_.RestrictedManagementByRMAU -ne $True -and $_.ObjectType -ne "serviceprincipal2" `
+                            -and $_.RestrictedManagementByAadRole -ne $True `
+                            -and $_.RestrictedManagementByRAG -ne $True
+                            }
+            if($UnprotectedAzureAdmin) {
+                $RoleAssignments = $AzPrivilegedRoles | Where-Object {$_.ObjectId -eq $AzPrivilegedPrincipal.ObjectId -and $_.ObjectSignInName -ne "01fc33a7-78ba-4d2f-a4b7-768e336e890e" } | Select-Object RoleName, Scope
+                $PrivilegedPrincipalAssignments = $RoleAssignments | ForEach-Object {
+                    [PSCustomObject]@{
+                        "ObjectDisplayName"        = $UnprotectedAzureAdmin.ObjectDisplayName
+                        "ObjectType"               = $UnprotectedAzureAdmin.ObjectType
+                        "ObjectId"                 = $UnprotectedAzureAdmin.ObjectId
+                        "SignInName"               = $UnprotectedAzureAdmin.ObjectSignInName
+                        "RoleAssignmentId"         = $_.id
+                        "RoleDefinitionName"       =  $_.RoleName
+                        "RoleAssignmentScopeId"    = $_.Scope
+                        "RoleAssignmentScopeName"  = ""
+                        "RoleSystem"               = "Azure"
+                        "AdminTierLevelName"       = $UnprotectedAzureAdmin.AdminTierLevelName
+                        "Description"              = $null
+                    }
+                }
+                # Filter out the service principal for MS-PIM
+                $PrivilegedPrincipalAssignments | where-object {$_.SignInName -ne "01fc33a7-78ba-4d2f-a4b7-768e336e890e"}
+            }
+    }
+
+  EvaluateResult: |
+    ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
+  OutputResult: Summary
+- Name: Group Owners with Privileged Roles and delegated ownership
+  Id: EOPS-03
+  Category: Privileged Scope
+  SkipCondition: (!$EntraOpsPrivilegedEamData)
+  Severity: High
+  Description: Avoid assignment of ownership to privileged objects.
+  Query: |
+    $GroupWithOwners = $EntraOpsPrivilegedEamData `
+      | Where-Object {$_.ObjectType -eq "group"} `
+      | Where-Object {$_.Owners -ne $null}
+    $GroupOwners = $GroupWithOwners | ForEach-Object {
+        $Owners = $_.Owners | ForEach-Object {
+            Get-EntraOpsPrivilegedEntraObject -AadObjectId $_
+        }
+        [PSCustomObject]@{
+            "ObjectId" = $_.ObjectId
+            "Owners" = $Owners
+        }
+    }
+    $QueryResult = foreach ($GroupWithOwner in $GroupWithOwners) {
+          $Description = ((($GroupOwners | Where-Object {$_.ObjectId -eq $GroupWithOwner.ObjectId}) | Select-Object -ExpandProperty Owners) | Select-Object ObjectSignInName).ObjectSignInName
+          [PSCustomObject]@{
+              "ObjectDisplayName"        = $GroupWithOwner.ObjectDisplayName
+              "ObjectType"               = $GroupWithOwner.ObjectType
+              "ObjectId"                 = $GroupWithOwner.ObjectId
+              "RoleDefinitionName"       = "Owners"
+              "RoleAssignmentScopeName"  = "group"
+              "RoleSystem"               = "Resource"
+              "AdminTierLevelName"       = ($GroupWithOwner.classification | Sort-Object AdminTierLevel)[0].AdminTierLevelName
+              "Description"              = $Description
+          }
+    }
+  EvaluateResult: |
+    ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
+  OutputResult: Summary
+- Name: Service Principals with High Privileges Roles on Microsoft Graph and delegation by owners
+  Id: EOPS-04
+  Category: Privileged Scope
+  SkipCondition: (!$EntraOpsPrivilegedEamData)
+  Severity: High
+  Description: Avoid the direct assignment of privileged objects without restricted management to Azure RBAC with High Privileged Roles on Tenant Root or Management Group.
+  Query: |
+    $SpWithOwners = $EntraOpsPrivilegedEamData `
+      | Where-Object {$_.ObjectType -eq "serviceprincipal" -and $_.Classification.AdminTierLevelName -contains "ControlPlane"} `
+      | Where-Object {$_.Owners -ne $null}
+    $SpOwners = $SpWithOwners | ForEach-Object {
+        $Owners = $_.Owners | ForEach-Object {
+            Get-EntraOpsPrivilegedEntraObject -AadObjectId $_
+        }
+        [PSCustomObject]@{
+            "ObjectId" = $_.ObjectId
+            "Owners" = $Owners
+        }
+    }
+    $QueryResult = $SpWithOwners | ForEach-Object {
+          [PSCustomObject]@{
+              "ObjectDisplayName"        = $_.ObjectDisplayName
+              "ObjectType"               = $_.ObjectType
+              "ObjectId"                 = $_.ObjectId
+              "SignInName"               = $_.ObjectSignInName
+              "RoleDefinitionName"       = "Owners"
+              "RoleAssignmentScopeName"  = "servicePrincipal"
+              "RoleSystem"               = "Resource"
+              "AdminTierLevelName"       = ($_.classification | Sort-Object AdminTierLevel)[0].AdminTierLevelName
+              "Description"              = $null
+          }
+    }
+  EvaluateResult: |
+    ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
+  OutputResult: Summary
