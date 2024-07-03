@@ -21,13 +21,13 @@ CompatiblePSEditions = 'Core', 'Desktop'
 GUID = '502a7fe7-b1ae-4bf5-98db-00831b14ed6f'
 
 # Author of this module
-Author = 'Maester'
+Author = 'Maester Team'
 
 # Company or vendor of this module
-CompanyName = 'Maester'
+CompanyName = 'Maester Team'
 
 # Copyright statement for this module
-Copyright = 'Maester. All rights reserved.'
+Copyright = 'Maester Team. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Pester based test automation framework to monitor your Microsoft 365 security configuration.'
@@ -107,6 +107,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaRequireActivationApproval',
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
+               'Test-MtCisaCrossTenantInboundDefault',
                'Test-MtCisaAutoExternalForwarding', 'Test-MtCisaSmtpAuthentication',
                'Test-MtCisaContactSharing', 'Test-MtCisaCalendarSharing',
                'Test-MtCisaExternalSenderWarning', 'Test-MtCisaAntiSpamAllowList',
