@@ -12,7 +12,7 @@
     Returns true if SPF record exists and has a fail all modifier for all exo domains
 #>
 
-Function Test-MtCisaSpfRestriction {
+Function Test-MtCisaSpfRestriction2 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -86,13 +86,13 @@ Function Test-MtCisaSpfRestriction {
                 $itemAddressList = "$($item.spfLookups.IPAddress[0])"
             }
             2 {
-                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br />"
+                $itemAddressList = "$($item.spfLookups.IPAddress[0]), "
                 $itemAddressList += "$($item.spfLookups.IPAddress[1])"
             }
             Default {
-                $itemAddressList = "$($item.spfLookups.IPAddress[0])<br />"
-                $itemAddressList += "$($item.spfLookups.IPAddress[1])<br />"
-                $itemAddressList += "...$($itemAddressCount-2) addresses"
+                $itemAddressList = "$($item.spfLookups.IPAddress[0]), "
+                $itemAddressList += "$($item.spfLookups.IPAddress[1]), "
+                $itemAddressList += "& ...$($itemAddressCount-2) addresses"
             }
         }
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($itemAddressList) |`n"
