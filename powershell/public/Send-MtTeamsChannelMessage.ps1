@@ -41,7 +41,7 @@ Function Send-MtTeamsChannelMessage {
         [string] $Subject,
 
         # Uri to the detailed test results page.
-        [string] $TestResultsUri,
+        [string] $TestResultsUri
 
     )
 
@@ -49,9 +49,12 @@ Function Send-MtTeamsChannelMessage {
         # Developer guide for editing the Adaptive Card.
         - Authoring of the Adaptive Card is done using the Adaptive Card Designer.
         - Card Payload can be found in /powershell/assets/AdaptiveCard.json
-        - Open https://adaptivecards.io/designer/, insert the payload and example data
+        - Open https://adaptivecards.io/designer/, insert the payload and example data ($adaptiveCardData | ConvertTo-Json -depth 5)
         - Make changes as needed
-        - Copy the payload and paste it into the /powershell/assets/AdaptiveCard.json file in the assets folder
+        - Copy the payload and paste it into the /powershell/assets/AdaptiveCardPayloadTemplate.json file in the assets folder
+
+        To do:
+        - Add a switch to send the card to a user instead of a channel
     #>
     if (!(Test-MtContext -SendChannelMessage)) { return }
 
@@ -91,13 +94,13 @@ Function Send-MtTeamsChannelMessage {
     # if $adaptiveCardData.run.TestResultURL is not set, remove the TestResultURL property from the adaptive card json template
     if(!$TestResultsUri){
         $adaptiveCardData.run.Remove("TestResultURL")
-        # Remove following string from the adaptive card json template
+        # Remove button with link to full testresults from the adaptive card json template
         $adaptiveCardTemplate = $adaptiveCardTemplate | ConvertFrom-Json
         $adaptiveCardTemplate.body = $adaptiveCardTemplate.body | Where-Object type -ne 'ActionSet'
         $adaptiveCardTemplate = $adaptiveCardTemplate | ConvertTo-Json -Depth 10
     }
 
-    # Identify and replace variables because Inline Data is not supported by Microsoft Teams...
+    # Identify and replace variables because 'Inline Data' is not supported by Microsoft Teams...
     # This regex matches placeholders like ${$root.run.TestResultURL}
     $pattern = '\$\{\$root\.([a-zA-Z0-9_.]+)\}'
 
@@ -144,7 +147,6 @@ Function Send-MtTeamsChannelMessage {
     Write-Verbose -Message "Uri: $sendChannelMessageUri"
 
     $sendChannelMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($ChannelId)/messages"
-
 
     Invoke-MgGraphRequest -Method POST -Uri $sendChannelMessageUri -Body $params
 

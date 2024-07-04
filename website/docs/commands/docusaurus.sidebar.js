@@ -31,6 +31,7 @@ module.exports = [
     'commands/Invoke-Maester',
     'commands/Invoke-MtGraphRequest',
     'commands/Send-MtMail',
+    'commands/Send-MtTeamsChannelMessage',
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',
