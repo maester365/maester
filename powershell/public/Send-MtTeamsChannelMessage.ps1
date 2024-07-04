@@ -148,6 +148,6 @@ Function Send-MtTeamsChannelMessage {
 
     $sendChannelMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($ChannelId)/messages"
 
-    Invoke-MgGraphRequest -Method POST -Uri $sendChannelMessageUri -Body $params
+    Invoke-MgGraphRequest -Method POST -Uri $sendChannelMessageUri -Body $params | Out-Null
 
 }

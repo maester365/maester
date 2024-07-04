@@ -297,7 +297,7 @@ Function Invoke-Maester {
 
         if ($TeamId -and $ChannelId) {
             Write-MtProgress -Activity "Sending Teams channel message"
-            Send-MtChannelMessage -MaesterResults $maesterResults -TeamId $TeamId -ChannelId $ChannelId -TestResultsUri $MailTestResultsUri
+            Send-MtTeamsChannelMessage -MaesterResults $maesterResults -TeamId $TeamId -ChannelId $ChannelId -TestResultsUri $MailTestResultsUri
         }
 
         if ($Verbosity -eq 'None') {
