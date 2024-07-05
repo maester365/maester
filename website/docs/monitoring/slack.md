@@ -1,6 +1,6 @@
 ---
 sidebar_label: Slack Alerts
-sidebar_position: 4
+sidebar_position: 5
 title: Set up Maester Slack alerts
 ---
 
@@ -34,7 +34,7 @@ Your Maester monitoring workflow can be configured to send a summary at the end 
 Update your GitHub daily monitoring workflow to send the Slack alert using the webhook with the following code:
 
 ```powershell
-    
+
     - name: Generate Slack Notification
       shell: pwsh
       run: |

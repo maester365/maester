@@ -10,7 +10,7 @@ Install-Module Maester -Scope CurrentUser
 
 md maester-tests
 cd maester-tests
-Install-MaesterTests -Path .\tests
+Install-MaesterTests
 ```
 
 - Sign into your Microsoft 365 tenant and run the tests.

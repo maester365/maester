@@ -30,7 +30,7 @@ CompanyName = 'Maester Team'
 Copyright = 'Maester Team. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Pester based test automation framework to monitor your Microsoft 365 security configuration.'
+Description = 'Maester is an automation framework to assess and monitor your Microsoft 365 security configuration.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
