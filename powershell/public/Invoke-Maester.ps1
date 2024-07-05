@@ -131,11 +131,11 @@ Function Invoke-Maester {
 
         # Optional. The Team Id of where the Teams Channel Message should be send to. e.g. 5ba5cbbb-675e-4a8d-a382-a52960a18b4d
         # No message will be sent if this parameter is not provided.
-        [string[]] $TeamId,
+        [string] $TeamId,
 
-        # Optional. The Channel Id of where the Teams Channel Message should be send to. e.g. 19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
+        # Optional. The Team Channel Id of where the Teams Channel Message should be send to. e.g. 19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
         # No message will be sent if this parameter is not provided.
-        [string[]] $ChannelId,
+        [string] $TeamChannelId,
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
@@ -225,12 +225,12 @@ Function Invoke-Maester {
 
     $isMail = $null -ne $MailRecipient
 
-    $isTeamsChannelMessage = $null -ne $TeamId -and $null -ne $ChannelId
+    $isTeamsChannelMessage = $null -ne $TeamId -and $null -ne $TeamChannelId
 
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
     } else {
-        if (!(Test-MtContext -SendMail:$isMail -SendChannelMessage:$isTeamsChannelMessage)) { return }
+        if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
     }
 
     $out = [PSCustomObject]@{
@@ -295,9 +295,9 @@ Function Invoke-Maester {
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
 
-        if ($TeamId -and $ChannelId) {
+        if ($TeamId -and $TeamChannelId) {
             Write-MtProgress -Activity "Sending Teams channel message"
-            Send-MtTeamsChannelMessage -MaesterResults $maesterResults -TeamId $TeamId -ChannelId $ChannelId -TestResultsUri $MailTestResultsUri
+            Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -ChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
         }
 
         if ($Verbosity -eq 'None') {

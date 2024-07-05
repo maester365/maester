@@ -63,7 +63,7 @@
                     "items": [
                         {
                             "type": "TextBlock",
-                            "text": "${$root.run.tenantName} (${$root.run.tenantId})",
+                            "text": "${$root.run.TenantName} (${$root.run.TenantId})",
                             "wrap": true,
                             "spacing": "None",
                             "horizontalAlignment": "Left",
@@ -210,7 +210,7 @@
         },
         {
             "type": "TextBlock",
-            "text": "Maester ${$root.run.moduleVersion}",
+            "text": "Maester ${$root.run.ModuleVersion}",
             "wrap": true,
             "spacing": "Large",
             "separator": true,

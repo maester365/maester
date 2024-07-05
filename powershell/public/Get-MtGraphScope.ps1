@@ -16,7 +16,7 @@
     Connects to Microsoft Graph with the required scopes to run Maester and send email.
 
  .Example
-    Connect-MgGraph -Scopes (Get-MtGraphScope -SendChannelMessage)
+    Connect-MgGraph -Scopes (Get-MtGraphScope -SendTeamsMessage)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send messages to a Teams Channel.
 
@@ -35,7 +35,7 @@ Function Get-MtGraphScope {
         [switch] $SendMail,
         # If specified, the cmdlet will include the scope to send Teams Channel Messages (ChannelMessage.Send).
         [Parameter(Mandatory = $false)]
-        [switch] $SendChannelMessage,
+        [switch] $SendTeamsMessage,
         # If specified, the cmdlet will include the scope for read write endpoints.
         [Parameter(Mandatory = $false)]
         [switch] $Privileged
@@ -80,8 +80,8 @@ Function Get-MtGraphScope {
         $scopes += 'Mail.Send'
     }
 
-    if ($SendChannelMessage) {
-        Write-Verbose -Message "Adding SendChannelMessage scope."
+    if ($SendTeamsMessage) {
+        Write-Verbose -Message "Adding SendTeamsMessage scope."
         $scopes += 'ChannelMessage.Send'
     }
 

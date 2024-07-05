@@ -10,19 +10,19 @@
     When running interactively this can be done by running the following command:
 
     ```
-    Connect-MtGraph -SendChannelMessage
+    Connect-MtGraph -SendTeamsMessage
     ```
 
     When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
     must be granted to the application in the Microsoft Entra portal.
 
 .EXAMPLE
-    Send-MtTeamsChannelMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+    Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 #>
 
-Function Send-MtTeamsChannelMessage {
+Function Send-MtTeamsMessage {
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
@@ -31,11 +31,11 @@ Function Send-MtTeamsChannelMessage {
 
         # The team id of where the message should be posted. e.g. 5ba5cbbb-675e-4a8d-a382-a52960a18b4d
         [Parameter(Mandatory = $true, Position = 1)]
-        [string[]] $TeamId,
+        [string] $TeamId,
 
-        # The channel id of where the message should be posted. e.g. 19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
+        # The Team Channel Id of where the message should be posted. e.g. 19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
         [Parameter(Mandatory = $true, Position = 2)]
-        [string[]] $ChannelId,
+        [string] $TeamChannelId,
 
         # The subject of the card. Defaults to 'Maester Test Results'.
         [string] $Subject,
@@ -56,7 +56,7 @@ Function Send-MtTeamsChannelMessage {
         To do:
         - Add a switch to send the card to a user instead of a channel
     #>
-    if (!(Test-MtContext -SendChannelMessage)) { return }
+    if (!(Test-MtContext -SendTeamsMessage)) { return }
 
     if (!$Subject) { $Subject = "Maester Test Results" }
 
@@ -72,20 +72,20 @@ Function Send-MtTeamsChannelMessage {
             "$currentVersion"
         }
 
-    $notRunCount = $MaesterResults.SkippedCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $notRunCount = "-" }
+    $NotRunCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $NotRunCount = "-" }
 
     $adaptiveCardData = @{
             title       = $Subject
             description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
             run         = @{
-                tenantName    = $MaesterResults.TenantName
-                tenantId      = $MaesterResults.TenantId
-                moduleVersion = $ModuleVersion
+                TenantName    = $MaesterResults.TenantName
+                TenantId      = $MaesterResults.TenantId
+                ModuleVersion = $ModuleVersion
                 TotalCount    = $MaesterResults.TotalCount
                 PassedCount   = $MaesterResults.PassedCount
                 FailedCount   = $MaesterResults.FailedCount
-                NotRunCount   = $notRunCount
+                NotRunCount   = $NotRunCount
                 TestResultURL = $TestResultsUri
             }
 
@@ -144,10 +144,10 @@ Function Send-MtTeamsChannelMessage {
         )
     }
 
-    Write-Verbose -Message "Uri: $sendChannelMessageUri"
+    Write-Verbose -Message "Uri: $SendTeamsMessageUri"
 
-    $sendChannelMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($ChannelId)/messages"
+    $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
 
-    Invoke-MgGraphRequest -Method POST -Uri $sendChannelMessageUri -Body $params | Out-Null
+    Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
 
 }

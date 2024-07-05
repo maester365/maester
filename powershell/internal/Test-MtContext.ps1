@@ -13,7 +13,7 @@ function Test-MtContext {
 
         # If specified, the scope will be checked to send Teams channel messages.
         [Parameter(Mandatory = $false)]
-        [switch] $SendChannelMessage
+        [switch] $SendTeamsMessage
     )
 
     $validContext = $true
@@ -21,7 +21,7 @@ function Test-MtContext {
         $message = "Not connected to Microsoft Graph. Please use 'Connect-Maester'. For more information, use 'Get-Help Connect-Maester'."
         $validContext = $false
     } else {
-        $requiredScopes = Get-MtGraphScope -SendMail:$SendMail -SendChannelMessage:$SendChannelMessage
+        $requiredScopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage
         $currentScopes = Get-MgContext | Select-Object -ExpandProperty Scopes
         $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ }
 

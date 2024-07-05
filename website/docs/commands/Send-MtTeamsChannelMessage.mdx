@@ -15,7 +15,7 @@ Send an adaptive card in a teams channel with the summary of the Maester test re
 ## SYNTAX
 
 ```powershell
-Send-MtTeamsChannelMessage [-MaesterResults] <PSObject> [-TeamId] <String[]> [-ChannelId] <String[]> [-Subject <String>] [-TestResultsUri <String>]
+Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamId] <String[]> [-ChannelId] <String[]> [-Subject <String>] [-TestResultsUri <String>]
 [<CommonParameters>]
 ```
 
@@ -28,7 +28,7 @@ This command requires the Mail.Send permission in the Microsoft Graph API.
 When running interactively this can be done by running the following command:
 
 ```
-Connect-MtGraph -SendChannelMessage
+Connect-MtGraph -SendTeamsMessage
 ```
 
 When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
@@ -43,7 +43,7 @@ Only send messages that people will read.
 ### EXAMPLE 1
 
 ```powershell
-Send-MtTeamsChannelMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 ```
 
 Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.

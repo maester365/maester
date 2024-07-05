@@ -78,7 +78,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Get-MtUser', 'Get-MtRole',
                'Get-MtSession',
                'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtGraphRequest',
-               'Send-MtMail', 'Send-MtTeamsChannelMessage', 'Test-MtAppManagementPolicyEnabled',
+               'Send-MtMail', 'Send-MtTeamsMessage', 'Test-MtAppManagementPolicyEnabled',
                'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction',
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
                'Test-MtCaBlockLegacyOtherAuthentication',

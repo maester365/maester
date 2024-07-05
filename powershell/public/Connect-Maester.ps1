@@ -37,7 +37,7 @@
    Connects to Microsoft Graph with the Mail.Send scope.
 
 .EXAMPLE
-   Connect-Maester -SendChannelMessage
+   Connect-Maester -SendTeamsMessage
 
    Connects to Microsoft Graph with the ChannelMessage.Send scope.
 
@@ -58,7 +58,7 @@ Function Connect-Maester {
       [switch] $SendMail,
 
       # If specified, the cmdlet will include the scope to send a channel message in Teams (ChannelMessage.Send).
-      [switch] $SendChannelMessage,
+      [switch] $SendTeamsMessage,
 
       # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying global admin roles in PIM.
       [switch] $Privileged,
@@ -89,7 +89,7 @@ Function Connect-Maester {
    if ($Service -contains "Graph" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Graph"
       try {
-         Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendChannelMessage:$SendChannelMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+         Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
          Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow
