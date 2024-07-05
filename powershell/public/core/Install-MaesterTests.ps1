@@ -50,7 +50,7 @@ Function Install-MaesterTests {
     } else {
         if ( ((Get-Module -Name 'Pester' -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $MinPesterVersion ) {
             Write-Host "The minimum required version of Pester is not installed." -ForegroundColor Yellow
-            Write-Host "Installing Pester version $MinPesterVersion..."
+            Write-Host "Installing Pester version $MinPesterVersion..." -ForegroundColor Yellow
             Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
             Import-Module -Name 'Pester'
         } else {
