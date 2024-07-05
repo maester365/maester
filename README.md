@@ -29,10 +29,12 @@ Install-Module -Name Maester -Scope CurrentUser
 
 ### Installing Maester Tests
 
+To install the Maester tests run the following PowerShell commands. Pester will be installed if needed.
+
 ```powershell
 md maester-tests
 cd maester-tests
-Install-MaesterTests .\tests
+Install-MaesterTests -Path .\tests
 ```
 
 ## Running Maester
