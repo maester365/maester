@@ -1,0 +1,148 @@
+---
+sidebar_class_name: hidden
+description: Send an Microsoft Teams channel message with the summary of the Maester test results
+id: Send-MtMTeamsChannelMessage
+title: Send-MtMTeamsChannelMessage
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Send-MtMTeamsChannelMessage.ps1
+---
+
+## SYNOPSIS
+
+Send an adaptive card in a teams channel with the summary of the Maester test results
+
+## SYNTAX
+
+```powershell
+Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamId] <String[]> [-ChannelId] <String[]> [-Subject <String>] [-TestResultsUri <String>]
+[<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Uses Graph API to send an Microsoft Teams channel message with the summary of the Maester test results.
+
+This command requires the Mail.Send permission in the Microsoft Graph API.
+
+When running interactively this can be done by running the following command:
+
+```
+Connect-MtGraph -SendTeamsMessage
+```
+
+When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
+is not available. Teamwork.Migrate.All might work but is not supported by Microsoft. If you want to use this
+permission, it must be granted to the application in the Microsoft Entra portal.
+
+> It is a violation of the terms of use of Microsoft Graph API to use Microsoft Teams as a log file.
+Only send messages that people will read.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+```
+
+Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
+
+## PARAMETERS
+
+### -MaesterResults
+
+The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
+
+```yaml
+Type: PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamId
+
+The ID of the team (GUID).
+e.g.
+5ba5caab-675e-4a8d-a382-a52960a18b4d
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ChannelId
+
+The ID of the teams channel.
+e.g.
+19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Subject
+
+The subject of the email.
+Defaults to 'Maester Test Results'.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TestResultsUri
+
+Uri to the detailed test results page.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS

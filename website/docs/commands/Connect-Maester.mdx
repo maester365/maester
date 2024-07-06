@@ -15,7 +15,7 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ## SYNTAX
 
 ```powershell
-Connect-Maester [-SendMail] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
+Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-Service] <String[]>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -86,6 +86,22 @@ Connects to Microsoft Graph with additional privileged scopes such as **RoleElig
 ### -SendMail
 
 If specified, the cmdlet will include the scope to send email (Mail.Send).
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SendTeamsMessage
+
+If specified, the cmdlet will include the scope to send Microsoft Teams Channel Messages (ChannelMessage.Send).
 
 ```yaml
 Type: SwitchParameter

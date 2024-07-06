@@ -12,42 +12,47 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 .EXAMPLE
 Invoke-Maester
 
-Runs all the Pester test files under the current folder and generates a report of the results in the ./test-results folder.
+Runs all the test files under the current folder and generates a report of the results in the ./test-results folder.
 
 .EXAMPLE
 Invoke-Maester ./maester-tests
 
-Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
+Runs all the tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
 
 .EXAMPLE
-Invoke-Maester -Tag "CA"
+Invoke-Maester -Tag 'CA'
 
-Runs the Pester tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
-
-.EXAMPLE
-Invoke-Maester -Tag "CA", "App"
-
-Runs the Pester tests with the tags "CA" and "App" and generates a report of the results in the default ./test-results folder.
+Runs the tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
 
 .EXAMPLE
-Invoke-Maester -OutputFolder "./my-test-results"
+Invoke-Maester -Tag 'CA', 'App'
 
-Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
+Runs the tests with the tags 'CA' and 'App' and generates a report of the results in the default ./test-results folder.
 
 .EXAMPLE
-Invoke-Maester -OutputHtmlFile "./test-results/TestResults.html"
+Invoke-Maester -OutputFolder './my-test-results'
 
-Runs all the Pester tests and generates a report of the results in the specified file.
+Runs all the tests and generates a report of the results in the ./my-test-results folder.
+
+.EXAMPLE
+Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
+
+Runs all the tests and generates a report of the results in the specified file.
 
 .EXAMPLE
 Invoke-Maester -Path ./tests/EIDSCA
 
-Runs all the Pester tests in the EIDSCA folder.
+Runs all the tests in the EIDSCA folder.
 
 .EXAMPLE
 Invoke-Maester -MailRecipient john@contoso.com
 
-Runs all the Pester tests and sends a report of the results to mail recipient.
+Runs all the tests and sends a report of the results to mail recipient.
+
+.EXAMPLE
+Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
+
+Runs all the tests and posts a summary of the results to a Teams channel.
 
 .EXAMPLE
 Invoke-Maester -Verbosity Normal
@@ -128,6 +133,14 @@ Function Invoke-Maester {
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
         [string] $MailUserId,
+
+        # Optional. The Teams team where the test results should be posted.
+        # To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=<TeamId>
+        [string] $TeamId,
+
+        # Optional. The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
+        # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
+        [string] $TeamChannelId,
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
@@ -219,10 +232,12 @@ Function Invoke-Maester {
 
     $isMail = $null -ne $MailRecipient
 
+    $isTeamsChannelMessage = $null -ne $TeamId -and $null -ne $TeamChannelId
+
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
     } else {
-        if (!(Test-MtContext -SendMail:$isMail)) { return }
+        if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
     }
 
     $out = [PSCustomObject]@{
@@ -285,6 +300,11 @@ Function Invoke-Maester {
         if ($MailRecipient) {
             Write-MtProgress -Activity "Sending mail"
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
+        }
+
+        if ($TeamId -and $TeamChannelId) {
+            Write-MtProgress -Activity "Sending Teams message"
+            Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
         }
 
         if ($Verbosity -eq 'None') {

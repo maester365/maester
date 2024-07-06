@@ -38,6 +38,7 @@ module.exports = [
     'commands/Invoke-MtGraphRequest',
     'commands/Resolve-SPFRecord',
     'commands/Send-MtMail',
+    'commands/Send-MtTeamsMessage',
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',

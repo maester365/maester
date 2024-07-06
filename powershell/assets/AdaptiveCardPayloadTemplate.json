@@ -1,0 +1,225 @@
+{
+    "type": "AdaptiveCard",
+    "body": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "data:image/png;base64,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",
+                            "size": "Small"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "size": "Medium",
+                            "weight": "Bolder",
+                            "text": "${$root.title}"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "${$root.description}",
+                            "wrap": true,
+                            "size": "Small",
+                            "isSubtle": true,
+                            "spacing": "None"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "spacing": "None",
+                    "horizontalAlignment": "Left",
+                    "minHeight": "15px",
+                    "verticalContentAlignment": "Center",
+                    "rtl": false,
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIiBjbGFzcz0idHJlbW9yLUJhZGdlLWljb24gc2hyaW5rLTAgLW1sLTEgbXItMS41IGgtNCB3LTQiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQuNSAyLjI1YS43NS43NSAwIDAgMCAwIDEuNXYxNi41aC0uNzVhLjc1Ljc1IDAgMCAwIDAgMS41aDE2LjVhLjc1Ljc1IDAgMCAwIDAtMS41aC0uNzVWMy43NWEuNzUuNzUgMCAwIDAgMC0xLjVoLTE1Wk05IDZhLjc1Ljc1IDAgMCAwIDAgMS41aDEuNWEuNzUuNzUgMCAwIDAgMC0xLjVIOVptLS43NSAzLjc1QS43NS43NSAwIDAgMSA5IDloMS41YS43NS43NSAwIDAgMSAwIDEuNUg5YS43NS43NSAwIDAgMS0uNzUtLjc1Wk05IDEyYS43NS43NSAwIDAgMCAwIDEuNWgxLjVhLjc1Ljc1IDAgMCAwIDAtMS41SDlabTMuNzUtNS4yNUEuNzUuNzUgMCAwIDEgMTMuNSA2SDE1YS43NS43NSAwIDAgMSAwIDEuNWgtMS41YS43NS43NSAwIDAgMS0uNzUtLjc1Wk0xMy41IDlhLjc1Ljc1IDAgMCAwIDAgMS41SDE1QS43NS43NSAwIDAgMCAxNSA5aC0xLjVabS0uNzUgMy43NWEuNzUuNzUgMCAwIDEgLjc1LS43NUgxNWEuNzUuNzUgMCAwIDEgMCAxLjVoLTEuNWEuNzUuNzUgMCAwIDEtLjc1LS43NVpNOSAxOS41di0yLjI1YS43NS43NSAwIDAgMSAuNzUtLjc1aDQuNWEuNzUuNzUgMCAwIDEgLjc1Ljc1djIuMjVhLjc1Ljc1IDAgMCAxLS43NS43NWgtNC41QS43NS43NSAwIDAgMSA5IDE5LjVaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48L3N2Zz4=",
+                            "width": "16px",
+                            "backgroundColor": "#fdf1e5"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${$root.run.TenantName} (${$root.run.TenantId})",
+                            "wrap": true,
+                            "spacing": "None",
+                            "horizontalAlignment": "Left",
+                            "size": "Small",
+                            "weight": "Default",
+                            "color": "Attention",
+                            "isSubtle": true,
+                            "fontType": "Default"
+                        }
+                    ],
+                    "horizontalAlignment": "Left"
+                }
+            ],
+            "spacing": "None",
+            "horizontalAlignment": "Center",
+            "minHeight": "6px",
+            "style": "emphasis"
+        },
+        {
+            "type": "Container",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": "Test summary",
+                    "wrap": true,
+                    "spacing": "Large",
+                    "style": "heading",
+                    "size": "Large",
+                    "weight": "Bolder"
+                },
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Total tests",
+                                    "wrap": true,
+                                    "isSubtle": true,
+                                    "weight": "Lighter",
+                                    "size": "Small",
+                                    "fontType": "Default",
+                                    "style": "columnHeader"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${$root.run.TotalCount}",
+                                    "wrap": true,
+                                    "weight": "Bolder",
+                                    "size": "Large"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Passed",
+                                    "wrap": true,
+                                    "isSubtle": true,
+                                    "weight": "Lighter",
+                                    "size": "Small",
+                                    "fontType": "Default",
+                                    "style": "columnHeader"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${$root.run.PassedCount}",
+                                    "wrap": true,
+                                    "size": "Large",
+                                    "weight": "Bolder"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Failed",
+                                    "wrap": true,
+                                    "isSubtle": true,
+                                    "weight": "Lighter",
+                                    "size": "Small",
+                                    "fontType": "Default",
+                                    "style": "columnHeader"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${$root.run.FailedCount}",
+                                    "wrap": true,
+                                    "size": "Large",
+                                    "weight": "Bolder"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Not tested",
+                                    "wrap": true,
+                                    "isSubtle": true,
+                                    "weight": "Lighter",
+                                    "size": "Small",
+                                    "fontType": "Default",
+                                    "style": "columnHeader"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${$root.run.NotRunCount}",
+                                    "wrap": true,
+                                    "size": "Large",
+                                    "weight": "Bolder"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ActionSet",
+            "actions": [
+                {
+                    "type": "Action.OpenUrl",
+                    "title": "Full test results",
+                    "url": "${$run.TestResultURL}",
+                    "tooltip": "Full test results of the Maester run.",
+                    "style": "positive",
+                    "iconUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzZjNzI4MSIgYXJpYS1oaWRkZW49InRydWUiIGRhdGEtc2xvdD0iaWNvbiIgY2xhc3M9InRyZW1vci1JY29uLWljb24gc2hyaW5rLTAgaC01IHctNSI+PHBhdGggZD0iTTMuMzc1IDNDMi4zMzkgMyAxLjUgMy44NCAxLjUgNC44NzV2Ljc1YzAgMS4wMzYuODQgMS44NzUgMS44NzUgMS44NzVoMTcuMjVjMS4wMzUgMCAxLjg3NS0uODQgMS44NzUtMS44NzV2LS43NUMyMi41IDMuODM5IDIxLjY2IDMgMjAuNjI1IDNIMy4zNzVaIj48L3BhdGg+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJtMy4wODcgOSAuNTQgOS4xNzZBMyAzIDAgMCAwIDYuNjIgMjFoMTAuNzU3YTMgMyAwIDAgMCAyLjk5NS0yLjgyNEwyMC45MTMgOUgzLjA4N1ptNi4xNjMgMy43NUEuNzUuNzUgMCAwIDEgMTAgMTJoNGEuNzUuNzUgMCAwIDEgMCAxLjVoLTRhLjc1Ljc1IDAgMCAxLS43NS0uNzVaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48L3N2Zz4="
+                }
+            ],
+            "separator": true,
+            "id": "1"
+        },
+        {
+            "type": "TextBlock",
+            "text": "Maester ${$root.run.ModuleVersion}",
+            "wrap": true,
+            "spacing": "Large",
+            "separator": true,
+            "size": "Small",
+            "weight": "Lighter",
+            "isSubtle": true,
+            "color": "Light"
+        }
+    ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.5"
+}
