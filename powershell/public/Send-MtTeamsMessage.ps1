@@ -17,7 +17,7 @@
     must be granted to the application in the Microsoft Entra portal.
 
 .EXAMPLE
-    Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+    Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 #>
@@ -29,11 +29,13 @@ Function Send-MtTeamsMessage {
         [Parameter(Mandatory = $true, Position = 0)]
         [psobject] $MaesterResults,
 
-        # The team id of where the message should be posted. e.g. 5ba5cbbb-675e-4a8d-a382-a52960a18b4d
+        # The Teams team where the test results should be posted.
+        # To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=<TeamId>
         [Parameter(Mandatory = $true, Position = 1)]
         [string] $TeamId,
 
-        # The Team Channel Id of where the message should be posted. e.g. 19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
+        # The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
+        # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
         [Parameter(Mandatory = $true, Position = 2)]
         [string] $TeamChannelId,
 
