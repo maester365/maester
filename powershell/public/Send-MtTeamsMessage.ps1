@@ -115,7 +115,7 @@ Function Send-MtTeamsMessage {
                 $currentValue = $currentValue[$property]
             } else {
                 # Debugging output to help identify where it fails
-                Write-Host "Failed to find property: $property in path: $($match.Groups[1].Value)"
+                Write-Verbose "Failed to find property: $property in path: $($match.Groups[1].Value)"
                 # If the property does not exist, return the original placeholder
                 return $match.Value
             }
