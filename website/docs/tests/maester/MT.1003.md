@@ -20,6 +20,6 @@ This practice ensures you
 
 Create a conditional access policy that applies to `All cloud apps`, and then exclude applications that you don't want the policy to apply to.
 
-## Learn more
-
+## Related links
+- [Entra admin center - Conditional Access | Policies](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Overview/fromNav/)
 - [Apply Conditional Access policies to every app](https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app)

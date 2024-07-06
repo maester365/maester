@@ -131,7 +131,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Maester`,
+        copyright: `Copyright © ${new Date().getFullYear()} Maester Team`,
       },
       prism: {
         theme: prismThemes.shadesOfPurple,

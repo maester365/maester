@@ -33,7 +33,17 @@ Function Invoke-MtGraphRequestCache {
 
     if (!$results) {
         Write-Verbose ("Invoking Graph: $($Uri.AbsoluteUri)")
-        $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
+        Write-Verbose ([string]::IsNullOrEmpty($Body))
+
+
+        if ($Method -eq 'GET') {
+            $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType # -Body $Body # Cannot use Body with GET in PS 5.1
+        } else {
+            $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
+        }
+
+
+
         if (!$isBatch -and $isMethodGet) {
             # Update cache
             if ($isInCache) {

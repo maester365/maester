@@ -2,12 +2,14 @@
 
 **Monitor your Microsoft 365 tenant's security configuration using Maester!**
 
-Maester is a **PowerShell-based test automation framework** designed to help you monitor and maintain the security configuration of your Microsoft 365 environment.
+Maester is an open source **PowerShell-based test automation framework** designed to help you monitor and maintain the security configuration of your Microsoft 365 environment.
 
 To learn more about Maester and to get started, visit [Maester.dev](https://maester.dev).
 
-[![PSGallery Version](https://img.shields.io/powershellgallery/v/maester.svg?style=flat&logo=powershell&label=PSGallery%20Version)](https://www.powershellgallery.com/packages/maester) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/maester.svg?style=flat&logo=powershell&label=PSGallery%20Downloads)](https://www.powershellgallery.com/packages/maester)
+[![PSGallery Preview Version](https://img.shields.io/powershellgallery/v/maester.svg?style=flat&logo=powershell&label=Preview%20Version&include_prereleases)](https://www.powershellgallery.com/packages/maester) [![PSGallery Release Version](https://img.shields.io/powershellgallery/v/maester.svg?style=flat&logo=powershell&label=Release%20Version)](https://www.powershellgallery.com/packages/maester) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/maester.svg?style=flat&logo=powershell&label=PSGallery%20Downloads)](https://www.powershellgallery.com/packages/maester)
 
+[![build-validation](https://github.com/maester365/maester/actions/workflows/build-validation.yaml/badge.svg)](https://github.com/maester365/maester/actions/workflows/build-validation.yaml)
+[![publish-module-preview](https://github.com/maester365/maester/actions/workflows/publish-module-preview.yaml/badge.svg)](https://github.com/maester365/maester/actions/workflows/publish-module-preview.yaml)
 ---
 
 ## Key Features
@@ -27,10 +29,12 @@ Install-Module -Name Maester -Scope CurrentUser
 
 ### Installing Maester Tests
 
+To install the Maester tests run the following PowerShell commands. Pester will be installed if needed.
+
 ```powershell
 md maester-tests
 cd maester-tests
-Install-MaesterTests .\tests
+Install-MaesterTests -Path .\tests
 ```
 
 ## Running Maester

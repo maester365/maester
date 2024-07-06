@@ -21,16 +21,16 @@ CompatiblePSEditions = 'Core', 'Desktop'
 GUID = '502a7fe7-b1ae-4bf5-98db-00831b14ed6f'
 
 # Author of this module
-Author = 'Maester'
+Author = 'Maester Team'
 
 # Company or vendor of this module
-CompanyName = 'Maester'
+CompanyName = 'Maester Team'
 
 # Copyright statement for this module
-Copyright = 'Maester. All rights reserved.'
+Copyright = 'Maester Team. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Pester based test automation framework to monitor your Microsoft 365 security configuration.'
+Description = 'Maester is an automation framework to assess and monitor your Microsoft 365 security configuration.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -51,8 +51,12 @@ PowerShellVersion = '5.1'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @(@{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.2.0'; },
-               @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '5.5.0'; })
+<# Requires Pester 5.5.0 but that is not declared here due to potential conflicts with the version of Pester that is
+   pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
+   if necessary by Install-MaesterTests.
+#>
+RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.2.0'; }
+                     @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -107,10 +111,14 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaRequireActivationApproval',
                'Test-MtCisaAssignmentNotification', 'Test-MtCisaActivationNotification',
                'Test-MtCisaGuestUserAccess', 'Test-MtCisaGuestInvitation',
+               'Test-MtCisaCrossTenantInboundDefault',
                'Test-MtCisaAutoExternalForwarding', 'Test-MtCisaSmtpAuthentication',
                'Test-MtCisaContactSharing', 'Test-MtCisaCalendarSharing',
                'Test-MtCisaExternalSenderWarning', 'Test-MtCisaAntiSpamAllowList',
                'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaMailboxAuditing',
+               'Test-MtCisaSpfRestriction', 'Test-MtCisaSpfDirective', 'Test-MtCisaDkim',
+               'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
+               'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcReport',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaAF01',
@@ -129,7 +137,10 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtEidscaPR02', 'Test-MtEidscaPR03', 'Test-MtEidscaPR05',
                'Test-MtEidscaPR06', 'Test-MtEidscaST08', 'Test-MtEidscaST09',
                'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
-               'Update-MaesterTests', 'Compare-MtTestResult'
+               'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
+               'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
+               'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordDkim',
+               'Resolve-SpfRecord', 'Clear-MtDnsCache'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

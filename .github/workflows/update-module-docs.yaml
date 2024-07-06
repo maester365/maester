@@ -14,8 +14,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  CreateRelease:
-    runs-on: ubuntu-latest
+  update-command-reference:
+    runs-on: windows-latest
 
     steps:
 

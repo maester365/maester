@@ -17,6 +17,11 @@ Function Test-MtCisaAutoExternalForwarding {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
     $domains = Get-RemoteDomain
 
     $forwardingDomains = $domains | Where-Object { `

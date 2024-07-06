@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Installs the latest ready-made Maester tests built by the Maester team.
+description: Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
 id: Install-MaesterTests
 title: Install-MaesterTests
 hide_title: false
@@ -10,12 +10,13 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Installs the latest ready-made Maester tests built by the Maester team.
+Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
 
 ## SYNTAX
 
 ```powershell
-Install-MaesterTests [[-Path] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Install-MaesterTests [[-Path] <String>] [-SkipPesterCheck] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,7 +33,7 @@ The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 Install-MaesterTests
 ```
 
-Install the latest set of Maester tests in the current directory.
+Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
 
 ### EXAMPLE 2
 
@@ -40,13 +41,23 @@ Install the latest set of Maester tests in the current directory.
 Install-MaesterTests -Path .\maester-tests
 ```
 
-Installs the latest Maester tests in the specified directory.
+Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
+
+### EXAMPLE 3
+
+```powershell
+Install-MaesterTests -SkipPesterCheck
+```
+
+Installs the latest Maester tests in the current directory.
+Skips the check for the required version of Pester.
 
 ## PARAMETERS
 
 ### -Path
 
-The path to install the Maester tests to, defaults to the current directory.
+The path to install the Maester tests in.
+Defaults to the current directory.
 
 ```yaml
 Type: String
@@ -56,6 +67,22 @@ Aliases:
 Required: False
 Position: 1
 Default value: .\
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipPesterCheck
+
+Skips the automatic installation check for Pester.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
