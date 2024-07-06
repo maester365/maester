@@ -76,6 +76,14 @@ Connects to Microsoft Graph with the Mail.Send scope.
 ### EXAMPLE 6
 
 ```powershell
+Connect-Maester -SendTeamsMessage
+```
+
+Connects to Microsoft Graph with the ChannelMessage.Send scope.
+
+### EXAMPLE 7
+
+```powershell
 Connect-Maester -Privileged
 ```
 
@@ -101,7 +109,7 @@ Accept wildcard characters: False
 
 ### -SendTeamsMessage
 
-If specified, the cmdlet will include the scope to send Microsoft Teams Channel Messages (ChannelMessage.Send).
+If specified, the cmdlet will include the scope to send a channel message in Teams (ChannelMessage.Send).
 
 ```yaml
 Type: SwitchParameter

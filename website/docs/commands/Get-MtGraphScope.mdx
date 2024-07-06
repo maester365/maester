@@ -15,7 +15,8 @@ Returns the list of Graph scopes required to run Maester.
 ## SYNTAX
 
 ```powershell
-Get-MtGraphScope [-SendMail] [-SendTeamsMessage] [-Privileged] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtGraphScope [-SendMail] [-SendTeamsMessage] [-Privileged] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -43,6 +44,14 @@ Connects to Microsoft Graph with the required scopes to run Maester and send ema
 ### EXAMPLE 3
 
 ```powershell
+Connect-MgGraph -Scopes (Get-MtGraphScope -SendTeamsMessage)
+```
+
+Connects to Microsoft Graph with the required scopes to run Maester and send messages to a Teams Channel.
+
+### EXAMPLE 4
+
+```powershell
 Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
 ```
 
@@ -68,7 +77,7 @@ Accept wildcard characters: False
 
 ### -SendTeamsMessage
 
-If specified, the cmdlet will include the scope to send Microsoft Teams Channel Messages (ChannelMessage.Send).
+If specified, the cmdlet will include the scope to send Teams Channel Messages (ChannelMessage.Send).
 
 ```yaml
 Type: SwitchParameter

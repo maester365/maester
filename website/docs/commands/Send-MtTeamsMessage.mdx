@@ -1,11 +1,11 @@
 ---
 sidebar_class_name: hidden
-description: Send an Microsoft Teams channel message with the summary of the Maester test results
-id: Send-MtMTeamsChannelMessage
-title: Send-MtMTeamsChannelMessage
+description: Send an adaptive card in a teams channel with the summary of the Maester test results
+id: Send-MtTeamsMessage
+title: Send-MtTeamsMessage
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Send-MtMTeamsChannelMessage.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Send-MtTeamsMessage.ps1
 ---
 
 ## SYNOPSIS
@@ -15,15 +15,15 @@ Send an adaptive card in a teams channel with the summary of the Maester test re
 ## SYNTAX
 
 ```powershell
-Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamId] <String[]> [-ChannelId] <String[]> [-Subject <String>] [-TestResultsUri <String>]
-[<CommonParameters>]
+Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamId] <String> [-TeamChannelId] <String>
+ [-Subject <String>] [-TestResultsUri <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Uses Graph API to send an Microsoft Teams channel message with the summary of the Maester test results.
+Uses Graph API to send an adaptive card in a teams channel with the summary of the Maester test results.
 
-This command requires the Mail.Send permission in the Microsoft Graph API.
+This command requires the ChannelMessage.Send permission in the Microsoft Graph API.
 
 When running interactively this can be done by running the following command:
 
@@ -32,18 +32,14 @@ Connect-MtGraph -SendTeamsMessage
 ```
 
 When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
-is not available. Teamwork.Migrate.All might work but is not supported by Microsoft. If you want to use this
-permission, it must be granted to the application in the Microsoft Entra portal.
-
-> It is a violation of the terms of use of Microsoft Graph API to use Microsoft Teams as a log file.
-Only send messages that people will read.
+must be granted to the application in the Microsoft Entra portal.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId <guid> -ChannelId <guid> -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 ```
 
 Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
@@ -68,12 +64,14 @@ Accept wildcard characters: False
 
 ### -TeamId
 
-The ID of the team (GUID).
+The Teams team where the test results should be posted.
+To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'.
+Use the value of groupId.
 e.g.
-5ba5caab-675e-4a8d-a382-a52960a18b4d
+?groupId=&lt;TeamId&gt;
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -84,14 +82,18 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ChannelId
+### -TeamChannelId
 
-The ID of the teams channel.
+The channel where the message should be posted.
 e.g.
-19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2
+19%3A00000000000000000000000000000000%40thread.tacv2
+To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'.
+Use the value found between channel and the channel name.
+e.g.
+/channel/&lt;TeamChannelId&gt;/my%20channel
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
 Aliases:
 
@@ -104,7 +106,7 @@ Accept wildcard characters: False
 
 ### -Subject
 
-The subject of the email.
+The subject of the card.
 Defaults to 'Maester Test Results'.
 
 ```yaml
@@ -127,6 +129,22 @@ Uri to the detailed test results page.
 Type: String
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
