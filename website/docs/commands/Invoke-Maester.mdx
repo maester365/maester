@@ -19,7 +19,8 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
- [-MailUserId <String>] [-SkipGraphConnect] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-SkipGraphConnect]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -38,7 +39,7 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 Invoke-Maester
 ```
 
-Runs all the Pester test files under the current folder and generates a report of the results in the ./test-results folder.
+Runs all the test files under the current folder and generates a report of the results in the ./test-results folder.
 
 ### EXAMPLE 2
 
@@ -46,39 +47,39 @@ Runs all the Pester test files under the current folder and generates a report o
 Invoke-Maester ./maester-tests
 ```
 
-Runs all the Pester tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
+Runs all the tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 3
 
 ```powershell
-Invoke-Maester -Tag "CA"
+Invoke-Maester -Tag 'CA'
 ```
 
-Runs the Pester tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
+Runs the tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 4
 
 ```powershell
-Invoke-Maester -Tag "CA", "App"
+Invoke-Maester -Tag 'CA', 'App'
 ```
 
-Runs the Pester tests with the tags "CA" and "App" and generates a report of the results in the default ./test-results folder.
+Runs the tests with the tags 'CA' and 'App' and generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 5
 
 ```powershell
-Invoke-Maester -OutputFolder "./my-test-results"
+Invoke-Maester -OutputFolder './my-test-results'
 ```
 
-Runs all the Pester tests and generates a report of the results in the ./my-test-results folder.
+Runs all the tests and generates a report of the results in the ./my-test-results folder.
 
 ### EXAMPLE 6
 
 ```powershell
-Invoke-Maester -OutputHtmlFile "./test-results/TestResults.html"
+Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
 ```
 
-Runs all the Pester tests and generates a report of the results in the specified file.
+Runs all the tests and generates a report of the results in the specified file.
 
 ### EXAMPLE 7
 
@@ -86,7 +87,7 @@ Runs all the Pester tests and generates a report of the results in the specified
 Invoke-Maester -Path ./tests/EIDSCA
 ```
 
-Runs all the Pester tests in the EIDSCA folder.
+Runs all the tests in the EIDSCA folder.
 
 ### EXAMPLE 8
 
@@ -94,9 +95,17 @@ Runs all the Pester tests in the EIDSCA folder.
 Invoke-Maester -MailRecipient john@contoso.com
 ```
 
-Runs all the Pester tests and sends a report of the results to mail recipient.
+Runs all the tests and sends a report of the results to mail recipient.
 
 ### EXAMPLE 9
+
+```powershell
+Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
+```
+
+Runs all the tests and posts a summary of the results to a Teams channel.
+
+### EXAMPLE 10
 
 ```powershell
 Invoke-Maester -Verbosity Normal
@@ -104,7 +113,7 @@ Invoke-Maester -Verbosity Normal
 
 Shows results of tests as they are run including details on failed tests.
 
-### EXAMPLE 10
+### EXAMPLE 11
 
 ```powershell
 $configuration = [PesterConfiguration]::Default
@@ -372,6 +381,50 @@ Accept wildcard characters: False
 The user id of the sender of the mail.
 Defaults to the current user.
 This is required when using application permissions.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamId
+
+Optional.
+The Teams team where the test results should be posted.
+To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'.
+Use the value of groupId.
+e.g.
+?groupId=&lt;TeamId&gt;
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamChannelId
+
+Optional.
+The channel where the message should be posted.
+e.g.
+19%3A00000000000000000000000000000000%40thread.tacv2
+To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'.
+Use the value found between channel and the channel name.
+e.g.
+/channel/&lt;TeamChannelId&gt;/my%20channel
 
 ```yaml
 Type: String
