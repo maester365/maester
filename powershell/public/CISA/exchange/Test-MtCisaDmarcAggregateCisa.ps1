@@ -69,6 +69,9 @@ Function Test-MtCisaDmarcAggregateCisa {
             $dmarcRecord.pass = "Passed"
         }elseif($checkType -and -not $checkTarget){
             $dmarcRecord.reason = "Missing CISA report target"
+        }elseif($dmarcRecord.dmarcRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }else{
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }
@@ -78,6 +81,9 @@ Function Test-MtCisaDmarcAggregateCisa {
 
     if("Failed" -in $dmarcRecords.pass){
         $testResult = $false
+    }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
     }else{
         $testResult = $true
     }

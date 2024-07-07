@@ -80,7 +80,7 @@ Function Connect-Maester {
       [string]$ExchangeEnvironmentName = "O365Default",
 
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph")]
+      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance")]
       [string[]]$Service = "Graph"
    )
 
@@ -113,6 +113,46 @@ Function Connect-Maester {
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
          Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+      }
+   }
+
+   if ($Service -contains "SecurityCompliance" -or $Service -contains "All") {
+      $environments = @{
+         O365China        = @{
+            ConnectionUri    = "https://ps.compliance.protection.partner.outlook.cn/powershell-liveid"
+            AuthZEndpointUri = "https://login.chinacloudapi.cn/common"
+         }
+         O365GermanyCloud = @{
+            ConnectionUri    = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+            AuthZEndpointUri = "https://login.microsoftonline.com/common"
+         }
+         O365Default      = @{
+            ConnectionUri    = "https://ps.compliance.protection.outlook.com/powershell-liveid/"
+            AuthZEndpointUri = "https://login.microsoftonline.com/common"
+         }
+         O365USGovGCCHigh = @{
+            ConnectionUri    = "https://ps.compliance.protection.office365.us/powershell-liveid/"
+            AuthZEndpointUri = "https://login.microsoftonline.us/common"
+         }
+         O365USGovDoD     = @{
+            ConnectionUri    = "https://l5.ps.compliance.protection.office365.us/powershell-liveid/"
+            AuthZEndpointUri = "https://login.microsoftonline.us/common"
+         }
+      }
+      Write-Verbose "Connecting to Microsoft Security & Complaince PowerShell"
+      if ($Service -notcontains "ExchangeOnline"){
+         Write-Host "`nThe Security & Complaince module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
+      }else{
+         if ($UseDeviceCode){
+            Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
+         }else{
+            try {
+               Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $environments[$ExchangeEnvironmentName].AuthZEndpointUri
+            } catch [Management.Automation.CommandNotFoundException] {
+               Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
+               Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+            }
+         }
       }
    }
 }

@@ -19,7 +19,7 @@ Function Test-MtConnection {
     [CmdletBinding()]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet("All", "Azure", "ExchangeOnline", "Graph")]
+        [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance")]
         [Parameter(Position = 0, Mandatory = $false)]
         [string[]]$Service = "Graph"
     )
@@ -56,6 +56,17 @@ Function Test-MtConnection {
             Write-Debug "Graph: $false"
         }
         Write-Verbose "Graph: $isConnected"
+        if (!$isConnected) { $connectionState = $false }
+    }
+
+    if ($Service -contains "SecurityCompliance" -or $Service -contains "All") {
+        $isConnected = $false
+        try {
+            $isConnected = $null -ne ((Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession }))
+        } catch {
+            Write-Debug "Security & Compliance: $false"
+        }
+        Write-Verbose "Security & Compliance: $isConnected"
         if (!$isConnected) { $connectionState = $false }
     }
 

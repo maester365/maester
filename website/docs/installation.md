@@ -31,11 +31,13 @@ Install-Module Az -Scope CurrentUser
 Install-Module ExchangeOnlineManagement -Scope CurrentUser
 ```
 
+> The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
+
 ### Connecting to Azure, Exchange and other services
 
-In order to run all the CISA tests, you need to connect to the Azure and Exchange Online modules.
+In order to run all the CISA tests, you need to connect to the Azure, Exchange Online, and other modules.
 
-Run the following command to interactively connect to the Azure and Exchange Online modules. A sign in window will appear for each module.
+Run the following command to interactively connect to the Azure, Exchange Online, and other modules. A sign in window will appear for each module.
 
 ```powershell
 Connect-Maester -Service All

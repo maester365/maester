@@ -47,6 +47,9 @@ Function Test-MtCisaDmarcRecordExist {
 
         if($dmarcRecord.dmarcRecord.GetType().Name -eq "DMARCRecord"){
             $dmarcRecord.pass = "Passed"
+        }elseif($dmarcRecord.dmarcRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }else{
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }
@@ -56,6 +59,9 @@ Function Test-MtCisaDmarcRecordExist {
 
     if("Failed" -in $dmarcRecords.pass){
         $testResult = $false
+    }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
     }else{
         $testResult = $true
     }
