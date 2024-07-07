@@ -89,14 +89,15 @@ Function Get-MailAuthenticationRecord {
                 $recordSet.spfLookups = $mtDnsCache.spfLookups
             }else{
                 $recordSet.spfRecord = ConvertFrom-MailAuthenticationRecordSpf @splat
-                if($recordSet.spfRecord.terms.modifier -contains "redirect"){
-                    Write-Verbose "SPF redirect modifier found, recursing"
-                    $redirect = ($recordSet.spfRecord.terms|Where-Object {`
-                        $_.modifier -eq "redirect"
-                    }).modifierTarget
-                    Get-MailAuthenticationRecord -DomainName $redirect
-                }
-                if($recordSet.spfRecord -ne "Failure to obtain record"){
+                if($recordSet.spfRecord.GetType() -ne "SPFRecord"){
+                    if($recordSet.spfRecord.terms.modifier -contains "redirect"){
+                        Write-Verbose "SPF redirect modifier found, recursing"
+                        $redirect = ($recordSet.spfRecord.terms|Where-Object {`
+                            $_.modifier -eq "redirect"
+                        }).modifierTarget
+                        Get-MailAuthenticationRecord -DomainName $redirect
+                    }
+
                     Write-Verbose "SPF record resolved, checking lookups"
                     if($null -ne $mtDnsCache.spfLookups){
                         Write-Verbose "SPF Lookups records exist in cache - Use Clear-MtDnsCache to reset"

@@ -40,10 +40,10 @@ Function ConvertFrom-MailAuthenticationRecordMx {
         try{
             $mxRecords = Resolve-DnsName @mxSplat | Where-Object {$_.Type -eq "MX"}
         }catch [System.Management.Automation.CommandNotFoundException]{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
         }catch{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Failure to obtain record"
         }
 

@@ -53,15 +53,20 @@ Function Test-MtCisaDkim {
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
-        if($dkimRecord.dkimRecord.GetType().Name -eq "DKIMRecord" -and $config.enabled){
-            if(-not $dkimRecord.dkimRecord.validBase64){
-                $dkimRecord.reason = "Malformed public key"
+        if($dkimRecord.dkimRecord.GetType().Name -eq "DKIMRecord"){
+            if($config.enabled){
+                if(-not $dkimRecord.dkimRecord.validBase64){
+                    $dkimRecord.reason = "Malformed public key"
+                }else{
+                    $dkimRecord.pass = "Passed"
+                }
             }else{
-                $dkimRecord.pass = "Passed"
+                $dkimRecord.pass = "Skipped"
+                $dkimRecord.reason = "Parked domain"
             }
-        }elseif($dkimRecord.dkimRecord.GetType().Name -eq "DKIMRecord" -and -not $config.enabled){
+        }elseif($dkimRecord.dkimRecord -eq "Unsupported platform, Resolve-DnsName not available"){
             $dkimRecord.pass = "Skipped"
-            $dkimRecord.reason = "Parked domain"
+            $dkimRecord.reason = $dkimRecord.dkimRecord
         }else{
             $dkimRecord.reason = $dkimRecord.dkimRecord
         }
@@ -71,6 +76,9 @@ Function Test-MtCisaDkim {
 
     if("Failed" -in $dkimRecords.pass){
         $testResult = $false
+    }elseif("Failed" -notin $dkimRecords.pass -and "Passed" -notin $dkimRecords.pass){
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
     }else{
         $testResult = $true
     }

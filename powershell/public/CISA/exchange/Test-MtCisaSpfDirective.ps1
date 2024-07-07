@@ -44,9 +44,14 @@ Function Test-MtCisaSpfDirective {
             $spfRecord.reason = "1+ mechanism targets"
         }elseif(($directives|Measure-Object).Count -ge 1 -and -not $check){
             $spfRecord.reason = "No EXO directive"
-        }elseif($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
+        }elseif($spfRecord.spfRecord -eq "Unsupported platform, Resolve-DnsName not available"){
             $spfRecord.pass = "Skipped"
-            $spfRecord.reason = "Redirect modifier"
+            $spfRecord.reason = $spfRecord.spfRecord
+        }elseif($spfRecord.spfRecord.GetType().Name -eq "SPFRecord"){
+            if($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
+                $spfRecord.pass = "Skipped"
+                $spfRecord.reason = "Redirect modifier"
+            }
         }else{
             $spfRecord.reason = "No mechanism targets"
         }
@@ -62,6 +67,9 @@ Function Test-MtCisaSpfDirective {
 
     if("Failed" -in $spfRecords.pass){
         $testResult = $false
+    }elseif("Failed" -notin $spfRecords.pass -and "Passed" -notin $spfRecords.pass){
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
     }else{
         $testResult = $true
     }
