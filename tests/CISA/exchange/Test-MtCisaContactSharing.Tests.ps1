@@ -3,7 +3,7 @@ Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.6.1", "CISA", "Security", "All" {
 
         $cisaContactSharing = Test-MtCisaContactSharing
 
-        if($null -eq $cisaContactSharing) {
+        if($null -ne $cisaContactSharing) {
             $cisaContactSharing | Should -Be $true -Because "contact sharing is disabled."
         }
     }

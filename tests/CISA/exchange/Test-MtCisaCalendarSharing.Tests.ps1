@@ -3,7 +3,7 @@ Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.6.2", "CISA", "Security", "All" {
 
         $cisaCalendarSharing = Test-MtCisaCalendarSharing
 
-        if($null -eq $cisaCalendarSharing) {
+        if($null -ne $cisaCalendarSharing) {
             $cisaCalendarSharing | Should -Be $true -Because "calendar sharing is disabled."
         }
     }
