@@ -67,7 +67,26 @@ function Resolve-SPFRecord {
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
         # Query DNS Record
         try{
-            $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
+            if($isWindows){
+                $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
+            }else{
+                $cmdletCheck = Get-Command "Resolve-Dns"
+                if($cmdletCheck){
+                    $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType TXT).Answers
+                    $DNSRecords = $answers | ForEach-Object {
+                        [PSCustomObject]@{
+                            Name    = $_.DomainName
+                            Type    = $_.RecordType
+                            TTL     = $_.TimeToLive
+                            Strings = $_.Text
+                        }
+                    }
+                }else{
+                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                    return "Missing dependency, Resolve-Dns not available"
+                }
+            }
         }catch [System.Management.Automation.CommandNotFoundException]{
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
@@ -138,7 +157,21 @@ function Resolve-SPFRecord {
                         }
                         '^a:.*$' {
                             Write-Verbose "[A]`tSPF entry: $SPFDirective"
-                            $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type A
+                            if($IsWindows){
+                                $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type A
+                            }else{
+                                $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
+                                $DNSRecords = $answers | ForEach-Object {
+                                    [PSCustomObject]@{
+                                        Name       = $_.DomainName
+                                        Type       = $_.RecordType
+                                        TTL        = $_.TimeToLive
+                                        DataLength = $_.RawDataLength
+                                        Section    = "Answer"
+                                        IPAddress  = $_.Address
+                                    }
+                                }
+                            }
                             # Check SPF record
                             foreach ($IPAddress in ($DNSRecords.IPAddress) ) {
                                 $SPFObject = [SPFRecord]::New( $IPAddress, ($SPFDirective -replace "^a:"), $Qualifier)
@@ -151,10 +184,37 @@ function Resolve-SPFRecord {
                         }
                         '^mx:.*$' {
                             Write-Verbose "[MX]`tSPF entry: $SPFDirective"
-                            $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type MX
+                            if($IsWindows){
+                                $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type MX
+                            }else{
+                                $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType MX).Answers
+                                $DNSRecords = $answers | ForEach-Object {
+                                    [PSCustomObject]@{
+                                        Name         = $_.DomainName
+                                        Type         = $_.RecordType
+                                        TTL          = $_.TimeToLive
+                                        NameExchange = $_.Exchange
+                                        Preference   = $_.Preference
+                                    }
+                                }
+                            }
                             foreach ($MXRecords in ($DNSRecords.NameExchange) ) {
                                 # Check SPF record
-                                $DNSRecords = Resolve-DnsName -Server $Server -Name $MXRecords -Type A
+                                if($isWindows){
+                                    $DNSRecords = Resolve-DnsName -Server $Server -Name $MXRecords -Type A
+                                }else{
+                                    $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
+                                    $DNSRecords = $answers | ForEach-Object {
+                                        [PSCustomObject]@{
+                                            Name       = $_.DomainName
+                                            Type       = $_.RecordType
+                                            TTL        = $_.TimeToLive
+                                            DataLength = $_.RawDataLength
+                                            Section    = "Answer"
+                                            IPAddress  = $_.Address
+                                        }
+                                    }
+                                }
                                 foreach ($IPAddress in ($DNSRecords.IPAddress) ) {
                                     $SPFObject = [SPFRecord]::New( $IPAddress, ($SPFDirective -replace "^mx:"), $Qualifier)
                                     if ( $PSBoundParameters.ContainsKey('Referrer') ) {

@@ -221,9 +221,28 @@ Function ConvertFrom-MailAuthenticationRecordDmarc {
             ErrorAction  = "Stop"
         }
         try{
-            $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
-                Where-Object {$_.Type -eq "TXT"} | `
-                Where-Object {$_.Strings -match $matchRecord}).Strings)
+            if($IsWindows){
+                $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
+                    Where-Object {$_.Type -eq "TXT"} | `
+                    Where-Object {$_.Strings -match $matchRecord}).Strings)
+            }else{
+                $cmdletCheck = Get-Command "Resolve-Dns"
+                if($cmdletCheck){
+                    $dmarcSplatAlt = @{
+                        Query       = $dmarcSplat.Name
+                        QueryType   = $dmarcSplat.Type
+                        NameServer  = $dmarcSplat.Server
+                        ErrorAction = $dmarcSplat.ErrorAction
+                    }
+                    $dmarcRecord = [DMARCRecord]::new((Resolve-Dns @dmarcSplatAlt | `
+                        Where-Object {$_.RecordType -eq "TXT"} | `
+                        Where-Object {$_.Text -imatch $matchRecord}).Text)
+                }else{
+                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                    return "Missing dependency, Resolve-Dns not available"
+                }
+            }
         }catch [System.Management.Automation.CommandNotFoundException]{
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
