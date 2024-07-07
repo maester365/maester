@@ -22,6 +22,7 @@ warnings :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordSpf {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([SPFRecord],[System.String])]
     [cmdletbinding()]
     param(

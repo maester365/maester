@@ -12,6 +12,7 @@
 #>
 
 function Resolve-SPFRecord {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([spfrecord[]],[System.String])]
     [CmdletBinding()]
     param (

@@ -28,6 +28,7 @@ warnings    :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordDkim {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DKIMRecord],[System.String])]
     [cmdletbinding()]
     param(

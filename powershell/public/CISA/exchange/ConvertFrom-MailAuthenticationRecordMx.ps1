@@ -15,6 +15,7 @@ microsoft.com                            MX     1731  Answer     microsoft-com.m
 #>
 
 Function ConvertFrom-MailAuthenticationRecordMx {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([Microsoft.DnsClient.Commands.DnsRecord_MX],[System.String])]
     [cmdletbinding()]
     param(
