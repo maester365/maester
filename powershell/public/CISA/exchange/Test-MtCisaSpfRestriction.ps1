@@ -12,7 +12,7 @@
     Returns true if SPF record exists and has a fail all modifier for all exo domains
 #>
 
-Function Test-MtCisaSpfRestriction2 {
+Function Test-MtCisaSpfRestriction {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,12 +35,17 @@ Function Test-MtCisaSpfRestriction2 {
         $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
-        if($spfRecord.spfRecord.terms[-1].directive -eq "-all"){
-            $spfRecord.pass = "Passed"
-            $spfRecord.reason = "Last directive is '-all'"
-        }elseif($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
+        if($spfRecord.spfRecord.GetType().Name -eq "SPFRecord"){
+            if($spfRecord.spfRecord.terms[-1].directive -eq "-all"){
+                $spfRecord.pass = "Passed"
+                $spfRecord.reason = "Last directive is '-all'"
+            }elseif($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
+                $spfRecord.pass = "Skipped"
+                $spfRecord.reason = "Redirect modifier"
+            }
+        }elseif($spfRecord.spfRecord -eq "Unsupported platform, Resolve-DnsName not available"){
             $spfRecord.pass = "Skipped"
-            $spfRecord.reason = "Redirect modifier"
+            $spfRecord.reason = $spfRecord.spfRecord
         }else{
             $spfRecord.reason = "Last directive is not '-all'"
         }

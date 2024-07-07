@@ -69,10 +69,10 @@ function Resolve-SPFRecord {
         try{
             $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
         }catch [System.Management.Automation.CommandNotFoundException]{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
         }catch{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Failure to obtain record"
         }
         # Check SPF record

@@ -225,10 +225,10 @@ Function ConvertFrom-MailAuthenticationRecordDmarc {
                 Where-Object {$_.Type -eq "TXT"} | `
                 Where-Object {$_.Strings -match $matchRecord}).Strings)
         }catch [System.Management.Automation.CommandNotFoundException]{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
         }catch{
-            Write-Error $Error[0]
+            Write-Error $_
             return "Failure to obtain record"
         }
 
