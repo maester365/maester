@@ -108,7 +108,7 @@ Function Test-MtCisaDmarcAggregateCisa {
         if($aggregatesCount -ge 3){
             $aggregates = "$($aggregates[0]), $($aggregates[1]), "
             $aggregates += "& ...$aggregatesCount targets"
-        }elseif(aggregatesCount -gt 1){
+        }elseif($aggregatesCount -gt 1){
             $aggregates = $aggregates -join ", "
         }
 
