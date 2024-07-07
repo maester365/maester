@@ -86,7 +86,7 @@ Function Test-MtCisaDmarcRecordExist {
         if($aggregatesCount -ge 3){
             $aggregates = "$($aggregates[0]), $($aggregates[1]), "
             $aggregates += "& ...$aggregatesCount targets"
-        }elseif(aggregatesCount -gt 1){
+        }elseif($aggregatesCount -gt 1){
             $aggregates = $aggregates -join ", "
         }
         $forensics = $item.dmarcRecord.reportForensic.mailAddress
@@ -94,7 +94,7 @@ Function Test-MtCisaDmarcRecordExist {
         if($forensicsCount -ge 3){
             $forensics = "$($forensics[0]), $($forensics[1]), "
             $forensics += "& ...$forensicsCount targets"
-        }elseif(aggregatesCount -gt 1){
+        }elseif($aggregatesCount -gt 1){
             $forensics = $forensics -join ", "
         }
 
