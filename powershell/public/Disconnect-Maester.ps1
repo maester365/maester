@@ -36,7 +36,7 @@ Function Disconnect-Maester {
       Disconnect-AzAccount
    }
 
-   if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "All"){
+   if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
       Disconnect-ExchangeOnline
    }
