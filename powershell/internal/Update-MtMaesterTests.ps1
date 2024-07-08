@@ -18,12 +18,12 @@ Function Update-MtMaesterTests {
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
 
-    if (-not (Test-Path -Path $MaesterTestsPath)) {
+    if (-not (Test-Path -Path $MaesterTestsPath -PathType Container)) {
         Write-Error "Maester tests not found at $MaesterTestsPath"
         return
     }
 
-    $targetFolderExists = (Test-Path -Path $Path)
+    $targetFolderExists = (Test-Path -Path $Path -PathType Container)
 
     $installOrUpdate = if ($Install) { "installed" } else { "updated" }
     if ($targetFolderExists) {
