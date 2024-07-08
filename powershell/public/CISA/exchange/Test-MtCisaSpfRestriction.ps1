@@ -43,7 +43,7 @@ Function Test-MtCisaSpfRestriction {
                 $spfRecord.pass = "Skipped"
                 $spfRecord.reason = "Redirect modifier"
             }
-        }elseif($spfRecord.spfRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+        }elseif($spfRecord.spfRecord -like "*not available"){
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = $spfRecord.spfRecord
         }else{
