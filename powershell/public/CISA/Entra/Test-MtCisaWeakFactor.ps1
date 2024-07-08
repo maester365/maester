@@ -23,23 +23,28 @@ Function Test-MtCisaWeakFactor {
         "Email"
     )
 
+    $isMethodsMigrationComplete = Test-MtCisaMethodsMigration
+
     $result = Get-MtAuthenticationMethodPolicyConfig
 
     $weakAuthMethods = $result | Where-Object { $_.id -in $weakFactors }
 
     $enabledWeakMethods = $weakAuthMethods | Where-Object { $_.state -eq "enabled" }
 
-    $testResult = ($enabledWeakMethods|Measure-Object).Count -eq 0
+    $testResult = (($enabledWeakMethods|Measure-Object).Count -eq 0) -and $isMethodsMigrationComplete
 
     if ($testResult) {
         $testResultMarkdown = "Well done. All weak authentication methods are disabled in your tenant.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "One or more weak methods are enabled in your tenant.`n`n%TestResult%"
+        $testResultMarkdown = "One or more weak methods are enabled in your tenant, or migration to Authentication Methods is incomplete.`n`n%TestResult%"
     }
 
     # Auth method does not support deep links.
     $authMethodsLink = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
-    $result = "| Authentication Method | State | Test Result |`n"
+    $migrationResult = "❌ Fail"
+    if($isMethodsMigrationComplete){$migrationResult = "✅ Pass"}
+    $result = "[Authentication Methods]($authMethodsLink) Migration Complete: $migrationResult`n`n"
+    $result += "| Authentication Method | State | Test Result |`n"
     $result += "| --- | --- | --- |`n"
     foreach ($item in $weakAuthMethods) {
         $methodResult = "✅ Pass"
