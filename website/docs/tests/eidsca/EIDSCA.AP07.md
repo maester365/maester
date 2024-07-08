@@ -16,6 +16,9 @@ Represents role templateId for the role that should be granted to guest user.
 | **Severity** |  |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** | CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory objects. |

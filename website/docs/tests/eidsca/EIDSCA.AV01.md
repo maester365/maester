@@ -16,6 +16,9 @@ Whether the Voice call is enabled in the tenant.
 | **Severity** | High |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** | Choose authentication methods with number matching (Authenticator)  |

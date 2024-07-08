@@ -16,6 +16,9 @@ Indicates whether users can sign up for email based subscriptions.
 | **Severity** | Medium |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

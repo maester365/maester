@@ -16,6 +16,9 @@ Defines if admin consent request feature is enabled or disabled
 | **Severity** |  |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

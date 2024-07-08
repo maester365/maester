@@ -16,6 +16,9 @@ Whether the Authenticator App is enabled in the tenant.
 | **Severity** | High |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** | enabled |

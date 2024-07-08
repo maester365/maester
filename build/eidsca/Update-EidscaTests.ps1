@@ -304,6 +304,7 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%CurrentValue%', $CurrentValue
     $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
     $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
+    $output = $output -replace '%HowToFix%', $controlItem.howToFix
     $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
     $output = $output -replace '%MitreDiagram%', $mitreDiagram
     $output = $output -replace '%PSFunctionName%', $psFunctionName

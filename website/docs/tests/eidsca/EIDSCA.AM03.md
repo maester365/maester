@@ -16,6 +16,9 @@ Defines if number matching is required for MFA notifications.
 | **Severity** | High |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

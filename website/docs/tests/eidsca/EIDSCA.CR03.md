@@ -16,6 +16,9 @@ Specifies whether reviewers will receive reminder emails
 | **Severity** |  |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

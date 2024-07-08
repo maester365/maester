@@ -16,6 +16,9 @@ Specifies the duration the request is active before it automatically expires if 
 | **Severity** |  |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

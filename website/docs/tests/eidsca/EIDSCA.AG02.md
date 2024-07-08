@@ -16,6 +16,9 @@ Allows users to report suspicious activities if they receive an authentication r
 | **Severity** | Medium |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** | Allows to integrate report of fraud attempt by users to identity protection: Users who report an MFA prompt as suspicious are set to High User Risk. Administrators can use risk-based policies to limit access for these users, or enable self-service password reset (SSPR) for users to remediate problems on their own. |

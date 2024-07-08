@@ -16,6 +16,9 @@ Determines whether the user's Authenticator app will show them the geographic lo
 | **Severity** | High |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |

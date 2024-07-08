@@ -16,6 +16,9 @@ Specifies whether reviewers will receive notifications
 | **Severity** |  |
 
 ## How to fix
+
+
+
 | | |
 |-|-|
 | **Recommendation** |  |
