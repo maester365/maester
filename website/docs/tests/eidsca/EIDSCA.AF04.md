@@ -16,6 +16,10 @@ Manages if registration of FIDO2 keys should be restricted.
 | **Severity** | Low |
 
 ## How to fix
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enforce key restrictions](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Restrict usage of FIDO2 from unauthorized vendors or platforms |

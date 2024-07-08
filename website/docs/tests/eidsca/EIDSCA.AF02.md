@@ -16,6 +16,10 @@ Allows users to register a FIDO key through the MySecurityInfo portal, even if e
 | **Severity** | High |
 
 ## How to fix
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Allow self-service set up](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

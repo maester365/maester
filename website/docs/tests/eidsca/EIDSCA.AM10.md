@@ -16,6 +16,10 @@ Object Id or scope of users which will be showing geographic location in the Aut
 | **Severity** | Medium |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

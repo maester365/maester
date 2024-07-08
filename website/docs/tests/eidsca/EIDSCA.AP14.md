@@ -16,6 +16,10 @@ Prevents all non-admins from reading user information from the directory. This f
 | **Severity** | Informational |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Restrict this default permissions for members have huge impact on collaboration features and user lookup. |
