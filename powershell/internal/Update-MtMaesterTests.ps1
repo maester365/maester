@@ -45,7 +45,7 @@ Function Update-MtMaesterTests {
                 }
             } else {
                 Write-Host "Maester tests not $installOrUpdate." -ForegroundColor Red
-                exit
+                return
             }
         }
     }
