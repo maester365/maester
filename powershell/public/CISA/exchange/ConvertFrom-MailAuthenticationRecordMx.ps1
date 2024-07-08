@@ -16,7 +16,7 @@ microsoft.com                            MX     1731  Answer     microsoft-com.m
 
 Function ConvertFrom-MailAuthenticationRecordMx {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [OutputType([Microsoft.DnsClient.Commands.DnsRecord_MX],[System.String])]
+    [OutputType([PSCustomObject],[System.String])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
@@ -41,23 +41,26 @@ Function ConvertFrom-MailAuthenticationRecordMx {
         try{
             if($isWindows){
                 $mxRecords = Resolve-DnsName @mxSplat | Where-Object {$_.Type -eq "MX"}
+                $mxRecords = $mxRecords|ConvertTo-Json|ConvertFrom-Json
             }else{
+                Write-Verbose "Is not Windows, checking for Resolve-Dns"
                 $cmdletCheck = Get-Command "Resolve-Dns"
                 if($cmdletCheck){
+                    Write-Verbose "Resolve-Dns exists, querying records"
                     $mxSplatAlt = @{
                         Query       = $mxSplat.Name
                         QueryType   = $mxSplat.Type
                         NameServer  = $mxSplat.Server
                         ErrorAction = $mxSplat.ErrorAction
                     }
-                    $answers = (Resolve-Dns @mxSplatAlt | Where-Object {$_.RecordType -eq "MX"}).Answers
+                    $answers = (Resolve-Dns @mxSplatAlt).Answers | Where-Object {$_.RecordType -eq "MX"}
                     $mxRecords = $answers | ForEach-Object {
                         [PSCustomObject]@{
-                            Name = $_.DomainName
+                            Name         = $_.DomainName
                             NameExchange = $_.Exchange
-                            Type = $_.RecordType
-                            TTL = $_.TimeToLive
-                            Preference = $_.Preference
+                            Type         = $_.RecordType
+                            TTL          = $_.TimeToLive
+                            Preference   = $_.Preference
                         }
                     }
                 }else{
