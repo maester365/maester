@@ -19,6 +19,7 @@ Whether the FIDO2 security keys is enabled in the tenant.
 
 [Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enable FIDO2 security key](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#enable-passkey-authentication-method)
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | enabled |

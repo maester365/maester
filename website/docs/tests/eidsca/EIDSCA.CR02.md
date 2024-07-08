@@ -19,6 +19,7 @@ Specifies whether reviewers will receive notifications
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

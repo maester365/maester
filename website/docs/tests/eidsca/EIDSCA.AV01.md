@@ -19,6 +19,7 @@ Whether the Voice call is enabled in the tenant.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Choose authentication methods with number matching (Authenticator)  |

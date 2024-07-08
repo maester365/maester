@@ -19,6 +19,7 @@ Determines whether the user's Authenticator app will show them the client app th
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

@@ -19,6 +19,7 @@ Determines whether the pass is limited to a one-time use.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Avoid to allow reusable passes and restrict usage to one-time use (if applicable) |

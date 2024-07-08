@@ -19,6 +19,7 @@ Manages controls who can invite guests to your directory to collaborate on resou
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | CISA SCuBA 2.18: Only users with the Guest Inviter role SHOULD be able to invite guest users |

@@ -19,6 +19,7 @@ sidebar_class_name: hidden
 
 %howtofix%
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | %Recommendation% |

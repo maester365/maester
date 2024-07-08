@@ -19,6 +19,7 @@ Indicates whether user consent for risky apps is allowed. For example, consent r
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | [Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/configure-risk-based-step-up-consent) |

@@ -19,6 +19,7 @@ Whether the Authenticator App is enabled in the tenant.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | enabled |

@@ -19,6 +19,7 @@ Defines if admin consent request feature is enabled or disabled
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

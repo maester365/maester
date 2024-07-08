@@ -19,6 +19,7 @@ Defines if list of AADGUID will be used to allow or block registration.
 
 [Microsoft Learn - Enable passkeys (FIDO2) for your organization: Restrict specific keys](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | You should use Block or Allow as value to allow- or blocklisting of AAGuids. |

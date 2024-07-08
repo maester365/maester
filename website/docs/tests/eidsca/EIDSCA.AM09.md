@@ -19,6 +19,7 @@ Determines whether the user's Authenticator app will show them the geographic lo
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

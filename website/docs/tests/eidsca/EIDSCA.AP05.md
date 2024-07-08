@@ -19,6 +19,7 @@ Indicates whether users can sign up for email based subscriptions.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

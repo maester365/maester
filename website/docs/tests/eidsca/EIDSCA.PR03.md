@@ -19,6 +19,7 @@ When enabled, the words in the list below are used in the banned password system
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | [Password protection in Microsoft Entra ID - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-password-ban-bad#global-banned-password-list) |

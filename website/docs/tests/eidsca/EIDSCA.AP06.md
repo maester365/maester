@@ -19,6 +19,7 @@ Controls whether users can join the tenant by email validation. To join, the use
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | [Self-service sign up for email-verified users - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/enterprise-users/directory-self-service-signup) |

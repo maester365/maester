@@ -19,6 +19,7 @@ Whether the Temporary Access Pass is enabled in the tenant.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy. |

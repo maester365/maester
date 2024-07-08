@@ -19,6 +19,7 @@ Controls if non-admin users may register custom-developed applications for use w
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | CISA SCuBA 2.6: Only Administrators SHALL Be Allowed To Register Third-Party Applications |

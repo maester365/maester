@@ -19,6 +19,7 @@ Specifies the duration the request is active before it automatically expires if 
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

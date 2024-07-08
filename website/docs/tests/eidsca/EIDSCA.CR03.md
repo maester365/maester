@@ -19,6 +19,7 @@ Specifies whether reviewers will receive reminder emails
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

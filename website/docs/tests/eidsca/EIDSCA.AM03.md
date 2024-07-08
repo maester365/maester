@@ -19,6 +19,7 @@ Defines if number matching is required for MFA notifications.
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

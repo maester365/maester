@@ -19,6 +19,7 @@ Object Id or scope of users which will be showing geographic location in the Aut
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

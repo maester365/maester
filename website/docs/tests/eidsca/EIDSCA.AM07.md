@@ -19,6 +19,7 @@ Object Id or scope of users which will be showing app information in the Authent
 
 
 
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |
