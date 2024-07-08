@@ -23,12 +23,14 @@ Function Update-MtMaesterTests {
         return
     }
 
+    $MaesterTests = (Get-ChildItem -Path $MaesterTestsPath -Exclude 'Custom').Name
+
     $targetFolderExists = (Test-Path -Path $Path -PathType Container)
 
     $installOrUpdate = if ($Install) { "installed" } else { "updated" }
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path -Exclude "Custom"
+        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests.Name)}
 
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
