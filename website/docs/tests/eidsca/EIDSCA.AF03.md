@@ -16,6 +16,10 @@ Requires the FIDO security key metadata to be published and verified with the FI
 | **Severity** | High |
 
 ## How to fix
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Enforce attestation](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

@@ -58,7 +58,7 @@ Function Test-MtCisaDmarcRecordReject {
             $dmarcRecord.reason = "Policy is not reject"
         }elseif($checkType -and $dmarcRecord.dmarcRecord.policySubdomain -in @("none","quarantine")){
             $dmarcRecord.reason = "Subdomain policy is not reject"
-        }elseif($dmarcRecord.dmarcRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+        }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }else{

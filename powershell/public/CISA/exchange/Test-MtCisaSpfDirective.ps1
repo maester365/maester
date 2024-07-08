@@ -44,7 +44,7 @@ Function Test-MtCisaSpfDirective {
             $spfRecord.reason = "1+ mechanism targets"
         }elseif(($directives|Measure-Object).Count -ge 1 -and -not $check){
             $spfRecord.reason = "No EXO directive"
-        }elseif($spfRecord.spfRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+        }elseif($spfRecord.spfRecord -like "*not available"){
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = $spfRecord.spfRecord
         }elseif($spfRecord.spfRecord.GetType().Name -eq "SPFRecord"){

@@ -136,11 +136,11 @@ Function Invoke-Maester {
 
         # Optional. The Teams team where the test results should be posted.
         # To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=<TeamId>
-        [string] $TeamId,
+        [string] $TeamId = $null,
 
         # Optional. The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
         # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
-        [string] $TeamChannelId,
+        [string] $TeamChannelId = $null,
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
@@ -232,7 +232,7 @@ Function Invoke-Maester {
 
     $isMail = $null -ne $MailRecipient
 
-    $isTeamsChannelMessage = $null -ne $TeamId -and $null -ne $TeamChannelId
+    $isTeamsChannelMessage = (($null -ne $TeamId) -or ($null -ne $TeamChannelId))
 
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow

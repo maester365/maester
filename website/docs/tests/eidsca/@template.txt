@@ -16,6 +16,10 @@ sidebar_class_name: hidden
 | **Severity** | %Severity% |
 
 ## How to fix
+
+%howtofix%
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | %Recommendation% |

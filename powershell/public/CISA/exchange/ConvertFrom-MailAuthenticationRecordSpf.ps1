@@ -22,6 +22,7 @@ warnings :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordSpf {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([SPFRecord],[System.String])]
     [cmdletbinding()]
     param(
@@ -123,9 +124,28 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
             ErrorAction  = "Stop"
         }
         try{
-            $spfRecord = [SPFRecord]::new((Resolve-DnsName @spfSplat | `
-                Where-Object {$_.Type -eq "TXT"} | `
-                Where-Object {$_.Strings -imatch $matchRecord}).Strings)
+            if($IsWindows){
+                $spfRecord = [SPFRecord]::new((Resolve-DnsName @spfSplat | `
+                    Where-Object {$_.Type -eq "TXT"} | `
+                    Where-Object {$_.Strings -imatch $matchRecord}).Strings)
+            }else{
+                $cmdletCheck = Get-Command "Resolve-Dns"
+                if($cmdletCheck){
+                    $spfSplatAlt = @{
+                        Query       = $spfSplat.Name
+                        QueryType   = $spfSplat.Type
+                        NameServer  = $spfSplat.Server
+                        ErrorAction = $spfSplat.ErrorAction
+                    }
+                    $spfRecord = [SPFRecord]::new((Resolve-Dns @spfSplatAlt | `
+                        Where-Object {$_.RecordType -eq "TXT"} | `
+                        Where-Object {$_.Text -imatch $matchRecord}).Text)
+                }else{
+                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                    return "Missing dependency, Resolve-Dns not available"
+                }
+            }
         }catch [System.Management.Automation.CommandNotFoundException]{
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
