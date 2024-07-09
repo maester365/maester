@@ -12,12 +12,12 @@
     The path to install or update the Maester tests in.
 
 .EXAMPLE
-    Update-MaesterTests -Path ./maester-tests
+    Update-MaesterTests -Path .\maester-tests
 
     Installs or updates the latest Maester tests in the specified directory.
 
 .EXAMPLE
-    Update-MaesterTests -Path ./
+    Update-MaesterTests -Path .\
 
     Install the latest set of Maester tests in the current directory.
 
@@ -31,7 +31,7 @@ function Update-MaesterTests {
     param(
         # The path to install or update Maester tests in. Defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = './'
+        [string] $Path = '.\'
     )
     Get-IsNewMaesterVersionAvailable | Out-Null
 
