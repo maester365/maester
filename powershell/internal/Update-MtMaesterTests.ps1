@@ -26,7 +26,7 @@ Function Update-MtMaesterTests {
 
     $targetFolderExists = (Test-Path -Path $Path -PathType Container)
     if (-not $targetFolderExists) {
-        Write-Verbose "Creating directory $Path"
+        Write-Verbose "Creating directory $([System.IO.Path]::GetFullPath($Path))"
         New-Item -Path $Path -ItemType Directory | Out-Null
     }
 
