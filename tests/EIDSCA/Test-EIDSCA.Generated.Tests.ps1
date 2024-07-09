@@ -1,4 +1,5 @@
 BeforeDiscovery {
+$SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
 $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
 $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
@@ -15,9 +16,9 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     It "EIDSCA.AP04: Default Authorization Settings - Guest invite restrictions. See https://maester.dev/docs/tests/EIDSCA.AP04" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
-            .allowInvitesFrom = 'adminsAndGuestInviters'
+            .allowInvitesFrom in @('adminsAndGuestInviters','none')
         #>
-        Test-MtEidscaAP04 | Should -Be 'adminsAndGuestInviters'
+        Test-MtEidscaAP04 | Should -BeIn @('adminsAndGuestInviters','none')
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP05" {
@@ -84,7 +85,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     }
 }
 
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP01" {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP01" -Skip:( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
     It "EIDSCA.CP01: Default Settings - Consent Policy Settings - Group owner consent for apps accessing data. See https://maester.dev/docs/tests/EIDSCA.CP01" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -93,7 +94,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
         Test-MtEidscaCP01 | Should -Be 'False'
     }
 }
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" -Skip:( $SettingsApiAvailable -notcontains 'BlockUserConsentForRiskyApps' ) {
     It "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps. See https://maester.dev/docs/tests/EIDSCA.CP03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -102,7 +103,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
         Test-MtEidscaCP03 | Should -Be 'true'
     }
 }
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" -Skip:( $SettingsApiAvailable -notcontains 'EnableAdminConsentRequests' ) {
     It "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CP04" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -112,7 +113,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
     }
 }
 
-Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR01" {
+Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR01" -Skip:( $SettingsApiAvailable -notcontains 'BannedPasswordCheckOnPremisesMode' ) {
     It "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode. See https://maester.dev/docs/tests/EIDSCA.PR01" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -130,7 +131,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
         Test-MtEidscaPR02 | Should -Be 'True'
     }
 }
-Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" {
+Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" -Skip:( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
     It "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list. See https://maester.dev/docs/tests/EIDSCA.PR03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"

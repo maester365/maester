@@ -25,7 +25,7 @@ sidebar_class_name: hidden
 | **Recommendation** | %Recommendation% |
 | **Configuration** | %RelativeUri% |
 | **Setting** | `%CurrentValue%` |
-| **Recommended Value** | %RecommendedValue% |
+| **Recommended Value** | %RecommendedValueMarkdown% |
 | **Default Value** | %DefaultValue% |
 | **Graph API Docs** | %GraphDocsUrl% |
 | **Graph Explorer** | %GraphExplorerUrl% |
