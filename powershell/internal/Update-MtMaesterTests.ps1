@@ -30,7 +30,7 @@ Function Update-MtMaesterTests {
         try {
             New-Item -Path $Path -ItemType Directory | Out-Null
         } catch {
-            Write-Error "Unable to create directory $([System.IO.Path]::GetFullPath($Path))."
+            Write-Error "Unable to create directory $([System.IO.Path]::GetFullPath($Path))"
             Write-Verbose $_
             return
         }
@@ -62,7 +62,13 @@ Function Update-MtMaesterTests {
         }
     }
 
-    Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
+    try {
+        Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
+    } catch {
+        Write-Error "Unable to copy the Maester tests to $Path."
+        Write-Verbose $_
+        return
+    }
 
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
     if (Get-MgContext) {
