@@ -27,7 +27,13 @@ Function Update-MtMaesterTests {
     $targetFolderExists = (Test-Path -Path $Path -PathType Container)
     if (-not $targetFolderExists) {
         Write-Verbose "Creating directory $([System.IO.Path]::GetFullPath($Path))"
-        New-Item -Path $Path -ItemType Directory | Out-Null
+        try {
+            New-Item -Path $Path -ItemType Directory | Out-Null
+        } catch {
+            Write-Error "Unable to create directory $([System.IO.Path]::GetFullPath($Path))."
+            Write-Verbose $_
+            return
+        }
     }
 
     $installOrUpdate = if ($Install) { "installed" } else { "updated" }
