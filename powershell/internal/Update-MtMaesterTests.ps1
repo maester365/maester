@@ -17,7 +17,6 @@ Function Update-MtMaesterTests {
     )
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
-
     if (-not (Test-Path -Path $MaesterTestsPath -PathType Container)) {
         Write-Error "Maester tests not found at $MaesterTestsPath"
         return
@@ -26,8 +25,13 @@ Function Update-MtMaesterTests {
     $MaesterTests = (Get-ChildItem -Path $MaesterTestsPath -Exclude 'Custom').Name
 
     $targetFolderExists = (Test-Path -Path $Path -PathType Container)
+    if (-not $targetFolderExists) {
+        Write-Verbose "Creating directory $Path"
+        New-Item -Path $Path -ItemType Directory | Out-Null
+    }
 
     $installOrUpdate = if ($Install) { "installed" } else { "updated" }
+
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
         $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests.Name)}
@@ -50,11 +54,6 @@ Function Update-MtMaesterTests {
                 return
             }
         }
-    }
-
-    if (-not $targetFolderExists) {
-        Write-Verbose "Creating directory $Path"
-        New-Item -Path $Path -ItemType Directory | Out-Null
     }
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
