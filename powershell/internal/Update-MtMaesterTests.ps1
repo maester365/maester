@@ -62,7 +62,6 @@ Function Update-MtMaesterTests {
         }
     }
 
-    $MaesterTestsPath = Get-MtMaesterTestFolderPath
     Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
 
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
