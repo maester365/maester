@@ -40,7 +40,7 @@ Function Update-MtMaesterTests {
 
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests.Name)}
+        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests)}
 
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
