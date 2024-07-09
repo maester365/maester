@@ -40,8 +40,13 @@ function ConvertTo-MtMaesterResult {
     $tenantName = GetTenantName
     $account = $mgContext.Account
 
-    $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
-    $latestVersion = (Find-Module -Name Maester).Version
+    if (Get-Command 'Find-Module' -ErrorAction SilentlyContinue) {
+        $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
+        $latestVersion = (Find-Module -Name Maester).Version
+    } else {
+        $currentVersion = 'Unknown'
+        $latestVersion = 'Unknown'
+    }
 
     $mtTests = @()
     $sortedTests = GetTestsSorted
