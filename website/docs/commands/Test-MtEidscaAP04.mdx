@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Default Authorization Settings - Guest invite restrictions is set to 'adminsAndGuestInviters'
+description: Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
 id: Test-MtEidscaAP04
 title: Test-MtEidscaAP04
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if Default Authorization Settings - Guest invite restrictions is set to 'adminsAndGuestInviters'
+Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
 
 ## SYNTAX
 
@@ -24,7 +24,7 @@ Manages controls who can invite guests to your directory to collaborate on resou
 
 Queries policies/authorizationPolicy
 and returns the result of
- graph/policies/authorizationPolicy.allowInvitesFrom -eq 'adminsAndGuestInviters'
+ graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ and returns the result of
 Test-MtEidscaAP04
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -eq 'adminsAndGuestInviters'
+Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 
 ## PARAMETERS
 
