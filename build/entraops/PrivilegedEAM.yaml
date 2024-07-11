@@ -1,4 +1,4 @@
-- Name: Identity Governance role assignment on catalog with privileged objects outside from classification of the administrator
+- Name: Catalogs in Identity Governance role should not be delegated to administrators outside of the classified privileges
   Id: EOPS-01
   Category: Privileged Scope
   SkipCondition: (!$EntraOpsPrivilegedEamData)
@@ -65,7 +65,7 @@
   EvaluateResult: |
     ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
   OutputResult: Summary
-- Name: Permanent and Direct Role Assignments in Azure RBAC on Management Groups without Restricted Management
+- Name: Members with Permanent and Direct Role Assignments in Azure RBAC on Management Groups should be protected by RMAUs
   Id: EOPS-02
   Category: Privileged Scope
   SkipCondition: (!(Get-AzContext) -and !(Get-Module EntraOps))
@@ -130,7 +130,7 @@
   EvaluateResult: |
     ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
   OutputResult: Summary
-- Name: Group Owners with Privileged Roles and delegated ownership
+- Name: Ownership should not be assigned on security groups with privileged assignments
   Id: EOPS-03
   Category: Privileged Scope
   SkipCondition: (!$EntraOpsPrivilegedEamData)
@@ -165,7 +165,7 @@
   EvaluateResult: |
     ($QueryResult | Measure-Object | Select-Object -ExpandProperty Count) -eq "0"
   OutputResult: Summary
-- Name: Service Principals with High Privileges Roles on Microsoft Graph and delegation by owners
+- Name: Ownership should not be assigned on Service Principals with High Privileges Roles in Microsoft Graph
   Id: EOPS-04
   Category: Privileged Scope
   SkipCondition: (!$EntraOpsPrivilegedEamData)
