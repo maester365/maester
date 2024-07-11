@@ -8,27 +8,30 @@
 
     The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 
+.PARAMETER Path
+    The path to install or update the Maester tests in.
+
 .EXAMPLE
     Update-MaesterTests -Path .\maester-tests
 
     Installs or updates the latest Maester tests in the specified directory.
 
 .EXAMPLE
-    Update-MaesterTests
+    Update-MaesterTests -Path .\
 
     Install the latest set of Maester tests in the current directory.
 
 #>
 
-Function Update-MaesterTests {
+function Update-MaesterTests {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param(
-        # The path to install the Maester tests to, defaults to the current directory.
+        # The path to install or update Maester tests in. Defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = ".\"
+        [string] $Path = '.\'
     )
     Get-IsNewMaesterVersionAvailable | Out-Null
 

@@ -17,18 +17,30 @@ Function Update-MtMaesterTests {
     )
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
-
-    if (-not (Test-Path -Path $MaesterTestsPath)) {
+    if (-not (Test-Path -Path $MaesterTestsPath -PathType Container)) {
         Write-Error "Maester tests not found at $MaesterTestsPath"
         return
     }
 
-    $targetFolderExists = (Test-Path -Path $Path)
+    $MaesterTests = (Get-ChildItem -Path $MaesterTestsPath -Exclude 'Custom').Name
+
+    $targetFolderExists = (Test-Path -Path $Path -PathType Container)
+    if (-not $targetFolderExists) {
+        Write-Verbose "Creating directory $([System.IO.Path]::GetFullPath($Path))"
+        try {
+            New-Item -Path $Path -ItemType Directory | Out-Null
+        } catch {
+            Write-Error "Unable to create directory $([System.IO.Path]::GetFullPath($Path))"
+            Write-Verbose $_
+            return
+        }
+    }
 
     $installOrUpdate = if ($Install) { "installed" } else { "updated" }
+
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path -Exclude "Custom"
+        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests)}
 
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
@@ -50,13 +62,13 @@ Function Update-MtMaesterTests {
         }
     }
 
-    if (-not $targetFolderExists) {
-        Write-Verbose "Creating directory $Path"
-        New-Item -Path $Path -ItemType Directory | Out-Null
+    try {
+        Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
+    } catch {
+        Write-Error "Unable to copy the Maester tests to $Path."
+        Write-Verbose $_
+        return
     }
-
-    $MaesterTestsPath = Get-MtMaesterTestFolderPath
-    Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
 
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
     if (Get-MgContext) {
