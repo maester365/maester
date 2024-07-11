@@ -235,7 +235,7 @@ Function ConvertFrom-MailAuthenticationRecordDmarc {
                         NameServer  = $dmarcSplat.Server
                         ErrorAction = $dmarcSplat.ErrorAction
                     }
-                    $dmarcRecord = [DMARCRecord]::new((Resolve-Dns @dmarcSplatAlt | `
+                    $dmarcRecord = [DMARCRecord]::new(((Resolve-Dns @dmarcSplatAlt).Answers | `
                         Where-Object {$_.RecordType -eq "TXT"} | `
                         Where-Object {$_.Text -imatch $matchRecord}).Text)
                 }else{

@@ -137,7 +137,7 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
                         NameServer  = $spfSplat.Server
                         ErrorAction = $spfSplat.ErrorAction
                     }
-                    $spfRecord = [SPFRecord]::new((Resolve-Dns @spfSplatAlt | `
+                    $spfRecord = [SPFRecord]::new(((Resolve-Dns @spfSplatAlt).Answers | `
                         Where-Object {$_.RecordType -eq "TXT"} | `
                         Where-Object {$_.Text -imatch $matchRecord}).Text)
                 }else{

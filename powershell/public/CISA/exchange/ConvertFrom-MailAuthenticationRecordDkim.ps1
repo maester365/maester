@@ -104,7 +104,7 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
                         NameServer  = $dkimSplat.Server
                         ErrorAction = $dkimSplat.ErrorAction
                     }
-                    $dkimRecord = [SPFRecord]::new((Resolve-Dns @dkimSplatAlt | `
+                    $dkimRecord = [SPFRecord]::new(((Resolve-Dns @dkimSplatAlt).Answers | `
                         Where-Object {$_.RecordType -eq "TXT"} | `
                         Where-Object {$_.Text -imatch $matchRecord}).Text)
                 }else{
