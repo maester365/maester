@@ -16,6 +16,10 @@ Group and team owners can authorize applications, such as applications published
 | **Severity** | High |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |

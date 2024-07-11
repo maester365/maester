@@ -16,6 +16,10 @@ Object Id or scope of users which will be showing app information in the Authent
 | **Severity** | High |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

@@ -16,12 +16,16 @@ sidebar_class_name: hidden
 | **Severity** | %Severity% |
 
 ## How to fix
+
+%howtofix%
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | %Recommendation% |
 | **Configuration** | %RelativeUri% |
 | **Setting** | `%CurrentValue%` |
-| **Recommended Value** | %RecommendedValue% |
+| **Recommended Value** | %RecommendedValueMarkdown% |
 | **Default Value** | %DefaultValue% |
 | **Graph API Docs** | %GraphDocsUrl% |
 | **Graph Explorer** | %GraphExplorerUrl% |

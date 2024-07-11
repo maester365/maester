@@ -140,7 +140,7 @@ Function Connect-Maester {
          }
       }
       Write-Verbose "Connecting to Microsoft Security & Complaince PowerShell"
-      if ($Service -notcontains "ExchangeOnline"){
+      if ($Service -notcontains "ExchangeOnline" -or $Service -notcontains "All"){
          Write-Host "`nThe Security & Complaince module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
       }else{
          if ($UseDeviceCode){

@@ -16,6 +16,10 @@ Object Id or scope of users which will be included to report suspicious activiti
 | **Severity** | High |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Apply this feature to all users. |

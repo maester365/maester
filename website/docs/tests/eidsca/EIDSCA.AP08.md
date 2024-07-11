@@ -16,6 +16,10 @@ Defines if user consent to apps is allowed, and if it is, which app consent poli
 | **Severity** | High |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | Microsoft recommends to allow to user consent for apps from verified publisher for selected permissions. CISA SCuBA 2.7 defines that all Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |

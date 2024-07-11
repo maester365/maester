@@ -64,7 +64,7 @@ Function Test-MtCisaDkim {
                 $dkimRecord.pass = "Skipped"
                 $dkimRecord.reason = "Parked domain"
             }
-        }elseif($dkimRecord.dkimRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+        }elseif($dkimRecord.dkimRecord -like "*not available"){
             $dkimRecord.pass = "Skipped"
             $dkimRecord.reason = $dkimRecord.dkimRecord
         }else{

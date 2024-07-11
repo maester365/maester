@@ -58,7 +58,7 @@ Function Test-MtCisaDmarcReport {
             $dmarcRecord.pass = "Passed"
         }elseif($checkType){
             $dmarcRecord.reason = "No target in domain"
-        }elseif($dmarcRecord.dmarcRecord -eq "Unsupported platform, Resolve-DnsName not available"){
+        }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }else{

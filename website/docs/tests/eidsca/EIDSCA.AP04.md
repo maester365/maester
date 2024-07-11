@@ -16,12 +16,16 @@ Manages controls who can invite guests to your directory to collaborate on resou
 | **Severity** | Medium |
 
 ## How to fix
+
+
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** | CISA SCuBA 2.18: Only users with the Guest Inviter role SHOULD be able to invite guest users |
 | **Configuration** | policies/authorizationPolicy |
 | **Setting** | `allowInvitesFrom` |
-| **Recommended Value** | 'adminsAndGuestInviters' |
+| **Recommended Value** | 'adminsAndGuestInviters','none' |
 | **Default Value** | everyone |
 | **Graph API Docs** | [authorizationPolicy resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy) |
 | **Graph Explorer** | [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |

@@ -28,6 +28,7 @@ warnings    :
 #>
 
 Function ConvertFrom-MailAuthenticationRecordDkim {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DKIMRecord],[System.String])]
     [cmdletbinding()]
     param(
@@ -90,9 +91,28 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
             ErrorAction  = "Stop"
         }
         try{
-            $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
-                Where-Object {$_.Type -eq "TXT"} | `
-                Where-Object {$_.Strings -match $matchRecord}).Strings)
+            if($isWindows){
+                $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
+                    Where-Object {$_.Type -eq "TXT"} | `
+                    Where-Object {$_.Strings -match $matchRecord}).Strings)
+            }else{
+                $cmdletCheck = Get-Command "Resolve-Dns"
+                if($cmdletCheck){
+                    $dkimSplatAlt = @{
+                        Query       = $dkimSplat.Name
+                        QueryType   = $dkimSplat.Type
+                        NameServer  = $dkimSplat.Server
+                        ErrorAction = $dkimSplat.ErrorAction
+                    }
+                    $dkimRecord = [SPFRecord]::new(((Resolve-Dns @dkimSplatAlt).Answers | `
+                        Where-Object {$_.RecordType -eq "TXT"} | `
+                        Where-Object {$_.Text -imatch $matchRecord}).Text)
+                }else{
+                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                    return "Missing dependency, Resolve-Dns not available"
+                }
+            }
         }catch [System.Management.Automation.CommandNotFoundException]{
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"

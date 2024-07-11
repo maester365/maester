@@ -16,6 +16,10 @@ You can work with your Security key provider to determine the AAGuids of their d
 | **Severity** | Low |
 
 ## How to fix
+
+[Microsoft Learn - Enable passkeys (FIDO2) for your organization: Restricted AAGUIDS](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-enable-passkey-fido2#passkey-optional-settings)
+
+### Details of configuration item
 | | |
 |-|-|
 | **Recommendation** |  |

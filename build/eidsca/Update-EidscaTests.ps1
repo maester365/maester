@@ -41,17 +41,37 @@ Function GetVersion($graphUri) {
 }
 
 Function GetRecommendedValue($RecommendedValue) {
-    $compareOperators = @(">=",">","<")
-    foreach ($compareOperator in $compareOperators) {
-        if ($RecommendedValue.StartsWith($compareOperator)) {
-            $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
+    if($RecommendedValue -notlike "@('*,*')") {
+        $compareOperators = @(">=",">","<")
+        foreach ($compareOperator in $compareOperators) {
+            if ($RecommendedValue.StartsWith($compareOperator)) {
+                $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
+            }
         }
+        return "'$RecommendedValue'"
+    } else {
+        return $RecommendedValue
     }
-    return "'$RecommendedValue'"
+}
+
+Function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
+    if($RecommendedValueMarkdown -like "@('*,*')") {
+        $RecommendedValueMarkdown = $RecommendedValueMarkdown -replace "@\(", "" -replace "\)", ""
+        return "$RecommendedValueMarkdown"
+    } else {
+        return "'$RecommendedValueMarkdown'"
+    }
 }
 
 Function GetCompareOperator($RecommendedValue) {
-    if ($RecommendedValue.StartsWith(">=")) {
+    if ($RecommendedValue -like "@('*,*')") {
+        $compareOperator = [PSCustomObject]@{
+            name       = 'in'
+            pester     = 'BeIn'
+            powershell = 'in'
+            text       = 'is one of the following values'
+        }
+    } elseif ($RecommendedValue.StartsWith(">=")) {
         $compareOperator = [PSCustomObject]@{
             name       = '>='
             pester     = 'BeGreaterOrEqual'
@@ -72,6 +92,7 @@ Function GetCompareOperator($RecommendedValue) {
             powershell = 'lt'
             text       = 'is less than'
         }
+
     } else {
         $compareOperator = [PSCustomObject]@{
             name       = '='
@@ -259,6 +280,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $apiVersion = GetVersion($control.GraphUri)
 
     $recommendedValue = GetRecommendedValue($controlItem.RecommendedValue)
+    $RecommendedValueMarkdown = GetRecommendedValueMarkdown($controlItem.RecommendedValue)
     $compareOperator = GetCompareOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
 
@@ -301,9 +323,11 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%CompareOperator%', $compareOperator.Name
     $output = $output -replace '%PwshCompareOperator%', $compareOperator.powershell.Replace("'", "")
     $output = $output -replace '%RecommendedValue%', $recommendedValue
+    $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
     $output = $output -replace '%CurrentValue%', $CurrentValue
     $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
     $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
+    $output = $output -replace '%HowToFix%', $controlItem.howToFix
     $output = $output -replace '%GraphExplorerUrl%', $graphExplorerUrl
     $output = $output -replace '%MitreDiagram%', $mitreDiagram
     $output = $output -replace '%PSFunctionName%', $psFunctionName

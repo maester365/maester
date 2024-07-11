@@ -14,45 +14,51 @@ Returns all the members of a role.
 
 ## SYNTAX
 
-### Eligible
+### RoleName (Default)
 
 ```powershell
-Get-MtRoleMember [-roleId] <Guid> [-Eligible] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtRoleMember [-Role] <String[]> [-MemberStatus <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
-### Active
+### RoleId
 
 ```powershell
-Get-MtRoleMember [-roleId] <Guid> [-Active] [-ProgressAction <ActionPreference>] [<CommonParameters>]
-```
-
-### All
-
-```powershell
-Get-MtRoleMember [-roleId] <Guid> [-All] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtRoleMember [-RoleId] <Guid[]> [-MemberStatus <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+The role can be either active or eligible, defaults to getting members that are both active and eligible.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtRoleMember
+Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000"
 ```
+
+Returns all the members of the role with the specified RoleId and includes both Eligible and Active members.
+
+### EXAMPLE 2
+
+```powershell
+Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000" -RoleStatus Active
+```
+
+Returns all the currently active members of the role with the specified RoleId.
 
 ## PARAMETERS
 
-### -roleId
+### -Role
 
-\{\{ Fill roleId Description \}\}
+The name of the role to get members for.
 
 ```yaml
-Type: Guid
-Parameter Sets: (All)
+Type: String[]
+Parameter Sets: RoleName
 Aliases:
 
 Required: True
@@ -62,50 +68,35 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Eligible
+### -RoleId
 
-\{\{ Fill Eligible Description \}\}
+The ID of the role to get members for.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: Eligible
+Type: Guid[]
+Parameter Sets: RoleId
 Aliases:
 
 Required: True
-Position: Named
-Default value: False
+Position: 1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Active
+### -MemberStatus
 
-\{\{ Fill Active Description \}\}
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: Active
-Aliases:
-
-Required: True
-Position: Named
-Default value: False
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -All
-
-\{\{ Fill All Description \}\}
+The type of members to look for.
+Default is both Eligible and Active.
 
 ```yaml
-Type: SwitchParameter
-Parameter Sets: All
+Type: String
+Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: Named
-Default value: False
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
