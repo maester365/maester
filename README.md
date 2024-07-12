@@ -34,7 +34,7 @@ To install the Maester tests run the following PowerShell commands. Pester will 
 ```powershell
 md maester-tests
 cd maester-tests
-Install-MaesterTests -Path .\tests
+Install-MaesterTests
 ```
 
 ## Running Maester

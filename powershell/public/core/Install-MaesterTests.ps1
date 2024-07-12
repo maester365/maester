@@ -62,7 +62,7 @@ Function Install-MaesterTests {
 
     Write-Verbose "Installing Maester tests to $Path"
 
-    $targetFolderExists = (Test-Path -Path $Path)
+    $targetFolderExists = (Test-Path -Path $Path -PathType Container)
 
 
     # Check if current folder is empty and prompt user to continue if it is not
