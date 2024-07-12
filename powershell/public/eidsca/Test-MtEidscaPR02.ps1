@@ -21,6 +21,8 @@ Function Test-MtEidscaPR02 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value
@@ -35,6 +37,5 @@ Function Test-MtEidscaPR02 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'True'** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

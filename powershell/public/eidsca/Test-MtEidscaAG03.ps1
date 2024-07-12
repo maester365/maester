@@ -21,6 +21,8 @@ Function Test-MtEidscaAG03 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.reportSuspiciousActivitySettings.includeTarget.id
@@ -35,6 +37,5 @@ Function Test-MtEidscaAG03 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'all_users'** for **policies/authenticationMethodsPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

@@ -21,6 +21,8 @@ Function Test-MtEidscaPR05 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
@@ -35,6 +37,5 @@ Function Test-MtEidscaPR05 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is greater than or equal to **'60'** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

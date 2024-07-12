@@ -21,6 +21,8 @@ Function Test-MtEidscaAP07 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.guestUserRoleId
@@ -35,6 +37,5 @@ Function Test-MtEidscaAP07 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

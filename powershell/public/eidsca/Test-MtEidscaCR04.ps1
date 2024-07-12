@@ -21,6 +21,11 @@ Function Test-MtEidscaCR04 {
     [OutputType([bool])]
     param()
 
+    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.requestDurationInDays
@@ -35,6 +40,5 @@ Function Test-MtEidscaCR04 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'30'** for **policies/adminConsentRequestPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

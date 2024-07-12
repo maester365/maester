@@ -1,7 +1,7 @@
 BeforeDiscovery {
-$SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
-$EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
-$EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
+New-Variable -Name 'SettingsApiAvailable' -Value (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name -Scope Script -Force
+New-Variable -Name 'EnabledAuthMethods' -Value (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id -Scope Script -Force
+New-Variable -Name 'EnabledAdminConsentWorkflow' -Value (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled -Scope Script -Force
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP01" {
     It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" {
@@ -85,7 +85,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     }
 }
 
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP01" -Skip:( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP01" {
     It "EIDSCA.CP01: Default Settings - Consent Policy Settings - Group owner consent for apps accessing data. See https://maester.dev/docs/tests/EIDSCA.CP01" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -94,7 +94,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
         Test-MtEidscaCP01 | Should -Be 'False'
     }
 }
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" -Skip:( $SettingsApiAvailable -notcontains 'BlockUserConsentForRiskyApps' ) {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" {
     It "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps. See https://maester.dev/docs/tests/EIDSCA.CP03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -103,7 +103,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
         Test-MtEidscaCP03 | Should -Be 'true'
     }
 }
-Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" -Skip:( $SettingsApiAvailable -notcontains 'EnableAdminConsentRequests' ) {
+Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" {
     It "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CP04" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -113,7 +113,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
     }
 }
 
-Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR01" -Skip:( $SettingsApiAvailable -notcontains 'BannedPasswordCheckOnPremisesMode' ) {
+Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR01" {
     It "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode. See https://maester.dev/docs/tests/EIDSCA.PR01" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -131,7 +131,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
         Test-MtEidscaPR02 | Should -Be 'True'
     }
 }
-Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" -Skip:( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
+Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" {
     It "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list. See https://maester.dev/docs/tests/EIDSCA.PR03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
@@ -215,7 +215,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM01 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM02" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM02" {
     It "EIDSCA.AM02: Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP. See https://maester.dev/docs/tests/EIDSCA.AM02" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -224,7 +224,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM02 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM03" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM03" {
     It "EIDSCA.AM03: Authentication Method - Microsoft Authenticator - Require number matching for push notifications. See https://maester.dev/docs/tests/EIDSCA.AM03" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -233,7 +233,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM03 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM04" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM04" {
     It "EIDSCA.AM04: Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications. See https://maester.dev/docs/tests/EIDSCA.AM04" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -242,7 +242,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM04 | Should -Be 'all_users'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM06" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM06" {
     It "EIDSCA.AM06: Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications. See https://maester.dev/docs/tests/EIDSCA.AM06" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -251,7 +251,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM06 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM07" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM07" {
     It "EIDSCA.AM07: Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications. See https://maester.dev/docs/tests/EIDSCA.AM07" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -260,7 +260,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM07 | Should -Be 'all_users'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM09" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM09" {
     It "EIDSCA.AM09: Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications. See https://maester.dev/docs/tests/EIDSCA.AM09" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -269,7 +269,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
         Test-MtEidscaAM09 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM10" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM10" {
     It "EIDSCA.AM10: Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications. See https://maester.dev/docs/tests/EIDSCA.AM10" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
@@ -288,7 +288,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF01 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF02" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF02" {
     It "EIDSCA.AF02: Authentication Method - FIDO2 security key - Allow self-service set up. See https://maester.dev/docs/tests/EIDSCA.AF02" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -297,7 +297,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF02 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF03" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF03" {
     It "EIDSCA.AF03: Authentication Method - FIDO2 security key - Enforce attestation. See https://maester.dev/docs/tests/EIDSCA.AF03" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -306,7 +306,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF03 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF04" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF04" {
     It "EIDSCA.AF04: Authentication Method - FIDO2 security key - Enforce key restrictions. See https://maester.dev/docs/tests/EIDSCA.AF04" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -315,7 +315,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF04 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF05" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF05" {
     It "EIDSCA.AF05: Authentication Method - FIDO2 security key - Restricted. See https://maester.dev/docs/tests/EIDSCA.AF05" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -324,7 +324,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
         Test-MtEidscaAF05 | Should -Be 'true'
     }
 }
-Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF06" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
+Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF06" {
     It "EIDSCA.AF06: Authentication Method - FIDO2 security key - Restrict specific keys. See https://maester.dev/docs/tests/EIDSCA.AF06" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
@@ -343,7 +343,7 @@ Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Securit
         Test-MtEidscaAT01 | Should -Be 'enabled'
     }
 }
-Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Security", "All", "EIDSCA.AT02" -Skip:( $EnabledAuthMethods -notcontains 'TemporaryAccessPass' ) {
+Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Security", "All", "EIDSCA.AT02" {
     It "EIDSCA.AT02: Authentication Method - Temporary Access Pass - One-time. See https://maester.dev/docs/tests/EIDSCA.AT02" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')"
@@ -372,7 +372,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
         Test-MtEidscaCR01 | Should -Be 'true'
     }
 }
-Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
+Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" {
     It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
@@ -381,7 +381,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
         Test-MtEidscaCR02 | Should -Be 'true'
     }
 }
-Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
+Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" {
     It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
@@ -390,7 +390,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
         Test-MtEidscaCR03 | Should -Be 'true'
     }
 }
-Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
+Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" {
     It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"

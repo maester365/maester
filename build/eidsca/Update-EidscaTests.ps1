@@ -333,6 +333,25 @@ if ($currentValue -eq '' -or $control.ControlName -eq '') {
     $output = $output -replace '%PSFunctionName%', $psFunctionName
     $output = $output -replace '%PortalDeepLinkMarkdown%', $portalDeepLinkMarkdown
     $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
+
+    if ($controlItem.SkipCondition -ne "") {
+        $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
+            return " + '$null' + " `
+    }"
+        $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
+    } else {
+        $output = $output -replace '%SkipCheck%', ""
+    }
+
+    <#
+    # Add condition to test template if defined in EidscaTest
+    if ($controlItem.SkipCondition -ne "") {
+        Write-Warning "Condition: $controlItem.checkid"
+        $output = $output -Replace '%SkipCondition%', $controlItem.SkipCondition
+        $output = $output -Replace '%SkipReason%', $controlItem.SkipReason
+    }
+        #>
 }
 
 return $output
@@ -396,16 +415,10 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 }
 '@
 
-            # Add condition to test template if defined in EidscaTest
-            if ($controlItem.SkipCondition -ne "") {
-
-                $testTemplate = $testTemplate.Replace( '"%CheckId%"', '"%CheckId%" -Skip:( ' + $controlItem.SkipCondition + ' )')
-            }
             $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
             $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
             $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
             $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
-
 
             if ($testOutput -ne '') {
                 [void]$testOutputList.AppendLine($testOutput)

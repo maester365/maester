@@ -21,6 +21,11 @@ Function Test-MtEidscaCP03 {
     [OutputType([bool])]
     param()
 
+    if ( $SettingsApiAvailable -notcontains 'BlockUserConsentForRiskyApps' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value
@@ -35,6 +40,5 @@ Function Test-MtEidscaCP03 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

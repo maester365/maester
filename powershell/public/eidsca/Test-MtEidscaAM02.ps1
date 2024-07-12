@@ -21,6 +21,11 @@ Function Test-MtEidscaAM02 {
     [OutputType([bool])]
     param()
 
+    if ( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Microsoft Authenticator is not enabled.'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     [string]$tenantValue = $result.state
@@ -35,6 +40,5 @@ Function Test-MtEidscaAM02 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

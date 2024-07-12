@@ -21,6 +21,11 @@ Function Test-MtEidscaAT02 {
     [OutputType([bool])]
     param()
 
+    if ( $EnabledAuthMethods -notcontains 'TemporaryAccessPass' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Temporary Access Pass is not enabled.'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 
     [string]$tenantValue = $result.isUsableOnce
@@ -35,6 +40,5 @@ Function Test-MtEidscaAT02 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

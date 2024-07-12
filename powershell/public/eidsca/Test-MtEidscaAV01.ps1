@@ -21,6 +21,8 @@ Function Test-MtEidscaAV01 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
     [string]$tenantValue = $result.state
@@ -35,6 +37,5 @@ Function Test-MtEidscaAV01 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }

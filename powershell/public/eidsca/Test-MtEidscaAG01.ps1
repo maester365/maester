@@ -21,6 +21,8 @@ Function Test-MtEidscaAG01 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.policyMigrationState
@@ -35,6 +37,5 @@ Function Test-MtEidscaAG01 {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $tenantValue
 }
