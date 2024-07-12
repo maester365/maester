@@ -62,16 +62,27 @@ Function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
+        [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance',
-            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported'
+            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported', 'Custom'
         )]
-        [string] $SkippedBecause
+        [string] $SkippedBecause,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SkippedCustomReason
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
 
     if ($SkippedBecause) {
-        $SkippedReason = Get-MtSkippedReason $SkippedBecause
+        if ($SkippedBecause -eq 'Custom') {
+            if ([string]::IsNullOrEmpty($SkippedCustomReason)) {
+                throw "SkippedBecause is set to 'Custom' but no SkippedCustomReason was provided."
+            }
+            $SkippedReason = $SkippedCustomReason
+        } else {
+            $SkippedReason = Get-MtSkippedReason $SkippedBecause
+        }
 
         if ([string]::IsNullOrEmpty($Result)) {
             $Result = "Skipped. $SkippedReason"
