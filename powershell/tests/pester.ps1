@@ -68,7 +68,6 @@ if ($TestGeneral)
             }
 
             if ($test.Result -eq 'Failed' -and $test.Tag -contains 'ScriptAnalyzerRule' -and $test.StandardOutput) {
-                # Print ScriptAnalyzer findings
                 $null = $scriptAnalyzerFailures.Add($test.StandardOutput)
             }
         }
@@ -76,7 +75,7 @@ if ($TestGeneral)
 }
 #endregion Run General Tests
 
-# Print any ScriptAnalyzer findings
+# Print any ScriptAnalyzer output
 $scriptAnalyzerFailures | Out-Host
 
 #region Test Commands
@@ -94,7 +93,7 @@ if ($TestFunctions)
         $config.Run.PassThru = $true
         $config.Output.Verbosity = $Output
         $result = Invoke-Pester -Configuration $config
-        
+
         foreach ($test in $result.Tests) {
             if ($test.Result -notin 'Passed','Skipped') {
                 $failedTest = [pscustomobject]@{
