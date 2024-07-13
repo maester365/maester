@@ -104,9 +104,14 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
                         NameServer  = $dkimSplat.Server
                         ErrorAction = $dkimSplat.ErrorAction
                     }
-                    $dkimRecord = [DKIMRecord]::new(((Resolve-Dns @dkimSplatAlt).Answers | `
+                    $record = ((Resolve-Dns @dkimSplatAlt).Answers | `
                         Where-Object {$_.RecordType -eq "TXT"} | `
-                        Where-Object {$_.Text -imatch $matchRecord}).Text)
+                        Where-Object {$_.Text -imatch $matchRecord}).Text
+                    if($record){
+                        $dkimRecord = [DKIMRecord]::new($record)
+                    }else{
+                        return "Failure to obtain record"
+                    }
                 }else{
                     Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
