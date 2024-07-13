@@ -16,10 +16,8 @@
 )
 
 Write-Host "Starting Tests"
-
 Write-Host "Importing Module"
 
-$global:testroot = $PSScriptRoot
 $global:__pester_data = @{ }
 
 Remove-Module Maester -ErrorAction Ignore
@@ -94,7 +92,7 @@ if ($TestFunctions)
 		{
 			$totalRun += $result.TotalCount
 			$totalFailed += $result.FailedCount
-			$result.Tests | Where-Object Result -ne 'Passed' | ForEach-Object {
+			$result.Tests | Where-Object Result -notin 'Passed','Skipped' | ForEach-Object {
 				$testresults += [pscustomobject]@{
 					Block    = $_.Block
 					Name	 = "It $($_.Name)"

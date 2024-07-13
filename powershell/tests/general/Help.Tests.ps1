@@ -36,13 +36,13 @@ Param (
 	$SkipTest,
 
 	[string[]]
-	$CommandPath = @("$global:testroot\..\public", "$global:testroot\..\internal"),
+	$CommandPath = @("$PSScriptRoot\..\..\public", "$PSScriptRoot\..\..\internal"),
 
 	[string]
 	$ModuleName = "PSFramework",
 
 	[string]
-	$ExceptionsFile = "$global:testroot\general\Help.Exceptions.ps1"
+	$ExceptionsFile = "$PSScriptRoot\..\general\Help.Exceptions.ps1"
 )
 if ($SkipTest) { return }
 . $ExceptionsFile
