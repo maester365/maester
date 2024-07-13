@@ -4,7 +4,6 @@
 }
 
 Describe "<module> Module Tests" -Tags ('Unit', 'Acceptance') {
-
     Context 'Module Setup' {
         It "has the root module $module.psm1" {
             Join-Path -Path $moduleRoot -ChildPath "$module.psm1" | Should -Exist
