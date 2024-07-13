@@ -17,7 +17,7 @@ Allows users to report suspicious activities if they receive an authentication r
 
 ## How to fix
 
-
+[Microsoft Learn - Report suspicious activites](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-mfasettings#report-suspicious-activity)
 
 ### Details of configuration item
 | | |

@@ -17,7 +17,7 @@ The state of migration of the authentication methods policy from the legacy mult
 
 ## How to fix
 
-
+[Microsoft Learn - How to manage authentication methodes](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-methods-manage#start-the-migration)
 
 ### Details of configuration item
 | | |

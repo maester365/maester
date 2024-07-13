@@ -17,7 +17,7 @@ Object Id or scope of users which will be included to report suspicious activiti
 
 ## How to fix
 
-
+[Microsoft Learn - Report suspicious activites](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-mfasettings#report-suspicious-activity)
 
 ### Details of configuration item
 | | |
