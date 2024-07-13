@@ -9,8 +9,6 @@ Param (
 
 if ($SkipTest) { return }
 
-$global:__pester_data.ScriptAnalyzer = New-Object System.Collections.ArrayList
-
 Describe 'Invoking PSScriptAnalyzer against commandbase' {
     BeforeDiscovery {
         $commandFiles = Get-ChildItem -Path $CommandPath -Recurse -File -Filter '*.ps1'
@@ -22,11 +20,13 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' {
             $file = $_
             $analysis = Invoke-ScriptAnalyzer -Path $file.FullName -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
         }
-        It "Should pass '<_.RuleName>'" -ForEach $scriptAnalyzerRules {
+        It "Should pass '<_.RuleName>'" -Tag 'ScriptAnalyzerRule' -ForEach $scriptAnalyzerRules {
             $rule = $_
             If ($analysis.RuleName -contains $rule.RuleName) {
-                $analysis | Where-Object RuleName -EQ $rule -OutVariable failures | ForEach-Object { $null = $global:__pester_data.ScriptAnalyzer.Add($_) }
-                1 | Should -Be 0
+                $failedRule = $analysis | Where-Object RuleName -EQ $rule.RuleName
+                $failedRule # Intentional output so we can get it from StandardOutput-property in pester.ps1
+
+                $failedRule | Should -BeNullOrEmpty
             }
         }
     }
