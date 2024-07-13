@@ -75,6 +75,7 @@ Runs all the Pester tests in the EIDSCA folder.
 Function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Alias("Invoke-MtMaester")]
+    [CmdletBinding()]
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]

@@ -19,6 +19,7 @@
 #>
 function Clear-MtGraphCache {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]
+    [CmdletBinding()]
     param()
 
     Write-Verbose -Message "Clearing the results cached from Graph API calls in this session"
