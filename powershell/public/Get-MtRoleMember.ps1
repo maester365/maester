@@ -6,12 +6,32 @@
   The role can be either active or eligible, defaults to getting members that are both active and eligible.
 
  .Example
+  Get-MtRoleMember -Role GlobalAdministrator
+
+  Returns all the Global administrators and includes both Eligible and Active members.
+
+ .Example
+  Get-MtRoleMember -Role GlobalAdministrator -MemberStatus Active
+
+  Returns all the Global administrators that are currently active and excludes those that are eligible but not yet active.
+
+ .Example
+  Get-MtRoleMember -Role GlobalAdministrator -MemberStatus Active
+
+  Returns all the Global administrators that are currently active and excludes those that are eligible but not yet active.
+
+ .EXAMPLE
+  Get-MtRoleMember -Role GlobalAdministrator,PrivilegedRoleAdministrator
+
+  Returns all the Global administrators and Privileged Role administrators and includes both Eligible and Active members.
+
+ .Example
   Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000"
 
   Returns all the members of the role with the specified RoleId and includes both Eligible and Active members.
 
   .Example
-  Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000" -RoleStatus Active
+  Get-MtRoleMember -RoleId "00000000-0000-0000-0000-000000000000" -MemberStatus Active
 
   Returns all the currently active members of the role with the specified RoleId.
 
