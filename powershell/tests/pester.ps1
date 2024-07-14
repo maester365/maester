@@ -20,7 +20,6 @@ Write-Host "Importing Module"
 
 Remove-Module Maester -ErrorAction Ignore
 Import-Module "$PSScriptRoot\..\Maester.psd1"
-Import-Module "$PSScriptRoot\..\Maester.psm1" -Force
 
 Import-Module PSModuleDevelopment
 Import-Module Pester
