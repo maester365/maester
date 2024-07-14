@@ -17,6 +17,11 @@ Function Test-MtCisaAuthenticatorContext {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $result = Get-MtAuthenticationMethodPolicyConfig
 
     $policies = $result | Where-Object {`
@@ -31,12 +36,15 @@ Function Test-MtCisaAuthenticatorContext {
 
     $testResult = ($policies|Measure-Object).Count -ge 1
 
+    $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods/fromNav/Identity"
+
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the Authentication Methods policy for Microsoft Authenticator set appropriately:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately."
     } else {
-        $testResultMarkdown = "Your tenant does not have the Authentication Methods policy for Microsoft Authenticator set appropriately."
+        $testResultMarkdown = "Your tenant does not have the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthenticationMethod -GraphObjects $policies
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }
