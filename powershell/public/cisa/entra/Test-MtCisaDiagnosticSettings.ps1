@@ -19,6 +19,11 @@ Function Test-MtCisaDiagnosticSettings {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Azure)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
+        return $null
+    }
+
     $logs = Invoke-AzRestMethod -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
     $logs = ($logs.Content|ConvertFrom-Json).value
     $logs = ($logs | Where-Object { `
