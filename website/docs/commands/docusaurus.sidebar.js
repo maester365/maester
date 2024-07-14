@@ -136,6 +136,7 @@ module.exports = [
     'commands/Test-MtEidscaAT01',
     'commands/Test-MtEidscaAT02',
     'commands/Test-MtEidscaAV01',
+    'commands/Test-MtEidscaControl',
     'commands/Test-MtEidscaCP01',
     'commands/Test-MtEidscaCP03',
     'commands/Test-MtEidscaCP04',
