@@ -235,9 +235,14 @@ Function ConvertFrom-MailAuthenticationRecordDmarc {
                         NameServer  = $dmarcSplat.Server
                         ErrorAction = $dmarcSplat.ErrorAction
                     }
-                    $dmarcRecord = [DMARCRecord]::new(((Resolve-Dns @dmarcSplatAlt).Answers | `
+                    $record = ((Resolve-Dns @dmarcSplatAlt).Answers | `
                         Where-Object {$_.RecordType -eq "TXT"} | `
-                        Where-Object {$_.Text -imatch $matchRecord}).Text)
+                        Where-Object {$_.Text -imatch $matchRecord}).Text
+                    if($record){
+                        $dmarcRecord = [DMARCRecord]::new($record)
+                    }else{
+                        return "Failure to obtain record"
+                    }
                 }else{
                     Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow

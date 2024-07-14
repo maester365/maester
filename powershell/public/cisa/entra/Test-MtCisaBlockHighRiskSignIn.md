@@ -11,6 +11,8 @@ Create a Conditional Access policy blocking sign-ins determined high risk by the
 * Conditions > Sign-in risk > **High**
 * Access controls > Grant > **Block Access**
 
+Note: While CISA recommends blocking, the [Microsoft recommendation](https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-risk-policies#microsofts-recommendation) is to require multi-factor authentication for high-risk sign-ins.
+
 #### Related links
 
 * [CISA Risk Based Policies - MS.AAD.2.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad23v1)
