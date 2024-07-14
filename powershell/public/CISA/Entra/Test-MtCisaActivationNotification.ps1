@@ -27,8 +27,16 @@ Function Test-MtCisaActivationNotification {
 
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
     $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-    if(-not $pim){
-        return $false
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }elseif(-not $pim){
+        if($EntraIDPlan -ne "P2"){
+            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        }elseif($EntraIDPlan -ne "Governance"){
+            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDGovernance
+        }
+        return $null
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
