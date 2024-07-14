@@ -29,7 +29,7 @@ warnings    :
 
 Function ConvertFrom-MailAuthenticationRecordDkim {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [OutputType([DKIMRecord],[System.String])]
+    [OutputType([DKIMRecord], [System.String])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
@@ -50,7 +50,7 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
         class DKIMRecord {
             [string]$record
             [string]$keyType = "rsa" #k
-            [string[]]$hash = @("sha1","sha256") #h
+            [string[]]$hash = @("sha1", "sha256") #h
             [string]$notes #n
             [string]$publicKey #p
             [bool]$validBase64
@@ -63,16 +63,16 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
             hidden $matchKeyType = "k\s*=\s*(?'k'[^;]+)\s*;\s*"
             hidden $matchPublicKey = "p\s*=\s*(?'p'[^;]+)\s*;\s*"
 
-            DKIMRecord([string]$record){
+            DKIMRecord([string]$record) {
                 $this.record = $record
                 $match = $record -match $this.matchRecord
-                if(-not $match){
+                if (-not $match) {
                     $this.warnings = "v: Record does not match version format"
                     break
                 }
-                $p = [regex]::Match($record,$this.matchPublicKey,$this.option)
-                $this.publicKey = ($p.Groups|Where-Object{$_.Name -eq "p"}).Value
-                $bytes = [System.Convert]::FromBase64String(($p.Groups|Where-Object{$_.Name -eq "p"}).Value)
+                $p = [regex]::Match($record, $this.matchPublicKey, $this.option)
+                $this.publicKey = ($p.Groups | Where-Object { $_.Name -eq "p" }).Value
+                $bytes = [System.Convert]::FromBase64String(($p.Groups | Where-Object { $_.Name -eq "p" }).Value)
                 $this.validBase64 = $null -ne $bytes
             }
         }
@@ -90,14 +90,14 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
             QuickTimeout = $QuickTimeout
             ErrorAction  = "Stop"
         }
-        try{
-            if($isWindows){
+        try {
+            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                 $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
-                    Where-Object {$_.Type -eq "TXT"} | `
-                    Where-Object {$_.Strings -match $matchRecord}).Strings)
-            }else{
-                $cmdletCheck = Get-Command "Resolve-Dns"
-                if($cmdletCheck){
+                            Where-Object { $_.Type -eq "TXT" } | `
+                            Where-Object { $_.Strings -match $matchRecord }).Strings)
+            } else {
+                $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
+                if ($cmdletCheck) {
                     $dkimSplatAlt = @{
                         Query       = $dkimSplat.Name
                         QueryType   = $dkimSplat.Type
@@ -105,23 +105,23 @@ Function ConvertFrom-MailAuthenticationRecordDkim {
                         ErrorAction = $dkimSplat.ErrorAction
                     }
                     $record = ((Resolve-Dns @dkimSplatAlt).Answers | `
-                        Where-Object {$_.RecordType -eq "TXT"} | `
-                        Where-Object {$_.Text -imatch $matchRecord}).Text
-                    if($record){
+                            Where-Object { $_.RecordType -eq "TXT" } | `
+                            Where-Object { $_.Text -imatch $matchRecord }).Text
+                    if ($record) {
                         $dkimRecord = [DKIMRecord]::new($record)
-                    }else{
+                    } else {
                         return "Failure to obtain record"
                     }
-                }else{
+                } else {
                     Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
                     return "Missing dependency, Resolve-Dns not available"
                 }
             }
-        }catch [System.Management.Automation.CommandNotFoundException]{
+        } catch [System.Management.Automation.CommandNotFoundException] {
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
-        }catch{
+        } catch {
             Write-Error $_
             return "Failure to obtain record"
         }
