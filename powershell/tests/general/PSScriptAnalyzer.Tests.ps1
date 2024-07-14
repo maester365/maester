@@ -21,7 +21,7 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
 
     # The next Context blocks are kinda duplicate, but helps us document both
     # which files and which rules where evaluated without running every rule for every file 
-    Context 'Analyzing <_.RuleName>' -ForEach $scriptAnalyzerRules {
+    Context 'Analyzing rule <_.RuleName>' -ForEach $scriptAnalyzerRules {
         BeforeAll {
             $rule = $_
         }
@@ -35,18 +35,18 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
         }
     }
 
-    Context 'Analyzing <_.BaseName>' -ForEach $commandFiles {
+    Context 'Analyzing file <_.BaseName>' -ForEach $commandFiles {
         BeforeAll {
             $file = $_
         }
         It "Should pass all rules" -Tag 'ScriptAnalyzerRule' {
             $failedRules = foreach ($failure in $analysis) {
                 if ($failure.ScriptPath -eq $file.FullName) {
-                    $failure.RuleName
+                    $failure
                 }
             }
             $failedRules # Intentional output so we can get it from StandardOutput-property in pester.ps1
-            $failedRules | Should -BeNullOrEmpty
+            @($failedRules).RuleName | Should -BeNullOrEmpty
         }
     }
 }
