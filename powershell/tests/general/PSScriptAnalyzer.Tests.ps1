@@ -1,40 +1,51 @@
-﻿[CmdletBinding()]
-Param (
-	[switch]
-	$SkipTest,
+﻿Param (
+    [switch]
+    $SkipTest,
 
-	[string[]]
-	$CommandPath = @("$global:testroot\..\public", "$global:testroot\..\internal")
+    [string[]]
+    $CommandPath = @("$PSScriptRoot/../../public/", "$PSScriptRoot/../../internal/")
 )
 
 if ($SkipTest) { return }
 
-$global:__pester_data.ScriptAnalyzer = New-Object System.Collections.ArrayList
+BeforeDiscovery {
+    $commandFiles = Get-ChildItem -Path $CommandPath -Recurse -File -Filter '*.ps1'
+    $scriptAnalyzerRules = Get-ScriptAnalyzerRule
+}
 
-Describe 'Invoking PSScriptAnalyzer against commandbase' {
-	$commandFiles = foreach ($path in $CommandPath) { Get-ChildItem -Path $path -Recurse | Where-Object Name -like "*.ps1" }
-	$scriptAnalyzerRules = Get-ScriptAnalyzerRule
+Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFiles = $commandFiles } {
+    BeforeAll {
+        $analysis = $commandFiles | Invoke-ScriptAnalyzer -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
+    }
 
-	foreach ($file in $commandFiles)
-	{
-		Context "Analyzing $($file.BaseName)" {
-			$analysis = Invoke-ScriptAnalyzer -Path $file.FullName -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
+    # The next Context blocks are kinda duplicate, but helps us document both
+    # which files and which rules where evaluated without running every rule for every file 
+    Context 'Analyzing rule <_.RuleName>' -ForEach $scriptAnalyzerRules {
+        BeforeAll {
+            $rule = $_
+        }
+        It 'All files should be compliant' {
+            $failedFiles = foreach ($failure in $analysis) {
+                if ($failure.RuleName -eq $rule.RuleName) {
+                    $failure.ScriptPath
+                }
+            }
+            $failedFiles | Should -BeNullOrEmpty
+        }
+    }
 
-			forEach ($rule in $scriptAnalyzerRules)
-			{
-				It "Should pass $rule" -TestCases @{ analysis = $analysis; rule = $rule } {
-					If ($analysis.RuleName -contains $rule)
-					{
-						$analysis | Where-Object RuleName -EQ $rule -outvariable failures | ForEach-Object { $null = $global:__pester_data.ScriptAnalyzer.Add($_) }
-
-						1 | Should -Be 0
-					}
-					else
-					{
-						0 | Should -Be 0
-					}
-				}
-			}
-		}
-	}
+    Context 'Analyzing file <_.BaseName>' -ForEach $commandFiles {
+        BeforeAll {
+            $file = $_
+        }
+        It "Should pass all rules" -Tag 'ScriptAnalyzerRule' {
+            $failedRules = foreach ($failure in $analysis) {
+                if ($failure.ScriptPath -eq $file.FullName) {
+                    $failure
+                }
+            }
+            $failedRules # Intentional output so we can get it from StandardOutput-property in pester.ps1
+            @($failedRules).RuleName | Should -BeNullOrEmpty
+        }
+    }
 }

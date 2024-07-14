@@ -1,7 +1,7 @@
 BeforeDiscovery {
-$SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
-$EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
-$EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
+New-Variable -Name 'SettingsApiAvailable' -Value (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name -Scope Script -Force
+New-Variable -Name 'EnabledAuthMethods' -Value (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id -Scope Script -Force
+New-Variable -Name 'EnabledAdminConsentWorkflow' -Value (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled -Scope Script -Force
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP01" {
     It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" {
@@ -9,7 +9,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowedToUseSSPR = 'false'
         #>
-        Test-MtEidscaAP01 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId AP01 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP04" {
@@ -18,7 +18,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowInvitesFrom in @('adminsAndGuestInviters','none')
         #>
-        Test-MtEidscaAP04 | Should -BeIn @('adminsAndGuestInviters','none')
+        Test-MtEidscaControl -CheckId AP04 | Should -BeIn @('adminsAndGuestInviters','none')
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP05" {
@@ -27,7 +27,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowedToSignUpEmailBasedSubscriptions = 'false'
         #>
-        Test-MtEidscaAP05 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId AP05 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP06" {
@@ -36,7 +36,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowEmailVerifiedUsersToJoinOrganization = 'false'
         #>
-        Test-MtEidscaAP06 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId AP06 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP07" {
@@ -45,7 +45,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .guestUserRoleId = '2af84b1e-32c8-42b7-82bc-daa82404023b'
         #>
-        Test-MtEidscaAP07 | Should -Be '2af84b1e-32c8-42b7-82bc-daa82404023b'
+        Test-MtEidscaControl -CheckId AP07 | Should -Be '2af84b1e-32c8-42b7-82bc-daa82404023b'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP08" {
@@ -54,7 +54,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 = 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
         #>
-        Test-MtEidscaAP08 | Should -Be 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+        Test-MtEidscaControl -CheckId AP08 | Should -Be 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP09" {
@@ -63,7 +63,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowUserConsentForRiskyApps = 'false'
         #>
-        Test-MtEidscaAP09 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId AP09 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP10" {
@@ -72,7 +72,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .defaultUserRolePermissions.allowedToCreateApps = 'false'
         #>
-        Test-MtEidscaAP10 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId AP10 | Should -Be 'false'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP14" {
@@ -81,7 +81,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .defaultUserRolePermissions.allowedToReadOtherUsers = 'true'
         #>
-        Test-MtEidscaAP14 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AP14 | Should -Be 'true'
     }
 }
 
@@ -91,7 +91,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value = 'False'
         #>
-        Test-MtEidscaCP01 | Should -Be 'False'
+        Test-MtEidscaControl -CheckId CP01 | Should -Be 'False'
     }
 }
 Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" -Skip:( $SettingsApiAvailable -notcontains 'BlockUserConsentForRiskyApps' ) {
@@ -100,7 +100,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value = 'true'
         #>
-        Test-MtEidscaCP03 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId CP03 | Should -Be 'true'
     }
 }
 Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" -Skip:( $SettingsApiAvailable -notcontains 'EnableAdminConsentRequests' ) {
@@ -109,7 +109,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value = 'true'
         #>
-        Test-MtEidscaCP04 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId CP04 | Should -Be 'true'
     }
 }
 
@@ -119,7 +119,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value = 'Enforce'
         #>
-        Test-MtEidscaPR01 | Should -Be 'Enforce'
+        Test-MtEidscaControl -CheckId PR01 | Should -Be 'Enforce'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR02" {
@@ -128,7 +128,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value = 'True'
         #>
-        Test-MtEidscaPR02 | Should -Be 'True'
+        Test-MtEidscaControl -CheckId PR02 | Should -Be 'True'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" -Skip:( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
@@ -137,7 +137,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value = 'True'
         #>
-        Test-MtEidscaPR03 | Should -Be 'True'
+        Test-MtEidscaControl -CheckId PR03 | Should -Be 'True'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR05" {
@@ -146,7 +146,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value >= '60'
         #>
-        Test-MtEidscaPR05 | Should -BeGreaterOrEqual '60'
+        Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual '60'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
@@ -155,7 +155,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutThreshold' | select-object -expand value = '10'
         #>
-        Test-MtEidscaPR06 | Should -Be '10'
+        Test-MtEidscaControl -CheckId PR06 | Should -Be '10'
     }
 }
 
@@ -165,7 +165,7 @@ Describe "Default Settings - Classification and M365 Groups" -Tag "EIDSCA", "Sec
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value = 'false'
         #>
-        Test-MtEidscaST08 | Should -Be 'false'
+        Test-MtEidscaControl -CheckId ST08 | Should -Be 'false'
     }
 }
 Describe "Default Settings - Classification and M365 Groups" -Tag "EIDSCA", "Security", "All", "EIDSCA.ST09" {
@@ -174,7 +174,7 @@ Describe "Default Settings - Classification and M365 Groups" -Tag "EIDSCA", "Sec
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value = 'True'
         #>
-        Test-MtEidscaST09 | Should -Be 'True'
+        Test-MtEidscaControl -CheckId ST09 | Should -Be 'True'
     }
 }
 
@@ -184,7 +184,7 @@ Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy"
             .policyMigrationState = 'migrationComplete'
         #>
-        Test-MtEidscaAG01 | Should -Be 'migrationComplete'
+        Test-MtEidscaControl -CheckId AG01 | Should -Be 'migrationComplete'
     }
 }
 Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AG02" {
@@ -193,7 +193,7 @@ Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy"
             .reportSuspiciousActivitySettings.state = 'enabled'
         #>
-        Test-MtEidscaAG02 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AG02 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AG03" {
@@ -202,7 +202,7 @@ Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy"
             .reportSuspiciousActivitySettings.includeTarget.id = 'all_users'
         #>
-        Test-MtEidscaAG03 | Should -Be 'all_users'
+        Test-MtEidscaControl -CheckId AG03 | Should -Be 'all_users'
     }
 }
 
@@ -212,7 +212,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .state = 'enabled'
         #>
-        Test-MtEidscaAM01 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM01 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM02" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -221,7 +221,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .state = 'enabled'
         #>
-        Test-MtEidscaAM02 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM02 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM03" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -230,7 +230,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.numberMatchingRequiredState.state = 'enabled'
         #>
-        Test-MtEidscaAM03 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM03 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM04" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -239,7 +239,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.numberMatchingRequiredState.includeTarget.id = 'all_users'
         #>
-        Test-MtEidscaAM04 | Should -Be 'all_users'
+        Test-MtEidscaControl -CheckId AM04 | Should -Be 'all_users'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM06" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -248,7 +248,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.displayAppInformationRequiredState.state = 'enabled'
         #>
-        Test-MtEidscaAM06 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM06 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM07" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -257,7 +257,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.displayAppInformationRequiredState.includeTarget.id = 'all_users'
         #>
-        Test-MtEidscaAM07 | Should -Be 'all_users'
+        Test-MtEidscaControl -CheckId AM07 | Should -Be 'all_users'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM09" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -266,7 +266,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.displayLocationInformationRequiredState.state = 'enabled'
         #>
-        Test-MtEidscaAM09 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM09 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM10" -Skip:( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
@@ -275,7 +275,7 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
             .featureSettings.displayLocationInformationRequiredState.includeTarget.id = 'all_users'
         #>
-        Test-MtEidscaAM10 | Should -Be 'all_users'
+        Test-MtEidscaControl -CheckId AM10 | Should -Be 'all_users'
     }
 }
 
@@ -285,7 +285,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .state = 'enabled'
         #>
-        Test-MtEidscaAF01 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AF01 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF02" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
@@ -294,7 +294,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .isSelfServiceRegistrationAllowed = 'true'
         #>
-        Test-MtEidscaAF02 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AF02 | Should -Be 'true'
     }
 }
 Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF03" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
@@ -303,7 +303,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .isAttestationEnforced = 'true'
         #>
-        Test-MtEidscaAF03 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AF03 | Should -Be 'true'
     }
 }
 Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF04" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' ) {
@@ -312,7 +312,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .keyRestrictions.isEnforced = 'true'
         #>
-        Test-MtEidscaAF04 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AF04 | Should -Be 'true'
     }
 }
 Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF05" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
@@ -321,7 +321,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .keyRestrictions.aaGuids -notcontains $null = 'true'
         #>
-        Test-MtEidscaAF05 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AF05 | Should -Be 'true'
     }
 }
 Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security", "All", "EIDSCA.AF06" -Skip:( $EnabledAuthMethods -notcontains 'Fido2' -or (Test-MtEidscaAF04) -eq $false ) {
@@ -330,7 +330,7 @@ Describe "Authentication Method - FIDO2 security key" -Tag "EIDSCA", "Security",
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')"
             .keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') = 'true'
         #>
-        Test-MtEidscaAF06 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AF06 | Should -Be 'true'
     }
 }
 
@@ -340,7 +340,7 @@ Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Securit
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')"
             .state = 'enabled'
         #>
-        Test-MtEidscaAT01 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AT01 | Should -Be 'enabled'
     }
 }
 Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Security", "All", "EIDSCA.AT02" -Skip:( $EnabledAuthMethods -notcontains 'TemporaryAccessPass' ) {
@@ -349,7 +349,7 @@ Describe "Authentication Method - Temporary Access Pass" -Tag "EIDSCA", "Securit
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')"
             .isUsableOnce = 'true'
         #>
-        Test-MtEidscaAT02 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId AT02 | Should -Be 'true'
     }
 }
 
@@ -359,7 +359,7 @@ Describe "Authentication Method - Voice call" -Tag "EIDSCA", "Security", "All", 
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')"
             .state = 'disabled'
         #>
-        Test-MtEidscaAV01 | Should -Be 'disabled'
+        Test-MtEidscaControl -CheckId AV01 | Should -Be 'disabled'
     }
 }
 
@@ -369,7 +369,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .isEnabled = 'true'
         #>
-        Test-MtEidscaCR01 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId CR01 | Should -Be 'true'
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
@@ -378,7 +378,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .notifyReviewers = 'true'
         #>
-        Test-MtEidscaCR02 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId CR02 | Should -Be 'true'
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
@@ -387,7 +387,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .notifyReviewers = 'true'
         #>
-        Test-MtEidscaCR03 | Should -Be 'true'
+        Test-MtEidscaControl -CheckId CR03 | Should -Be 'true'
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" -Skip:( ($EnabledAdminConsentWorkflow) -eq $false ) {
@@ -396,7 +396,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .requestDurationInDays = '30'
         #>
-        Test-MtEidscaCR04 | Should -Be '30'
+        Test-MtEidscaControl -CheckId CR04 | Should -Be '30'
     }
 }
 

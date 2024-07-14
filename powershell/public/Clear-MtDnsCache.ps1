@@ -14,6 +14,7 @@
 #>
 function Clear-MtDnsCache {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]
+    [CmdletBinding()]
     param()
 
     Write-Verbose -Message "Clearing the results cached from DNS lookups in this session"

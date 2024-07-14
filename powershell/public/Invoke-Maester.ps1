@@ -61,7 +61,7 @@ Shows results of tests as they are run including details on failed tests.
 
 .EXAMPLE
 ```
-$configuration = [PesterConfiguration]::Default
+$configuration = New-PesterConfiguration
 $configuration.Run.Path = './tests/Maester'
 $configuration.Filter.Tag = 'CA'
 $configuration.Filter.ExcludeTag = 'App'
@@ -75,6 +75,7 @@ Runs all the Pester tests in the EIDSCA folder.
 Function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Alias("Invoke-MtMaester")]
+    [CmdletBinding()]
     param (
         # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]
@@ -136,11 +137,11 @@ Function Invoke-Maester {
 
         # Optional. The Teams team where the test results should be posted.
         # To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=<TeamId>
-        [string] $TeamId = $null,
+        [string] $TeamId,
 
         # Optional. The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
         # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
-        [string] $TeamChannelId = $null,
+        [string] $TeamChannelId,
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
@@ -232,7 +233,7 @@ Function Invoke-Maester {
 
     $isMail = $null -ne $MailRecipient
 
-    $isTeamsChannelMessage = (($null -ne $TeamId) -or ($null -ne $TeamChannelId))
+    $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId))
 
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
