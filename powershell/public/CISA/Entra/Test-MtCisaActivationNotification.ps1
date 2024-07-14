@@ -81,11 +81,28 @@ Function Test-MtCisaActivationNotification {
 
     $testResult = ($misconfigured|Measure-Object).Count -eq 0
 
+    $link = "https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles"
+    $resultFail = "❌ Fail"
+    $resultPass = "✅ Pass"
+
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for role activations:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for [role activations]($link).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have notifications on role activations."
+        $testResultMarkdown = "Your tenant does not have notifications on [role activations]($link).`n`n%TestResult%"
     }
+
+    $result = "| Role Name | Result |`n"
+    $result += "| --- | --- |`n"
+
+    foreach ($item in $rolePolicies) {
+        $itemResult = $resultFail
+        if($item.activationNotify){
+            $itemResult = $resultPass
+        }
+        $result += "| $($item.role) | $($itemResult) |`n"
+    }
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
