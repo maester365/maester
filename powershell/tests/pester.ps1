@@ -20,10 +20,9 @@ Write-Host "Importing Module"
 
 Remove-Module Maester -ErrorAction Ignore
 Import-Module "$PSScriptRoot\..\Maester.psd1"
-Import-Module PSModuleDevelopment
 Import-Module "$PSScriptRoot\..\Maester.psm1" -Force
 
-# Need to import explicitly so we can use the configuration class
+Import-Module PSModuleDevelopment
 Import-Module Pester
 
 Write-PSFMessage -Level Important -Message "Creating test result folder"
@@ -34,7 +33,7 @@ $totalRun = 0
 
 $testresults = [System.Collections.Generic.List[object]]::new()
 $scriptAnalyzerFailures = [System.Collections.Generic.List[object]]::new()
-$config = [PesterConfiguration]::Default
+$config = New-PesterConfiguration
 $config.TestResult.Enabled = $true
 
 #region Run General Tests

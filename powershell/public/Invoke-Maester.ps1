@@ -61,7 +61,7 @@ Shows results of tests as they are run including details on failed tests.
 
 .EXAMPLE
 ```
-$configuration = [PesterConfiguration]::Default
+$configuration = New-PesterConfiguration
 $configuration.Run.Path = './tests/Maester'
 $configuration.Filter.Tag = 'CA'
 $configuration.Filter.ExcludeTag = 'App'
