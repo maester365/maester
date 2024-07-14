@@ -262,7 +262,23 @@ Function Invoke-Maester {
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
+
+    if ( Test-Path -Path $Path -PathType Leaf ) {
+        Write-Error -Message "The path '$Path' is a file. Please provide a folder path."
+        return
+    }
+
+    if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
+        Write-Error -Message "The path '$Path' does not exist. Please run Update-MaesterTests to download the tests."
+        return
+    }
+
+    if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
+        Write-Error -Message "No test files found in the path '$Path'. Please run Update-MaesterTests to download the tests."
+        return
+    }
 
     $maesterResults = $null
 
