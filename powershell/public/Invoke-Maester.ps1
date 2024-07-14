@@ -262,7 +262,29 @@ Function Invoke-Maester {
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
+
+    if ( Test-Path -Path $Path -PathType Leaf ) {
+        Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
+
+    if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
+        Write-Host "The path '$Path' does not exist." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
+
+    if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
+        Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
 
     $maesterResults = $null
 
