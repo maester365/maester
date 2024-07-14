@@ -30,12 +30,16 @@ Function Test-MtCisaActivationNotification {
         return $null
     }else{
         $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-        if($EntraIDPlan -ne "P2"){
-            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
-        }elseif($EntraIDPlan -ne "Governance"){
-            Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDGovernance
+        if($EntraIDPlan -notin @("P2","Governance")){
+            if($EntraIDPlan -ne "P2"){
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+                return $null
+            }elseif($EntraIDPlan -ne "Governance"){
+                #This will not currently be hit
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDGovernance
+                return $null
+            }
         }
-        return $null
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles

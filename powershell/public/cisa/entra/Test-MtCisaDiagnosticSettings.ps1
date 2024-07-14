@@ -80,7 +80,7 @@ Function Test-MtCisaDiagnosticSettings {
     $result = "| Log Name | Result |`n"
     $result += "| --- | --- |`n"
 
-    foreach ($item in $array) {
+    foreach ($item in ($array | Sort-Object Log)) {
         $itemResult = $resultFail
         if($item.Enabled){
             $itemResult = $resultPass
