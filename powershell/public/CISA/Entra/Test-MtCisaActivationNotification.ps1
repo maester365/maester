@@ -25,12 +25,11 @@ Function Test-MtCisaActivationNotification {
         [switch]$GlobalAdminOnly
     )
 
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
     if(!(Test-MtConnection Graph)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
-    }elseif(-not $pim){
+    }else{
+        $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if($EntraIDPlan -ne "P2"){
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         }elseif($EntraIDPlan -ne "Governance"){
