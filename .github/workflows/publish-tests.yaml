@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Publish to maester-tests
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@target-branch
