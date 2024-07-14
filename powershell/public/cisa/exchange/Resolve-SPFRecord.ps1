@@ -13,7 +13,7 @@
 
 function Resolve-SPFRecord {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [OutputType([spfrecord[]],[System.String])]
+    [OutputType([spfrecord[]], [System.String])]
     [CmdletBinding()]
     param (
         # Domain Name
@@ -67,12 +67,12 @@ function Resolve-SPFRecord {
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
         # Query DNS Record
-        try{
-            if($isWindows){
+        try {
+            if ($isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
-            }else{
-                $cmdletCheck = Get-Command "Resolve-Dns"
-                if($cmdletCheck){
+            } else {
+                $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
+                if ($cmdletCheck) {
                     $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType TXT).Answers
                     $DNSRecords = $answers | ForEach-Object {
                         [PSCustomObject]@{
@@ -82,16 +82,16 @@ function Resolve-SPFRecord {
                             Strings = $_.Text
                         }
                     }
-                }else{
+                } else {
                     Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
                     return "Missing dependency, Resolve-Dns not available"
                 }
             }
-        }catch [System.Management.Automation.CommandNotFoundException]{
+        } catch [System.Management.Automation.CommandNotFoundException] {
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
-        }catch{
+        } catch {
             Write-Error $_
             return "Failure to obtain record"
         }
@@ -103,13 +103,11 @@ function Resolve-SPFRecord {
         if ( $SPFCount -eq 0) {
             # If there is no error show an error
             Write-Error "No SPF record found for `"$Name`""
-        }
-        elseif ( $SPFCount -ge 2 ) {
+        } elseif ( $SPFCount -ge 2 ) {
             # Multiple DNS Records are not allowed
             # https://tools.ietf.org/html/rfc7208#section-3.2
             Write-Error "There is more than one SPF for domain `"$Name`""
-        }
-        else {
+        } else {
             # Multiple Strings in a Single DNS Record
             # https://tools.ietf.org/html/rfc7208#section-3.3
             $SPFString = $SPFRecord.Strings -join ''
@@ -122,8 +120,7 @@ function Resolve-SPFRecord {
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
                 # Follow the include and resolve the include
                 Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
-            }
-            else {
+            } else {
 
                 # Extract the qualifier
                 $Qualifier = switch ( $SPFDirectives -match "^[+-?~]all$" -replace "all" ) {
@@ -158,9 +155,9 @@ function Resolve-SPFRecord {
                         }
                         '^a:.*$' {
                             Write-Verbose "[A]`tSPF entry: $SPFDirective"
-                            if($IsWindows){
+                            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type A
-                            }else{
+                            } else {
                                 $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
                                 $DNSRecords = $answers | ForEach-Object {
                                     [PSCustomObject]@{
@@ -185,9 +182,9 @@ function Resolve-SPFRecord {
                         }
                         '^mx:.*$' {
                             Write-Verbose "[MX]`tSPF entry: $SPFDirective"
-                            if($IsWindows){
+                            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type MX
-                            }else{
+                            } else {
                                 $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType MX).Answers
                                 $DNSRecords = $answers | ForEach-Object {
                                     [PSCustomObject]@{
@@ -201,9 +198,9 @@ function Resolve-SPFRecord {
                             }
                             foreach ($MXRecords in ($DNSRecords.NameExchange) ) {
                                 # Check SPF record
-                                if($isWindows){
+                                if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                     $DNSRecords = Resolve-DnsName -Server $Server -Name $MXRecords -Type A
-                                }else{
+                                } else {
                                     $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
                                     $DNSRecords = $answers | ForEach-Object {
                                         [PSCustomObject]@{

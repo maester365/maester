@@ -23,7 +23,7 @@ warnings :
 
 Function ConvertFrom-MailAuthenticationRecordSpf {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [OutputType([SPFRecord],[System.String])]
+    [OutputType([SPFRecord], [System.String])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
@@ -49,35 +49,35 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
         class SPFRecordTerm {
             [string]$term #term
             [string]$directive #directive
-            [ValidateSet("+","-","~","?","")]
+            [ValidateSet("+", "-", "~", "?", "")]
             [string]$qualifier #qual
-            [ValidateSet("all","include","a","mx","ptr","ip4","ip6","exists","")]
+            [ValidateSet("all", "include", "a", "mx", "ptr", "ip4", "ip6", "exists", "")]
             [string]$mechanism #mech
             [string]$mechanismTarget #mechTarget
             [string]$mechanismTargetCidr #cidr
-            [ValidateSet("redirect","exp","")]
+            [ValidateSet("redirect", "exp", "")]
             [string]$modifier #mod
             [string]$modifierTarget #modTarget
 
             hidden $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
             hidden $matchTerms = "\s*(?'term'(?'directive'(?'qual'\+|-|~|\?)?(?'mech'all|include|a|mx|ptr|ip4|ip6|exists)(?::?(?'mechTarget'[^\s]+?(?'cidr'\/[^\s]+)?))?)(?:\s|$)|(?'mod'redirect|exp)(?:=(?'modTarget'[^\s]+))(?:\s|$))"
 
-            SPFRecordTerm([string]$term){
+            SPFRecordTerm([string]$term) {
                 $this.term = $term
-                $match = [regex]::Match($term,$this.matchTerms,$this.option)
-                $this.directive = ($match.Groups|Where-Object{$_.Name -eq "directive"}).Value
-                $qVal = ($match.Groups|Where-Object{$_.Name -eq "qual"}).Value
-                if($qVal -eq ""){
+                $match = [regex]::Match($term, $this.matchTerms, $this.option)
+                $this.directive = ($match.Groups | Where-Object { $_.Name -eq "directive" }).Value
+                $qVal = ($match.Groups | Where-Object { $_.Name -eq "qual" }).Value
+                if ($qVal -eq "") {
                     $q = "?"
-                }else{
+                } else {
                     $q = $qVal
                 }
                 $this.qualifier = $q
-                $this.mechanism = ($match.Groups|Where-Object{$_.Name -eq "mech"}).Value
-                $this.mechanismTarget = ($match.Groups|Where-Object{$_.Name -eq "mechTarget"}).Value
-                $this.mechanismTargetCidr = ($match.Groups|Where-Object{$_.Name -eq "cidr"}).Value
-                $this.modifier = ($match.Groups|Where-Object{$_.Name -eq "mod"}).Value
-                $this.modifierTarget = ($match.Groups|Where-Object{$_.Name -eq "modTarget"}).Value
+                $this.mechanism = ($match.Groups | Where-Object { $_.Name -eq "mech" }).Value
+                $this.mechanismTarget = ($match.Groups | Where-Object { $_.Name -eq "mechTarget" }).Value
+                $this.mechanismTargetCidr = ($match.Groups | Where-Object { $_.Name -eq "cidr" }).Value
+                $this.modifier = ($match.Groups | Where-Object { $_.Name -eq "mod" }).Value
+                $this.modifierTarget = ($match.Groups | Where-Object { $_.Name -eq "modTarget" }).Value
             }
         }
 
@@ -93,19 +93,19 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
             #https://datatracker.ietf.org/doc/html/rfc7208#section-12
             hidden $matchTerms = "\s*(?'term'(?'directive'(?'qual'\+|-|~|\?)?(?'mech'all|include|a|mx|ptr|ip4|ip6|exists)(?::?(?'mechTarget'[^\s]+?(?'cidr'\/[^\s]+)?))?)(?:\s|$)|(?'mod'redirect|exp)(?:=(?'modTarget'[^\s]+))(?:\s|$))"
 
-            SPFRecord([string]$inputRecord){
+            SPFRecord([string]$inputRecord) {
                 $this.record = $inputRecord
-                $match = [regex]::Matches($inputRecord,$this.matchRecord,$this.option)
-                if(-not $match){
+                $match = [regex]::Matches($inputRecord, $this.matchRecord, $this.option)
+                if (-not $match) {
                     $this.warnings += "v: Record does not match spf1 version format"
                     break
                 }
-                if(($match|Measure-Object).Count -gt 1){
+                if (($match | Measure-Object).Count -gt 1) {
                     $this.warnings += "v: Multiple records match spf1 version format"
                     break
                 }
-                $recordTerms = [regex]::Matches($inputRecord,$this.matchTerms,$this.option)
-                foreach($term in ($recordTerms.Groups|Where-Object{$_.Name -eq "term"})){
+                $recordTerms = [regex]::Matches($inputRecord, $this.matchTerms, $this.option)
+                foreach ($term in ($recordTerms.Groups | Where-Object { $_.Name -eq "term" })) {
                     $this.terms += [SPFRecordTerm]::new($term.Value)
                 }
             }
@@ -123,14 +123,14 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
             QuickTimeout = $QuickTimeout
             ErrorAction  = "Stop"
         }
-        try{
-            if($IsWindows){
+        try {
+            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                 $spfRecord = [SPFRecord]::new((Resolve-DnsName @spfSplat | `
-                    Where-Object {$_.Type -eq "TXT"} | `
-                    Where-Object {$_.Strings -imatch $matchRecord}).Strings)
-            }else{
-                $cmdletCheck = Get-Command "Resolve-Dns"
-                if($cmdletCheck){
+                            Where-Object { $_.Type -eq "TXT" } | `
+                            Where-Object { $_.Strings -imatch $matchRecord }).Strings)
+            } else {
+                $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
+                if ($cmdletCheck) {
                     $spfSplatAlt = @{
                         Query       = $spfSplat.Name
                         QueryType   = $spfSplat.Type
@@ -138,18 +138,18 @@ Function ConvertFrom-MailAuthenticationRecordSpf {
                         ErrorAction = $spfSplat.ErrorAction
                     }
                     $spfRecord = [SPFRecord]::new(((Resolve-Dns @spfSplatAlt).Answers | `
-                        Where-Object {$_.RecordType -eq "TXT"} | `
-                        Where-Object {$_.Text -imatch $matchRecord}).Text)
-                }else{
+                                Where-Object { $_.RecordType -eq "TXT" } | `
+                                Where-Object { $_.Text -imatch $matchRecord }).Text)
+                } else {
                     Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
                     Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
                     return "Missing dependency, Resolve-Dns not available"
                 }
             }
-        }catch [System.Management.Automation.CommandNotFoundException]{
+        } catch [System.Management.Automation.CommandNotFoundException] {
             Write-Error $_
             return "Unsupported platform, Resolve-DnsName not available"
-        }catch{
+        } catch {
             Write-Error $_
             return "Failure to obtain record"
         }
