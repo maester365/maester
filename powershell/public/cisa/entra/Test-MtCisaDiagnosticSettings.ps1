@@ -58,14 +58,38 @@ Function Test-MtCisaDiagnosticSettings {
         $actual["$_"] -eq $false
     } | Sort-Object
 
+    $array = $actual.Keys | ForEach-Object { `
+        [pscustomobject]@{
+            Log = "$_"
+            Enabled = "$($actual[$_])"
+        }
+    }
+
     $testResult = $unsetLogs.Count -eq 0
 
+    $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/DiagnosticSettingsMenuBlade/~/General"
+    $resultFail = "❌ Fail"
+    $resultPass = "✅ Pass"
+
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has diagnostic settings configured for all logs."
+        $testResultMarkdown = "Well done. Your tenant has [diagnostic settings]($link) configured for all logs."
     } else {
-        $testResultMarkdown = "Your tenant does not have diagnostic settings configured for all logs:`n`n%unsetLogs%"
+        $testResultMarkdown = "Your tenant does not have [diagnostic settings]($link) configured for all logs:`n`n%TestResult%"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType DiagnosticSettings
+
+    $result = "| Log Name | Result |"
+    $result += "| --- | --- |"
+
+    foreach ($item in $array) {
+        $itemResult = $resultFail
+        if($item.Enabled){
+            $itemResult = $resultPass
+        }
+        $result += "| $($item.Log) | $($itemResult) |`n"
+    }
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

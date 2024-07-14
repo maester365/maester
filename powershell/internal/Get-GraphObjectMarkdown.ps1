@@ -23,7 +23,7 @@ Function Get-GraphObjectMarkdown {
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         [Parameter(Mandatory = $true)]
         [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
-            'Devices', 'DiagnosticSettings', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
+            'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
             )]
         [string] $GraphObjectType
     )
@@ -34,7 +34,6 @@ Function Get-GraphObjectMarkdown {
         ConditionalAccess    = "https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
         ConsentPolicy        = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
         Devices              = "https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
-        DiagnosticSettings   = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/DiagnosticSettingsMenuBlade/~/General"
         Domains              = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/DomainsManagementMenuBlade/~/CustomDomainNames"
         Groups               = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/{0}"
         IdentityProtection   = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"

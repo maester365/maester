@@ -53,7 +53,7 @@ Function Add-MtTestResultDetail {
 
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
-            'Devices', 'DiagnosticSettings', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
+            'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
         )]
         [string] $GraphObjectType,
 
