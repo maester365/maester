@@ -61,7 +61,7 @@ Function Test-MtCisaDiagnosticSettings {
     $array = $actual.Keys | ForEach-Object { `
         [pscustomobject]@{
             Log = "$_"
-            Enabled = "$($actual[$_])"
+            Enabled = $($actual[$_])
         }
     }
 
@@ -77,8 +77,8 @@ Function Test-MtCisaDiagnosticSettings {
         $testResultMarkdown = "Your tenant does not have [diagnostic settings]($link) configured for all logs:`n`n%TestResult%"
     }
 
-    $result = "| Log Name | Result |"
-    $result += "| --- | --- |"
+    $result = "| Log Name | Result |`n"
+    $result += "| --- | --- |`n"
 
     foreach ($item in $array) {
         $itemResult = $resultFail
