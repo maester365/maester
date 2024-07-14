@@ -64,16 +64,16 @@ Function ConvertFrom-MailAuthenticationRecordMx {
                         }
                     }
                 } else {
-                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
-                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                    Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
                     return "Missing dependency, Resolve-Dns not available"
                 }
             }
         } catch [System.Management.Automation.CommandNotFoundException] {
-            Write-Error $_
+            Write-Verbose $_
             return "Unsupported platform, Resolve-DnsName not available"
         } catch {
-            Write-Error $_
+            Write-Verbose $_
             return "Failure to obtain record"
         }
 
