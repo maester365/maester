@@ -14,8 +14,5 @@ Rationale: Many privileged administrative users do not need unfettered access to
 * [CISA 7.3 Highly Privileged User Access - MS.AAD.7.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad73v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L833)
 
-#### Note
-Current test only captures active role assignments: https://github.com/maester365/maester/issues/195
-
 <!--- Results --->
 %TestResult%
