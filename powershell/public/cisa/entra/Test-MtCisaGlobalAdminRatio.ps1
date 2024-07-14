@@ -42,6 +42,7 @@ Function Test-MtCisaGlobalAdminRatio {
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
     If ($otherAssignments.Count) {
+        $ratio = 0
         $ratio = $globalAdministrators.Count / $otherAssignments.Count
         $testResult = $ratio -le 1
     } Else {
@@ -55,7 +56,8 @@ Function Test-MtCisaGlobalAdminRatio {
     } else {
         $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%TestResult%"
     }
-    $result = "$ratio = $($globalAdministrators.Count) / $($otherAssignments.Count)"
+    $result = "Current Ratio: $([System.Math]::Round($ratio,2)) = $($globalAdministrators.Count) / $($otherAssignments.Count)`n"
+    $result += "Ratio >= 1 - $($ratio -ge 1)"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
