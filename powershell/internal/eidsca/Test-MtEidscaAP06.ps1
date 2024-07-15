@@ -21,6 +21,8 @@ Function Test-MtEidscaAP06 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowEmailVerifiedUsersToJoinOrganization

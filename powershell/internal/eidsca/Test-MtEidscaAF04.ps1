@@ -21,6 +21,11 @@ Function Test-MtEidscaAF04 {
     [OutputType([bool])]
     param()
 
+    if ( $EnabledAuthMethods -notcontains 'Fido2' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled.'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
     [string]$tenantValue = $result.keyRestrictions.isEnforced
