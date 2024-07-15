@@ -341,7 +341,7 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     }
 
     # Add condition to test template if defined in EidscaTest
-    if ($controlItem.SkipCondition -ne "") {
+    if (-not [string]::IsNullOrWhiteSpace($controlItem.SkipCondition) ) {
         $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
             return " + '$null' + " `
