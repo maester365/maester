@@ -56,7 +56,7 @@ Function Test-MtCisaGlobalAdminRatio {
     } else {
         $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%TestResult%"
     }
-    $result = "Current Ratio: $([System.Math]::Round($ratio,2)) = $($globalAdministrators.Count) / $($otherAssignments.Count)`n"
+    $result = "Current Ratio: $([System.Math]::Round($ratio,2)) = $($globalAdministrators.Count) / $($otherAssignments.Count)`n`n"
     $result += "Ratio >= 1 - $($ratio -ge 1)"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
