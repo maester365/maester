@@ -17,7 +17,7 @@ Add detailed information about a test so that it can be displayed in the test re
 ```powershell
 Add-MtTestResultDetail [[-Description] <String>] [[-Result] <String>] [[-GraphObjects] <Object[]>]
  [[-GraphObjectType] <String>] [[-TestName] <String>] [[-SkippedBecause] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-SkippedCustomReason] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -154,6 +154,22 @@ Aliases:
 
 Required: False
 Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkippedCustomReason
+
+\{\{ Fill SkippedCustomReason Description \}\}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
