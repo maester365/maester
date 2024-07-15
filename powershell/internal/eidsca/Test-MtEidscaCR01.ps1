@@ -21,6 +21,8 @@ Function Test-MtEidscaCR01 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.isEnabled

@@ -21,6 +21,8 @@ Function Test-MtEidscaAP04 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowInvitesFrom

@@ -21,6 +21,8 @@ Function Test-MtEidscaAP14 {
     [OutputType([bool])]
     param()
 
+    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.defaultUserRolePermissions.allowedToReadOtherUsers

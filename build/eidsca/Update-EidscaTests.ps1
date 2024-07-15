@@ -340,6 +340,23 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%GraphDocsUrlMarkdown%', $graphDocsUrlMarkdown
     }
 
+    # Add condition to test template if defined in EidscaTest
+    if ($controlItem.SkipCondition -ne "") {
+        $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
+            return " + '$null' + " `
+    }"
+        $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
+
+        # Extract variable name from the condition to build syntax for TestCases
+        $SkipConditionVariable = ($controlItem.SkipCondition -split ' ')[0]
+        $SkipConditionVariableName = $SkipConditionVariable -replace '[$()]', ''
+        $output = $output -replace '%TestCases%', " -TestCases @{ $($SkipConditionVariableName) = $($SkipConditionVariable) }"
+    } else {
+        $output = $output -replace '%SkipCheck%', ""
+        $output = $output -replace '%TestCases%', ""
+    }
+
     return $output
 }
 
@@ -404,7 +421,7 @@ foreach ($control in $aadsc) {
 
 $testTemplate = @'
 Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
-    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%" {
+    It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
             .%CurrentValue% %CompareOperator% %RecommendedValue%
@@ -414,11 +431,6 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 }
 '@
 
-        # Add condition to test template if defined in EidscaTest
-        if ($controlItem.SkipCondition -ne "") {
-
-            $testTemplate = $testTemplate.Replace( '"%CheckId%"', '"%CheckId%" -Skip:( ' + $controlItem.SkipCondition + ' )')
-        }
         $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
         $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
         $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName

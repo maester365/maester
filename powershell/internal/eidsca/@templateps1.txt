@@ -21,6 +21,7 @@ Function %PSFunctionName% {
     [OutputType([bool])]
     param()
 
+    %SkipCheck%
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
     [string]$tenantValue = $result.%CurrentValue%

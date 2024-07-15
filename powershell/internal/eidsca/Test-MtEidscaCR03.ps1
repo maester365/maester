@@ -21,6 +21,11 @@ Function Test-MtEidscaCR03 {
     [OutputType([bool])]
     param()
 
+    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.notifyReviewers

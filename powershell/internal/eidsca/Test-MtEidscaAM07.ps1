@@ -21,6 +21,11 @@ Function Test-MtEidscaAM07 {
     [OutputType([bool])]
     param()
 
+    if ( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Microsoft Authenticator is not enabled.'
+            return $null 
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     [string]$tenantValue = $result.featureSettings.displayAppInformationRequiredState.includeTarget.id
