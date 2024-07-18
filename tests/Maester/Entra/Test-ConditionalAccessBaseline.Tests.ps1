@@ -56,6 +56,9 @@
     It "MT.1020: All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them. See https://maester.dev/docs/tests/MT.1020" -Tag "MT.1020" {
         Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
     }
+    It "MT.1021: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
+        Test-MtCaGroupsRestrictedByRmau | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
+    }
     Context "License utilization" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
