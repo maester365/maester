@@ -11,9 +11,9 @@ export default function TestResultsTable(props) {
   const testResults = props.TestResults;
 
   const isStatusSelected = (item) => {
-    return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) &&
-      (selectedBlock.includes(item.Block) || selectedBlock.length === 0) &&
-      (item.Tag.some((tag) => selectedTag.includes(tag)) || selectedTag.length === 0);
+    return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
+      (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
+      (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag)));
   }
 
   const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
