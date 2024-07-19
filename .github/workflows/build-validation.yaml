@@ -28,6 +28,8 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: filter
         with:
+          # This requires all patterns to match so exclusion works
+          predicate-quantifier: 'every'
           filters: |
             pwshmodule:
               - 'powershell/**'
