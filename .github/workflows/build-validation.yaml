@@ -41,15 +41,6 @@ jobs:
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
 
-      - name: Install PowerShell dependencies (Windows PowerShell)
-        if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
-        shell: powershell
-        run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-
       - name: Run Pester tests
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
@@ -60,6 +51,8 @@ jobs:
         if: runner.os == 'Windows' && steps.filter.outputs.pwshmodule == 'true'
         shell: powershell
         run: |
+          # Reuse downloaded modules from pwsh
+          $env:PSModulePath += ";$HOME\Documents\PowerShell\Modules"
           # Remove old test results
           Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
           # Run Pester tests on Windows PowerShell
