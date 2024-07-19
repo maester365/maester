@@ -21,11 +21,11 @@ export default function TestResultsTable(props) {
 
   return (
     <Card>
-      <Flex justifyContent="start">
+      <Flex justifyContent="start" className="flex-wrap gap-2">
         <MultiSelect
           onValueChange={setSelectedBlock}
           placeholder="Select category..."
-          className="max-w-lg mr-6"
+          className="max-w-lg"
         >
           {testResults.Blocks
             .sort((a, b) => a.Name > b.Name ? 1 : -1)
@@ -38,7 +38,7 @@ export default function TestResultsTable(props) {
         <MultiSelect
           onValueChange={setSelectedTag}
           placeholder="Select tag..."
-          className="max-w-fit mr-6"
+          className="max-w-fit"
         >
           {uniqueTags
             .sort((a, b) => a > b ? 1 : -1)
