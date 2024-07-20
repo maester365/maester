@@ -18,5 +18,6 @@ function Get-MtSession {
     [CmdletBinding()]
     param()
 
+    Write-Verbose 'Getting the current Maester session information.'
     Write-Output $__MtSession
 }

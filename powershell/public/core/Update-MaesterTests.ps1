@@ -35,7 +35,9 @@ function Update-MaesterTests {
         [Parameter(Mandatory = $false)]
         [string] $Path = '.\'
     )
+    Write-Verbose 'Checking if newer version is availble.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
+    Write-Verbose "Updating Maester tests in '$Path'."
     Update-MtMaesterTests -Path $Path
 }

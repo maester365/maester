@@ -32,6 +32,7 @@ function Get-MtHtmlReport {
         [psobject] $MaesterResults
     )
 
+    Write-Verbose "Generating HTML report."
     $json = $MaesterResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
 
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'

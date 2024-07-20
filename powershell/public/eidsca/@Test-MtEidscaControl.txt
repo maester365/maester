@@ -22,5 +22,6 @@ Function Test-MtEidscaControl {
         $CheckId
     )
 
+    Write-Verbose -Message "Invoking EIDSCA control check $CheckId."
     & "%InternalFunctionNameTemplate%"
 }
