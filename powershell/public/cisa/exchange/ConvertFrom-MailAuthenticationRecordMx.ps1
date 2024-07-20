@@ -3,10 +3,11 @@
     A simple wrapper for Resolve-DnsName
 
 .DESCRIPTION
-
-Name                                     Type   TTL   Section    NameExchange                              Preference
-----                                     ----   ---   -------    ------------                              ----------
-microsoft.com                            MX     1731  Answer     microsoft-com.mail.protection.outlook.com 10
+    ```
+    Name                                     Type   TTL   Section    NameExchange                              Preference
+    ----                                     ----   ---   -------    ------------                              ----------
+    microsoft.com                            MX     1731  Answer     microsoft-com.mail.protection.outlook.com 10
+    ```
 
 .EXAMPLE
     ConvertFrom-MailAuthenticationRecordMx -DomainName "microsoft.com"

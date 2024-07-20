@@ -3,28 +3,29 @@
     Returns structured RFC compliant object for a DMARC record
 
 .DESCRIPTION
-
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
     - https://xkln.net/blog/getting-mx-spf-dmarc-dkim-and-smtp-banners-with-powershell/
     - DMARC https://datatracker.ietf.org/doc/html/rfc7489
 
-record               : v=DMARC1; p=reject; pct=100; rua=mailto:itex-rua@microsoft.com; ruf=mailto:itex-ruf@microsoft.com; fo=1
-valid                : True
-policy               : reject
-policySubdomain      :
-percentage           : 100
-reportAggregate      : {DMARCRecordUri}
-reportForensic       : {DMARCRecordUri}
-reportFailure        : {1}
-reportFailureFormats : {afrf}
-reportFrequency      : 86400
-alignmentDkim        : r
-alignmentSpf         : r
-version              : DMARC1
-warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment set, defaults to relaxed, aspf: No SPF alignment set, defaults to relaxed, ri: No
-                       report interval set, defaults to 86400 seconds…}
+    ```
+    record               : v=DMARC1; p=reject; pct=100; rua=mailto:itex-rua@microsoft.com; ruf=mailto:itex-ruf@microsoft.com; fo=1
+    valid                : True
+    policy               : reject
+    policySubdomain      :
+    percentage           : 100
+    reportAggregate      : {DMARCRecordUri}
+    reportForensic       : {DMARCRecordUri}
+    reportFailure        : {1}
+    reportFailureFormats : {afrf}
+    reportFrequency      : 86400
+    alignmentDkim        : r
+    alignmentSpf         : r
+    version              : DMARC1
+    warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment set, defaults to relaxed, aspf: No SPF alignment set, defaults to relaxed, ri: No
+                        report interval set, defaults to 86400 seconds…}
+    ```
 
 .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
