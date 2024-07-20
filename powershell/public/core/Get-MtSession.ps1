@@ -15,5 +15,8 @@
     https://maester.dev/docs/commands/Get-MtSession
 #>
 function Get-MtSession {
+    [CmdletBinding()]
+    param()
+
     Write-Output $__MtSession
 }
