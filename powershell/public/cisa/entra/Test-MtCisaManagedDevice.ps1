@@ -3,7 +3,6 @@
     Checks if Conditional Access Policy requiring managed device is enabled
 
 .DESCRIPTION
-
     Managed devices SHOULD be required for authentication.
 
 .EXAMPLE
@@ -18,6 +17,7 @@ function Test-MtCisaManagedDevice {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Do not check if Hybrid Joined devices are accepted.
         [switch]$SkipHybridJoinCheck
     )
 

@@ -9,7 +9,7 @@
   Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtPimAlertsExists
+  https://maester.dev/docs/commands/Test-MtPimAlertsExists
 #>
 function Test-MtPimAlertsExists {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
@@ -19,13 +19,16 @@ function Test-MtPimAlertsExists {
   param (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
     [ValidateSet("RedundantAssignmentAlert", "RolesAssignedOutsidePimAlert", "SequentialActivationRenewalsAlert", "TooManyGlobalAdminsAssignedToTenantAlert", "StaleSignInAlert")]
+    # ID for the alert to test.
     [string[]]$AlertId,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Position = 1)]
     [ValidateSet("ControlPlane", "ManagementPlane")]
+    # Filter based on Enterprise Access Model Tiering. Can be 'ControlPlane' and/or 'ManagementPlane'.
     [string[]]$FilteredAccessLevel = $null,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Position = 2)]
+    # Specify break glass accounts to exclude. Defaults to automatic detection based on conditional access policy exclusions.
     [object[]]$FilteredBreakGlass = (Get-MtUser -UserType EmergencyAccess)
   )
 

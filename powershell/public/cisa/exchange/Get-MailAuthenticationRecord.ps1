@@ -25,17 +25,23 @@ function Get-MailAuthenticationRecord {
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        # Domain name to check.
         [string]$DomainName,
 
+        # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
+        # Selector-name for the DKIM record to retrieve.
         [string]$DkimSelector = "selector1",
 
         [ValidateSet("All", "DKIM", "DMARC", "MX", "SPF")]
+        # Specify which records should be retrieved. Accepted values are 'All', 'DKIM', 'DMARC', 'MX' and/or 'SPF'.
         [string[]]$Records = "All",
 
+        # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
 
+        # Ignore hosts file for domain lookup.
         [switch]$NoHostsFile
     )
 

@@ -27,8 +27,8 @@ function Test-MtCaAllAppsExists {
   [CmdletBinding()]
   [OutputType([bool])]
   param (
-
     [Parameter(Position = 0)]
+    # Do not check for All Users target in policy.
     [switch] $SkipCheckAllUsers = $false
   )
 

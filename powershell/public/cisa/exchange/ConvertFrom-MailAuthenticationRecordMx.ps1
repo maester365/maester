@@ -22,12 +22,16 @@ function ConvertFrom-MailAuthenticationRecordMx {
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        # Domain name to check.
         [string]$DomainName,
 
+        # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
+        # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
 
+        # Ignore hosts file for domain lookup.
         [switch]$NoHostsFile
     )
 

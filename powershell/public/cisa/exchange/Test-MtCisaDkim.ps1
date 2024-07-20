@@ -18,6 +18,7 @@ function Test-MtCisaDkim {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Selector-name for the DKIM record to test..
         [string]$Selector = "selector1"
     )
 

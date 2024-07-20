@@ -9,7 +9,7 @@
   Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole
+  https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole
 #>
 function Test-MtPrivPermanentDirectoryRole {
   [OutputType([bool])]
@@ -17,10 +17,12 @@ function Test-MtPrivPermanentDirectoryRole {
   param (
     [Parameter(ValueFromPipelineByPropertyName = $true)]
     [ValidateSet("ControlPlane", "ManagementPlane")]
+    # Filter based on Enterprise Access Model Tiering. Can be 'ControlPlane' and/or 'ManagementPlane'.
     [string[]]$FilteredAccessLevel = $null,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Mandatory)]
     [ValidateSet("ExternalUser", "HybridUser", "ServicePrincipalClientSecret", "ServicePrincipalObject", "UserMailbox")]
+    # Filter based on principal types. Accepted values are 'ExternalUser', 'HybridUser', 'ServicePrincipalClientSecret', 'ServicePrincipalObject' and/or 'UserMailbox'.
     [object[]]$FilterPrincipal
   )
 

@@ -23,6 +23,7 @@ function Test-MtCisaDmarcAggregateCisa {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Check all domains, not only .gov domains.
         [switch]$Force
     )
 

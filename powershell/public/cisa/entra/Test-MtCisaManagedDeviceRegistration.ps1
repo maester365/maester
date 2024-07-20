@@ -18,6 +18,7 @@ function Test-MtCisaManagedDeviceRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Do not check if Hybrid Joined devices are accepted.
         [switch]$SkipHybridJoinCheck
     )
 

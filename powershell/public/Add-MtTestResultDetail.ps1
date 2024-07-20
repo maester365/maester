@@ -68,9 +68,11 @@ function Add-MtTestResultDetail {
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported', 'Custom'
         )]
+        # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
 
         [Parameter(Mandatory = $false)]
+        # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
         [string] $SkippedCustomReason
     )
 

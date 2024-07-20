@@ -51,7 +51,7 @@ Describe 'Testing module help' -Tag 'Help','Acceptance' -ForEach @{ exportedComm
 
 				$parametersMissingHelp | Should -Be @()
 			} else {
-				Set-ItResult -Skipped -Because 'no static parameters to test'
+				# no static parameters to test. pass.
 			}
 		}
 	}

@@ -19,6 +19,7 @@ function Test-MtCaEnforceNonPersistentBrowserSession {
     [OutputType([bool])]
     param (
         [Parameter()]
+        # Ignore device filters for compliant devices.
         [switch]$AllDevices
     )
 
