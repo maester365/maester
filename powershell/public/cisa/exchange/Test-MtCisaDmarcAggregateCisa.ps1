@@ -35,6 +35,17 @@ Function Test-MtCisaDmarcAggregateCisa {
         -not $_.SendingFromDomainDisabled
     }
     #>
+    $tldMatch = "^.*\.(?'tld'.*)$"
+    $govDomains = $acceptedDomains | Where-Object {`
+        $_ -imatch $tldMatch|Out-Null;
+        if($Matches.tld -eq "gov"){$_}
+    }
+
+    if(!($govDomains) -and !($Force)){
+        Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
+        return $null
+    }
+
     $expandedDomains = @()
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios
@@ -49,11 +60,6 @@ Function Test-MtCisaDmarcAggregateCisa {
         }else{
             $expandedDomains += $domain.domainname
         }
-    }
-
-    if(!($expandedDomains -notlike "*.gov") -and !($Force)){
-        Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
-        return $null
     }
 
     $dmarcRecords = @()
