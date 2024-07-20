@@ -92,6 +92,8 @@ if ($TestFunctions)
         $config.Output.Verbosity = $Output
         $result = Invoke-Pester -Configuration $config
 
+        $totalRun += $result.TotalCount
+        $totalFailed += $result.FailedCount
         foreach ($test in $result.Tests) {
             if ($test.Result -notin 'Passed','Skipped') {
                 $failedTest = [pscustomobject]@{
