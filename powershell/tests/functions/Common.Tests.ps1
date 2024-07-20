@@ -18,7 +18,8 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
         }
 
         It "<function>.ps1 should exist in public folder" {
-            $functionPath | Should -BeLike "*/public/*$($function.Name).ps1"
+            # Normalize path in test to work cross-platform
+            $functionPath -replace '\\','/' | Should -BeLike "*/public/*$($function.Name).ps1"
             $functionPath | Should -Exist
         }
 
