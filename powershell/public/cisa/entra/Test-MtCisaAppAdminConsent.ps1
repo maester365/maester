@@ -3,7 +3,6 @@
     Checks if admin consent workflow is configured with reviewers
 
 .DESCRIPTION
-
     An admin consent workflow SHALL be configured for applications.
 
 .EXAMPLE

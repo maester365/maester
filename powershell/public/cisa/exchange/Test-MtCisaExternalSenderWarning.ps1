@@ -3,7 +3,6 @@
     Checks state of transport policies
 
 .DESCRIPTION
-
     External sender warnings SHALL be implemented.
 
 .EXAMPLE

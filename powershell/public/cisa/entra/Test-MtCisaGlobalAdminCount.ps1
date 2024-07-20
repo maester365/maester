@@ -3,7 +3,6 @@
     Checks if Global Admins is an acceptable number
 
 .DESCRIPTION
-
     A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.
 
 .EXAMPLE

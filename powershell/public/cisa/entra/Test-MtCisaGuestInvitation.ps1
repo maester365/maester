@@ -3,7 +3,6 @@
     Checks if guest invitiations are restricted to admins
 
 .DESCRIPTION
-
     Only users with the Guest Inviter role SHOULD be able to invite guest users.
 
 .EXAMPLE

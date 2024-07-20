@@ -3,7 +3,6 @@
     Checks state of sharing policies
 
 .DESCRIPTION
-
     Calendar details SHALL NOT be shared with all domains.
 
 .EXAMPLE

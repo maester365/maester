@@ -3,14 +3,12 @@
     Checks for configuration of Entra diagnostic settings
 
 .DESCRIPTION
-
     Security logs SHALL be sent to the agency's security operations center for monitoring.
 
 .EXAMPLE
     Test-MtCisaDiagnosticSettings
 
     Returns true if diagnostic settings for the appropriate logs are configured
-
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaDiagnosticSettings

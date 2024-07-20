@@ -3,7 +3,6 @@
     Checks for approval requirement on activation of Gloabl Admin role
 
 .DESCRIPTION
-
     Activation of the Global Administrator role SHALL require approval.
 
 .EXAMPLE

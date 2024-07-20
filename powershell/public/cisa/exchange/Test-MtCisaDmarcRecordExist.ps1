@@ -3,7 +3,6 @@
     Checks state of DMARC records for all exo second level domains
 
 .DESCRIPTION
-
     A DMARC policy SHALL be published for every second-level domain.
 
 .EXAMPLE

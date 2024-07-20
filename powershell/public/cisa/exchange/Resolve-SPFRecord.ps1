@@ -3,12 +3,10 @@
     Returns a list of all IP addresses from an SPF record
 
 .DESCRIPTION
-
     https://cloudbrothers.info/en/powershell-tip-resolve-spf/
 
 .EXAMPLE
     Resolve-SPFRecord microsoft.com
-
 
 .LINK
     https://maester.dev/docs/commands/Resolve-SPFRecord

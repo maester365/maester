@@ -3,7 +3,6 @@
     Checks if Risk Based Policies - MS.AAD.2.2v1 has recipients
 
 .DESCRIPTION
-
     A notification SHOULD be sent to the administrator when high-risk users are detected.
 
     Queries /identityProtection/settings/notifications

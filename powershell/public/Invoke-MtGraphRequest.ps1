@@ -16,11 +16,9 @@
     :::
 
  .Example
-
     Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName" -Top 10
 
     Get all users with a display name of "John Doe" and return the first 10 results.
-
 
 .LINK
     https://maester.dev/docs/commands/Invoke-MtGraphRequest

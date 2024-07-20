@@ -3,7 +3,6 @@
     Checks state of SPF records for all exo domains
 
 .DESCRIPTION
-
     A list of approved IP addresses for sending mail SHALL be maintained.
 
 .EXAMPLE

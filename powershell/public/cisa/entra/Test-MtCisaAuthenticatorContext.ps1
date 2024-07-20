@@ -3,7 +3,6 @@
     Checks if the Authentication Methods policy for Microsoft Authenticator is set appropriately
 
 .DESCRIPTION
-
     If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information
 
 .EXAMPLE

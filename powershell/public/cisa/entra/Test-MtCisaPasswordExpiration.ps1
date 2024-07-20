@@ -3,7 +3,6 @@
     Checks if passwords are set to not expire
 
 .DESCRIPTION
-
     User passwords SHALL NOT expire.
 
 .EXAMPLE

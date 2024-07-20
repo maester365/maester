@@ -3,7 +3,6 @@
     Checks for active role assingments with no start time
 
 .DESCRIPTION
-
     Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
 
 .EXAMPLE

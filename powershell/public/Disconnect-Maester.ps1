@@ -19,7 +19,6 @@
  .Example
     Disconnect-MtMaester
 
-
 .LINK
     https://maester.dev/docs/commands/Disconnect-Maester
 #>

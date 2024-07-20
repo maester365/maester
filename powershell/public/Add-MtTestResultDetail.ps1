@@ -30,7 +30,6 @@
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
-
 .LINK
     https://maester.dev/docs/commands/Add-MtTestResultDetail
 #>

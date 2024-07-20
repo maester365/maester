@@ -3,7 +3,6 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     An agency point of contact SHOULD be included for aggregate and failure reports.
 
 .EXAMPLE

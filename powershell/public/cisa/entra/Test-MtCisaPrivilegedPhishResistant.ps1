@@ -1,8 +1,8 @@
 ﻿<#
 .SYNOPSIS
     Checks if Conditional Access Policy requiring phishing resistant authentication methods for privileged roles is enabled
-.DESCRIPTION
 
+.DESCRIPTION
     Phishing-resistant MFA SHALL be required for highly privileged roles.
 
 .EXAMPLE

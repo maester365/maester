@@ -3,7 +3,6 @@
     Checks ...
 
 .DESCRIPTION
-
     Automatic forwarding to external domains SHALL be disabled.
 
 .EXAMPLE

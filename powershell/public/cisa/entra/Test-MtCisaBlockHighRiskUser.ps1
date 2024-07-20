@@ -3,7 +3,6 @@
     Checks if User Risk Based Policies - MS.AAD.2.1 is set to 'blocked'
 
 .DESCRIPTION
-
     Users detected as high risk SHALL be blocked.
 
 .EXAMPLE

@@ -3,7 +3,6 @@
     Checks state of anti-spam policies
 
 .DESCRIPTION
-
     Safe lists SHOULD NOT be enabled.
 
 .EXAMPLE

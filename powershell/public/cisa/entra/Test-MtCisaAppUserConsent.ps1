@@ -3,7 +3,6 @@
     Checks if user app consent is prevented
 
 .DESCRIPTION
-
     Only administrators SHALL be allowed to consent to applications.
 
 .EXAMPLE

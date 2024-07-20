@@ -3,7 +3,6 @@
     Checks state of DKIM for all EXO domains
 
 .DESCRIPTION
-
     DKIM SHOULD be enabled for all domains.
 
 .EXAMPLE

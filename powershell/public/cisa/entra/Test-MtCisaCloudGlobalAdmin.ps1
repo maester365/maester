@@ -3,7 +3,6 @@
     Checks if Global Admins are cloud users
 
 .DESCRIPTION
-
     Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.
 
 .EXAMPLE

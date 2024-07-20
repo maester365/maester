@@ -3,7 +3,6 @@
     Checks for notification on role assignments
 
 .DESCRIPTION
-
     Eligible and Active highly privileged role assignments SHALL trigger an alert.
 
 .EXAMPLE

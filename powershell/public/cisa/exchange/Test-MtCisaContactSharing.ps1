@@ -3,7 +3,6 @@
     Checks state of sharing policies
 
 .DESCRIPTION
-
     Contact folders SHALL NOT be shared with all domains.
 
 .EXAMPLE

@@ -3,7 +3,6 @@
     Checks the ratio of global admins to privileged roles
 
 .DESCRIPTION
-
     Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
 .EXAMPLE

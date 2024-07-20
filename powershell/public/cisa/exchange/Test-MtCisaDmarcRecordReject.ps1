@@ -3,7 +3,6 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     The DMARC message rejection option SHALL be p=reject.
 
 .EXAMPLE

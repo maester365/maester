@@ -3,7 +3,6 @@
     Checks state of DLP for EXO
 
 .DESCRIPTION
-
     A DLP solution SHALL be used.
 
 .EXAMPLE

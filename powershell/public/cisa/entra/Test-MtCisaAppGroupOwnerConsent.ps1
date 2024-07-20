@@ -3,7 +3,6 @@
     Checks if group owners can consent to apps
 
 .DESCRIPTION
-
     Group owners SHALL NOT be allowed to consent to applications.
 
 .EXAMPLE

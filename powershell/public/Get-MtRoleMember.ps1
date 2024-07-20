@@ -35,7 +35,6 @@
 
   Returns all the currently active members of the role with the specified RoleId.
 
-
 .LINK
     https://maester.dev/docs/commands/Get-MtRoleMember
 #>

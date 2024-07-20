@@ -3,7 +3,6 @@
     Checks if guests use proper role template
 
 .DESCRIPTION
-
     Guest users SHOULD have limited or restricted access to Azure AD directory objects.
 
 .EXAMPLE

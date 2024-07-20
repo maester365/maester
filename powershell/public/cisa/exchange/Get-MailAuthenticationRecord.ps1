@@ -3,7 +3,6 @@
     Obtains and converts the mail authentication records of a domain
 
 .DESCRIPTION
-
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1

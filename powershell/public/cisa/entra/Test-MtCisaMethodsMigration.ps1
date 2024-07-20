@@ -3,7 +3,6 @@
     Checks if migration to Authentication Methods is complete
 
 .DESCRIPTION
-
     The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.
 
 .EXAMPLE

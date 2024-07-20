@@ -3,7 +3,6 @@
     Checks state of anti-spam policies
 
 .DESCRIPTION
-
     IP allow lists SHOULD NOT be created.
 
 .EXAMPLE

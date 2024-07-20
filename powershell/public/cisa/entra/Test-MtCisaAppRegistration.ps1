@@ -3,7 +3,6 @@
     Checks if user app registration is prevented
 
 .DESCRIPTION
-
     Only administrators SHALL be allowed to register applications.
 
 .EXAMPLE

@@ -3,7 +3,6 @@
     Checks state of mailbox auditing
 
 .DESCRIPTION
-
     Mailbox auditing SHALL be enabled.
 
 .EXAMPLE

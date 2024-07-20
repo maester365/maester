@@ -3,7 +3,6 @@
     Checks if weak Authentication Methods are disabled
 
 .DESCRIPTION
-
     The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.
 
 .EXAMPLE

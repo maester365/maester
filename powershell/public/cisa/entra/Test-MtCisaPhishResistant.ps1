@@ -3,7 +3,6 @@
     Checks if Conditional Access Policy using Phishing-Resistant Authentication Strengths is enabled
 
 .DESCRIPTION
-
     Phishing-resistant MFA SHALL be enforced for all users
 
 .EXAMPLE

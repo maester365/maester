@@ -3,7 +3,6 @@
     Checks if Sign-In Risk Based Policies - MS.AAD.2.3 is set to 'blocked'
 
 .DESCRIPTION
-
     Sign-ins detected as high risk SHALL be blocked.
 
 .EXAMPLE

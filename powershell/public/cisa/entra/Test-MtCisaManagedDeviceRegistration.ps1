@@ -3,7 +3,6 @@
     Checks if a policy is enabled requiring a managed device for registration
 
 .DESCRIPTION
-
     Managed Devices SHOULD be required to register MFA.
 
 .EXAMPLE

@@ -3,7 +3,6 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.
 
 .EXAMPLE

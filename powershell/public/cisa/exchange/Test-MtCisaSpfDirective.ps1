@@ -3,7 +3,6 @@
     Checks state of SPF records for all exo domains
 
 .DESCRIPTION
-
     An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
 .EXAMPLE

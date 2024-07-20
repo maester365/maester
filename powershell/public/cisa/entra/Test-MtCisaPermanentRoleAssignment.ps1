@@ -3,7 +3,6 @@
     Checks for permanent active role assingments
 
 .DESCRIPTION
-
     Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
 .EXAMPLE

@@ -3,7 +3,6 @@
     Checks if Conditional Access Policy requiring MFA is enabled
 
 .DESCRIPTION
-
     If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users
 
 .EXAMPLE
