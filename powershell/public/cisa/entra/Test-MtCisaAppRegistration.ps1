@@ -10,9 +10,11 @@
     Test-MtCisaAppRegistration
 
     Returns true if disabled
-#>
 
-Function Test-MtCisaAppRegistration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAppRegistration
+#>
+function Test-MtCisaAppRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -10,9 +10,11 @@
     Test-MtCisaMailboxAuditing
 
     Returns true if mailbox auditing is enabled.
-#>
 
-Function Test-MtCisaMailboxAuditing {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaMailboxAuditing
+#>
+function Test-MtCisaMailboxAuditing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

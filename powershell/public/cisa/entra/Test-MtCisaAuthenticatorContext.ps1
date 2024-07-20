@@ -10,9 +10,11 @@
     Test-MtCisaAuthenticatorContext
 
     Returns true if the Authentication Methods policy for Microsoft Authenticator is set appropriately
-#>
 
-Function Test-MtCisaAuthenticatorContext {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAuthenticatorContext
+#>
+function Test-MtCisaAuthenticatorContext {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

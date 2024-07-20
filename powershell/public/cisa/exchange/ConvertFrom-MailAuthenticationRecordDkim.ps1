@@ -25,9 +25,11 @@ warnings    :
     ConvertFrom-MailAuthenticationRecordDkim -DomainName "microsoft.com"
 
     Returns [DKIMRecord] or "Failure to obtain record"
-#>
 
-Function ConvertFrom-MailAuthenticationRecordDkim {
+.LINK
+    https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDkim
+#>
+function ConvertFrom-MailAuthenticationRecordDkim {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DKIMRecord], [System.String])]
     [cmdletbinding()]

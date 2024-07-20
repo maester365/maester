@@ -6,9 +6,11 @@
 
  .Example
   Get-MtGroupMember
-#>
 
-Function Get-MtGroupMember {
+.LINK
+    https://maester.dev/docs/commands/Get-MtGroupMember
+#>
+function Get-MtGroupMember {
   [CmdletBinding()]
   param(
     [Parameter(Position=0,mandatory=$true)]

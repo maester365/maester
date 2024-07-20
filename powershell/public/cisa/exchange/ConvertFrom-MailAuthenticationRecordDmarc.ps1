@@ -30,9 +30,11 @@ warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment se
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 
     Returns [DMARCRecord] or "Failure to obtain record"
-#>
 
-Function ConvertFrom-MailAuthenticationRecordDmarc {
+.LINK
+    https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDmarc
+#>
+function ConvertFrom-MailAuthenticationRecordDmarc {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DMARCRecord], [System.String])]
     [cmdletbinding()]

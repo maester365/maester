@@ -16,6 +16,9 @@
     Test-MtCaLicenseUtilization -License P2
 
     This example tests the utilization of P2 licenses in the tenant.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaLicenseUtilization
 #>
 function Test-MtCaLicenseUtilization {
     [CmdletBinding()]

@@ -10,9 +10,11 @@
     Test-MtCisaAppGroupOwnerConsent
 
     Returns true if disabled
-#>
 
-Function Test-MtCisaAppGroupOwnerConsent {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAppGroupOwnerConsent
+#>
+function Test-MtCisaAppGroupOwnerConsent {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

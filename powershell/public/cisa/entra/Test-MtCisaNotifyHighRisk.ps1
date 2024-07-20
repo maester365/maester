@@ -14,9 +14,11 @@
     Test-MtCisaNotifyHighRisk
 
     Returns the result of (graph.microsoft.com/beta/identityProtection/settings/notifications)
-#>
 
-Function Test-MtCisaNotifyHighRisk {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaNotifyHighRisk
+#>
+function Test-MtCisaNotifyHighRisk {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

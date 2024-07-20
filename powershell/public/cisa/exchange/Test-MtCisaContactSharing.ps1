@@ -10,9 +10,11 @@
     Test-MtCisaContactSharing
 
     Returns true if no sharing policies allow uncontrolled contact sharing.
-#>
 
-Function Test-MtCisaContactSharing {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaContactSharing
+#>
+function Test-MtCisaContactSharing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

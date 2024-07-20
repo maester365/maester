@@ -10,9 +10,11 @@
     Test-MtCisaSpfDirective
 
     Returns true if SPF record exists and has at least one directive
-#>
 
-Function Test-MtCisaSpfDirective {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaSpfDirective
+#>
+function Test-MtCisaSpfDirective {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

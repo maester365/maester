@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaMfaForAdmin
-#>
 
-Function Test-MtCaMfaForAdmin {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaMfaForAdmin
+#>
+function Test-MtCaMfaForAdmin {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllRoles is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]

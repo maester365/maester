@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaExclusionForDirectorySyncAccount
-#>
 
-Function Test-MtCaExclusionForDirectorySyncAccount {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
+#>
+function Test-MtCaExclusionForDirectorySyncAccount {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]

@@ -10,9 +10,11 @@
     Test-MtCisaMfa
 
     Returns true if at least one policy requires MFA
-#>
 
-Function Test-MtCisaMfa {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaMfa
+#>
+function Test-MtCisaMfa {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

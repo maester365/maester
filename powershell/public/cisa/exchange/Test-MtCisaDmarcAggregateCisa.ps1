@@ -15,9 +15,11 @@
     Test-MtCisaDmarcAggregateCisa -Force
 
     Returns true if DMARC record with reject policy exists for every domain
-#>
 
-Function Test-MtCisaDmarcAggregateCisa {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa
+#>
+function Test-MtCisaDmarcAggregateCisa {
     [CmdletBinding()]
     [OutputType([bool])]
     param(

@@ -10,9 +10,11 @@
     Test-MtCisaDkim
 
     Returns true if DKIM record exists and EXO shows DKIM enabled
-#>
 
-Function Test-MtCisaDkim {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDkim
+#>
+function Test-MtCisaDkim {
     [CmdletBinding()]
     [OutputType([bool])]
     param(

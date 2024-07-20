@@ -10,9 +10,11 @@
     Test-MtCisaPasswordExpiration
 
     Returns true if at least 1 domain has password expiration of 100 years or greater
-#>
 
-Function Test-MtCisaPasswordExpiration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPasswordExpiration
+#>
+function Test-MtCisaPasswordExpiration {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

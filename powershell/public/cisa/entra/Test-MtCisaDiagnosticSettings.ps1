@@ -11,9 +11,11 @@
 
     Returns true if diagnostic settings for the appropriate logs are configured
 
-#>
 
-Function Test-MtCisaDiagnosticSettings {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDiagnosticSettings
+#>
+function Test-MtCisaDiagnosticSettings {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Diagnostic Settings is a specific term')]
     [CmdletBinding()]
     [OutputType([bool])]

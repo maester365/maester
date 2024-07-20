@@ -11,9 +11,11 @@
 
     Returns true if cross-tenant default inbound access is set to block.
 
-#>
 
-Function Test-MtCisaCrossTenantInboundDefault {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaCrossTenantInboundDefault
+#>
+function Test-MtCisaCrossTenantInboundDefault {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

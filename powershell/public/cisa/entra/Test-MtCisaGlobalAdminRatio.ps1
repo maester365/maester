@@ -10,9 +10,11 @@
     Test-MtCisaGlobalAdminRatio
 
     Returns true if global admin to privileged roles ration is 1 or less
-#>
 
-Function Test-MtCisaGlobalAdminRatio {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGlobalAdminRatio
+#>
+function Test-MtCisaGlobalAdminRatio {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

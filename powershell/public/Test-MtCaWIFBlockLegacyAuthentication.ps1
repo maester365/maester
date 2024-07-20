@@ -10,6 +10,9 @@
 
 .EXAMPLE
     Test-MtCaWIFBlockLegacyAuthentication -UserId "e7417ac7-0485-4014-9100-33163bd6211f"
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaWIFBlockLegacyAuthentication
 #>
 function Test-MtCaWIFBlockLegacyAuthentication {
     [CmdletBinding()]

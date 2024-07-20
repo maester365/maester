@@ -10,9 +10,11 @@
     Test-MtCisaPermanentRoleAssignment
 
     Returns true if no roles have permanent active assignments
-#>
 
-Function Test-MtCisaPermanentRoleAssignment {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPermanentRoleAssignment
+#>
+function Test-MtCisaPermanentRoleAssignment {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

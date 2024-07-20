@@ -21,8 +21,10 @@
 
     Install the latest set of Maester tests in the current directory.
 
-#>
 
+.LINK
+    https://maester.dev/docs/commands/Update-MaesterTests
+#>
 function Update-MaesterTests {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]

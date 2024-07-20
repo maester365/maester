@@ -12,9 +12,11 @@ microsoft.com                            MX     1731  Answer     microsoft-com.m
     ConvertFrom-MailAuthenticationRecordMx -DomainName "microsoft.com"
 
     Returns MX records or "Failure to obtain record"
-#>
 
-Function ConvertFrom-MailAuthenticationRecordMx {
+.LINK
+    https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordMx
+#>
+function ConvertFrom-MailAuthenticationRecordMx {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([PSCustomObject], [System.String])]
     [cmdletbinding()]

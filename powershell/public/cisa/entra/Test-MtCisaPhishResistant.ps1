@@ -10,9 +10,11 @@
     Test-MtCisaPhishResistant
 
     Returns true if at least one policy is set to use the built-in phishing resistant authentication strengths
-#>
 
-Function Test-MtCisaPhishResistant {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPhishResistant
+#>
+function Test-MtCisaPhishResistant {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

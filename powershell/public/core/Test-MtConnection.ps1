@@ -14,8 +14,11 @@
     Test-MtConnection -Service All
 
     Checks if the current session is connected to all services including Azure, Exchange and Microsoft Graph.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtConnection
 #>
-Function Test-MtConnection {
+function Test-MtConnection {
     [CmdletBinding()]
     param(
         # Checks if the current session is connected to the specified service

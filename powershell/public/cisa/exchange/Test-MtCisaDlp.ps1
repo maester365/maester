@@ -10,9 +10,11 @@
     Test-MtCisaDlp
 
     Returns true if
-#>
 
-Function Test-MtCisaDlp {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDlp
+#>
+function Test-MtCisaDlp {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

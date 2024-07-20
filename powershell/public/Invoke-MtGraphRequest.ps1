@@ -21,8 +21,11 @@
 
     Get all users with a display name of "John Doe" and return the first 10 results.
 
+
+.LINK
+    https://maester.dev/docs/commands/Invoke-MtGraphRequest
 #>
-Function Invoke-MtGraphRequest {
+function Invoke-MtGraphRequest {
     [CmdletBinding()]
     param(
         # Graph endpoint such as "users".

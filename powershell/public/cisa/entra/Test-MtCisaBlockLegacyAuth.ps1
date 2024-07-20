@@ -10,9 +10,11 @@
     Test-MtCisaBlockLegacyAuth
 
     Returns true if a CA policy exists that blocks legacy authentication.
-#>
 
-Function Test-MtCisaBlockLegacyAuth {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaBlockLegacyAuth
+#>
+function Test-MtCisaBlockLegacyAuth {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

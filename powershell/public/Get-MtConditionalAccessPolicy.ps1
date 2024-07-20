@@ -6,9 +6,11 @@
 
  .Example
   Get-MtConditionalAccessPolicy
-#>
 
-Function Get-MtConditionalAccessPolicy {
+.LINK
+    https://maester.dev/docs/commands/Get-MtConditionalAccessPolicy
+#>
+function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
   param()
 

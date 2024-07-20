@@ -9,9 +9,11 @@
     Test-MtCisaPhishResistant
 
     Returns true if at least one policy requires phishing resistant methods for the specific roles
-#>
 
-Function Test-MtCisaPrivilegedPhishResistant {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPrivilegedPhishResistant
+#>
+function Test-MtCisaPrivilegedPhishResistant {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

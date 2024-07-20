@@ -10,9 +10,11 @@
     Test-MtCisaAntiSpamAllowList
 
     Returns true if no allowed IPs in anti-spam policy
-#>
 
-Function Test-MtCisaAntiSpamAllowList {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAntiSpamAllowList
+#>
+function Test-MtCisaAntiSpamAllowList {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -10,9 +10,11 @@
 
  .Example
   Get-MtRole
-#>
 
-Function Get-MtRole {
+.LINK
+    https://maester.dev/docs/commands/Get-MtRole
+#>
+function Get-MtRole {
   [CmdletBinding()]
   param(
     [switch]$CisaHighlyPrivilegedRoles

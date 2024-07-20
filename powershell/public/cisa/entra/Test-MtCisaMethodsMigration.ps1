@@ -10,9 +10,11 @@
     Test-MtCisaMethodsMigration
 
     Returns true if policyMigrationState is migrationComplete
-#>
 
-Function Test-MtCisaMethodsMigration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaMethodsMigration
+#>
+function Test-MtCisaMethodsMigration {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -10,9 +10,11 @@
     Test-MtCisaCloudGlobalAdmin
 
     Returns true if all global admins are cloud users
-#>
 
-Function Test-MtCisaCloudGlobalAdmin {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaCloudGlobalAdmin
+#>
+function Test-MtCisaCloudGlobalAdmin {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

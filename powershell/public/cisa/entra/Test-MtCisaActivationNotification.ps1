@@ -16,9 +16,11 @@
     Test-MtCisaActivationNotification -GlobalAdminOnly
 
     Returns true if notifications are set for activation of the Global Admin role
-#>
 
-Function Test-MtCisaActivationNotification {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaActivationNotification
+#>
+function Test-MtCisaActivationNotification {
     [CmdletBinding()]
     [OutputType([bool])]
     param(

@@ -10,9 +10,11 @@
     Test-MtCisaManagedDeviceRegistration
 
     Returns true if at least one policy requires MFA for registration
-#>
 
-Function Test-MtCisaManagedDeviceRegistration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaManagedDeviceRegistration
+#>
+function Test-MtCisaManagedDeviceRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
     param(

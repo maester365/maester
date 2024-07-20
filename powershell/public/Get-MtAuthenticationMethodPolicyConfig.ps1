@@ -7,6 +7,9 @@
 
 .EXAMPLE
     Get-MtAuthenticationMethodPolicyConfig -State Enabled
+
+.LINK
+    https://maester.dev/docs/commands/Get-MtAuthenticationMethodPolicyConfig
 #>
 function Get-MtAuthenticationMethodPolicyConfig {
 

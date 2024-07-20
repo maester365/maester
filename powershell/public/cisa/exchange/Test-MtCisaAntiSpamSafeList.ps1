@@ -10,9 +10,11 @@
     Test-MtCisaAntiSpamSafeList
 
     Returns true if Safe List is disabled in anti-spam policy
-#>
 
-Function Test-MtCisaAntiSpamSafeList {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAntiSpamSafeList
+#>
+function Test-MtCisaAntiSpamSafeList {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

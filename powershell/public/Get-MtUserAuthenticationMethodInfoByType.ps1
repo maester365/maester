@@ -16,9 +16,11 @@
     $authMethod | Get-MtUserAuthenticationMethodInfoByType
 
     # Returns the DisplayName and IsMfa metadata for the authentication methods registered by the specified user.
-#>
 
-Function Get-MtUserAuthenticationMethodInfoByType {
+.LINK
+    https://maester.dev/docs/commands/Get-MtUserAuthenticationMethodInfoByType
+#>
+function Get-MtUserAuthenticationMethodInfoByType {
 
     [CmdletBinding()]
     param(

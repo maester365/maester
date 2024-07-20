@@ -10,9 +10,11 @@
     Test-MtCisaRequireActivationApproval
 
     Returns true if the Global Admin role requires approval on activation
-#>
 
-Function Test-MtCisaRequireActivationApproval {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaRequireActivationApproval
+#>
+function Test-MtCisaRequireActivationApproval {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -7,8 +7,11 @@
 
  .Example
   Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole
 #>
-Function Test-MtPrivPermanentDirectoryRole {
+function Test-MtPrivPermanentDirectoryRole {
   [OutputType([bool])]
   [CmdletBinding()]
   param (

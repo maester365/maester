@@ -45,9 +45,11 @@
    Connect-Maester -Privileged
 
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
-#>
 
-Function Connect-Maester {
+.LINK
+    https://maester.dev/docs/commands/Connect-Maester
+#>
+function Connect-Maester {
    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
    [Alias("Connect-MtGraph", "Connect-MtMaester")]
    [CmdletBinding()]

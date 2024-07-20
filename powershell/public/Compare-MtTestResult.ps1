@@ -12,6 +12,9 @@
         PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
     }
     Compare-MtTestResult @tests
+
+.LINK
+    https://maester.dev/docs/commands/Compare-MtTestResult
 #>
 function Compare-MtTestResult {
     [CmdletBinding()]

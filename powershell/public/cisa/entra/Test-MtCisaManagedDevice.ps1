@@ -10,9 +10,11 @@
     Test-MtCisaManagedDevice
 
     Returns true if at least one policy requires managed devices
-#>
 
-Function Test-MtCisaManagedDevice {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaManagedDevice
+#>
+function Test-MtCisaManagedDevice {
     [CmdletBinding()]
     [OutputType([bool])]
     param(

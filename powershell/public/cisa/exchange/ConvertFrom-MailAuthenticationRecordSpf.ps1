@@ -19,9 +19,11 @@ warnings :
     ConvertFrom-MailAuthenticationRecordSpf -DomainName "microsoft.com"
 
     Returns [SPFRecord] object or "Failure to obtain record"
-#>
 
-Function ConvertFrom-MailAuthenticationRecordSpf {
+.LINK
+    https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf
+#>
+function ConvertFrom-MailAuthenticationRecordSpf {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([SPFRecord], [System.String])]
     [cmdletbinding()]

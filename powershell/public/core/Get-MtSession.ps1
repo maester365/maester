@@ -10,8 +10,10 @@
     Get-MtSession
 
     Returns the current Maester session information.
-#>
 
-Function Get-MtSession {
+.LINK
+    https://maester.dev/docs/commands/Get-MtSession
+#>
+function Get-MtSession {
     Write-Output $__MtSession
 }

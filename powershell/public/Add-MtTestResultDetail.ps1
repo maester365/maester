@@ -30,9 +30,11 @@
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
-#>
 
-Function Add-MtTestResultDetail {
+.LINK
+    https://maester.dev/docs/commands/Add-MtTestResultDetail
+#>
+function Add-MtTestResultDetail {
     [CmdletBinding()]
     param(
         # Brief description of what this test is checking.

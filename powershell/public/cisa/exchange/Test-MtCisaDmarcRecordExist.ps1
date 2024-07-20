@@ -10,9 +10,11 @@
     Test-MtCisaDmarcRecordExist
 
     Returns true if DMARC record exists for all 2LD
-#>
 
-Function Test-MtCisaDmarcRecordExist {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDmarcRecordExist
+#>
+function Test-MtCisaDmarcRecordExist {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

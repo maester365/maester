@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaEnforceNonPersistentBrowserSession
-#>
 
-Function Test-MtCaEnforceNonPersistentBrowserSession {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaEnforceNonPersistentBrowserSession
+#>
+function Test-MtCaEnforceNonPersistentBrowserSession {
     [CmdletBinding()]
     [OutputType([bool])]
     param (

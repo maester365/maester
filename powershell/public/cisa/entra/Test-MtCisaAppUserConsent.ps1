@@ -10,9 +10,11 @@
     Test-MtCisaAppUserConsent
 
     Returns true if disabled
-#>
 
-Function Test-MtCisaAppUserConsent {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAppUserConsent
+#>
+function Test-MtCisaAppUserConsent {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

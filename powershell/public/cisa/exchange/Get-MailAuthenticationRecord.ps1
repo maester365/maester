@@ -16,9 +16,11 @@
     Get-MailAuthenticationRecord -DomainName "microsoft.com"
 
     Returns an object containing the structured mail authentication objects
-#>
 
-Function Get-MailAuthenticationRecord {
+.LINK
+    https://maester.dev/docs/commands/Get-MailAuthenticationRecord
+#>
+function Get-MailAuthenticationRecord {
     [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(

@@ -9,8 +9,10 @@
 .EXAMPLE
     Resolve-SPFRecord microsoft.com
 
-#>
 
+.LINK
+    https://maester.dev/docs/commands/Resolve-SPFRecord
+#>
 function Resolve-SPFRecord {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([spfrecord[]], [System.String])]

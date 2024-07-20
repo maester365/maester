@@ -18,9 +18,11 @@
   Test-MtCaAllAppsExists -SkipCheckAllUsers
 
   Returns true if at least one conditional access policy exists that targets all cloud apps and all users, but skips the check for all users.
-#>
 
-Function Test-MtCaAllAppsExists {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaAllAppsExists
+#>
+function Test-MtCaAllAppsExists {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
   [CmdletBinding()]
   [OutputType([bool])]

@@ -11,9 +11,11 @@
 
  .Example
   Test-MtCaDeviceComplianceAdminsExists
-#>
 
-Function Test-MtCaDeviceComplianceAdminsExists {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaDeviceComplianceAdminsExists
+#>
+function Test-MtCaDeviceComplianceAdminsExists {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PSScriptAnalyzer bug is not detecting usage of PolicyIncludesAllRoles')]
   [CmdletBinding()]

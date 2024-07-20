@@ -35,9 +35,11 @@
 
   Returns all the currently active members of the role with the specified RoleId.
 
-#>
 
-Function Get-MtRoleMember {
+.LINK
+    https://maester.dev/docs/commands/Get-MtRoleMember
+#>
+function Get-MtRoleMember {
   [CmdletBinding(DefaultParameterSetName = "RoleName")]
   param(
     # The name of the role to get members for.

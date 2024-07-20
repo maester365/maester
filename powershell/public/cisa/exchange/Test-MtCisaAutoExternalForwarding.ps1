@@ -10,9 +10,11 @@
     Test-MtCisaAutoExternalForwarding
 
     Returns true if no domain is enabled for auto forwarding
-#>
 
-Function Test-MtCisaAutoExternalForwarding {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAutoExternalForwarding
+#>
+function Test-MtCisaAutoExternalForwarding {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

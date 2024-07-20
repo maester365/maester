@@ -7,8 +7,11 @@
 
  .Example
   Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtPimAlertsExists
 #>
-Function Test-MtPimAlertsExists {
+function Test-MtPimAlertsExists {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
   [OutputType([object])]
   [CmdletBinding()]

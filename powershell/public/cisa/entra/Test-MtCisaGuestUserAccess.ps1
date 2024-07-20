@@ -10,9 +10,11 @@
     Test-MtCisaGuestUserAccess
 
     Returns true if guests use proper role template
-#>
 
-Function Test-MtCisaGuestUserAccess {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGuestUserAccess
+#>
+function Test-MtCisaGuestUserAccess {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

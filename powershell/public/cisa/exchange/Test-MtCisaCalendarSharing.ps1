@@ -10,9 +10,11 @@
     Test-MtCisaCalendarSharing
 
     Returns true if no sharing policies allow uncontrolled calendar sharing.
-#>
 
-Function Test-MtCisaCalendarSharing {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaCalendarSharing
+#>
+function Test-MtCisaCalendarSharing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -10,9 +10,11 @@
     Test-MtCisaUnmanagedRoleAssignment
 
     Returns true if all role assignments have a start time
-#>
 
-Function Test-MtCisaUnmanagedRoleAssignment {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaUnmanagedRoleAssignment
+#>
+function Test-MtCisaUnmanagedRoleAssignment {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

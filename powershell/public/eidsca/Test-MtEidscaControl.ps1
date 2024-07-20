@@ -9,9 +9,11 @@
     Test-MtEidscaControl -CheckId AP01
 
     Returns the result of the EIDSCA AP01 control check
-#>
 
-Function Test-MtEidscaControl {
+.LINK
+    https://maester.dev/docs/commands/Test-MtEidscaControl
+#>
+function Test-MtEidscaControl {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
