@@ -3,6 +3,7 @@
   Returns all the conditional access policies in the tenant.
 
  .Description
+  Returns all the conditional access policies in the tenant.
 
  .Example
   Get-MtConditionalAccessPolicy

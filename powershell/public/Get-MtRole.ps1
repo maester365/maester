@@ -3,6 +3,7 @@
   Returns all the role definitions in the tenant.
 
  .Description
+  Returns all the role definitions in the tenant.
 
  .Parameter CisaHighlyPrivilegedRoles
   Filters the returned roles to only those described

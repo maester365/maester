@@ -3,6 +3,7 @@
   Returns all the members of the specific group ID.
 
  .Description
+  Returns all the members of the specific group ID.
 
  .Example
   Get-MtGroupMember
