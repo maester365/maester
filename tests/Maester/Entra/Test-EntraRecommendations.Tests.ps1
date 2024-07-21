@@ -4,7 +4,7 @@ BeforeDiscovery {
     Write-Verbose "Found $($EntraRecommendations.Count) Entra recommendations"
 }
 
-Describe "Entra Recommendations" -Tag "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
+Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
     It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024" {
         #region Add detailed test description
         $ActionSteps = $actionSteps | Sort-Object -Property 'stepNumber' | ForEach-Object {
