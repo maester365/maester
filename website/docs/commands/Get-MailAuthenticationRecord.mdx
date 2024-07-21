@@ -44,7 +44,7 @@ Returns an object containing the structured mail authentication objects
 
 ### -DomainName
 
-\{\{ Fill DomainName Description \}\}
+Domain name to check.
 
 ```yaml
 Type: String
@@ -60,7 +60,7 @@ Accept wildcard characters: False
 
 ### -DnsServerIpAddress
 
-\{\{ Fill DnsServerIpAddress Description \}\}
+DNS-server to use for lookup.
 
 ```yaml
 Type: IPAddress
@@ -76,7 +76,7 @@ Accept wildcard characters: False
 
 ### -DkimSelector
 
-\{\{ Fill DkimSelector Description \}\}
+Selector-name for the DKIM record to retrieve.
 
 ```yaml
 Type: String
@@ -92,7 +92,8 @@ Accept wildcard characters: False
 
 ### -Records
 
-\{\{ Fill Records Description \}\}
+Specify which records should be retrieved.
+Accepted values are 'All', 'DKIM', 'DMARC', 'MX' and/or 'SPF'.
 
 ```yaml
 Type: String[]
@@ -108,7 +109,7 @@ Accept wildcard characters: False
 
 ### -QuickTimeout
 
-\{\{ Fill QuickTimeout Description \}\}
+Use a shorter timeout value for the DNS lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -124,7 +125,7 @@ Accept wildcard characters: False
 
 ### -NoHostsFile
 
-\{\{ Fill NoHostsFile Description \}\}
+Ignore hosts file for domain lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -167,3 +168,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MailAuthenticationRecord](https://maester.dev/docs/commands/Get-MailAuthenticationRecord)

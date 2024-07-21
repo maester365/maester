@@ -35,7 +35,8 @@ Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPri
 
 ### -FilteredAccessLevel
 
-\{\{ Fill FilteredAccessLevel Description \}\}
+Filter based on Enterprise Access Model Tiering.
+Can be 'ControlPlane' and/or 'ManagementPlane'.
 
 ```yaml
 Type: String[]
@@ -51,7 +52,8 @@ Accept wildcard characters: False
 
 ### -FilterPrincipal
 
-\{\{ Fill FilterPrincipal Description \}\}
+Filter based on principal types.
+Accepted values are 'ExternalUser', 'HybridUser', 'ServicePrincipalClientSecret', 'ServicePrincipalObject' and/or 'UserMailbox'.
 
 ```yaml
 Type: Object[]
@@ -94,3 +96,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole](https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole)
