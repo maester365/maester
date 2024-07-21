@@ -11,7 +11,7 @@
     Get-MtMarkdownReport $maesterResults
 #>
 
-Function Get-MtMarkdownReport {
+function Get-MtMarkdownReport {
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`

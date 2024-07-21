@@ -9,7 +9,7 @@
     This function will be called for each fresh run of Invoke-Maester.
 #>
 
-Function Clear-ModuleVariable {
+function Clear-ModuleVariable {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Module variables used in other functions.')]
     param()
 

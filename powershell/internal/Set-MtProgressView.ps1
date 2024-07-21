@@ -3,7 +3,7 @@
     Set the style of the progress bar to classic on Windows for better compatibility with the console.
 #>
 
-Function Set-MtProgressView {
+function Set-MtProgressView {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param ()

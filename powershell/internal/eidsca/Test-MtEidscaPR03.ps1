@@ -16,14 +16,14 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
 #>
 
-Function Test-MtEidscaPR03 {
+function Test-MtEidscaPR03 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if ( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
-            return $null 
+            return $null
     }
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta

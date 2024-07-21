@@ -2,7 +2,7 @@
 .SYNOPSIS
     Enhanced version of Invoke-MgGraphRequest that supports caching.
 #>
-Function Invoke-MtGraphRequestCache {
+function Invoke-MtGraphRequestCache {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]

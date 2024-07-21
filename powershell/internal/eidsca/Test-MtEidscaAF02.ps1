@@ -16,14 +16,14 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isSelfServiceRegistrationAllowed -eq 'true'
 #>
 
-Function Test-MtEidscaAF02 {
+function Test-MtEidscaAF02 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if ( $EnabledAuthMethods -notcontains 'Fido2' ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled.'
-            return $null 
+            return $null
     }
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta

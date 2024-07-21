@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
 #>
 
-Function Test-MtEidscaPR02 {
+function Test-MtEidscaPR02 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

@@ -16,7 +16,7 @@
     Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
 #>
 
-Function %PSFunctionName% {
+function %PSFunctionName% {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

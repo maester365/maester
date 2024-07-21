@@ -13,7 +13,7 @@
     Get-IsNewMaesterVersionAvailable
 #>
 
-Function Get-IsNewMaesterVersionAvailable {
+function Get-IsNewMaesterVersionAvailable {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([bool])]
     [CmdletBinding()]
