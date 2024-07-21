@@ -15,12 +15,12 @@ Returns all the members of the specific group ID.
 ## SYNTAX
 
 ```powershell
-Get-MtGroupMember [-groupId] <Guid> [-Recursive] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtGroupMember [-GroupId] <Guid> [-Recursive] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Returns all the members of the specific group ID.
 
 ## EXAMPLES
 
@@ -32,9 +32,9 @@ Get-MtGroupMember
 
 ## PARAMETERS
 
-### -groupId
+### -GroupId
 
-\{\{ Fill groupId Description \}\}
+ID for the Entra group to return members for.
 
 ```yaml
 Type: Guid
@@ -50,7 +50,7 @@ Accept wildcard characters: False
 
 ### -Recursive
 
-\{\{ Fill Recursive Description \}\}
+Include indirect members through nested groups.
 
 ```yaml
 Type: SwitchParameter
@@ -91,3 +91,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtGroupMember](https://maester.dev/docs/commands/Get-MtGroupMember)

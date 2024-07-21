@@ -54,7 +54,8 @@ Compare-MtTestResult @tests
 
 ### -BaseDir
 
-\{\{ Fill BaseDir Description \}\}
+Path to folder where test results are located.
+The two newest results will be compared.
 
 ```yaml
 Type: Object
@@ -70,7 +71,7 @@ Accept wildcard characters: False
 
 ### -PriorTest
 
-\{\{ Fill PriorTest Description \}\}
+Path to the previous test result JSON-file to be used as a reference.
 
 ```yaml
 Type: Object
@@ -86,7 +87,7 @@ Accept wildcard characters: False
 
 ### -NewTest
 
-\{\{ Fill NewTest Description \}\}
+Path to the newer test result JSON-file to be used as the current result.
 
 ```yaml
 Type: Object
@@ -127,3 +128,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Compare-MtTestResult](https://maester.dev/docs/commands/Compare-MtTestResult)

@@ -21,9 +21,11 @@ ConvertFrom-MailAuthenticationRecordMx [-DomainName] <String> [[-DnsServerIpAddr
 
 ## DESCRIPTION
 
+```
 Name                                     Type   TTL   Section    NameExchange                              Preference
 ----                                     ----   ---   -------    ------------                              ----------
 microsoft.com                            MX     1731  Answer     microsoft-com.mail.protection.outlook.com 10
+```
 
 ## EXAMPLES
 
@@ -39,7 +41,7 @@ Returns MX records or "Failure to obtain record"
 
 ### -DomainName
 
-\{\{ Fill DomainName Description \}\}
+Domain name to check.
 
 ```yaml
 Type: String
@@ -55,7 +57,7 @@ Accept wildcard characters: False
 
 ### -DnsServerIpAddress
 
-\{\{ Fill DnsServerIpAddress Description \}\}
+DNS-server to use for lookup.
 
 ```yaml
 Type: IPAddress
@@ -71,7 +73,7 @@ Accept wildcard characters: False
 
 ### -QuickTimeout
 
-\{\{ Fill QuickTimeout Description \}\}
+Use a shorter timeout value for the DNS lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -87,7 +89,7 @@ Accept wildcard characters: False
 
 ### -NoHostsFile
 
-\{\{ Fill NoHostsFile Description \}\}
+Ignore hosts file for domain lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -131,3 +133,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordMx](https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordMx)
