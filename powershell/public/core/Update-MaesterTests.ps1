@@ -21,8 +21,9 @@
 
     Install the latest set of Maester tests in the current directory.
 
+.LINK
+    https://maester.dev/docs/commands/Update-MaesterTests
 #>
-
 function Update-MaesterTests {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
@@ -33,7 +34,9 @@ function Update-MaesterTests {
         [Parameter(Mandatory = $false)]
         [string] $Path = '.\'
     )
+    Write-Verbose 'Checking if newer version is availble.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
+    Write-Verbose "Updating Maester tests in '$Path'."
     Update-MtMaesterTests -Path $Path
 }

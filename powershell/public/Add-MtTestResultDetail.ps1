@@ -30,9 +30,10 @@
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
+.LINK
+    https://maester.dev/docs/commands/Add-MtTestResultDetail
 #>
-
-Function Add-MtTestResultDetail {
+function Add-MtTestResultDetail {
     [CmdletBinding()]
     param(
         # Brief description of what this test is checking.
@@ -66,9 +67,11 @@ Function Add-MtTestResultDetail {
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported', 'Custom'
         )]
+        # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
 
         [Parameter(Mandatory = $false)]
+        # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
         [string] $SkippedCustomReason
     )
 

@@ -10,9 +10,11 @@
 
     .Example
     Test-MtCaMfaForGuest
-#>
 
-Function Test-MtCaMfaForGuest {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaMfaForGuest
+#>
+function Test-MtCaMfaForGuest {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

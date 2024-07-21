@@ -3,19 +3,21 @@
     Checks if a policy is enabled requiring a managed device for registration
 
 .DESCRIPTION
-
     Managed Devices SHOULD be required to register MFA.
 
 .EXAMPLE
     Test-MtCisaManagedDeviceRegistration
 
     Returns true if at least one policy requires MFA for registration
-#>
 
-Function Test-MtCisaManagedDeviceRegistration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaManagedDeviceRegistration
+#>
+function Test-MtCisaManagedDeviceRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Do not check if Hybrid Joined devices are accepted.
         [switch]$SkipHybridJoinCheck
     )
 

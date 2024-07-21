@@ -3,16 +3,17 @@
     Checks for permanent active role assingments
 
 .DESCRIPTION
-
     Permanent active role assignments SHALL NOT be allowed for highly privileged roles.
 
 .EXAMPLE
     Test-MtCisaPermanentRoleAssignment
 
     Returns true if no roles have permanent active assignments
-#>
 
-Function Test-MtCisaPermanentRoleAssignment {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPermanentRoleAssignment
+#>
+function Test-MtCisaPermanentRoleAssignment {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

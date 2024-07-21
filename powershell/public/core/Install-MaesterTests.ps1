@@ -27,9 +27,11 @@
     Install-MaesterTests -SkipPesterCheck
 
     Installs the latest Maester tests in the current directory. Skips the check for the required version of Pester.
-#>
 
-Function Install-MaesterTests {
+.LINK
+    https://maester.dev/docs/commands/Install-MaesterTests
+#>
+function Install-MaesterTests {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [CmdletBinding()]

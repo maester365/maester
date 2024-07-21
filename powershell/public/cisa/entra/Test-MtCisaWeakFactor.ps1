@@ -3,16 +3,17 @@
     Checks if weak Authentication Methods are disabled
 
 .DESCRIPTION
-
     The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.
 
 .EXAMPLE
     Test-MtCisaWeakFactor
 
     Returns true if weak Authentication Methods are disabled
-#>
 
-Function Test-MtCisaWeakFactor {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaWeakFactor
+#>
+function Test-MtCisaWeakFactor {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

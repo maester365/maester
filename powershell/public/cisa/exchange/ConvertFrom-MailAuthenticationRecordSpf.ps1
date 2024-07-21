@@ -3,36 +3,43 @@
     Returns a structured RFC compliant object for the supplied SPF record
 
 .DESCRIPTION
-
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
     - https://xkln.net/blog/getting-mx-spf-dmarc-dkim-and-smtp-banners-with-powershell/
     - SPF https://datatracker.ietf.org/doc/html/rfc7208
 
-record   : v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com
-           include:_spf1-meo.microsoft.com -all
-terms    : {SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…}
-warnings :
+    ```
+    record   : v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com
+            include:_spf1-meo.microsoft.com -all
+    terms    : {SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…}
+    warnings :
+    ```
 
 .EXAMPLE
     ConvertFrom-MailAuthenticationRecordSpf -DomainName "microsoft.com"
 
     Returns [SPFRecord] object or "Failure to obtain record"
-#>
 
-Function ConvertFrom-MailAuthenticationRecordSpf {
+.LINK
+    https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf
+#>
+function ConvertFrom-MailAuthenticationRecordSpf {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([SPFRecord], [System.String])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        # Domain name to check.
         [string]$DomainName,
 
+        # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
+        # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
 
+        # Ignore hosts file for domain lookup.
         [switch]$NoHostsFile
     )
 

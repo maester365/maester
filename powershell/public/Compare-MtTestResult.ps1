@@ -12,15 +12,21 @@
         PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
     }
     Compare-MtTestResult @tests
+
+.LINK
+    https://maester.dev/docs/commands/Compare-MtTestResult
 #>
 function Compare-MtTestResult {
     [CmdletBinding()]
     param (
         [Parameter(ParameterSetName="Directory",Position=0,Mandatory=$true)]
+        # Path to folder where test results are located. The two newest results will be compared.
         $BaseDir,
         [Parameter(ParameterSetName="Files",Position=0,Mandatory=$true)]
+        # Path to the previous test result JSON-file to be used as a reference.
         $PriorTest,
         [Parameter(ParameterSetName="Files",Position=1,Mandatory=$true)]
+        # Path to the newer test result JSON-file to be used as the current result.
         $NewTest
     )
 

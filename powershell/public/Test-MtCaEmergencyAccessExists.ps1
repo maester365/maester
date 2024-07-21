@@ -11,9 +11,11 @@
 
  .Example
   Test-MtCaEmergencyAccessExists
-#>
 
-Function Test-MtCaEmergencyAccessExists {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaEmergencyAccessExists
+#>
+function Test-MtCaEmergencyAccessExists {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
     [CmdletBinding()]
     [OutputType([bool])]

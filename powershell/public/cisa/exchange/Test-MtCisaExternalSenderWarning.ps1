@@ -3,16 +3,17 @@
     Checks state of transport policies
 
 .DESCRIPTION
-
     External sender warnings SHALL be implemented.
 
 .EXAMPLE
     Test-MtCisaExternalSenderWarning
 
     Returns true if a transport policy appends a warning.
-#>
 
-Function Test-MtCisaExternalSenderWarning {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaExternalSenderWarning
+#>
+function Test-MtCisaExternalSenderWarning {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

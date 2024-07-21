@@ -3,7 +3,6 @@
     Checks if Risk Based Policies - MS.AAD.2.2v1 has recipients
 
 .DESCRIPTION
-
     A notification SHOULD be sent to the administrator when high-risk users are detected.
 
     Queries /identityProtection/settings/notifications
@@ -14,9 +13,11 @@
     Test-MtCisaNotifyHighRisk
 
     Returns the result of (graph.microsoft.com/beta/identityProtection/settings/notifications)
-#>
 
-Function Test-MtCisaNotifyHighRisk {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaNotifyHighRisk
+#>
+function Test-MtCisaNotifyHighRisk {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

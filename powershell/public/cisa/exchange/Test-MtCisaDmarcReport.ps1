@@ -3,16 +3,17 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     An agency point of contact SHOULD be included for aggregate and failure reports.
 
 .EXAMPLE
     Test-MtCisaDmarcReport
 
     Returns true if DMARC record inlcudes report targets within same domain
-#>
 
-Function Test-MtCisaDmarcReport {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDmarcReport
+#>
+function Test-MtCisaDmarcReport {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

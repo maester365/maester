@@ -11,6 +11,9 @@
     Clear-MtDnsCache
 
     This example clears the cache of all DNS lookups.
+
+.LINK
+    https://maester.dev/docs/commands/Clear-MtDnsCache
 #>
 function Clear-MtDnsCache {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]

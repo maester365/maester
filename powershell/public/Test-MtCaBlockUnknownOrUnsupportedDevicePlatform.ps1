@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
-#>
 
-Function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
+#>
+function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -3,16 +3,17 @@
     Checks if User Risk Based Policies - MS.AAD.2.1 is set to 'blocked'
 
 .DESCRIPTION
-
     Users detected as high risk SHALL be blocked.
 
 .EXAMPLE
     Test-MtCisaBlockHighRiskUser
 
     Returns true if at least one policy is set to block high risk users.
-#>
 
-Function Test-MtCisaBlockHighRiskUser {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaBlockHighRiskUser
+#>
+function Test-MtCisaBlockHighRiskUser {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

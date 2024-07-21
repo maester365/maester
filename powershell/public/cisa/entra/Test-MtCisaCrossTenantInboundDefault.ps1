@@ -3,7 +3,6 @@
     Checks cross-tenant default inbound access configuration
 
 .DESCRIPTION
-
     Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.
 
 .EXAMPLE
@@ -11,9 +10,10 @@
 
     Returns true if cross-tenant default inbound access is set to block.
 
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaCrossTenantInboundDefault
 #>
-
-Function Test-MtCisaCrossTenantInboundDefault {
+function Test-MtCisaCrossTenantInboundDefault {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

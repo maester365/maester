@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaRequirePasswordChangeForHighUserRisk
-#>
 
-Function Test-MtCaRequirePasswordChangeForHighUserRisk {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaRequirePasswordChangeForHighUserRisk
+#>
+function Test-MtCaRequirePasswordChangeForHighUserRisk {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -3,7 +3,6 @@
     Obtains and converts the mail authentication records of a domain
 
 .DESCRIPTION
-
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -16,24 +15,32 @@
     Get-MailAuthenticationRecord -DomainName "microsoft.com"
 
     Returns an object containing the structured mail authentication objects
-#>
 
-Function Get-MailAuthenticationRecord {
+.LINK
+    https://maester.dev/docs/commands/Get-MailAuthenticationRecord
+#>
+function Get-MailAuthenticationRecord {
     [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        # Domain name to check.
         [string]$DomainName,
 
+        # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
+        # Selector-name for the DKIM record to retrieve.
         [string]$DkimSelector = "selector1",
 
         [ValidateSet("All", "DKIM", "DMARC", "MX", "SPF")]
+        # Specify which records should be retrieved. Accepted values are 'All', 'DKIM', 'DMARC', 'MX' and/or 'SPF'.
         [string[]]$Records = "All",
 
+        # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
 
+        # Ignore hosts file for domain lookup.
         [switch]$NoHostsFile
     )
 

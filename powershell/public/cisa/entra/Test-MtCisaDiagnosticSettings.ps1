@@ -3,7 +3,6 @@
     Checks for configuration of Entra diagnostic settings
 
 .DESCRIPTION
-
     Security logs SHALL be sent to the agency's security operations center for monitoring.
 
 .EXAMPLE
@@ -11,9 +10,10 @@
 
     Returns true if diagnostic settings for the appropriate logs are configured
 
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDiagnosticSettings
 #>
-
-Function Test-MtCisaDiagnosticSettings {
+function Test-MtCisaDiagnosticSettings {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Diagnostic Settings is a specific term')]
     [CmdletBinding()]
     [OutputType([bool])]

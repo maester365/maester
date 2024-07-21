@@ -3,16 +3,17 @@
     Checks if Sign-In Risk Based Policies - MS.AAD.2.3 is set to 'blocked'
 
 .DESCRIPTION
-
     Sign-ins detected as high risk SHALL be blocked.
 
 .EXAMPLE
     Test-MtCisaBlockHighRiskSignIn
 
     Returns true if at least one policy is set to block high risk sign-ins.
-#>
 
-Function Test-MtCisaBlockHighRiskSignIn {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaBlockHighRiskSignIn
+#>
+function Test-MtCisaBlockHighRiskSignIn {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

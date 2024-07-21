@@ -3,16 +3,17 @@
     Checks if Conditional Access Policy using Phishing-Resistant Authentication Strengths is enabled
 
 .DESCRIPTION
-
     Phishing-resistant MFA SHALL be enforced for all users
 
 .EXAMPLE
     Test-MtCisaPhishResistant
 
     Returns true if at least one policy is set to use the built-in phishing resistant authentication strengths
-#>
 
-Function Test-MtCisaPhishResistant {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaPhishResistant
+#>
+function Test-MtCisaPhishResistant {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

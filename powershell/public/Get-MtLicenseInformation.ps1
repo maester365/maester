@@ -10,6 +10,9 @@
 
 .EXAMPLE
     Get-MtLicenseInformation -Product EntraID
+
+.LINK
+    https://maester.dev/docs/commands/Get-MtLicenseInformation
 #>
 function Get-MtLicenseInformation {
     [OutputType([string])]

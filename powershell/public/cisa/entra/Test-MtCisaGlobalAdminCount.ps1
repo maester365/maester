@@ -3,16 +3,17 @@
     Checks if Global Admins is an acceptable number
 
 .DESCRIPTION
-
     A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.
 
 .EXAMPLE
     Test-MtCisaGlobalAdminCount
 
     Returns true if only 2 to 8 users are eligible to be global admins
-#>
 
-Function Test-MtCisaGlobalAdminCount {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGlobalAdminCount
+#>
+function Test-MtCisaGlobalAdminCount {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

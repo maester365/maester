@@ -3,12 +3,15 @@
   Returns all the conditional access policies in the tenant.
 
  .Description
+  Returns all the conditional access policies in the tenant.
 
  .Example
   Get-MtConditionalAccessPolicy
-#>
 
-Function Get-MtConditionalAccessPolicy {
+.LINK
+    https://maester.dev/docs/commands/Get-MtConditionalAccessPolicy
+#>
+function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
   param()
 

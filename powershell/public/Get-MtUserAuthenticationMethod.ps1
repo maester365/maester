@@ -20,8 +20,11 @@
   Get-MtUserAuthenticationMethod -UserId 'john@contoso.com'
 
   # Get the authentication methods for the specified user
+
+.LINK
+    https://maester.dev/docs/commands/Get-MtUserAuthenticationMethod
 #>
-Function Get-MtUserAuthenticationMethod {
+function Get-MtUserAuthenticationMethod {
   [CmdletBinding()]
   param(
     # The GUID or user principal name of the user to get Authentication Methods for.

@@ -3,7 +3,6 @@
     Checks for notification on role activation
 
 .DESCRIPTION
-
     User activation of the Global Administrator role SHALL trigger an alert.
     User activation of other highly privileged roles SHOULD trigger an alert.
 
@@ -16,12 +15,15 @@
     Test-MtCisaActivationNotification -GlobalAdminOnly
 
     Returns true if notifications are set for activation of the Global Admin role
-#>
 
-Function Test-MtCisaActivationNotification {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaActivationNotification
+#>
+function Test-MtCisaActivationNotification {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Check Global Administrator role only
         [switch]$GlobalAdminOnly
     )
 
