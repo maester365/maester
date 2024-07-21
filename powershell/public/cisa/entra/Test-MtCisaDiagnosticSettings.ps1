@@ -24,7 +24,7 @@ function Test-MtCisaDiagnosticSettings {
         return $null
     }
 
-    $logs = Invoke-AzRestMethod -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
+    $logs = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
     $logs = ($logs.Content|ConvertFrom-Json).value
     $logs = ($logs | Where-Object { `
         $_.properties.categoryType -eq "Logs"
@@ -32,7 +32,7 @@ function Test-MtCisaDiagnosticSettings {
 
     $configs = @()
 
-    $settings = Invoke-AzRestMethod -Path "/providers/microsoft.aadiam/diagnosticSettings?api-version=2017-04-01-preview"
+    $settings = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettings?api-version=2017-04-01-preview"
     $settings = ($settings.Content|ConvertFrom-Json).value
 
     $settings | ForEach-Object { `
