@@ -58000,20 +58000,31 @@ function ResultInfoDialog(props) {
 function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = reactExports.useState(["Passed", "Failed", "Skipped"]);
   const [selectedBlock, setSelectedBlock] = reactExports.useState([]);
+  const [selectedTag, setSelectedTag] = reactExports.useState([]);
   const testResults2 = props.TestResults;
   const isStatusSelected = (item) => {
-    return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) && (selectedBlock.includes(item.Block) || selectedBlock.length === 0);
+    return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) && (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) && (selectedTag.length === 0 || item.Tag.some((tag) => selectedTag.includes(tag)));
   };
   const status = ["Passed", "Failed", "NotRun", "Skipped"];
+  const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag))];
   return /* @__PURE__ */ jsxRuntimeExports$1.jsxs(c$6, { children: [
-    /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { justifyContent: "start", children: [
+    /* @__PURE__ */ jsxRuntimeExports$1.jsxs(a$m, { justifyContent: "start", className: "flex-wrap gap-2", children: [
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(
         h$2,
         {
           onValueChange: setSelectedBlock,
           placeholder: "Select category...",
-          className: "max-w-lg mr-6",
+          className: "max-w-lg",
           children: testResults2.Blocks.sort((a4, b3) => a4.Name > b3.Name ? 1 : -1).map((item) => /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$d, { value: item.Name, children: item.Name }, item.Name))
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports$1.jsx(
+        h$2,
+        {
+          onValueChange: setSelectedTag,
+          placeholder: "Select tag...",
+          className: "max-w-fit",
+          children: uniqueTags.sort((a4, b3) => a4 > b3 ? 1 : -1).map((tag) => /* @__PURE__ */ jsxRuntimeExports$1.jsx(i$d, { value: tag, children: tag }, tag))
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports$1.jsx(
@@ -58802,6 +58813,21 @@ const testResults = {
         "All"
       ],
       "Result": "Skipped",
+      "ScriptBlock": '\n        Test-MtAppManagementPolicyEnabled | Should -Be $true -Because "an app policy for workload identities should be defined to enforce strong credentials instead of passwords and a maximum expiry period (e.g. credential should be renewed every six months)"\n    ',
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-AppManagementPolicies.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "App Management Policies",
+      "ResultDetail": null
+    },
+    {
+      "Name": "MT.1003: App management restrictions on applications and service principals is configured and enabled.",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.1002",
+      "Tag": [
+        "App",
+        "Security",
+        "Some"
+      ],
+      "Result": "Passed",
       "ScriptBlock": '\n        Test-MtAppManagementPolicyEnabled | Should -Be $true -Because "an app policy for workload identities should be defined to enforce strong credentials instead of passwords and a maximum expiry period (e.g. credential should be renewed every six months)"\n    ',
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-AppManagementPolicies.Tests.ps1",
       "ErrorRecord": [],
@@ -59995,9 +60021,6 @@ video {
 .mr-5 {
   margin-right: 1.25rem;
 }
-.mr-6 {
-  margin-right: 1.5rem;
-}
 .mr-8 {
   margin-right: 2rem;
 }
@@ -60381,6 +60404,9 @@ video {
 }
 .gap-12 {
   gap: 3rem;
+}
+.gap-2 {
+  gap: 0.5rem;
 }
 .gap-3 {
   gap: 0.75rem;
