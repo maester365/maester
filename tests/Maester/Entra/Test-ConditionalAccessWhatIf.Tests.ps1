@@ -13,7 +13,7 @@ BeforeDiscovery {
 }
 
 
-Describe "Conditional Access WhatIf" -Tag "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
+Describe "Conditional Access WhatIf" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
 
     Context "Regular users" -ForEach @( $RegularUsers ) {
 
