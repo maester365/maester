@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').state -eq 'enabled'
 #>
 
-Function Test-MtEidscaAT01 {
+function Test-MtEidscaAT01 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 

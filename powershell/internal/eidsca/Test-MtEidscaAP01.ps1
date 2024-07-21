@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
 #>
 
-Function Test-MtEidscaAP01 {
+function Test-MtEidscaAP01 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

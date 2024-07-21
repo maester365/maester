@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
 #>
 
-Function Test-MtEidscaAP09 {
+function Test-MtEidscaAP09 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

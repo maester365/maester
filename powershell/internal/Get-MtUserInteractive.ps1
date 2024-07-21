@@ -3,7 +3,7 @@
     Returns if the current session is interactive or is being run in a non-interactive environment (e.g. Azure DevOps Pipeline or GitHub Actions).
 #>
 
-Function Get-MtUserInteractive {
+function Get-MtUserInteractive {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

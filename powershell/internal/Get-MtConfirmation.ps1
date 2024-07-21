@@ -1,4 +1,4 @@
-﻿Function Get-MtConfirmation {
+﻿function Get-MtConfirmation {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [CmdletBinding()]
     param ($message)

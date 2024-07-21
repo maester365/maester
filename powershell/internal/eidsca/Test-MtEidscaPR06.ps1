@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
 #>
 
-Function Test-MtEidscaPR06 {
+function Test-MtEidscaPR06 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

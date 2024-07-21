@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
 #>
 
-Function Test-MtEidscaST09 {
+function Test-MtEidscaST09 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

@@ -30,13 +30,13 @@ param (
     [string] $AadSecConfigUrl = 'https://raw.githubusercontent.com/Cloud-Architekt/AzureAD-Attack-Defense/AADSCAv4/config/EidscaConfig.json'
 )
 
-Function GetRelativeUri($graphUri) {
+function GetRelativeUri($graphUri) {
     $relativeUri = $graphUri -replace 'https://graph.microsoft.com/v1.0/', ''
     $relativeUri = $relativeUri -replace 'https://graph.microsoft.com/beta/', ''
     return $relativeUri
 }
 
-Function GetVersion($graphUri) {
+function GetVersion($graphUri) {
     $apiVersion = 'v1.0'
     if ($graphUri.Contains('beta')) {
         $apiVersion = 'beta'
@@ -44,7 +44,7 @@ Function GetVersion($graphUri) {
     return $apiVersion
 }
 
-Function GetRecommendedValue($RecommendedValue) {
+function GetRecommendedValue($RecommendedValue) {
     if($RecommendedValue -notlike "@('*,*')") {
         $compareOperators = @(">=",">","<")
         foreach ($compareOperator in $compareOperators) {
@@ -58,7 +58,7 @@ Function GetRecommendedValue($RecommendedValue) {
     }
 }
 
-Function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
+function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
     if($RecommendedValueMarkdown -like "@('*,*')") {
         $RecommendedValueMarkdown = $RecommendedValueMarkdown -replace "@\(", "" -replace "\)", ""
         return "$RecommendedValueMarkdown"
@@ -67,7 +67,7 @@ Function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
     }
 }
 
-Function GetCompareOperator($RecommendedValue) {
+function GetCompareOperator($RecommendedValue) {
     if ($RecommendedValue -like "@('*,*')") {
         $compareOperator = [PSCustomObject]@{
             name       = 'in'
@@ -108,7 +108,7 @@ Function GetCompareOperator($RecommendedValue) {
     return $compareOperator
 }
 
-Function GetPageTitle($uri) {
+function GetPageTitle($uri) {
     $isValidUri = ($uri -as [System.URI]).AbsoluteURI -ne $null
 
     $title = ''
@@ -122,7 +122,7 @@ Function GetPageTitle($uri) {
     return $title
 }
 
-Function GetPageMarkdownLink($uri) {
+function GetPageMarkdownLink($uri) {
     $output = $uri
 
     $title = GetPageTitle($uri)
@@ -133,12 +133,12 @@ Function GetPageMarkdownLink($uri) {
     return $output
 }
 
-Function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
+function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
     $graphExplorerUrl = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
     return "[Open in Graph Explorer]($graphExplorerUrl)"
 }
 
-Function GetMitreUrl($item) {
+function GetMitreUrl($item) {
     $item = $item.Trim()
 
     $urlPart = ''
@@ -161,7 +161,7 @@ Function GetMitreUrl($item) {
     return $url
 }
 
-Function GetMitreTitle($item) {
+function GetMitreTitle($item) {
     $url = GetMitreUrl($item)
     if ($null -eq $url) {
         return $item
@@ -174,7 +174,7 @@ Function GetMitreTitle($item) {
     return $title
 }
 
-Function GetMitreItems($items) {
+function GetMitreItems($items) {
     $output = ""
     $isFirst = $true
     foreach ($item in $items) {
@@ -189,7 +189,7 @@ Function GetMitreItems($items) {
     return $output
 }
 
-Function GetMitreMarkdownLink($item) {
+function GetMitreMarkdownLink($item) {
     $url = GetMitreUrl($item)
     if ($null -eq $url) {
         return $item
@@ -199,7 +199,7 @@ Function GetMitreMarkdownLink($item) {
     return $output
 }
 
-Function GetMitreMarkdownLinks($items) {
+function GetMitreMarkdownLinks($items) {
     $output = ""
     $isFirst = $true
     foreach ($item in $items) {
@@ -212,7 +212,7 @@ Function GetMitreMarkdownLinks($items) {
     }
     return $output
 }
-Function GetMitreDiagram($controlItem) {
+function GetMitreDiagram($controlItem) {
 
     if ($controlItem.MitreTactic.Length -le 0) {
         return ''
@@ -253,7 +253,7 @@ mindmap
     return $mermaid
 }
 
-Function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
+function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
     if([string]::IsNullOrEmpty($uri)) { return '' }
     if($lookupTitle) {
         $pageTitle = GetPageTitle($uri)
@@ -264,7 +264,7 @@ Function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
     return "- [$title]($uri)"
 }
 
-Function GetPortalDeepLinkMarkdown($portalDeepLink) {
+function GetPortalDeepLinkMarkdown($portalDeepLink) {
     $result = $portalDeepLink
     if (![string]::IsNullOrEmpty($portalDeepLink)) {
         $domain = ($uri -as [System.URI]).Host
@@ -279,7 +279,7 @@ Function GetPortalDeepLinkMarkdown($portalDeepLink) {
     return $result
 }
 
-Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
+function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $relativeUri = GetRelativeUri($control.GraphUri)
     $apiVersion = GetVersion($control.GraphUri)
 
@@ -361,23 +361,23 @@ Function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
 }
 
 # Returns the contents of a file named @template.txt at the given folder path
-Function GetTemplate($folderPath, $templateFileName = "@template.txt") {
+function GetTemplate($folderPath, $templateFileName = "@template.txt") {
     $templateFilePath = Join-Path $folderPath $templateFileName
     return Get-Content $templateFilePath -Raw
 }
 
-Function CreateFile($folderPath, $fileName, $content) {
+function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
     $content | Out-File $filePath -Encoding utf8
 }
 
-Function GetEidscaPsFunctionName($checkId) {
+function GetEidscaPsFunctionName($checkId) {
     $powerShellFunctionName = "Test-Mt$($checkId)"
     $powerShellFunctionName = $powerShellFunctionName.Replace("EIDSCA.", "Eidsca")
     return $powerShellFunctionName
 }
 
-Function GeneratePublicFunction($folderPath, $controlIds) {
+function GeneratePublicFunction($folderPath, $controlIds) {
     $output = GetTemplate -folderPath $folderPath -templateFileName '@Test-MtEidscaControl.txt'
     $output = $output -replace '%ArrayOfControlIds%', "'$($controlIds -replace '^.*\.' -join "','")'"
     $output = $output -replace '%InternalFunctionNameTemplate%', (GetEidscaPsFunctionName -checkId 'EIDSCA.$CheckId')

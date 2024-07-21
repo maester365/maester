@@ -12,7 +12,7 @@
     Returns a markdown list of Conditional Access policies with deeplinks to the relevant CA blade in Entra portal.
 #>
 
-Function Get-GraphObjectMarkdown {
+function Get-GraphObjectMarkdown {
     [CmdletBinding()]
     [OutputType([string])]
     param(

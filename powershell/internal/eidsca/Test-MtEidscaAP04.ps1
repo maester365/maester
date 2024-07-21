@@ -16,12 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 #>
 
-Function Test-MtEidscaAP04 {
+function Test-MtEidscaAP04 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
