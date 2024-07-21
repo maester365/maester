@@ -33,7 +33,10 @@ function Test-MtConnection {
         $isConnected = $false
         try {
             $isConnected = $null -ne (Get-AzContext -ErrorAction SilentlyContinue)
+            # Validate that the credentials are still valid
+            Invoke-AzRestMethod -Method GET -Path "subscriptions" -ErrorAction Stop | Out-Null
         } catch {
+            $isConnected = $false
             Write-Debug "Azure: $false"
         }
         Write-Verbose "Azure: $isConnected"
