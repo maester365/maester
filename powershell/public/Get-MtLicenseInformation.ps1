@@ -27,12 +27,12 @@ function Get-MtLicenseInformation {
         switch ($Product) {
             "EntraID" {
                 Write-Verbose "Retrieving license information for Entra ID"
-                $AvailablePlans = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'organization' | Select-Object -ExpandProperty assignedPlans | Where-Object service -EQ "AADPremiumService" | Select-Object -ExpandProperty servicePlanId
-                if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $AvailablePlans ) {
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $skus ) {
                     $LicenseType = "P2"
-                } elseif ( "e866a266-3cff-43a3-acca-0c90a7e00c8b" -in $AvailablePlans ) {
+                } elseif ( "e866a266-3cff-43a3-acca-0c90a7e00c8b" -in $skus ) {
                     $LicenseType = "Governance"
-                } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d" -in $AvailablePlans ) {
+                } elseif ( "41781fb2-bc02-4b7c-bd55-b576c07bb09d" -in $skus ) {
                     $LicenseType = "P1"
                 } else {
                     $LicenseType = "Free"
