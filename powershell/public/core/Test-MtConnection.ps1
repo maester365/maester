@@ -14,8 +14,11 @@
     Test-MtConnection -Service All
 
     Checks if the current session is connected to all services including Azure, Exchange and Microsoft Graph.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtConnection
 #>
-Function Test-MtConnection {
+function Test-MtConnection {
     [CmdletBinding()]
     param(
         # Checks if the current session is connected to the specified service
@@ -30,7 +33,10 @@ Function Test-MtConnection {
         $isConnected = $false
         try {
             $isConnected = $null -ne (Get-AzContext -ErrorAction SilentlyContinue)
+            # Validate that the credentials are still valid
+            Invoke-AzRestMethod -Method GET -Path "subscriptions" -ErrorAction Stop | Out-Null
         } catch {
+            $isConnected = $false
             Write-Debug "Azure: $false"
         }
         Write-Verbose "Azure: $isConnected"

@@ -44,7 +44,10 @@
         -UserRiskLevel High
 
     This example tests the Conditional Access policies for a user accessing the **My Security Info** page from an **Android** device with a **High** user risk level.
-    #>
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf
+#>
 function Test-MtConditionalAccessWhatIf {
     [CmdletBinding(DefaultParameterSetName = 'ApplicationBasedCA')]
     [OutputType([object])]

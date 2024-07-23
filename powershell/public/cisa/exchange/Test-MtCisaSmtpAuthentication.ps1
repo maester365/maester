@@ -9,9 +9,11 @@
     Test-MtCisaSmtpAuthentication
 
     Returns true if SMTP authentication is disabled in Exchange Online.
-#>
 
-Function Test-MtCisaSmtpAuthentication {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaSmtpAuthentication
+#>
+function Test-MtCisaSmtpAuthentication {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

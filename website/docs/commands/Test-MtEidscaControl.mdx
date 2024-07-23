@@ -1,65 +1,51 @@
 ---
 sidebar_class_name: hidden
-description: Returns all the members of the specific group ID.
-id: Get-MtGroupMember
-title: Get-MtGroupMember
+description: Tests your environment for compliance with the specified EIDSCA control
+id: Test-MtEidscaControl
+title: Test-MtEidscaControl
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtGroupMember.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEidscaControl.ps1
 ---
 
 ## SYNOPSIS
 
-Returns all the members of the specific group ID.
+Tests your environment for compliance with the specified EIDSCA control
 
 ## SYNTAX
 
 ```powershell
-Get-MtGroupMember [-GroupId] <Guid> [-Recursive] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtEidscaControl [-CheckId] <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Returns all the members of the specific group ID.
+Validates your environment against the specified EIDSCA control by comparing MS Graph result with the recommended value.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtGroupMember
+Test-MtEidscaControl -CheckId AP01
 ```
+
+Returns the result of the EIDSCA AP01 control check
 
 ## PARAMETERS
 
-### -GroupId
+### -CheckId
 
-ID for the Entra group to return members for.
+Id for the EIDSCA control check to test
 
 ```yaml
-Type: Guid
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 1
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Recursive
-
-Include indirect members through nested groups.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -88,8 +74,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### System.Boolean
+
 ## NOTES
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Get-MtGroupMember](https://maester.dev/docs/commands/Get-MtGroupMember)
+[https://maester.dev/docs/commands/Test-MtEidscaControl](https://maester.dev/docs/commands/Test-MtEidscaControl)

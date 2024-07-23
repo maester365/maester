@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaExclusionForDirectorySyncAccount
-#>
 
-Function Test-MtCaExclusionForDirectorySyncAccount {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
+#>
+function Test-MtCaExclusionForDirectorySyncAccount {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -46,7 +48,17 @@ Function Test-MtCaExclusionForDirectorySyncAccount {
         if ( $policy.conditions.applications.includeApplications -ne "All" ) {
             # Skip this policy, because it does not apply to all applications
             $currentresult = $true
-            Write-Verbose "Skipping $($policy.displayName) - $currentresult"
+            Write-Verbose "Skipping $($policy.displayName) because it's not scoped to all apps - $currentresult"
+            continue
+        }
+
+        if ( [string]::IsNullOrWhiteSpace($policy.conditions.users.includeUsers) -and `
+                [string]::IsNullOrWhiteSpace($policy.conditions.users.includeGroups) -and `
+                [string]::IsNullOrWhiteSpace($policy.conditions.users.includeRoles) -and `
+            ( -not [string]::IsNullOrWhiteSpace($policy.conditions.users.includeGuestsOrExternalUsers) ) ) {
+            # Skip this policy, because it does not apply to any internal users, but only guests
+            $currentresult = $true
+            Write-Verbose "Skipping $($policy.displayName) because no internal users is scoped - $currentresult"
             continue
         }
 

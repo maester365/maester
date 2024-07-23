@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
 #>
 
-Function Test-MtEidscaAG03 {
+function Test-MtEidscaAG03 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 

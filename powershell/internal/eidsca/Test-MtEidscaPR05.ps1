@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
 #>
 
-Function Test-MtEidscaPR05 {
+function Test-MtEidscaPR05 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

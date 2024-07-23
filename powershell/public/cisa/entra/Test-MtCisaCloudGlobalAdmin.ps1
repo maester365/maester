@@ -3,16 +3,17 @@
     Checks if Global Admins are cloud users
 
 .DESCRIPTION
-
     Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.
 
 .EXAMPLE
     Test-MtCisaCloudGlobalAdmin
 
     Returns true if all global admins are cloud users
-#>
 
-Function Test-MtCisaCloudGlobalAdmin {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaCloudGlobalAdmin
+#>
+function Test-MtCisaCloudGlobalAdmin {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

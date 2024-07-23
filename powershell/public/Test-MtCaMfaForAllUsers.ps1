@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaMfaForAllUsers
-#>
 
-Function Test-MtCaMfaForAllUsers {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaMfaForAllUsers
+#>
+function Test-MtCaMfaForAllUsers {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'AllUsers is a well known term for conditional access policies.')]
     [CmdletBinding()]
     [OutputType([bool])]

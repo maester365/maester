@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaMfaForRiskySignIn
-#>
 
-Function Test-MtCaMfaForRiskySignIn {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaMfaForRiskySignIn
+#>
+function Test-MtCaMfaForRiskySignIn {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

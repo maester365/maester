@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.guestUserRoleId -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
 #>
 
-Function Test-MtEidscaAP07 {
+function Test-MtEidscaAP07 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

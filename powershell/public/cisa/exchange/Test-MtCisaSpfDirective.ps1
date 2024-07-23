@@ -3,16 +3,17 @@
     Checks state of SPF records for all exo domains
 
 .DESCRIPTION
-
     An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
 .EXAMPLE
     Test-MtCisaSpfDirective
 
     Returns true if SPF record exists and has at least one directive
-#>
 
-Function Test-MtCisaSpfDirective {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaSpfDirective
+#>
+function Test-MtCisaSpfDirective {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

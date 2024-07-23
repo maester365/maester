@@ -45,9 +45,11 @@
    Connect-Maester -Privileged
 
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
-#>
 
-Function Connect-Maester {
+.LINK
+    https://maester.dev/docs/commands/Connect-Maester
+#>
+function Connect-Maester {
    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
    [Alias("Connect-MtGraph", "Connect-MtMaester")]
    [CmdletBinding()]
@@ -107,7 +109,14 @@ Function Connect-Maester {
    if ($Service -contains "ExchangeOnline" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Exchage Online"
       try {
-         Connect-ExchangeOnline -ShowBanner:$false -Device:$UseDeviceCode -ExchangeEnvironmentName $ExchangeEnvironmentName
+         if ( $UseDeviceCode -and $PSVersionTable.PSEdition -eq "Desktop" ) {
+            Write-Host "The Exchange Online module in Windows PowerShell does not support device code flow authentication." -ForegroundColor Red
+            Write-Host "💡Please use the Exchange Online module in PowerShell Core." -ForegroundColor Yellow
+         } elseif ( $UseDeviceCode ) {
+            Connect-ExchangeOnline -ShowBanner:$false -Device:$UseDeviceCode -ExchangeEnvironmentName $ExchangeEnvironmentName
+         } else {
+            Connect-ExchangeOnline -ShowBanner:$false -ExchangeEnvironmentName $ExchangeEnvironmentName
+         }
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
          Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -138,12 +147,12 @@ Function Connect-Maester {
          }
       }
       Write-Verbose "Connecting to Microsoft Security & Complaince PowerShell"
-      if ($Service -notcontains "ExchangeOnline" -and $Service -notcontains "All"){
+      if ($Service -notcontains "ExchangeOnline" -and $Service -notcontains "All") {
          Write-Host "`nThe Security & Complaince module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
-      }else{
-         if ($UseDeviceCode){
+      } else {
+         if ($UseDeviceCode) {
             Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
-         }else{
+         } else {
             try {
                Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $environments[$ExchangeEnvironmentName].AuthZEndpointUri
             } catch [Management.Automation.CommandNotFoundException] {

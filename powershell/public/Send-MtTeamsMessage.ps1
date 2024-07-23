@@ -20,9 +20,11 @@
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
-#>
 
-Function Send-MtTeamsMessage {
+.LINK
+    https://maester.dev/docs/commands/Send-MtTeamsMessage
+#>
+function Send-MtTeamsMessage {
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`

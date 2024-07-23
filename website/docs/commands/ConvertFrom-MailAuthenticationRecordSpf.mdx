@@ -27,10 +27,12 @@ Adapted from:
 - https://xkln.net/blog/getting-mx-spf-dmarc-dkim-and-smtp-banners-with-powershell/
 - SPF https://datatracker.ietf.org/doc/html/rfc7208
 
+```
 record   : v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com
-       include:_spf1-meo.microsoft.com -all
-terms    : \{SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…\}
+        include:_spf1-meo.microsoft.com -all
+terms    : {SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…}
 warnings :
+```
 
 ## EXAMPLES
 
@@ -46,7 +48,7 @@ Returns [SPFRecord] object or "Failure to obtain record"
 
 ### -DomainName
 
-\{\{ Fill DomainName Description \}\}
+Domain name to check.
 
 ```yaml
 Type: String
@@ -62,7 +64,7 @@ Accept wildcard characters: False
 
 ### -DnsServerIpAddress
 
-\{\{ Fill DnsServerIpAddress Description \}\}
+DNS-server to use for lookup.
 
 ```yaml
 Type: IPAddress
@@ -78,7 +80,7 @@ Accept wildcard characters: False
 
 ### -QuickTimeout
 
-\{\{ Fill QuickTimeout Description \}\}
+Use a shorter timeout value for the DNS lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -94,7 +96,7 @@ Accept wildcard characters: False
 
 ### -NoHostsFile
 
-\{\{ Fill NoHostsFile Description \}\}
+Ignore hosts file for domain lookup.
 
 ```yaml
 Type: SwitchParameter
@@ -138,3 +140,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf](https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf)

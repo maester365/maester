@@ -3,7 +3,7 @@
     Resets the style of the progress bar to the previous state on Windows.
 #>
 
-Function Reset-MtProgressView {
+function Reset-MtProgressView {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param ()

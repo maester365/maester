@@ -3,16 +3,17 @@
     Checks if guests use proper role template
 
 .DESCRIPTION
-
     Guest users SHOULD have limited or restricted access to Azure AD directory objects.
 
 .EXAMPLE
     Test-MtCisaGuestUserAccess
 
     Returns true if guests use proper role template
-#>
 
-Function Test-MtCisaGuestUserAccess {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGuestUserAccess
+#>
+function Test-MtCisaGuestUserAccess {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

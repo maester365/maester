@@ -3,16 +3,17 @@
     Checks if Conditional Access Policy requiring MFA is enabled
 
 .DESCRIPTION
-
     If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users
 
 .EXAMPLE
     Test-MtCisaMfa
 
     Returns true if at least one policy requires MFA
-#>
 
-Function Test-MtCisaMfa {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaMfa
+#>
+function Test-MtCisaMfa {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

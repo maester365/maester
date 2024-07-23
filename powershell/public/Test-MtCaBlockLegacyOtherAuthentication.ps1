@@ -11,9 +11,11 @@
 
  .Example
   Test-MtCaBlockLegacyOtherAuthentication
-#>
 
-Function Test-MtCaBlockLegacyOtherAuthentication {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaBlockLegacyOtherAuthentication
+#>
+function Test-MtCaBlockLegacyOtherAuthentication {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

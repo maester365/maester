@@ -1,4 +1,4 @@
-﻿Describe "Conditional Access Baseline Policies" -Tag "CA", "Security", "All" {
+﻿Describe "Conditional Access Baseline Policies" -Tag "Maester", "CA", "Security", "All" {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }

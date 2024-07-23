@@ -16,7 +16,7 @@ Use this if you need to force a refresh of the cache in the current session.
 ## SYNTAX
 
 ```powershell
-Clear-MtGraphCache
+Clear-MtGraphCache [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,6 +37,26 @@ This example clears the cache of all Graph API calls.
 
 ## PARAMETERS
 
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ## OUTPUTS
@@ -44,3 +64,5 @@ This example clears the cache of all Graph API calls.
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Clear-MtGraphCache](https://maester.dev/docs/commands/Clear-MtGraphCache)

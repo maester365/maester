@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
 #>
 
-Function Test-MtEidscaAP06 {
+function Test-MtEidscaAP06 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

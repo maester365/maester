@@ -3,7 +3,6 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.
 
 .EXAMPLE
@@ -15,12 +14,15 @@
     Test-MtCisaDmarcAggregateCisa -Force
 
     Returns true if DMARC record with reject policy exists for every domain
-#>
 
-Function Test-MtCisaDmarcAggregateCisa {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa
+#>
+function Test-MtCisaDmarcAggregateCisa {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Check all domains, not only .gov domains.
         [switch]$Force
     )
 
@@ -35,6 +37,17 @@ Function Test-MtCisaDmarcAggregateCisa {
         -not $_.SendingFromDomainDisabled
     }
     #>
+    $tldMatch = "^.*\.(?'tld'.*)$"
+    $govDomains = $acceptedDomains | Where-Object {`
+        $_ -imatch $tldMatch|Out-Null;
+        if($Matches.tld -eq "gov"){$_}
+    }
+
+    if(!($govDomains) -and !($Force)){
+        Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
+        return $null
+    }
+
     $expandedDomains = @()
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios
@@ -49,11 +62,6 @@ Function Test-MtCisaDmarcAggregateCisa {
         }else{
             $expandedDomains += $domain.domainname
         }
-    }
-
-    if(!($expandedDomains -notlike "*.gov") -and !($Force)){
-        Add-MtTestResultDetail -SkippedBecause NotDotGovDomain
-        return $null
     }
 
     $dmarcRecords = @()

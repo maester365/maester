@@ -20,9 +20,11 @@
     $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
     This example shows how to generate the html report and save it to a file by using Invoke-Maester
-#>
 
-Function Get-MtHtmlReport {
+.LINK
+    https://maester.dev/docs/commands/Get-MtHtmlReport
+#>
+function Get-MtHtmlReport {
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
@@ -30,6 +32,7 @@ Function Get-MtHtmlReport {
         [psobject] $MaesterResults
     )
 
+    Write-Verbose "Generating HTML report."
     $json = $MaesterResults | ConvertTo-Json -Depth 3 -WarningAction Ignore
 
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'

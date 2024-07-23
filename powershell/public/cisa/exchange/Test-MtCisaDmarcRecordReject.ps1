@@ -3,16 +3,17 @@
     Checks state of DMARC records for all exo domains
 
 .DESCRIPTION
-
     The DMARC message rejection option SHALL be p=reject.
 
 .EXAMPLE
     Test-MtCisaDmarcRecordExist
 
     Returns true if DMARC record with reject policy exists for every domain
-#>
 
-Function Test-MtCisaDmarcRecordReject {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaDmarcRecordReject
+#>
+function Test-MtCisaDmarcRecordReject {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

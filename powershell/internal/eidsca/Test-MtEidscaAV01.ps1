@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
 #>
 
-Function Test-MtEidscaAV01 {
+function Test-MtEidscaAV01 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 

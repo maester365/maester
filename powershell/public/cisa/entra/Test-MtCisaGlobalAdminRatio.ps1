@@ -3,16 +3,17 @@
     Checks the ratio of global admins to privileged roles
 
 .DESCRIPTION
-
     Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
 .EXAMPLE
     Test-MtCisaGlobalAdminRatio
 
     Returns true if global admin to privileged roles ration is 1 or less
-#>
 
-Function Test-MtCisaGlobalAdminRatio {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGlobalAdminRatio
+#>
+function Test-MtCisaGlobalAdminRatio {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -42,20 +43,25 @@ Function Test-MtCisaGlobalAdminRatio {
         $_.'@odata.type' -eq "#microsoft.graph.user"}
 
     If ($otherAssignments.Count) {
+        $ratio = 0
         $ratio = $globalAdministrators.Count / $otherAssignments.Count
         $testResult = $ratio -le 1
     } Else {
         $testResult = $false
     }
 
-    $users = $roleAssignments.assignments | Sort-Object id -Unique
+    $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has more granular role assignments than global admin assignments:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has more granular [role assignments]($link) than global admin assignments.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have enough granular role assignments."
+        $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%TestResult%"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $users
+    $result = "Current Ratio: $([System.Math]::Round($ratio,2)) = $($globalAdministrators.Count) / $($otherAssignments.Count)`n`n"
+    $result += "Ratio >= 1 - $($ratio -ge 1)"
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

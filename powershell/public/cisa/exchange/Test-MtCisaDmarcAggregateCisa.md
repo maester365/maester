@@ -4,6 +4,8 @@ Rationale: Email spoofing attempts are not inherently visible to domain owners. 
 
 **Note: Only federal, executive branch, departments and agencies should include this email address in their DMARC record.**
 
+> For other organization's there are many services that offer managed DMARC analysis and reporting, though ensure you properly align your implementation with your organization's policies for data handling.
+
 #### Remediation action:
 
 * See MS.EXO.4.1v1 Instructions for an overview of how to publish and check a DMARC record.

@@ -16,11 +16,12 @@
     Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
 #>
 
-Function %PSFunctionName% {
+function %PSFunctionName% {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
+    %SkipCheck%
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
     [string]$tenantValue = $result.%CurrentValue%

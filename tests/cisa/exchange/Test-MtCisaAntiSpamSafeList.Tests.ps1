@@ -3,7 +3,7 @@ Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.12.2", "CISA", "Security", "All" {
 
         $cisaAntiSpamSafeList = Test-MtCisaAntiSpamSafeList
 
-        if($null -eq $cisaAntiSpamSafeList) {
+        if($null -ne $cisaAntiSpamSafeList) {
             $cisaAntiSpamSafeList | Should -Be $true -Because "Safe Lists should be disabled."
         }
     }

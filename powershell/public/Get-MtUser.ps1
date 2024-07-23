@@ -19,6 +19,8 @@
     Get-MtUser -Count 5 -UserType Member
     # Get 5 Member users from the tenant.
 
+.LINK
+    https://maester.dev/docs/commands/Get-MtUser
 #>
 function Get-MtUser {
     [OutputType([System.Collections.ArrayList])]

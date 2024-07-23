@@ -16,10 +16,15 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
 #>
 
-Function Test-MtEidscaCP03 {
+function Test-MtEidscaCP03 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    if ( $SettingsApiAvailable -notcontains 'BlockUserConsentForRiskyApps' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
+            return $null
+    }
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

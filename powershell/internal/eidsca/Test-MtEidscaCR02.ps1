@@ -16,10 +16,15 @@
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
 #>
 
-Function Test-MtEidscaCR02 {
+function Test-MtEidscaCR02 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
+            return $null
+    }
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 

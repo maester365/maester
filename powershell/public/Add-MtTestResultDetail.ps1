@@ -30,9 +30,10 @@
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
+.LINK
+    https://maester.dev/docs/commands/Add-MtTestResultDetail
 #>
-
-Function Add-MtTestResultDetail {
+function Add-MtTestResultDetail {
     [CmdletBinding()]
     param(
         # Brief description of what this test is checking.
@@ -53,7 +54,7 @@ Function Add-MtTestResultDetail {
 
         # The type of graph object, this will be used to show the right deeplink to the test results report.
         [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
-            'Devices', 'DiagnosticSettings', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
+            'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
         )]
         [string] $GraphObjectType,
 
@@ -62,16 +63,29 @@ Function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
+        [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance',
-            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported'
+            'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', "LicensedEntraIDPremium", 'NotSupported', 'Custom'
         )]
-        [string] $SkippedBecause
+        # Common reasons for why the test was skipped.
+        [string] $SkippedBecause,
+
+        [Parameter(Mandatory = $false)]
+        # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
+        [string] $SkippedCustomReason
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
 
     if ($SkippedBecause) {
-        $SkippedReason = Get-MtSkippedReason $SkippedBecause
+        if ($SkippedBecause -eq 'Custom') {
+            if ([string]::IsNullOrEmpty($SkippedCustomReason)) {
+                throw "SkippedBecause is set to 'Custom' but no SkippedCustomReason was provided."
+            }
+            $SkippedReason = $SkippedCustomReason
+        } else {
+            $SkippedReason = Get-MtSkippedReason $SkippedBecause
+        }
 
         if ([string]::IsNullOrEmpty($Result)) {
             $Result = "Skipped. $SkippedReason"

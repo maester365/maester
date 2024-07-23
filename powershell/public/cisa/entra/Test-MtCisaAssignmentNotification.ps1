@@ -3,16 +3,17 @@
     Checks for notification on role assignments
 
 .DESCRIPTION
-
     Eligible and Active highly privileged role assignments SHALL trigger an alert.
 
 .EXAMPLE
     Test-MtCisaAssignmentNotification
 
     Returns true if notifications are set for all roles
-#>
 
-Function Test-MtCisaAssignmentNotification {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAssignmentNotification
+#>
+function Test-MtCisaAssignmentNotification {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

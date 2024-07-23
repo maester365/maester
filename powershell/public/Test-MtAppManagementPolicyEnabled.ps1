@@ -7,9 +7,11 @@
 
  .Example
   Test-MtAppManagementPolicyEnabled
-#>
 
-Function Test-MtAppManagementPolicyEnabled {
+.LINK
+    https://maester.dev/docs/commands/Test-MtAppManagementPolicyEnabled
+#>
+function Test-MtAppManagementPolicyEnabled {
   [CmdletBinding()]
   [OutputType([bool])]
   param()

@@ -70,9 +70,11 @@ Invoke-Maester -PesterConfiguration $configuration
 
 ```
 Runs all the Pester tests in the EIDSCA folder.
-#>
 
-Function Invoke-Maester {
+.LINK
+    https://maester.dev/docs/commands/Invoke-Maester
+#>
+function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Alias("Invoke-MtMaester")]
     [CmdletBinding()]
@@ -216,15 +218,15 @@ Function Invoke-Maester {
         return $PesterConfiguration
     }
 
+    # ASCII Art using style "ANSI Shadow"
     $motd = @"
 
-.___  ___.      ___       _______     _______.___________. _______ .______         ____    ____  ___      __
-|   \/   |     /   \     |   ____|   /       |           ||   ____||   _  \        \   \  /   / / _ \    /_ |
-|  \  /  |    /  ^  \    |  |__     |   (--------|  |----``|  |__   |  |_)  |        \   \/   / | | | |    | |
-|  |\/|  |   /  /_\  \   |   __|     \   \       |  |     |   __|  |      /          \      /  | | | |    | |
-|  |  |  |  /  _____  \  |  |____.----)   |      |  |     |  |____ |  |\  \----.      \    /   | |_| |  __| |
-|__|  |__| /__/     \__\ |_______|_______/       |__|     |_______|| _| ``._____|       \__/     \___/  (__)_|
-
+███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗     ██╗   ██╗ ██████╗    ██████╗
+████╗ ████║██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗    ██║   ██║██╔═████╗   ╚════██╗
+██╔████╔██║███████║█████╗  ███████╗   ██║   █████╗  ██████╔╝    ██║   ██║██║██╔██║    █████╔╝
+██║╚██╔╝██║██╔══██║██╔══╝  ╚════██║   ██║   ██╔══╝  ██╔══██╗    ╚██╗ ██╔╝████╔╝██║   ██╔═══╝
+██║ ╚═╝ ██║██║  ██║███████╗███████║   ██║   ███████╗██║  ██║     ╚████╔╝ ╚██████╔╝██╗███████╗
+╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝      ╚═══╝   ╚═════╝ ╚═╝╚══════╝
 
 "@
     Write-Host -ForegroundColor Green $motd
@@ -262,7 +264,29 @@ Function Invoke-Maester {
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
+
+    if ( Test-Path -Path $Path -PathType Leaf ) {
+        Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
+
+    if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
+        Write-Host "The path '$Path' does not exist." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
+
+    if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
+        Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
+        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
+        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        return
+    }
 
     $maesterResults = $null
 

@@ -35,9 +35,10 @@
 
   Returns all the currently active members of the role with the specified RoleId.
 
+.LINK
+    https://maester.dev/docs/commands/Get-MtRoleMember
 #>
-
-Function Get-MtRoleMember {
+function Get-MtRoleMember {
   [CmdletBinding(DefaultParameterSetName = "RoleName")]
   param(
     # The name of the role to get members for.
@@ -117,7 +118,7 @@ Function Get-MtRoleMember {
       $groups = $assignments | Where-Object { $_.'@odata.type' -eq "#microsoft.graph.group" }
       $groups | ForEach-Object {`
           #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-          $assignments += Get-MtGroupMember -groupId $_.id
+          $assignments += Get-MtGroupMember -GroupId $_.id
       }
     }
 

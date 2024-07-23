@@ -10,8 +10,14 @@
     Get-MtSession
 
     Returns the current Maester session information.
-#>
 
-Function Get-MtSession {
+.LINK
+    https://maester.dev/docs/commands/Get-MtSession
+#>
+function Get-MtSession {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose 'Getting the current Maester session information.'
     Write-Output $__MtSession
 }

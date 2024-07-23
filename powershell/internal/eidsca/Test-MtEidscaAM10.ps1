@@ -16,10 +16,15 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayLocationInformationRequiredState.includeTarget.id -eq 'all_users'
 #>
 
-Function Test-MtEidscaAM10 {
+function Test-MtEidscaAM10 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    if ( $EnabledAuthMethods -notcontains 'MicrosoftAuthenticator' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Microsoft Authenticator is not enabled.'
+            return $null
+    }
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 

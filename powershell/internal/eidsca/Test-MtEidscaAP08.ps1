@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 #>
 
-Function Test-MtEidscaAP08 {
+function Test-MtEidscaAP08 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 

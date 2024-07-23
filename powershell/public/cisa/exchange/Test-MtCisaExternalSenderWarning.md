@@ -2,7 +2,23 @@ External sender warnings SHALL be implemented.
 
 Rationale: Phishing is an ever-present threat. Alerting users when email originates from outside their organization can encourage them to exercise increased caution, especially if an email is one they expected from an internal sender.
 
+> ⚠️ WARNING: This test allows the use of a technical mechanism that differs from CISA's, though the outcome is the same.
+
 #### Remediation action:
+
+##### Option 1: Use external sender identification
+
+This feature is only available for Outlook, Outlook for Mac, Outlook on the web, and Outlook for iOS and Android.
+
+1. Connect to Exchange Online using PowerShell module `ExchangeOnlineManagement`
+2. Enable the feature with the cmdlet `Set-ExternalInOutlook`
+
+```powershell
+Connect-ExchangeOnline
+Set-ExternalInOutlook -Enabled $true
+```
+
+##### Option 2: Prepend subject with "[External]"
 
 To create a mail flow rule to produce external sender warnings:
 1. Sign in to the **Exchange admin center**.

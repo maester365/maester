@@ -3,16 +3,17 @@
     Checks for approval requirement on activation of Gloabl Admin role
 
 .DESCRIPTION
-
     Activation of the Global Administrator role SHALL require approval.
 
 .EXAMPLE
     Test-MtCisaRequireActivationApproval
 
     Returns true if the Global Admin role requires approval on activation
-#>
 
-Function Test-MtCisaRequireActivationApproval {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaRequireActivationApproval
+#>
+function Test-MtCisaRequireActivationApproval {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

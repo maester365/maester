@@ -7,27 +7,44 @@ import StatusLabel from "./StatusLabel";
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped']);
   const [selectedBlock, setSelectedBlock] = useState([]);
+  const [selectedTag, setSelectedTag] = useState([]);
   const testResults = props.TestResults;
 
   const isStatusSelected = (item) => {
-    return (selectedStatus.includes(item.Result) || selectedStatus.length === 0) && (selectedBlock.includes(item.Block) || selectedBlock.length === 0);
+    return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
+      (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
+      (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag)));
   }
 
   const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
+  const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag))];
 
   return (
     <Card>
-      <Flex justifyContent="start">
+      <Flex justifyContent="start" className="flex-wrap gap-2">
         <MultiSelect
           onValueChange={setSelectedBlock}
           placeholder="Select category..."
-          className="max-w-lg mr-6"
+          className="max-w-lg"
         >
           {testResults.Blocks
             .sort((a, b) => a.Name > b.Name ? 1 : -1)
             .map((item) => (
               <MultiSelectItem key={item.Name} value={item.Name}>
                 {item.Name}
+              </MultiSelectItem>
+            ))}
+        </MultiSelect>
+        <MultiSelect
+          onValueChange={setSelectedTag}
+          placeholder="Select tag..."
+          className="max-w-fit"
+        >
+          {uniqueTags
+            .sort((a, b) => a > b ? 1 : -1)
+            .map((tag) => (
+              <MultiSelectItem key={tag} value={tag}>
+                {tag}
               </MultiSelectItem>
             ))}
         </MultiSelect>

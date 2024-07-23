@@ -11,9 +11,11 @@
 
  .Example
   Test-MtCaBlockLegacyExchangeActiveSyncAuthentication
-#>
 
-Function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication
+#>
+function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

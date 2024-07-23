@@ -19,9 +19,10 @@
  .Example
     Disconnect-MtMaester
 
+.LINK
+    https://maester.dev/docs/commands/Disconnect-Maester
 #>
-
-Function Disconnect-Maester {
+function Disconnect-Maester {
    [Alias("Disconnect-MtMaester", "Disconnect-MtGraph")]
    [CmdletBinding()]
    param()

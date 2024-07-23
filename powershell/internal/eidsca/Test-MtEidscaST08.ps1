@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
 #>
 
-Function Test-MtEidscaST08 {
+function Test-MtEidscaST08 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 

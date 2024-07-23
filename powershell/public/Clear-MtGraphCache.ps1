@@ -16,6 +16,9 @@
     Clear-MtGraphCache
 
     This example clears the cache of all Graph API calls.
+
+.LINK
+    https://maester.dev/docs/commands/Clear-MtGraphCache
 #>
 function Clear-MtGraphCache {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting module level variable')]

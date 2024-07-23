@@ -3,7 +3,6 @@
     Checks for notification on role activation
 
 .DESCRIPTION
-
     User activation of the Global Administrator role SHALL trigger an alert.
     User activation of other highly privileged roles SHOULD trigger an alert.
 
@@ -16,19 +15,33 @@
     Test-MtCisaActivationNotification -GlobalAdminOnly
 
     Returns true if notifications are set for activation of the Global Admin role
-#>
 
-Function Test-MtCisaActivationNotification {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaActivationNotification
+#>
+function Test-MtCisaActivationNotification {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # Check Global Administrator role only
         [switch]$GlobalAdminOnly
     )
 
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-    $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
-    if(-not $pim){
-        return $false
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }else{
+        $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+        if($EntraIDPlan -notin @("P2","Governance")){
+            if($EntraIDPlan -ne "P2"){
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+                return $null
+            }elseif($EntraIDPlan -ne "Governance"){
+                #This will not currently be hit
+                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDGovernance
+                return $null
+            }
+        }
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
@@ -74,11 +87,28 @@ Function Test-MtCisaActivationNotification {
 
     $testResult = ($misconfigured|Measure-Object).Count -eq 0
 
+    $link = "https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles"
+    $resultFail = "❌ Fail"
+    $resultPass = "✅ Pass"
+
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for role activations:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for [role activations]($link).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have notifications on role activations."
+        $testResultMarkdown = "Your tenant does not have notifications on [role activations]($link).`n`n%TestResult%"
     }
+
+    $result = "| Role Name | Result |`n"
+    $result += "| --- | --- |`n"
+
+    foreach ($item in $rolePolicies) {
+        $itemResult = $resultFail
+        if($item.activationNotify){
+            $itemResult = $resultPass
+        }
+        $result += "| $($item.role) | $($itemResult) |`n"
+    }
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult

@@ -3,6 +3,7 @@
   Returns all the role definitions in the tenant.
 
  .Description
+  Returns all the role definitions in the tenant.
 
  .Parameter CisaHighlyPrivilegedRoles
   Filters the returned roles to only those described
@@ -10,9 +11,11 @@
 
  .Example
   Get-MtRole
-#>
 
-Function Get-MtRole {
+.LINK
+    https://maester.dev/docs/commands/Get-MtRole
+#>
+function Get-MtRole {
   [CmdletBinding()]
   param(
     [switch]$CisaHighlyPrivilegedRoles

@@ -20,9 +20,11 @@
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an email with the summary of the Maester test results to two users along with the link to the detailed test results.
-#>
 
-Function Send-MtMail {
+.LINK
+    https://maester.dev/docs/commands/Send-MtMail
+#>
+function Send-MtMail {
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`

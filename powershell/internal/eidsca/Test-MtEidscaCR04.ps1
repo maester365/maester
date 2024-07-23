@@ -16,10 +16,15 @@
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.requestDurationInDays -eq '30'
 #>
 
-Function Test-MtEidscaCR04 {
+function Test-MtEidscaCR04 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
+            return $null
+    }
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 

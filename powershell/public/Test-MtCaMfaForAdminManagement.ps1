@@ -11,9 +11,11 @@
 
  .Example
   Test-MtCaMfaForAdminManagement
-#>
 
-Function Test-MtCaMfaForAdminManagement {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaMfaForAdminManagement
+#>
+function Test-MtCaMfaForAdminManagement {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

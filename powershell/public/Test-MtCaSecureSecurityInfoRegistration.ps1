@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaSecureSecurityInfoRegistration
-#>
 
-Function Test-MtCaSecureSecurityInfoRegistration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaSecureSecurityInfoRegistration
+#>
+function Test-MtCaSecureSecurityInfoRegistration {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

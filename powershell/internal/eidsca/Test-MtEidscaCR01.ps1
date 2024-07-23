@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
 #>
 
-Function Test-MtEidscaCR01 {
+function Test-MtEidscaCR01 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 

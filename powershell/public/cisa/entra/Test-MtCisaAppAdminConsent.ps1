@@ -3,16 +3,17 @@
     Checks if admin consent workflow is configured with reviewers
 
 .DESCRIPTION
-
     An admin consent workflow SHALL be configured for applications.
 
 .EXAMPLE
     Test-MtCisaAppAdminConsent
 
     Returns true if configured
-#>
 
-Function Test-MtCisaAppAdminConsent {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaAppAdminConsent
+#>
+function Test-MtCisaAppAdminConsent {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

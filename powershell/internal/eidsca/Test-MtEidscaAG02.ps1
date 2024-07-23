@@ -16,10 +16,12 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.reportSuspiciousActivitySettings.state -eq 'enabled'
 #>
 
-Function Test-MtEidscaAG02 {
+function Test-MtEidscaAG02 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 

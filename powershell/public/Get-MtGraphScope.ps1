@@ -24,9 +24,11 @@
     Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
 
     Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
-#>
 
-Function Get-MtGraphScope {
+.LINK
+    https://maester.dev/docs/commands/Get-MtGraphScope
+#>
+function Get-MtGraphScope {
 
     [CmdletBinding()]
     param(

@@ -3,17 +3,17 @@
     Returns a list of all IP addresses from an SPF record
 
 .DESCRIPTION
-
     https://cloudbrothers.info/en/powershell-tip-resolve-spf/
 
 .EXAMPLE
     Resolve-SPFRecord microsoft.com
 
+.LINK
+    https://maester.dev/docs/commands/Resolve-SPFRecord
 #>
-
 function Resolve-SPFRecord {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
-    [OutputType([spfrecord[]],[System.String])]
+    [OutputType([spfrecord[]], [System.String])]
     [CmdletBinding()]
     param (
         # Domain Name
@@ -67,12 +67,12 @@ function Resolve-SPFRecord {
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
         # Query DNS Record
-        try{
-            if($isWindows){
+        try {
+            if ($isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
-            }else{
-                $cmdletCheck = Get-Command "Resolve-Dns"
-                if($cmdletCheck){
+            } else {
+                $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
+                if ($cmdletCheck) {
                     $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType TXT).Answers
                     $DNSRecords = $answers | ForEach-Object {
                         [PSCustomObject]@{
@@ -82,17 +82,17 @@ function Resolve-SPFRecord {
                             Strings = $_.Text
                         }
                     }
-                }else{
-                    Write-Error "`nFor non-Windows platforms, please install DnsClient-PS module."
-                    Write-Host "`n    Install-Module DnsClient-PS -Scope CurrentUser`n" -ForegroundColor Yellow
+                } else {
+                    Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
+                    Write-Verbose "`n    Install-Module DnsClient-PS -Scope CurrentUser`n"
                     return "Missing dependency, Resolve-Dns not available"
                 }
             }
-        }catch [System.Management.Automation.CommandNotFoundException]{
-            Write-Error $_
+        } catch [System.Management.Automation.CommandNotFoundException] {
+            Write-Verbose $_
             return "Unsupported platform, Resolve-DnsName not available"
-        }catch{
-            Write-Error $_
+        } catch {
+            Write-Verbose $_
             return "Failure to obtain record"
         }
         # Check SPF record
@@ -102,14 +102,12 @@ function Resolve-SPFRecord {
 
         if ( $SPFCount -eq 0) {
             # If there is no error show an error
-            Write-Error "No SPF record found for `"$Name`""
-        }
-        elseif ( $SPFCount -ge 2 ) {
+            Write-Verbose "No SPF record found for `"$Name`""
+        } elseif ( $SPFCount -ge 2 ) {
             # Multiple DNS Records are not allowed
             # https://tools.ietf.org/html/rfc7208#section-3.2
-            Write-Error "There is more than one SPF for domain `"$Name`""
-        }
-        else {
+            Write-Verbose "There is more than one SPF for domain `"$Name`""
+        } else {
             # Multiple Strings in a Single DNS Record
             # https://tools.ietf.org/html/rfc7208#section-3.3
             $SPFString = $SPFRecord.Strings -join ''
@@ -122,8 +120,7 @@ function Resolve-SPFRecord {
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
                 # Follow the include and resolve the include
                 Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
-            }
-            else {
+            } else {
 
                 # Extract the qualifier
                 $Qualifier = switch ( $SPFDirectives -match "^[+-?~]all$" -replace "all" ) {
@@ -136,11 +133,11 @@ function Resolve-SPFRecord {
                 $ReturnValues = foreach ($SPFDirective in $SPFDirectives) {
                     switch -Regex ($SPFDirective) {
                         "%[{%-_]" {
-                            Write-Warning "[$_]`tMacros are not supported. For more information, see https://tools.ietf.org/html/rfc7208#section-7"
+                            Write-Verbose "[$_]`tMacros are not supported. For more information, see https://tools.ietf.org/html/rfc7208#section-7"
                             Continue
                         }
                         "^exp:.*$" {
-                            Write-Warning "[$_]`tExplanation is not supported. For more information, see https://tools.ietf.org/html/rfc7208#section-6.2"
+                            Write-Verbose "[$_]`tExplanation is not supported. For more information, see https://tools.ietf.org/html/rfc7208#section-6.2"
                             Continue
                         }
                         '^include:.*$' {
@@ -158,9 +155,9 @@ function Resolve-SPFRecord {
                         }
                         '^a:.*$' {
                             Write-Verbose "[A]`tSPF entry: $SPFDirective"
-                            if($IsWindows){
+                            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type A
-                            }else{
+                            } else {
                                 $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
                                 $DNSRecords = $answers | ForEach-Object {
                                     [PSCustomObject]@{
@@ -185,9 +182,9 @@ function Resolve-SPFRecord {
                         }
                         '^mx:.*$' {
                             Write-Verbose "[MX]`tSPF entry: $SPFDirective"
-                            if($IsWindows){
+                            if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                 $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type MX
-                            }else{
+                            } else {
                                 $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType MX).Answers
                                 $DNSRecords = $answers | ForEach-Object {
                                     [PSCustomObject]@{
@@ -201,9 +198,9 @@ function Resolve-SPFRecord {
                             }
                             foreach ($MXRecords in ($DNSRecords.NameExchange) ) {
                                 # Check SPF record
-                                if($isWindows){
+                                if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                                     $DNSRecords = Resolve-DnsName -Server $Server -Name $MXRecords -Type A
-                                }else{
+                                } else {
                                     $answers = (Resolve-Dns -NameServer $Server -Query $Name -QueryType A).Answers
                                     $DNSRecords = $answers | ForEach-Object {
                                         [PSCustomObject]@{
@@ -227,17 +224,17 @@ function Resolve-SPFRecord {
                             }
                         }
                         Default {
-                            Write-Warning "[$_]`t Unknown directive"
+                            Write-Verbose "[$_]`t Unknown directive"
                         }
                     }
                 }
 
                 $DNSQuerySum = $ReturnValues | Select-Object -Unique SPFSourceDomain | Measure-Object | Select-Object -ExpandProperty Count
                 if ( $DNSQuerySum -gt 6) {
-                    Write-Warning "Watch your includes!`nThe maximum number of DNS queries is 10 and you have already $DNSQuerySum.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
+                    Write-Verbose "Watch your includes!`nThe maximum number of DNS queries is 10 and you have already $DNSQuerySum.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
                 }
                 if ( $DNSQuerySum -gt 10) {
-                    Write-Error "Too many DNS queries made ($DNSQuerySum).`nMust not exceed 10 DNS queries.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
+                    Write-Verbose "Too many DNS queries made ($DNSQuerySum).`nMust not exceed 10 DNS queries.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
                 }
 
                 return $ReturnValues

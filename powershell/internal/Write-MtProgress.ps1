@@ -6,7 +6,7 @@
    Show updates to the user on the current activity.
 #>
 
-Function Write-MtProgress {
+function Write-MtProgress {
     [CmdletBinding()]
     Param (
         # Specifies the first line of text in the heading above the status bar. This text describes the activity whose progress is being reported.

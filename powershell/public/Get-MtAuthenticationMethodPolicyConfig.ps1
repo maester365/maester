@@ -7,6 +7,9 @@
 
 .EXAMPLE
     Get-MtAuthenticationMethodPolicyConfig -State Enabled
+
+.LINK
+    https://maester.dev/docs/commands/Get-MtAuthenticationMethodPolicyConfig
 #>
 function Get-MtAuthenticationMethodPolicyConfig {
 
@@ -14,6 +17,7 @@ function Get-MtAuthenticationMethodPolicyConfig {
     param(
         [Parameter(Mandatory = $false)]
         [ValidateSet("Enabled", "Disabled")]
+        # Only return methods in the spcecified state. Can be Enabled or Disabled.
         [string]$State
     )
 

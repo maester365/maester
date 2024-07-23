@@ -3,16 +3,17 @@
     Checks if guest invitiations are restricted to admins
 
 .DESCRIPTION
-
     Only users with the Guest Inviter role SHOULD be able to invite guest users.
 
 .EXAMPLE
     Test-MtCisaGuestInvitation
 
     Returns true if guest invitiations are restricted to admins
-#>
 
-Function Test-MtCisaGuestInvitation {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaGuestInvitation
+#>
+function Test-MtCisaGuestInvitation {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

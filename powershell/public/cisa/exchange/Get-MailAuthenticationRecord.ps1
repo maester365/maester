@@ -3,7 +3,6 @@
     Obtains and converts the mail authentication records of a domain
 
 .DESCRIPTION
-
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -16,32 +15,40 @@
     Get-MailAuthenticationRecord -DomainName "microsoft.com"
 
     Returns an object containing the structured mail authentication objects
-#>
 
-Function Get-MailAuthenticationRecord {
+.LINK
+    https://maester.dev/docs/commands/Get-MailAuthenticationRecord
+#>
+function Get-MailAuthenticationRecord {
     [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(
         [Parameter(Mandatory)]
+        # Domain name to check.
         [string]$DomainName,
 
+        # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
+        # Selector-name for the DKIM record to retrieve.
         [string]$DkimSelector = "selector1",
 
-        [ValidateSet("All","DKIM","DMARC","MX","SPF")]
+        [ValidateSet("All", "DKIM", "DMARC", "MX", "SPF")]
+        # Specify which records should be retrieved. Accepted values are 'All', 'DKIM', 'DMARC', 'MX' and/or 'SPF'.
         [string[]]$Records = "All",
 
+        # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
 
+        # Ignore hosts file for domain lookup.
         [switch]$NoHostsFile
     )
 
     begin {
-        if($Records -contains "All"){
+        if ($Records -contains "All") {
             $all = $dkim = $dmarc = $mx = $spf = $true
-        }else{
-            foreach($record in $Records){
+        } else {
+            foreach ($record in $Records) {
                 Set-Variable -Name $record -Value $true
             }
         }
@@ -57,11 +64,11 @@ Function Get-MailAuthenticationRecord {
             dkimRecord  = $null
         }
 
-        if(($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}|Measure-Object).Count -eq 0){
+        if (($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName } | Measure-Object).Count -eq 0) {
             $__MtSession.DnsCache += $recordSet
             $mtDnsCache = $recordSet
-        }else{
-            $mtDnsCache = $__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}
+        } else {
+            $mtDnsCache = $__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }
         }
 
         $splat = @{
@@ -71,64 +78,64 @@ Function Get-MailAuthenticationRecord {
             NoHostsFile        = $NoHostsFile
         }
 
-        if($mx -or $all){
-            if($null -ne $mtDnsCache.mxRecords){
+        if ($mx -or $all) {
+            if ($null -ne $mtDnsCache.mxRecords) {
                 Write-Verbose "MX records exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.mxRecords = $mtDnsCache.mxRecords
-            }else{
+            } else {
                 $recordSet.mxRecords = ConvertFrom-MailAuthenticationRecordMx @splat
-                ($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}).mxRecords = $recordSet.mxRecords
+                ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).mxRecords = $recordSet.mxRecords
             }
         }
 
-        if($spf -or $all){
-            if($null -ne $mtDnsCache.spfRecord){
+        if ($spf -or $all) {
+            if ($null -ne $mtDnsCache.spfRecord) {
                 Write-Verbose "SPF record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.spfRecord = $mtDnsCache.spfRecord
                 Write-Verbose "SPF record exist in cache - Skipping SPF Lookups"
                 $recordSet.spfLookups = $mtDnsCache.spfLookups
-            }else{
+            } else {
                 $recordSet.spfRecord = ConvertFrom-MailAuthenticationRecordSpf @splat
-                if($recordSet.spfRecord.GetType() -ne "SPFRecord"){
-                    if($recordSet.spfRecord.terms.modifier -contains "redirect"){
+                if ($recordSet.spfRecord.GetType() -ne "SPFRecord") {
+                    if ($recordSet.spfRecord.terms.modifier -contains "redirect") {
                         Write-Verbose "SPF redirect modifier found, recursing"
-                        $redirect = ($recordSet.spfRecord.terms|Where-Object {`
-                            $_.modifier -eq "redirect"
-                        }).modifierTarget
+                        $redirect = ($recordSet.spfRecord.terms | Where-Object {`
+                                    $_.modifier -eq "redirect"
+                            }).modifierTarget
                         Get-MailAuthenticationRecord -DomainName $redirect
                     }
 
                     Write-Verbose "SPF record resolved, checking lookups"
-                    if($null -ne $mtDnsCache.spfLookups){
+                    if ($null -ne $mtDnsCache.spfLookups) {
                         Write-Verbose "SPF Lookups records exist in cache - Use Clear-MtDnsCache to reset"
                         $recordSet.spfLookups = $mtDnsCache.spfLookups
-                    }else{
+                    } else {
                         Write-Verbose "SPF Lookups records not in cache, querying"
                         $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName -Server $DnsServerIpAddress
-                        ($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}).spfLookups = $recordSet.spfLookups
+                        ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).spfLookups = $recordSet.spfLookups
                     }
                 }
-                ($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}).spfRecord = $recordSet.spfRecord
+                ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).spfRecord = $recordSet.spfRecord
             }
         }
 
-        if($dkim -or $all){
-            if($null -ne $mtDnsCache.dkimRecord){
+        if ($dkim -or $all) {
+            if ($null -ne $mtDnsCache.dkimRecord) {
                 Write-Verbose "DKIM record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.dkimRecord = $mtDnsCache.dkimRecord
-            }else{
+            } else {
                 $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @splat -DkimSelector $DkimSelector
-                ($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}).dkimRecord = $recordSet.dkimRecord
+                ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).dkimRecord = $recordSet.dkimRecord
             }
         }
 
-        if($dmarc -or $all){
-            if($null -ne $mtDnsCache.dmarcRecord){
+        if ($dmarc -or $all) {
+            if ($null -ne $mtDnsCache.dmarcRecord) {
                 Write-Verbose "DMARC record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.dmarcRecord = $mtDnsCache.dmarcRecord
-            }else{
+            } else {
                 $recordSet.dmarcRecord = ConvertFrom-MailAuthenticationRecordDmarc @splat
-                ($__MtSession.DnsCache|Where-Object{$_.domain -eq $DomainName}).dmarcRecord = $recordSet.dmarcRecord
+                ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).dmarcRecord = $recordSet.dmarcRecord
             }
         }
 

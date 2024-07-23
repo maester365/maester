@@ -3,16 +3,17 @@
     Checks if migration to Authentication Methods is complete
 
 .DESCRIPTION
-
     The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.
 
 .EXAMPLE
     Test-MtCisaMethodsMigration
 
     Returns true if policyMigrationState is migrationComplete
-#>
 
-Function Test-MtCisaMethodsMigration {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisaMethodsMigration
+#>
+function Test-MtCisaMethodsMigration {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

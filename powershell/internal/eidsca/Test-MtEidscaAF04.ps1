@@ -16,10 +16,15 @@
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
 #>
 
-Function Test-MtEidscaAF04 {
+function Test-MtEidscaAF04 {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    if ( $EnabledAuthMethods -notcontains 'Fido2' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled.'
+            return $null
+    }
 
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 

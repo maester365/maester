@@ -10,9 +10,11 @@
 
  .Example
   Test-MtCaApplicationEnforcedRestriction
-#>
 
-Function Test-MtCaApplicationEnforcedRestriction {
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaApplicationEnforcedRestriction
+#>
+function Test-MtCaApplicationEnforcedRestriction {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
