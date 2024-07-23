@@ -171,7 +171,7 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
                 if (-not $ri) {
                     $this.warnings += "ri: No report interval set, defaults to 86400 seconds"
                 } else {
-                    $this.ri = $Matches["ri"]
+                    $this.reportFrequency = $Matches["ri"]
                 }
 
                 $fo = $record -match $this.matchFo
