@@ -1,23 +1,19 @@
 ﻿<#
   .Synopsis
-  Checks if the tenant has at least one fallback policy targetting All Apps and All Users.
+  Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups. 
 
   .Description
   Microsoft recommends creating at least one conditional access policy targetting all cloud apps
   and ideally should be enabled for all users.
 
   Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/plan-conditional-access#apply-conditional-access-policies-to-every-app
+  https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
   .Example
-  Test-MtCaAllAppsExists
+  Test-MtCaGroupsRestrictedByRmau
 
-  Returns true if at least one conditional access policy exists that targets all cloud apps and all users.
+  Returns true if all Conditional Access groups are protected.
 
-  .Example
-  Test-MtCaAllAppsExists -SkipCheckAllUsers
-
-  Returns true if at least one conditional access policy exists that targets all cloud apps and all users, but skips the check for all users.
 #>
 
 Function Test-MtCaGroupsRestrictedByRmau {
@@ -28,17 +24,28 @@ Function Test-MtCaGroupsRestrictedByRmau {
   }
 
   $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-  $Groups = $policies.conditions.users | Where-Object {$_.includeGroups -ne ""} | Select-Object -ExpandProperty includeGroups | Select-Object -unique
+
+  $Groups = $policies.conditions.users | Where-Object {
+  @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0
+} | ForEach-Object {
+  $_.includeGroups + $_.excludeGroups
+} | Select-Object -Unique
+
+
   $GroupsDetail = foreach ($Group in $Groups) {
-    Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta | Select-Object displayName, isManagementRestricted, id
+    Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta | Select-Object displayName, isManagementRestricted, isAssignableToRole, id
   }
-  $UnrestrictedGroups = $GroupsDetail | Where-Object {$_.isManagementRestricted -eq $true} # Filtering out groups that are created as role assignable group
+  
+  $UnrestrictedGroups = $GroupsDetail | Where-Object {
+    -not $_.isManagementRestricted -and -not $_.isAssignableToRole
+}
+
   $result = ($unrestrictedGroup | Measure-Object).Count -eq 0
 
   if ( $result ) {
-    $ResultDescription = "All security groups with assignment in Conditional Access are protected."
+    $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
   } else {
-    $ResultDescription = "These security groups with assignments in Conditional Access are not protected by RMAU."
+    $ResultDescription = "These security groups with assignments in Conditional Access are not protected by Restricted Management Admin Units or Role Assignable groups."
     $ImpactedCaGroups = "`n`n#### Impacted Conditional Access Policies`n`n | Security Group | Condition | Policy name | `n"
     $ImpactedCaGroups += "| --- | --- | --- |`n"
   }
