@@ -24,6 +24,21 @@ function Test-MtCisaDiagnosticSettings {
         return $null
     }
 
+    $cisaLogs = @(
+        "AuditLogs",
+        "SignInLogs",
+        "RiskyUsers",
+        "UserRiskEvents",
+        "NonInteractiveUserSignInLogs",
+        "ServicePrincipalSignInLogs",
+        "ADFSSignInLogs",
+        "RiskyServicePrincipals",
+        "ServicePrincipalRiskEvents",
+        "EnrichedOffice365AuditLogs",
+        "MicrosoftGraphActivityLogs",
+        "ManagedIdentitySignInLogs"
+    )
+
     $logs = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettingsCategories?api-version=2017-04-01-preview"
     $logs = ($logs.Content|ConvertFrom-Json).value
     $logs = ($logs | Where-Object { `
@@ -65,11 +80,14 @@ function Test-MtCisaDiagnosticSettings {
         }
     }
 
-    $testResult = $unsetLogs.Count -eq 0
+    $testResult = ($unsetLogs | Where-Object { `
+        $_ -in $cisaLogs
+    } | Measure-Object).Count -eq 0
 
     $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/DiagnosticSettingsMenuBlade/~/General"
     $resultFail = "❌ Fail"
     $resultPass = "✅ Pass"
+    $resultOptional = "❔ Optional"
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has [diagnostic settings]($link) configured for all logs."
@@ -84,6 +102,8 @@ function Test-MtCisaDiagnosticSettings {
         $itemResult = $resultFail
         if($item.Enabled){
             $itemResult = $resultPass
+        }elseif($item.Log -notin $cisaLogs){
+            $itemResult = $resultOptional
         }
         $result += "| $($item.Log) | $($itemResult) |`n"
     }
