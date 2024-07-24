@@ -24,6 +24,10 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
 ### (Optional) Grant permissions to Exchange Online
 
+The Exchange Online Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
+
+> The Exchange Online permissions are necessary to support tests that validate [Exchange Online configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/exo).
+
 - Open the application you created in the previous step
 - Select **API permissions** > **Add a permission**
 - Select **APIs that my organization uses** > search for **Office 365 Exchange Online** > **Application permissions**
@@ -38,6 +42,8 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 ### (Optional) Grant permissions to Azure
 
 The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resource Names (URN) with a "/" separator for heirarchical scoping. There exists resources within the root (e.g., "/") scope that Microsoft retains strict control over by limiting supported interactions. As a Global Administrator you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
+
+> The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
 
 The following PowerShell script will enable you, with a Global Administrator role assignment, to:
 - Identify the Service Principal Object ID that will be authorized as a Reader and the Subscription ID to authorize for
