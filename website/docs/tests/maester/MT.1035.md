@@ -1,6 +1,5 @@
 ---
-title: MT.1034 - All security groups assigned to Conditional Access Policies should be protected by RMAU
-description: Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups
+title: MT.1035 - All security groups assigned to Conditional Access Policies should be protected by RMAUdescription: Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups
 slug: /tests/MT.1035
 sidebar_class_name: hidden
 ---
