@@ -14,6 +14,9 @@
 
   .Example
   Test-MtCaGroupsRestrictedByRmau
+
+  .LINK
+  https://maester.dev/docs/commands/Test-MtCaGroupsRestrictedByRmau
 #>
 
 Function Test-MtCaGroupsRestrictedByRmau {
