@@ -40,7 +40,7 @@ Function Test-MtCaGroupsRestrictedByRmau {
       Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta | Select-Object displayName, isManagementRestricted, isAssignableToRole, id
     }
     catch {
-      Write-Warning "Group $Group not found"
+      Write-Verbose "Group $Group not found"
     }
   }
 
@@ -66,7 +66,6 @@ Function Test-MtCaGroupsRestrictedByRmau {
       } elseif ($ImpactedPolicy.conditions.users.excludeGroups -contains $UnrestrictedGroup.id) {
         $Condition = "exclude"
       } else {
-        Write-Warning
         $Condition = "Unknown"
       }
       $Policy = (Get-GraphObjectMarkdown -GraphObjects $ImpactedPolicy -GraphObjectType ConditionalAccess -AsPlainTextLink)
