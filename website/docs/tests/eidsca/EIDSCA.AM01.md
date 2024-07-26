@@ -17,7 +17,7 @@ Whether the Authenticator App is enabled in the tenant.
 
 ## How to fix
 
-
+[Microsoft Learn - Enable Authenticator App](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods-manage#authentication-methods-policy)
 
 ### Details of configuration item
 | | |

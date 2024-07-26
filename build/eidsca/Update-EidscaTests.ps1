@@ -344,7 +344,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     if (-not [string]::IsNullOrWhiteSpace($controlItem.SkipCondition) ) {
         $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
-            return " + '$null' + " `
+            return " + '$null' +"`
     }"
         $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
 

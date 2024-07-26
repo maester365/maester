@@ -25,7 +25,6 @@ function Test-MtEidscaAF05 {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of FIDO2 security keys is not enabled and key restriction not enforced.'
             return $null
     }
-
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
     [string]$tenantValue = $result.keyRestrictions.aaGuids -notcontains $null
