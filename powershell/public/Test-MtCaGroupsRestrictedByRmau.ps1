@@ -14,16 +14,17 @@
 
   .Example
   Test-MtCaGroupsRestrictedByRmau
-
-  Returns true if all Conditional Access groups are protected.
-
 #>
 
 Function Test-MtCaGroupsRestrictedByRmau {
+  [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
+  [CmdletBinding()]
+  [OutputType([bool])]
+  param ()
 
   if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
-    Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
-    return $null
+      Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+      return $null
   }
 
   $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
