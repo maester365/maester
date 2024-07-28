@@ -13,13 +13,13 @@
   https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
   .Example
-  Test-MtCaGroupsRestrictedByRmau
+  Test-MtCaGroupsRestricted
 
   .LINK
-  https://maester.dev/docs/commands/Test-MtCaGroupsRestrictedByRmau
+  https://maester.dev/docs/commands/Test-MtCaGroupsRestricted
 #>
 
-Function Test-MtCaGroupsRestrictedByRmau {
+Function Test-MtCaGroupsRestricted {
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
   [CmdletBinding()]
   [OutputType([bool])]
