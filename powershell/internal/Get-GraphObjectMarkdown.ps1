@@ -25,7 +25,10 @@ function Get-GraphObjectMarkdown {
         [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
             'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
             )]
-        [string] $GraphObjectType
+        [string] $GraphObjectType,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $AsPlainTextLink
     )
 
     $markdownLinkTemplate = @{
@@ -45,7 +48,11 @@ function Get-GraphObjectMarkdown {
     $result = ""
     foreach ($item in $GraphObjects) {
         $link = $markdownLinkTemplate[$GraphObjectType] -f $item.id
-        $result += "  - [$($item.displayName)]($link)`n"
+        if ($AsPlainTextLink) {
+            $result += "[$($item.displayName)]($link)"
+        } else {
+            $result += "  - [$($item.displayName)]($link)`n"
+        }
     }
 
     return $result
