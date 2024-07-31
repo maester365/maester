@@ -51,6 +51,7 @@ module.exports = [
     'commands/Test-MtCaEnforceNonPersistentBrowserSession',
     'commands/Test-MtCaEnforceSignInFrequency',
     'commands/Test-MtCaExclusionForDirectorySyncAccount',
+    'commands/Test-MtCaGroupsRestricted',
     'commands/Test-MtCaLicenseUtilization',
     'commands/Test-MtCaMfaForAdmin',
     'commands/Test-MtCaMfaForAdminManagement',
