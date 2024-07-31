@@ -25,7 +25,6 @@ function Test-MtEidscaAT02 {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Authentication method of Temporary Access Pass is not enabled.'
             return $null
     }
-
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 
     [string]$tenantValue = $result.isUsableOnce

@@ -6,7 +6,7 @@ sidebar_class_name: hidden
 
 # Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner
 
-Indicating whether or not a guest user can be an owner of groups
+Indicating whether or not a guest user can be an owner of groups, manage
 
 | | |
 |-|-|
@@ -17,7 +17,7 @@ Indicating whether or not a guest user can be an owner of groups
 
 ## How to fix
 
-
+[Microsoft Learn - Microsoft Entra cmdlets for configuring group settings](https://learn.microsoft.com/en-us/entra/identity/users/groups-settings-cmdlets#update-settings-at-the-directory-level)
 
 ### Details of configuration item
 | | |

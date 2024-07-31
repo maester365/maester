@@ -21,8 +21,7 @@ function Test-MtEidscaAP08 {
     [OutputType([bool])]
     param()
 
-
-
+    
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1

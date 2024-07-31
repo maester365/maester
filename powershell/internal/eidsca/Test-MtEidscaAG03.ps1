@@ -21,8 +21,7 @@ function Test-MtEidscaAG03 {
     [OutputType([bool])]
     param()
 
-
-
+    
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.reportSuspiciousActivitySettings.includeTarget.id
