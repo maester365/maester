@@ -8,6 +8,8 @@
 .EXAMPLE
     Update-MtLicenseCache
 
+.LINK
+    https://maester.dev/docs/commands/Update-MtLicenseCache
 #>
 function Update-MtLicenseCache {
     [OutputType([System.Void])]
@@ -46,5 +48,6 @@ function Update-MtLicenseCache {
         }
 
         Write-Verbose "$(($skus|Measure-Object).Count) SKUs in cache"
+        return $null
     }
 }
