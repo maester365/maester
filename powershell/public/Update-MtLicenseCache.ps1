@@ -6,7 +6,7 @@
     This function retrieves the license information for known M365 Product SKUs using a list Microsoft maintains.
 
 .EXAMPLE
-    Update-MtLicenseCache
+    Update-MtLicenseCache -Force
 
 .PARAMETER Force
     Forces the cmdlet to update the cache file
