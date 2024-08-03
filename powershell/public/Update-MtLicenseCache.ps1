@@ -8,6 +8,12 @@
 .EXAMPLE
     Update-MtLicenseCache
 
+.PARAMETER Force
+    Forces the cmdlet to update the cache file
+
+.PARAMETER FileName
+    Provides the file name for the cache file in the system temp directory
+
 .LINK
     https://maester.dev/docs/commands/Update-MtLicenseCache
 #>
