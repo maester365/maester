@@ -63,7 +63,8 @@ function Update-MtMaesterTests {
     }
 
     try {
-        Copy-Item -Path $MaesterTestsPath\* -Destination $Path -Recurse -Force
+        Write-Verbose "Copying Maester tests from $MaesterTestsPath/* to $Path"
+        Copy-Item -Path $MaesterTestsPath/* -Destination $Path -Recurse -Force
     } catch {
         Write-Error "Unable to copy the Maester tests to $Path."
         Write-Verbose $_

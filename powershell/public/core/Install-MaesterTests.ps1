@@ -45,6 +45,9 @@ function Install-MaesterTests {
         [switch] $SkipPesterCheck
     )
 
+    # Note: If testing this locally in dev, you will need to run ./build/Copy-MaesterTestsToPSModule.ps1 to copy the tests to the correct location.
+    # This script is automatically run during the build process to embed the tests into the PowerShell module.
+
     [version]$MinPesterVersion = '5.5.0'
     # The default action installs the minimum required version of Pester if not present. Opt out with -SkipPesterCheck.
     if ( $PSBoundParameters.ContainsKey('SkipPesterCheck') ) {
