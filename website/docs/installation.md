@@ -20,6 +20,11 @@ Connect-Maester
 Invoke-Maester
 ```
 
+## Invoke-Maester
+
+To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](/docs/commands/invoke-maester) documentation.
+
+
 ## Optional modules and permissions
 
 Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
