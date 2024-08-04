@@ -36,8 +36,11 @@ The Exchange Online Role Based Access Control (RBAC) implementation utilizes ser
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 - Connect to the Exchange Online Management tools and use the following to set the appropriate permissions:
-  - `New-ServicePrincipal -AppId <Application ID> -ObjectId <Object ID> -DisplayName <Name>`
-  - `New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName from previous command>`
+
+```PowerShell
+New-ServicePrincipal -AppId <Application ID> -ObjectId <Object ID> -DisplayName <Name>
+New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName from previous command>
+```
 
 ### (Optional) Grant permissions to Azure
 
@@ -58,6 +61,7 @@ The following PowerShell script will enable you, with a Global Administrator rol
 $servicePrincipal = "<Object ID of the Entra App>"
 $subscription = "<Subscription ID>"
 Install-Module Az.Accounts -Force
+Install-Moduel Az.Resources -Force
 Connect-AzAccount
 #Elevate to root scope access
 $elevateAccess = Invoke-AzRestMethod -Path "/providers/Microsoft.Authorization/elevateAccess?api-version=2015-07-01" -Method POST
