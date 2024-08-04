@@ -5,8 +5,20 @@
 .DESCRIPTION
     This function retrieves the license relationships for a Microsoft 365 product from Microsoft's documentation
 
-.PARAMETER Product
-    The Microsoft 365 product for which to retrieve the license information.
+.PARAMETER regexSearchString
+    Provide a regex search string that will be used against the license display names and part names.
+
+.PARAMETER servicePlanId
+    Provide a GUID for a specific subscription. For bundle only SKUs that are not a la carte products use skuId.
+
+.PARAMETER servicePlanName
+    Provide a string for a specific subscription part name. Same as servicePlanName.
+
+.PARAMETER skuPartNumber
+    Provide a string for a specific subscription part name. Same as skuPartNumber. Matches Graph property, https://learn.microsoft.com/en-us/graph/api/resources/subscribedsku#properties
+
+.PARAMETER skuId
+    Provide a GUID for a specific subscription.
 
 .EXAMPLE
     Get-MtLicenseRelationship -regexSearchString "^.*Entra.*$"
@@ -26,7 +38,7 @@
 .EXAMPLE
     Get-MtLicenseRelationship -skuId cf6b0d46-4093-4546-a0ab-0b1546dcc10e
 
-    Returns all subscriptions that include the Entra Identity Governance subscription. Matches Graph property, https://learn.microsoft.com/en-us/graph/api/resources/subscribedsku#properties
+    Returns all subscriptions that include the Entra Identity Governance subscription.
 
 .EXAMPLE
     Get-MtLicenseRelationship -skuPartNumber Microsoft_Entra_ID_Governance
@@ -34,7 +46,7 @@
     Returns all subscriptions that include the Entra Identity Governance subscription. Matches Graph property, https://learn.microsoft.com/en-us/graph/api/resources/subscribedsku#properties
 
 .LINK
-    https://maester.dev/docs/commands/Get-MtLicenseInformation
+    https://maester.dev/docs/commands/Get-MtLicenseRelationship
 #>
 function Get-MtLicenseRelationship {
     [OutputType([pscustomobject])]
