@@ -38,6 +38,16 @@ inputs:
     description: "Pester verbosity level. Options: 'None', 'Normal', 'Detailed', 'Diagnostic'"
     required: false
     default: "None"
+  step_summary:
+    type: boolean
+    description: "Define whether a summary is outputted to GitHub Actions."
+    required: false
+    default: true
+  artifact_upload:
+    type: boolean
+    description: "Define whether the results are uploaded as Artifacts"
+    required: false
+    default: true
 
 runs:
   using: "composite"
@@ -123,15 +133,16 @@ runs:
           # Run Maester tests
           $results = Invoke-Maester @MaesterParameters
 
-          # Add step summary
-          $summary = Get-Content test-results/test-results.md
-          Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
-
+          if('${{ inputs.step_summary }}' -ne $false) {
+            # Add step summary
+            $summary = Get-Content test-results/test-results.md
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+          }
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
-      if: always()
+      if: ${{ inputs.artifact_upload == true }}
       with:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
