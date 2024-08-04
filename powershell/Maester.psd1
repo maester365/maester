@@ -123,7 +123,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaDlp',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
-               'Test-MtEidscaControl', 'Update-MtLicenseCache',
+               'Test-MtEidscaControl', 'Update-MtLicenseCache', 'Get-MtLicenseRelationship',
                'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
                'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
                'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
