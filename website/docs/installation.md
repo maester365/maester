@@ -22,7 +22,7 @@ Invoke-Maester
 
 ## Invoke-Maester
 
-To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](/docs/commands/invoke-maester) documentation.
+To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](commands/invoke-maester) documentation.
 
 
 ## Optional modules and permissions
