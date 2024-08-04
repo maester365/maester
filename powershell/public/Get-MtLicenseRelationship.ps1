@@ -66,6 +66,7 @@ function Get-MtLicenseRelationship {
 
     process {
         if(-not (Test-Path $env:TEMP\maesterLicenses.csv)){
+            Write-Verbose "License cache not found, updating"
             Update-MtLicenseCache
         }
 
@@ -74,24 +75,29 @@ function Get-MtLicenseRelationship {
         $relationships = @()
 
         if($skuId){
+            Write-Verbose "Processing as skuId"
             $relationships = $plans | Where-Object {`
                 $_.GUID -eq $skuId
             }
         }elseif($servicePlanId){
+            Write-Verbose "Processing as servicePlanId"
             $relationships = $plans | Where-Object {`
                 $_.Service_Plan_Id -eq $servicePlanId
             }
         }elseif($servicePlanName){
+            Write-Verbose "Processing as servicePlanName"
             $relationships = $plans | Where-Object {`
                 $_.String_Id -eq $servicePlanName -or `
                 $_.Service_Plan_Name -eq $servicePlanName
             }
         }elseif($skuPartNumber){
+            Write-Verbose "Processing as skuPartNumber"
             $relationships = $plans | Where-Object {`
                 $_.String_Id -eq $skuPartNumber -or `
                 $_.Service_Plan_Name -eq $skuPartNumber
             }
         }elseif($regexSearchString){
+            Write-Verbose "Processing as regexSearchString"
             foreach($plan in $plans){
                 $match = $regexSearchString.Match($plan.Product_Display_Name).Success -or `
                     $regexSearchString.Match($plan.String_Id).Success -or `
