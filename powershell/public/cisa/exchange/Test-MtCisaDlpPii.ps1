@@ -18,6 +18,7 @@ function Test-MtCisaDlpPii {
     [OutputType([bool])]
     param()
 
+    #Add License Check
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
