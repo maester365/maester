@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp')]
         [string] $Product
     )
 
@@ -50,6 +50,28 @@ function Get-MtLicenseInformation {
                     $LicenseType = "P2"
                 } else {
                     $LicenseType = $null
+                }
+                Write-Information "The license type for Entra ID is $LicenseType"
+                return $LicenseType
+                Break
+            }
+            "ExoDlp" {
+                Write-Verbose "Retrieving license SKU for ExoDlp"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $requiredSkus = @(
+                    #skuId
+                    "cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46", #Microsoft 365 Business Premium
+                    "a3f586b6-8cce-4d9b-99d6-55238397f77a", #Microsoft 365 Business Premium EEA (no Teams)
+                    #servicePlanId
+                    "efb87545-963c-4e0d-99df-69c6916d9eb0" #Exchange Online (Plan 2)
+                )
+                $LicenseType = $null
+                foreach($sku in $requiredSkus){
+                    $skuId = $sku -in $skus.skuId
+                    $servicePlanId = $sku -in $skus.servicePlans.servicePlanId
+                    if($skuId -or $servicePlanId){
+                        $LicenseType = "ExoDlp"
+                    }
                 }
                 Write-Information "The license type for Entra ID is $LicenseType"
                 return $LicenseType

@@ -18,12 +18,14 @@ function Test-MtCisaDlp {
     [OutputType([bool])]
     param()
 
-    #Add License Check
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
     }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return $null
+    }elseif($null -eq (Get-MtLicenseInformation -Product ExoDlp)){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedExoDlp
         return $null
     }
 
