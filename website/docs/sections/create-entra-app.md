@@ -61,13 +61,13 @@ The following PowerShell script will enable you, with a Global Administrator rol
 $servicePrincipal = "<Object ID of the Entra App>"
 $subscription = "<Subscription ID>"
 Install-Module Az.Accounts -Force
-Install-Moduel Az.Resources -Force
+Install-Module Az.Resources -Force
 Connect-AzAccount
 #Elevate to root scope access
 $elevateAccess = Invoke-AzRestMethod -Path "/providers/Microsoft.Authorization/elevateAccess?api-version=2015-07-01" -Method POST
 New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/subscriptions/$subscription" -RoleDefinitionName "Reader" -ObjectType "ServicePrincipal"
 New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/providers/Microsoft.aadiam" -RoleDefinitionName "Reader" -ObjectType "ServicePrincipal"
 #Remove root scope access
-$assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9 -Scope "/"|?{$_.SignInName -eq (Get-AzContext).Account.Id}
+$assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9|?{$_.Scope -eq "/" -and $_.SignInName -eq (Get-AzContext).Account.Id}
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
 ```
