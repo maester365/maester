@@ -39,7 +39,7 @@ function Test-MtCisaDlpBaselineRule {
     }
 
     # This is a really slow call
-    $rules = $resultPolicies | foreach {
+    $rules = $resultPolicies | ForEach-Object {
         Get-DlpComplianceRule -Policy $_.Name
     }
 
