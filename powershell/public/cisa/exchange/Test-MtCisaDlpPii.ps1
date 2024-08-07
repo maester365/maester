@@ -44,6 +44,9 @@ function Test-MtCisaDlpPii {
     $resultRules = $rules | Where-Object {`
         -not $_.Disabled -and `
         $_.Mode -eq "Enforce" -and `
+        $_.BlockAccess -and `
+        $_.BlockAccessScope -eq "All" -and `
+        $_.NotifyPolicyTipDisplayOption -eq "Tip" -and `
         $_.AdvancedRule -like "*50b8b56b-4ef8-44c2-a924-03374f5831ce*" # All Full Names Sensitive Info Type
     }
 

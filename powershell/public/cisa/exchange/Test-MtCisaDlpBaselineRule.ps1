@@ -49,7 +49,10 @@ function Test-MtCisaDlpBaselineRule {
 
     $resultRules = $rules | Where-Object {`
         -not $_.Disabled -and `
-        $_.Mode -eq "Enforce" -and (`
+        $_.Mode -eq "Enforce" -and `
+        $_.BlockAccess -and `
+        $_.BlockAccessScope -eq "All" -and `
+        $_.NotifyPolicyTipDisplayOption -eq "Tip" -and (`
             $_.AdvancedRule -like $sits.ccn -or`
             $_.AdvancedRule -like $sits.ssn -or`
             $_.AdvancedRule -like $sits.itin
