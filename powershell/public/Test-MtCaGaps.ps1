@@ -128,42 +128,6 @@ function Test-MtCaGaps {
     $differencesLocations = Get-ObjectDifferences -excludedObjects $excludedLocations -includedObjects $includedLocations
     $differencesPlatforms = Get-ObjectDifferences -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms
 
-    Write-Host "The following user objects did not have a fallback"
-    $differencesUsers | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following group objects did not have a fallback"
-    $differencesGroups | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following role objects did not have a fallback"
-    $differencesRoles | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following application objects did not have a fallback"
-    $differencesApplications | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following service principals did not have a fallback"
-    $differencesServicePrincipals | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following locations did not have a fallback"
-    $differencesLocations | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-    Write-Host "The following platforms did not have a fallback"
-    $differencesPlatforms | ForEach-Object {
-        Write-Host "    - $_"
-        Get-RalatedPolicies -Arr $mappingArray -ObjName $_
-    }
-
     # Check if all excluded objects have fallbacks
     if (
         $differencesUsers.Count() -eq 0 `
