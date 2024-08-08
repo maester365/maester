@@ -40,12 +40,15 @@ function Get-RalatedPolicies {
     foreach ($obj in $Arr) {
         # Check if the excluded object is present in the policy
         if ($obj.ExcludedObjects -contains $ObjName) {
-            Write-Host "        - Excluded in policy '$($obj.PolicyName)'"
+            $testResult += "        - Excluded in policy '$($obj.PolicyName)'`n"
         }
     }
 }
 
 function Test-MtCaGaps {
+    $result = $false
+    $testDescription = "All excluded objects should have a fallback include in another policy"
+
     # Get the enabled conditional access policies
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
@@ -160,4 +163,64 @@ function Test-MtCaGaps {
         Write-Host "    - $_"
         Get-RalatedPolicies -Arr $mappingArray -ObjName $_
     }
+
+    # Check if all excluded objects have fallbacks
+    if (
+        $differencesUsers.Count() -eq 0 `
+        -and $differencesGroups.Count() -eq 0 `
+        -and $differencesRoles.Count() -eq 0 `
+        -and $differencesApplications.Count() -eq 0 `
+        -and $differencesServicePrincipals.Count() -eq 0 `
+        -and $differencesLocations.Count() -eq 0 `
+        -and $differencesPlatforms.Count() -eq 0 `
+    ) {
+        $result = $true
+        $testResult = "All excluded objects seem to have a fallback in other policies."
+    } else {
+        # Add user objects to results
+        $testResult = "The following user objects did not have a fallback:`n"
+        $differencesUsers | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add group objects to results
+        $testResult = "The following group objects did not have a fallback:`n"
+        $differencesGroups | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add role objects to results
+        $testResult = "The following role objects did not have a fallback:`n"
+        $differencesRoles | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add application objects to results
+        $testResult = "The following application objects did not have a fallback:`n"
+        $differencesApplications | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add service principal objects to results
+        $testResult = "The following service principal objects did not have a fallback:`n"
+        $differencesServicePrincipals | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add location objects to results
+        $testResult = "The following location objects did not have a fallback:`n"
+        $differencesLocations | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+        # Add platform objects to results
+        $testResult = "The following platform objects did not have a fallback:`n"
+        $differencesPlatforms | ForEach-Object {
+            $testResult += "    - $_`n"
+            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        }
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+
+    return $result
 }
