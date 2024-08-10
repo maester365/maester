@@ -18,19 +18,24 @@ function Test-MtCisCloudAdmin {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Getting Global Admin role"
     $role = Get-MtRole | Where-Object {`
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10" } # Global Administrator
 
+    Write-Verbose "Getting role members"
     $assignments = Get-MtRoleMember -roleId $role.id
 
+    Write-Verbose "Filtering for users"
     $globalAdministrators = $assignments | Where-Object {`
         $_.'@odata.type' -eq "#microsoft.graph.user"
     }
 
     $userIds = @($globalAdministrators.Id)
 
+    Write-Verbose "Requesting users onPremisesSyncEnabled property"
     $users = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $userIds -Select id,displayName,onPremisesSyncEnabled
 
+    Write-Verbose "Filtering users for onPremisesSyncEnabled"
     $result = $users | Where-Object {`
         $_.onPremisesSyncEnabled -eq $true
     }
