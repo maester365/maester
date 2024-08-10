@@ -121,6 +121,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
                'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcReport',
                'Test-MtCisaDlp',
+               'Test-MtCisCloudAdmin',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
