@@ -73,7 +73,28 @@ function Get-MtLicenseInformation {
                         $LicenseType = "ExoDlp"
                     }
                 }
-                Write-Information "The license type for Entra ID is $LicenseType"
+                Write-Information "The license type for Exchange Online DLP is $LicenseType"
+                return $LicenseType
+                Break
+            }
+            "Mdo" {
+                Write-Verbose "Retrieving license SKU for ExoDlp"
+                #TODO, Refactor to store in module variable
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $requiredSkus = @(
+                    #servicePlanId
+                    "8e0c0a52-6a6c-4d40-8370-dd62790dcd70" #Microsoft Defender for Office 365 (Plan 2)
+                )
+                $LicenseType = $null
+                #TODO, Refactor to test function
+                foreach($sku in $requiredSkus){
+                    $skuId = $sku -in $skus.skuId
+                    $servicePlanId = $sku -in $skus.servicePlans.servicePlanId
+                    if($skuId -or $servicePlanId){
+                        $LicenseType = "Mdo"
+                    }
+                }
+                Write-Information "The license type for Defender for Office is $LicenseType"
                 return $LicenseType
                 Break
             }
