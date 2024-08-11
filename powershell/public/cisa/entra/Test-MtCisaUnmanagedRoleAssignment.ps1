@@ -18,10 +18,16 @@ function Test-MtCisaUnmanagedRoleAssignment {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
     $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
     if(-not $pim){
-        return $false
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles

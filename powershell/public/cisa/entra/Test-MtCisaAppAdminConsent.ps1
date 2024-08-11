@@ -18,6 +18,11 @@ function Test-MtCisaAppAdminConsent {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion v1.0
 
     $reviewers = $result | Where-Object {`

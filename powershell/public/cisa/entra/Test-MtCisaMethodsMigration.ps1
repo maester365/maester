@@ -18,6 +18,17 @@ function Test-MtCisaMethodsMigration {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -eq "Free"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     #4/28/2024 - Select OData query option not supported
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationmethodspolicy" -ApiVersion "v1.0"
 

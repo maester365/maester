@@ -18,6 +18,11 @@ function Test-MtCisaCrossTenantInboundDefault {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $policy = Invoke-MtGraphRequest -RelativeUri "policies/crossTenantAccessPolicy/default"
 
     $testResult = ($policy | Where-Object {`

@@ -22,6 +22,17 @@ function Test-MtCisaNotifyHighRisk {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -ne "P2"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     #Connect-MgGraph -UseDeviceCode -Scopes IdentityRiskEvent.Read.All
     $result = Invoke-MtGraphRequest -RelativeUri "identityProtection/settings/notifications" -ApiVersion "beta"
 

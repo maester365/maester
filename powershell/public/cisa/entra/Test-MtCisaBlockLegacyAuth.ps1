@@ -18,6 +18,17 @@ function Test-MtCisaBlockLegacyAuth {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -eq "Free"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $result = Get-MtConditionalAccessPolicy
 
     $blockPolicies = $result | Where-Object {`

@@ -18,6 +18,11 @@ function Test-MtCisaPasswordExpiration {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion v1.0
 
     #Would need to validate management API is configured

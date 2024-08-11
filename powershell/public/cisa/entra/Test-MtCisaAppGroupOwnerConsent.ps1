@@ -18,6 +18,11 @@ function Test-MtCisaAppGroupOwnerConsent {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     #May need update to https://learn.microsoft.com/en-us/graph/api/resources/teamsappsettings?view=graph-rest-1.0
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
