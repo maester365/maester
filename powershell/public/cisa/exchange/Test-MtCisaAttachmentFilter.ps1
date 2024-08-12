@@ -6,14 +6,14 @@
     Emails SHALL be filtered by attachment file types
 
 .EXAMPLE
-    Test-MtCisaAttachmentFileType
+    Test-MtCisaAttachmentFilter
 
     Returns true if standard and strict protection is on
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaAttachmentFileType
+    https://maester.dev/docs/commands/Test-MtCisaAttachmentFilter
 #>
-function Test-MtCisaAttachmentFileType {
+function Test-MtCisaAttachmentFilter {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -68,13 +68,15 @@ function Test-MtCisaAttachmentFileType {
         $result += "| Strict | $failResult |`n`n"
     }
 
-    $result += "| Policy Name | File Filter Enabled |`n"
-    $result += "| --- | --- |`n"
+    $result += "| Policy Name | File Filter Enabled | Extensions |`n"
+    $result += "| --- | --- | --- |`n"
     foreach($item in $policies | Sort-Object -Property Identity){
         if($item.EnableFileFilter){
-            $result += "| $($item.Identity) | $($passResult) |`n"
+            $resultFilesList = ($item.FileTypes | Select-Object -First 5) -join ", "
+            $resultFilesList += ", & $(($item.FileTypes|Measure-Object).Count -5) others"
+            $result += "| $($item.Identity) | $($passResult) | $resultFilesList |`n"
         }else{
-            $result += "| $($item.Identity) | $($failResult) |`n"
+            $result += "| $($item.Identity) | $($failResult) |  |`n"
         }
     }
 

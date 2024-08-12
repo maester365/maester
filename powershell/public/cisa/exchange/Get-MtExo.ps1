@@ -46,6 +46,17 @@ function Get-MtExo {
     param(
         [string] $Request = ($MyInvocation.InvocationName).Substring(6)
     )
+    <#
+    $policies = @{
+        "HostedContentFilterPolicy" = Get-HostedContentFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "AntiPhishPolicy"           = Get-AntiPhishPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "SafeAttachmentPolicy"      = Get-SafeAttachmentPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "SafeLinksPolicy"           = Get-SafeLinksPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "ATPBuiltInProtectionRule"  = Get-ATPBuiltInProtectionRule
+        "EOPProtectionPolicyRule"   = Get-EOPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
+        "ATPProtectionPolicyRule"   = Get-ATPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
+    }
+    #>
 
     ### To add new commands
     ### - add them to the hashtable below

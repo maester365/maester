@@ -6,14 +6,14 @@
     Emails SHALL be filtered by attachment file types
 
 .EXAMPLE
-    Test-MtCisaAttachmentFileType
+    Test-MtCisaBlockExecutable
 
     Returns true if standard and strict protection is on
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaAttachmentFileType
+    https://maester.dev/docs/commands/Test-MtCisaBlockExecutable
 #>
-function Test-MtCisaAttachmentFileType {
+function Test-MtCisaBlockExecutable {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -31,15 +31,38 @@ function Test-MtCisaAttachmentFileType {
 
     $policies = Get-MtMalwareFilterPolicy
 
-    $fileFilter = $policies | Where-Object { `
-        $_.EnableFileFilter
+    $clickToRunExtensions = @(
+        "cmd",
+        "exe",
+        "vbe"
+    )
+
+    $resultPolicies = @()
+    foreach($policy in $policies){
+        $p = [PSCustomObject]@{
+            Identity              = $policy.Identity
+            EnableFileFilter      = $policy.EnableFileFilter
+            RecommendedPolicyType = $policy.RecommendedPolicyType
+            clickToRunExtensions  = @()
+        }
+        foreach($extension in $clickToRunExtensions){
+            if($extension -in $policy.FileTypes){
+                $p.clickToRunExtensions += $extension
+            }
+        }
+        $resultPolicies += $p
     }
 
-    $standard = $policies | Where-Object { `
+    $fileFilter = $resultPolicies | Where-Object { `
+        $_.EnableFileFilter -and `
+        ($_.clickToRunExtensions|Measure-Object).Count -eq ($clickToRunExtensions|Measure-Object).Count
+    }
+
+    $standard = $resultPolicies | Where-Object { `
         $_.RecommendedPolicyType -eq "Standard"
     }
 
-    $strict = $policies | Where-Object { `
+    $strict = $resultPolicies | Where-Object { `
         $_.RecommendedPolicyType -eq "Strict"
     }
 
@@ -68,13 +91,14 @@ function Test-MtCisaAttachmentFileType {
         $result += "| Strict | $failResult |`n`n"
     }
 
-    $result += "| Policy Name | File Filter Enabled |`n"
-    $result += "| --- | --- |`n"
-    foreach($item in $policies | Sort-Object -Property Identity){
+    $result += "| Policy Name | File Filter Enabled | Extensions |`n"
+    $result += "| --- | --- | --- |`n"
+    foreach($item in $resultPolicies | Sort-Object -Property Identity){
         if($item.EnableFileFilter){
-            $result += "| $($item.Identity) | $($passResult) |`n"
+            $resultFilesList = ($item.clickToRunExtensions) -join ", "
+            $result += "| $($item.Identity) | $($passResult) | $resultFilesList |`n"
         }else{
-            $result += "| $($item.Identity) | $($failResult) |`n"
+            $result += "| $($item.Identity) | $($failResult) |  |`n"
         }
     }
 

@@ -7,7 +7,7 @@ Rationale: Users can change a file extension at the end of a file name (e.g., no
 1. Sign in to **Microsoft 365 Defender**.
 2. In the left-hand menu, go to **Email & Collaboration** > **Policies & Rules**.
 3. Select **Threat Policies**.
-4. From the **Templated policies** section, select **Preset Security Policies**.
+4. From the **Templated policies** section, select [**Preset Security Policies**](https://security.microsoft.com/presetSecurityPolicies).
 5. Under **Standard protection**, slide the toggle switch to the right so the text next to the toggle reads **Standard protection is on**.
 6. Under **Strict protection**, slide the toggle switch to the right so the text next to the toggle reads **Strict protection is on**.
 
