@@ -4,7 +4,7 @@ Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.9.1", "CISA", "Security", "All" {
         $result = Test-MtCisaAttachmentFilter
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "preset policies are enabled."
+            $result | Should -Be $true -Because "policies exist."
         }
     }
 }
