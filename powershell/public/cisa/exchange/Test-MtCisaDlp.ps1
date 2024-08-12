@@ -29,7 +29,7 @@ function Test-MtCisaDlp {
         return $null
     }
 
-    $policies = Get-DlpCompliancePolicy
+    $policies = Get-MtDlpCompliancePolicy
 
     $resultPolicies = $policies | Where-Object {`
         $_.ExchangeLocation.DisplayName -contains "All" -and `
