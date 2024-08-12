@@ -29,7 +29,7 @@ function Test-MtCisaPresetSecurity {
         return $null
     }
 
-    $policies = Get-ATPProtectionPolicyRule
+    $policies = Get-MtATPProtectionPolicyRule
 
     $standard = $policies | Where-Object { `
         $_.State -eq "Enabled" -and
@@ -48,7 +48,7 @@ function Test-MtCisaPresetSecurity {
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
     }

@@ -5,6 +5,9 @@
 .DESCRIPTION
     Manages the EXO cmdlet caching
 
+.PARAMETER Request
+    Provide the name of the EXO Cmdlet without the Get- prepended (e.g. Get-AcceptedDomain = -Request AcceptedDomain)
+
 .EXAMPLE
     Get-MtExo -Request AcceptedDomain
 
@@ -44,11 +47,6 @@ function Get-MtExo {
         [string] $Request = ($MyInvocation.InvocationName).Substring(6)
     )
 
-    if($Request -eq "Exo"){
-        Write-Error "$($MyInvocation.InvocationName) called with invalid -Request"
-        return "Unable to obtain policy"
-    }
-
     ### To add new commands
     ### - add them to the hashtable below
     ### - add them as an alias
@@ -73,10 +71,21 @@ function Get-MtExo {
         "ATPProtectionPolicyRule"   = "Get-ATPProtectionPolicyRule"
     }
 
+
+    if($Request -eq "Exo"){
+        Write-Error "$($MyInvocation.InvocationName) called with invalid -Request, specify value (e.g., AcceptedDomain)"
+        return "Unable to obtain policy"
+    }elseif($Request -notin $commands.Keys){
+        Write-Error "$($MyInvocation.InvocationName) called with unsupported -Request"
+        return "Unable to obtain policy"
+    }
+
     if($null -eq $__MtSession.ExoCache.$Request){
+        Write-Verbose "$request not in cache, requesting."
         $response = $commands.$Request
         $__MtSession.ExoCache.$Request = $response
     }else{
+        Write-Verbose "$request in cache."
         $response = $__MtSession.ExoCache.$Request
     }
 

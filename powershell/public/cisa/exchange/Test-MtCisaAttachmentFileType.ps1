@@ -6,14 +6,14 @@
     Emails SHALL be filtered by attachment file types
 
 .EXAMPLE
-    Test-MtCisaPresetSecurity
+    Test-MtCisaAttachmentFileType
 
     Returns true if standard and strict protection is on
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaPresetSecurity
+    https://maester.dev/docs/commands/Test-MtCisaAttachmentFileType
 #>
-function Test-MtCisaPresetSecurity {
+function Test-MtCisaAttachmentFileType {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -29,6 +29,7 @@ function Test-MtCisaPresetSecurity {
         return $null
     }
 
+    $policies = Get-MtMalwareFilterPolicy
     <#
     $policies = @{
         "MalwareFilterPolicy"       = Get-MalwareFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
@@ -42,27 +43,26 @@ function Test-MtCisaPresetSecurity {
     }
     #>
 
-    #TODO, cache in module variable
-    $policies = Get-ATPProtectionPolicyRule
+    $fileFilter = $policies | Where-Object { `
+        $_.EnableFileFilter
+    }
 
     $standard = $policies | Where-Object { `
-            $_.State -eq "Enabled" -and
-        $_.Identity -eq "Standard Preset Security Policy"
+        $_.RecommendedPolicyType -eq "Standard"
     }
 
     $strict = $policies | Where-Object { `
-            $_.State -eq "Enabled" -and
-        $_.Identity -eq "Strict Preset Security Policy"
+        $_.RecommendedPolicyType -eq "Strict"
     }
 
-    $testResult = $standard -and $strict
+    $testResult = $standard -and $strict -and (($fileFilter|Measure-Object).Count -ge 1)
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
     }
@@ -77,7 +77,17 @@ function Test-MtCisaPresetSecurity {
     if ($strict) {
         $result += "| Strict | $passResult |`n"
     } else {
-        $result += "| Strict | $failResult |`n"
+        $result += "| Strict | $failResult |`n`n"
+    }
+
+    $result += "| Policy Name | File Filter Enabled |`n"
+    $result += "| --- | --- |`n"
+    foreach($item in $policies | Sort-Object -Property Identity){
+        if($item.EnableFileFilter){
+            $result += "| $($item.Identity) | $($passResult) |`n"
+        }else{
+            $result += "| $($item.Identity) | $($failResult) |`n"
+        }
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
