@@ -18,6 +18,7 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [Defender admin center - Preset security policies](https://security.microsoft.com/presetSecurityPolicies)
 * [CISA 9 Attachment File Type - MS.EXO.9.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo92v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L502)
+* [Microsoft Learn - True type matching in the common attachments filter](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-protection-about#true-type-matching-in-the-common-attachments-filter)
 
 <!--- Results --->
 %TestResult%

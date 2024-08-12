@@ -121,7 +121,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
                'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcReport',
                'Test-MtCisaDlp', 'Test-MtCisaDlpPii', 'Test-MtCisaDlpAlternate',
-               'Test-MtCisaDlpBaselineRule', 'Test-MtCisaPresetSecurity',
+               'Test-MtCisaDlpBaselineRule', 'Test-MtCisaPresetSecurity', 'Get-MtExo',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',

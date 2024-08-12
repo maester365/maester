@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo')]
         [string] $Product
     )
 
@@ -79,14 +79,12 @@ function Get-MtLicenseInformation {
             }
             "Mdo" {
                 Write-Verbose "Retrieving license SKU for ExoDlp"
-                #TODO, Refactor to store in module variable
                 $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
                 $requiredSkus = @(
                     #servicePlanId
                     "8e0c0a52-6a6c-4d40-8370-dd62790dcd70" #Microsoft Defender for Office 365 (Plan 2)
                 )
                 $LicenseType = $null
-                #TODO, Refactor to test function
                 foreach($sku in $requiredSkus){
                     $skuId = $sku -in $skus.skuId
                     $servicePlanId = $sku -in $skus.servicePlans.servicePlanId

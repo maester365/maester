@@ -18,26 +18,40 @@ function Test-MtCisaPresetSecurity {
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection ExchangeOnline)){
+    if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
+    } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
+    } elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
         return $null
     }
 
+    <#
+    $policies = @{
+        "MalwareFilterPolicy"       = Get-MalwareFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "HostedContentFilterPolicy" = Get-HostedContentFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "AntiPhishPolicy"           = Get-AntiPhishPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "SafeAttachmentPolicy"      = Get-SafeAttachmentPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "SafeLinksPolicy"           = Get-SafeLinksPolicy #RecommendedPolicyType -eq "Standard", "Strict"
+        "ATPBuiltInProtectionRule"  = Get-ATPBuiltInProtectionRule
+        "EOPProtectionPolicyRule"   = Get-EOPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
+        "ATPProtectionPolicyRule"   = Get-ATPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
+    }
+    #>
+
+    #TODO, cache in module variable
     $policies = Get-ATPProtectionPolicyRule
 
     $standard = $policies | Where-Object { `
-        $_.State -eq "Enabled" -and
+            $_.State -eq "Enabled" -and
         $_.Identity -eq "Standard Preset Security Policy"
     }
 
     $strict = $policies | Where-Object { `
-        $_.State -eq "Enabled" -and
+            $_.State -eq "Enabled" -and
         $_.Identity -eq "Strict Preset Security Policy"
     }
 
@@ -55,14 +69,14 @@ function Test-MtCisaPresetSecurity {
 
     $result = "| Policy | Status |`n"
     $result += "| --- | --- |`n"
-    if($standard){
+    if ($standard) {
         $result += "| Standard | $passResult |`n"
-    }else{
+    } else {
         $result += "| Standard | $failResult |`n"
     }
-    if($strict){
+    if ($strict) {
         $result += "| Strict | $passResult |`n"
-    }else{
+    } else {
         $result += "| Strict | $failResult |`n"
     }
 

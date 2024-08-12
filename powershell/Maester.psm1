@@ -19,6 +19,7 @@ $__MtSession = @{
 	TestResultDetail = @{}
 	Connections = @()
 	DnsCache = @()
+	ExoCache = @{}
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 
