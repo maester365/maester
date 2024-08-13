@@ -1,15 +1,20 @@
 <#
-.SYNOPSIS
-    Check for gaps in conditional access policies
-
-.DESCRIPTION
+.Synopsis
     This function checks if all objects found in policy exclusions are found in policy inclusions.
 
-.EXAMPLE
-    <TO DO>
+.Description
+    Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically inlcuded
+    in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
+    overlooked exclusions which do not have a fallback.
+
+    Reference:
+    https://learn.microsoft.com/en-us/entra/identity/monitoring-health/workbook-conditional-access-gap-analyzer
+
+.Example
+    Test-MtCaGaps
 
 .LINK
-    <TO DO>
+    https://maester.dev/docs/commands/Test-MtCaGaps
 #>
 function Get-ObjectDifferences {
     param (
@@ -51,11 +56,16 @@ function Get-RalatedPolicies {
 }
 
 function Test-MtCaGaps {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
     $result = $false
     $testDescription = "All excluded objects should have a fallback include in another policy"
 
     # Get the enabled conditional access policies
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    Write-Verbose "Retrieved conditional access policies:`n $policies"
 
     # Variabes related to users
     [System.Collections.ArrayList]$excludedUsers = @()
@@ -123,6 +133,7 @@ function Test-MtCaGaps {
         $mappingArray += $mapping
         Clear-Variable -Name allExcluded
     }
+    Write-Verbose "Created a mapping with all excluded objects for each policy:`n $mapping"
 
     # Find which objects are excluded without a fallback
     [System.Collections.ArrayList]$differencesUsers = @(Get-ObjectDifferences -excludedObjects $excludedUsers -includedObjects $includedUsers)
@@ -132,6 +143,7 @@ function Test-MtCaGaps {
     [System.Collections.ArrayList]$differencesServicePrincipals = @(Get-ObjectDifferences -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals)
     [System.Collections.ArrayList]$differencesLocations = @(Get-ObjectDifferences -excludedObjects $excludedLocations -includedObjects $includedLocations)
     [System.Collections.ArrayList]$differencesPlatforms = @(Get-ObjectDifferences -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms)
+    Write-Host "Finished searching for gaps in policies."
 
     # Check if all excluded objects have fallbacks
     if (
@@ -145,7 +157,9 @@ function Test-MtCaGaps {
     ) {
         $result = $true
         $testResult = "All excluded objects seem to have a fallback in other policies."
+        Write-Verbose "All excluded objects seem to have a fallback in other policies."
     } else {
+        Write-Verbose "Not all excluded objects seem to have a fallback in other policies."
         # Add user objects to results
         if ($differencesUsers.Count -ne 0) {
             $testResult = "The following user objects did not have a fallback:`n`n"
