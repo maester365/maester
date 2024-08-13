@@ -93,7 +93,7 @@ function Get-MtExo {
 
     if($null -eq $__MtSession.ExoCache.$Request){
         Write-Verbose "$request not in cache, requesting."
-        $response = $commands.$Request
+        $response = Invoke-Expression $commands.$Request
         $__MtSession.ExoCache.$Request = $response
     }else{
         Write-Verbose "$request in cache."
