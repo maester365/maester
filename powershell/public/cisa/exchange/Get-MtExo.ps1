@@ -50,7 +50,6 @@ function Get-MtExo {
     <#
     $policies = @{
         "HostedContentFilterPolicy" = Get-HostedContentFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
-        "AntiPhishPolicy"           = Get-AntiPhishPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "SafeAttachmentPolicy"      = Get-SafeAttachmentPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "SafeLinksPolicy"           = Get-SafeLinksPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "ATPBuiltInProtectionRule"  = Get-ATPBuiltInProtectionRule
