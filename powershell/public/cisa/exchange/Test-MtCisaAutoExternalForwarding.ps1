@@ -23,7 +23,7 @@ function Test-MtCisaAutoExternalForwarding {
         return $null
     }
 
-    $domains = Get-RemoteDomain
+    $domains = Get-MtRemoteDomain
 
     $forwardingDomains = $domains | Where-Object { `
         $_.AutoForwardEnabled

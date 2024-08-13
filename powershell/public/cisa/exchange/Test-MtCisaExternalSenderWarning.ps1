@@ -29,7 +29,7 @@ function Test-MtCisaExternalSenderWarning {
         $testResult = $true
     } else {
 
-        $rules = Get-TransportRule
+        $rules = Get-MtTransportRule
 
         $resultRules = $rules | Where-Object {`
                 $_.State -eq "Enabled" -and `

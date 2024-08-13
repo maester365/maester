@@ -23,7 +23,7 @@ function Test-MtCisaSpfRestriction {
         return $null
     }
 
-    $acceptedDomains = Get-AcceptedDomain
+    $acceptedDomains = Get-MtAcceptedDomain
     <# Parked domains should have SPF ending in -all too
     $sendingDomains = $acceptedDomains | Where-Object {`
         -not $_.SendingFromDomainDisabled

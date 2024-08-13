@@ -23,7 +23,7 @@ function Test-MtCisaMailboxAuditing {
         return $null
     }
 
-    $config = Get-OrganizationConfig
+    $config = Get-MtOrganizationConfig
 
     $testResult = (-not $config.AuditDisabled)
 

@@ -29,7 +29,7 @@ function Test-MtCisaDlpBaselineRule {
         return $null
     }
 
-    $policies = Get-DlpCompliancePolicy
+    $policies = Get-MtDlpCompliancePolicy
 
     $resultPolicies = $policies | Where-Object {`
         $_.ExchangeLocation.DisplayName -contains "All" -and `
@@ -38,9 +38,8 @@ function Test-MtCisaDlpBaselineRule {
         $_.Enabled
     }
 
-    # This is a really slow call
     $rules = $resultPolicies | ForEach-Object {
-        Get-DlpComplianceRule -Policy $_.Name
+        Get-MtDlpComplianceRule -Policy $_.Name
     }
 
     $sits = [pscustomobject]@{

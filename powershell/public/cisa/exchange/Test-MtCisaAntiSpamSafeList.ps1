@@ -23,7 +23,7 @@ function Test-MtCisaAntiSpamSafeList {
         return $null
     }
 
-    $policy = Get-HostedConnectionFilterPolicy
+    $policy = Get-MtHostedConnectionFilterPolicy
 
     $resultPolicy = $policy | Where-Object {`
         -not $_.EnableSafeList

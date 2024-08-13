@@ -35,6 +35,17 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaDlpPii                 | [MS.EXO.8.2v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo82v2) |
 | Test-MtCisaDlpAlternate           | [MS.EXO.8.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo83v1) |
 | Test-MtCisaDlpBaselineRules       | [MS.EXO.8.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo84v1) |
+| Test-MtCisaAttachmentFileType     | [MS.EXO.9.1v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo91v2) |
+| Test-MtCisaAttachmentFileType     | [MS.EXO.9.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo92v1) |
+| Test-MtCisaAttachmentFileType     | [MS.EXO.9.3v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo93v2) |
+| Test-MtCisaEmailFilterAlternative | [MS.EXO.9.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo94v1) |
+| Test-MtCisaBlockExecutable        | [MS.EXO.9.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo95v1) |
+| Test-MtCisaAttachmentFilter       | [MS.EXO.10.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo101v1) |
+| Test-MtCisaMalwareAction          | [MS.EXO.10.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo102v1) |
+| Test-MtCisaMalwareZap             | [MS.EXO.10.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo103v1) |
+| Test-MtCisaImpersonation          | [MS.EXO.11.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo111v1) |
+| Test-MtCisaImpersonationTip       | [MS.EXO.11.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo112v1) |
+| Test-MtCisaMailboxIntelligence    | [MS.EXO.11.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo113v1) |
 | Test-MtCisaAntiSpamAllowList      | [MS.EXO.12.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo121v1) |
 | Test-MtCisaAntiSpamSafeList       | [MS.EXO.12.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo122v1) |
 | Test-MtCisaMailboxAuditing        | [MS.EXO.13.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo131v1) |
