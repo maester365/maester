@@ -1,15 +1,20 @@
 <#
-.SYNOPSIS
-    Check for gaps in conditional access policies
-
-.DESCRIPTION
+.Synopsis
     This function checks if all objects found in policy exclusions are found in policy inclusions.
 
-.EXAMPLE
-    <TO DO>
+.Description
+    Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically inlcuded
+    in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
+    overlooked exclusions which do not have a fallback.
+
+    Reference:
+    https://learn.microsoft.com/en-us/entra/identity/monitoring-health/workbook-conditional-access-gap-analyzer
+
+.Example
+    Test-MtCaGaps
 
 .LINK
-    <TO DO>
+    https://maester.dev/docs/commands/Test-MtCaGaps
 #>
 function Get-ObjectDifferences {
     param (
@@ -18,16 +23,17 @@ function Get-ObjectDifferences {
     )
 
     # Only get unique values
-    $excludedObjects = $excludedObjects | Select-Object -Unique
-    $includedObjects = $includedObjects | Select-Object -Unique
+    $excludedObjects = @($excludedObjects | Select-Object -Unique)
+    $includedObjects = @($includedObjects | Select-Object -Unique)
     # Get all the objects that are excluded somewhere but included somewhere else
     $excludedObjectsWithFallback = $excludedObjects | Where-Object {
         $includedObjects -contains $_
     }
     # Get the differences between the two Arrays, so we can find which objects did not have a fallback
-    $objectDifferences = $excludedObjects | Where-Object {
+    $objectDifferences = @($excludedObjects | Where-Object {
         $excludedObjectsWithFallback -notcontains $_
-    }
+    })
+
     return $objectDifferences
 }
 
@@ -36,21 +42,30 @@ function Get-RalatedPolicies {
         [System.Collections.ArrayList]$Arr,
         [String]$ObjName
     )
+    $result = ""
+
     # Check each policy in the array
     foreach ($obj in $Arr) {
         # Check if the excluded object is present in the policy
         if ($obj.ExcludedObjects -contains $ObjName) {
-            $testResult += "        - Excluded in policy '$($obj.PolicyName)'`n"
+            $result += "        - Excluded in policy '$($obj.PolicyName)'`n`n"
         }
     }
+
+    return $result
 }
 
 function Test-MtCaGaps {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
     $result = $false
     $testDescription = "All excluded objects should have a fallback include in another policy"
 
     # Get the enabled conditional access policies
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    Write-Verbose "Retrieved conditional access policies:`n $policies"
 
     # Variabes related to users
     [System.Collections.ArrayList]$excludedUsers = @()
@@ -86,20 +101,20 @@ function Test-MtCaGaps {
     # Get all the objects for all policies
     $policies | ForEach-Object {
         # Save all interesting objects for later use
-        $excludedUsers += $_.Conditions.Users.ExcludeUsers
-        $includedUsers += $_.Conditions.Users.IncludeUsers
-        $excludedGroups += $_.Conditions.Users.ExcludeGroups
-        $includedGroups += $_.Conditions.Users.IncludeGroups
-        $excludedRoles += $_.Conditions.Users.ExcludeRoles
-        $includedRoles += $_.Conditions.Users.IncludeRoles
-        $excludedApplications += $_.Conditions.Applications.ExcludeApplications
-        $includedApplications += $_.Conditions.Applications.IncludeApplications
-        $excludedServicePrincipals += $_.Conditions.ClientApplications.ExcludeServicePrincipals
-        $includedServicePrincipals += $_.Conditions.ClientApplications.IncludeServicePrincipals
-        $excludedLocations += $_.Conditions.Locations.ExcludeLocations
-        $includedLocations += $_.Conditions.Locations.IncludeLocations
-        $excludedPlatforms += $_.Conditions.Locations.Platforms
-        $includedPlatforms += $_.Conditions.Locations.Platforms
+        $_.Conditions.Users.ExcludeUsers | ForEach-Object { $excludedUsers.Add($_) | Out-Null }
+        $_.Conditions.Users.IncludeUsers | ForEach-Object { $includedUsers.Add($_) | Out-Null }
+        $_.Conditions.Users.ExcludeGroups | ForEach-Object { $excludedGroups.Add($_) | Out-Null }
+        $_.Conditions.Users.IncludeGroups | ForEach-Object { $includedGroups.Add($_) | Out-Null }
+        $_.Conditions.Users.ExcludeRoles | ForEach-Object { $excludedRoles.Add($_) | Out-Null }
+        $_.Conditions.Users.IncludeRoles | ForEach-Object { $includedRoles.Add($_) | Out-Null }
+        $_.Conditions.Applications.ExcludeApplications | ForEach-Object { $excludedApplications.Add($_) | Out-Null }
+        $_.Conditions.Applications.IncludeApplications | ForEach-Object { $includedApplications.Add($_) | Out-Null }
+        $_.Conditions.ClientApplications.ExcludeServicePrincipals | ForEach-Object { $excludedServicePrincipals.Add($_) | Out-Null }
+        $_.Conditions.ClientApplications.IncludeServicePrincipals | ForEach-Object { $includedServicePrincipals.Add($_) | Out-Null }
+        $_.Conditions.Locations.ExcludeLocations | ForEach-Object { $excludedLocations.Add($_) | Out-Null }
+        $_.Conditions.Locations.IncludeLocations | ForEach-Object { $includedLocations.Add($_) | Out-Null }
+        $_.Conditions.Locations.Platforms | ForEach-Object { $excludedPlatforms.Add($_) | Out-Null }
+        $_.Conditions.Locations.Platforms | ForEach-Object { $includedPlatforms.Add($_) | Out-Null }
 
         # Create a mapping for each policy with excluded objects
         [System.Collections.ArrayList]$allExcluded = $_.Conditions.Users.ExcludeUsers + `
@@ -118,70 +133,88 @@ function Test-MtCaGaps {
         $mappingArray += $mapping
         Clear-Variable -Name allExcluded
     }
+    Write-Verbose "Created a mapping with all excluded objects for each policy:`n $mapping"
 
     # Find which objects are excluded without a fallback
-    $differencesUsers = Get-ObjectDifferences -excludedObjects $excludedUsers -includedObjects $includedUsers
-    $differencesGroups = Get-ObjectDifferences -excludedObjects $excludedGroups -includedObjects $includedGroups
-    $differencesRoles = Get-ObjectDifferences -excludedObjects $excludedRoles -includedObjects $includedRoles
-    $differencesApplications = Get-ObjectDifferences -excludedObjects $excludedApplications -includedObjects $includedApplications
-    $differencesServicePrincipals = Get-ObjectDifferences -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals
-    $differencesLocations = Get-ObjectDifferences -excludedObjects $excludedLocations -includedObjects $includedLocations
-    $differencesPlatforms = Get-ObjectDifferences -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms
+    [System.Collections.ArrayList]$differencesUsers = @(Get-ObjectDifferences -excludedObjects $excludedUsers -includedObjects $includedUsers)
+    [System.Collections.ArrayList]$differencesGroups = @(Get-ObjectDifferences -excludedObjects $excludedGroups -includedObjects $includedGroups)
+    [System.Collections.ArrayList]$differencesRoles = @(Get-ObjectDifferences -excludedObjects $excludedRoles -includedObjects $includedRoles)
+    [System.Collections.ArrayList]$differencesApplications = @(Get-ObjectDifferences -excludedObjects $excludedApplications -includedObjects $includedApplications)
+    [System.Collections.ArrayList]$differencesServicePrincipals = @(Get-ObjectDifferences -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals)
+    [System.Collections.ArrayList]$differencesLocations = @(Get-ObjectDifferences -excludedObjects $excludedLocations -includedObjects $includedLocations)
+    [System.Collections.ArrayList]$differencesPlatforms = @(Get-ObjectDifferences -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms)
+    Write-Host "Finished searching for gaps in policies."
 
     # Check if all excluded objects have fallbacks
     if (
-        $differencesUsers.Count() -eq 0 `
-        -and $differencesGroups.Count() -eq 0 `
-        -and $differencesRoles.Count() -eq 0 `
-        -and $differencesApplications.Count() -eq 0 `
-        -and $differencesServicePrincipals.Count() -eq 0 `
-        -and $differencesLocations.Count() -eq 0 `
-        -and $differencesPlatforms.Count() -eq 0 `
+        $differencesUsers.Count -eq 0 `
+        -and $differencesGroups.Count -eq 0 `
+        -and $differencesRoles.Count -eq 0 `
+        -and $differencesApplications.Count -eq 0 `
+        -and $differencesServicePrincipals.Count -eq 0 `
+        -and $differencesLocations.Count -eq 0 `
+        -and $differencesPlatforms.Count -eq 0 `
     ) {
         $result = $true
         $testResult = "All excluded objects seem to have a fallback in other policies."
+        Write-Verbose "All excluded objects seem to have a fallback in other policies."
     } else {
+        Write-Verbose "Not all excluded objects seem to have a fallback in other policies."
         # Add user objects to results
-        $testResult = "The following user objects did not have a fallback:`n"
-        $differencesUsers | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesUsers.Count -ne 0) {
+            $testResult = "The following user objects did not have a fallback:`n`n"
+            $differencesUsers | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add group objects to results
-        $testResult = "The following group objects did not have a fallback:`n"
-        $differencesGroups | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesGroups.Count -ne 0) {
+            $testResult += "The following group objects did not have a fallback:`n`n"
+            $differencesGroups | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add role objects to results
-        $testResult = "The following role objects did not have a fallback:`n"
-        $differencesRoles | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesRoles.Count -ne 0) {
+            $testResult += "The following role objects did not have a fallback:`n`n"
+            $differencesRoles | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add application objects to results
-        $testResult = "The following application objects did not have a fallback:`n"
-        $differencesApplications | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesApplications.Count -ne 0) {
+            $testResult += "The following application objects did not have a fallback:`n`n"
+            $differencesApplications | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add service principal objects to results
-        $testResult = "The following service principal objects did not have a fallback:`n"
-        $differencesServicePrincipals | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesServicePrincipals.Count -ne 0) {
+            $testResult += "The following service principal objects did not have a fallback:`n`n"
+            $differencesServicePrincipals | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add location objects to results
-        $testResult = "The following location objects did not have a fallback:`n"
-        $differencesLocations | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesLocations.Count -ne 0) {
+            $testResult += "The following location objects did not have a fallback:`n`n"
+            $differencesLocations | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
         # Add platform objects to results
-        $testResult = "The following platform objects did not have a fallback:`n"
-        $differencesPlatforms | ForEach-Object {
-            $testResult += "    - $_`n"
-            Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+        if ($differencesPlatforms.Count -ne 0) {
+            $testResult += "The following platform objects did not have a fallback:`n`n"
+            $differencesPlatforms | ForEach-Object {
+                $testResult += "    - $_`n`n"
+                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+            }
         }
     }
     Add-MtTestResultDetail -Description $testDescription -Result $testResult

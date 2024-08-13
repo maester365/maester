@@ -1,6 +1,6 @@
 ---
 title: MT.1036 - All excluded objects should have a fallback include in another policy.
-description: Checks if all objects used in policy exclusions can be found as included into another policy
+description: Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically inlcuded in another conditional access policy. This way we try to spot possibly overlooked exclusions which do not have a fallback.
 slug: /tests/MT.1036
 sidebar_class_name: hidden
 ---
