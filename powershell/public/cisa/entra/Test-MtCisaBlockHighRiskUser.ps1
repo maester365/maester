@@ -18,6 +18,17 @@ function Test-MtCisaBlockHighRiskUser {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -ne "P2"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     $result = Get-MtConditionalAccessPolicy
 
     $blockPolicies = $result | Where-Object {`

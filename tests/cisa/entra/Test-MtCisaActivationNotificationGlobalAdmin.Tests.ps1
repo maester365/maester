@@ -1,4 +1,4 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.8", "CISA", "Security", "All" {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.8", "CISA", "Security", "All", "Entra ID P2" {
     It "MS.AAD.7.8: User activation of the Global Administrator role SHALL trigger an alert." {
         $result = Test-MtCisaActivationNotification -GlobalAdminOnly
 

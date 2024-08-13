@@ -23,6 +23,12 @@ function Test-MtCisaAuthenticatorContext {
         return $null
     }
 
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -eq "Free"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $isMethodsMigrationComplete = Test-MtCisaMethodsMigration
 
     $result = Get-MtAuthenticationMethodPolicyConfig

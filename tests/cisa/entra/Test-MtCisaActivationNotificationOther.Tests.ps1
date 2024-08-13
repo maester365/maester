@@ -1,4 +1,4 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.9", "CISA", "Security", "All" {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.9", "CISA", "Security", "All", "Entra ID P2" {
     It "MS.AAD.7.9: User activation of other highly privileged roles SHOULD trigger an alert." {
         $result = Test-MtCisaActivationNotification
 

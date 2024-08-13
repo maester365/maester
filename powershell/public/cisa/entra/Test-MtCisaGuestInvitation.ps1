@@ -18,6 +18,11 @@ function Test-MtCisaGuestInvitation {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion v1.0
 
     $testResult = $result.allowInvitesFrom -eq "adminsAndGuestInviters"

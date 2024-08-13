@@ -24,6 +24,12 @@ function Test-MtCisaDiagnosticSettings {
         return $null
     }
 
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -eq "Free"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $cisaLogs = @(
         "AuditLogs",
         "SignInLogs",

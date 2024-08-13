@@ -18,6 +18,11 @@ function Test-MtCisaGuestUserAccess {
     [OutputType([bool])]
     param()
 
+    if(!(Test-MtConnection Graph)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     $guestRoles = @(
         @{
             Id               = "a0b1b346-4d3e-4e8b-98f8-753987be4970"
