@@ -22,6 +22,7 @@
     https://maester.dev/docs/commands/Get-MtExo
 #>
 function Get-MtExo {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression","")]
     [Alias(
         "Get-MtAcceptedDomain",
         "Get-MtRemoteDomain",
