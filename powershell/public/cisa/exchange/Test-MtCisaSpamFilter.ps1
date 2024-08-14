@@ -29,7 +29,7 @@ function Test-MtCisaSpamFilter {
         return $null
     }
 
-    $policies = Get-MtHostedContentFilterPolicy
+    $policies = Get-MtExo -Request HostedContentFilterPolicy
 
     $standard = $policies | Where-Object { `
         $_.RecommendedPolicyType -eq "Standard"

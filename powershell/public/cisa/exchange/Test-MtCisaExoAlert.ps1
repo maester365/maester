@@ -29,7 +29,7 @@ function Test-MtCisaExoAlerts {
         return $null
     }
 
-    $alerts = Get-MtProtectionAlert
+    $alerts = Get-MtExo -Request ProtectionAlert
 
     $cisaAlerts = @(
         "be215649-fba8-4339-9ddd-05991a43b948", #Suspicious email sending patterns detected

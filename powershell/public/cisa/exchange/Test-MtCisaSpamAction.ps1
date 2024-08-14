@@ -29,7 +29,7 @@ function Test-MtCisaSpamAction {
         return $null
     }
 
-    $policies = Get-MtHostedContentFilterPolicy
+    $policies = Get-MtExo -Request HostedContentFilterPolicy
 
     $resultPolicies = $policies | Where-Object { `
         $_.SpamAction -in @("MoveToJmf","Quarantine") -and `

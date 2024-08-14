@@ -29,7 +29,7 @@ function Test-MtCisaAttachmentFileType {
         return $null
     }
 
-    $policies = Get-MtMalwareFilterPolicy
+    $policies = Get-MtExo -Request MalwareFilterPolicy
 
     $fileFilter = $policies | Where-Object { `
         $_.EnableFileFilter

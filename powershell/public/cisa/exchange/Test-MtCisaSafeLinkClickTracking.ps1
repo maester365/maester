@@ -29,7 +29,7 @@ function Test-MtCisaSafeLinkClickTracking {
         return $null
     }
 
-    $policies = Get-MtSafeLinksPolicy
+    $policies = Get-MtExo -Request SafeLinksPolicy
 
     $resultPolicies = $policies | Where-Object { `
         $_.TrackClicks

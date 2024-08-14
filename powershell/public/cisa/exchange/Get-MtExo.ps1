@@ -23,27 +23,6 @@
 #>
 function Get-MtExo {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression","")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingCmdletAliases","")]
-    [Alias(
-        "Get-MtAcceptedDomain",
-        "Get-MtRemoteDomain",
-        "Get-MtTransportConfig",
-        "Get-MtTransportRule",
-        "Get-MtOrganizationConfig",
-        "Get-MtDkimSigningConfig",
-        "Get-MtSharingPolicy",
-        "Get-MtDlpComplianceRule",
-        "Get-MtDlpCompliancePolicy",
-        "Get-MtMalwareFilterPolicy",
-        "Get-MtHostedContentFilterPolicy",
-        "Get-MtAntiPhishPolicy",
-        "Get-MtSafeAttachmentPolicy",
-        "Get-MtSafeLinksPolicy",
-        "Get-MtATPBuiltInProtectionRule",
-        "Get-MtEOPProtectionPolicyRule",
-        "Get-MtATPProtectionPolicyRule",
-        "Get-MtProtectionAlert"
-    )]
     [CmdletBinding()]
     [OutputType([string],[object[]],[psobject])]
     param(
@@ -60,8 +39,6 @@ function Get-MtExo {
 
     ### To add new commands
     ### - add them to the hashtable below
-    ### - add them as an alias above
-    ### - add them as an alias to export in maester.psd1
     ### - confirm the command's return type is in OutputType (e.g. (Get-AcceptedDomain).GetType().Name)
     $commands = @{
         "AcceptedDomain"            = "Get-AcceptedDomain"

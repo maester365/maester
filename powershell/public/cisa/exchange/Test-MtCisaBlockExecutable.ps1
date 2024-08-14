@@ -29,7 +29,7 @@ function Test-MtCisaBlockExecutable {
         return $null
     }
 
-    $policies = Get-MtMalwareFilterPolicy
+    $policies = Get-MtExo -Request MalwareFilterPolicy
 
     $clickToRunExtensions = @(
         "cmd",

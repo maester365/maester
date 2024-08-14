@@ -29,7 +29,7 @@ function Test-MtCisaImpersonation {
         return $null
     }
 
-    $policies = Get-MtAntiPhishPolicy
+    $policies = Get-MtExo -Request AntiPhishPolicy
 
     $resultPolicies = $policies | Where-Object { `
         $_.Enabled -and `
