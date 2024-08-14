@@ -6,14 +6,14 @@
     Alerts SHALL be enabled.
 
 .EXAMPLE
-    Test-MtCisaExoAlerts
+    Test-MtCisaExoAlert
 
     Returns true if alerts enabled
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaExoAlerts
+    https://maester.dev/docs/commands/Test-MtCisaExoAlert
 #>
-function Test-MtCisaExoAlerts {
+function Test-MtCisaExoAlert {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
