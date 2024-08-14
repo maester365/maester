@@ -69,7 +69,7 @@ function Test-MtCisaSafeLinkDownloadScan {
     }
 
     $result += "| Policy Name | Policy Result |`n"
-    $result += "| --- | --- | --- |`n"
+    $result += "| --- | --- |`n"
     foreach($item in $policies | Sort-Object -Property Identity){
         if($item.Guid -in $resultPolicies.Guid){
             $result += "| $($item.Identity) | $passResult |`n"

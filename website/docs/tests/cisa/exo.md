@@ -56,3 +56,5 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaSafeLink               | [MS.EXO.15.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo151v1) |
 | Test-MtCisaSafeLinkDownloadScan   | [MS.EXO.15.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo152v1) |
 | Test-MtCisaSafeLinkClickTracking  | [MS.EXO.15.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo153v1) |
+| Test-MtCisaExoAlert               | [MS.EXO.16.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo161v1) |
+| Test-MtCisaExoAlertSiem           | [MS.EXO.16.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo162v1) |

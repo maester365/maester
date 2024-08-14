@@ -1,19 +1,19 @@
 ﻿<#
 .SYNOPSIS
-    Checks state of spam filter
+    Checks state of alerts
 
 .DESCRIPTION
-    If a third-party party filtering solution is used, the solution SHOULD offer services comparable to the native spam filtering offered by Microsoft.
+    Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.
 
 .EXAMPLE
-    Test-MtCisaSpamAlternative
+    Test-MtCisaExoAlertSiem
 
-    Always returns $null
+    Returns null
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSpamAlternative
+    https://maester.dev/docs/commands/Test-MtCisaExoAlertSiem
 #>
-function Test-MtCisaSpamAlternative {
+function Test-MtCisaExoAlertSiem {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -28,7 +28,7 @@ function Test-MtCisaSpamAlternative {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
         return $null
     }else{
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not available for API validation."
         return $null
     }
 }

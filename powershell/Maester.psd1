@@ -127,7 +127,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxIntelligence',
                'Test-MtCisaSpamFilter', 'Test-MtCisaSpamAction', 'Test-MtCisaSpamBypass',
                'Test-MtCisaSpamAlternative', 'Test-MtCisaSafeLink', 'Test-MtCisaSafeLinkDownloadScan',
-               'Test-MtCisaSafeLinkClickTracking',
+               'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaExoAlert', 'Test-MtCisaExoAlertSiem',
                'Get-MtExo', 'Clear-MtExoCache',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
@@ -155,7 +155,7 @@ AliasesToExport = 'Invoke-MtMaester', 'Connect-MtGraph', 'Connect-MtMaester',
                'Get-MtHostedContentFilterPolicy', 'Get-MtAntiPhishPolicy',
                'Get-MtSafeAttachmentPolicy', 'Get-MtSafeLinksPolicy',
                'Get-MtATPBuiltInProtectionRule', 'Get-MtEOPProtectionPolicyRule',
-               'Get-MtATPProtectionPolicyRule'
+               'Get-MtATPProtectionPolicyRule', 'Get-MtProtectionAlert'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()

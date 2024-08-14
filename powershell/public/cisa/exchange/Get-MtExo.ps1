@@ -40,7 +40,8 @@ function Get-MtExo {
         "Get-MtSafeLinksPolicy",
         "Get-MtATPBuiltInProtectionRule",
         "Get-MtEOPProtectionPolicyRule",
-        "Get-MtATPProtectionPolicyRule"
+        "Get-MtATPProtectionPolicyRule",
+        "Get-MtProtectionAlert"
     )]
     [CmdletBinding()]
     [OutputType([string],[object[]],[psobject])]
@@ -50,7 +51,6 @@ function Get-MtExo {
     <#
     $policies = @{
         "SafeAttachmentPolicy"      = Get-SafeAttachmentPolicy #RecommendedPolicyType -eq "Standard", "Strict"
-        "SafeLinksPolicy"           = Get-SafeLinksPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "ATPBuiltInProtectionRule"  = Get-ATPBuiltInProtectionRule
         "EOPProtectionPolicyRule"   = Get-EOPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
         "ATPProtectionPolicyRule"   = Get-ATPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
@@ -59,7 +59,8 @@ function Get-MtExo {
 
     ### To add new commands
     ### - add them to the hashtable below
-    ### - add them as an alias
+    ### - add them as an alias above
+    ### - add them as an alias to export in maester.psd1
     ### - confirm the command's return type is in OutputType (e.g. (Get-AcceptedDomain).GetType().Name)
     $commands = @{
         "AcceptedDomain"            = "Get-AcceptedDomain"
@@ -79,6 +80,7 @@ function Get-MtExo {
         "ATPBuiltInProtectionRule"  = "Get-ATPBuiltInProtectionRule"
         "EOPProtectionPolicyRule"   = "Get-EOPProtectionPolicyRule"
         "ATPProtectionPolicyRule"   = "Get-ATPProtectionPolicyRule"
+        "ProtectionAlert"           = "Get-ProtectionAlert"
     }
 
 
