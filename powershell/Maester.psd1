@@ -128,6 +128,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaSpamFilter', 'Test-MtCisaSpamAction', 'Test-MtCisaSpamBypass',
                'Test-MtCisaSpamAlternative', 'Test-MtCisaSafeLink', 'Test-MtCisaSafeLinkDownloadScan',
                'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaExoAlert', 'Test-MtCisaExoAlertSiem',
+               'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium', 'Test-MtCisaAuditLogRetention',
                'Get-MtExo', 'Clear-MtExoCache',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',

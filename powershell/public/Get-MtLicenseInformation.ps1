@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo', 'AdvAudit')]
         [string] $Product
     )
 
@@ -78,7 +78,7 @@ function Get-MtLicenseInformation {
                 Break
             }
             "Mdo" {
-                Write-Verbose "Retrieving license SKU for ExoDlp"
+                Write-Verbose "Retrieving license SKU for Mdo"
                 $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
                 $requiredSkus = @(
                     #servicePlanId
@@ -93,6 +93,25 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information "The license type for Defender for Office is $LicenseType"
+                return $LicenseType
+                Break
+            }
+            "AdvAudit" {
+                Write-Verbose "Retrieving license SKU for AdvAudit"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $requiredSkus = @(
+                    #servicePlanId
+                    "2f442157-a11c-46b9-ae5b-6e39ff4e5849" #Microsoft 365 Advanced Auditing
+                )
+                $LicenseType = $null
+                foreach($sku in $requiredSkus){
+                    $skuId = $sku -in $skus.skuId
+                    $servicePlanId = $sku -in $skus.servicePlans.servicePlanId
+                    if($skuId -or $servicePlanId){
+                        $LicenseType = "AdvAudit"
+                    }
+                }
+                Write-Information "The license type for Advanced Audit is $LicenseType"
                 return $LicenseType
                 Break
             }

@@ -66,7 +66,7 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
-            'NotLicensedMdo'
+            'NotLicensedMdo', 'AdvAudit'
         )]
         # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
