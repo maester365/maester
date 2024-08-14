@@ -86,7 +86,7 @@ function Test-MtCisaBlockExecutable {
         $result += "| Standard | $failResult |`n"
     }
     if ($strict) {
-        $result += "| Strict | $passResult |`n"
+        $result += "| Strict | $passResult |`n`n"
     } else {
         $result += "| Strict | $failResult |`n`n"
     }

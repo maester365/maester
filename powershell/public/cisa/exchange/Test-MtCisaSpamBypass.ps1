@@ -1,41 +1,38 @@
 ﻿<#
 .SYNOPSIS
-    Checks state of preset security policies
+    Checks state of spam filter
 
 .DESCRIPTION
-    Impersonation protection checks SHOULD be used.
+    Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
 
 .EXAMPLE
-    Test-MtCisaImpersonationTip
+    Test-MtCisaSpamAction
 
-    Returns true if standard and strict protection is on
+    Returns true if spam filter enabled
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaImpersonationTip
+    https://maester.dev/docs/commands/Test-MtCisaSpamAction
 #>
-function Test-MtCisaImpersonationTip {
+function Test-MtCisaSpamBypass {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
+    if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
-    } elseif (!(Test-MtConnection SecurityCompliance)) {
+    }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    } elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
+    }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
         return $null
     }
 
-    $policies = Get-MtAntiPhishPolicy
+    $policies = Get-MtHostedContentFilterPolicy
 
     $resultPolicies = $policies | Where-Object { `
-        $_.Enabled -and `
-        $_.EnableSimilarDomainsSafetyTips -and `
-        $_.EnableSimilarUsersSafetyTips -and `
-        $_.EnableUnusualCharactersSafetyTips
+        $_.AllowedSenderDomains
     }
 
     $standard = $policies | Where-Object { `
@@ -46,16 +43,16 @@ function Test-MtCisaImpersonationTip {
         $_.RecommendedPolicyType -eq "Strict"
     }
 
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
+    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -eq 0)
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
     }
 
     $result = "| Policy | Status |`n"
@@ -71,13 +68,13 @@ function Test-MtCisaImpersonationTip {
         $result += "| Strict | $failResult |`n`n"
     }
 
-    $result += "| Policy Name | Result |`n"
-    $result += "| --- | --- |`n"
+    $result += "| Policy Name | Policy Result | Allowed Domains |`n"
+    $result += "| --- | --- | --- |`n"
     foreach($item in $policies | Sort-Object -Property Identity){
-        if($item.Guid -in $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $($passResult) |`n"
+        if($item.Guid -notin $resultPolicies.Guid){
+            $result += "| $($item.Identity) | $passResult | $($item.AllowedSenderDomains) |`n"
         }else{
-            $result += "| $($item.Identity) | $($failResult) |`n"
+            $result += "| $($item.Identity) | $failResult | $($item.AllowedSenderDomains) |`n"
         }
     }
 

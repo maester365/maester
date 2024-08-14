@@ -125,6 +125,8 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaAttachmentFileType', 'Test-MtCisaEmailFilterAlternative',
                'Test-MtCisaBlockExecutable', 'Test-MtCisaMalwareAction', 'Test-MtCisaMalwareZap',
                'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxIntelligence',
+               'Test-MtCisaSpamFilter', 'Test-MtCisaSpamAction', 'Test-MtCisaSpamBypass',
+               'Test-MtCisaSpamAlternative',
                'Get-MtExo', 'Clear-MtExoCache',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
@@ -143,7 +145,16 @@ CmdletsToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = 'Invoke-MtMaester', 'Connect-MtGraph', 'Connect-MtMaester',
-               'Disconnect-MtGraph', 'Disconnect-MtMaester'
+               'Disconnect-MtGraph', 'Disconnect-MtMaester',
+               'Get-MtAcceptedDomain', 'Get-MtRemoteDomain',
+               'Get-MtTransportConfig', 'Get-MtTransportRule',
+               'Get-MtOrganizationConfig', 'Get-MtDkimSigningConfig',
+               'Get-MtSharingPolicy', 'Get-MtDlpComplianceRule',
+               'Get-MtDlpCompliancePolicy', 'Get-MtMalwareFilterPolicy',
+               'Get-MtHostedContentFilterPolicy', 'Get-MtAntiPhishPolicy',
+               'Get-MtSafeAttachmentPolicy', 'Get-MtSafeLinksPolicy',
+               'Get-MtATPBuiltInProtectionRule', 'Get-MtEOPProtectionPolicyRule',
+               'Get-MtATPProtectionPolicyRule'
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
