@@ -23,6 +23,7 @@
 #>
 function Get-MtExo {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression","")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingCmdletAliases","")]
     [Alias(
         "Get-MtAcceptedDomain",
         "Get-MtRemoteDomain",
