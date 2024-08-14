@@ -1,19 +1,19 @@
 ﻿<#
 .SYNOPSIS
-    Checks state of spam filter
+    Checks state of URL direct download scans
 
 .DESCRIPTION
-    Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
+    User click tracking SHOULD be enabled.
 
 .EXAMPLE
-    Test-MtCisaSpamBypass
+    Test-MtCisaSafeLinkClickTracking
 
-    Returns true if spam filter enabled
+    Returns true if URL direct download scan enabled
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSpamBypass
+    https://maester.dev/docs/commands/Test-MtCisaSafeLinkClickTracking
 #>
-function Test-MtCisaSpamBypass {
+function Test-MtCisaSafeLinkClickTracking {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -29,10 +29,10 @@ function Test-MtCisaSpamBypass {
         return $null
     }
 
-    $policies = Get-MtHostedContentFilterPolicy
+    $policies = Get-MtSafeLinksPolicy
 
     $resultPolicies = $policies | Where-Object { `
-        $_.AllowedSenderDomains
+        $_.TrackClicks
     }
 
     $standard = $policies | Where-Object { `
@@ -43,7 +43,7 @@ function Test-MtCisaSpamBypass {
         $_.RecommendedPolicyType -eq "Strict"
     }
 
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -eq 0)
+    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
     $passResult = "✅ Pass"
@@ -68,13 +68,13 @@ function Test-MtCisaSpamBypass {
         $result += "| Strict | $failResult |`n`n"
     }
 
-    $result += "| Policy Name | Policy Result | Allowed Domains |`n"
+    $result += "| Policy Name | Policy Result |`n"
     $result += "| --- | --- | --- |`n"
     foreach($item in $policies | Sort-Object -Property Identity){
-        if($item.Guid -notin $resultPolicies.Guid){
-            $result += "| $($item.Identity) | $passResult | $($item.AllowedSenderDomains) |`n"
+        if($item.Guid -in $resultPolicies.Guid){
+            $result += "| $($item.Identity) | $passResult |`n"
         }else{
-            $result += "| $($item.Identity) | $failResult | $($item.AllowedSenderDomains) |`n"
+            $result += "| $($item.Identity) | $failResult |`n"
         }
     }
 
