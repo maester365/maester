@@ -363,6 +363,16 @@ Describe "Authentication Method - Voice call" -Tag "EIDSCA", "Security", "All", 
     }
 }
 
+Describe "Authentication Method - SMS" -Tag "EIDSCA", "Security", "All", "EIDSCA.AS04" {
+    It "EIDSCA.AS04: Authentication Method - SMS - Use for sign-in. See https://maester.dev/docs/tests/EIDSCA.AS04" -TestCases @{ EnabledAuthMethods = $EnabledAuthMethods } {
+        <#
+            Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')"
+            .includeTargets.isUsableForSignIn = 'false'
+        #>
+        Test-MtEidscaControl -CheckId AS04 | Should -Be 'false'
+    }
+}
+
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR01" {
     It "EIDSCA.CR01: Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature. See https://maester.dev/docs/tests/EIDSCA.CR01" {
         <#

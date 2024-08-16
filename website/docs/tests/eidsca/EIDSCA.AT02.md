@@ -17,7 +17,7 @@ Determines whether the pass is limited to a one-time use.
 
 ## How to fix
 
-
+[Microsoft Learn - Require one-time use (Step 5)](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-temporary-access-pass#enable-the-temporary-access-pass-policy)
 
 ### Details of configuration item
 | | |
