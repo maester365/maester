@@ -24,9 +24,9 @@ function Test-MtCisaGlobalAdminCount {
     }
 
     $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes
+    $permissionMissing = "RoleEligibilitySchedule.Read.Directory" -notin $scopes
     if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.Read.Directory"
         return $null
     }
 
