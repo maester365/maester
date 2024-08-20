@@ -17,6 +17,7 @@
     https://maester.dev/docs/commands/Test-MtCaGaps
 #>
 function Get-ObjectDifferences {
+    [CmdletBinding()]
     param (
         [System.Collections.ArrayList]$excludedObjects,
         [System.Collections.ArrayList]$includedObjects
@@ -38,6 +39,7 @@ function Get-ObjectDifferences {
 }
 
 function Get-RalatedPolicies {
+    [CmdletBinding()]
     param (
         [System.Collections.ArrayList]$Arr,
         [String]$ObjName
