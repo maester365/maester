@@ -85,7 +85,7 @@ $body = @{
     }
   )
 } | ConvertTo-Json
-Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/applications/$applicationId" -Body $body
+Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/applications(appId='$applicationId')" -Body $body
 ```
 
 ## Create your Docker image
