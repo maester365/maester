@@ -73,6 +73,7 @@
 
 Describe "Security Defaults" -Tag "CA", "Security", "All" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
+        $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if ($EntraIDPlan -ne "Free") {
             Add-MtTestResultDetail -SkippedBecause LicensedEntraIDPremium
         } else {
