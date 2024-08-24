@@ -126,7 +126,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaAttachmentFileType', 'Test-MtCisaEmailFilterAlternative',
                'Test-MtCisaBlockExecutable', 'Test-MtCisaMalwareAction', 'Test-MtCisaMalwareZap',
                'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxIntelligence',
-               'Get-MtExo', 'Clear-MtExoCache',
+               'Get-MtExo', 'Clear-MtExoCache', 'Test-MtCisCloudAdmin',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
