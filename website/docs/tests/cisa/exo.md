@@ -49,3 +49,15 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaAntiSpamAllowList      | [MS.EXO.12.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo121v1) |
 | Test-MtCisaAntiSpamSafeList       | [MS.EXO.12.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo122v1) |
 | Test-MtCisaMailboxAuditing        | [MS.EXO.13.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo131v1) |
+| Test-MtCisaSpamFilter             | [MS.EXO.14.1v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo141v2) |
+| Test-MtCisaSpamAction             | [MS.EXO.14.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo142v1) |
+| Test-MtCisaSpamBypass             | [MS.EXO.14.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo143v1) |
+| Test-MtCisaSpamAlternative        | [MS.EXO.14.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo144v1) |
+| Test-MtCisaSafeLink               | [MS.EXO.15.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo151v1) |
+| Test-MtCisaSafeLinkDownloadScan   | [MS.EXO.15.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo152v1) |
+| Test-MtCisaSafeLinkClickTracking  | [MS.EXO.15.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo153v1) |
+| Test-MtCisaExoAlert               | [MS.EXO.16.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo161v1) |
+| Test-MtCisaExoAlertSiem           | [MS.EXO.16.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo162v1) |
+| Test-MtCisaAuditLog               | [MS.EXO.17.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo171v1) |
+| Test-MtCisaAuditLogPremium        | [MS.EXO.17.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo172v1) |
+| Test-MtCisaAuditLogRetention      | [MS.EXO.17.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo173v1) |

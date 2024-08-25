@@ -30,7 +30,7 @@ function Test-MtCisaAttachmentFilter {
         return $null
     }
 
-    $policies = Get-MtMalwareFilterPolicy
+    $policies = Get-MtExo -Request MalwareFilterPolicy
 
     $fileFilter = $policies | Where-Object { `
         $_.EnableFileFilter
@@ -64,7 +64,7 @@ function Test-MtCisaAttachmentFilter {
         $result += "| Standard | $failResult |`n"
     }
     if ($strict) {
-        $result += "| Strict | $passResult |`n"
+        $result += "| Strict | $passResult |`n`n"
     } else {
         $result += "| Strict | $failResult |`n`n"
     }

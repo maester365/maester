@@ -26,6 +26,7 @@ function Test-MtCisaDlpAlternate {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }else{
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."
         return $null
     }
 }

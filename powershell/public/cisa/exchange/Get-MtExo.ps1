@@ -23,25 +23,6 @@
 #>
 function Get-MtExo {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression","")]
-    [Alias(
-        "Get-MtAcceptedDomain",
-        "Get-MtRemoteDomain",
-        "Get-MtTransportConfig",
-        "Get-MtTransportRule",
-        "Get-MtOrganizationConfig",
-        "Get-MtDkimSigningConfig",
-        "Get-MtSharingPolicy",
-        "Get-MtDlpComplianceRule",
-        "Get-MtDlpCompliancePolicy",
-        "Get-MtMalwareFilterPolicy",
-        "Get-MtHostedContentFilterPolicy",
-        "Get-MtAntiPhishPolicy",
-        "Get-MtSafeAttachmentPolicy",
-        "Get-MtSafeLinksPolicy",
-        "Get-MtATPBuiltInProtectionRule",
-        "Get-MtEOPProtectionPolicyRule",
-        "Get-MtATPProtectionPolicyRule"
-    )]
     [CmdletBinding()]
     [OutputType([string],[object[]],[psobject])]
     param(
@@ -49,9 +30,7 @@ function Get-MtExo {
     )
     <#
     $policies = @{
-        "HostedContentFilterPolicy" = Get-HostedContentFilterPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "SafeAttachmentPolicy"      = Get-SafeAttachmentPolicy #RecommendedPolicyType -eq "Standard", "Strict"
-        "SafeLinksPolicy"           = Get-SafeLinksPolicy #RecommendedPolicyType -eq "Standard", "Strict"
         "ATPBuiltInProtectionRule"  = Get-ATPBuiltInProtectionRule
         "EOPProtectionPolicyRule"   = Get-EOPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
         "ATPProtectionPolicyRule"   = Get-ATPProtectionPolicyRule #-Identity "*Preset Security Policy" #IsBuiltInProtection
@@ -60,7 +39,6 @@ function Get-MtExo {
 
     ### To add new commands
     ### - add them to the hashtable below
-    ### - add them as an alias
     ### - confirm the command's return type is in OutputType (e.g. (Get-AcceptedDomain).GetType().Name)
     $commands = @{
         "AcceptedDomain"            = "Get-AcceptedDomain"
@@ -80,6 +58,7 @@ function Get-MtExo {
         "ATPBuiltInProtectionRule"  = "Get-ATPBuiltInProtectionRule"
         "EOPProtectionPolicyRule"   = "Get-EOPProtectionPolicyRule"
         "ATPProtectionPolicyRule"   = "Get-ATPProtectionPolicyRule"
+        "ProtectionAlert"           = "Get-ProtectionAlert"
     }
 
 
