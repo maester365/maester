@@ -11,13 +11,14 @@
     https://learn.microsoft.com/en-us/entra/identity/monitoring-health/workbook-conditional-access-gap-analyzer
 
 .Example
-    Test-MtCaGaps
+    Test-MtCaGap
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCaGaps
+    https://maester.dev/docs/commands/Test-MtCaGap
 #>
-function Get-ObjectDifferences {
+function Get-ObjectDifference {
     [CmdletBinding()]
+    [OutputType([object[]])]
     param (
         [System.Collections.ArrayList]$excludedObjects,
         [System.Collections.ArrayList]$includedObjects
@@ -38,8 +39,9 @@ function Get-ObjectDifferences {
     return $objectDifferences
 }
 
-function Get-RalatedPolicies {
+function Get-RelatedPolicies {
     [CmdletBinding()]
+    [OutputType([string])]
     param (
         [System.Collections.ArrayList]$Arr,
         [String]$ObjName
@@ -57,7 +59,7 @@ function Get-RalatedPolicies {
     return $result
 }
 
-function Test-MtCaGaps {
+function Test-MtCaGap {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -138,14 +140,14 @@ function Test-MtCaGaps {
     Write-Verbose "Created a mapping with all excluded objects for each policy:`n $mapping"
 
     # Find which objects are excluded without a fallback
-    [System.Collections.ArrayList]$differencesUsers = @(Get-ObjectDifferences -excludedObjects $excludedUsers -includedObjects $includedUsers)
-    [System.Collections.ArrayList]$differencesGroups = @(Get-ObjectDifferences -excludedObjects $excludedGroups -includedObjects $includedGroups)
-    [System.Collections.ArrayList]$differencesRoles = @(Get-ObjectDifferences -excludedObjects $excludedRoles -includedObjects $includedRoles)
-    [System.Collections.ArrayList]$differencesApplications = @(Get-ObjectDifferences -excludedObjects $excludedApplications -includedObjects $includedApplications)
-    [System.Collections.ArrayList]$differencesServicePrincipals = @(Get-ObjectDifferences -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals)
-    [System.Collections.ArrayList]$differencesLocations = @(Get-ObjectDifferences -excludedObjects $excludedLocations -includedObjects $includedLocations)
-    [System.Collections.ArrayList]$differencesPlatforms = @(Get-ObjectDifferences -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms)
-    Write-Host "Finished searching for gaps in policies."
+    [System.Collections.ArrayList]$differencesUsers = @(Get-ObjectDifference -excludedObjects $excludedUsers -includedObjects $includedUsers)
+    [System.Collections.ArrayList]$differencesGroups = @(Get-ObjectDifference -excludedObjects $excludedGroups -includedObjects $includedGroups)
+    [System.Collections.ArrayList]$differencesRoles = @(Get-ObjectDifference -excludedObjects $excludedRoles -includedObjects $includedRoles)
+    [System.Collections.ArrayList]$differencesApplications = @(Get-ObjectDifference -excludedObjects $excludedApplications -includedObjects $includedApplications)
+    [System.Collections.ArrayList]$differencesServicePrincipals = @(Get-ObjectDifference -excludedObjects $excludedServicePrincipals -includedObjects $includedServicePrincipals)
+    [System.Collections.ArrayList]$differencesLocations = @(Get-ObjectDifference -excludedObjects $excludedLocations -includedObjects $includedLocations)
+    [System.Collections.ArrayList]$differencesPlatforms = @(Get-ObjectDifference -excludedObjects $excludedPlatforms -includedObjects $includedPlatforms)
+    Write-Verbose "Finished searching for gaps in policies."
 
     # Check if all excluded objects have fallbacks
     if (
@@ -167,7 +169,7 @@ function Test-MtCaGaps {
             $testResult = "The following user objects did not have a fallback:`n`n"
             $differencesUsers | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add group objects to results
@@ -175,7 +177,7 @@ function Test-MtCaGaps {
             $testResult += "The following group objects did not have a fallback:`n`n"
             $differencesGroups | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add role objects to results
@@ -183,7 +185,7 @@ function Test-MtCaGaps {
             $testResult += "The following role objects did not have a fallback:`n`n"
             $differencesRoles | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add application objects to results
@@ -191,7 +193,7 @@ function Test-MtCaGaps {
             $testResult += "The following application objects did not have a fallback:`n`n"
             $differencesApplications | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add service principal objects to results
@@ -199,7 +201,7 @@ function Test-MtCaGaps {
             $testResult += "The following service principal objects did not have a fallback:`n`n"
             $differencesServicePrincipals | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add location objects to results
@@ -207,7 +209,7 @@ function Test-MtCaGaps {
             $testResult += "The following location objects did not have a fallback:`n`n"
             $differencesLocations | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
         # Add platform objects to results
@@ -215,7 +217,7 @@ function Test-MtCaGaps {
             $testResult += "The following platform objects did not have a fallback:`n`n"
             $differencesPlatforms | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RalatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
             }
         }
     }

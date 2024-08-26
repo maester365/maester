@@ -60,7 +60,7 @@
         Test-MtCaGroupsRestricted | Should -Be $true -Because "there is one or more policy without protection of included or excluded groups"
     }
     It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036", "Warning" {
-        Test-MtCaGaps | Should -Be $true -Because "there is one ore more object excluded without an include fallback in another policy."
+        Test-MtCaGap | Should -Be $true -Because "there is one ore more object excluded without an include fallback in another policy."
     }
     Context "License utilization" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
