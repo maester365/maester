@@ -1,20 +1,15 @@
 <#
 .Synopsis
-    This function checks if all objects found in policy exclusions are found in policy inclusions.
+    This function compares to object arrays
 
 .Description
-    Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically inlcuded
-    in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
-    overlooked exclusions which do not have a fallback.
-
-    Reference:
-    https://learn.microsoft.com/en-us/entra/identity/monitoring-health/workbook-conditional-access-gap-analyzer
+    Provides the differences in objects between two arrays of objects.
 
 .Example
-    Test-MtCaGap
+    Get-ObjectDifference
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCaGap
+    https://maester.dev/docs/commands/Get-ObjectDifference
 #>
 function Get-ObjectDifference {
     [CmdletBinding()]
@@ -39,6 +34,19 @@ function Get-ObjectDifference {
     return $objectDifferences
 }
 
+<#
+.Synopsis
+    Provides MarkDown text for specific array of objects
+
+.Description
+    Returns a structured MarkDown string resolving objects
+
+.Example
+    Get-RelatedPolicy
+
+.LINK
+    https://maester.dev/docs/commands/Get-RelatedPolicy
+#>
 function Get-RelatedPolicy {
     [CmdletBinding()]
     [OutputType([string])]
@@ -59,6 +67,21 @@ function Get-RelatedPolicy {
     return $result
 }
 
+<#
+.Synopsis
+    This function checks if all objects found in policy exclusions are found in policy inclusions.
+
+.Description
+    Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically inlcuded
+    in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
+    overlooked exclusions which do not have a fallback.
+
+.Example
+    Test-MtCaGap
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaGap
+#>
 function Test-MtCaGap {
     [CmdletBinding()]
     [OutputType([bool])]
