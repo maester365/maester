@@ -39,7 +39,7 @@ function Get-ObjectDifference {
     return $objectDifferences
 }
 
-function Get-RelatedPolicies {
+function Get-RelatedPolicy {
     [CmdletBinding()]
     [OutputType([string])]
     param (
@@ -169,7 +169,7 @@ function Test-MtCaGap {
             $testResult = "The following user objects did not have a fallback:`n`n"
             $differencesUsers | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add group objects to results
@@ -177,7 +177,7 @@ function Test-MtCaGap {
             $testResult += "The following group objects did not have a fallback:`n`n"
             $differencesGroups | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add role objects to results
@@ -185,7 +185,7 @@ function Test-MtCaGap {
             $testResult += "The following role objects did not have a fallback:`n`n"
             $differencesRoles | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add application objects to results
@@ -193,7 +193,7 @@ function Test-MtCaGap {
             $testResult += "The following application objects did not have a fallback:`n`n"
             $differencesApplications | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add service principal objects to results
@@ -201,7 +201,7 @@ function Test-MtCaGap {
             $testResult += "The following service principal objects did not have a fallback:`n`n"
             $differencesServicePrincipals | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add location objects to results
@@ -209,7 +209,7 @@ function Test-MtCaGap {
             $testResult += "The following location objects did not have a fallback:`n`n"
             $differencesLocations | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
         # Add platform objects to results
@@ -217,7 +217,7 @@ function Test-MtCaGap {
             $testResult += "The following platform objects did not have a fallback:`n`n"
             $differencesPlatforms | ForEach-Object {
                 $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicies -Arr $mappingArray -ObjName $_
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
     }
