@@ -1,29 +1,35 @@
 ---
 sidebar_class_name: hidden
-description: \{\{ Fill in the Synopsis \}\}
-id: Get-RalatedPolicies
-title: Get-RalatedPolicies
+description: Provides MarkDown text for specific array of objects
+id: Get-RelatedPolicy
+title: Get-RelatedPolicy
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-RalatedPolicies.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-RelatedPolicy.ps1
 ---
 
 ## SYNOPSIS
 
-\{\{ Fill in the Synopsis \}\}
+Provides MarkDown text for specific array of objects
 
 ## SYNTAX
 
 ```powershell
-Get-RalatedPolicies [[-Arr] <ArrayList>] [[-ObjName] <String>] [-ProgressAction <ActionPreference>]
+Get-RelatedPolicy [[-Arr] <ArrayList>] [[-ObjName] <String>] [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Returns a structured MarkDown string resolving objects
 
 ## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-RelatedPolicy
+```
 
 ## PARAMETERS
 
@@ -37,7 +43,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -53,7 +59,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -81,12 +87,12 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
-
 ## OUTPUTS
 
-### System.Object
+### System.String
 
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-RelatedPolicy](https://maester.dev/docs/commands/Get-RelatedPolicy)
