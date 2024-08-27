@@ -1,11 +1,11 @@
 ---
 sidebar_class_name: hidden
 description: This function checks if all objects found in policy exclusions are found in policy inclusions.
-id: Get-ObjectDifferences
-title: Get-ObjectDifferences
+id: Test-MtCaGap
+title: Test-MtCaGap
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-ObjectDifferences.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaGap.ps1
 ---
 
 ## SYNOPSIS
@@ -15,8 +15,7 @@ This function checks if all objects found in policy exclusions are found in poli
 ## SYNTAX
 
 ```powershell
-Get-ObjectDifferences [[-excludedObjects] <ArrayList>] [[-includedObjects] <ArrayList>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCaGap [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,50 +25,15 @@ in another conditional access policy.
 Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
 overlooked exclusions which do not have a fallback.
 
-Reference:
-https://learn.microsoft.com/en-us/entra/identity/monitoring-health/workbook-conditional-access-gap-analyzer
-
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCaGaps
+Test-MtCaGap
 ```
 
 ## PARAMETERS
-
-### -excludedObjects
-
-\{\{ Fill excludedObjects Description \}\}
-
-```yaml
-Type: ArrayList
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -includedObjects
-
-\{\{ Fill includedObjects Description \}\}
-
-```yaml
-Type: ArrayList
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ProgressAction
 
@@ -95,8 +59,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### System.Boolean
+
 ## NOTES
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCaGaps](https://maester.dev/docs/commands/Test-MtCaGaps)
+[https://maester.dev/docs/commands/Test-MtCaGap](https://maester.dev/docs/commands/Test-MtCaGap)
