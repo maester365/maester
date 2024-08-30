@@ -25,7 +25,20 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
 
 - If you are new to GitHub, create an account at [github.com](https://github.com/join)
 
-### Create a new repository and import the Maester Tests repository
+## Use the latest, or keep control of your versions?
+
+You may want to always use the latest, or you may want to control the tests running each time. The two options below provide a choice for each.
+
+### 1. Create a blank new repository to always use the latest available public Maester Tests
+
+- Open [https://github.com/new](https://github.com/new)
+- Fill in the following fields:
+  - **Repository name**: E.g. `maester-tests`
+  - **Add a README file**: Select this option to initialize your repository 
+  - **Private**: Select this option to keep your tests private
+- Select **Create repository**
+
+### 2. Create a new repository and import the Maester Tests repository, to keep updated yourself
 
 - Open [https://github.com/new/import](https://github.com/new/import)
 - Fill in the following fields:
@@ -104,6 +117,10 @@ jobs:
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+        include_public_tests: true # Optional: Set to false if you are keeping to a certain version of tests or have your own tests
+        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
+        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
+        # Other inputs are available and can be reviewed in the action.yml in the Maester repository
 
 ```
 
