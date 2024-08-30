@@ -45,7 +45,7 @@ inputs:
     default: true
   artifact_upload:
     type: boolean
-    description: "Define whether the results are uploaded as Artifacts"
+    description: "Define whether the results are uploaded as Artifacts."
     required: false
     default: true
 
