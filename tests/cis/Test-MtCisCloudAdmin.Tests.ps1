@@ -3,7 +3,7 @@ Describe "CIS" -Tag "CIS 1.1.1", "L1", "CIS E3 Level 1", "CIS E3", "CIS", "Secur
 
         $result = Test-MtCisCloudAdmin
 
-        if($null -ne $result) {
+        if ($null -ne $result) {
             $result | Should -Be $true -Because "admin accounts are separate and cloud-only"
         }
     }
