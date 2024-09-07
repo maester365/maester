@@ -7,7 +7,7 @@ Ensure that only organizationally managed and approved public groups exist.
 #### Remediation action:
 
 To enable only organizationally managed/approved public groups exist:
-1. Navigate to Microsoft 365 admin center https://admin.microsoft.com.
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Teams & groups** select **Active teams & groups**.
 3. On the **Active teams and groups** page, select the group's name that is public.
 4. On the popup groups name page, **Select Settings**.

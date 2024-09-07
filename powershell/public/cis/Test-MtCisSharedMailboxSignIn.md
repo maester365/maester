@@ -5,7 +5,7 @@ The intent of the shared mailbox is the only allow delegated access from other m
 #### Remediation action:
 
 Block sign-in to shared mailboxes in the UI:
-1. Navigate to Microsoft 365 admin center https://admin.microsoft.com/
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Teams & groups** and select **Shared mailboxes**.
 3. Take note of all shared mailboxes.
 4. Click to expand **Users** and select **Active users**.

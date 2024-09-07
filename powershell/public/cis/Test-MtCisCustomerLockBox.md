@@ -5,7 +5,7 @@ Customer Lockbox is a security feature that provides an additional layer of cont
 #### Remediation action:
 
 To enable the Customer Lockbox feature:
-1. Navigate to Microsoft 365 admin center https://admin.microsoft.com.
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Settings** then select **Org settings**.
 3. Select **Security & privacy** tab.
 4. Click **Customer lockbox**.

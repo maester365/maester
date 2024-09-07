@@ -5,7 +5,7 @@ Attackers often spend time learning about organizations before launching an atta
 #### Remediation action:
 
 To remediate using the UI:
-1. Navigate to Microsoft 365 admin center https://admin.microsoft.com.
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Settings** select **Org settings**.
 3. In the **Services** section click **Calendar**.
 4. Uncheck **Let your users share their calendars with people outside of

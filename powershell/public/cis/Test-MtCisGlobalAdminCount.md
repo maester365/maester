@@ -5,7 +5,7 @@ More than one global administrator should be designated so a single admin can be
 #### Remediation action:
 
 To correct the number of global tenant administrators:
-1. Navigate to the Microsoft 365 admin center https://admin.microsoft.com
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Select **Users** > **Active Users**.
 3. In the Search field enter the name of the user to be made a Global Administrator.
 4. To create a new Global Admin:
