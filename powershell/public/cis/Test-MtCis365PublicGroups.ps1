@@ -38,15 +38,21 @@ function Test-MtCis365PublicGroups {
     else {
         $testResultMarkdown = "Your tenant has 1 or more public 365 groups:`n`n%TestResult%"
     }
-
+    # $itemCount is used to limit the number of returned results shown in the table
+    $itemCount = 0
     $resultMd = "| Display Name | Public Groups |`n"
     $resultMd += "| --- | --- |`n"
-    foreach ($item in $365Groups) {
+    foreach ($item in $result) {
+        $itemCount += 1
         $itemResult = "❌ Fail"
-        if ($item.id -notin $result.id) {
-            $itemResult = "✅ Pass"
+        # We are restricting the table output to 6 below as it could be extremely large
+        if ($itemCount -lt 7) {
+            $resultMd += "| $($item.displayName) | $($itemResult) |`n"
         }
-        $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+    }
+    # Add a limited results message if more than 6 results are returned
+    if ($itemCount -gt 6) {
+        $resultMd += "Results limited to 6`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
