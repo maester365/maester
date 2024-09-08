@@ -91,7 +91,7 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
   }
 
   if ($result -eq $false) {
-    $testResult = "There was no conditional access policy blocking access for unknown or unsupported device platforms."
+    $testResult = "There was no conditional access policy requiring compliant or Microsoft Entra hybrid joined device for administrators."
   }
   Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
