@@ -40,7 +40,7 @@ function Test-MtCis365PublicGroups {
     }
     # $itemCount is used to limit the number of returned results shown in the table
     $itemCount = 0
-    $resultMd = "| Display Name | Public Groups |`n"
+    $resultMd = "| Display Name | Group Public |`n"
     $resultMd += "| --- | --- |`n"
     foreach ($item in $result) {
         $itemCount += 1
