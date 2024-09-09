@@ -41,13 +41,15 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         if (-not $AllDevices.IsPresent) {
             # Check if device filter for compliant or hybrid Azure AD joined devices is present
             if ( $policy.conditions.devices.deviceFilter.mode -eq "include" `
-                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.trustType -ne \"ServerAD\"' `
-                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -ne True' `
+                    -and (($policy.conditions.devices.deviceFilter.rule -match 'device.trustType -ne \"ServerAD\"' `
+                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -ne True') `
+                    -or $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -ne True') `
             ) {
                 $IsDeviceFilterPresent = $true
             } elseif ( $policy.conditions.devices.deviceFilter.mode -eq "exclude" `
-                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.trustType -eq \"ServerAD\"' `
-                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -eq True' `
+                    -and (($policy.conditions.devices.deviceFilter.rule -match 'device.trustType -eq \"ServerAD\"' `
+                    -and $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -eq True') `
+                    -or $policy.conditions.devices.deviceFilter.rule -match 'device.isCompliant -eq True') `
             ) {
                 $IsDeviceFilterPresent = $true
             } else {
