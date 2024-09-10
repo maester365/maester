@@ -30,7 +30,7 @@ function Test-MtCisSharedMailboxSignIn {
     }
 
     Write-Verbose "Getting all shared mailboxes"
-    $sharedMailboxes = Get-EXOMailbox -RecipientTypeDetails SharedMailbox
+    $sharedMailboxes = Get-MtExo -Request EXOMailbox | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
 
     Write-Verbose "For each mailbox get mailbox an and AccountEnabled status"
     $mailboxDetails = @()

@@ -59,6 +59,7 @@ function Get-MtExo {
         "EOPProtectionPolicyRule"   = "Get-EOPProtectionPolicyRule"
         "ATPProtectionPolicyRule"   = "Get-ATPProtectionPolicyRule"
         "ProtectionAlert"           = "Get-ProtectionAlert"
+        "EXOMailbox"                = "Get-EXOMailbox"
     }
 
 
