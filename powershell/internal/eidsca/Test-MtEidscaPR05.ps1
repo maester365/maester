@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to '60'
+    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is greater or equal to '60'
 
 .DESCRIPTION
 
@@ -25,7 +25,7 @@ function Test-MtEidscaPR05 {
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
-    $testResult = $tenantValue -ge '60'
+    $testResult = [int]$tenantValue -ge [int]'60'
     $tenantValueNotSet = $null -eq $tenantValue -and '60' -notlike '*$null*'
 
     if($testResult){
