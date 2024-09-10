@@ -38,7 +38,11 @@ function Get-MtUser {
         [string]$MemberOfRole
     )
 
-    process {
+    begin{
+
+        $Users = New-Object -TypeName 'System.Collections.ArrayList'
+
+        # Default roles that will be queried for UserType "Admin"
         $AdminRoles = @(
             "Global administrator",
             "Application administrator",
@@ -55,9 +59,13 @@ function Get-MtUser {
             "SharePoint administrator",
             "User administrator"
         )
+    }
+
+    process {
+
 
         Write-Verbose "Getting $Count $UserType users from the tenant."
-        $Users = New-Object -TypeName 'System.Collections.ArrayList'
+
 
         if ( $UserType -eq "Admin" ) {
             $UserType = "Member"
@@ -136,19 +144,34 @@ function Get-MtUser {
             }
 
         } else {
+
+            if( $UserType -eq "Member" ){
+                $queryFilter = "userType eq 'Member'"
+            }
+            elseif( $UserType -eq "Guest" ){
+                $queryFilter = "userType eq 'Guest'"
+            }
+            else{
+                Write-Warning "UserType $($UserType) cannot be processed! Aborting!"
+                throw "User can not be queried, invalid UserType: $($UserType)"
+            }
+
             if ($Count -gt 999) {
                 Write-Verbose "The maximum number of users that can be retrieved on one page is 999. Using paging to retrieve $Count users."
-                $TmpUsers = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = 999 } -OutputType Hashtable
+
+                $TmpUsers = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter $queryFilter -QueryParameters @{'$top' = 999 } -OutputType Hashtable
                 $Count = if ( $TmpUsers.Count -lt $Count ) { $TmpUsers.Count } else { $Count }
+
                 Write-Verbose "Retrieved $($TmpUsers.Count) users"
                 for ($i = 0; $i -lt $Count; $i++) {
                     $Users.Add($TmpUsers[$i]) | Out-Null
                 }
             } else {
-                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter "userType eq 'Member'" -QueryParameters @{'$top' = $Count } -DisablePaging -OutputType Hashtable
+                $Users = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'users' -Select id, userPrincipalName, userType -Filter $queryFilter -QueryParameters @{'$top' = $Count } -DisablePaging -OutputType Hashtable
                 $Users = $Users['value']
             }
         }
-        Return $Users
+
+        return $Users
     }
 }

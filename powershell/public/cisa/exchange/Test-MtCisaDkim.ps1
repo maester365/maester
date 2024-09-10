@@ -26,7 +26,7 @@ function Test-MtCisaDkim {
         return $null
     }
 
-    $signingConfig = Get-MtExo -Request kimSigningConfig
+    $signingConfig = Get-MtExo -Request DkimSigningConfig
     $acceptedDomains = Get-MtExo -Request AcceptedDomain
     <# DKIM record without key for parked domains
     $sendingDomains = $acceptedDomains | Where-Object {`
