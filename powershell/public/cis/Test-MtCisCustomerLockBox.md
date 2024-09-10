@@ -2,6 +2,8 @@
 
 Customer Lockbox is a security feature that provides an additional layer of control and transparency to customer data in Microsoft 365. Enabling this feature protects organizational data against data spillage and exfiltration.
 
+Test implementation checks Exchange Online service only.
+
 #### Remediation action:
 
 To enable the Customer Lockbox feature:
