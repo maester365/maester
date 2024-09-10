@@ -5,7 +5,8 @@ Rationale: By only allowing an authorized group of individuals to invite externa
 #### Remediation action:
 
 1. In **Entra ID** and **External Identities**, select **[External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/Settings)**.
-2. Under **Guest invite settings**, select **Only users assigned to specific admin roles can invite guest users**.
+2. Under **Guest invite settings**, select **Only users assigned to specific admin roles can invite guest users** or **No one in the organization can invite guest users including admins (most restrictive)**.
+
 3. Click **Save**.
 
 #### Related links
