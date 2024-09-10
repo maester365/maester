@@ -25,8 +25,7 @@ function Test-MtCisCustomerLockBox {
     }
 
     Write-Verbose "Requesting secure scores to get the customer lockbox setting"
-    $customerLockbox = Get-OrganizationConfig | Select-Object CustomerLockBoxEnabled
-
+    $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled
 
     Write-Verbose "Get domains where passwords are set to expire"
     $result = $customerLockbox | Where-Object { $_.CustomerLockBoxEnabled -ne "True" }
