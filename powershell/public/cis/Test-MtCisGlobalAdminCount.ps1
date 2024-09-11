@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if the number of Global Admins is between 2 and 4
 
@@ -31,12 +31,15 @@ function Test-MtCisGlobalAdminCount {
         return $null
     }
 
+    Write-Verbose "Getting role"
     $role = Get-MtRole | Where-Object {
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10"
     } # Global Administrator
 
+    Write-Verbose "Getting role assignments"
     $assignments = Get-MtRoleMember -roleId $role.id
 
+    Write-Verbose "Getting list of user identities assigned the Global Administrator role"
     $globalAdministrators = $assignments | Where-Object {`
             $_.'@odata.type' -eq "#microsoft.graph.user"
     }

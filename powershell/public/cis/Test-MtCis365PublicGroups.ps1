@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if there are public groups
 

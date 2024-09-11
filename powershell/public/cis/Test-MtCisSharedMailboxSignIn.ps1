@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if shared mailboxes allow sign-ins
 

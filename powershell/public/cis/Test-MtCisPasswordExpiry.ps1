@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if passwords are set to expire
 

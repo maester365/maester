@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if the customer lockbox feature is enabled
 

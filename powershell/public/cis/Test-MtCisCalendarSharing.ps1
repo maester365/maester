@@ -19,7 +19,7 @@ function Test-MtCisCalendarSharing {
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection ExchangeOnline)){
+    if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
     }
@@ -27,16 +27,17 @@ function Test-MtCisCalendarSharing {
     $policies = Get-MtExo -Request SharingPolicy
 
     $resultPolicies = $policies | Where-Object {`
-        $_.Enabled -and `
+            $_.Enabled -and `
         ($_.Domains -like "`*:*CalendarSharing*" -or `
-         $_.Domains -like "Anonymous:*CalendarSharing*")
+                $_.Domains -like "Anonymous:*CalendarSharing*")
     }
 
-    $testResult = ($resultPolicies|Measure-Object).Count -eq 0
+    $testResult = ($resultPolicies | Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%TestResult%"
     }
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if Global Admins are cloud users
 
