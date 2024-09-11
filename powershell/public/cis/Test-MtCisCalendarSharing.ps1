@@ -26,10 +26,8 @@ function Test-MtCisCalendarSharing {
 
     $policies = Get-MtExo -Request SharingPolicy
 
-    $resultPolicies = $policies | Where-Object {`
-            $_.Enabled -and `
-        ($_.Domains -like "`*:*CalendarSharing*" -or `
-                $_.Domains -like "Anonymous:*CalendarSharing*")
+    $resultPolicies = $policies | Where-Object {
+        $_.Enabled -and ($_.Domains -like "`*:*CalendarSharing*" -or $_.Domains -like "Anonymous:*CalendarSharing*")
     }
 
     $testResult = ($resultPolicies | Measure-Object).Count -eq 0
