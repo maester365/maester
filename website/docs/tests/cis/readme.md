@@ -34,6 +34,6 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisCalendarSharing | 1.3.3 (L2) Ensure 'External sharing' of calendars is not available |
 | TBD | 1.3.4 (L1) Ensure 'User owned apps and services' is restricted |
 | TBD | 1.3.5 (L1) Ensure internal phishing protection for Forms is enabled |
-| XXX | 1.3.6 (L2) Ensure the customer lockbox feature is enabled |
+| Test-MtCisCustomerLockBox | 1.3.6 (L2) Ensure the customer lockbox feature is enabled |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
