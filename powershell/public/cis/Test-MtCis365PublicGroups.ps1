@@ -7,14 +7,14 @@
     CIS Microsoft 365 Foundations Benchmark v3.1.0
 
 .EXAMPLE
-    Test-MtCis365PublicGroups
+    Test-MtCis365PublicGroup
 
     Returns true if no public Microsoft 365 groups are found
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCis365PublicGroups
+    https://maester.dev/docs/commands/Test-MtCis365PublicGroup
 #>
-function Test-MtCis365PublicGroups {
+function Test-MtCis365PublicGroup {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

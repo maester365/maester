@@ -27,7 +27,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | TBD | 1.1.2 (L1) Ensure two emergency access accounts have been defined |
 | Test-MtCisGlobalAdminCount | 1.1.3 (L1) Ensure that between two and four global admins are designated |
 | N/A | 1.1.4 (L1) Ensure Guest Users are reviewed at least biweekly |
-| Test-MtCis365PublicGroups | 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist |
+| Test-MtCis365PublicGroup | 1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist |
 | Test-MtCisSharedMailboxSignIn | 1.2.2 (L1) Ensure sign-in to shared mailboxes is blocked |
 | Test-MtCisPasswordExpiry | 1.3.1 (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' |
 | TBD | 1.3.2 (L1) Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices |
