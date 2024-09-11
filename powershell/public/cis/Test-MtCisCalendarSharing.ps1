@@ -24,8 +24,10 @@ function Test-MtCisCalendarSharing {
         return $null
     }
 
+    Write-Verbose "Get Calendar sharing policy"
     $policies = Get-MtExo -Request SharingPolicy
 
+    Write-Verbose "Get Calendars where sharing policy is enabled and allows anonymous sharing"
     $resultPolicies = $policies | Where-Object {
         $_.Enabled -and ($_.Domains -like "`*:*CalendarSharing*" -or $_.Domains -like "Anonymous:*CalendarSharing*")
     }
