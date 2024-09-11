@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Retrieves cached response or requests from cmdlet
 
@@ -22,9 +22,9 @@
     https://maester.dev/docs/commands/Get-MtExo
 #>
 function Get-MtExo {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression","")]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
     [CmdletBinding()]
-    [OutputType([string],[object[]],[psobject])]
+    [OutputType([string], [object[]], [psobject])]
     param(
         [string] $Request = ($MyInvocation.InvocationName).Substring(6)
     )
@@ -60,22 +60,25 @@ function Get-MtExo {
         "EOPProtectionPolicyRule"      = "Get-EOPProtectionPolicyRule"
         "ATPProtectionPolicyRule"      = "Get-ATPProtectionPolicyRule"
         "ProtectionAlert"              = "Get-ProtectionAlert"
+        "EXOMailbox"                   = "Get-EXOMailbox"
     }
 
 
-    if($Request -eq "Exo"){
+    if ($Request -eq "Exo") {
         Write-Error "$($MyInvocation.InvocationName) called with invalid -Request, specify value (e.g., AcceptedDomain)"
         return "Unable to obtain policy"
-    }elseif($Request -notin $commands.Keys){
+    }
+    elseif ($Request -notin $commands.Keys) {
         Write-Error "$($MyInvocation.InvocationName) called with unsupported -Request"
         return "Unable to obtain policy"
     }
 
-    if($null -eq $__MtSession.ExoCache.$Request){
+    if ($null -eq $__MtSession.ExoCache.$Request) {
         Write-Verbose "$request not in cache, requesting."
         $response = Invoke-Expression $commands.$Request
         $__MtSession.ExoCache.$Request = $response
-    }else{
+    }
+    else {
         Write-Verbose "$request in cache."
         $response = $__MtSession.ExoCache.$Request
     }

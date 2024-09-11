@@ -5,8 +5,7 @@ Administrative accounts are special privileged accounts that could have varying 
 #### Remediation action:
 
 To created licensed, separate Administrative accounts for Administrative users:
-
-1. Navigate to **Microsoft 365 admin center**.
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Users** select **Active users**
 3. Click **Add a user**.
 4. Fill out the appropriate fields for Name, user, etc.
