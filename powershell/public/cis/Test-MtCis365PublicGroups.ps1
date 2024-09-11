@@ -25,10 +25,10 @@ function Test-MtCis365PublicGroups {
     }
 
     Write-Verbose "Getting all Microsoft 365 Groups"
-    $365Groups = Invoke-MtGraphRequest -RelativeUri "groups" -ApiVersion v1.0
+    $365GroupList = Invoke-MtGraphRequest -RelativeUri "groups" -ApiVersion v1.0
 
     Write-Verbose "Filtering out private 365 groups"
-    $result = $365Groups | Where-Object { $_.visibility -eq "Public" }
+    $result = $365GroupList | Where-Object { $_.visibility -eq "Public" }
 
     $testResult = ($result | Measure-Object).Count -eq 0
 
