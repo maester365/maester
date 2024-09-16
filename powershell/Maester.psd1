@@ -131,6 +131,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaExoAlert', 'Test-MtCisaExoAlertSiem',
                'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium', 'Test-MtCisaAuditLogRetention',
                'Get-MtExo', 'Clear-MtExoCache', 'Test-MtCisaSharePointOnlineSharing',
+               'Test-MtCisaSharePointOnlineSharingAllowedDomains',
                'Test-MtCisCloudAdmin',
                'Test-MtCisGlobalAdminCount',
                'Test-MtCis365PublicGroup',
