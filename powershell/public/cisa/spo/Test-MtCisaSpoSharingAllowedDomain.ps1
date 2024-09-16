@@ -11,9 +11,9 @@
     Returns true if sharing uses restricted domains
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSharePointOnlineSharingAllowedDomains
+    https://maester.dev/docs/commands/Test-MtCisaSharePointOnlineSharingAllowedDomain
 #>
-function Test-MtCisaSharePointOnlineSharingAllowedDomains {
+function Test-MtCisaSharePointOnlineSharingAllowedDomain {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

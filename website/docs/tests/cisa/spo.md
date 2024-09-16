@@ -15,7 +15,7 @@ The tests in this section verifies that a Microsoft 365 tenant’s **SharePoint 
 |- | - |
 | Test-MtCisaSpoSharing                     | [MS.SHAREPOINT.1.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint11v1) |
 | Not Implemented (Not availabile in Graph) | [MS.SHAREPOINT.1.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint12v1) |
-| Test-MtCisaSpoSharingAllowedDomains       | [MS.SHAREPOINT.1.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint13v1) |
+| Test-MtCisaSpoSharingAllowedDomain        | [MS.SHAREPOINT.1.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint13v1) |
 | Not Implemented (Deprecated setting)      | [MS.SHAREPOINT.1.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint14v1) |
 | Not Implemented                           | [MS.SHAREPOINT.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint21v1) |
 | Not Implemented                           | [MS.SHAREPOINT.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/sharepoint.md#mssharepoint22v1) |
