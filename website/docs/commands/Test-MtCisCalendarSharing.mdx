@@ -1,36 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: Checks if guest invitations are restricted to admins
-id: Test-MtCisaGuestInvitation
-title: Test-MtCisaGuestInvitation
+description: Checks state of sharing policies
+id: Test-MtCisCalendarSharing
+title: Test-MtCisCalendarSharing
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaGuestInvitation.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisCalendarSharing.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if guest invitations are restricted to admins
+Checks state of sharing policies
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaGuestInvitation [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisCalendarSharing [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Only users with the Guest Inviter role SHOULD be able to invite guest users.
+Calendar details SHALL NOT be shared with all domains.
+CIS Microsoft 365 Foundations Benchmark v3.1.0
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaGuestInvitation
+Test-MtCisCalendarSharing
 ```
 
-Returns true if guest invitations are restricted to admins
+Returns true if no sharing policies allow uncontrolled calendar sharing.
 
 ## PARAMETERS
 
@@ -64,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaGuestInvitation](https://maester.dev/docs/commands/Test-MtCisaGuestInvitation)
+[https://maester.dev/docs/commands/Test-MtCisCalendarSharing](https://maester.dev/docs/commands/Test-MtCisCalendarSharing)

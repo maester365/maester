@@ -23,7 +23,7 @@ function Test-MtCisaContactSharing {
         return $null
     }
 
-    $policies = Get-MtSharingPolicy
+    $policies = Get-MtExo -Request SharingPolicy
 
     $resultPolicies = $policies | Where-Object {`
         $_.Enabled -and `
