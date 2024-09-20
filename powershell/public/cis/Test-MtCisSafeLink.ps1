@@ -104,7 +104,6 @@ function Test-MtCisSafeLink {
     }
 
     $testResult = ($failedCheckList | Measure-Object).Count -eq 0
-    Write-Verbose "testResult" $testResult
 
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
 
