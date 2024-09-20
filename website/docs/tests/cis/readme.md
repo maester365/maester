@@ -35,5 +35,8 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | TBD | 1.3.4 (L1) Ensure 'User owned apps and services' is restricted |
 | TBD | 1.3.5 (L1) Ensure internal phishing protection for Forms is enabled |
 | Test-MtCisCustomerLockBox | 1.3.6 (L2) Ensure the customer lockbox feature is enabled |
+| TBD | 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' |
+| TBD | 1.3.8 (L2) Ensure that Sways cannot be shared with people outside of your organization |
+| Test-MtCisSafeLink | 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
