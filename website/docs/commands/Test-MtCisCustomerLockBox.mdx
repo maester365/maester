@@ -1,36 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: Checks if guest invitations are restricted to admins
-id: Test-MtCisaGuestInvitation
-title: Test-MtCisaGuestInvitation
+description: Checks if the customer lockbox feature is enabled
+id: Test-MtCisCustomerLockBox
+title: Test-MtCisCustomerLockBox
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaGuestInvitation.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisCustomerLockBox.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if guest invitations are restricted to admins
+Checks if the customer lockbox feature is enabled
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaGuestInvitation [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisCustomerLockBox [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Only users with the Guest Inviter role SHOULD be able to invite guest users.
+The customer lockbox feature should be enabled
+CIS Microsoft 365 Foundations Benchmark v3.1.0
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaGuestInvitation
+Test-MtCisCustomerLockBox
 ```
 
-Returns true if guest invitations are restricted to admins
+Returns true if the customer lockbox feature is enabled
 
 ## PARAMETERS
 
@@ -64,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaGuestInvitation](https://maester.dev/docs/commands/Test-MtCisaGuestInvitation)
+[https://maester.dev/docs/commands/Test-MtCisCustomerLockBox](https://maester.dev/docs/commands/Test-MtCisCustomerLockBox)
