@@ -36,7 +36,7 @@ function Test-MtCisAttachmentFilter {
 
     Write-Verbose "Executing checks"
     $fileFilter = $policy | Where-Object {
-        $_.EnableFileFilter
+        $_.EnableFileFilter -match "True"
     }
 
     $testResult = ($fileFilter | Measure-Object).Count -ge 1

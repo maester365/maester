@@ -39,5 +39,6 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | TBD | 1.3.8 (L2) Ensure that Sways cannot be shared with people outside of your organization |
 | Test-MtCisSafeLink | 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled |
 | Test-MtCisAttachmentFilter | 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled |
+| Test-MtCisInternalMalwareNotification | 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
