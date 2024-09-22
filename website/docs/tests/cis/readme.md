@@ -23,7 +23,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 
 | Cmdlet Name | CIS Recommendation ID |
 | - | - |
-| Test-MtCisCloudAdmin | CIS 1.1.1: Ensure Administrative accounts are separate and cloud-only |
+| Test-MtCisCloudAdmin | 1.1.1 (L1) Ensure Administrative accounts are separate and cloud-only |
 | TBD | 1.1.2 (L1) Ensure two emergency access accounts have been defined |
 | Test-MtCisGlobalAdminCount | 1.1.3 (L1) Ensure that between two and four global admins are designated |
 | N/A | 1.1.4 (L1) Ensure Guest Users are reviewed at least biweekly |
@@ -40,5 +40,6 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisSafeLink | 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled |
 | Test-MtCisAttachmentFilter | 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled |
 | Test-MtCisInternalMalwareNotification | 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled |
+| Test-MtCisSafeAttachment | 2.1.4 (L2) Ensure Safe Attachments policy is enabled |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
