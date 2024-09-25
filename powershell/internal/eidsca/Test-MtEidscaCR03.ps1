@@ -8,12 +8,12 @@
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+     graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 
 .EXAMPLE
     Test-MtEidscaCR03
 
-    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+    Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 #>
 
 function Test-MtEidscaCR03 {
@@ -27,7 +27,7 @@ function Test-MtEidscaCR03 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.notifyReviewers
+    [string]$tenantValue = $result.remindersEnabled
     $testResult = $tenantValue -eq 'true'
     $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
 

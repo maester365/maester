@@ -8,12 +8,12 @@
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'enabled'
 
 .EXAMPLE
     Test-MtEidscaAM02
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'enabled'
 #>
 
 function Test-MtEidscaAM02 {
@@ -27,7 +27,7 @@ function Test-MtEidscaAM02 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    [string]$tenantValue = $result.isSoftwareOathEnabled
     $testResult = $tenantValue -eq 'enabled'
     $tenantValueNotSet = $null -eq $tenantValue -and 'enabled' -notlike '*$null*'
 

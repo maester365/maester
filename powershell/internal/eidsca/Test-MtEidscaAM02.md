@@ -5,7 +5,7 @@ enabled
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-.state = 'enabled'
+.isSoftwareOathEnabled = 'enabled'
 ```
 
 #### Related links
