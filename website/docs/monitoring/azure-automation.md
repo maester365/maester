@@ -73,6 +73,8 @@ foreach ($perm in $getPerms){
   - **Maester**
   - **Microsoft.Graph.Authentication**
   - **Pester**
+  - **NuGet**
+  - **PackageManagement**
 - Select **Next**.
 - Select **Create**.
 
