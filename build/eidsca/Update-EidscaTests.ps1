@@ -306,6 +306,13 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         }
 
         $output = $template
+
+        # Replace string with int if DefaultValue is a number and expecting an int as configuration value
+        if ($controlItem.DefaultValue -match "^[\d\.]+$") {
+            $output = $output -replace 'string', 'int'
+            $output = $output -replace '%RecommendedValue%' , '[int]%RecommendedValue%'
+        }
+
         $output = $output -replace '%DocName%', $docName
         $output = $output -replace '%ControlName%', $control.ControlName
         $output = $output -replace '%Description%', $control.Description
@@ -434,6 +441,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
         $testOutput = UpdateTemplate -template $testTemplate -control $control -controlItem $controlItem -docName $docName
         $docsOutput = UpdateTemplate -template $docsTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
         $psOutput = UpdateTemplate -template $psTemplate -control $control -controlItem $controlItem -docName $docName
+
         $psMarkdownOutput = UpdateTemplate -template $psMarkdownTemplate -control $control -controlItem $controlItem -docName $docName -isDoc $true
 
         if ($testOutput -ne '') {

@@ -144,18 +144,18 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value >= '60'
+            .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value >= [int]'60'
         #>
-        Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual '60'
+        Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual [int]'60'
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
     It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value = '10'
+            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value = [int]'10'
         #>
-        Test-MtEidscaControl -CheckId PR06 | Should -Be '10'
+        Test-MtEidscaControl -CheckId PR06 | Should -Be [int]'10'
     }
 }
 

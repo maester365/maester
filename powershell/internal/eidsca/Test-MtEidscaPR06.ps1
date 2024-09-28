@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to '10'
+    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to [int]'10'
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+     graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq [int]'10'
 
 .EXAMPLE
     Test-MtEidscaPR06
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq [int]'10'
 #>
 
 function Test-MtEidscaPR06 {
@@ -24,16 +24,16 @@ function Test-MtEidscaPR06 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
-    $testResult = $tenantValue -eq '10'
-    $tenantValueNotSet = $null -eq $tenantValue -and '10' -notlike '*$null*'
+    [int]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
+    $testResult = $tenantValue -eq [int]'10'
+    $tenantValueNotSet = $null -eq $tenantValue -and [int]'10' -notlike '*$null*'
 
     if($testResult){
-        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'10'** for **settings**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **[int]'10'** for **settings**"
     } elseif ($tenantValueNotSet) {
-        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'10'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **[int]'10'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'10'** for **settings**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **[int]'10'** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
