@@ -107,6 +107,7 @@ cd $env:TEMP
 md maester-tests
 cd maester-tests
 Install-MaesterTests .\tests
+Update-MaesterTests
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
 
