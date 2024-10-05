@@ -138,6 +138,10 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisSharedMailboxSignIn',
                'Test-MtCisPasswordExpiry',
                'Test-MtCisCustomerLockBox',
+               'Test-MtCisSafeLink',
+               'Test-MtCisAttachmentFilter',
+               'Test-MtCisInternalMalwareNotification',
+               'Test-MtCisSafeAttachment',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
@@ -206,4 +210,3 @@ HelpInfoURI = 'https://maester.dev/docs/commands/'
 # DefaultCommandPrefix = ''
 
 }
-
