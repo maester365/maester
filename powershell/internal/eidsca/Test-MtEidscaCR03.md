@@ -5,7 +5,7 @@ Specifies whether reviewers will receive reminder emails
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
-.notifyReviewers = 'true'
+.remindersEnabled = 'true'
 ```
 
 #### Related links
