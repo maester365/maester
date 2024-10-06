@@ -62,7 +62,7 @@
     It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036", "Warning" {
         Test-MtCaGap | Should -Be $true -Because "there is one ore more object excluded without an include fallback in another policy."
     }
-    It "MT.1037: All assigned group objects should exists. See https://maester.dev/docs/tests/MT.1037" -Tag "MT.1037", "Warning" {
+    It "MT.1038: All assigned group objects should exists. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038", "Warning" {
         Test-MtCaInvalidGroupsAssigned | Should -Be $true -Because "there is one ore more group object which not exists anymore."
     }
     Context "License utilization" {

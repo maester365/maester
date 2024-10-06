@@ -20,54 +20,66 @@ Function Test-MtCaInvalidGroupsAssigned {
   [OutputType([bool])]
   param ()
 
-  $Policies = Get-MtConditionalAccessPolicy
+  # Execute the test only when PowerShell Core and parallel processing is supported
+  if ($PSVersionTable.PSEdition -eq 'Core') {
 
-  $Groups = $Policies.conditions.users | Where-Object {
-  @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0
-} | ForEach-Object {
-  $_.includeGroups + $_.excludeGroups
-} | Select-Object -Unique
+    $testDescription = "Conditional Access Policies should not target to security groups which are not exists anymore."
+    $Policies = Get-MtConditionalAccessPolicy
 
+    $Groups = $Policies.conditions.users | Where-Object {
+    @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0
+    } | ForEach-Object {
+    $_.includeGroups + $_.excludeGroups
+    } | Select-Object -Unique
 
-$GroupsWhichNotExist = [System.Collections.Concurrent.ConcurrentDictionary[string]]::new()
-$Groups | ForEach-Object -Parallel {
-  $Group = $_
-  $NotExistedGroup = $using:GroupsWhichNotExist
-    $GraphQueryResult = Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue
-    if ([string]::IsNullOrEmpty($GraphQueryResult)) {
-      $NotExistedGroup.Add($Group) | Out-Null
-    }
-}
-
-  $result = ($GroupsWhichNotExist | Measure-Object).Count -eq 0
-
-  if ( $result ) {
-    $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
-  } else {
-    $ResultDescription = "These security groups with assignments in Conditional Access are exists anymore."
-    $ImpactedCaGroups = "`n`n#### Impacted Conditional Access Policies`n`n | Security Group | Condition | Policy name | `n"
-    $ImpactedCaGroups += "| --- | --- | --- |`n"
-  }
-
-  $InvalidGroupIds | ForEach-Object {
-    $InvalidGroupId = $_
-    $ImpactedPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.conditions.users.includeGroups -contains $InvalidGroupId -or $_.conditions.users.excludeGroups -contains $InvalidGroupId }
-    foreach ($ImpactedPolicy in $ImpactedPolicies) {
-      if ($ImpactedPolicy.conditions.users.includeGroups -contains $InvalidGroupId) {
-        $Condition = "include"
-      } elseif ($ImpactedPolicy.conditions.users.excludeGroups -contains $InvalidGroupId) {
-        $Condition = "exclude"
-      } else {
-        $Condition = "Unknown"
+    if ($Groups.Count -lt 50) {
+      $GroupsWhichNotExist = [System.Collections.Concurrent.ConcurrentBag[psobject]]::new()
+      $Groups | ForEach-Object -Parallel {
+        $Group = $_
+        $NotExistedGroup = $using:GroupsWhichNotExist
+          $GraphQueryResult = Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue
+          if ([string]::IsNullOrEmpty($GraphQueryResult)) {
+            $NotExistedGroup.Add($Group) | Out-Null
+          }
       }
-      $Policy = (Get-GraphObjectMarkdown -GraphObjects $ImpactedPolicy -GraphObjectType ConditionalAccess -AsPlainTextLink)
-      $Group = (Get-GraphObjectMarkdown -GraphObjects $GroupNotExists -GraphObjectType Groups -AsPlainTextLink)
-      $ImpactedCaGroups += "| $($Group) | $($Condition) | $($Policy) | `n"
+
+      $result = ($GroupsWhichNotExist | Measure-Object).Count -eq 0
+
+      if ( $result ) {
+        $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
+      } else {
+        $ResultDescription = "These security groups with assignments in Conditional Access are exists anymore. Invalid groups are only visible in the policy assignment in Microsoft Graph API and not in the Portal UI."
+        $ImpactedCaGroups = "`n`n#### Impacted Conditional Access Policies`n`n | Security Group | Condition | Policy name | `n"
+        $ImpactedCaGroups += "| --- | --- | --- |`n"
+      }
+
+      $GroupsWhichNotExist  | Sort-Object | ForEach-Object {
+        $InvalidGroupId = $_
+        $ImpactedPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.conditions.users.includeGroups -contains $InvalidGroupId -or $_.conditions.users.excludeGroups -contains $InvalidGroupId }
+        foreach ($ImpactedPolicy in $ImpactedPolicies) {
+          if ($ImpactedPolicy.conditions.users.includeGroups -contains $InvalidGroupId) {
+            $Condition = "include"
+          } elseif ($ImpactedPolicy.conditions.users.excludeGroups -contains $InvalidGroupId) {
+            $Condition = "exclude"
+          } else {
+            $Condition = "Unknown"
+          }
+          $Policy = (Get-GraphObjectMarkdown -GraphObjects $ImpactedPolicy -GraphObjectType ConditionalAccess -AsPlainTextLink)
+          $ImpactedCaGroups += "| $($InvalidGroupId) | $($Condition) | $($Policy) | `n"
+        }
+      }
+
+      $resultMarkdown = $ResultDescription + $ImpactedCaGroups
+      Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
+      return $result
+    } else {
+      # Too many groups to check, skip the test because of performance reasons
+      Add-MtTestResultDetail -SkippedBecause unsupported
+      return $null
     }
+  } else {
+    # PowerShell Core not available, skip the test
+    Add-MtTestResultDetail -SkippedBecause NotSupported
+    return $null
   }
-
-  $resultMarkdown = $ResultDescription + $ImpactedCaGroups
-  Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
-
-  return $result
 }
