@@ -310,7 +310,6 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         # Replace string with int if DefaultValue is a number and expecting an int as configuration value
         if ($controlItem.DefaultValue -match "^[\d\.]+$") {
             $output = $output -replace 'string', 'int'
-            #$output = $output -replace '%RecommendedValue%' , '[int]%RecommendedValue%'
         }
 
         $output = $output -replace '%DocName%', $docName
