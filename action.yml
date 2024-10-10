@@ -146,3 +146,4 @@ runs:
       with:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
+        include-hidden-files: true
