@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Checks if the default common attadchment types filter is enabled
+    Checks if the default common attachment types filter is enabled
 
 .DESCRIPTION
     The common attachment types fileter should be enabled
