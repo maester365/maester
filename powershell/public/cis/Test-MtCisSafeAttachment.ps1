@@ -75,7 +75,7 @@ function Test-MtCisSafeAttachment {
         $testResultMarkdown = "Well done. Your tenant has the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
     }
 
 
