@@ -41,5 +41,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisAttachmentFilter | 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled |
 | Test-MtCisInternalMalwareNotification | 2.1.3 (L1) Ensure notifications for internal users sending malware is Enabled |
 | Test-MtCisSafeAttachment | 2.1.4 (L2) Ensure Safe Attachments policy is enabled |
+| Test-MtCisSafeAttachmentsAtpPolicy | 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled |
+| Test-MtCisOutboundSpamFilterPolicy | 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
