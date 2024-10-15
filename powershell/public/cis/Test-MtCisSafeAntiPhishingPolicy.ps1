@@ -41,7 +41,7 @@ function Test-MtCisSafeAntiPhishingPolicy {
 
     # Enabled should be True
     $antiPhishingPolicyCheckList += [pscustomobject] @{
-        "CheckName" = "enabled"
+        "CheckName" = "Enabled"
         "Value"     = "True"
     }
 
@@ -77,10 +77,15 @@ function Test-MtCisSafeAntiPhishingPolicy {
     }
 
     # Custom check for PhishThresholdLevel
-    # Because it is not exact match, we do it seperately
-    if ($policy | Where-Object { $_.PhishThresholdLevel -ge 2 }) {
+    # Because it is not exact match, the above logic won't work. Manual check to see if PhishThresholdLevel is 2 or greater
+    if ($policy | Where-Object { $_.PhishThresholdLevel -le 1 }) {
         #If the check fails, add it to the list so we can report on it later
         $failedCheckList += "PhishThresholdLevel"
+    }
+
+    # We didn't use this in the foreach loop above, but we need to add it now so we get results in the output for the separate check
+    $antiPhishingPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "PhishThresholdLevel"
     }
 
     $testResult = ($failedCheckList | Measure-Object).Count -eq 0
