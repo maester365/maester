@@ -142,7 +142,7 @@ runs:
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
-      if: ${{ inputs.artifact_upload == true }}
+      if: ${{ inputs.artifact_upload == 'true' }}
       with:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
