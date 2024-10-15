@@ -43,5 +43,6 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisSafeAttachment | 2.1.4 (L2) Ensure Safe Attachments policy is enabled |
 | Test-MtCisSafeAttachmentsAtpPolicy | 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled |
 | Test-MtCisOutboundSpamFilterPolicy | 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators |
+| Test-MtCisSafeAntiPhishingPolicy | 2.1.7 (L1) Ensure that an anti-phishing policy has been created |
 
 TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
