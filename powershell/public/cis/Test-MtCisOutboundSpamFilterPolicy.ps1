@@ -1,19 +1,19 @@
 ﻿<#
 .SYNOPSIS
-Checks if the Safe Attachments policy is enabled
+Checks if Exchange Online Spam Policies are set to notify administrators
 
 .DESCRIPTION
-The Safe Attachments policy is enabled
+Ensure Exchange Online Spam Policies are set to notify administrators
 
 .EXAMPLE
-Test-MtCisSafeAttachment
+Test-MtCisOutboundSpamFilterPolicy
 
-Returns true safe attachments policy is enabled
+Returns true if Exchange Online Spam Policies are set to notify administrators
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeAttachment
+https://maester.dev/docs/commands/Test-MtCisOutboundSpamFilterPolicy
 #>
-function Test-MtCisSafeAttachment {
+function Test-MtCisOutboundSpamFilterPolicy {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -31,32 +31,27 @@ function Test-MtCisSafeAttachment {
         return $null
     }
 
-    Write-Verbose "Getting Safe Attachment Policy..."
-    $policy = Get-MtExo -Request SafeAttachmentPolicy
+    Write-Verbose "Getting Outbound Spam Filter Policy..."
+    $policy = Get-MtExo -Request HostedOutboundSpamFilterPolicy
 
-    $safeAttachmentCheckList = @()
+    $OutboundSpamFilterPolicyCheckList = @()
 
-    #Enable
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "Enable"
+    #BccSuspiciousOutboundMail should be True
+    $OutboundSpamFilterPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "BccSuspiciousOutboundMail"
         "Value"     = "True"
     }
 
-    #Action
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "Action"
-        "Value"     = "Block"
+    #NotifyOutboundSpam should be True
+    $OutboundSpamFilterPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "NotifyOutboundSpam"
+        "Value"     = "True"
     }
 
-    #QuarantineTag
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "QuarantineTag"
-        "Value"     = "AdminOnlyAccessPolicy"
-    }
 
     Write-Verbose "Executing checks"
     $failedCheckList = @()
-    foreach ($check in $safeAttachmentCheckList) {
+    foreach ($check in $OutboundSpamFilterPolicyCheckList) {
 
         $checkResult = $policy | Where-Object { $_.($check.CheckName) -notmatch $check.Value }
 
@@ -69,19 +64,19 @@ function Test-MtCisSafeAttachment {
 
     $testResult = ($failedCheckList | Measure-Object).Count -eq 0
 
-    $portalLink = "https://security.microsoft.com/safeattachmentv2"
+    $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has Exchange Online Spam Policies set to notify administrators ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have Exchange Online Spam Policies set to notify administrators ($portalLink).`n`n%TestResult%"
     }
 
 
     $resultMd = "| Check Name | Result |`n"
     $resultMd += "| --- | --- |`n"
-    foreach ($item in $safeAttachmentCheckList) {
+    foreach ($item in $OutboundSpamFilterPolicyCheckList) {
         $itemResult = "❌ Fail"
         if ($item.CheckName -notin $failedCheckList) {
             $itemResult = "✅ Pass"

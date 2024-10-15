@@ -142,6 +142,8 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisAttachmentFilter',
                'Test-MtCisInternalMalwareNotification',
                'Test-MtCisSafeAttachment',
+               'Test-MtCisSafeAttachmentsAtpPolicy',
+               "Test-MtCisOutboundSpamFilterPolicy",
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',

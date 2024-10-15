@@ -1,19 +1,19 @@
 ﻿<#
 .SYNOPSIS
-Checks if the Safe Attachments policy is enabled
+Checks if Safe Attachments for SharePoint, OneDrive, and Microsoft Teams are enabled
 
 .DESCRIPTION
-The Safe Attachments policy is enabled
+Safe Attachments for SharePoint, OneDrive, and Microsoft Teams should be enabled
 
 .EXAMPLE
-Test-MtCisSafeAttachment
+Test-MtCisSafeAttachmentsAtpPolicy
 
-Returns true safe attachments policy is enabled
+Returns true if safe attachments are enabled for SharePoint, OneDrive, and Microsoft Teams
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeAttachment
+https://maester.dev/docs/commands/Test-MtCisSafeAttachmentsAtpPolicy
 #>
-function Test-MtCisSafeAttachment {
+function Test-MtCisSafeAttachmentsAtpPolicy {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -31,32 +31,32 @@ function Test-MtCisSafeAttachment {
         return $null
     }
 
-    Write-Verbose "Getting Safe Attachment Policy..."
-    $policy = Get-MtExo -Request SafeAttachmentPolicy
+    Write-Verbose "Getting 365 Atp Policy..."
+    $policy = Get-MtExo -Request AtpPolicyForO365
 
-    $safeAttachmentCheckList = @()
+    $atpPolicyCheckList = @()
 
-    #Enable
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "Enable"
+    #EnableATPForSPOTeamsODB should be True
+    $atpPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "EnableATPForSPOTeamsODB"
         "Value"     = "True"
     }
 
-    #Action
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "Action"
-        "Value"     = "Block"
+    #EnableSafeDocs should be True
+    $atpPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "EnableSafeDocs"
+        "Value"     = "True"
     }
 
-    #QuarantineTag
-    $safeAttachmentCheckList += [pscustomobject] @{
-        "CheckName" = "QuarantineTag"
-        "Value"     = "AdminOnlyAccessPolicy"
+    #AllowSafeDocsOpen should be False
+    $atpPolicyCheckList += [pscustomobject] @{
+        "CheckName" = "AllowSafeDocsOpen"
+        "Value"     = "False"
     }
 
     Write-Verbose "Executing checks"
     $failedCheckList = @()
-    foreach ($check in $safeAttachmentCheckList) {
+    foreach ($check in $atpPolicyCheckList) {
 
         $checkResult = $policy | Where-Object { $_.($check.CheckName) -notmatch $check.Value }
 
@@ -72,16 +72,16 @@ function Test-MtCisSafeAttachment {
     $portalLink = "https://security.microsoft.com/safeattachmentv2"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%TestResult%"
     }
 
 
     $resultMd = "| Check Name | Result |`n"
     $resultMd += "| --- | --- |`n"
-    foreach ($item in $safeAttachmentCheckList) {
+    foreach ($item in $atpPolicyCheckList) {
         $itemResult = "❌ Fail"
         if ($item.CheckName -notin $failedCheckList) {
             $itemResult = "✅ Pass"
