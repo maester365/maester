@@ -31,7 +31,7 @@ function Test-MtCisSafeAttachmentsAtpPolicy {
         return $null
     }
 
-    Write-Verbose "Getting Safe Attachment Policy..."
+    Write-Verbose "Getting 365 Atp Policy..."
     $policy = Get-MtExo -Request AtpPolicyForO365
 
     $atpPolicyCheckList = @()

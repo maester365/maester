@@ -31,7 +31,7 @@ function Test-MtCisOutboundSpamFilterPolicy {
         return $null
     }
 
-    Write-Verbose "Getting Safe Attachment Policy..."
+    Write-Verbose "Getting Outbound Spam Filter Policy..."
     $policy = Get-MtExo -Request HostedOutboundSpamFilterPolicy
 
     $OutboundSpamFilterPolicyCheckList = @()
