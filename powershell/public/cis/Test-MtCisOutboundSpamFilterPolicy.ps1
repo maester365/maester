@@ -32,7 +32,10 @@ function Test-MtCisOutboundSpamFilterPolicy {
     }
 
     Write-Verbose "Getting Outbound Spam Filter Policy..."
-    $policy = Get-MtExo -Request HostedOutboundSpamFilterPolicy
+    $policies = Get-MtExo -Request HostedOutboundSpamFilterPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.Name -eq 'Default' }
 
     $OutboundSpamFilterPolicyCheckList = @()
 
@@ -67,10 +70,10 @@ function Test-MtCisOutboundSpamFilterPolicy {
     $portalLink = "https://security.microsoft.com/antispam"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has Exchange Online Spam Policies set to notify administrators ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenants default Exchange Online Spam policy set to notify administrators ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have Exchange Online Spam Policies set to notify administrators ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenants default Exchange Online Spam policy is not set to notify administrators ($portalLink).`n`n%TestResult%"
     }
 
 

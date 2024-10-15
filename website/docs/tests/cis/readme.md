@@ -21,6 +21,8 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 
 ## Tests
 
+It is important to note that a number of the policy checks ONLY check the default policy, and not every policy. CIS 2.1.7 `Test-MtCisSafeAntiPhishingPolicy` is one example.
+
 | Cmdlet Name | CIS Recommendation ID |
 | - | - |
 | Test-MtCisCloudAdmin | 1.1.1 (L1) Ensure Administrative accounts are separate and cloud-only |
