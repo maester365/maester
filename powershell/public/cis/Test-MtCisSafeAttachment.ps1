@@ -32,7 +32,10 @@ function Test-MtCisSafeAttachment {
     }
 
     Write-Verbose "Getting Safe Attachment Policy..."
-    $policy = Get-MtExo -Request SafeAttachmentPolicy
+    $policies = Get-MtExo -Request SafeAttachmentPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.Name -eq 'Built-In Protection Policy' }
 
     $safeAttachmentCheckList = @()
 
@@ -72,10 +75,10 @@ function Test-MtCisSafeAttachment {
     $portalLink = "https://security.microsoft.com/safeattachmentv2"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenants default safe attachments policy matches CIS recommendations ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the safe attachment policy enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenants default safe attachments policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
 
 

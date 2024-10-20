@@ -32,7 +32,10 @@ function Test-MtCisSafeLink {
     }
 
     Write-Verbose "Getting Safe Links Policy..."
-    $policy = Get-MtExo -Request SafeLinksPolicy
+    $policies = Get-MtExo -Request SafeLinksPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.Name -eq 'Built-In Protection Policy' }
 
     $safeLinkCheckList = @()
 
@@ -108,10 +111,10 @@ function Test-MtCisSafeLink {
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the recommended safelink settings configured ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenants default safe link policy matches CIS recommendations ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the recommended safelink settings configured ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenants default safe link policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
 
 

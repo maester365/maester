@@ -1,9 +1,9 @@
 ﻿<#
 .SYNOPSIS
-    Checks if the default common attadchment types filter is enabled
+    Checks if the default common attachment types filter is enabled
 
 .DESCRIPTION
-    The common attachment types fileter should be enabled
+    The common attachment types filter should be enabled
 
 .EXAMPLE
     Test-MtCisAttachmentFilter
@@ -32,7 +32,10 @@ function Test-MtCisAttachmentFilter {
     }
 
     Write-Verbose "Getting Malware Filter Policy..."
-    $policy = Get-MtExo -Request MalwareFilterPolicy
+    $policies = Get-MtExo -Request MalwareFilterPolicy
+
+    # We grab the default policy as that is what CIS checks
+    $policy = $policies | Where-Object { $_.Name -eq 'Default' }
 
     Write-Verbose "Executing checks"
     $fileFilter = $policy | Where-Object {
@@ -44,10 +47,10 @@ function Test-MtCisAttachmentFilter {
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenants default malware filter policy has the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant does not have the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenants default malware filter policy does not have the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
     }
 
     $resultMd = "| Policy | Result |`n"

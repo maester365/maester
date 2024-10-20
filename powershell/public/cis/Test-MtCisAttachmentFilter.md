@@ -1,12 +1,9 @@
 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled
 
 **Rationale:**
-
 Blocking known malicious file types can help prevent malware-infested files from infecting a host.
 
 #### Remediation action:
-
-
 
 To enable the Common Attachment Types Filter:
 1. Navigate to Microsoft 365 Defender [https://security.microsoft.com](https://security.microsoft.com).
