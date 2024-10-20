@@ -146,6 +146,7 @@ module.exports = [
     'commands/Test-MtCisInternalMalwareNotification',
     'commands/Test-MtCisOutboundSpamFilterPolicy',
     'commands/Test-MtCisPasswordExpiry',
+    'commands/Test-MtCisSafeAntiPhishingPolicy',
     'commands/Test-MtCisSafeAttachment',
     'commands/Test-MtCisSafeAttachmentsAtpPolicy',
     'commands/Test-MtCisSafeLink',
