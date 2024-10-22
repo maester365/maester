@@ -20,3 +20,5 @@ foreach($file in $files){
 $dependencies|group command|sort @{e={$_.Count};Descending=$true},Name|select count,name
 #Show modules
 #($dependencies.Name|%{Get-Command $_}).Source|sort -Unique
+#Show commands by modules filtering out a few
+#$dependencies|%{$n=$_.Name;$(Get-Command $_.Name).Source|?{$_ -notin @("Maester","Pester","PowerShellGet") -and $_ -notlike "Microsoft.PowerShell*"}|%{"$_;$n"}}|sort
