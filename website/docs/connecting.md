@@ -3,6 +3,8 @@ sidebar_position: 3
 title: Connecting details
 ---
 
+import CreateEntraApp from '../sections/create-entra-app.md';
+
 ## Authentication & Maester
 
 There are two main methods of authenticating sessions for use with Maester:
@@ -55,6 +57,10 @@ graph TD;
 ```
 
 You can [write tests](/docs/writing-tests) that expand Maester to validate the configuration state of infrastructure in the cloud, on-premises, and entirely unrelated to Microsoft products.
+
+For use with the Maester tests the following provides an overview of creating the necessary service principal.
+
+<CreateEntraApp/>
 
 ## Authenticating Across Tenants
 
