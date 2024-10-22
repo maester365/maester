@@ -18,3 +18,5 @@ foreach($file in $files){
 }
 
 $dependencies|group command|sort @{e={$_.Count};Descending=$true},Name|select count,name
+#Show modules
+#($dependencies.Name|%{Get-Command $_}).Source|sort -Unique
