@@ -64,29 +64,7 @@ RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '88
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
 # ScriptsToProcess = @()
 ScriptsToProcess = @(
-    '.\internal\orca\orcaClass.ps1',
-    '.\internal\orca\check-ORCA101.ps1', '.\internal\orca\check-ORCA102.ps1', '.\internal\orca\check-ORCA103.ps1',
-    '.\internal\orca\check-ORCA104.ps1', '.\internal\orca\check-ORCA105.ps1', '.\internal\orca\check-ORCA106.ps1',
-    '.\internal\orca\check-ORCA107.ps1', '.\internal\orca\check-ORCA108_1.ps1', '.\internal\orca\check-ORCA108.ps1',
-    '.\internal\orca\check-ORCA109.ps1', '.\internal\orca\check-ORCA110.ps1', '.\internal\orca\check-ORCA111.ps1',
-    '.\internal\orca\check-ORCA112.ps1', '.\internal\orca\check-ORCA113.ps1', '.\internal\orca\check-ORCA114.ps1',
-    '.\internal\orca\check-ORCA115.ps1', '.\internal\orca\check-ORCA116.ps1', '.\internal\orca\check-ORCA118_1.ps1',
-    '.\internal\orca\check-ORCA118_2.ps1', '.\internal\orca\check-ORCA118_3.ps1', '.\internal\orca\check-ORCA118_4.ps1',
-    '.\internal\orca\check-ORCA119.ps1', '.\internal\orca\check-ORCA120_malware.ps1', '.\internal\orca\check-ORCA120_phish.ps1',
-    '.\internal\orca\check-ORCA120_spam.ps1', '.\internal\orca\check-ORCA121.ps1', '.\internal\orca\check-ORCA123.ps1',
-    '.\internal\orca\check-ORCA124.ps1', '.\internal\orca\check-ORCA139.ps1', '.\internal\orca\check-ORCA140.ps1',
-    '.\internal\orca\check-ORCA141.ps1', '.\internal\orca\check-ORCA142.ps1', '.\internal\orca\check-ORCA143.ps1',
-    '.\internal\orca\check-ORCA156.ps1', '.\internal\orca\check-ORCA158.ps1', '.\internal\orca\check-ORCA179.ps1',
-    '.\internal\orca\check-ORCA180.ps1', '.\internal\orca\check-ORCA189_2.ps1', '.\internal\orca\check-ORCA189.ps1',
-    '.\internal\orca\check-ORCA205.ps1', '.\internal\orca\check-ORCA220.ps1', '.\internal\orca\check-ORCA221.ps1',
-    '.\internal\orca\check-ORCA222.ps1', '.\internal\orca\check-ORCA223.ps1', '.\internal\orca\check-ORCA224.ps1',
-    '.\internal\orca\check-ORCA225.ps1', '.\internal\orca\check-ORCA226.ps1', '.\internal\orca\check-ORCA227.ps1',
-    '.\internal\orca\check-ORCA228.ps1', '.\internal\orca\check-ORCA229.ps1', '.\internal\orca\check-ORCA230.ps1',
-    '.\internal\orca\check-ORCA231.ps1', '.\internal\orca\check-ORCA232.ps1', '.\internal\orca\check-ORCA233_1.ps1',
-    '.\internal\orca\check-ORCA233.ps1', '.\internal\orca\check-ORCA234.ps1', '.\internal\orca\check-ORCA235.ps1',
-    '.\internal\orca\check-ORCA236.ps1', '.\internal\orca\check-ORCA237.ps1', '.\internal\orca\check-ORCA238.ps1',
-    '.\internal\orca\check-ORCA239.ps1', '.\internal\orca\check-ORCA240.ps1', '.\internal\orca\check-ORCA241.ps1',
-    '.\internal\orca\check-ORCA242.ps1', '.\internal\orca\check-ORCA243.ps1', '.\internal\orca\check-ORCA244.ps1'
+    '.\internal\orca\orcaClass.ps1'
 )
 
 # Type files (.ps1xml) to be loaded when importing this module
