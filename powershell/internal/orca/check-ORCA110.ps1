@@ -1,4 +1,4 @@
-# Generated on 10/25/2024 17:00:43 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 17:06:47 by .\build\orca\Update-OrcaTests.ps1
 
 <#
 
@@ -6,7 +6,7 @@ ORCA-110 Check if internal malware notification is disabled in malware policies.
 
 #>
 
-using module "..\Maester.psm1"
+#using module "..\Maester.psm1"
 
 class ORCA110 : ORCACheck
 {

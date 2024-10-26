@@ -1,4 +1,4 @@
-# Generated on 10/25/2024 17:00:43 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 17:06:48 by .\build\orca\Update-OrcaTests.ps1
 
 <#
 
@@ -6,7 +6,7 @@ ORCA-228 - Check MDO Anti-Phishing trusted senders
 
 #>
 
-using module "..\Maester.psm1"
+#using module "..\Maester.psm1"
 
 class ORCA228 : ORCACheck
 {
