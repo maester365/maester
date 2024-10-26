@@ -107,7 +107,7 @@ foreach($file in $testFiles){
 
     $content.content = $content.content -replace`
         "using module `"..\\ORCA.psm1`"",`
-        "using module Maester"
+        "using module `"..\Maester.psm1`""
 
     # Script Files
     Set-Content -Path "$repo\powershell\internal\orca\$($content.file)" -Value $content.content -Force
