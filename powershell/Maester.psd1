@@ -63,9 +63,6 @@ RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '88
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
 # ScriptsToProcess = @()
-<#ScriptsToProcess = @(
-    '.\internal\orca\orcaClass.ps1'
-)#>
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
@@ -97,6 +94,8 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaExclusionForDirectorySyncAccount',
                'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
                'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
+               'Test-MtCaGroupsRestricted',
+               'Test-MtCaGap',
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
                'Test-MtCaRequirePasswordChangeForHighUserRisk',
                'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCisaDiagnosticSettings',
@@ -122,7 +121,30 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaSpfRestriction', 'Test-MtCisaSpfDirective', 'Test-MtCisaDkim',
                'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
                'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcReport',
-               'Test-MtCisaDlp',
+               'Test-MtCisaDlp', 'Test-MtCisaDlpPii', 'Test-MtCisaDlpAlternate',
+               'Test-MtCisaDlpBaselineRule', 'Test-MtCisaAttachmentFilter',
+               'Test-MtCisaAttachmentFileType', 'Test-MtCisaEmailFilterAlternative',
+               'Test-MtCisaBlockExecutable', 'Test-MtCisaMalwareAction', 'Test-MtCisaMalwareZap',
+               'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxIntelligence',
+               'Test-MtCisaSpamFilter', 'Test-MtCisaSpamAction', 'Test-MtCisaSpamBypass',
+               'Test-MtCisaSpamAlternative', 'Test-MtCisaSafeLink', 'Test-MtCisaSafeLinkDownloadScan',
+               'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaExoAlert', 'Test-MtCisaExoAlertSiem',
+               'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium', 'Test-MtCisaAuditLogRetention',
+               'Get-MtExo', 'Clear-MtExoCache', 'Test-MtCisaSpoSharing', 'Test-MtCisaSpoSharingAllowedDomain',
+               'Test-MtCisCloudAdmin',
+               'Test-MtCisGlobalAdminCount',
+               'Test-MtCis365PublicGroup',
+               'Test-MtCisCalendarSharing',
+               'Test-MtCisSharedMailboxSignIn',
+               'Test-MtCisPasswordExpiry',
+               'Test-MtCisCustomerLockBox',
+               'Test-MtCisSafeLink',
+               'Test-MtCisAttachmentFilter',
+               'Test-MtCisInternalMalwareNotification',
+               'Test-MtCisSafeAttachment',
+               'Test-MtCisSafeAttachmentsAtpPolicy',
+               "Test-MtCisOutboundSpamFilterPolicy",
+               "Test-MtCisSafeAntiPhishingPolicy",
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
@@ -191,4 +213,3 @@ HelpInfoURI = 'https://maester.dev/docs/commands/'
 # DefaultCommandPrefix = ''
 
 }
-

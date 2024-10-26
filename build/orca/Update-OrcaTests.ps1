@@ -76,6 +76,9 @@ foreach($prereq in $prereqs){
 
     if($function){
         $function = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+        $function += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
+        $function += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]`n"
+        $function += "param()`n`n"
         $function += $text
         $function = $function -replace "Write\-Host","Write-Verbose"
         Set-Content -Path "$repo\powershell\internal\orca\$($prereq.name).ps1" -Value $function -Force
@@ -84,6 +87,12 @@ foreach($prereq in $prereqs){
 Write-Verbose "Found $($codeBlocks.Count)/$($prereqs.Count) code blocks"
 
 $orcaPrereqContent = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+$orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
+$orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]`n"
+$orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]`n"
+$orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]`n"
+$orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]`n"
+$orcaPrereqContent += "param()`n`n"
 $orcaPrereqContent += $codeBlocks -join "`n`n"
 $orcaPrereqContent = $orcaPrereqContent -replace "Write\-Host","Write-Verbose"
 Set-Content -Path $repo\powershell\internal\orca\orcaClass.ps1 -Value $orcaPrereqContent -Force

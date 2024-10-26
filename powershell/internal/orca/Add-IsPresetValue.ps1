@@ -1,4 +1,8 @@
-# Generated on 10/25/2024 18:13:47 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 18:35:16 by .\build\orca\Update-OrcaTests.ps1
+
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]
+param()
 
 Function Add-IsPresetValue
 {

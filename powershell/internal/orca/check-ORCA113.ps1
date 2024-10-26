@@ -1,4 +1,11 @@
-# Generated on 10/25/2024 18:13:49 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 18:35:17 by .\build\orca\Update-OrcaTests.ps1
+
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]
+param()
 
 Class ORCACheck
 {
@@ -343,7 +350,7 @@ enum PresetPolicyLevel
     Standard = 2
 }
 
-# Generated on 10/25/2024 18:13:50 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 18:35:17 by .\build\orca\Update-OrcaTests.ps1
 
 
 
