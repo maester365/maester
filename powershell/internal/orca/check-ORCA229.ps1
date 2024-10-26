@@ -1,4 +1,4 @@
-# Generated on 10/25/2024 16:51:13 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 17:00:43 by .\build\orca\Update-OrcaTests.ps1
 
 <#
 
@@ -6,7 +6,7 @@ ORCA-229 - Check allowed domains in MDO Anti-phishing policies
 
 #>
 
-using module Maester
+using module "..\Maester.psm1"
 
 class ORCA229 : ORCACheck
 {

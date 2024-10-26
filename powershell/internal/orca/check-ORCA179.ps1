@@ -1,4 +1,4 @@
-# Generated on 10/25/2024 16:51:13 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 17:00:43 by .\build\orca\Update-OrcaTests.ps1
 
 <#
 
@@ -9,7 +9,7 @@ check to determine if there is a rule enforcing this.
 
 #>
 
-using module Maester
+using module "..\Maester.psm1"
 
 class ORCA179 : ORCACheck
 {
