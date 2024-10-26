@@ -1,4 +1,4 @@
-# Generated on 10/25/2024 17:06:49 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 10/25/2024 18:13:50 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA238", "EXO", "Security", "All" {
     It "ORCA238: Safe Links protections for links in office documents" {

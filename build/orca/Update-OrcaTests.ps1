@@ -105,9 +105,15 @@ foreach($file in $testFiles){
 
     $content.content = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n" + $content.content
 
+    <#$content.content = $content.content -replace`
+        "using module `"..\\ORCA.psm1`"",`
+        "using module `"Maester`""
+        #>
     $content.content = $content.content -replace`
         "using module `"..\\ORCA.psm1`"",`
-        "#using module `"..\Maester.psm1`""
+        ""
+
+    $content.content = "$orcaPrereqContent`n`n" + $content.content
 
     # Script Files
     Set-Content -Path "$repo\powershell\internal\orca\$($content.file)" -Value $content.content -Force
