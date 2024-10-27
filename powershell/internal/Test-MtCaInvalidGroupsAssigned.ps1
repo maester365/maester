@@ -26,11 +26,7 @@ Function Test-MtCaInvalidGroupsAssigned {
     $testDescription = "Conditional Access Policies should not target to security groups which are not exists anymore."
     $Policies = Get-MtConditionalAccessPolicy
 
-    $Groups = $Policies.conditions.users | Where-Object {
-    @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0
-    } | ForEach-Object {
-    $_.includeGroups + $_.excludeGroups
-    } | Select-Object -Unique
+    $Groups = $Policies.conditions.users.includeGroups + $Policies.conditions.users.excludeGroups |  Select-Object -Unique
 
     if ($Groups.Count -lt 50) {
       $GroupsWhichNotExist = [System.Collections.Concurrent.ConcurrentBag[psobject]]::new()
