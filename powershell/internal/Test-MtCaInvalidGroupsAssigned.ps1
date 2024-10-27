@@ -48,7 +48,7 @@ Function Test-MtCaInvalidGroupsAssigned {
       if ( $result ) {
         $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
       } else {
-        $ResultDescription = "These security groups with assignments in Conditional Access are exists anymore. Invalid groups are only visible in the policy assignment in Microsoft Graph API and not in the Portal UI."
+        $ResultDescription = "The security groups with active assignments in Conditional Access do not exist anymore. Invalid groups are only visible in the policy assignment in Microsoft Graph API and not in the Portal UI."
         $ImpactedCaGroups = "`n`n#### Impacted Conditional Access Policies`n`n | Security Group | Condition | Policy name | `n"
         $ImpactedCaGroups += "| --- | --- | --- |`n"
       }
