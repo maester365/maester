@@ -1,11 +1,14 @@
 ---
-sidebar_position: 3
-title: Connecting details
+sidebar_label: Connect-Maester Advanced
+sidebar_position: 2
+title: Connect-Maester - Advanced
 ---
+
+# Connect-Maester Advanced
 
 import CreateEntraApp from '../sections/create-entra-app.md';
 
-## Authentication & Maester
+## Overview
 
 There are two main methods of authenticating sessions for use with Maester:
 
@@ -14,7 +17,9 @@ There are two main methods of authenticating sessions for use with Maester:
 
 ### Within the Maester module
 
-**Recommended for interactive use**
+:::tip
+Recommended for interactive use
+:::
 
 The Maester module includes [`Connect-Maester`](/docs/commands/Connect-Maester) to provide coverage for common scenarios. The parameter set options afford a user of the module the ability to test with common interactive methods. The Microsoft Graph API is the default authentication service, and more specifically the Microsoft Graph PowerShell SDK. Coverage for tests shipping with Maester have at least one option available in general.
 
