@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
 
 .DESCRIPTION
    Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
