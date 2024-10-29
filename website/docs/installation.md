@@ -42,7 +42,7 @@ Install-Module ExchangeOnlineManagement -Scope CurrentUser
 
 In order to run all the CISA tests, you need to connect to the Azure, Exchange Online, and other modules.
 
-For a more detailed introduction to these concepts see the [Connecting details](/docs/connecting) documentation.
+For a more detailed introduction to these concepts see the [Connect-Maester](/docs/connect-maester) documentation.
 
 Run the following command to interactively connect to the Azure, Exchange Online, and other modules. A sign in window will appear for each module.
 
