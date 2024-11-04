@@ -68,7 +68,7 @@ function ConvertTo-MtMaesterResult {
         $mtTestInfo = [PSCustomObject]@{
             Name            = $name
             HelpUrl         = $helpUrl
-            Tag             = $test.Block.Tag
+            Tag             = ($test.Block.Tag + $test.Tag | Select-Object -Unique) ?? @()
             Result          = $test.Result
             ScriptBlock     = $test.ScriptBlock.ToString()
             ScriptBlockFile = $test.ScriptBlock.File
