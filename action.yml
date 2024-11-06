@@ -50,7 +50,12 @@ inputs:
     default: true
   install_prerelease:
     type: boolean
-    description: "Installs the Preview version, allowing access to new cmdlets"
+    description: "Installs the preview version, allowing access to new cmdlets."
+    required: false
+    default: false
+  disable_telemetry:
+    type: boolean
+    description: "If set, telemetry information will not be logged."
     required: false
     default: false
 
@@ -92,10 +97,10 @@ runs:
           Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
           # Install Maester
-          if(!$install_prerelease){
-            Install-Module Maester -Force
-          } else {
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.install_prerelease}}' ) -eq $true ){
             Install-Module Maester -AllowPrerelease -Force
+          } else {
+            Install-Module Maester -Force
           }
 
           # Configure test results
@@ -137,6 +142,11 @@ runs:
               } else {
                   Write-Warning "Mail recipients are not provided. Skipping mail notification."
               }
+          }
+
+          # Check if disable telemetry is provided
+          if (( [string]::IsNullOrWhiteSpace( '${{ inputs.disable_telemetry}}' ) -eq $true ){
+            $MaesterParameters.Add( 'DisableTelemetry', $true )
           }
 
           # Run Maester tests
