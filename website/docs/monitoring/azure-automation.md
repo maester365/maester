@@ -6,92 +6,342 @@ title: Azure Automation
 import GraphPermissions from '../sections/permissions.md';
 import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
-# <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Automation
+# <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Automation using Azure Bicep
 
-This guide will walk you through setting up Maester in Azure Automation and automate the running of tests using Runbooks.
+This guide will demonstrate how to get started with Maester and provide an Azure Bicep template to automate the deployment of Maester with Azure Automation.
+- This setup will enable you to perform monthly security configuration checks on your Microsoft tenant and receive email alerts 🔥
 
-## Why Azure Automation?
+## Why Azure Automation & Azure Bicep?
 
-Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost.
+Azure Automation provides a simple and effective method to automate email reporting with Maester. Azure Automation has a free-tier option, giving you up to 500 minutes of execution each month without additional cost. Azure Bicep is a domain-specific language that uses declarative syntax to deploy Azure resources. It simplifies the process of defining, deploying, and managing Azure resources. Here’s why Azure Bicep stands out:
+- **Simplified Syntax**: Bicep provides concise syntax, reliable type safety, and support for reusing code.easier to read. 
+- **Support for all resource types and API versions**: Bicep immediately supports all preview and GA versions for Azure services. 
+- **Modular and Reusable**: Bicep enables the creation of modular templates that can be reused across various projects, ensuring consistency and minimizing duplication.
+
+![Screenshot of the Bicep Solution](assets/azureautomation-bicep-overview.png)
 
 ### Pre-requisites
 
 - If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
-- You must also have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity.
+- You must have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity.
+- You must also have Azure Bicep & Azure CLI installed on your machine, this can be easily done with, using the following commands:
 
-## Create an Azure Automation Account
+```PowerShell
+winget install -e --id Microsoft.AzureCLI
+winget install -e --id Microsoft.Bicep
+```
 
-- Browse to the Azure portal and open the **[Automation Accounts](https://portal.azure.com/#browse/Microsoft.Automation%2FAutomationAccounts)** blade.
-- Select **+ Create**.
-  - Select a **Subscription** and **Resource Group**.
-  - Enter a name for the account (e.g. `Maester-Automation-Account`) and select a **region**.
-- Select **Next**.
-- Leave **System assigned** selected
-- Select **Next**.
-- Select **Create**.
+## Template Walkthrough
+This section will guide you through the templates required to deploy Maester on Azure Automation Accounts. Depending on your needs, this can be done locally or through CI/CD pipelines.
+- For instance, using your favorite IDE such as VS Code.
+- Alternatively, through Azure DevOps.
 
-## Assign permissions to the System-assigned Managed Identity
+To be able to declare Microsoft Graph resources in a Bicep file, you need to enable the Bicep preview feature and specify the Microsoft Graph Bicep type versions, by configuring ```bicepconfig.json```
 
-The script below will assign the required Graph permissions to the managed identity created in the previous step.
-
-Copy and paste the script below to run it in your local PowerShell environment.
-
-If required, make the following changes to the script before running it:
-
-- Replace the `$managedIdentityName` variable with the name of the Automation Account you created in the previous step.
-- Uncomment the **-SendMail** switch in the Get-MtGraphScope line, if the automation needs to email the Maester report.
-- Uncomment the **-Privileged** switch in the Get-MtGraphScope line, if the automation needs to run some of the tests that require privileged permission scopes.
-
-```powershell
-$managedIdentityName = "Maester-Automation-Account" #Name of the Automation Account created in the previous step
-
-Connect-MgGraph -Scopes Application.Read.All, AppRoleAssignment.ReadWrite.All
-
-$permissions = Get-MtGraphScope #-SendMail -Privileged
-
-$managedIdentity = (Get-MgServicePrincipal -Filter "DisplayName eq '$managedIdentityName'")
-$managedIdentityId = $managedIdentity.Id
-$getPerms = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").AppRoles | Where {$_.Value -in $permissions}
-$graphAppId = (Get-MgServicePrincipal -Filter "AppId eq '00000003-0000-0000-c000-000000000000'").Id
-
-foreach ($perm in $getPerms){
-    New-MgServicePrincipalAppRoleAssignment -ServicePrincipalId $managedIdentityId `
-    -PrincipalId $managedIdentityId -ResourceId $graphAppId -AppRoleId $perm.id
+```json
+{
+    "experimentalFeaturesEnabled": {
+        "extensibility": true
+    },
+    // specify an alias for the version of the v1.0 dynamic types package you want to use
+    "extensions": {
+      "microsoftGraphV1_0": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:0.1.8-preview"
+    }
 }
 ```
 
-## Load the required PowerShell modules
+The ```main.bicepparam``` template defines our input parameters, such as the environment, customer, location, and app roles for the Managed Identity (MI).
 
-- Open **[Automation Accounts](https://portal.azure.com/#browse/Microsoft.Automation%2FAutomationAccounts)** blade.
-- Select the Automation Account you created earlier.
-- Select **Runtime Environments**.
-- Select **Create**.
-- Define a name for the environment.
-- Select **PowerShell** for the language and set the **Runtime version** to **7.2**.
-- Select **Next**.
-- On the **Packages** tab, select **Add from gallery** and select the following packages:
-  - **Maester**
-  - **Microsoft.Graph.Authentication**
-  - **Pester**
-  - **NuGet**
-  - **PackageManagement**
-- Select **Next**.
-- Select **Create**.
+```bicep
+using 'main.bicep'
 
-## Create a new Runbook
+// Defing our input parameters
+param __env__ = 'prod'
+param __cust__ = 'ct'
+param __location__ = 'westeurope'
+param __maesterAppRoles__ = [
+  'Directory.Read.All'
+  'DirectoryRecommendations.Read.All'
+  'IdentityRiskEvent.Read.All'
+  'Policy.Read.All'
+  'Policy.Read.ConditionalAccess'
+  'PrivilegedAccess.Read.AzureAD'
+  'Reports.Read.All'
+  'RoleEligibilitySchedule.Read.Directory'
+  'RoleManagement.Read.All'
+  'SharePointTenantSettings.Read.All'
+  'UserAuthenticationMethod.Read.All'
+  'Mail.Send'
+]
 
-- Under **Process Automation** click **Create**.
-- Select **Create new** next to Runbook.
-- Define a name for the Runbook.
-- Next to Runbook type, select **PowerShell**, then choose the Runtime Environment you previously created.
-- Click **Create**.
-- Copy and paste this example code:
+param __maesterAutomationAccountModules__ = [
+  {
+    name: 'Maester'
+    uri: 'https://www.powershellgallery.com/api/v2/package/Maester'
+  }
+  {
+    name: 'Microsoft.Graph.Authentication'
+    uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
+  }
+  {
+    name: 'Pester'
+    uri: 'https://www.powershellgallery.com/api/v2/package/Pester'
+  }
+  {
+    name: 'NuGet'
+    uri: 'https://www.powershellgallery.com/api/v2/package/NuGet'
+  }
+  {
+    name: 'PackageManagement'
+    uri: 'https://www.powershellgallery.com/api/v2/package/PackageManagement'
+  }
+]
+```
 
+The ```main.bicep``` template serves as the entry point for our Bicep configuration. It defines the parameters and variables used across the various modules.
+
+```bicep
+metadata name = 'Maester Automation as Code <3'
+metadata description = 'This Bicep code deploys Maester Automation Account with modules and runbook for automated report every month via e-mail'
+metadata owner = 'Maester'
+metadata version = '1.0.0'
+
+targetScope = 'subscription'
+
+extension microsoftGraphV1_0
+
+@description('Defing our input parameters')
+param __env__ string
+param __cust__ string
+param __location__ string
+param __maesterAppRoles__ array
+param __maesterAutomationAccountModules__ array
+
+@description('Defining our variables')
+var _maesterResourceGroupName_ = 'rg-maester-${__env__}'
+var _maesterAutomationAccountName_ = 'aa-maester-${__env__}'
+var _maesterStorageAccountName_ = 'sa${__cust__}maester${__env__}'
+var _maesterStorageBlobName_ = 'maester'
+var _maesterStorageBlobFileName_ = 'maester.ps1'
+
+@description('Resource Group Deployment')
+resource maesterResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+  name: _maesterResourceGroupName_
+  location: __location__
+}
+
+@description('Module Deployment')
+module modAutomationAccount './modules/aa.bicep' = {
+  name: 'module-automation-account-deployment'
+  params: {
+    __location__: __location__
+    _maesterAutomationAccountName_: _maesterAutomationAccountName_
+    _maesterStorageAccountName_: _maesterStorageAccountName_
+    _maesterStorageBlobName_: _maesterStorageBlobName_
+    _maesterStorageBlobFileName_: _maesterStorageBlobFileName_
+  }
+  scope: maesterResourceGroup
+}
+
+module modAutomationAccountAdvanced './modules/aa-advanced.bicep' = {
+  name: 'module-automation-account-advanced-deployment'
+  params: {
+    __location__: __location__
+    __ouMaesterAutomationMiId__: modAutomationAccount.outputs.__ouMaesterAutomationMiId__
+    __ouMaesterScriptBlobUri__: modAutomationAccount.outputs.__ouMaesterScriptBlobUri__
+    _maesterAutomationAccountName_: _maesterAutomationAccountName_
+    __maesterAppRoles__:  __maesterAppRoles__
+    __maesterAutomationAccountModules__: __maesterAutomationAccountModules__
+
+  }
+  scope: maesterResourceGroup
+}
+
+```
+
+The ```aa.bicep``` module-file, automates the deployment of the Maester Azure Automation Account, a Storage Account, a container and uploads the Maester script to the Blob Container, which will be later used as input for our PowerShell runbook for the automation account to generate a security report.
+
+```bicep
+param __location__ string
+param _maesterAutomationAccountName_ string
+param _maesterStorageAccountName_ string
+param _maesterStorageBlobName_ string
+param _maesterStorageBlobFileName_ string
+
+@description('Automation Account Deployment')
+resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' = {
+  name: _maesterAutomationAccountName_
+  location: __location__
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    sku: {
+      name: 'Basic'
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: _maesterStorageAccountName_
+  location: __location__
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    accessTier: 'Hot'
+    allowBlobPublicAccess: true
+    networkAcls: {
+      defaultAction: 'Allow'
+    }
+  }
+
+}
+
+@description('Create Blob Service')
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+  parent: storageAccount
+  name: 'default'
+}
+
+@description('Create Blob Container')
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+  parent: blobService
+  name: _maesterStorageBlobName_
+  properties: {
+    publicAccess: 'Blob'
+  }
+}
+
+@description('Upload .ps1 file to Blob Container using Deployment Script')
+resource uploadScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: 'deployscript-upload-blob-maester'
+  location: __location__
+  kind: 'AzureCLI'
+  properties: {
+    azCliVersion: '2.26.1'
+    timeout: 'PT5M'
+    retentionInterval: 'PT1H'
+    environmentVariables: [
+      {
+        name: 'AZURE_STORAGE_ACCOUNT'
+        value: storageAccount.name
+      }
+      {
+        name: 'AZURE_STORAGE_KEY'
+        secureValue: storageAccount.listKeys().keys[0].value
+      }
+      {
+        name: 'CONTENT'
+        value: loadTextContent('../pwsh/maester.ps1')
+      }
+    ]
+    scriptContent: 'echo "$CONTENT" > ${_maesterStorageBlobFileName_} && az storage blob upload -f ${_maesterStorageBlobFileName_} -c ${_maesterStorageBlobName_} -n ${_maesterStorageBlobFileName_}'
+  }
+  dependsOn: [
+    blobContainer
+  ]
+}
+
+@description('Outputs')
+output __ouMaesterAutomationMiId__ string = automationAccount.identity.principalId
+output __ouMaesterScriptBlobUri__ string = 'https://${_maesterStorageAccountName_}.blob.${environment().suffixes.storage}/${_maesterStorageBlobName_}/maester.ps1'
+
+```
+
+The ```aa-advanced.bicep``` module file automates the configuration of the Maester Azure Automation Account by setting up role assignments, installing necessary PowerShell modules, creating a runbook, defining a schedule, and associating the runbook with the schedule. This configuration enables Maester to run automatically in Azure according to the specified schedule. This module is separate due to the need for replicating the Managed Service Identity (MSI) in Entra ID. By dividing the configuration into two module files, we can add the API consents 💪🏻
+
+
+```bicep
+extension microsoftGraphV1_0
+param __location__ string
+param __maesterAppRoles__ array
+param __maesterAutomationAccountModules__ array
+param __ouMaesterAutomationMiId__ string
+param __ouMaesterScriptBlobUri__ string
+param _maesterAutomationAccountName_ string
+param __currentUtcTime__ string = utcNow()
+
+@description('Role Assignment Deployment')
+resource graphId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '00000003-0000-0000-c000-000000000000'
+}
+
+resource managedIdentityRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' = [for appRole in __maesterAppRoles__: {
+    appRoleId: (filter(graphId.appRoles, role => role.value == appRole)[0]).id
+    principalId: __ouMaesterAutomationMiId__
+    resourceId: graphId.id
+}]
+
+@description('Existing Automation Account')
+resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' existing = {
+  name: _maesterAutomationAccountName_
+}
+
+@description('PowerShell Modules Deployment')
+resource automationAccountModules 'Microsoft.Automation/automationAccounts/modules@2023-11-01' = [ for module in __maesterAutomationAccountModules__: {
+  name: module.name
+  parent: automationAccount
+  properties: {
+    contentLink: {
+      uri: module.uri
+    }
+  }
+}]
+
+@description('Runbook Deployment')
+resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
+  name: 'runBookMaester'
+  location: __location__
+  parent: automationAccount
+  properties: {
+    runbookType: 'PowerShell'
+    logProgress: true
+    logVerbose: true
+    description: 'Runbook to execute Maester report'
+    publishContentLink: {
+      uri: __ouMaesterScriptBlobUri__
+    }
+  }
+}
+
+@description('Schedule Deployment')
+resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11-01' = {
+  name: 'scheduleMaester'
+  parent: automationAccount
+  properties: {
+    expiryTime: '9999-12-31T23:59:59.9999999+00:00'
+    frequency: 'Month'
+    interval: 1
+    startTime: dateTimeAdd(__currentUtcTime__, 'PT1H')
+    timeZone: 'W. Europe Standard Time'
+  }
+}
+
+@description('Runbook Schedule Association')
+resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2023-11-01' = {
+  name: guid(automationAccount.id, 'runbook', 'schedule')
+  parent: automationAccount
+  properties: {
+    parameters: {}
+    runbook: {
+      name: automationAccountRunbook.name
+    }
+    schedule: {
+      name: automationAccountSchedule.name
+    }
+  }
+}
+```
+
+The PowerShell script as part of the Automation Runbook for a simple and effective method to automate email reporting with Maester.
 ```PowerShell
+#Connect to Microsoft Graph with System-Assigned Managed Identity
 Connect-MgGraph -Identity
 
 #Define mail recipient
-$MailRecipient = "Define Sender/Recipient"
+$MailRecipient = "admin@tenant.com"
 
 #create output folder
 $date = (Get-Date).ToString("yyyyMMdd-HHmm")
@@ -110,19 +360,47 @@ Install-MaesterTests .\tests
 Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputFolder $TempOutputFolder
 ```
 
-- Click **Save**, then **Publish**.
 
-## Create a schedule
+## Deployment
 
-- From the Azure Portal, open your Automation Account.
-- Under **Shared Resources** select **Schedules**.
-- Click **Add a schedule** and define a name.
-- Set the Recurrence to **Recurring**.
-- Select **Recur every 1 Month** and set **Run on last day of month** to **Yes**.
-- Click **Create**.
-- Under **Process Automation**, select **Runbooks** and open your Runbook.
-- Click **Schedules** > **Add a schedule**.
-- Choose your schedule and click **OK**.
+- You have the flexibility to deploy either based on deployment stacks or directly to the Azure Subscription.
+- Using Deployment Stacks allows you to bundle solutions into a single package, offering several advantages
+  - Management of resources across different scopes as a single unit
+  - Securing resources with deny settings to prevent configuration drift
+  - Easy cleanup of development environments by deleting the entire stack
+
+
+Directly deployed based: 
+```PowerShell
+#Connect to Azure
+Connect-AzAccount
+
+#Getting current context to confirm we deploy towards right Azure Subscription
+Get-AzContext
+
+# If not correct context, change, using:
+# Get-AzSubscription
+# Set-AzContext -SubscriptionID "ID"
+
+#Deploy to Azure Subscription
+New-AzSubscriptionDeployment -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+```
+
+Deployment Stack based: 
+```PowerShell
+#Connect to Azure
+Connect-AzAccount
+
+#Getting current context to confirm we deploy towards right Azure Subscription
+Get-AzContext
+
+# If not correct context, change, using:
+# Get-AzSubscription
+# Set-AzContext -SubscriptionID "ID"
+
+#Change DenySettingsMode and ActionOnUnmanage based on your needs..
+New-AzSubscriptionDeploymentStack -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+```
 
 ## Viewing the test results
 
@@ -130,12 +408,9 @@ Invoke-Maester -MailUserId $MailRecipient -MailRecipient $MailRecipient -OutputF
 
 ## FAQ / Troubleshooting
 
-- You see a `The term 'Get-MgServicePrincipal' is not recognized` error message
-  - You don't have Graph PowerShell installed, you can install it by running `Install-Module Microsoft.Graph.Applications`.
-- You have more than one managed identity with the same name
-  - Search for the managed identity in [Enterprise Applications](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/~/AppAppsPreview) (Remove the **Application type == Enterprise Applications** filter)
-  - Copy the **Object ID** and set the `$managedIdentityId` variable in the script above (eg `$managedIdentityId = 'insert-object-id'`).
+- Ensure you have the latest version of Azure Bicep, as the ```microsoftGraphV1_0``` module depends on the newer versions
 
 ## Contributors
 
 - Original author: [Daniel Bradley](https://www.linkedin.com/in/danielbradley2/) | Microsoft MVP
+- Co-author: [Brian Veldman](https://www.linkedin.com/in/brian-veldman/) | Technology Enthusiast
