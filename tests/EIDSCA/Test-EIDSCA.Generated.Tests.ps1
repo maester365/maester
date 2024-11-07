@@ -404,9 +404,9 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
-            .requestDurationInDays = '30'
+            .requestDurationInDays <= '30'
         #>
-        Test-MtEidscaControl -CheckId CR04 | Should -Be '30'
+        Test-MtEidscaControl -CheckId CR04 | Should -BeLessOrEqual '30'
     }
 }
 
