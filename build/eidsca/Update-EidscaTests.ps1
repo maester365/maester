@@ -46,7 +46,7 @@ function GetVersion($graphUri) {
 
 function GetRecommendedValue($RecommendedValue) {
     if($RecommendedValue -notlike "@('*,*')") {
-        $compareOperators = @(">=",">","<")
+        $compareOperators = @(">=","<=",">","<")
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
                 $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
@@ -81,6 +81,13 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
+        }
+    } elseif ($RecommendedValue.StartsWith("<=")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '<='
+            pester     = 'BeLessOrEqual'
+            powershell = 'le'
+            text       = 'is less than or equal to'
         }
     } elseif ($RecommendedValue.StartsWith(">")) {
         $compareOperator = [PSCustomObject]@{
