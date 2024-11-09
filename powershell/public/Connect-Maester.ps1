@@ -79,8 +79,12 @@ function Connect-Maester {
       [ValidateSet("O365China", "O365Default", "O365GermanyCloud", "O365USGovDoD", "O365USGovGCCHigh")]
       [string]$ExchangeEnvironmentName = "O365Default",
 
+      # The Teams environment to connect to. Default is O365Default.
+      [ValidateSet("TeamsChina", "TeamsGCCH", "TeamsDOD")]
+      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance")]
+      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance","Teams")]
       [string[]]$Service = "Graph"
    )
 
@@ -109,7 +113,7 @@ function Connect-Maester {
    if ($Service -contains "ExchangeOnline" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Exchage Online"
       try {
-         if ( $UseDeviceCode -and $PSVersionTable.PSEdition -eq "Desktop" ) {
+         if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq "Desktop") {
             Write-Host "The Exchange Online module in Windows PowerShell does not support device code flow authentication." -ForegroundColor Red
             Write-Host "💡Please use the Exchange Online module in PowerShell Core." -ForegroundColor Yellow
          } elseif ( $UseDeviceCode ) {
@@ -160,6 +164,23 @@ function Connect-Maester {
                Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
             }
          }
+      }
+   }
+   if ($Service -contains "Teams") { #ToValidate: Preview
+   #if ($Service -contains "Teams" -or $Service -contains "All") {
+      Write-Verbose "Connecting to Microsoft Teams"
+      try {
+         if ($UseDeviceCode) {
+            Connect-MicrosoftTeams -UseDeviceAuthentication
+         } elseif ($TeamsEnvironmentName) {
+            Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName
+         } else {
+            Connect-MicrosoftTeams
+            #$null = Connect-MicrosoftTeams
+         }
+      } catch [Management.Automation.CommandNotFoundException] {
+         Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
+         Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 }
