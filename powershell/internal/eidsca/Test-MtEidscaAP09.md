@@ -5,7 +5,7 @@ Indicates whether user consent for risky apps is allowed. For example, consent r
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.allowUserConsentForRiskyApps = 'false'
+.allowUserConsentForRiskyApps -eq 'false'
 ```
 
 #### Related links

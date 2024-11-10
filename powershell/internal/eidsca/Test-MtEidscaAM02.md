@@ -5,7 +5,7 @@ true
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-.isSoftwareOathEnabled = 'true'
+.isSoftwareOathEnabled -eq 'true'
 ```
 
 #### Related links

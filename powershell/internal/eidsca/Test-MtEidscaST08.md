@@ -5,7 +5,7 @@ CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory ob
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value = 'false'
+.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
 ```
 
 #### Related links

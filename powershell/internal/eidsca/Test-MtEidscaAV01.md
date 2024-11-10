@@ -5,7 +5,7 @@ Choose authentication methods with number matching (Authenticator)
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
-.state = 'disabled'
+.state -eq 'disabled'
 ```
 
 #### Related links

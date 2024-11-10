@@ -5,7 +5,7 @@ Allows to integrate report of fraud attempt by users to identity protection: Use
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
-.reportSuspiciousActivitySettings.state = 'enabled'
+.reportSuspiciousActivitySettings.state -eq 'enabled'
 ```
 
 #### Related links

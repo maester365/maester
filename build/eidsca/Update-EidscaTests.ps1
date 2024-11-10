@@ -437,7 +437,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% %CompareOperator% %RecommendedValue%
+            .%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
         #>
         Test-MtEidscaControl -CheckId %CheckShortId% | Should -%ShouldOperator% %RecommendedValue%
     }
