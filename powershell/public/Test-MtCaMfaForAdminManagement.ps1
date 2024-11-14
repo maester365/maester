@@ -32,7 +32,8 @@ function Test-MtCaMfaForAdminManagement {
         if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
                     -or $policy.grantcontrols.authenticationStrength.requirementsSatisfied -contains 'mfa' ) `
                 -and $policy.conditions.users.includeUsers -eq "All" `
-                -and "797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications `
+                -and ("797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications `
+                    -or $policy.conditions.applications.includeApplications -contains "All") `
         ) {
             $result = $true
             $currentresult = $true
