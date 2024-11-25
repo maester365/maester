@@ -93,3 +93,32 @@ If you need to connect to just a subset of the services you can specifiy them us
 ```powershell
 Connect-Maester -Service Azure,Graph
 ```
+
+### Connect to US Government, US DoD, China and Germany and other clouds
+
+`Connect-Maester` also provides options to connect to the US Government, China and Germany clouds for Microsoft Graph, Azure and Exchange Online.
+
+
+#### US Government
+
+```powershell
+Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+```
+
+#### US Department of Defense (DoD)
+
+```powershell
+Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+```
+
+#### China
+
+```powershell
+Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+```
+
+#### Germany
+
+```powershell
+Connect-Maester -Environment Germany
+```
