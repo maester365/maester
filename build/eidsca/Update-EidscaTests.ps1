@@ -62,6 +62,10 @@ function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
     if($RecommendedValueMarkdown -like "@('*,*')") {
         $RecommendedValueMarkdown = $RecommendedValueMarkdown -replace "@\(", "" -replace "\)", ""
         return "$RecommendedValueMarkdown"
+    } elseif ($RecommendedValueMarkdown.StartsWith(">") -or $RecommendedValueMarkdown.StartsWith("<")) {
+        $RecommendedValueText = (GetCompareOperator($RecommendedValueMarkdown)).Text
+        $RecommendedValueMarkdown = "$RecommendedValueText $RecommendedValue"
+        return "$RecommendedValueMarkdown"
     } else {
         return "'$RecommendedValueMarkdown'"
     }
