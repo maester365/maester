@@ -79,7 +79,7 @@ function Invoke-Maester {
     [Alias("Invoke-MtMaester")]
     [CmdletBinding()]
     param (
-        # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
+        # Specifies path to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]
         [string] $Path,
 
