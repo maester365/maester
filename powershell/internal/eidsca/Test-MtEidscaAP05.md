@@ -8,6 +8,13 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 .allowedToSignUpEmailBasedSubscriptions = 'false'
 ```
 
+#### How to fix
+
+```powershell
+# Get-MgPolicyAuthorizationPolicy | Select-Object AllowedToSignUpEmailBasedSubscriptions
+Update-MgPolicyAuthorizationPolicy -AllowedToSignupEmailBasedSubscriptions $false
+```
+
 #### Related links
 
 - [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
