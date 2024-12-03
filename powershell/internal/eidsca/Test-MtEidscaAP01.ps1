@@ -21,7 +21,12 @@ function Test-MtEidscaAP01 {
     [OutputType([bool])]
     param()
 
-    
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    if($EntraIDPlan -eq "Free"){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowedToUseSSPR

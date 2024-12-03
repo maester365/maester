@@ -5,12 +5,13 @@ BeforeDiscovery {
 
 Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
     It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024" {
-        $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
+
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",
             "userRiskPolicy",
             "signinRiskPolicy"
         )
+        $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
         if ( $EntraIDPlan -ne "P2" ) {
             $EntraPremiumRecommendations | ForEach-Object {
                 if ( $id -match "$($_)$" ) {
@@ -19,6 +20,12 @@ Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Re
                 }
             }
         }
+
+        if ( $status -match "dismissed" ) {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Status:Dismissed for '$($id)'"
+            return $null
+        }
+
         #region Add detailed test description
         $ActionSteps = $actionSteps | Sort-Object -Property 'stepNumber' | ForEach-Object {
             $_.text + "[$($_.actionUrl.displayName)]($($_.actionUrl.url))."
