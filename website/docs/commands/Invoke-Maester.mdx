@@ -125,6 +125,21 @@ Invoke-Maester -PesterConfiguration $configuration
 
 ```
 
+### EXAMPLE 12
+
+```powershell
+$exclude_tags1 = @('CA', 'App') # System.Array
+$exclude_tags2 = @('MT.1028', 'MT.1024') # System.Array
+
+$exclude_tags_combined = $exclude_tags1 + $exclude_tags2
+
+#Invoke-Maester -ExcludeTag $exclude_tags_combined -Verbose
+Invoke-Maester -ExcludeTag $exclude_tags_combined
+```
+
+This combines two arrays of exclusion tags and runs the tests, excluding any tests with those tags.
+
+
 ## PARAMETERS
 
 ### -Path
