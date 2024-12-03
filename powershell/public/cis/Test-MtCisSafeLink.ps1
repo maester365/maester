@@ -26,8 +26,8 @@ function Test-MtCisSafeLink {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }
-    elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+    elseif ( ( Get-MtLicenseInformation -Product MdoV2 ) -eq "EOP") {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
 
