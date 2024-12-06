@@ -45,7 +45,7 @@ inputs:
     default: true
   artifact_upload:
     type: boolean
-    description: "Define whether the results are uploaded as Artifacts"
+    description: "Define whether the results are uploaded as Artifacts."
     required: false
     default: true
 
@@ -142,7 +142,8 @@ runs:
 
     - name: Archive Maester Html Report
       uses: actions/upload-artifact@v4
-      if: ${{ inputs.artifact_upload == true }}
+      if: ${{ inputs.artifact_upload == 'true' }}
       with:
         name: maester-test-results-${{ env.NOW }}
         path: test-results
+        include-hidden-files: true

@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
 
 .DESCRIPTION
    Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
@@ -46,6 +46,26 @@
 
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
+.EXAMPLE
+   Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+
+   Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+
+   Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+
+   Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment Germany
+
+   Connects to the Germany environment for Microsoft Graph.
+
 .LINK
     https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -67,15 +87,15 @@ function Connect-Maester {
       # This will open a browser window to prompt for authentication and is useful for non-interactive sessions and on Windows when SSO is not desired.
       [switch] $UseDeviceCode,
 
-      # The environment to connect to. Default is Global.
+      # The environment to connect to. Default is Global. Supported values include China, Germany, Global, USGov, USGovDoD.
       [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
       [string]$Environment = "Global",
 
-      # The Azure environment to connect to. Default is AzureCloud.
+      # The Azure environment to connect to. Default is AzureCloud. Supported values include AzureChinaCloud, AzureCloud, AzureUSGovernment.
       [ValidateSet("AzureChinaCloud", "AzureCloud", "AzureUSGovernment")]
       [string]$AzureEnvironment = "AzureCloud",
 
-      # The Exchange environment to connect to. Default is O365Default.
+      # The Exchange environment to connect to. Default is O365Default. Supported values include O365China, O365Default, O365GermanyCloud, O365USGovDoD, O365USGovGCCHigh.
       [ValidateSet("O365China", "O365Default", "O365GermanyCloud", "O365USGovDoD", "O365USGovGCCHigh")]
       [string]$ExchangeEnvironmentName = "O365Default",
 

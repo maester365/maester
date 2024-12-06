@@ -130,8 +130,21 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisaSpamAlternative', 'Test-MtCisaSafeLink', 'Test-MtCisaSafeLinkDownloadScan',
                'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaExoAlert', 'Test-MtCisaExoAlertSiem',
                'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium', 'Test-MtCisaAuditLogRetention',
-               'Get-MtExo', 'Clear-MtExoCache',
+               'Get-MtExo', 'Clear-MtExoCache', 'Test-MtCisaSpoSharing', 'Test-MtCisaSpoSharingAllowedDomain',
                'Test-MtCisCloudAdmin',
+               'Test-MtCisGlobalAdminCount',
+               'Test-MtCis365PublicGroup',
+               'Test-MtCisCalendarSharing',
+               'Test-MtCisSharedMailboxSignIn',
+               'Test-MtCisPasswordExpiry',
+               'Test-MtCisCustomerLockBox',
+               'Test-MtCisSafeLink',
+               'Test-MtCisAttachmentFilter',
+               'Test-MtCisInternalMalwareNotification',
+               'Test-MtCisSafeAttachment',
+               'Test-MtCisSafeAttachmentsAtpPolicy',
+               "Test-MtCisOutboundSpamFilterPolicy",
+               "Test-MtCisSafeAntiPhishingPolicy",
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
@@ -200,4 +213,3 @@ HelpInfoURI = 'https://maester.dev/docs/commands/'
 # DefaultCommandPrefix = ''
 
 }
-

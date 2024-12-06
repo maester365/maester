@@ -24,7 +24,7 @@ function Test-MtEidscaPR05 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
+    [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
     $testResult = $tenantValue -ge '60'
     $tenantValueNotSet = $null -eq $tenantValue -and '60' -notlike '*$null*'
 

@@ -1,10 +1,11 @@
 - **Directory.Read.All**
-- **Policy.Read.All**
-- **Reports.Read.All**
 - **DirectoryRecommendations.Read.All**
-- **PrivilegedAccess.Read.AzureAD**
 - **IdentityRiskEvent.Read.All**
+- **Policy.Read.All**
+- **Policy.Read.ConditionalAccess**
+- **PrivilegedAccess.Read.AzureAD**
+- **Reports.Read.All**
 - **RoleEligibilitySchedule.Read.Directory**
 - **RoleManagement.Read.All**
-- **Policy.Read.ConditionalAccess**
+- **SharePointTenantSettings.Read.All**
 - **UserAuthenticationMethod.Read.All**

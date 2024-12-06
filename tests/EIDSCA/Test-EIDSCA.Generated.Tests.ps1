@@ -219,9 +219,9 @@ Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Secur
     It "EIDSCA.AM02: Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP. See https://maester.dev/docs/tests/EIDSCA.AM02" -TestCases @{ EnabledAuthMethods = $EnabledAuthMethods } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')"
-            .state = 'enabled'
+            .isSoftwareOathEnabled = 'true'
         #>
-        Test-MtEidscaControl -CheckId AM02 | Should -Be 'enabled'
+        Test-MtEidscaControl -CheckId AM02 | Should -Be 'true'
     }
 }
 Describe "Authentication Method - Microsoft Authenticator" -Tag "EIDSCA", "Security", "All", "EIDSCA.AM03" {
@@ -395,7 +395,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
-            .notifyReviewers = 'true'
+            .remindersEnabled = 'true'
         #>
         Test-MtEidscaControl -CheckId CR03 | Should -Be 'true'
     }

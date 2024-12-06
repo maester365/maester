@@ -24,7 +24,7 @@ Specifies whether reviewers will receive reminder emails
 
 Queries policies/adminConsentRequestPolicy
 and returns the result of
- graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+ graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ and returns the result of
 Test-MtEidscaCR03
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 
 ## PARAMETERS
 
