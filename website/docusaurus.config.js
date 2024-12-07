@@ -51,6 +51,10 @@ const config = {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
         },
+        blog: {
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+        },
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -95,6 +99,7 @@ const config = {
             docId: "commands/commands-overview",
             label: "Commands",
           },
+          { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",
             className: "navbar--github-link",
