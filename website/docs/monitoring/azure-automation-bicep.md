@@ -18,7 +18,7 @@ Azure Automation provides a simple and effective method to automate email report
 - **Support for all resource types and API versions**: Bicep immediately supports all preview and GA versions for Azure services.
 - **Modular and Reusable**: Bicep enables the creation of modular templates that can be reused across various projects, ensuring consistency and minimizing duplication.
 
-<!-- ![Screenshot of the Bicep Solution](assets/azureautomation-bicep-overview.png) -->
+![Screenshot of the Bicep Solution](assets/azureautomation-bicep-overview.png)
 
 ### Pre-requisites
 
