@@ -4,9 +4,8 @@ BeforeDiscovery {
         Write-Verbose "Found $($TeamsMeetingPolicy.Count) Teams Meeting policies"
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object {$_.Identity -eq "Global"}
         Write-Verbose "Filtered $( $TeamsMeetingPolicyGlobal.Count) Global Teams Meeting policy"
-        #$TeamsEventsPolicy = Get-CsTeamsEventsPolicy
-        #Write-Verbose "Found $($TeamsEventsPolicy.Count) Teams Events policies"
-    } catch [System.UnauthorizedAccessException] {
+
+    } catch {
         Write-Verbose "Session is not established, run Connect-MicrosoftTeams before requesting access token"
     }
 }
