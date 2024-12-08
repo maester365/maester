@@ -1,0 +1,46 @@
+merill:
+  name: Merill Fernando
+  title: Maester maintainer + Product Manager, Microsoft
+  image_url: https://github.com/merill.png
+  page: true
+  socials:
+    newsletter: https://entra.news
+    website: https://merill.net
+    bluesky: https://bsky.app/profile/merill.net
+    linkedin: https://linkedin.com/in/merill/
+    github: merill
+    x: merill
+fabian:
+  name: Fabian Bader
+  title: Maester maintainer + Microsoft MVP
+  url: https://www.linkedin.com/in/fabianbader/
+  image_url: https://github.com/f-bader.png
+  page: true
+  socials:
+    website: https://cloudbrothers.info/en/
+    bluesky: https://bsky.app/profile/fabian.bader.cloud
+    linkedin: https://linkedin.com/in/fabianbader/
+    github: f-bader
+    x: fabian_bader
+thomas:
+  name: Thomas Naunheim
+  title: Maester maintainer + Microsoft MVP
+  url: https://linkedin.com/in/thomasnaunheim/
+  image_url: https://github.com/Cloud-Architekt.png
+  page: true
+  socials:
+    website: https://www.cloud-architekt.net/
+    bluesky: https://bsky.app/profile/naunheim.cloud
+    linkedin: https://www.linkedin.com/in/thomasnaunheim/
+    github: Cloud-Architekt
+    x: Thomas_Live
+mike:
+  name: Mike Soule
+  title: Maester maintainer + National Director, Sentinel Technologies
+  url: https://www.linkedin.com/in/mikesoule/
+  image_url: https://github.com/soulemike.png
+  page: true
+  socials:
+    linkedin: https://linkedin.com/in/mikesoule/
+    github: soulemike
+    x: MySnozzberries
