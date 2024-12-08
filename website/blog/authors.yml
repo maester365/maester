@@ -36,7 +36,7 @@ thomas:
     x: Thomas_Live
 mike:
   name: Mike Soule
-  title: Maester maintainer + National Directory, Sentinel Technologies
+  title: Maester maintainer + National Director, Sentinel Technologies
   url: https://www.linkedin.com/in/mikesoule/
   image_url: https://github.com/soulemike.png
   page: true
