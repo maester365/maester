@@ -49,10 +49,10 @@
 .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
         -IncludeApplications 'a7936c39-024c-4148-a9b3-f88f2e9406f6' `
-        -ServicePrincipalRiskLevel 'High' -Verbose -IncludeReportOnly -IncludeDisabled -PrettyJsonVerboseOutput
+        -ServicePrincipalRiskLevel 'High' -Verbose
 
     This example tests the Conditional Access policies for a service principal user accessing the **application** with a **High** service principal risk level.
-    It will return all applied results, including the report-only and disabled policies. It will print the Graph API input and output JSON objects in a pretty format.
+    It will return all applied results, including the report-only and disabled policies.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf
@@ -166,22 +166,7 @@ function Test-MtConditionalAccessWhatIf {
 
         # Output all results, not only the applied policies.
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [switch]$AllResults,
-
-        # IncludeReportOnly
-        # Include report-only policies in the final resultset
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [switch]$IncludeReportOnly,
-
-        # IncludeDisabled
-        # Include disabled policies in the final resultset
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [switch]$IncludeDisabled,
-
-        # Pretty JSON verbose output
-        # Pretty print Whatif input and result JSON objects in verbose mode
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [switch]$PrettyJsonVerboseOutput
+        [switch]$AllResults
     )
 
     process {
