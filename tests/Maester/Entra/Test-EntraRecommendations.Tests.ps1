@@ -4,7 +4,7 @@ BeforeDiscovery {
 }
 
 Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
-    It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024" {
+    It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
         $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",
@@ -36,7 +36,7 @@ Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Re
                 $impactedResourcesList += "| $($resourceResult) | [$($resource.displayName)]($($resource.portalUrl)) | $($resource.addedDateTime) | `n"
             }
         }
-        $ResultMarkdown = $insights + $impactedResourcesList + "`n`n#### Remediation actions:`n`n" + $ActionSteps
+        $ResultMarkdown = $insights + $impactedResourcesList + "`n`n#### Remediation actions:`n`n" + $ActionSteps + "`n`n ExcludeTag: $($recommendationType)"
         Add-MtTestResultDetail -Description $benefits -Result $ResultMarkdown
         #endregion
         # Actual test

@@ -27,11 +27,11 @@ inputs:
     required: false
     default: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
   include_tags:
-    description: "A list of tags to include in the test run. Please separate multiple tags with a comma."
+    description: "A list of tags to include in the test run. Please separate multiple tags with a comma (without space)."
     required: false
     default: ""
   exclude_tags:
-    description: "A list of tags to exclude from the test run. Please separate multiple tags with a comma."
+    description: "A list of tags to exclude from the test run. Please separate multiple tags with a comma (without space)."
     required: false
     default: ""
   pester_verbosity:
@@ -48,6 +48,16 @@ inputs:
     description: "Define whether the results are uploaded as Artifacts."
     required: false
     default: true
+  install_prerelease:
+    type: boolean
+    description: "Installs the preview version, allowing access to new cmdlets."
+    required: false
+    default: false
+  disable_telemetry:
+    type: boolean
+    description: "If set, telemetry information will not be logged."
+    required: false
+    default: false
 
 runs:
   using: "composite"
@@ -87,7 +97,11 @@ runs:
           Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
           # Install Maester
-          Install-Module Maester -Force
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.install_prerelease}}' ) -eq $true ){
+            Install-Module Maester -AllowPrerelease -Force
+          } else {
+            Install-Module Maester -Force
+          }
 
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
@@ -128,6 +142,11 @@ runs:
               } else {
                   Write-Warning "Mail recipients are not provided. Skipping mail notification."
               }
+          }
+
+          # Check if disable telemetry is provided
+          if (( [string]::IsNullOrWhiteSpace( '${{ inputs.disable_telemetry}}' ) -eq $true ){
+            $MaesterParameters.Add( 'DisableTelemetry', $true )
           }
 
           # Run Maester tests
