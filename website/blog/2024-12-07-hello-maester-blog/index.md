@@ -5,6 +5,7 @@ slug: hello-maester-blog
 authors: merill
 tags: [hello, blog]
 hide_table_of_contents: false
+date: 2024-12-07
 ---
 
 Hey folks! 👋

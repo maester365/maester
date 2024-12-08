@@ -5,12 +5,13 @@ slug: maester-teams-alert
 authors: merill
 tags: [teams, alerts]
 hide_table_of_contents: false
-image: assets/maester-teams-alert.png
+image: ./img/maester-teams-alert.png
+date: 2024-12-08
 ---
 
 The command `Send-MtTeamsMessage` to post your Maester results to a Teams channel has been there for a while but we did forget to write the documentation for it. This is now fixed!
 
-![Maester - Microsoft Teams Alerts](assets/maester-teams-alert.png)
+![Maester - Microsoft Teams Alerts](./img/maester-teams-alert.png)
 
 <!-- truncate -->
 
