@@ -147,9 +147,9 @@ function Test-MtConditionalAccessWhatIf {
         # 		[OperatingSystem <String>]:
         # 		[OperatingSystemVersion <String>]:
         # 		[Ownership <String>]:
-        # 		[PhysicalIds <String- []>]:
+        # 		[PhysicalIds <String []>]:
         # 		[ProfileType <String>]:
-        # 		[SystemLabels <String- []>]:
+        # 		[SystemLabels <String []>]:
         # 		[TrustType <String>]:
         [Parameter(ValueFromPipelineByPropertyName = $true)]
         [hashtable]$DeviceInfo,
