@@ -22,7 +22,7 @@ function Test-MtConnection {
     [CmdletBinding()]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance")]
+        [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance","Teams")]
         [Parameter(Position = 0, Mandatory = $false)]
         [string[]]$Service = "Graph"
     )
@@ -73,6 +73,18 @@ function Test-MtConnection {
             Write-Debug "Security & Compliance: $false"
         }
         Write-Verbose "Security & Compliance: $isConnected"
+        if (!$isConnected) { $connectionState = $false }
+    }
+
+    if ($Service -contains "Teams") { #ToValidate: Preview
+    #if ($Service -contains "Teams" -or $Service -contains "All") {
+        $isConnected = $false
+        try {
+            $isConnected = $null -ne (Get-CsTenant -ErrorAction SilentlyContinue)
+        } catch {
+            Write-Debug "Teams: $false"
+        }
+        Write-Verbose "Teams: $isConnected"
         if (!$isConnected) { $connectionState = $false }
     }
 
