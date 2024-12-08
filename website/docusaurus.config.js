@@ -125,7 +125,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                href: "https://discord.maester.dev",
+                href: "https://discord.com/channels/1125617152368594976/1226351860693205062",
               },
               {
                 label: "Twitter",
@@ -136,6 +136,10 @@ const config = {
           {
             title: "More",
             items: [
+              {
+                label: "Bluesky",
+                href: "https://bsky.app/profile/maester.dev",
+              },
               {
                 label: "GitHub",
                 href: "https://github.com/maester365/maester",
