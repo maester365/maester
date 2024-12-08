@@ -1,10 +1,14 @@
 BeforeDiscovery {
-    $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy
-    Write-Verbose "Found $($TeamsMeetingPolicy.Count) Teams Meeting policies"
-    $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object {$_.Identity -eq "Global"}
-    Write-Verbose "Filtered $( $TeamsMeetingPolicyGlobal.Count) Global Teams Meeting policy"
-    #$TeamsEventsPolicy = Get-CsTeamsEventsPolicy
-    #Write-Verbose "Found $($TeamsEventsPolicy.Count) Teams Events policies"
+    try {
+        $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy
+        Write-Verbose "Found $($TeamsMeetingPolicy.Count) Teams Meeting policies"
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object {$_.Identity -eq "Global"}
+        Write-Verbose "Filtered $( $TeamsMeetingPolicyGlobal.Count) Global Teams Meeting policy"
+        #$TeamsEventsPolicy = Get-CsTeamsEventsPolicy
+        #Write-Verbose "Found $($TeamsEventsPolicy.Count) Teams Events policies"
+    } catch [System.UnauthorizedAccessException] {
+        Write-Verbose "Session is not established, run Connect-MicrosoftTeams before requesting access token"
+    }
 }
 
 Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
@@ -25,6 +29,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be $false -Because "AllowParticipantGiveRequestControl should be False"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 
@@ -44,6 +50,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be "InvitedUsers" -Because "AutoAdmittedUsers should be InvitedUsers"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 
@@ -62,6 +70,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be $false -Because "AllowAnonymousUsersToJoinMeeting should be False"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 
@@ -80,6 +90,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be $false -Because "AllowAnonymousUsersToStartMeeting should be False"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 
@@ -98,6 +110,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be $false -Because "AllowExternalParticipantGiveRequestControl should be False"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 
@@ -112,14 +126,12 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         }
         $testDetailsMarkdown = "Dial-in users aren’t authenticated though the Teams app. Increase the security of your meetings by preventing these unknown users from bypassing the lobby and immediately joining the meeting."
         Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
-        
+
         # Actual test
         if ($null -ne $result) {
             $result | Should -Be $false -Because "AllowPSTNUsersToBypassLobby should be False"
+        } else {
+            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         }
     }
 }
-
-#Describe "Teams Events policies" -Tag "Maester", "Teams", "EventsPolicy" {
-#    $TeamsEventsPolicy | fl
-#}
