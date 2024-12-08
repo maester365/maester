@@ -122,7 +122,7 @@ function Connect-Maester {
          Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
-         Write-Host "`Install-Module Az -Scope CurrentUser`n" -ForegroundColor Yellow
+         Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 
