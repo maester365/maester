@@ -4,8 +4,8 @@ description: Join us on Discord for an AMA with the Maester team.
 slug: ama-with-maester-team
 authors: [fabian, thomas, mike, merill]
 tags: [ama]
+image: assets/ama-with-maester-team.png
 hide_table_of_contents: false
-image: assets/maester-teams-alert.png
 ---
 
 This week the Maester team (Fabian, Thomas, Mike & Merill) will be joining [Microsoft EMS Community] Discord for an AMA. Join us to ask your questions about Maester, the community, plans for the future and anything else you want to know.
