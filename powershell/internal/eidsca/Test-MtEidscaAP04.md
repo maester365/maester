@@ -5,7 +5,7 @@ CISA SCuBA 2.18: Only users with the Guest Inviter role SHOULD be able to invite
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.allowInvitesFrom in @('adminsAndGuestInviters','none')
+.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 ```
 
 #### Related links

@@ -5,7 +5,7 @@ Defines if admin consent request feature is enabled or disabled
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
-.isEnabled = 'true'
+.isEnabled -eq 'true'
 ```
 
 #### Related links

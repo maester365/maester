@@ -5,7 +5,7 @@ When enabled, the words in the list below are used in the banned password system
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value = 'True'
+.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
 ```
 
 #### Related links

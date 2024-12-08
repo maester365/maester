@@ -5,7 +5,7 @@ Use Temporary Access Pass for secure onboarding users (initial password replacem
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
-.state = 'enabled'
+.state -eq 'enabled'
 ```
 
 #### Related links

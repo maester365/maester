@@ -5,7 +5,7 @@ Administrators with sensitive roles should use phishing-resistant authentication
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.allowedToUseSSPR = 'false'
+.allowedToUseSSPR -eq 'false'
 ```
 
 #### Related links

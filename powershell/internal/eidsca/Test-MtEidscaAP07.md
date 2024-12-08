@@ -5,7 +5,7 @@ CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory ob
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.guestUserRoleId = '2af84b1e-32c8-42b7-82bc-daa82404023b'
+.guestUserRoleId -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
 ```
 
 #### Related links

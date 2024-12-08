@@ -5,7 +5,7 @@ Object Id or scope of users which will be showing app information in the Authent
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-.featureSettings.displayAppInformationRequiredState.includeTarget.id = 'all_users'
+.featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
 ```
 
 #### Related links

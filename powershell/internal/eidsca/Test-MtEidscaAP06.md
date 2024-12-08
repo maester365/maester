@@ -5,7 +5,7 @@ Controls whether users can join the tenant by email validation. To join, the use
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.allowEmailVerifiedUsersToJoinOrganization = 'false'
+.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
 ```
 
 #### Related links

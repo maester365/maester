@@ -5,7 +5,7 @@ Requires the FIDO security key metadata to be published and verified with the FI
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.isAttestationEnforced = 'true'
+.isAttestationEnforced -eq 'true'
 ```
 
 #### Related links

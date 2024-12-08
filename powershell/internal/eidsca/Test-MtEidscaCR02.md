@@ -5,7 +5,7 @@ Specifies whether reviewers will receive notifications
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
-.notifyReviewers = 'true'
+.notifyReviewers -eq 'true'
 ```
 
 #### Related links
