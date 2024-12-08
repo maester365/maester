@@ -1,6 +1,6 @@
 ---
-title: Sending Maester alerts to Microsoft Teams
-description: This is my first post on Docusaurus.
+title: Maester alerts → Microsoft Teams
+description: Find out how you can send your Maester daily results to a Teams channel
 slug: maester-teams-alert
 authors: merill
 tags: [teams, alerts]
