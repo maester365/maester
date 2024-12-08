@@ -89,6 +89,38 @@ Connect-Maester -Privileged
 
 Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
+### EXAMPLE 8
+
+```powershell
+Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+```
+
+Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 9
+
+```powershell
+Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+```
+
+Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 10
+
+```powershell
+Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+```
+
+Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 11
+
+```powershell
+Connect-Maester -Environment Germany
+```
+
+Connects to the Germany environment for Microsoft Graph.
+
 ## PARAMETERS
 
 ### -SendMail
@@ -161,6 +193,7 @@ Accept wildcard characters: False
 
 The environment to connect to.
 Default is Global.
+Supported values include China, Germany, Global, USGov, USGovDoD.
 
 ```yaml
 Type: String
@@ -178,6 +211,7 @@ Accept wildcard characters: False
 
 The Azure environment to connect to.
 Default is AzureCloud.
+Supported values include AzureChinaCloud, AzureCloud, AzureUSGovernment.
 
 ```yaml
 Type: String
@@ -195,6 +229,7 @@ Accept wildcard characters: False
 
 The Exchange environment to connect to.
 Default is O365Default.
+Supported values include O365China, O365Default, O365GermanyCloud, O365USGovDoD, O365USGovGCCHigh.
 
 ```yaml
 Type: String
