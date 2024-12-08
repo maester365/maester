@@ -1,6 +1,6 @@
 ---
 title: Welcome to the 🔥 Maester blog
-description: This is my first post on Docusaurus.
+description: Launch announcement of the Maester blog
 slug: hello-maester-blog
 authors: merill
 tags: [hello, blog]
