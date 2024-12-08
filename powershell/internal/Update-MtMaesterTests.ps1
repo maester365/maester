@@ -72,7 +72,8 @@ function Update-MtMaesterTests {
     }
 
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
-    if (Get-MgContext) {
+    #if (Get-MgContext) { #ToAdjust: Issue with -SkipGraphConnect
+    if (Test-MtConnection Graph) {
         $message = "Run Invoke-Maester to start testing."
     }
 
