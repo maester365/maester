@@ -20,7 +20,7 @@ The app that sends the email alerts needs the `Mail.Send` permission to send ema
 - Search for the application you created to run as the `Maester DevOps Account`.
 - Select **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
-- Search for `Mail.Send` and check the box next to each permission:
+- Search for `Mail.Send` and check the box next to the permission
 - Select **Add permissions**
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm

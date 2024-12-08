@@ -51,6 +51,10 @@ const config = {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
         },
+        blog: {
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+        },
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -95,6 +99,7 @@ const config = {
             docId: "commands/commands-overview",
             label: "Commands",
           },
+          { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",
             className: "navbar--github-link",
@@ -120,7 +125,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                href: "https://discord.maester.dev",
+                href: "https://discord.com/channels/1125617152368594976/1226351860693205062",
               },
               {
                 label: "Twitter",
@@ -131,6 +136,10 @@ const config = {
           {
             title: "More",
             items: [
+              {
+                label: "Bluesky",
+                href: "https://bsky.app/profile/maester.dev",
+              },
               {
                 label: "GitHub",
                 href: "https://github.com/maester365/maester",

@@ -147,7 +147,12 @@ function Invoke-Maester {
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
-        [switch] $SkipGraphConnect
+        [switch] $SkipGraphConnect,
+
+        # Disable Telemetry
+        # If set, telemetry information will not be logged.
+        [switch] $DisableTelemetry
+
     )
 
     function GetDefaultFileName() {
@@ -232,6 +237,10 @@ function Invoke-Maester {
     Write-Host -ForegroundColor Green $motd
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
+
+    if (-not $DisableTelemetry) {
+        Write-Telemetry -EventName InvokeMaester
+    }
 
     $isMail = $null -ne $MailRecipient
 
