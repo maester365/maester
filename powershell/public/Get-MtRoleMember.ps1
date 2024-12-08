@@ -79,7 +79,7 @@ function Get-MtRoleMember {
     if ($Active) {
       $types += @{active = "roleManagement/directory/roleAssignments" }
     }
-    if ($Eligible -and "RoleEligibilitySchedule.ReadWrite.Directory" -in $scopes) {
+    if ($Eligible -and ("RoleEligibilitySchedule.ReadWrite.Directory" -in $scopes -or "RoleManagement.ReadWrite.Directory" -in $scopes)) {
       $types += @{eligible = "roleManagement/directory/roleEligibilityScheduleRequests" }
     } elseif ($Eligible) {
       Write-Warning "Skipping eligible roles as required Graph permission 'RoleEligibilitySchedule.ReadWrite.Directory' was not present."
