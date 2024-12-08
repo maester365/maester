@@ -1,6 +1,6 @@
 ---
 sidebar_label: Azure Container App Job
-sidebar_position: 3
+sidebar_position: 6
 title: Set up Maester in Azure Container App Job
 ---
 
