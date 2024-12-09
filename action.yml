@@ -145,7 +145,7 @@ runs:
           }
 
           # Check if disable telemetry is provided
-          if (( [string]::IsNullOrWhiteSpace( '${{ inputs.disable_telemetry}}' ) -eq $true ){
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.disable_telemetry}}' ) -eq $true ) {
             $MaesterParameters.Add( 'DisableTelemetry', $true )
           }
 
