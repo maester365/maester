@@ -3,42 +3,23 @@ BeforeDiscovery {
 
         $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy
         Write-Verbose "Found $($TeamsMeetingPolicy.Count) Teams Meeting policies"
-        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
-        Write-Verbose "Filtered $( $TeamsMeetingPolicyGlobal.Count) Global Teams Meeting policy"
-
     } catch {
         Write-Verbose "Session is not established, run Connect-MicrosoftTeams before requesting access token"
     }
 }
 
-Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
+Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All" {
 
+    It "MT.1037 Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
 
-    It "Configure which users are allowed to present in Teams meetings" -Tag "AllowParticipantGiveRequestControl" {
+        $result = Test-MtTeamsRestrictParticipantGiveRequestControl -TeamsMeetingPolicy $TeamsMeetingPolicy
+        $result | Should -Be $true -Because "Standard attendees in a Teams meeting should not be allowed to present in Teams meetings unless they are assigned the Presenter role."
 
-        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
-
-        if (!(Test-MtConnection Teams)) {
-            Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
-            return $null
-        }
-
-        $result = $TeamsMeetingPolicyGlobal.AllowParticipantGiveRequestControl
-
-        if ($result -eq $false) {
-            $testResultMarkdown = "Well done. AllowParticipantGiveRequestControl is $($result)`n`n"
-        } else {
-            $testResultMarkdown = "AllowParticipantGiveRequestControl in [Meeting policies]($portalLink_MeetingPolicy) should be False and is $($result) `n`n"
-        }
-        $testDetailsMarkdown = "Only allow users with presenter rights to share content during meetings. Restricting who can present limits meeting disruptions and reduces the risk of unwanted or inappropriate content being shared."
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
-
-        $result | Should -Be $false -Because "AllowParticipantGiveRequestControl should be False"
     }
 
-    It "Only invited users should be automatically admitted to Teams meetings" -Tag "AutoAdmittedUsers" {
+    It "MT.1038 Only invited users should be automatically admitted to Teams meetings" -Tag "MT.1038" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
         #($TeamsMeetingPolicyGlobal.AutoAdmittedUsers -eq "InvitedUsers")
-
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
@@ -59,8 +40,9 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be "InvitedUsers" -Because "AutoAdmittedUsers should be InvitedUsers"
     }
 
-    It "Restrict anonymous users from joining meetings" -Tag "AllowAnonymousUsersToJoinMeeting" {
+    It "MT.1039 Restrict anonymous users from joining meetings" -Tag "MT.1039" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
 
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
@@ -81,8 +63,9 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowAnonymousUsersToJoinMeeting should be False"
     }
 
-    It "Restrict anonymous users from starting Teams meetings" -Tag "AllowAnonymousUsersToStartMeeting" {
+    It "MT.1040 Restrict anonymous users from starting Teams meetings" -Tag "MT.1040" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
@@ -103,8 +86,9 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowAnonymousUsersToStartMeeting should be False"
     }
 
-    It "Limit external participants from having control in a Teams meeting" -Tag "AllowExternalParticipantGiveRequestControl" {
+    It "MT.1041 Limit external participants from having control in a Teams meeting" -Tag "MT.1041" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
@@ -125,8 +109,9 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowExternalParticipantGiveRequestControl should be False"
     }
 
-    It "Restrict dial-in users from bypassing a meeting lobby " -Tag "AllowPSTNUsersToBypassLobby" {
+    It "MT.1042 Restrict dial-in users from bypassing a meeting lobby " -Tag "MT.1042" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {

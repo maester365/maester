@@ -21,6 +21,13 @@ function Get-MtGroupMember {
     [switch]$Recursive
   )
 
+  try{
+    Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0|Out-Null
+  }catch{
+    Write-Error "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant."
+    return $null
+  }
+
   Write-Verbose -Message "Getting group members."
 
   $members = @()

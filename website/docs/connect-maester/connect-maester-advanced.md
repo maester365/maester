@@ -15,6 +15,15 @@ There are two main methods of authenticating sessions for use with Maester:
 * Within the Maester module
 * Within the respective modules for the tests
 
+### Module Integrations
+
+The Maester module integrates with the following modules:
+
+* Microsoft.Graph.Authentication
+* Az.Accounts
+* ExchangeOnlineManagement
+* MicrosoftTeams
+
 ### Within the Maester module
 
 :::tip
@@ -49,6 +58,7 @@ graph TD;
   Connect-Maester-->Microsoft.Graph.Authentication;
   Connect-Maester-->Az.Accounts;
   Connect-Maester-->ExchangeOnlineManagement;
+  Connect-Maester-->a[Additional Modules];
   Microsoft.Graph.Authentication-->Get-MgContext;
   Microsoft.Graph.Authentication-->Get-MgEnvironment;
   Microsoft.Graph.Authentication-->Invoke-MgGraphRequest;

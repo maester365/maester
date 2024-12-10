@@ -1,5 +1,5 @@
 Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.6.1", "CISA", "Security", "All" {
-    It "MS.EXO.6.1: Contact folders SHALL NOT be shared with all domains." {
+    It "MS.EXO.06.1: Contact folders SHALL NOT be shared with all domains." {
 
         $cisaContactSharing = Test-MtCisaContactSharing
 
