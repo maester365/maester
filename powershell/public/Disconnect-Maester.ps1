@@ -41,8 +41,7 @@ function Disconnect-Maester {
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
       Disconnect-ExchangeOnline
    }
-   if($__MtSession.Connections -contains "Teams"){ #ToValidate: Preview
-   #if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
+   if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
       Disconnect-MicrosoftTeams
    }
