@@ -41,6 +41,9 @@ function Send-MtMail {
         # Uri to the detailed test results page.
         [string] $TestResultsUri,
 
+        # Does not send the email, but outputs the body to use elsewhere
+        [switch] $CreateBodyOnly,
+
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
         [string] $UserId
@@ -54,9 +57,11 @@ function Send-MtMail {
         - Copy the source (<html>..</html>) and paste it into the /powershell/assets/EmailTemplate.html file in the assets folder
         - Search for cid:image in the html and update the -replace commands in the script below.
     #>
-    if (!(Test-MtContext -SendMail)) { return }
+    if (! ($CreateBodyOnly)) {
+        if (!(Test-MtContext -SendMail)) { return }
 
-    if (!$Subject) { $Subject = "Maester Test Results" }
+        if (!$Subject) { $Subject = "Maester Test Results" }
+    }
 
     $emailTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/EmailTemplate.html'
     $emailTemplate = Get-Content -Path $emailTemplateFilePath -Raw
@@ -149,6 +154,11 @@ function Send-MtMail {
 
     Write-Verbose -Message "Uri: $sendMailUri"
     # Construct the message body
-    Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
+    if ($CreateBodyOnly) {
+        return $mailRequestBody
+    }
+    else {
+        Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
+    }
 
 }

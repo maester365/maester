@@ -5,7 +5,7 @@ Indicates whether users can sign up for email based subscriptions.
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.allowedToSignUpEmailBasedSubscriptions = 'false'
+.allowedToSignUpEmailBasedSubscriptions -eq 'false'
 ```
 
 #### Related links

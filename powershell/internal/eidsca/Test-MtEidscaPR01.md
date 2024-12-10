@@ -5,7 +5,7 @@ If set to Enforce, users will be prevented from setting banned passwords and the
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value = 'Enforce'
+.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
 ```
 
 #### Related links

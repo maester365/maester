@@ -16,7 +16,7 @@ Send an email with the summary of the Maester test results
 
 ```powershell
 Send-MtMail [-MaesterResults] <PSObject> [-Recipient] <String[]> [-Subject <String>] [-TestResultsUri <String>]
- [-UserId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-CreateBodyOnly] [-UserId <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -109,6 +109,22 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -CreateBodyOnly
+
+Does not send the email, but outputs the body to use elsewhere
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

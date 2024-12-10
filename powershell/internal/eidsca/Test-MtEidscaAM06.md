@@ -5,7 +5,7 @@ Determines whether the user's Authenticator app will show them the client app th
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-.featureSettings.displayAppInformationRequiredState.state = 'enabled'
+.featureSettings.displayAppInformationRequiredState.state -eq 'enabled'
 ```
 
 #### Related links

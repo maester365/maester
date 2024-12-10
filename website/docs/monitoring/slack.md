@@ -1,6 +1,6 @@
 ---
 sidebar_label: Slack Alerts
-sidebar_position: 5
+sidebar_position: 9
 title: Set up Maester Slack alerts
 ---
 

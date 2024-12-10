@@ -5,7 +5,7 @@ CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Thi
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value = 'true'
+.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
 ```
 
 #### Related links

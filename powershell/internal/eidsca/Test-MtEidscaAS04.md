@@ -5,7 +5,7 @@ Avoid to use SMS as primary sign in factor (instead of a password) and consider 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')
-.includeTargets.isUsableForSignIn = 'false'
+.includeTargets.isUsableForSignIn -eq 'false'
 ```
 
 #### Related links

@@ -46,6 +46,26 @@
 
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
+.EXAMPLE
+   Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+
+   Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+
+   Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+
+   Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment Germany
+
+   Connects to the Germany environment for Microsoft Graph.
+
 .LINK
     https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -67,15 +87,15 @@ function Connect-Maester {
       # This will open a browser window to prompt for authentication and is useful for non-interactive sessions and on Windows when SSO is not desired.
       [switch] $UseDeviceCode,
 
-      # The environment to connect to. Default is Global.
+      # The environment to connect to. Default is Global. Supported values include China, Germany, Global, USGov, USGovDoD.
       [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
       [string]$Environment = "Global",
 
-      # The Azure environment to connect to. Default is AzureCloud.
+      # The Azure environment to connect to. Default is AzureCloud. Supported values include AzureChinaCloud, AzureCloud, AzureUSGovernment.
       [ValidateSet("AzureChinaCloud", "AzureCloud", "AzureUSGovernment")]
       [string]$AzureEnvironment = "AzureCloud",
 
-      # The Exchange environment to connect to. Default is O365Default.
+      # The Exchange environment to connect to. Default is O365Default. Supported values include O365China, O365Default, O365GermanyCloud, O365USGovDoD, O365USGovGCCHigh.
       [ValidateSet("O365China", "O365Default", "O365GermanyCloud", "O365USGovDoD", "O365USGovGCCHigh")]
       [string]$ExchangeEnvironmentName = "O365Default",
 
@@ -106,7 +126,7 @@ function Connect-Maester {
          Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
-         Write-Host "`Install-Module Az -Scope CurrentUser`n" -ForegroundColor Yellow
+         Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 

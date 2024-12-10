@@ -5,7 +5,7 @@ CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Thi
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value = 'False'
+.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
 ```
 
 #### Related links

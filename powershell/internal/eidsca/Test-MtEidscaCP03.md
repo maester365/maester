@@ -5,7 +5,7 @@ Defines whether user consent will be blocked when a risky request is detected
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value = 'true'
+.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
 ```
 
 #### Related links

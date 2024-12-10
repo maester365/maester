@@ -5,7 +5,7 @@ Object Id or scope of users which will be showing number matching in the Authent
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
-.featureSettings.numberMatchingRequiredState.includeTarget.id = 'all_users'
+.featureSettings.numberMatchingRequiredState.includeTarget.id -eq 'all_users'
 ```
 
 #### Related links

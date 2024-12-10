@@ -46,7 +46,7 @@ function GetVersion($graphUri) {
 
 function GetRecommendedValue($RecommendedValue) {
     if($RecommendedValue -notlike "@('*,*')") {
-        $compareOperators = @(">=",">","<")
+        $compareOperators = @(">=","<=",">","<")
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
                 $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
@@ -61,6 +61,10 @@ function GetRecommendedValue($RecommendedValue) {
 function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
     if($RecommendedValueMarkdown -like "@('*,*')") {
         $RecommendedValueMarkdown = $RecommendedValueMarkdown -replace "@\(", "" -replace "\)", ""
+        return "$RecommendedValueMarkdown"
+    } elseif ($RecommendedValueMarkdown.StartsWith(">") -or $RecommendedValueMarkdown.StartsWith("<")) {
+        $RecommendedValueText = (GetCompareOperator($RecommendedValueMarkdown)).Text
+        $RecommendedValueMarkdown = "$RecommendedValueText $RecommendedValue"
         return "$RecommendedValueMarkdown"
     } else {
         return "'$RecommendedValueMarkdown'"
@@ -81,6 +85,13 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
+        }
+    } elseif ($RecommendedValue.StartsWith("<=")) {
+        $compareOperator = [PSCustomObject]@{
+            name       = '<='
+            pester     = 'BeLessOrEqual'
+            powershell = 'le'
+            text       = 'is less than or equal to'
         }
     } elseif ($RecommendedValue.StartsWith(">")) {
         $compareOperator = [PSCustomObject]@{
@@ -430,7 +441,7 @@ Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% %CompareOperator% %RecommendedValue%
+            .%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
         #>
         Test-MtEidscaControl -CheckId %CheckShortId% | Should -%ShouldOperator% %RecommendedValue%
     }

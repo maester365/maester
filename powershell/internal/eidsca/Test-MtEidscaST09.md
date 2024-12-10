@@ -5,7 +5,7 @@ Manages if guest accounts can access resources through Microsoft 365 Group membe
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value = 'True'
+.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
 ```
 
 #### Related links

@@ -79,7 +79,7 @@ function Invoke-Maester {
     [Alias("Invoke-MtMaester")]
     [CmdletBinding()]
     param (
-        # Specifies one or more paths to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
+        # Specifies path to files containing tests. The value is a path\file name or name pattern. Wildcards are permitted.
         [Parameter(Position = 0)]
         [string] $Path,
 
@@ -147,7 +147,16 @@ function Invoke-Maester {
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
-        [switch] $SkipGraphConnect
+        [switch] $SkipGraphConnect,
+
+        # Disable Telemetry
+        # If set, telemetry information will not be logged.
+        [switch] $DisableTelemetry,
+`
+        # Skip the version check.
+        # If set, the version check will not be performed.
+        [switch] $SkipVersionCheck
+
     )
 
     function GetDefaultFileName() {
@@ -232,6 +241,10 @@ function Invoke-Maester {
     Write-Host -ForegroundColor Green $motd
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
+
+    if (-not $DisableTelemetry) {
+        Write-Telemetry -EventName InvokeMaester
+    }
 
     $isMail = $null -ne $MailRecipient
 
@@ -339,7 +352,9 @@ function Invoke-Maester {
             Write-Host "Skipped ⚫: $($pesterResults.SkippedCount)`n" -ForegroundColor DarkGray
         }
 
-        Get-IsNewMaesterVersionAvailable | Out-Null
+        if (-not $SkipVersionCheck) {
+            Get-IsNewMaesterVersionAvailable | Out-Null
+        }
 
         Write-MtProgress -Activity "🔥 Completed tests" -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar
     }
