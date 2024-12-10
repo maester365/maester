@@ -13,7 +13,7 @@
   Test-MtTeamsRestrictParticipantGiveRequestControl
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtTeamsBlockParticipantGiveRequestControl
+    https://maester.dev/docs/commands/Test-MtTeamsRestrictParticipantGiveRequestControl
 #>
 function Test-MtTeamsRestrictParticipantGiveRequestControl {
     [CmdletBinding()]
@@ -32,6 +32,8 @@ function Test-MtTeamsRestrictParticipantGiveRequestControl {
     $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
 
     $result = -not $TeamsMeetingPolicyGlobal.AllowParticipantGiveRequestControl
+
+    Write-Verbose "Test-MtTeamsRestrictParticipantGiveRequestControl: $result"
 
     if ($result) {
         $testResultMarkdown = "Well done. Only users in the **Presenter** role are configured to share content during Teams meetings.`n`n"

@@ -201,5 +201,6 @@ module.exports = [
     'commands/Test-MtEidscaST09',
     'commands/Test-MtPimAlertsExists',
     'commands/Test-MtPrivPermanentDirectoryRole',
+    'commands/Test-MtTeamsRestrictParticipantGiveRequestControl',
     'commands/Update-MaesterTests'
 ];
