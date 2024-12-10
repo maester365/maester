@@ -52,7 +52,7 @@ Function Test-MtCaGroupsRestricted {
     -not $_.isManagementRestricted -and -not $_.isAssignableToRole
 }
 
-  $result = ($unrestrictedGroups | Measure-Object).Count -eq 0
+  $result = ($UnrestrictedGroups | Measure-Object).Count -eq 0
 
   if ( $result ) {
     $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
