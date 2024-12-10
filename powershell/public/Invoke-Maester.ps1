@@ -151,7 +151,11 @@ function Invoke-Maester {
 
         # Disable Telemetry
         # If set, telemetry information will not be logged.
-        [switch] $DisableTelemetry
+        [switch] $DisableTelemetry,
+`
+        # Skip the version check.
+        # If set, the version check will not be performed.
+        [switch] $SkipVersionCheck
 
     )
 
@@ -348,7 +352,9 @@ function Invoke-Maester {
             Write-Host "Skipped ⚫: $($pesterResults.SkippedCount)`n" -ForegroundColor DarkGray
         }
 
-        Get-IsNewMaesterVersionAvailable | Out-Null
+        if (-not $SkipVersionCheck) {
+            Get-IsNewMaesterVersionAvailable | Out-Null
+        }
 
         Write-MtProgress -Activity "🔥 Completed tests" -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar
     }
