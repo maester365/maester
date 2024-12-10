@@ -20,7 +20,7 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-SkipGraphConnect] [-DisableTelemetry]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-SkipVersionCheck] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -459,6 +459,23 @@ Accept wildcard characters: False
 
 Disable Telemetry
 If set, telemetry information will not be logged.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipVersionCheck
+
+Skip the version check.
+If set, the version check will not be performed.
 
 ```yaml
 Type: SwitchParameter
