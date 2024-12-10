@@ -78,11 +78,11 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
-### Connect to Azure and Exchange Online
+### Connect to Azure, Exchange Online and Teams
 
-`Connect-Maester` also provides options to connect to Azure and Exchange Online for running tests that use the Azure PowerShell and Exchange Online PowerShell modules.
+`Connect-Maester` also provides options to connect to Azure, Exchange Online adn Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online and Security Compliance.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online, Security Compliance and Microsoft Teams.
 
 ```powershell
 Connect-Maester -Service All
@@ -91,7 +91,7 @@ Connect-Maester -Service All
 If you need to connect to just a subset of the services you can specifiy them using the `-Service` parameter.
 
 ```powershell
-Connect-Maester -Service Azure,Graph
+Connect-Maester -Service Azure,Graph,Teams
 ```
 
 ### Connect to US Government, US DoD, China and Germany and other clouds

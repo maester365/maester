@@ -115,3 +115,16 @@ The Microsoft Exchange Online and Security & Compliance PowerShell Modules provi
 Connect-ExchangeOnline -Certificate $cert -AppID $applicationId -Organization $moera -ShowBanner:$false
 Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moera -ShowBanner:$false
 ```
+
+### Microsoft Teams PowerShell Module
+
+The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps). For interactive sessions, you can use the standard login prompt. For non-interactive use, such as in automation scenarios, service principal authentication is recommended.
+
+```powershell
+# Interactive
+Connect-MicrosoftTeams
+
+# Non-Interactive (Service Principal)
+$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("C:\exampleCert.pfx",$password)
+Connect-MicrosoftTeams -Certificate $cert -ApplicationId $applicationId -TenantId $tenantId
+```
