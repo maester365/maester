@@ -12,9 +12,11 @@ BeforeDiscovery {
 }
 
 Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
-    $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
+
 
     It "Configure which users are allowed to present in Teams meetings" -Tag "AllowParticipantGiveRequestControl" {
+
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
@@ -37,6 +39,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
     It "Only invited users should be automatically admitted to Teams meetings" -Tag "AutoAdmittedUsers" {
         #($TeamsMeetingPolicyGlobal.AutoAdmittedUsers -eq "InvitedUsers")
 
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
+
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
             return $null
@@ -56,6 +60,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
     }
 
     It "Restrict anonymous users from joining meetings" -Tag "AllowAnonymousUsersToJoinMeeting" {
+
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
@@ -77,6 +83,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
 
     It "Restrict anonymous users from starting Teams meetings" -Tag "AllowAnonymousUsersToStartMeeting" {
 
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
+
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
             return $null
@@ -97,6 +105,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
 
     It "Limit external participants from having control in a Teams meeting" -Tag "AllowExternalParticipantGiveRequestControl" {
 
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
+
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
             return $null
@@ -116,6 +126,8 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
     }
 
     It "Restrict dial-in users from bypassing a meeting lobby " -Tag "AllowPSTNUsersToBypassLobby" {
+
+        $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
         if (!(Test-MtConnection Teams)) {
             Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
