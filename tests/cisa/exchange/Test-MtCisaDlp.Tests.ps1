@@ -1,5 +1,5 @@
 Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.8.1", "CISA", "Security", "All" {
-    It "MS.EXO.8.1: A DLP solution SHALL be used." {
+    It "MS.EXO.08.1: A DLP solution SHALL be used." {
 
         $cisaDlp = Test-MtCisaDlp
 

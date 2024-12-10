@@ -1,5 +1,5 @@
 Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.2.1", "CISA", "Security", "All" {
-    It "MS.EXO.2.1: A list of approved IP addresses for sending mail SHALL be maintained." {
+    It "MS.EXO.02.1: A list of approved IP addresses for sending mail SHALL be maintained." {
         $cisaSpfRestriction = Test-MtCisaSpfRestriction
 
         if ($null -ne $cisaSpfRestriction) {
