@@ -14,7 +14,7 @@ BeforeDiscovery {
 Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
 
 
-    It "Configure which users are allowed to present in Teams meetings" -Tag "AllowParticipantGiveRequestControl" {
+    It "MT. Configure which users are allowed to present in Teams meetings" -Tag "AllowParticipantGiveRequestControl" {
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
@@ -36,7 +36,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowParticipantGiveRequestControl should be False"
     }
 
-    It "Only invited users should be automatically admitted to Teams meetings" -Tag "AutoAdmittedUsers" {
+    It "MT. Only invited users should be automatically admitted to Teams meetings" -Tag "AutoAdmittedUsers" {
         #($TeamsMeetingPolicyGlobal.AutoAdmittedUsers -eq "InvitedUsers")
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
@@ -59,7 +59,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be "InvitedUsers" -Because "AutoAdmittedUsers should be InvitedUsers"
     }
 
-    It "Restrict anonymous users from joining meetings" -Tag "AllowAnonymousUsersToJoinMeeting" {
+    It "MT. Restrict anonymous users from joining meetings" -Tag "AllowAnonymousUsersToJoinMeeting" {
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
@@ -81,7 +81,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowAnonymousUsersToJoinMeeting should be False"
     }
 
-    It "Restrict anonymous users from starting Teams meetings" -Tag "AllowAnonymousUsersToStartMeeting" {
+    It "MT. Restrict anonymous users from starting Teams meetings" -Tag "AllowAnonymousUsersToStartMeeting" {
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
@@ -103,7 +103,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowAnonymousUsersToStartMeeting should be False"
     }
 
-    It "Limit external participants from having control in a Teams meeting" -Tag "AllowExternalParticipantGiveRequestControl" {
+    It "MT. Limit external participants from having control in a Teams meeting" -Tag "AllowExternalParticipantGiveRequestControl" {
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
@@ -125,7 +125,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy" {
         $result | Should -Be $false -Because "AllowExternalParticipantGiveRequestControl should be False"
     }
 
-    It "Restrict dial-in users from bypassing a meeting lobby " -Tag "AllowPSTNUsersToBypassLobby" {
+    It "MT. Restrict dial-in users from bypassing a meeting lobby " -Tag "AllowPSTNUsersToBypassLobby" {
 
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
 
