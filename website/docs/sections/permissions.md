@@ -1,5 +1,6 @@
 - **Directory.Read.All**
 - **DirectoryRecommendations.Read.All**
+- **Domain.Read.All**
 - **IdentityRiskEvent.Read.All**
 - **Policy.Read.All**
 - **Policy.Read.ConditionalAccess**
