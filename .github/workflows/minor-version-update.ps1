@@ -21,13 +21,18 @@ if ( -not (Test-Path $ManfifestPath )) {
 
     # Set new version number. If it is pre-release, increment the build number otherwise increment the minor version.
     $major = 0 # Update this to change the major version number of Maester.
-    $minor = $ver.Minor
-
-    if ($preview) {
-        $build = $ver.Build + 1
+    if ($major -ne $ver.Major) {
+        $minor = 0 # Reset the minor & build version when incrementing the major version.
+        $build = 0
     } else {
-        $minor = $ver.Minor + 1
-        $build = 0 # Reset the build number when incrementing the minor version.
+        $minor = $ver.Minor
+
+        if ($preview) {
+            $build = $ver.Build + 1
+        } else {
+            $minor = $ver.Minor + 1
+            $build = 0 # Reset the build number when incrementing the minor version.
+        }
     }
 
     $NewVersion = '{0}.{1}.{2}' -f $major, $minor, $build
