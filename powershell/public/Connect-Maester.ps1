@@ -205,7 +205,8 @@ function Connect-Maester {
          }
       }
    }
-   if ($Service -contains "Teams" -or $Service -contains "All") {
+   if ($Service -contains "Teams") {
+   # if ($Service -contains "Teams" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Teams"
       try {
          if ($UseDeviceCode) {
