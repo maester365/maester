@@ -17,7 +17,7 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ```powershell
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
- [[-Service] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-Service] <String[]>] [[-TenantId] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -273,6 +273,22 @@ Aliases:
 Required: False
 Position: 5
 Default value: Graph
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TenantId
+
+The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
