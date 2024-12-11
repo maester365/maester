@@ -104,16 +104,25 @@ function Connect-Maester {
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance","Teams")]
-      [string[]]$Service = "Graph"
+      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance", "Teams")]
+      [string[]]$Service = "Graph",
+
+      # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
+      [string]$TenantId
    )
 
    $__MtSession.Connections = $Service
 
+
    if ($Service -contains "Graph" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Graph"
       try {
-         Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+         if ($TenantId) {
+            Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment -TenantId $TenantId
+         } else {
+            Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+            $TenantId = (Get-MgContext).TenantId
+         }
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
          Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -123,13 +132,20 @@ function Connect-Maester {
    if ($Service -contains "Azure" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Azure"
       try {
-         Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+         if($TenantId){
+            Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId
+         }
+         else {
+            Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+         }
+
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
          Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 
+   $exchangeModuleNotInstalledWarningShown = $false
    if ($Service -contains "ExchangeOnline" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Exchage Online"
       try {
@@ -144,6 +160,7 @@ function Connect-Maester {
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
          Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+         $exchangeModuleNotInstalledWarningShown = $true
       }
    }
 
@@ -170,9 +187,9 @@ function Connect-Maester {
             AuthZEndpointUri = "https://login.microsoftonline.us/common"
          }
       }
-      Write-Verbose "Connecting to Microsoft Security & Complaince PowerShell"
+      Write-Verbose "Connecting to Microsoft Security & Compliance PowerShell"
       if ($Service -notcontains "ExchangeOnline" -and $Service -notcontains "All") {
-         Write-Host "`nThe Security & Complaince module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
+         Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
       } else {
          if ($UseDeviceCode) {
             Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
@@ -180,14 +197,15 @@ function Connect-Maester {
             try {
                Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $environments[$ExchangeEnvironmentName].AuthZEndpointUri
             } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
-               Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+               if (-not $exchangeModuleNotInstalledWarningShown) {
+                  Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
+                  Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+               }
             }
          }
       }
    }
-   if ($Service -contains "Teams") { #ToValidate: Preview
-   #if ($Service -contains "Teams" -or $Service -contains "All") {
+   if ($Service -contains "Teams" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Teams"
       try {
          if ($UseDeviceCode) {
