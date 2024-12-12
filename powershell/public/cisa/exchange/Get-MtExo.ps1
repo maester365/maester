@@ -63,6 +63,16 @@ function Get-MtExo {
         "ATPProtectionPolicyRule"        = "Get-ATPProtectionPolicyRule"
         "ProtectionAlert"                = "Get-ProtectionAlert"
         "EXOMailbox"                     = "Get-EXOMailbox"
+        "ArcConfig"                      = "Get-ArcConfig"
+        "ExternalInOutlook"              = "Get-ExternalInOutlook"
+        "InboundConnector"               = "Get-InboundConnector"
+        "SafeLinksRule"                  = "Get-SafeLinksRule"
+        "SafeAttachmentRule"             = "Get-SafeAttachmentRule"
+        "MalwareFilterRule"              = "Get-MalwareFilterRule"
+        "AntiPhishRule"                  = "Get-AntiPhishRule"
+        "QuarantinePolicy"               = "Get-QuarantinePolicy"
+        "HostedOutboundSpamFilterRule"   = "Get-HostedOutboundSpamFilterRule"
+        "HostedContentFilterRule"        = "Get-HostedContentFilterRule"
     }
 
 
