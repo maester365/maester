@@ -7,7 +7,7 @@ Rationale: In M365, group owners and team owners can consent to applications acc
 1. In **Entra** under **Identity** and **Applications**, select **Enterprise applications**.
 2. Under **Security**, select **Consent and permissions**.
 3. Under **Manage**, select **[User consent settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings)**.
-4. Under **User consent for applications**, select **Do not allow user consent**.
+4. Under **Group owner consent for apps accessing data**, select **Do not allow group owner consent**.
 5. Click **Save**.
 
 #### Related links
