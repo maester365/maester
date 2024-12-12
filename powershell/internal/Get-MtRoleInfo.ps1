@@ -16,6 +16,7 @@ function Get-MtRoleInfo {
     #(Invoke-MtGraphRequest -RelativeUri "directoryRoleTemplates" | select id, displayName | Sort-Object displayName | %{ "'$($($_.displayName) -replace ' ')'"}) -join ", "
 
     switch ($RoleName) {
+        "AIAdministrator" { 'd2562ede-74db-457e-a7b6-544e236ebb61'; break; }
         "ApplicationAdministrator" { '9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3'; break; }
         "ApplicationDeveloper" { 'cf1c38e5-3621-4004-a7cb-879624dced7c'; break; }
         "AttackPayloadAuthor" { '9c6df0f2-1e7c-4dc3-b195-66dfbd24aa8f'; break; }
@@ -83,6 +84,7 @@ function Get-MtRoleInfo {
         "Microsoft365MigrationAdministrator" { '8c8b803f-96e1-4129-9349-20738d9f9652'; break; }
         "MicrosoftHardwareWarrantyAdministrator" { '1501b917-7653-4ff9-a4b5-203eaf33784f'; break; }
         "MicrosoftHardwareWarrantySpecialist" { '281fe777-fb20-4fbb-b7a3-ccebce5b0d96'; break; }
+        "ModernCommerceAdministrator" { 'd24aef57-1500-4070-84db-2666f29cf966'; break; }
         "NetworkAdministrator" { 'd37c8bed-0711-4417-ba38-b4abe66ce4c2'; break; }
         "OfficeAppsAdministrator" { '2b745bdf-0803-4d80-aa65-822c4493daac'; break; }
         "OnPremisesDirectorySyncAccount" { 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'; break; }
