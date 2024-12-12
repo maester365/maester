@@ -30,23 +30,33 @@ Here are some quick stats for you:
 
 We have added a lot of new features and improvements based on your feedback. Thank you for that! 🙏
 
-### Here are some of the major new features we've added since our first release in March.
+### What's new since March v0.1.0
 
+It's taken a whole village to bring you Maester v1. Here are some of the highlights.
 
 * **New tests**: We've almost doubled the number of tests going from 96 to 194 today. Check out the [test list](https://github.com/maester365/maester/blob/main/docs/tests.md) for the full list. Two very special mentions for the tests are:
-  * [Mike → @soulemike](https://github.com/soulemike) - Mike started adding CISA tests to Maester the very next day at the PowerShell conference. Since then he's done an amazing job of contributing code, replying to issues both on GitHub and the Discord channel. Maester wouldn't be where it is today without Mike. Thanks Mike!
-  * [Ben → @NZLostboy](https://github.com/NZLostboy) - Ben took it upon himself to start adding the CIS benchmark tests to Maester and is our #6 highest contributor. Thank you Ben for the insane amount of value you've added to Maester!
-* **Maester GitHub Action**: [Fabian → @f-bader](https://github.com/f-bader) - Fabian built the [Maester - GitHub Action](https://github.com/marketplace/actions/maester-action) that greatly simplified the process of setting up and running Maester on GitHub and he managed to get it done in time for the Powershell + DevOps Europe Summit. Thank you Fabian!
-* **Test doc updates**: Improvements to the remediation steps for each test to make it easier to understand and fix failing tests. TODO: Jan Bakker,etc..
-* **Teams alerts**: TODO:
-* **Slack alerts**: TODO:
-* **Azure Automation**: TODO:
-* **Azure Automation with Bicep**: TODO:
-* **Azure Container App Job**: TODO:
-* **Pester test & report improvements**: @frodef TODO:
-* **New Maester Blog**: We have started a new blog to share our thoughts and ideas on security, DevOps, and automation. Don't forget to subscribe with your favorite RSS reader.
+  * [Mike](https://github.com/soulemike) - Mike started adding [CISA tests](/docs/tests/cisa/entra) to Maester the very next day at the PowerShell conference. Since then he's done an amazing job of contributing code, replying to issues both on GitHub and the Discord channel. Maester wouldn't be where it is today without Mike. Thanks Mike!
+  * [Ben](https://github.com/NZLostboy) - Ben took it upon himself to start adding the [CIS benchmark tests](/docs/tests/cis/) to Maester and is our #6 highest contributor. Thank you Ben for the insane amount of value you've added to Maester!
+* **Maester GitHub Action**: [Fabian](https://github.com/f-bader) - Fabian built the [Maester - GitHub Action](https://github.com/marketplace/actions/maester-action) that greatly simplified the process of setting up and running Maester on GitHub and he managed to get it done in time for the Powershell + DevOps Europe Summit. Thank you Fabian!
+* **Entra ID - Security Config Analyzer Updates** : [Thomas](https://github.com/Cloud-Architekt) has been doing yeoman's work keeping Maester up to date with [EIDSCA](/docs/tests/eidsca/). Maester wouldn't be the same without Thomas' watching Entra ID like a hawk and adding new checks to secure the service.
+* **Pester test & report improvements**: Huge shout out to [Frode Flaten](https://github.com/fflaten) for helping refactor the original Maester code base and making everything better. From simplifying and improving perf for PSScriptAnalyzer, to adding support for running tests by tags to improving the final report making it easier to read and adding filtering on the table by tags. What a solid contributor!
+* **New and improved test folder installation**: Shout out to [Sam Erde](https://github.com/SamErde) for making Maester more robust, from improvements to the test install/update process to error handling and fixing all our PowerShell newbie mistakes 😉.
+* **New Teams tests**: Shout out to [Stefan Wey](https://github.com/weyCC81) for a whirlwind of activity in the last month, adding brand new tests to improve the default security of Microsoft Teams meeting policies plus a whole bunch of fixes to the Entra Recommendations tests, PowerShell 5 support and more!
+* **Teams alerts**: Shout out to [Guido Baijense](https://github.com/GuidoBaijense) for adding support to send Teams alerts from Maester. This included a brand new cmdlet that posts using an Adaptive Card template!
+* **Slack alerts**: Shout out to [Fabrizio Di Carlo](https://github.com/fdicarlo) for adding support to send alerts to Slack from Maester.
+* **Azure Automation**: Shout out to [Daniel Bradley](https://github.com/DanielBradley1) for adding Azure Automation from Maester.
+* **Azure Automation with Bicep**: Shout out to [Brian Veldman](https://github.com/brianveldman) for taking the Azure Automation support to the next level by adding support for Bicep.
+* **Azure Container App Job**: Shout out to [Mike Soule](https://github.com/soulemike) for adding Docker and Azure Container App Job support to Maester.
+* **Azure DevOps - Virtual Machine Scale Set Support**: Shout out to [Ilija Ranogajec](https://github.com/iranogajec) for adding support for running Maester in a VMSS hosted agent.
+* **New Maester Blog**: We have started a new blog to share our thoughts and ideas on the tests we build, security, DevOps, and automation. Don't forget to subscribe with your favorite RSS reader.
+* **Test doc updates**: Improvements to the remediation steps for each test to make it easier to understand and fix failing tests.
+  * [Michael Morten Sonne](https://github.com/michaelmsonne)
+  * [Jan Bakker](https://github.com/BakkerJan)
+  * [Christian Frohn](https://github.com/ChrFrohn)
 
-Here's a complete list of the amazing contributors who have helped us build Maester:
+
+There are many, many more new features, improvements and fixes that have gone in by this amazing list of contributors 👇
+
 
 
 We are super excited about the future of Maester and we have a lot of ideas for new features and improvements.
