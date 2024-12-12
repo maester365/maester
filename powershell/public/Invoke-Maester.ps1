@@ -156,7 +156,6 @@ function Invoke-Maester {
         # Skip the version check.
         # If set, the version check will not be performed.
         [switch] $SkipVersionCheck
-
     )
 
     function GetDefaultFileName() {

@@ -49,7 +49,6 @@ function Get-MtGraphScope {
     # NOTE: We should only include read-only permissions in the default scopes.
     # Other permissions should be opted-in by the user with switches like -SendMail.
 
-
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
         'Directory.Read.All'

@@ -51,6 +51,7 @@ function Test-MtCaMfaForAllUsers {
     } else {
         $testResult = "No conditional access policy requires multi-factor authentication for all users."
     }
+
     Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result

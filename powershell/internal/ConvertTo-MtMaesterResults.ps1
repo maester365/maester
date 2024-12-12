@@ -12,7 +12,7 @@ function ConvertTo-MtMaesterResult {
     )
 
     function GetTenantName() {
-        if(Test-MtConnection Graph) {
+        if (Test-MtConnection Graph) {
             $org = Invoke-MtGraphRequest -RelativeUri 'organization'
             return $org.DisplayName
         } elseif (Test-MtConnection Teams) {
@@ -24,7 +24,7 @@ function ConvertTo-MtMaesterResult {
     }
 
     function GetTenantId() {
-        if(Test-MtConnection Graph) {
+        if (Test-MtConnection Graph) {
             $mgContext = Get-MgContext
             return $mgContext.TenantId
         } elseif (Test-MtConnection Teams) {
@@ -36,12 +36,12 @@ function ConvertTo-MtMaesterResult {
     }
 
     function GetAccount() {
-        if(Test-MtConnection Graph) {
+        if (Test-MtConnection Graph) {
             $mgContext = Get-MgContext
             return $mgContext.Account
-        #} elseif (Test-MtConnection Teams) {
-        #    $tenant = Get-CsTenant #ToValidate: N/A
-        #    return $tenant.DisplayName
+            #} elseif (Test-MtConnection Teams) {
+            #    $tenant = Get-CsTenant #ToValidate: N/A
+            #    return $tenant.DisplayName
         } else {
             return "Account (not connected to Graph)"
         }
@@ -57,10 +57,10 @@ function ConvertTo-MtMaesterResult {
     }
 
     function GetFormattedDate($date) {
-        if(!$IsCoreCLR) { # Prevent 5.1 date format to json issue
+        if (!$IsCoreCLR) {
+            # Prevent 5.1 date format to json issue
             return $date.ToString("o")
-        }
-        else {
+        } else {
             return $date
         }
     }

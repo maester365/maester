@@ -105,7 +105,6 @@ function Send-MtMail {
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
     }
 
-
     $table = "<table border='1' cellpadding='10' cellspacing='2' style='border-collapse: collapse; border-color: #f6f8fa;'><tr><th>Test Name</th><th>Status</th></tr>"
     $counter = 0
     foreach ($test in $MaesterResults.Tests) {
@@ -124,7 +123,6 @@ function Send-MtMail {
         $testResultsLink = "<a href='$TestResultsUri'>View detailed test results</a>"
     }
     $emailTemplate = $emailTemplate -replace "%TestResultsLink%", $testResultsLink
-
 
     $mailRequestBody = @{
         message         = @{
@@ -160,5 +158,4 @@ function Send-MtMail {
     else {
         Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
     }
-
 }

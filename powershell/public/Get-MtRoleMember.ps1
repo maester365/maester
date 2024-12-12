@@ -63,7 +63,7 @@ function Get-MtRoleMember {
     $Active = $true
   }
 
-  if($Role) {
+  if ($Role) {
     $RoleId = $Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_) }
   }
 
@@ -105,7 +105,6 @@ function Get-MtRoleMember {
         # See full list of states at https://learn.microsoft.com/en-us/graph/api/resources/request?view=graph-rest-1.0#properties
         $dirAssignmentsSplat.Filter += " and NOT(status eq 'Canceled' or status eq 'Denied' or status eq 'Failed' or status eq 'Revoked')"
       }
-
 
       $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
 

@@ -113,7 +113,6 @@ function Connect-Maester {
 
    $__MtSession.Connections = $Service
 
-
    if ($Service -contains "Graph" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Graph"
       try {
@@ -205,6 +204,7 @@ function Connect-Maester {
          }
       }
    }
+
    if ($Service -contains "Teams") {
    # if ($Service -contains "Teams" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Teams"

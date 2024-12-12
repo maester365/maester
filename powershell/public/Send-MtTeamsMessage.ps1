@@ -70,33 +70,32 @@ function Send-MtTeamsMessage {
     $CurrentVersion = $MaesterResults.CurrentVersion
     $LatestVersion = $MaesterResults.LatestVersion
     $ModuleVersion =
-        if ($currentVersion -ne $latestVersion) {
-            "$currentVersion → Latest version: $latestVersion"
-        } else {
-            "$currentVersion"
-        }
+    if ($currentVersion -ne $latestVersion) {
+        "$currentVersion → Latest version: $latestVersion"
+    } else {
+        "$currentVersion"
+    }
 
     $NotRunCount = $MaesterResults.SkippedCount
     if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $NotRunCount = "-" }
 
     $adaptiveCardData = @{
-            title       = $Subject
-            description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
-            run         = @{
-                TenantName    = $MaesterResults.TenantName
-                TenantId      = $MaesterResults.TenantId
-                ModuleVersion = $ModuleVersion
-                TotalCount    = $MaesterResults.TotalCount
-                PassedCount   = $MaesterResults.PassedCount
-                FailedCount   = $MaesterResults.FailedCount
-                NotRunCount   = $NotRunCount
-                TestResultURL = $TestResultsUri
-            }
-
+        title       = $Subject
+        description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
+        run         = @{
+            TenantName    = $MaesterResults.TenantName
+            TenantId      = $MaesterResults.TenantId
+            ModuleVersion = $ModuleVersion
+            TotalCount    = $MaesterResults.TotalCount
+            PassedCount   = $MaesterResults.PassedCount
+            FailedCount   = $MaesterResults.FailedCount
+            NotRunCount   = $NotRunCount
+            TestResultURL = $TestResultsUri
+        }
     }
 
     # if $adaptiveCardData.run.TestResultURL is not set, remove the TestResultURL property from the adaptive card json template
-    if(!$TestResultsUri){
+    if (!$TestResultsUri) {
         $adaptiveCardData.run.Remove("TestResultURL")
         # Remove button with link to full testresults from the adaptive card json template
         $adaptiveCardTemplate = $adaptiveCardTemplate | ConvertFrom-Json
@@ -109,30 +108,30 @@ function Send-MtTeamsMessage {
     $pattern = '\$\{\$root\.([a-zA-Z0-9_.]+)\}'
 
     $adaptiveCardBody = [regex]::Replace($adaptiveCardTemplate, $pattern, {
-        param($match)
-        # Extract the property path from the match, splitting by '.'
-        $propertyPath = $match.Groups[1].Value.Split('.')
-        # Navigate through the $adaptiveCardData based on the property path
-        $currentValue = $adaptiveCardData
-        foreach ($property in $propertyPath) {
-            if ($currentValue -is [System.Collections.IDictionary] -and $currentValue.ContainsKey($property)) {
-                $currentValue = $currentValue[$property]
-            } else {
-                # Debugging output to help identify where it fails
-                Write-Verbose "Failed to find property: $property in path: $($match.Groups[1].Value)"
-                # If the property does not exist, return the original placeholder
-                return $match.Value
+            param($match)
+            # Extract the property path from the match, splitting by '.'
+            $propertyPath = $match.Groups[1].Value.Split('.')
+            # Navigate through the $adaptiveCardData based on the property path
+            $currentValue = $adaptiveCardData
+            foreach ($property in $propertyPath) {
+                if ($currentValue -is [System.Collections.IDictionary] -and $currentValue.ContainsKey($property)) {
+                    $currentValue = $currentValue[$property]
+                } else {
+                    # Debugging output to help identify where it fails
+                    Write-Verbose "Failed to find property: $property in path: $($match.Groups[1].Value)"
+                    # If the property does not exist, return the original placeholder
+                    return $match.Value
+                }
             }
-        }
-        # Return the final value to replace the placeholder
-        $currentValue
-    })
+            # Return the final value to replace the placeholder
+            $currentValue
+        })
 
     $attachmentGuid = New-Guid
 
     $params = @{
-        subject = $null
-        body    = @{
+        subject     = $null
+        body        = @{
             contentType = "html"
             content     = "<attachment id=""$attachmentGuid""></attachment>"
         }

@@ -40,13 +40,11 @@ function ConvertFrom-QueryString {
                 if ($DecodeParameterNames) { $QueryParameterPair[0] = [System.Net.WebUtility]::UrlDecode($QueryParameterPair[0]) }
                 if ($OutputObject -is [hashtable]) {
                     $OutputObject.Add($QueryParameterPair[0], [System.Net.WebUtility]::UrlDecode($QueryParameterPair[1]))
-                }
-                else {
+                } else {
                     $OutputObject | Add-Member $QueryParameterPair[0] -MemberType NoteProperty -Value ([System.Net.WebUtility]::UrlDecode($QueryParameterPair[1]))
                 }
             }
             Write-Output $OutputObject
         }
     }
-
 }
