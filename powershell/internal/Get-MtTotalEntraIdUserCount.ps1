@@ -1,3 +1,8 @@
+<#
+.SYNOPSIS
+    Returns the total number of users from the Microsoft Graph API.
+#>
+
 function Get-MtTotalEntraIdUserCount {
     [CmdletBinding()]
     [OutputType([int])]

@@ -37,6 +37,7 @@ function Test-MtCaWIFBlockLegacyAuthentication {
         $testResult = "No conditional access policy found that blocks legacy authentication."
         $Result = $false
     }
+
     Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
     Write-Verbose "Checking if the user $UserId is blocked from using legacy authentication"
     return $Result

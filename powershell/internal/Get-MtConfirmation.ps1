@@ -1,4 +1,15 @@
-﻿function Get-MtConfirmation {
+﻿<#
+.SYNOPSIS
+    Get confirmation from user.
+
+.DESCRIPTION
+    Get confirmation from user to continue with the operation.
+
+.EXAMPLE
+    Get-MtConfirmation
+#>
+
+function Get-MtConfirmation {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [CmdletBinding()]
     param ($message)

@@ -19,25 +19,25 @@
 function Compare-MtTestResult {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName="Directory",Position=0,Mandatory=$true)]
+        [Parameter(ParameterSetName = "Directory", Position = 0, Mandatory = $true)]
         # Path to folder where test results are located. The two newest results will be compared.
         $BaseDir,
-        [Parameter(ParameterSetName="Files",Position=0,Mandatory=$true)]
+        [Parameter(ParameterSetName = "Files", Position = 0, Mandatory = $true)]
         # Path to the previous test result JSON-file to be used as a reference.
         $PriorTest,
-        [Parameter(ParameterSetName="Files",Position=1,Mandatory=$true)]
+        [Parameter(ParameterSetName = "Files", Position = 1, Mandatory = $true)]
         # Path to the newer test result JSON-file to be used as the current result.
         $NewTest
     )
 
-    if(-not ($NewTest -and $PriorTest)){
-        $reportProperties = @("Account","Blocks","CurrentVersion","ExecutedAt","FailedCount","LatestVersion","PassedCount","Result","SkippedCount","TenantId","TenantName","Tests","TotalCount")
+    if (-not ($NewTest -and $PriorTest)) {
+        $reportProperties = @("Account", "Blocks", "CurrentVersion", "ExecutedAt", "FailedCount", "LatestVersion", "PassedCount", "Result", "SkippedCount", "TenantId", "TenantName", "Tests", "TotalCount")
         $reports = @()
         $files = Get-ChildItem "$BaseDir\TestResults-*.json"
         Write-Verbose "Found $($files.Count) TestResults-*.json files in $BaseDir"
-        foreach($file in $files){
+        foreach ($file in $files) {
             $report = Get-Content $file | ConvertFrom-Json
-            if(-not (Compare-Object $reportProperties $report.PSObject.Properties.Name)){
+            if (-not (Compare-Object $reportProperties $report.PSObject.Properties.Name)) {
                 Write-Verbose "Report properties match, adding to collection"
                 $reports += $report
             }
@@ -45,8 +45,8 @@ function Compare-MtTestResult {
         $reports = $reports | Sort-Object ExecutedAt -Descending
         $tenants = $reports | Group-Object TenantId
         $reportsToCompare = @()
-        foreach($tenant in $tenants){
-            if($tenant.Count -ge 2){
+        foreach ($tenant in $tenants) {
+            if ($tenant.Count -ge 2) {
                 $obj = [PSCustomObject]@{
                     tenant  = $tenant.Name
                     reports = $tenant.Group | Select-Object -First 2
@@ -55,18 +55,18 @@ function Compare-MtTestResult {
             }
         }
 
-        foreach($reportToCompare in $reportsToCompare){
+        foreach ($reportToCompare in $reportsToCompare) {
             Compare-MtTestResult -NewTest $reportToCompare.reports[0] -PriorTest $reportToCompare.reports[1]
         }
-    }else{
-        $compareTests = ($NewTest.Tests + $PriorTest.Tests) | Group-Object Name,Result
-        $testDeltas = $compareTests | Where-Object {$_.Count -lt 2} | Select-Object -Unique @{n="Name";e={$_.Group.Name}}
+    } else {
+        $compareTests = ($NewTest.Tests + $PriorTest.Tests) | Group-Object Name, Result
+        $testDeltas = $compareTests | Where-Object { $_.Count -lt 2 } | Select-Object -Unique @{n = "Name"; e = { $_.Group.Name } }
         $results = @()
-        foreach($testDelta in $testDeltas){
+        foreach ($testDelta in $testDeltas) {
             $result = [PSCustomObject]@{
-                Name = $testDelta.Name
-                PriorState = ($PriorTest.Tests | Where-Object {$_.Name -eq $testDelta.Name}).Result
-                NewState = ($NewTest.Tests | Where-Object {$_.Name -eq $testDelta.Name}).Result
+                Name       = $testDelta.Name
+                PriorState = ($PriorTest.Tests | Where-Object { $_.Name -eq $testDelta.Name }).Result
+                NewState   = ($NewTest.Tests | Where-Object { $_.Name -eq $testDelta.Name }).Result
             }
             $results += $result
         }

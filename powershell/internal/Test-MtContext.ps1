@@ -28,7 +28,7 @@ function Test-MtContext {
         if ($missingScopes) {
             $message = "These Graph permissions are missing in the current connection => ($($missingScopes))."
             $authType = (Get-MgContext).AuthType
-            if ($authType -eq  'Delegated') {
+            if ($authType -eq 'Delegated') {
                 $message += " Please use 'Connect-Maester'. For more information, use 'Get-Help Connect-Maester'."
             } else {
                 $clientId = (Get-MgContext).ClientId

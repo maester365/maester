@@ -38,7 +38,7 @@ function Get-MtUser {
         [string]$MemberOfRole
     )
 
-    begin{
+    begin {
 
         $Users = New-Object -TypeName 'System.Collections.ArrayList'
 
@@ -63,9 +63,7 @@ function Get-MtUser {
 
     process {
 
-
         Write-Verbose "Getting $Count $UserType users from the tenant."
-
 
         if ( $UserType -eq "Admin" ) {
             $UserType = "Member"
@@ -142,16 +140,12 @@ function Get-MtUser {
                     }
                 }
             }
-
         } else {
-
-            if( $UserType -eq "Member" ){
+            if ( $UserType -eq "Member" ) {
                 $queryFilter = "userType eq 'Member'"
-            }
-            elseif( $UserType -eq "Guest" ){
+            } elseif ( $UserType -eq "Guest" ) {
                 $queryFilter = "userType eq 'Guest'"
-            }
-            else{
+            } else {
                 Write-Warning "UserType $($UserType) cannot be processed! Aborting!"
                 throw "User can not be queried, invalid UserType: $($UserType)"
             }
