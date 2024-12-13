@@ -53,7 +53,7 @@ function Send-MtMail {
         # Developer guide for editing the html report.
         - Authoring of the email template is done using Word. Open /powershell/assets/EmailTemplate.docx and make changes as needed
         - Select all and copy/paste the content into a new email in Outlook and send it to yourself
-        - When the email is recieved, view the source (either through Graph API, View Source in Outlook for Mac or save as .eml and open in a text editor)
+        - When the email is received, view the source (either through Graph API, View Source in Outlook for Mac or save as .eml and open in a text editor)
         - Copy the source (<html>..</html>) and paste it into the /powershell/assets/EmailTemplate.html file in the assets folder
         - Search for cid:image in the html and update the -replace commands in the script below.
     #>
