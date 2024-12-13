@@ -15,7 +15,9 @@
     "maester",
     "eidsca",
     "merill",
-    "docusaurus"
+    "docusaurus",
+    "devcontainers",
+    "codespaces"
   ],
   "patterns": [
     {
