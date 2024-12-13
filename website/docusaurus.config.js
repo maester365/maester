@@ -42,6 +42,17 @@ const config = {
     "@easyops-cn/docusaurus-search-local",
   ],
 
+  plugins: [
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: "phc_VxA235FsdurMGycf9DHjlUeZeIhLuC7r11Ptum0WjRK",
+        appUrl: "https://us.i.posthog.com", // optional, defaults to "https://us.i.posthog.com"
+        enableInDevelopment: false, // optional
+      },
+    ],
+  ],
+
   presets: [
     [
       "classic",
