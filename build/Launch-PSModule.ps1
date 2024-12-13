@@ -28,8 +28,8 @@ if ($NoNewWindow) {
     [scriptblock] $ScriptBlock = {
         param ([string]$ModulePath, [string]$PSModuleCacheDirectory, [scriptblock]$PostImportScriptBlock)
         ## Reset PSModulePath environment variable to default value because starting powershell.exe from pwsh.exe (or vice versa) will inherit environment variables for the wrong version of PowerShell.
-        $PSModulePathDefault = [System.Management.Automation.ModuleIntrinsics]::GetModulePath($null, [System.Environment]::GetEnvironmentVariable('PSMODULEPATH', [EnvironmentVariableTarget]::Machine), [System.Environment]::GetEnvironmentVariable('PSMODULEPATH', [EnvironmentVariableTarget]::User))
-        [Environment]::SetEnvironmentVariable("PSMODULEPATH", $PSModulePathDefault)
+        $PSModulePathDefault = [System.Management.Automation.ModuleIntrinsics]::GetModulePath($null, [System.Environment]::GetEnvironmentVariable('PSModulePath', [EnvironmentVariableTarget]::Machine), [System.Environment]::GetEnvironmentVariable('PSModulePath', [EnvironmentVariableTarget]::User))
+        [Environment]::SetEnvironmentVariable("PSModulePath", $PSModulePathDefault)
         ## Add PSModuleCacheDirectory to PSModulePath environment variable
         if (!$env:PSModulePath.Contains($PSModuleCacheDirectory)) { $env:PSModulePath += '{0}{1}' -f [IO.Path]::PathSeparator, $PSModuleCacheDirectory }
         ## Import Module and Execute Post-Import ScriptBlock
