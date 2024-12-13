@@ -19,7 +19,7 @@ Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFile
     }
 
     # The next Context blocks are kinda duplicate, but helps us document both
-    # which files and which rules where evaluated without running every rule for every file 
+    # which files and which rules where evaluated without running every rule for every file
     Context 'Analyzing rule <_.RuleName>' -ForEach $scriptAnalyzerRules {
         BeforeAll {
             $rule = $_
