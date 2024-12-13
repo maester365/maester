@@ -8,6 +8,8 @@ This page lists a collection of videos and tutorials on Maester. If you have a v
 
 This video is from the [PowerShell + DevOps Global Summit 2024](https://www.powershellsummit.org/) where we launched Maester in March 2024.
 
+Here's the download link for the [Introduction to Maester presentation](https://github.com/maester365/content-hub/raw/refs/heads/main/slides/introduction-to-maester.pptx).
+
 <iframe width="686" height="386" src="https://www.youtube.com/embed/xfs02tjSU24" title="Introducing Maester: Your Microsoft 365 test automation framework by Merill Fernando" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Quick demo of Maester
