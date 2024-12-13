@@ -291,7 +291,7 @@ function Use-StartBitsTransfer {
         # Specifies the credentials to use to authenticate the user at the proxy
         [Parameter(Mandatory = $false, Position = 6)]
         [pscredential] $ProxyCredential,
-        # Returns an object representing transfered item.
+        # Returns an object representing transferred item.
         [Parameter(Mandatory = $false)]
         [switch] $PassThru
     )
@@ -304,7 +304,7 @@ function Use-StartBitsTransfer {
 
     if (!$Destination) { $Destination = (Get-Location).ProviderPath }
     if (![System.IO.Path]::HasExtension($Destination)) { $Destination = Join-Path $Destination (Split-Path $Source -Leaf) }
-    if (Test-Path $Destination) { Write-Verbose ('The Source [{0}] was not transfered to Destination [{0}] because it already exists.' -f $Source, $Destination) }
+    if (Test-Path $Destination) { Write-Verbose ('The Source [{0}] was not transferred to Destination [{0}] because it already exists.' -f $Source, $Destination) }
     else {
         Write-Verbose ('Downloading Source [{0}] to Destination [{1}]' -f $Source, $Destination);
         Start-BitsTransfer $Source $Destination @paramStartBitsTransfer
