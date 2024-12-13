@@ -20,7 +20,7 @@ param (
     # Folder where control functions should be generated
     [string] $PowerShellFunctionsPath = "$PSScriptRoot/../../powershell/internal/eidsca",
 
-    # Foldere where the public function should be generated
+    # Folder where the public function should be generated
     [string] $PublicFunctionPath = "$PSScriptRoot/../../powershell/public/eidsca",
 
     # Control name to filter on
