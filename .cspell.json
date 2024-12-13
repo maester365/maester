@@ -9,7 +9,8 @@
     "Maester",
     "Docusaurus",
     "Entra",
-    "Contoso"
+    "Contoso",
+    "SSPR"
   ],
   "ignoreWords": [
     "maester",
@@ -17,7 +18,8 @@
     "merill",
     "docusaurus",
     "devcontainers",
-    "codespaces"
+    "codespaces",
+    "multifactor"
   ],
   "patterns": [
     {
