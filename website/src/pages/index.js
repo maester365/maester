@@ -10,7 +10,7 @@ import styles from "./index.module.css";
 const textContent = {
   customTests: `
   Write Pester tests that encode your organization's business and security policies.<br/><br/>
-  <strong>Apply modern DevSecOps practices</strong> and continously monitor critical aspects of your Microsoft cloud.
+  <strong>Apply modern DevSecOps practices</strong> and continuously monitor critical aspects of your Microsoft cloud.
   `,
   whatIf: `
   Avoid creating loopholes in your conditional access policies and test to see the impact of a policy change before it is applied.<br/><br/>
@@ -48,7 +48,7 @@ and when changes are introduced in your Microsoft 365 tenant.
 <strong>Follow the step-by-step guide</strong> in the Maester docs to set up
 an automation account with Workload Identify Federation.`,
   gitHub: `
-Integrate Maester with GitHub Actions to continously monitor your tenant configuration.
+Integrate Maester with GitHub Actions to continuously monitor your tenant configuration.
 <br/><br/>
 <strong>Build an archive history</strong> of Maester test runs against your tenant with the native
 workflow integration in Maester.
