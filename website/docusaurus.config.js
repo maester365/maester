@@ -136,7 +136,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                href: "https://discord.com/channels/1125617152368594976/1226351860693205062",
+                href: "https://discord.maester.dev/",
               },
               {
                 label: "Twitter",
