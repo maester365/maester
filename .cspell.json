@@ -10,7 +10,8 @@
     "Docusaurus",
     "Entra",
     "Contoso",
-    "SSPR"
+    "SSPR",
+    "passwordless"
   ],
   "ignoreWords": [
     "maester",
@@ -21,7 +22,10 @@
     "codespaces",
     "multifactor",
     "Dmarc",
-    "Siem"
+    "Siem",
+    "pscustomobject",
+    "psobject",
+    "testresults"
   ],
   "patterns": [
     {
