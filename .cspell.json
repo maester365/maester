@@ -19,7 +19,9 @@
     "docusaurus",
     "devcontainers",
     "codespaces",
-    "multifactor"
+    "multifactor",
+    "Dmarc",
+    "Siem"
   ],
   "patterns": [
     {
