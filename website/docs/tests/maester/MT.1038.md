@@ -5,7 +5,7 @@ slug: /tests/MT.1038
 sidebar_class_name: hidden
 ---
 
-# All excluded objects should have a fallback include in another policy
+# Conditional Access policies should not include or exclude deleted groups
 
 ## Description
 
