@@ -16,7 +16,7 @@ BeforeDiscovery {
 Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
     $portalLink_SecureScore = "https://security.microsoft.com/securescore"
 
-    It "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "SetScl", "TransportRule" {
+    It "MT.1037: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "SetScl", "TransportRule" {
 
         $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
@@ -37,7 +37,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         }
     }
 
-    It "Ensure modern authentication for Exchange Online is enabled" -Tag "OAuth2ClientProfileEnabled" {
+    It "MT.1038: Ensure modern authentication for Exchange Online is enabled" -Tag "OAuth2ClientProfileEnabled" {
 
         $result = $OrganizationConfig.OAuth2ClientProfileEnabled
 
@@ -55,7 +55,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         }
     }
 
-    It "Ensure MailTips are enabled for end users" -Tag "MailTipsExternalRecipientsTipsEnabled" {
+    It "MT.1039: Ensure MailTips are enabled for end users" -Tag "MailTipsExternalRecipientsTipsEnabled" {
         #Get-OrganizationConfig | fl MailTipsAllTipsEnabled, MailTipsExternalRecipientsTipsEnabled
         #Set-OrganizationConfig -MailTipsAllTipsEnabled $true -MailTipsExternalRecipientsTipsEnabled $true -MailTipsGroupMetricsEnabled $true -MailTipsLargeAudienceThreshold '25'
 
@@ -76,7 +76,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
     }
 
     # Y
-    It "Ensure additional storage providers are restricted in Outlook on the web" -Tag "AdditionalStorageProvidersAvailable" {
+    It "MT.1040: Ensure additional storage providers are restricted in Outlook on the web" -Tag "AdditionalStorageProvidersAvailable" {
         #Get-OwaMailboxPolicy | fl Name, AdditionalStorageProvidersAvailable, ThirdPartyFileProvidersEnabled, ConditionalAccessPolicy, ChangePasswordEnabled, *Offline*, ReportJunkEmailEnabled
         #Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false
 
@@ -97,7 +97,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
     }
 
     # Z
-    It "Ensure users installing Outlook add-ins is not allowed" -Tag "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps" {
+    It "MT.1041: Ensure users installing Outlook add-ins is not allowed" -Tag "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps" {
         #Get-ManagementRoleAssignment -Role "My Custom Apps" -RoleAssignee $defaultrole | ft -AutoSize
         #Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $defaultrole | ft -AutoSize
         #Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $defaultrole | ft -AutoSize
@@ -105,7 +105,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         $result = [bool](Get-ManagementRoleAssignment -Role "My Custom Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or  `
         [bool](Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or  `
         [bool](Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $RoleAssignmentPolicyDefault)
-        
+
         if ($result -eq $false) {
             $testResultMarkdown = "Well done. Apps in 'Default Role Assignment Policy' is $($result)`n`n"
         } else {
