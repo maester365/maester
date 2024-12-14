@@ -16,7 +16,7 @@
     :::
 
  .Example
-    Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName" -Top 10
+    Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName"
 
     Get all users with a display name of "John Doe" and return the first 10 results.
 
