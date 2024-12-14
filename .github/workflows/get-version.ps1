@@ -4,14 +4,14 @@ Param(
     [string]$ModuleRoot = "$($env:GITHUB_WORKSPACE)/powershell"
 )
 
-$ManfifestPath = "$($ModuleRoot)/Maester.psd1"
+$ManifestPath = "$($ModuleRoot)/Maester.psd1"
 
-if ( -not (Test-Path $ManfifestPath )) {
-    Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
+if ( -not (Test-Path $ManifestPath )) {
+    Write-Error "Could not find PowerShell module manifest ($ManifestPath)"
     throw
 } else {
     # Get the current version of the module from the module manifest
-    $Version = (Test-ModuleManifest $ManfifestPath).Version
+    $Version = (Test-ModuleManifest $ManifestPath).Version
     $Version = '{0}.{1}.{2}' -f $Version.Major, $Version.Minor, $Version.Build
 }
 

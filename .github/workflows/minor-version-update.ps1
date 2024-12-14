@@ -7,10 +7,10 @@ Param(
     [switch]$preview = $false
 )
 
-$ManfifestPath = "$($ModuleRoot)/Maester.psd1"
+$ManifestPath = "$($ModuleRoot)/Maester.psd1"
 
-if ( -not (Test-Path $ManfifestPath )) {
-    Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
+if ( -not (Test-Path $ManifestPath )) {
+    Write-Error "Could not find PowerShell module manifest ($ManifestPath)"
     throw
 } else {
     # Get the current version of the module from the PowerShell gallery
@@ -42,7 +42,7 @@ if ( -not (Test-Path $ManfifestPath )) {
 
     $previewLabel = if ($preview) { '-preview' } else { '' }
 
-    Update-ModuleManifest -Path $ManfifestPath -ModuleVersion $NewVersion -FunctionsToExport $FunctionNames -Prerelease $previewLabel
+    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $NewVersion -FunctionsToExport $FunctionNames -Prerelease $previewLabel
 }
 
 $NewVersion += $previewLabel

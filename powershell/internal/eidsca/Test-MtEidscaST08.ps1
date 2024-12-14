@@ -21,7 +21,6 @@ function Test-MtEidscaST08 {
     [OutputType([bool])]
     param()
 
-    
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value
