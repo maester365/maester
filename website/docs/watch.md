@@ -12,6 +12,12 @@ Here's the download link for the [Introduction to Maester presentation](https://
 
 <iframe width="686" height="386" src="https://www.youtube.com/embed/xfs02tjSU24" title="Introducing Maester: Your Microsoft 365 test automation framework by Merill Fernando" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+## Introduction to Maester at PSconf.eu
+
+This video is from the [PowerShell Conference Europe](https://psconf.eu/) three month after we launched Maester in March 2024.
+
+<iframe width="686" height="386" src="https://www.youtube.com/embed/SGXExUmwmBQ" title="Introducing Maester your Microsoft 365 test automation framework - Fabian Bader - PSConfEU 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Quick demo of Maester
 
 The folks at [Via Monstra Online Academy](https://www.viamonstra.com/) have created this quick demo of Maester.
