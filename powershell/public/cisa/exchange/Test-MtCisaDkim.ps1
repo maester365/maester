@@ -41,12 +41,12 @@ function Test-MtCisaDkim {
         }
         if((Get-Date) -gt $config.RotateOnDate){
             if($Selector -ne $config.SelectorAfterRotateOnDate){
-                Write-Warning "Using DKIM $($config.SelectorAfterRotateOnDate) based on EXO config"
+                Write-Verbose "Using DKIM $($config.SelectorAfterRotateOnDate) based on EXO config"
             }
             $Selector = $config.SelectorAfterRotateOnDate
         }else{
             if($Selector -ne $config.SelectorBeforeRotateOnDate){
-                Write-Warning "Using DKIM $($config.SelectorBeforeRotateOnDate) based on EXO config"
+                Write-Verbose "Using DKIM $($config.SelectorBeforeRotateOnDate) based on EXO config"
             }
             $selector = $config.SelectorBeforeRotateOnDate
         }

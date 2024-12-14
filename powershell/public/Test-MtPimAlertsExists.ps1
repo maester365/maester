@@ -63,7 +63,7 @@ function Test-MtPimAlertsExists {
     # Exclude Break Glass from Alerts
     if ($null -ne $FilteredBreakGlass -and $null -ne $AffectedRoleAssignments) {
       $AffectedRoleAssignments | Where-Object { $_.AssigneeId -in $($FilteredBreakGlass).Id } | ForEach-Object {
-        Write-Warning "$($_.AssigneeUserPrincipalName) has been defined as Break Glass and removed from $($Alert.id)"
+        Write-Verbose "$($_.AssigneeUserPrincipalName) has been defined as Break Glass and removed from $($Alert.id)"
       }
       $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.AssigneeId -notin $($FilteredBreakGlass).Id }
 
