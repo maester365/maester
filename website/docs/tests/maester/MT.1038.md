@@ -15,8 +15,6 @@ This usually happens when a group is deleted but is still referenced in a Condit
 
 Deleted groups in your policy can lead to unexpected gaps. This may result in Conditional Access policies not being applied to the users you intended or the policy not being applied at all.
 
-To fix this issue:
-
 ## How to fix
 
 * Open the impacted Conditional access policy.
