@@ -7,10 +7,10 @@ Param(
     [switch]$preview = $false
 )
 
-$ManfifestPath = "$($ModuleRoot)/Maester.psd1"
+$ManifestPath = "$($ModuleRoot)/Maester.psd1"
 
-if ( -not (Test-Path $ManfifestPath )) {
-    Write-Error "Could not find PowerShell module manifest ($ManfifestPath)"
+if ( -not (Test-Path $ManifestPath )) {
+    Write-Error "Could not find PowerShell module manifest ($ManifestPath)"
     throw
 } else {
     # Get the current version of the module from the PowerShell gallery
@@ -20,14 +20,19 @@ if ( -not (Test-Path $ManfifestPath )) {
     $ver = [version]($previousVersion -replace '-preview')
 
     # Set new version number. If it is pre-release, increment the build number otherwise increment the minor version.
-    $major = 0 # Update this to change the major version number of Maester.
-    $minor = $ver.Minor
-
-    if ($preview) {
-        $build = $ver.Build + 1
+    $major = 1 # Update this to change the major version number of Maester.
+    if ($major -ne $ver.Major) {
+        $minor = 0 # Reset the minor & build version when incrementing the major version.
+        $build = 0
     } else {
-        $minor = $ver.Minor + 1
-        $build = 0 # Reset the build number when incrementing the minor version.
+        $minor = $ver.Minor
+
+        if ($preview) {
+            $build = $ver.Build + 1
+        } else {
+            $minor = $ver.Minor + 1
+            $build = 0 # Reset the build number when incrementing the minor version.
+        }
     }
 
     $NewVersion = '{0}.{1}.{2}' -f $major, $minor, $build
@@ -37,7 +42,7 @@ if ( -not (Test-Path $ManfifestPath )) {
 
     $previewLabel = if ($preview) { '-preview' } else { '' }
 
-    Update-ModuleManifest -Path $ManfifestPath -ModuleVersion $NewVersion -FunctionsToExport $FunctionNames -Prerelease $previewLabel
+    Update-ModuleManifest -Path $ManifestPath -ModuleVersion $NewVersion -FunctionsToExport $FunctionNames -Prerelease $previewLabel
 }
 
 $NewVersion += $previewLabel

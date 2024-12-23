@@ -32,6 +32,6 @@ function Get-IsNewMaesterVersionAvailable {
             Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
             return $true
         }
-    } catch { Write-Verbose -Message $_}
+    } catch { Write-Verbose -Message $_ }
     return $false
 }

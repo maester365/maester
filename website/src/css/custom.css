@@ -269,3 +269,7 @@ html[data-theme="dark"] .Section p a {
     grid-template-areas: "first" "last";
   }
 }
+
+.githubProfile {
+  clip-path:circle();
+}

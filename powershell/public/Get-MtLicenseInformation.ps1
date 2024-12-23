@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo', 'AdvAudit')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit')]
         [string] $Product
     )
 
@@ -91,6 +91,20 @@ function Get-MtLicenseInformation {
                     if($skuId -or $servicePlanId){
                         $LicenseType = "Mdo"
                     }
+                }
+                Write-Information "The license type for Defender for Office is $LicenseType"
+                return $LicenseType
+                Break
+            }
+            "MdoV2" {
+                Write-Verbose "Retrieving license SKU for MDO"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                if ("f20fedf3-f3c3-43c3-8267-2bfdd51c0939" -in $skus) {
+                    $LicenseType = "P1" # Microsoft Defender for Office 365 (Plan 1)
+                } elseif ("8e0c0a52-6a6c-4d40-8370-dd62790dcd70" -in $skus) {
+                    $LicenseType = "P2" # Microsoft Defender for Office 365 (Plan 2)
+                } else {
+                    $LicenseType = "EOP" # Exchange Online Protection (326e2b78-9d27-42c9-8509-46c827743a17)
                 }
                 Write-Information "The license type for Defender for Office is $LicenseType"
                 return $LicenseType

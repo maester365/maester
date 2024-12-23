@@ -1,5 +1,6 @@
 ---
-title: Writing custom tests
+title: Getting started
+sidebar_position: 1
 ---
 
 ## Introduction
@@ -35,7 +36,12 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
 
         $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
 
-        $memberCount = Get-MgGroupTransitiveMemberCount -GroupId $groupId -ConsistencyLevel eventual
+        try {
+            $memberCount = Get-MgGroupTransitiveMemberCount -GroupId $groupId -ConsistencyLevel eventual
+        }
+        catch {
+            Write-Error $_.Exception.Message
+        }
 
         # Test if the group exists and has members
         $memberCount | Should -BeGreaterThan 0

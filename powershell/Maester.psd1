@@ -94,8 +94,8 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaExclusionForDirectorySyncAccount',
                'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
                'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
-               'Test-MtCaGroupsRestricted',
-               'Test-MtCaGap',
+               "Test-MtCaGroupsRestricted",
+               "Test-MtCaGap", "Test-MtCaReferencedGroupsExist",
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
                'Test-MtCaRequirePasswordChangeForHighUserRisk',
                'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCisaDiagnosticSettings',
@@ -152,7 +152,8 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
                'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
                'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordDkim',
-               'Resolve-SpfRecord', 'Clear-MtDnsCache'
+               'Resolve-SpfRecord', 'Clear-MtDnsCache',
+               'Test-MtTeamsRestrictParticipantGiveRequestControl'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

@@ -5,7 +5,7 @@ If set to Yes, password protection is turned on for Active Directory domain cont
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value = 'True'
+.values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
 ```
 
 #### Related links

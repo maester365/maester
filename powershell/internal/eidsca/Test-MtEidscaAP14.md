@@ -5,7 +5,7 @@ Restrict this default permissions for members have huge impact on collaboration 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.defaultUserRolePermissions.allowedToReadOtherUsers = 'true'
+.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
 ```
 
 #### Related links

@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
 
 .DESCRIPTION
    Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
@@ -46,6 +46,26 @@
 
    Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
+.EXAMPLE
+   Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+
+   Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+
+   Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+
+   Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
+
+.EXAMPLE
+   Connect-Maester -Environment Germany
+
+   Connects to the Germany environment for Microsoft Graph.
+
 .LINK
     https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -67,21 +87,28 @@ function Connect-Maester {
       # This will open a browser window to prompt for authentication and is useful for non-interactive sessions and on Windows when SSO is not desired.
       [switch] $UseDeviceCode,
 
-      # The environment to connect to. Default is Global.
+      # The environment to connect to. Default is Global. Supported values include China, Germany, Global, USGov, USGovDoD.
       [ValidateSet("China", "Germany", "Global", "USGov", "USGovDoD")]
       [string]$Environment = "Global",
 
-      # The Azure environment to connect to. Default is AzureCloud.
+      # The Azure environment to connect to. Default is AzureCloud. Supported values include AzureChinaCloud, AzureCloud, AzureUSGovernment.
       [ValidateSet("AzureChinaCloud", "AzureCloud", "AzureUSGovernment")]
       [string]$AzureEnvironment = "AzureCloud",
 
-      # The Exchange environment to connect to. Default is O365Default.
+      # The Exchange environment to connect to. Default is O365Default. Supported values include O365China, O365Default, O365GermanyCloud, O365USGovDoD, O365USGovGCCHigh.
       [ValidateSet("O365China", "O365Default", "O365GermanyCloud", "O365USGovDoD", "O365USGovGCCHigh")]
       [string]$ExchangeEnvironmentName = "O365Default",
 
+      # The Teams environment to connect to. Default is O365Default.
+      [ValidateSet("TeamsChina", "TeamsGCCH", "TeamsDOD")]
+      [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
+
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance")]
-      [string[]]$Service = "Graph"
+      [ValidateSet("All", "Azure", "ExchangeOnline", "Graph", "SecurityCompliance", "Teams")]
+      [string[]]$Service = "Graph",
+
+      # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
+      [string]$TenantId
    )
 
    $__MtSession.Connections = $Service
@@ -89,7 +116,12 @@ function Connect-Maester {
    if ($Service -contains "Graph" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Graph"
       try {
-         Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+         if ($TenantId) {
+            Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment -TenantId $TenantId
+         } else {
+            Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+            $TenantId = (Get-MgContext).TenantId
+         }
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
          Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow
@@ -99,17 +131,24 @@ function Connect-Maester {
    if ($Service -contains "Azure" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Azure"
       try {
-         Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+         if($TenantId){
+            Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId
+         }
+         else {
+            Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+         }
+
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
-         Write-Host "`Install-Module Az -Scope CurrentUser`n" -ForegroundColor Yellow
+         Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 
+   $exchangeModuleNotInstalledWarningShown = $false
    if ($Service -contains "ExchangeOnline" -or $Service -contains "All") {
       Write-Verbose "Connecting to Microsoft Exchage Online"
       try {
-         if ( $UseDeviceCode -and $PSVersionTable.PSEdition -eq "Desktop" ) {
+         if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq "Desktop") {
             Write-Host "The Exchange Online module in Windows PowerShell does not support device code flow authentication." -ForegroundColor Red
             Write-Host "💡Please use the Exchange Online module in PowerShell Core." -ForegroundColor Yellow
          } elseif ( $UseDeviceCode ) {
@@ -120,6 +159,7 @@ function Connect-Maester {
       } catch [Management.Automation.CommandNotFoundException] {
          Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
          Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+         $exchangeModuleNotInstalledWarningShown = $true
       }
    }
 
@@ -146,9 +186,9 @@ function Connect-Maester {
             AuthZEndpointUri = "https://login.microsoftonline.us/common"
          }
       }
-      Write-Verbose "Connecting to Microsoft Security & Complaince PowerShell"
+      Write-Verbose "Connecting to Microsoft Security & Compliance PowerShell"
       if ($Service -notcontains "ExchangeOnline" -and $Service -notcontains "All") {
-         Write-Host "`nThe Security & Complaince module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
+         Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
       } else {
          if ($UseDeviceCode) {
             Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
@@ -156,10 +196,30 @@ function Connect-Maester {
             try {
                Connect-IPPSSession -BypassMailboxAnchoring -ConnectionUri $environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $environments[$ExchangeEnvironmentName].AuthZEndpointUri
             } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
-               Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+               if (-not $exchangeModuleNotInstalledWarningShown) {
+                  Write-Host "`nThe Exchange Online module is not installed. Please install the module using the following command.`nFor more information see https://learn.microsoft.com/powershell/exchange/exchange-online-powershell-v2" -ForegroundColor Red
+                  Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
+               }
             }
          }
+      }
+   }
+
+   if ($Service -contains "Teams") {
+   # if ($Service -contains "Teams" -or $Service -contains "All") {
+      Write-Verbose "Connecting to Microsoft Teams"
+      try {
+         if ($UseDeviceCode) {
+            Connect-MicrosoftTeams -UseDeviceAuthentication
+         } elseif ($TeamsEnvironmentName) {
+            Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName
+         } else {
+            Connect-MicrosoftTeams
+            #$null = Connect-MicrosoftTeams
+         }
+      } catch [Management.Automation.CommandNotFoundException] {
+         Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
+         Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
       }
    }
 }

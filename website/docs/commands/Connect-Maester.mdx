@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+description: Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
 id: Connect-Maester
 title: Connect-Maester
 hide_title: false
@@ -10,14 +10,14 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Helper method to connect to Microsoft Graph using Connect-MgGraph with the required scopes.
+Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
 
 ## SYNTAX
 
 ```powershell
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
- [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-Service] <String[]>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
+ [[-Service] <String[]>] [[-TenantId] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -88,6 +88,38 @@ Connect-Maester -Privileged
 ```
 
 Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
+
+### EXAMPLE 8
+
+```powershell
+Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
+```
+
+Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 9
+
+```powershell
+Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
+```
+
+Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 10
+
+```powershell
+Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
+```
+
+Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
+
+### EXAMPLE 11
+
+```powershell
+Connect-Maester -Environment Germany
+```
+
+Connects to the Germany environment for Microsoft Graph.
 
 ## PARAMETERS
 
@@ -161,6 +193,7 @@ Accept wildcard characters: False
 
 The environment to connect to.
 Default is Global.
+Supported values include China, Germany, Global, USGov, USGovDoD.
 
 ```yaml
 Type: String
@@ -178,6 +211,7 @@ Accept wildcard characters: False
 
 The Azure environment to connect to.
 Default is AzureCloud.
+Supported values include AzureChinaCloud, AzureCloud, AzureUSGovernment.
 
 ```yaml
 Type: String
@@ -195,6 +229,7 @@ Accept wildcard characters: False
 
 The Exchange environment to connect to.
 Default is O365Default.
+Supported values include O365China, O365Default, O365GermanyCloud, O365USGovDoD, O365USGovGCCHigh.
 
 ```yaml
 Type: String
@@ -204,6 +239,23 @@ Aliases:
 Required: False
 Position: 3
 Default value: O365Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamsEnvironmentName
+
+The Teams environment to connect to.
+Default is O365Default.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -219,8 +271,24 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 5
 Default value: Graph
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TenantId
+
+The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

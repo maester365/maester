@@ -1,5 +1,5 @@
 Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.4.3", "CISA", "Security", "All" {
-    It "MS.EXO.4.3: The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov." {
+    It "MS.EXO.04.3: The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov." {
         $cisaDmarcAggregateCisa = Test-MtCisaDmarcAggregateCisa
 
         if ($null -ne $cisaDmarcAggregateCisa) {

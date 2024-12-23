@@ -1,0 +1,43 @@
+{
+  "import": [
+    "@cspell/dict-powershell/cspell-ext.json",
+    "@cspell/dict-csharp/cspell-ext.json"
+  ],
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "Maester",
+    "Docusaurus",
+    "Entra",
+    "Contoso",
+    "SSPR",
+    "passwordless"
+  ],
+  "ignoreWords": [
+    "maester",
+    "eidsca",
+    "merill",
+    "docusaurus",
+    "devcontainers",
+    "codespaces",
+    "multifactor",
+    "Dmarc",
+    "Siem",
+    "pscustomobject",
+    "psobject",
+    "testresults"
+  ],
+  "patterns": [
+    {
+      "name": "ALL-CAPS-WORDS",
+      "pattern": "/\b[A-Z0-9]+\b/g",
+      "description": "Any word in ALL CAPS."
+    }
+  ],
+  "ignoreRegExpList": [
+    "ALL-CAPS-WORDS",
+    "Email",
+    "github.com/",
+    "@"
+  ]
+}

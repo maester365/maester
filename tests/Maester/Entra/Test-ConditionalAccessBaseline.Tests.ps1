@@ -57,12 +57,15 @@
         Test-MtCaExclusionForDirectorySyncAccount | Should -Be $true -Because "there is no policy that excludes directory synchronization accounts"
     }
     It "MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035" -Tag "MT.1035" {
-        Test-MtCaGroupsRestricted | Should -Be $true -Because "there is one or more policy without protection of included or excluded groups"
+        Test-MtCaGroupsRestricted | Should -Be $true -Because "there are one or more policies without protection of included or excluded groups"
     }
     It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036", "Warning" {
-        Test-MtCaGap | Should -Be $true -Because "there is one ore more object excluded without an include fallback in another policy."
+        Test-MtCaGap | Should -Be $true -Because "there are one or more objects excluded without a corresponding fallback in another policy."
     }
-    Context "License utilization" {
+    It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038", "Warning" {
+        Test-MtCaReferencedGroupsExist | Should -Be $true -Because "there are one or more policies relying on deleted groups."
+    }
+    Context "License utilization" -Tag "LicenseUtilization" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
             $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
@@ -81,6 +84,15 @@ Describe "Security Defaults" -Tag "CA", "Security", "All" {
             Add-MtTestResultDetail -SkippedBecause LicensedEntraIDPremium
         } else {
             $SecurityDefaults = Invoke-MtGraphRequest -RelativeUri "policies/identitySecurityDefaultsEnforcementPolicy" -ApiVersion beta | Select-Object -ExpandProperty isEnabled
+
+            if ($SecurityDefaults -eq $true) {
+                $testResultMarkdown = "Well done. SecurityDefaults are On `n`n"
+            } else {
+                $testResultMarkdown = "SecurityDefaults are Off '$($SecurityDefaults)' `n`n"
+            }
+            $testDetailsMarkdown = "You should enable SecurityDefaults or configure Conditional Access."
+            Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+
             $SecurityDefaults | Should -Be $true -Because "Security Defaults are not enabled"
         }
     }

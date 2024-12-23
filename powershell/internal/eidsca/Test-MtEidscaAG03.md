@@ -5,7 +5,7 @@ Apply this feature to all users.
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
-.reportSuspiciousActivitySettings.includeTarget.id = 'all_users'
+.reportSuspiciousActivitySettings.includeTarget.id -eq 'all_users'
 ```
 
 #### Related links

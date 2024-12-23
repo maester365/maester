@@ -12,8 +12,39 @@ function ConvertTo-MtMaesterResult {
     )
 
     function GetTenantName() {
-        $org = Invoke-MtGraphRequest -RelativeUri 'organization'
-        return $org.DisplayName
+        if (Test-MtConnection Graph) {
+            $org = Invoke-MtGraphRequest -RelativeUri 'organization'
+            return $org.DisplayName
+        } elseif (Test-MtConnection Teams) {
+            $tenant = Get-CsTenant
+            return $tenant.DisplayName
+        } else {
+            return "TenantName (not connected to Graph)"
+        }
+    }
+
+    function GetTenantId() {
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            return $mgContext.TenantId
+        } elseif (Test-MtConnection Teams) {
+            $tenant = Get-CsTenant
+            return $tenant.TenantId
+        } else {
+            return "TenantId (not connected to Graph)"
+        }
+    }
+
+    function GetAccount() {
+        if (Test-MtConnection Graph) {
+            $mgContext = Get-MgContext
+            return $mgContext.Account
+            #} elseif (Test-MtConnection Teams) {
+            #    $tenant = Get-CsTenant #ToValidate: N/A
+            #    return $tenant.DisplayName
+        } else {
+            return "Account (not connected to Graph)"
+        }
     }
 
     function GetTestsSorted() {
@@ -26,10 +57,10 @@ function ConvertTo-MtMaesterResult {
     }
 
     function GetFormattedDate($date) {
-        if(!$IsCoreCLR) { # Prevent 5.1 date format to json issue
+        if (!$IsCoreCLR) {
+            # Prevent 5.1 date format to json issue
             return $date.ToString("o")
-        }
-        else {
+        } else {
             return $date
         }
     }
@@ -42,11 +73,15 @@ function ConvertTo-MtMaesterResult {
         return 'Unknown'
     }
 
-    $mgContext = Get-MgContext
+    #if(Test-MtConnection Graph) { #ToValidate: Issue with -SkipGraphConnect
+    #    $mgContext = Get-MgContext
+    #}
 
-    $tenantId = $mgContext.TenantId
+    #$tenantId = $mgContext.TenantId ?? "Tenant ID (not connected to Graph)"
+    $tenantId = GetTenantId
     $tenantName = GetTenantName
-    $account = $mgContext.Account
+    #$account = $mgContext.Account ?? "Account (not connected to Graph)"
+    $account = GetAccount
 
     $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
     $latestVersion = GetMaesterLatestVersion
@@ -68,7 +103,7 @@ function ConvertTo-MtMaesterResult {
         $mtTestInfo = [PSCustomObject]@{
             Name            = $name
             HelpUrl         = $helpUrl
-            Tag             = $test.Block.Tag
+            Tag             = ($test.Block.Tag + $test.Tag | Select-Object -Unique)
             Result          = $test.Result
             ScriptBlock     = $test.ScriptBlock.ToString()
             ScriptBlockFile = $test.ScriptBlock.File

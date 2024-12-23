@@ -21,7 +21,6 @@ function Test-MtEidscaPR05 {
     [OutputType([bool])]
     param()
 
-    
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value

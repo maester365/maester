@@ -9,5 +9,4 @@ function Get-MtUserInteractive {
     param ()
 
     return ([Environment]::UserInteractive -and !([Environment]::GetCommandLineArgs() | Where-Object { $_ -like '-NonI*' }))
-
 }

@@ -41,6 +41,9 @@ function Send-MtMail {
         # Uri to the detailed test results page.
         [string] $TestResultsUri,
 
+        # Does not send the email, but outputs the body to use elsewhere
+        [switch] $CreateBodyOnly,
+
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
         [string] $UserId
@@ -50,13 +53,15 @@ function Send-MtMail {
         # Developer guide for editing the html report.
         - Authoring of the email template is done using Word. Open /powershell/assets/EmailTemplate.docx and make changes as needed
         - Select all and copy/paste the content into a new email in Outlook and send it to yourself
-        - When the email is recieved, view the source (either through Graph API, View Source in Outlook for Mac or save as .eml and open in a text editor)
+        - When the email is received, view the source (either through Graph API, View Source in Outlook for Mac or save as .eml and open in a text editor)
         - Copy the source (<html>..</html>) and paste it into the /powershell/assets/EmailTemplate.html file in the assets folder
         - Search for cid:image in the html and update the -replace commands in the script below.
     #>
-    if (!(Test-MtContext -SendMail)) { return }
+    if (! ($CreateBodyOnly)) {
+        if (!(Test-MtContext -SendMail)) { return }
 
-    if (!$Subject) { $Subject = "Maester Test Results" }
+        if (!$Subject) { $Subject = "Maester Test Results" }
+    }
 
     $emailTemplateFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/EmailTemplate.html'
     $emailTemplate = Get-Content -Path $emailTemplateFilePath -Raw
@@ -100,7 +105,6 @@ function Send-MtMail {
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
     }
 
-
     $table = "<table border='1' cellpadding='10' cellspacing='2' style='border-collapse: collapse; border-color: #f6f8fa;'><tr><th>Test Name</th><th>Status</th></tr>"
     $counter = 0
     foreach ($test in $MaesterResults.Tests) {
@@ -119,7 +123,6 @@ function Send-MtMail {
         $testResultsLink = "<a href='$TestResultsUri'>View detailed test results</a>"
     }
     $emailTemplate = $emailTemplate -replace "%TestResultsLink%", $testResultsLink
-
 
     $mailRequestBody = @{
         message         = @{
@@ -149,6 +152,10 @@ function Send-MtMail {
 
     Write-Verbose -Message "Uri: $sendMailUri"
     # Construct the message body
-    Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
-
+    if ($CreateBodyOnly) {
+        return $mailRequestBody
+    }
+    else {
+        Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
+    }
 }

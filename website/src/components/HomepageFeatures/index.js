@@ -24,11 +24,11 @@ const FeatureList = [
     ),
   },
   {
-    title: "Continous monitoring",
+    title: "Continuous monitoring",
     Svg: require("@site/static/img/home/feature_monitor.svg").default,
     description: (
       <>
-        Set up continous monitoring of your tenant configuration using your
+        Set up continuous monitoring of your tenant configuration using your
         favorite CI/CD pipeline and alert if any test fails.
       </>
     ),

@@ -21,7 +21,6 @@ function Test-MtEidscaAP10 {
     [OutputType([bool])]
     param()
 
-    
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.defaultUserRolePermissions.allowedToCreateApps

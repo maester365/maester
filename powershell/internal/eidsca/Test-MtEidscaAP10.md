@@ -5,7 +5,7 @@ CISA SCuBA 2.6: Only Administrators SHALL Be Allowed To Register Third-Party App
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authorizationPolicy
-.defaultUserRolePermissions.allowedToCreateApps = 'false'
+.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
 ```
 
 #### Related links

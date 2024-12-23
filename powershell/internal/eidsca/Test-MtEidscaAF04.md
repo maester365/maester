@@ -5,7 +5,7 @@ Restrict usage of FIDO2 from unauthorized vendors or platforms
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
-.keyRestrictions.isEnforced = 'true'
+.keyRestrictions.isEnforced -eq 'true'
 ```
 
 #### Related links

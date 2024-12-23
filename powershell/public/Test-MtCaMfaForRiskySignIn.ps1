@@ -51,6 +51,7 @@ function Test-MtCaMfaForRiskySignIn {
     } else {
         $testResult = "No conditional access policy requires multi-factor authentication for risky sign-ins."
     }
+
     Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
     return $result

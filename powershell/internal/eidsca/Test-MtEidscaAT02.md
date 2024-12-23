@@ -5,7 +5,7 @@ Avoid to allow reusable passes and restrict usage to one-time use (if applicable
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
-.isUsableOnce = 'true'
+.isUsableOnce -eq 'true'
 ```
 
 #### Related links

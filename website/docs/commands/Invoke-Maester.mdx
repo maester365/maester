@@ -19,8 +19,8 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
- [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-SkipGraphConnect]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-SkipGraphConnect] [-DisableTelemetry]
+ [-SkipVersionCheck] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -129,7 +129,7 @@ Invoke-Maester -PesterConfiguration $configuration
 
 ### -Path
 
-Specifies one or more paths to files containing tests.
+Specifies path to files containing tests.
 The value is a path\file name or name pattern.
 Wildcards are permitted.
 
@@ -442,6 +442,40 @@ Accept wildcard characters: False
 
 Skip the graph connection check.
 This is used for running tests that does not require a graph connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DisableTelemetry
+
+Disable Telemetry
+If set, telemetry information will not be logged.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SkipVersionCheck
+
+Skip the version check.
+If set, the version check will not be performed.
 
 ```yaml
 Type: SwitchParameter
