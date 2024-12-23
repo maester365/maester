@@ -217,8 +217,9 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
     }
 
     process {
-        $dmarcPrefix = "_dmarc."
-        $matchRecord = "^v\s*=\s*(?'v'DMARC1)\s*;\s*p\s*=\s*(?'p'none|quarantine|reject)(?:$|\s*;\s*)"
+        $dmarcPrefix  = "_dmarc."
+        $matchRecord  = "^v\s*=\s*(?'v'DMARC1)\s*;\s*p\s*=\s*(?'p'none|quarantine|reject)(?:$|\s*;\s*)"
+        $regexOptions = [Text.RegularExpressions.RegexOptions]'IgnoreCase,Multiline'
 
         $dmarcSplat = @{
             Name         = "$dmarcPrefix$DomainName"
@@ -232,7 +233,7 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
                 $dmarcRecord = [DMARCRecord]::new((Resolve-DnsName @dmarcSplat | `
                             Where-Object { $_.Type -eq "TXT" } | `
-                            Where-Object { $_.Strings -match $matchRecord }).Strings)
+                            Where-Object { [regex]::Match($_.Strings,$matchRecord,$regexOptions) }).Strings)
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
@@ -244,7 +245,7 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
                     }
                     $record = ((Resolve-Dns @dmarcSplatAlt).Answers | `
                             Where-Object { $_.RecordType -eq "TXT" } | `
-                            Where-Object { $_.Text -imatch $matchRecord }).Text
+                            Where-Object { [regex]::Match($_.Text,$matchRecord,$regexOptions) }).Text
                     if ($record) {
                         $dmarcRecord = [DMARCRecord]::new($record)
                     } else {

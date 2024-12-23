@@ -71,6 +71,12 @@ function Test-MtCisaDmarcRecordReject {
 
     if("Failed" -in $dmarcRecords.pass){
         $testResult = $false
+    }elseif("Failed" -in $dmarcRecords.pass -and -not $Strict){
+        if("Failed" -in ($dmarcRecords|Where-Object{$_.domain -in $acceptedDomains.DomainName}).pass){
+            $testResult = $false
+        }else{
+            $testResult = $true
+        }
     }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null

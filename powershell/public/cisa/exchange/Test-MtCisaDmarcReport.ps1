@@ -10,20 +10,31 @@
 
     Returns true if DMARC record inlcudes report targets within same domain
 
+.PARAMETER
+    Strict
+
+
+
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcReport
 #>
 function Test-MtCisaDmarcReport {
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Check 2nd Level Domains Explicitly per CISA
+        [switch]$Strict
+    )
 
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
     }
 
-    $acceptedDomains = Get-MtExo -Request AcceptedDomain
+    #$acceptedDomains = Get-MtExo -Request AcceptedDomain
+    $acceptedDomains = @{
+        DomainName = "amazon.co.uk"
+    }
     <# Parked domains should have DMARC with reject policy
     $sendingDomains = $acceptedDomains | Where-Object {`
         -not $_.SendingFromDomainDisabled
@@ -46,8 +57,8 @@ function Test-MtCisaDmarcReport {
     }
 
     $dmarcRecords = @()
-    foreach($domain in $expandedDomains){
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domainName -Records DMARC
+    foreach($expandedDomain in $expandedDomains){
+        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $expandedDomain -Records DMARC
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
@@ -55,7 +66,7 @@ function Test-MtCisaDmarcReport {
         $hostsAggregate = $dmarcRecord.dmarcRecord.reportAggregate.mailAddress.Host
         $hostsForensic = $dmarcRecord.dmarcRecord.reportForensic.mailAddress.Host
 
-        if($checkType -and $domain -in $hostsAggregate -and $domain -in $hostsForensic){
+        if($checkType -and $expandedDomain -in $hostsAggregate -and $expandedDomain -in $hostsForensic){
             $dmarcRecord.pass = "Passed"
         }elseif($checkType){
             $dmarcRecord.reason = "No target in domain"
@@ -69,8 +80,14 @@ function Test-MtCisaDmarcReport {
         $dmarcRecords += $dmarcRecord
     }
 
-    if("Failed" -in $dmarcRecords.pass){
+    if("Failed" -in $dmarcRecords.pass -and $Strict){
         $testResult = $false
+    }elseif("Failed" -in $dmarcRecords.pass -and -not $Strict){
+        if("Failed" -in ($dmarcRecords|Where-Object{$_.domain -in $acceptedDomains.DomainName}).pass){
+            $testResult = $false
+        }else{
+            $testResult = $true
+        }
     }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
@@ -98,7 +115,7 @@ function Test-MtCisaDmarcReport {
         if($aggregatesCount -ge 3){
             $aggregates = "$($aggregates[0]), $($aggregates[1]), "
             $aggregates += "& ...$aggregatesCount targets"
-        }elseif(aggregatesCount -gt 1){
+        }elseif($aggregatesCount -gt 1){
             $aggregates = $aggregates -join "<br />"
         }
         $forensics = $item.dmarcRecord.reportForensic.mailAddress
@@ -106,7 +123,7 @@ function Test-MtCisaDmarcReport {
         if($forensicsCount -ge 3){
             $forensics = "$($forensics[0]), $($forensics[1]), "
             $forensics += "& ...$forensicsCount targets"
-        }elseif(aggregatesCount -gt 1){
+        }elseif($aggregatesCount -gt 1){
             $forensics = $forensics -join ", "
         }
 
