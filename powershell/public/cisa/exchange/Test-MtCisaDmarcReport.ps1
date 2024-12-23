@@ -10,10 +10,8 @@
 
     Returns true if DMARC record inlcudes report targets within same domain
 
-.PARAMETER
-    Strict
-
-
+.PARAMETER Strict
+    Require the CISA explicit 2nd level validation
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcReport
