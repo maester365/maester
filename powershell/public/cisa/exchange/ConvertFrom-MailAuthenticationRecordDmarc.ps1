@@ -248,7 +248,7 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
                     if ($record) {
                         $dmarcRecord = [DMARCRecord]::new($record)
                     } else {
-                        return "Failure to obtain record"
+                        return "Record does not exist"
                     }
                 } else {
                     Write-Verbose "`nFor non-Windows platforms, please install DnsClient-PS module."
