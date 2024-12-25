@@ -23,7 +23,10 @@ function Test-MtCisaDmarcAggregateCisa {
     [OutputType([bool])]
     param(
         # Check all domains, not only .gov domains.
-        [switch]$Force
+        [switch]$Force,
+
+        # Check 2nd Level Domains Explicitly per CISA
+        [switch]$Strict
     )
 
     if(!(Test-MtConnection ExchangeOnline)){
@@ -87,7 +90,7 @@ function Test-MtCisaDmarcAggregateCisa {
         $dmarcRecords += $dmarcRecord
     }
 
-    if("Failed" -in $dmarcRecords.pass){
+    if("Failed" -in $dmarcRecords.pass -and $Strict){
         $testResult = $false
     }elseif("Failed" -in $dmarcRecords.pass -and -not $Strict){
         if("Failed" -in ($dmarcRecords|Where-Object{$_.domain -in $acceptedDomains.DomainName}).pass){

@@ -115,7 +115,6 @@ function ConvertFrom-MailAuthenticationRecordDmarc {
                 $this.valid = $init
                 if (-not $init) {
                     $this.warnings += "v/p: Record version (v) and policy (p) configuration is not proper"
-                    exit
                 }
                 $this.version = $Matches["v"]
                 $this.policy = $Matches["p"]
