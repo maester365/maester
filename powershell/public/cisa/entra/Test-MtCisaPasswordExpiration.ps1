@@ -8,7 +8,7 @@
 .EXAMPLE
     Test-MtCisaPasswordExpiration
 
-    Returns true if all managed domains have password expiration configured
+    Returns true if all verified managed domains have password expiration configured
     to be of 100 years or greater
 
 .LINK
