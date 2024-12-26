@@ -8,7 +8,8 @@
 .EXAMPLE
     Test-MtCisaPasswordExpiration
 
-    Returns true if all domains have password expiration of 100 years or greater
+    Returns true if all managed domains have password expiration configured
+    to be of 100 years or greater
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaPasswordExpiration
@@ -37,11 +38,11 @@ function Test-MtCisaPasswordExpiration {
     #$federatedDomains = $result | Where-Object {`
     #    $_.authenticationType -ne "Managed"}
 
-    $managedDomains = $result | Where-Object {`
-        $_.authenticationType -eq "Managed" -and `
-        $_.PasswordValidityPeriodInDays -ge 36500}
+    $managedDomains = $result | Where-Object authenticationType -eq "Managed"
 
-    $testResult = ($result | Measure-Object).Count - ($managedDomains|Measure-Object).Count -eq 0
+    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -ge 36500
+
+    $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains|Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire."
