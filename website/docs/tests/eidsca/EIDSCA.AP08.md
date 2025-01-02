@@ -12,7 +12,7 @@ Defines if user consent to apps is allowed, and if it is, which app consent poli
 |-|-|
 | **Name** | permissionGrantPolicyIdsAssignedToDefaultUserRole |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | High |
 
 ## How to fix

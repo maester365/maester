@@ -12,12 +12,12 @@ Controls if non-admin users may register custom-developed applications for use w
 |-|-|
 | **Name** | allowedToCreateApps |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | High |
 
 ## How to fix
 
-
+Update-MgPolicyAuthorizationPolicy -BodyParameter @{DefaultUserRolePermissions = @{AllowedToCreateApps = $false}}
 
 ### Details of configuration item
 | | |

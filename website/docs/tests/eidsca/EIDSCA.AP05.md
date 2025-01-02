@@ -12,12 +12,12 @@ Indicates whether users can sign up for email based subscriptions.
 |-|-|
 | **Name** | allowedToSignUpEmailBasedSubscriptions |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | Medium |
 
 ## How to fix
 
-
+Update-MgPolicyAuthorizationPolicy -AllowedToSignupEmailBasedSubscriptions $false
 
 ### Details of configuration item
 | | |

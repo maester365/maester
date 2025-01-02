@@ -4,7 +4,7 @@ $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
 $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP01" {
-    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" {
+    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowedToUseSSPR -eq 'false'
@@ -141,7 +141,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR05" {
-    It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" {
+    It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
@@ -150,7 +150,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
-    It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" {
+    It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'

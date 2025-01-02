@@ -21,6 +21,10 @@ function Test-MtEidscaPR05 {
     [OutputType([bool])]
     param()
 
+    if ( $SettingsApiAvailable -notcontains 'LockoutDurationInSeconds' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants (NotLicensedEntraIDP1).'
+            return $null
+    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value

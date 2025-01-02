@@ -12,7 +12,7 @@ Indicates whether user consent for risky apps is allowed. For example, consent r
 |-|-|
 | **Name** | allowUserConsentForRiskyApps |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | High |
 
 ## How to fix

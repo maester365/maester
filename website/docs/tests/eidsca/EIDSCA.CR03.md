@@ -12,7 +12,7 @@ Specifies whether reviewers will receive reminder emails
 |-|-|
 | **Name** | remindersEnabled |
 | **Control** | Consent Framework - Admin Consent Request |
-| **Description** | Represents the policy for enabling or disabling the Azure AD admin consent workflow. The admin consent workflow allows users to request access for apps that they wish to use and that require admin authorization before users can use the apps to access organizational data.  |
+| **Description** | Represents the policy for enabling or disabling the Entra ID (Azure AD) admin consent workflow. The admin consent workflow allows users to request access for apps that they wish to use and that require admin authorization before users can use the apps to access organizational data.  |
 | **Severity** |  |
 
 ## How to fix
