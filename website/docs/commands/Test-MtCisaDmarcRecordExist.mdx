@@ -15,7 +15,7 @@ Checks state of DMARC records for all exo second level domains
 ## SYNTAX
 
 ```powershell
-Test-MtCisaDmarcRecordExist [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaDmarcRecordExist [-Strict] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,22 @@ Test-MtCisaDmarcRecordExist
 Returns true if DMARC record exists for all 2LD
 
 ## PARAMETERS
+
+### -Strict
+
+Check 2nd Level Domains Explicitly per CISA
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
