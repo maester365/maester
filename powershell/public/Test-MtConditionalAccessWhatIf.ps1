@@ -41,7 +41,7 @@
 .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
         -IncludeApplications 'bbad9299-f060-4e15-9a9a-285980ae00fc' `
-        -DeviceInfo { 'isCompliant' = 'true'; 'Manufacturer' = 'Dell' } `
+        -DeviceInfo @{ 'isCompliant' = 'true'; 'Manufacturer' = 'Dell' } `
         -InsiderRiskLevel 'Minor'
 
     This example tests the Conditional Access policies for a user accessing an **application** from a **compliant**, **Dell** device with a **Minor** insider risk level.
