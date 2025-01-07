@@ -16,7 +16,10 @@
 function Test-MtCisaDmarcRecordReject {
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Check 2nd Level Domains Explicitly per CISA
+        [switch]$Strict
+    )
 
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
@@ -69,8 +72,14 @@ function Test-MtCisaDmarcRecordReject {
         $dmarcRecords += $dmarcRecord
     }
 
-    if("Failed" -in $dmarcRecords.pass){
+    if("Failed" -in $dmarcRecords.pass -and $Strict){
         $testResult = $false
+    }elseif("Failed" -in $dmarcRecords.pass -and -not $Strict){
+        if("Failed" -in ($dmarcRecords|Where-Object{$_.domain -in $acceptedDomains.DomainName}).pass){
+            $testResult = $false
+        }else{
+            $testResult = $true
+        }
     }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
         Add-MtTestResultDetail -SkippedBecause NotSupported
         return $null
