@@ -97,11 +97,14 @@ runs:
           Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
           # Install Maester
-          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.install_prerelease}}' ) -eq $true ){
+           if ( '${{ inputs.install_prerelease}}' -eq $true ){
+            Write-Host "Installing prerelease version"
             Install-Module Maester -AllowPrerelease -Force
           } else {
+            Write-Host "Installing latest version"
             Install-Module Maester -Force
           }
+          
 
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
