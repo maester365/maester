@@ -11,6 +11,7 @@ BeforeDiscovery {
 Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All" {
 
     It "MT.1037 Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
+        # Secure Score Name: Configure which users are allowed to present in Teams meetings
 
         $result = Test-MtTeamsRestrictParticipantGiveRequestControl -TeamsMeetingPolicy $TeamsMeetingPolicy
         $result | Should -Be $true -Because "Standard attendees in a Teams meeting should not be allowed to present in Teams meetings unless they are assigned the Presenter role."
