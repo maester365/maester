@@ -8,12 +8,12 @@
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
 .EXAMPLE
     Test-MtEidscaAP08
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 #>
 
 function Test-MtEidscaAP08 {
@@ -24,7 +24,7 @@ function Test-MtEidscaAP08 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1
+    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
     $tenantValueNotSet = $null -eq $tenantValue -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
 
