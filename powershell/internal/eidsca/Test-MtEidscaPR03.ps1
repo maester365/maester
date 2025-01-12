@@ -22,7 +22,7 @@ function Test-MtEidscaPR03 {
     param()
 
     if ( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants or tenants that are not licensed for Entra ID P1.'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
