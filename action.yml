@@ -103,6 +103,10 @@ runs:
             Install-Module Maester -Force
           }
 
+          # Delete Microsoft.Graph.Authentication 2.9.1 (issue #606)
+          Write-Host "Delete module version 2.9.1 of Microsoft.Graph.Authentication"  
+          rm -r /home/runner/.local/share/powershell/Modules/Microsoft.Graph.Authentication/2.9.1
+
           # Configure test results
           $PesterConfiguration = New-PesterConfiguration
           $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
