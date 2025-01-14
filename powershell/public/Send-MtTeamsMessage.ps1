@@ -33,13 +33,18 @@ function Send-MtTeamsMessage {
 
         # The Teams team where the test results should be posted.
         # To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=<TeamId>
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "MSGraph")]
         [string] $TeamId,
 
         # The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
         # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $true, Position = 2, ParameterSetName = "MSGraph")]
         [string] $TeamChannelId,
+
+        # The URL of the webhook where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
+        # To get the webhook Url, right-click on the channel in Teams and select 'Workflow'. Create a workflow using the 'Post to a channel when a webhook request is received' template. Use the value after complete
+        [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Webhook")]
+        [string] $TeamChannelWebhookUri,
 
         # The subject of the card. Defaults to 'Maester Test Results'.
         [string] $Subject,
@@ -60,7 +65,9 @@ function Send-MtTeamsMessage {
         To do:
         - Add a switch to send the card to a user instead of a channel
     #>
-    if (!(Test-MtContext -SendTeamsMessage)) { return }
+    if (!$TeamChannelWebhookUri) {
+      if (!(Test-MtContext -SendTeamsMessage)) { return }
+    }
 
     if (!$Subject) { $Subject = "Maester Test Results" }
 
@@ -127,30 +134,49 @@ function Send-MtTeamsMessage {
             $currentValue
         })
 
-    $attachmentGuid = New-Guid
+    if (!$TeamChannelWebhookUri)
+    {
+        $attachmentGuid = New-Guid
 
-    $params = @{
-        subject     = $null
-        body        = @{
-            contentType = "html"
-            content     = "<attachment id=""$attachmentGuid""></attachment>"
-        }
-        attachments = @(
-            @{
-                id           = "$attachmentGuid"
-                contentType  = "application/vnd.microsoft.card.adaptive"
-                contentUrl   = $null
-                content      = $adaptiveCardBody.toString()
-                name         = $null
-                thumbnailUrl = $null
+        $params = @{
+            subject     = $null
+            body        = @{
+                contentType = "html"
+                content     = "<attachment id=""$attachmentGuid""></attachment>"
             }
-        )
+            attachments = @(
+                @{
+                    id           = "$attachmentGuid"
+                    contentType  = "application/vnd.microsoft.card.adaptive"
+                    contentUrl   = $null
+                    content      = $adaptiveCardBody.toString()
+                    name         = $null
+                    thumbnailUrl = $null
+                }
+            )
+        }
+
+      Write-Verbose -Message "Uri: $SendTeamsMessageUri"
+
+      $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
+
+      Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
     }
+    else
+    {
+        $params = @{
+            type     = "message"
+            attachments = @(
+                @{
+                    contentType  = "application/vnd.microsoft.card.adaptive"
+                    contentUrl   = $null
+                    content      = $null
+                }
+            )
+        }
 
-    Write-Verbose -Message "Uri: $SendTeamsMessageUri"
-
-    $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
-
-    Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
-
+      $params.attachments[0].content = ($adaptiveCardBody | convertFrom-Json)
+      Write-Verbose -Message "Posting message to Teams channel using webhook: $TeamChannelWebhookUri"
+      Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body ($params | ConvertTo-Json -Depth 25) -Uri $TeamChannelWebhookUri
+    }
 }
