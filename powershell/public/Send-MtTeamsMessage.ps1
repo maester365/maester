@@ -21,6 +21,12 @@
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 
+.EXAMPLE
+    Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+
+    Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
+
+
 .LINK
     https://maester.dev/docs/commands/Send-MtTeamsMessage
 #>
@@ -41,7 +47,7 @@ function Send-MtTeamsMessage {
         [Parameter(Mandatory = $true, Position = 2, ParameterSetName = "MSGraph")]
         [string] $TeamChannelId,
 
-        # The URL of the webhook where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
+        # The URL of the webhook where the message should be posted. e.g. 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
         # To get the webhook Url, right-click on the channel in Teams and select 'Workflow'. Create a workflow using the 'Post to a channel when a webhook request is received' template. Use the value after complete
         [Parameter(Mandatory = $true, Position = 1, ParameterSetName = "Webhook")]
         [string] $TeamChannelWebhookUri,
