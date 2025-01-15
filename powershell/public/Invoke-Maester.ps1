@@ -256,7 +256,7 @@ function Invoke-Maester {
 
     $isMail = $null -ne $MailRecipient
 
-    $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId) -or [String]::IsNullOrEmpty($TeamChannelWebhookUri))
+    $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId))
 
     $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
 
