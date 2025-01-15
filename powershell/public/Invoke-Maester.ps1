@@ -55,6 +55,11 @@ Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19
 Runs all the tests and posts a summary of the results to a Teams channel.
 
 .EXAMPLE
+Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+
+Runs all the tests and posts a summary of the results to a Teams channel.
+
+.EXAMPLE
 Invoke-Maester -Verbosity Normal
 
 Shows results of tests as they are run including details on failed tests.
@@ -144,6 +149,10 @@ function Invoke-Maester {
         # Optional. The channel where the message should be posted. e.g. 19%3A00000000000000000000000000000000%40thread.tacv2
         # To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/<TeamChannelId>/my%20channel
         [string] $TeamChannelId,
+
+        # Optional. The webhook Uri where the message should be posted. e.g. https://some-url/?value=123
+        # To get the Webhook Uri, right-click on the channel in Teams and select 'Workflow'. Create a workflow using the 'Post to a channel when a webhook request is received' template. Use the value after complete
+        [string] $TeamChannelWebhookUri,
 
         # Skip the graph connection check.
         # This is used for running tests that does not require a graph connection.
@@ -249,10 +258,21 @@ function Invoke-Maester {
 
     $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId))
 
+    $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
+
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
     } else {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
+    }
+
+    if ($isWebUri) {
+        # Check if TeamChannelWebhookUri is a valid URL
+       $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
+        if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
+            Write-Output "Invalid Webhook URL: $TeamChannelWebhookUri"
+            return
+        }
     }
 
     $out = [PSCustomObject]@{
@@ -342,6 +362,11 @@ function Invoke-Maester {
         if ($TeamId -and $TeamChannelId) {
             Write-MtProgress -Activity "Sending Teams message"
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
+        }
+
+        if ($TeamChannelWebhookUri) {
+            Write-MtProgress -Activity "Sending Teams message"
+            Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
         }
 
         if ($Verbosity -eq 'None') {
