@@ -73,6 +73,13 @@ function Send-MtTeamsMessage {
     #>
     if (!$TeamChannelWebhookUri) {
       if (!(Test-MtContext -SendTeamsMessage)) { return }
+    } else {
+        # Check if TeamChannelWebhookUri is a valid URL
+        $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
+        if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
+            Write-Output "Invalid Webhook URL: $TeamChannelWebhookUri"
+            return
+        }
     }
 
     if (!$Subject) { $Subject = "Maester Test Results" }

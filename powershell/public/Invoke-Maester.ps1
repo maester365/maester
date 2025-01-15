@@ -258,10 +258,21 @@ function Invoke-Maester {
 
     $isTeamsChannelMessage = -not ([String]::IsNullOrEmpty($TeamId) -or [String]::IsNullOrEmpty($TeamChannelId) -or [String]::IsNullOrEmpty($TeamChannelWebhookUri))
 
+    $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
+
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
     } else {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
+    }
+
+    if ($isWebUri) {
+        # Check if TeamChannelWebhookUri is a valid URL
+       $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
+        if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
+            Write-Output "Invalid Webhook URL: $TeamChannelWebhookUri"
+            return
+        }
     }
 
     $out = [PSCustomObject]@{
