@@ -132,7 +132,11 @@ function Test-MtCaGap {
         $_.Conditions.Users.IncludeUsers | ForEach-Object { $includedUsers.Add($_) | Out-Null }
         $_.Conditions.Users.ExcludeGroups | ForEach-Object { $excludedGroups.Add($_) | Out-Null }
         $_.Conditions.Users.IncludeGroups | ForEach-Object { $includedGroups.Add($_) | Out-Null }
-        $_.Conditions.Users.ExcludeRoles | ForEach-Object { $excludedRoles.Add($_) | Out-Null }
+        If ($_ -ne "d29b2b05-8046-44ba-8758-1e26182fcf32") {
+            # Role: 'Directory Synchronization Accounts' excluded
+            # Policy: 'Multifactor authentication for Microsoft partners and vendors'
+            $_.Conditions.Users.ExcludeRoles | ForEach-Object { $excludedRoles.Add($_) | Out-Null }
+        }
         $_.Conditions.Users.IncludeRoles | ForEach-Object { $includedRoles.Add($_) | Out-Null }
         $_.Conditions.Applications.ExcludeApplications | ForEach-Object { $excludedApplications.Add($_) | Out-Null }
         $_.Conditions.Applications.IncludeApplications | ForEach-Object { $includedApplications.Add($_) | Out-Null }
