@@ -29,10 +29,9 @@ function Test-MtCisaBlockHighRiskUser {
         return $null
     }
 
-    $result = Get-MtConditionalAccessPolicy
+    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $blockPolicies = $result | Where-Object {`
-        $_.state -eq "enabled" -and `
         $_.grantControls.builtInControls -contains "block" -and `
         $_.conditions.applications.includeApplications -contains "all" -and `
         $_.conditions.userRiskLevels -contains "high" -and `
