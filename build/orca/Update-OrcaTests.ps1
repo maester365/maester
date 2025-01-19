@@ -99,6 +99,7 @@ Set-Content -Path $repo\powershell\internal\orca\orcaClass.ps1 -Value $orcaPrere
 #endregion
 
 #region tests
+$exports = @()
 $testFiles = Get-ChildItem $repo\build\orca\orca\Checks\*.ps1
 foreach($file in $testFiles){
     $content = [pscustomobject]@{
@@ -148,28 +149,7 @@ foreach($file in $testFiles){
 
 Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security", "All" {
     It "$($content.file.Substring(6,7)): $($content.name)" {
-
-        if(!(Test-MtConnection ExchangeOnline)){
-            Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
-            `$result = `$null
-        }elseif(!(Test-MtConnection SecurityCompliance)){
-            Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-            `$result = `$null
-        }else{
-            `$Collection = Get-ORCACollection
-            `$obj = New-Object -TypeName $($content.func)
-            `$obj.Run(`$Collection)
-            `$result = (`$obj.Completed -and `$obj.Result -eq "Pass")
-
-            `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
-            if(`$result){
-                `$resultMarkdown += "Well done. $($content.pass)"
-            }else{
-                `$resultMarkdown += "Your tenant did not pass. $($content.fail)"
-            }
-
-            Add-MtTestResultDetail -Result `$resultMarkdown
-        }
+        `$result = Get-$($content.func)
 
         if(`$null -ne `$result) {
             `$result | Should -Be `$true -Because "$($content.pass)"
@@ -182,25 +162,64 @@ Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security
     Set-Content -Path "$repo\tests\orca\check-$($content.func).Tests.ps1" -Value $testScript -Force
     #$testContents += $content
 
+    $funcScript = @"
+# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
+
+function Get-$($content.func){
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if(!(Test-MtConnection ExchangeOnline)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return = `$null
+    }elseif(!(Test-MtConnection SecurityCompliance)){
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return = `$null
+    }
+
+    `$Collection = Get-ORCACollection
+    `$obj = New-Object -TypeName $($content.func)
+    `$obj.Run(`$Collection)
+    `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")
+
+    `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
+    if(`$testResult){
+        `$resultMarkdown += "Well done. $($content.pass)"
+    }else{
+        `$resultMarkdown += "Your tenant did not pass. $($content.fail)"
+    }
+
+    Add-MtTestResultDetail -Result `$resultMarkdown
+
+    return `$testResult
+}
+"@
+
+    # Test Files
+    Set-Content -Path "$repo\powershell\public\orca\Get-$($content.func).ps1" -Value $funcScript -Force
+    $exports += "Get-$($content.func).ps1"
+
+
     $description = [regex]::Match($content.content,"this.importance.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $content.description = $description.Groups['capture'].Value
-    $links = [regex]::Match($x,"this.Links.*(?'capture'@{[^}]*})",$option)
+    $links = [regex]::Match($content.content,"this.Links.*@{(?'capture'[^}]*)}",$option)
     $content.links = $links.Groups['capture'].Value|ConvertFrom-StringData
 
     $md = @"
-    $($content.pass)
+$($content.pass)
 
-    $($content.description)
+$($content.description)
 
-    ### Related Links
+### Related Links
 
-    $($content.links.Keys|ForEach-Object{
-        "* ($($_.Substring(1,$_.Length-2)))[$(($f["$_"]).Substring(1,($f["$_"]).Length-2))]"
-    })
 "@
 
+    $md += $($content.links.Keys|ForEach-Object{
+        "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
+    })
     # MD Files
-    Set-Content -Path "$repo\powershell\public\orca\check-$($content.func).md" -Value $md -Force
+    Set-Content -Path "$repo\powershell\public\orca\get-$($content.func).md" -Value $md -Force
 }
 @"
 ScriptsToProcess = @(
@@ -213,5 +232,7 @@ ScriptsToProcess = @(
         }
     )
 )
+
 "@
+$exports
 #endregion
