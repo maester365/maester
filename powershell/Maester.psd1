@@ -153,7 +153,29 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
                'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordDkim',
                'Resolve-SpfRecord', 'Clear-MtDnsCache',
-               'Test-MtTeamsRestrictParticipantGiveRequestControl'
+               'Test-MtTeamsRestrictParticipantGiveRequestControl',
+               'Test-ORCA101.ps1', 'Test-ORCA102.ps1', 'Test-ORCA103.ps1',
+               'Test-ORCA104.ps1', 'Test-ORCA105.ps1', 'Test-ORCA106.ps1',
+               'Test-ORCA107.ps1', 'Test-ORCA108.ps1', 'Test-ORCA108.ps1',
+               'Test-ORCA109.ps1', 'Test-ORCA110.ps1', 'Test-ORCA111.ps1',
+               'Test-ORCA112.ps1', 'Test-ORCA113.ps1', 'Test-ORCA114.ps1',
+               'Test-ORCA115.ps1', 'Test-ORCA116.ps1', 'Test-ORCA118.ps1',
+               'Test-ORCA118.ps1', 'Test-ORCA118.ps1', 'Test-ORCA118.ps1',
+               'Test-ORCA119.ps1', 'Test-ORCA120.ps1', 'Test-ORCA120.ps1',
+               'Test-ORCA120.ps1', 'Test-ORCA121.ps1', 'Test-ORCA123.ps1',
+               'Test-ORCA124.ps1', 'Test-ORCA139.ps1', 'Test-ORCA140.ps1',
+               'Test-ORCA141.ps1', 'Test-ORCA142.ps1', 'Test-ORCA143.ps1',
+               'Test-ORCA156.ps1', 'Test-ORCA158.ps1', 'Test-ORCA179.ps1',
+               'Test-ORCA180.ps1', 'Test-ORCA189.ps1', 'Test-ORCA189.ps1',
+               'Test-ORCA205.ps1', 'Test-ORCA220.ps1', 'Test-ORCA221.ps1',
+               'Test-ORCA222.ps1', 'Test-ORCA223.ps1', 'Test-ORCA224.ps1',
+               'Test-ORCA225.ps1', 'Test-ORCA226.ps1', 'Test-ORCA227.ps1',
+               'Test-ORCA228.ps1', 'Test-ORCA229.ps1', 'Test-ORCA230.ps1',
+               'Test-ORCA231.ps1', 'Test-ORCA232.ps1', 'Test-ORCA233.ps1',
+               'Test-ORCA233.ps1', 'Test-ORCA234.ps1', 'Test-ORCA235.ps1',
+               'Test-ORCA236.ps1', 'Test-ORCA237.ps1', 'Test-ORCA238.ps1',
+               'Test-ORCA239.ps1', 'Test-ORCA240.ps1', 'Test-ORCA241.ps1',
+               'Test-ORCA242.ps1', 'Test-ORCA243.ps1', 'Test-ORCA244.ps1'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

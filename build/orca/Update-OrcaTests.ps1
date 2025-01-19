@@ -210,7 +210,7 @@ function Test-$($content.func){
 
     # Test Files
     Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).ps1" -Value $funcScript -Force
-    $exports += "Get-$($content.func).ps1"
+    $exports += "Test-$($content.func).ps1"
 
 
     $description = [regex]::Match($content.content,"this.importance.*[\'\`"](?'capture'.*)[\'\`"]",$option)
@@ -246,5 +246,15 @@ ScriptsToProcess = @(
 )
 
 "@
-$exports
+@"
+FunctionsToExport = @(
+    $(
+        $index = 1
+        while($index -le $exports.Count){
+            "    '$(($exports[$index]))', '$(($exports[$index+1]))', '$(($exports[$index+2]))', `n"
+            $index = $index+3
+        }
+    )
+)
+"@
 #endregion
