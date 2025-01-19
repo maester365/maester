@@ -25,6 +25,7 @@
     https://maester.dev/docs/commands/Send-MtMail
 #>
 function Send-MtMail {
+    [OutputType([System.Collections.Hashtable])]
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
