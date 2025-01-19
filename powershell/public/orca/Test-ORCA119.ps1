@@ -1,16 +1,18 @@
 <#
-.DESCRIPTION
+.SYNOPSIS
     Similar Domains Safety Tips is enabled
+
+.DESCRIPTION
+    Generated on 01/19/2025 05:57:36 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA119
 
+    Returns true or false
+
 .LINK
     https://maester.dev/docs/commands/Test-ORCA119
 #>
-
-# Generated on 01/18/2025 20:19:55 by .\build\orca\Update-OrcaTests.ps1
-
 function Test-ORCA119{
     [CmdletBinding()]
     [OutputType([bool])]
@@ -37,9 +39,9 @@ function Test-ORCA119{
         $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
     }
 
-    $passResult = " Pass"
-    $failResult = " Fail"
-    $skipResult = " Skip"
+    $passResult = "`u{2705} Pass"
+    $failResult = "`u{274C} Fail"
+    $skipResult = "`u{1F5C4}  Skip"
     $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
     $resultDetail += "| --- | --- | --- |`n"
     foreach($config in $obj.Config){

@@ -164,18 +164,20 @@ Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security
 
     $funcScript = @"
 <#
-.DESCRIPTION
+.SYNOPSIS
     $($content.pass)
+
+.DESCRIPTION
+    Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-$($content.func)
 
+    Returns true or false
+
 .LINK
     https://maester.dev/docs/commands/Test-$($content.func)
 #>
-
-# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
-
 function Test-$($content.func){
     [CmdletBinding()]
     [OutputType([bool])]
@@ -202,9 +204,9 @@ function Test-$($content.func){
         `$resultMarkdown += "Your tenant did not pass. $($content.fail)``n``n%ResultDetail%"
     }
 
-    `$passResult = "✅ Pass"
-    `$failResult = "❌ Fail"
-    `$skipResult = "🗄️ Skip"
+    `$passResult = "``u{2705} Pass"
+    `$failResult = "``u{274C} Fail"
+    `$skipResult = "``u{1F5C4}  Skip"
     `$resultDetail = "| `$(`$obj.ItemName) | `$(`$obj.DataType) | Result |``n"
     `$resultDetail += "| --- | --- | --- |``n"
     foreach(`$config in `$obj.Config){
