@@ -197,10 +197,27 @@ function Test-$($content.func){
 
     `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
     if(`$testResult){
-        `$resultMarkdown += "Well done. $($content.pass)"
+        `$resultMarkdown += "Well done. $($content.pass)``n``n%ResultDetail%"
     }else{
-        `$resultMarkdown += "Your tenant did not pass. $($content.fail)"
+        `$resultMarkdown += "Your tenant did not pass. $($content.fail)``n``n%ResultDetail%"
     }
+
+    `$passResult = "✅ Pass"
+    `$failResult = "❌ Fail"
+    `$skipResult = "🗄️ Skip"
+    `$resultDetail = "| `$(`$obj.ItemName) | `$(`$obj.DataType) | Result |``n"
+    `$resultDetail += "| --- | --- | --- |``n"
+    foreach(`$config in `$obj.Config){
+        switch(`$config.ResultStandard){
+            "Pass" {`$itemResult = `$passResult}
+            "Informational" {`$itemResult = `$skipResult}
+            "None" {`$itemResult = `$skipResult}
+            "Fail" {`$itemResult = `$failResult}
+        }
+        `$resultDetail += "| `$(`$config.ConfigItem) | `$(`$config.ConfigData) | `$itemResult |``n"
+    }
+
+    `$resultMarkdown = `$resultMarkdown -replace "%ResultDetail%", `$resultDetail
 
     Add-MtTestResultDetail -Result `$resultMarkdown
 
@@ -210,7 +227,7 @@ function Test-$($content.func){
 
     # Test Files
     Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).ps1" -Value $funcScript -Force
-    $exports += "Test-$($content.func).ps1"
+    $exports += "Test-$($content.func)"
 
 
     $description = [regex]::Match($content.content,"this.importance.*[\'\`"](?'capture'.*)[\'\`"]",$option)
@@ -251,7 +268,7 @@ FunctionsToExport = @(
     $(
         $index = 1
         while($index -le $exports.Count){
-            "    '$(($exports[$index]).Substring(0,$exports[$index].Length-4))', '$(($exports[$index+1]).Substring(0,$exports[$index].Length-4))', '$(($exports[$index+2]).Substring(0,$exports[$index].Length-4))', `n"
+            "    '$(($exports[$index]))', '$(($exports[$index+1]))', '$(($exports[$index+2]))', `n"
             $index = $index+3
         }
     )

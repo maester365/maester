@@ -9,7 +9,7 @@
     https://maester.dev/docs/commands/Test-ORCA106
 #>
 
-# Generated on 01/18/2025 19:34:46 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/18/2025 20:19:55 by .\build\orca\Update-OrcaTests.ps1
 
 function Test-ORCA106{
     [CmdletBinding()]
@@ -32,10 +32,27 @@ function Test-ORCA106{
 
     $resultMarkdown = "Anti-Spam Policies - Quarantine retention period - ORCA-106`n`n"
     if($testResult){
-        $resultMarkdown += "Well done. Quarantine retention period is 30 days"
+        $resultMarkdown += "Well done. Quarantine retention period is 30 days`n`n%ResultDetail%"
     }else{
-        $resultMarkdown += "Your tenant did not pass. "
+        $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
     }
+
+    $passResult = " Pass"
+    $failResult = " Fail"
+    $skipResult = " Skip"
+    $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
+    $resultDetail += "| --- | --- | --- |`n"
+    foreach($config in $obj.Config){
+        switch($config.ResultStandard){
+            "Pass" {$itemResult = $passResult}
+            "Informational" {$itemResult = $skipResult}
+            "None" {$itemResult = $skipResult}
+            "Fail" {$itemResult = $failResult}
+        }
+        $resultDetail += "| $($config.ConfigItem) | $($config.ConfigData) | $itemResult |`n"
+    }
+
+    $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

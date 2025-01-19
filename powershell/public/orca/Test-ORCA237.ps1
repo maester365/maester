@@ -9,7 +9,7 @@
     https://maester.dev/docs/commands/Test-ORCA237
 #>
 
-# Generated on 01/18/2025 19:34:47 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/18/2025 20:19:56 by .\build\orca\Update-OrcaTests.ps1
 
 function Test-ORCA237{
     [CmdletBinding()]
@@ -32,10 +32,27 @@ function Test-ORCA237{
 
     $resultMarkdown = "Microsoft Defender for Office 365 Policies - Safe Links protections for links in teams messages - `n`n"
     if($testResult){
-        $resultMarkdown += "Well done. Safe Links is enabled for teams messages"
+        $resultMarkdown += "Well done. Safe Links is enabled for teams messages`n`n%ResultDetail%"
     }else{
-        $resultMarkdown += "Your tenant did not pass. "
+        $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
     }
+
+    $passResult = " Pass"
+    $failResult = " Fail"
+    $skipResult = " Skip"
+    $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
+    $resultDetail += "| --- | --- | --- |`n"
+    foreach($config in $obj.Config){
+        switch($config.ResultStandard){
+            "Pass" {$itemResult = $passResult}
+            "Informational" {$itemResult = $skipResult}
+            "None" {$itemResult = $skipResult}
+            "Fail" {$itemResult = $failResult}
+        }
+        $resultDetail += "| $($config.ConfigItem) | $($config.ConfigData) | $itemResult |`n"
+    }
+
+    $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

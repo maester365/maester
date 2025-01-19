@@ -1,4 +1,4 @@
-# Generated on 01/18/2025 19:34:47 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/18/2025 20:19:56 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA237", "EXO", "Security", "All" {
     It "ORCA237: Safe Links protections for links in teams messages" {

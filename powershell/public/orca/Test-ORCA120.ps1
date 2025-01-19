@@ -9,7 +9,7 @@
     https://maester.dev/docs/commands/Test-ORCA120
 #>
 
-# Generated on 01/18/2025 19:34:47 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/18/2025 20:19:55 by .\build\orca\Update-OrcaTests.ps1
 
 function Test-ORCA120{
     [CmdletBinding()]
@@ -32,10 +32,27 @@ function Test-ORCA120{
 
     $resultMarkdown = "Zero Hour Autopurge - Zero Hour Autopurge Enabled for Spam - 120-spam`n`n"
     if($testResult){
-        $resultMarkdown += "Well done. Zero Hour Autopurge is Enabled"
+        $resultMarkdown += "Well done. Zero Hour Autopurge is Enabled`n`n%ResultDetail%"
     }else{
-        $resultMarkdown += "Your tenant did not pass. "
+        $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
     }
+
+    $passResult = " Pass"
+    $failResult = " Fail"
+    $skipResult = " Skip"
+    $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
+    $resultDetail += "| --- | --- | --- |`n"
+    foreach($config in $obj.Config){
+        switch($config.ResultStandard){
+            "Pass" {$itemResult = $passResult}
+            "Informational" {$itemResult = $skipResult}
+            "None" {$itemResult = $skipResult}
+            "Fail" {$itemResult = $failResult}
+        }
+        $resultDetail += "| $($config.ConfigItem) | $($config.ConfigData) | $itemResult |`n"
+    }
+
+    $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

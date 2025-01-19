@@ -9,7 +9,7 @@
     https://maester.dev/docs/commands/Test-ORCA235
 #>
 
-# Generated on 01/18/2025 19:34:47 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/18/2025 20:19:56 by .\build\orca\Update-OrcaTests.ps1
 
 function Test-ORCA235{
     [CmdletBinding()]
@@ -32,10 +32,27 @@ function Test-ORCA235{
 
     $resultMarkdown = "SPF - SPF Records - 235`n`n"
     if($testResult){
-        $resultMarkdown += "Well done. SPF records is set up for all your custom domains"
+        $resultMarkdown += "Well done. SPF records is set up for all your custom domains`n`n%ResultDetail%"
     }else{
-        $resultMarkdown += "Your tenant did not pass. "
+        $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
     }
+
+    $passResult = " Pass"
+    $failResult = " Fail"
+    $skipResult = " Skip"
+    $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
+    $resultDetail += "| --- | --- | --- |`n"
+    foreach($config in $obj.Config){
+        switch($config.ResultStandard){
+            "Pass" {$itemResult = $passResult}
+            "Informational" {$itemResult = $skipResult}
+            "None" {$itemResult = $skipResult}
+            "Fail" {$itemResult = $failResult}
+        }
+        $resultDetail += "| $($config.ConfigItem) | $($config.ConfigData) | $itemResult |`n"
+    }
+
+    $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
 
     Add-MtTestResultDetail -Result $resultMarkdown
 
