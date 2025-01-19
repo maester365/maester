@@ -1,4 +1,4 @@
-# Generated on 01/19/2025 05:57:37 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA226", "EXO", "Security", "All" {
     It "ORCA226: Safe Links Policy Rules" {

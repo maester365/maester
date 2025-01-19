@@ -3,7 +3,7 @@
     Bulk Complaint Level threshold is between 4 and 6
 
 .DESCRIPTION
-    Generated on 01/19/2025 05:57:35 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 01/19/2025 07:06:35 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA100
@@ -27,7 +27,11 @@ function Test-ORCA100{
         return = $null
     }
 
-    $Collection = Get-ORCACollection
+    if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        $__MtSession.OrcaCache = Get-ORCACollection
+    }
+    $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA100
     $obj.Run($Collection)
     $testResult = ($obj.Completed -and $obj.Result -eq "Pass")

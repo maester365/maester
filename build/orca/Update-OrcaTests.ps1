@@ -68,6 +68,9 @@ foreach($prereq in $prereqs){
             $text = $text -replace`
                 "$($_.Value.Trim())\r","Get-MtExo -Request $($_.Groups['Request'].Value)"
         }
+    }elseif($codeBlock.Name -eq "Add-IsPresetValue"){
+        $text = $codeBlock.Extent.Text
+        $text = $text -replace "-Value .IsPreset","-Value `$IsPreset -Force"
     }elseif($function){
         $text = $codeBlock.Extent.Text
     }else{
@@ -192,7 +195,11 @@ function Test-$($content.func){
         return = `$null
     }
 
-    `$Collection = Get-ORCACollection
+    if((`$__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        `$__MtSession.OrcaCache = Get-ORCACollection
+    }
+    `$Collection = `$__MtSession.OrcaCache
     `$obj = New-Object -TypeName $($content.func)
     `$obj.Run(`$Collection)
     `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")

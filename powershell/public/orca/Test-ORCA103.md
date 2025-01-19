@@ -4,5 +4,5 @@ Configure the maximum number of recipients that a user can send to, per hour for
 
 ### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)

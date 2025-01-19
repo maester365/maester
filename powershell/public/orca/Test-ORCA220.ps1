@@ -3,7 +3,7 @@
     Advanced Phish filter Threshold level is adequate.
 
 .DESCRIPTION
-    Generated on 01/19/2025 05:57:37 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA220
@@ -27,7 +27,11 @@ function Test-ORCA220{
         return = $null
     }
 
-    $Collection = Get-ORCACollection
+    if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        $__MtSession.OrcaCache = Get-ORCACollection
+    }
+    $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA220
     $obj.Run($Collection)
     $testResult = ($obj.Completed -and $obj.Result -eq "Pass")

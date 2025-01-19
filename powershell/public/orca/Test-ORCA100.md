@@ -4,6 +4,6 @@ The differentiation between bulk and spam can sometimes be subjective. The bulk 
 
 ### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
 * [Bulk Complaint Level values](https://aka.ms/orca-antispam-docs-1)

@@ -4,6 +4,6 @@ Safe Documents can assist protecting files opened in Office appplications. Befor
 
 ### Related Links
 
+* [Safe Documents in Microsoft 365 E5](https://aka.ms/orca-atpp-docs-1) 
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
-* [Safe Documents in Microsoft 365 E5](https://aka.ms/orca-atpp-docs-1)
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)

@@ -4,6 +4,6 @@ Enable End-user Spam notifications to let users manage their own spam-quarantine
 
 ### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
 * [Configure end-user spam notifications in Exchange Online](https://aka.ms/orca-antispam-docs-2) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)

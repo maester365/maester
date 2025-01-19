@@ -3,7 +3,7 @@
     Quarantine retention period is 30 days
 
 .DESCRIPTION
-    Generated on 01/19/2025 05:57:35 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 01/19/2025 07:06:35 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA106
@@ -27,7 +27,11 @@ function Test-ORCA106{
         return = $null
     }
 
-    $Collection = Get-ORCACollection
+    if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        $__MtSession.OrcaCache = Get-ORCACollection
+    }
+    $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA106
     $obj.Run($Collection)
     $testResult = ($obj.Completed -and $obj.Result -eq "Pass")

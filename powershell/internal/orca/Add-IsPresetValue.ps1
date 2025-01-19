@@ -1,4 +1,4 @@
-# Generated on 01/18/2025 18:28:57 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 01/19/2025 07:06:34 by .\build\orca\Update-OrcaTests.ps1
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]
@@ -20,7 +20,7 @@ Function Add-IsPresetValue
         {
             $IsPreset = $PresetNames -contains $item.Name
 
-            $item | Add-Member -MemberType NoteProperty -Name IsPreset -Value $IsPreset
+            $item | Add-Member -MemberType NoteProperty -Name IsPreset -Value $IsPreset -Force
         }
         
     }

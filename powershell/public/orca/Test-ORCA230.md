@@ -4,7 +4,7 @@ s important in this circumstance to check that the desired settings are applied 
 
 ### Related Links
 
-* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
 * [Microsoft 365 Defender Portal - Antiphishing policies](https://security.microsoft.com/antiphishing) 
 * [Setting up antiphishing policies](https://aka.ms/orca-atpp-docs-2) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
+* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)

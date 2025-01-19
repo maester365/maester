@@ -3,7 +3,7 @@
     Each domain has a anti-spam policy applied to it, or the default policy is being used
 
 .DESCRIPTION
-    Generated on 01/19/2025 05:57:38 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA231
@@ -27,7 +27,11 @@ function Test-ORCA231{
         return = $null
     }
 
-    $Collection = Get-ORCACollection
+    if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        $__MtSession.OrcaCache = Get-ORCACollection
+    }
+    $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA231
     $obj.Run($Collection)
     $testResult = ($obj.Completed -and $obj.Result -eq "Pass")

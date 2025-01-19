@@ -4,5 +4,5 @@ Zero Hour Autopurge can assist removing false-negatives post detection from mail
 
 ### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2)
+* [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)

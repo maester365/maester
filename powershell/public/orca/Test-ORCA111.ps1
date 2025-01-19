@@ -3,7 +3,7 @@
     Anti-phishing policy exists and EnableUnauthenticatedSender is true
 
 .DESCRIPTION
-    Generated on 01/19/2025 05:57:36 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 01/19/2025 07:06:35 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA111
@@ -27,7 +27,11 @@ function Test-ORCA111{
         return = $null
     }
 
-    $Collection = Get-ORCACollection
+    if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
+        Write-Verbose "OrcaCache not set, Get-ORCACollection"
+        $__MtSession.OrcaCache = Get-ORCACollection
+    }
+    $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA111
     $obj.Run($Collection)
     $testResult = ($obj.Completed -and $obj.Result -eq "Pass")
