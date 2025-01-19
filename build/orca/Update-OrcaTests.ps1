@@ -102,14 +102,16 @@ Set-Content -Path $repo\powershell\internal\orca\orcaClass.ps1 -Value $orcaPrere
 $testFiles = Get-ChildItem $repo\build\orca\orca\Checks\*.ps1
 foreach($file in $testFiles){
     $content = [pscustomobject]@{
-        file    = $file.Name
-        content = Get-Content $file -Raw
-        name    = ""
-        pass    = ""
-        fail    = ""
-        func    = ""
-        control = ""
-        area    = ""
+        file        = $file.Name
+        content     = Get-Content $file -Raw
+        name        = ""
+        pass        = ""
+        fail        = ""
+        func        = ""
+        control     = ""
+        area        = ""
+        description = ""
+        links       = ""
     }
 
     $content.content = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n" + $content.content
@@ -179,6 +181,26 @@ Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security
     # Test Files
     Set-Content -Path "$repo\tests\orca\check-$($content.func).Tests.ps1" -Value $testScript -Force
     #$testContents += $content
+
+    $description = [regex]::Match($content.content,"this.importance.*[\'\`"](?'capture'.*)[\'\`"]",$option)
+    $content.description = $description.Groups['capture'].Value
+    $links = [regex]::Match($x,"this.Links.*(?'capture'@{[^}]*})",$option)
+    $content.links = $links.Groups['capture'].Value|ConvertFrom-StringData
+
+    $md = @"
+    $($content.pass)
+
+    $($content.description)
+
+    ### Related Links
+
+    $($content.links.Keys|ForEach-Object{
+        "* ($($_.Substring(1,$_.Length-2)))[$(($f["$_"]).Substring(1,($f["$_"]).Length-2))]"
+    })
+"@
+
+    # MD Files
+    Set-Content -Path "$repo\powershell\public\orca\check-$($content.func).md" -Value $md -Force
 }
 @"
 ScriptsToProcess = @(
