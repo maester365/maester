@@ -159,7 +159,7 @@ Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security
 "@
 
     # Test Files
-    Set-Content -Path "$repo\tests\orca\check-$($content.func).Tests.ps1" -Value $testScript -Force
+    Set-Content -Path "$repo\tests\orca\Get-$($content.func).Tests.ps1" -Value $testScript -Force
     #$testContents += $content
 
     $funcScript = @"
@@ -219,7 +219,7 @@ $($content.description)
         "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
     })
     # MD Files
-    Set-Content -Path "$repo\powershell\public\orca\get-$($content.func).md" -Value $md -Force
+    Set-Content -Path "$repo\powershell\public\orca\Get-$($content.func).md" -Value $md -Force
 }
 @"
 ScriptsToProcess = @(
