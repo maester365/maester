@@ -251,7 +251,7 @@ FunctionsToExport = @(
     $(
         $index = 1
         while($index -le $exports.Count){
-            "    '$(($exports[$index]))', '$(($exports[$index+1]))', '$(($exports[$index+2]))', `n"
+            "    '$(($exports[$index]).Substring(0,$exports[$index].Length-4))', '$(($exports[$index+1]).Substring(0,$exports[$index].Length-4))', '$(($exports[$index+2]).Substring(0,$exports[$index].Length-4))', `n"
             $index = $index+3
         }
     )
