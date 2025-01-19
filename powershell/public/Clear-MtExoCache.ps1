@@ -23,4 +23,5 @@ function Clear-MtExoCache {
     Write-Verbose -Message "Clearing the results for EXO requests in this session"
 
     $__MtSession.ExoCache = @{}
+    $__MtSession.OrcaCache = @{}
 }
