@@ -149,7 +149,7 @@ foreach($file in $testFiles){
 
 Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security", "All" {
     It "$($content.file.Substring(6,7)): $($content.name)" {
-        `$result = Get-$($content.func)
+        `$result = Test-$($content.func)
 
         if(`$null -ne `$result) {
             `$result | Should -Be `$true -Because "$($content.pass)"
@@ -159,17 +159,29 @@ Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security
 "@
 
     # Test Files
-    Set-Content -Path "$repo\tests\orca\Get-$($content.func).Tests.ps1" -Value $testScript -Force
+    Set-Content -Path "$repo\tests\orca\Test-$($content.func).Tests.ps1" -Value $testScript -Force
     #$testContents += $content
 
     $funcScript = @"
+<#
+.DESCRIPTION
+    $($content.pass)
+
+.EXAMPLE
+    Test-$($content.func)
+
+.LINK
+    https://maester.dev/docs/commands/Test-$($content.func)
+#>
+
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-function Get-$($content.func){
+function Test-$($content.func){
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-$($content.func)"
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return = `$null
@@ -197,7 +209,7 @@ function Get-$($content.func){
 "@
 
     # Test Files
-    Set-Content -Path "$repo\powershell\public\orca\Get-$($content.func).ps1" -Value $funcScript -Force
+    Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).ps1" -Value $funcScript -Force
     $exports += "Get-$($content.func).ps1"
 
 
@@ -219,7 +231,7 @@ $($content.description)
         "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
     })
     # MD Files
-    Set-Content -Path "$repo\powershell\public\orca\Get-$($content.func).md" -Value $md -Force
+    Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).md" -Value $md -Force
 }
 @"
 ScriptsToProcess = @(
