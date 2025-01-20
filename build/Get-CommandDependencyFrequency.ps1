@@ -30,7 +30,7 @@ function Get-CommandDependencyFrequency {
 
     .NOTES
     To Do:
-    - Track known, internal private functions so they can be reported accurately in the results.
+    - Track known, internal private functions so they can be reported accurately in the results. (In Progress)
     - Add a parameter to scan directories other than the default (public).
     - Define parameter sets as necessary to support the filters below:
     - Add a parameter to only show unknown/private commands.
@@ -64,6 +64,12 @@ function Get-CommandDependencyFrequency {
     $Filter = [scriptblock]::Create($FilterConditions)
     #endregion FilterResults
 
+    #region GetInternalFunctions
+    $InternalFunctionsPath = (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/internal')
+    [string[]]$InternalFunctions = Get-ChildItem -Path $InternalFunctionsPath -File *.ps1 |
+        Select-Object -ExpandProperty BaseName
+    #endregion GetInternalFunctions
+
     $FileDependencies = New-Object System.Collections.Generic.List[PSCustomObject]
     $Files = Get-ChildItem -Path (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/public') -File *.ps1 -Recurse
     foreach ($file in $Files) {
@@ -87,21 +93,18 @@ function Get-CommandDependencyFrequency {
     # Loop through $FileDependencies. Create a list of custom objects that contain the command name, the number of times it appears, and the files it appears in.
     $DependencyList = New-Object System.Collections.Generic.List[PSCustomObject]
     foreach ($item in $FileDependencies) {
-        # Filter the list of commands (optional)
-        # Move the filter block up to this section
-
         # Check if $DependencyList already contains an object with the same command name.
         if ($DependencyList.command -contains $item.command) {
-            # If it does, increment the count and add the file to the files array.
+            # If it is already in the list, increment the count and add the file to the files array.
             $ListItem = $DependencyList | Where-Object { $_.command -eq $item.command }
             $ListItem.count = $ListItem.count + $item.count
             $ListItem.files += $item.file
             continue
         } else {
-
+            # Create a new item in the list.
             $Module = (Get-Command -Name $item.command -ErrorAction SilentlyContinue).Source
-            if ( [string]::IsNullOrEmpty($Module) ) {
-                $Module = 'Unknown Module or Private Command'
+            if ( [string]::IsNullOrEmpty($Module) -and $InternalFunctions -contains $item.command ) {
+                $Module = 'Maester (Internal Function)'
             }
 
             $DependencyList.Add( [PSCustomObject]@{
