@@ -27,6 +27,16 @@ function Get-CommandDependencyFrequency {
     Get-CommandDependencyFrequency -ExcludeBuiltIn -ExcludeUnknown
 
     Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands, unknown commands, and private functions.
+
+    .NOTES
+    To Do:
+    - Track known, internal private functions so they can be reported accurately in the results.
+    - Define parameter sets as necessary to support the filters below:
+    - Add a parameter to only show unknown/private commands.
+    - Add a parameter to filter the results by module.
+    - Add a parameter to filter the results by command name.
+    - Add a parameter to filter the results by file name.
+    - Add a parameter to filter the results by command usage count.
     #>
 
     [CmdletBinding()]
