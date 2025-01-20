@@ -31,6 +31,7 @@ function Get-CommandDependencyFrequency {
     .NOTES
     To Do:
     - Track known, internal private functions so they can be reported accurately in the results.
+    - Add a parameter to scan directories other than the default (public).
     - Define parameter sets as necessary to support the filters below:
     - Add a parameter to only show unknown/private commands.
     - Add a parameter to filter the results by module.
@@ -59,12 +60,12 @@ function Get-CommandDependencyFrequency {
     }
     if ($ExcludeUnknown.IsPresent) {
         $FilterConditions += ' -and ( $_.Module -ne "Unknown Module or Private Command" )'
-        }
+    }
     $Filter = [scriptblock]::Create($FilterConditions)
     #endregion FilterResults
 
     $FileDependencies = New-Object System.Collections.Generic.List[PSCustomObject]
-    $Files = Get-ChildItem ..\powershell\public\ -File *.ps1 -Recurse
+    $Files = Get-ChildItem -Path (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/public') -File *.ps1 -Recurse
     foreach ($file in $Files) {
         $Content = Get-Content $file -Raw
         $Parse = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$null, [ref]$null)
@@ -92,9 +93,9 @@ function Get-CommandDependencyFrequency {
         # Check if $DependencyList already contains an object with the same command name.
         if ($DependencyList.command -contains $item.command) {
             # If it does, increment the count and add the file to the files array.
-            $existing = $DependencyList | Where-Object { $_.command -eq $item.command }
-            $existing.count = $existing.count + $item.count
-            $existing.files += $item.file
+            $ListItem = $DependencyList | Where-Object { $_.command -eq $item.command }
+            $ListItem.count = $ListItem.count + $item.count
+            $ListItem.files += $item.file
             continue
         } else {
 
