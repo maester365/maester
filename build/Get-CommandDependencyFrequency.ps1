@@ -1,7 +1,7 @@
 function Get-CommandDependencyFrequency {
     <#
     .SYNOPSIS
-    Get command dependencies in the public PowerShell scripts.
+    Get command dependencies in public PowerShell scripts.
 
     .DESCRIPTION
     This function reads all the public PowerShell scripts and counts the number of times each command is used in them.
@@ -19,14 +19,14 @@ function Get-CommandDependencyFrequency {
     Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands.
 
     .EXAMPLE
-    Get-CommandDependencyFrequency -ExcludeUnknown
+    Get-CommandDependencyFrequency -ExcludeUnidentified
 
-    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding unknown commands and private functions.
+    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding commands from unidentified modules.
 
     .EXAMPLE
-    Get-CommandDependencyFrequency -ExcludeBuiltIn -ExcludeUnknown
+    Get-CommandDependencyFrequency -ExcludeBuiltIn -ExcludeUnidentified -ExcludeMaesterFunctions
 
-    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands, unknown commands, and private functions.
+    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands, commands from unidentified modules, and Maester functions.
     #>
 
     [CmdletBinding()]
