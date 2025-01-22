@@ -27,30 +27,31 @@ function Get-CommandDependencyFrequency {
     Get-CommandDependencyFrequency -ExcludeBuiltIn -ExcludeUnknown
 
     Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands, unknown commands, and private functions.
-
-    .NOTES
-    To Do:
-    - Track known, internal private functions so they can be reported accurately in the results. (In Progress)
-    - Add a parameter to scan directories other than the default (public).
-    - Define parameter sets as necessary to support the filters below:
-    - Add a parameter to only show unknown/private commands.
-    - Add a parameter to filter the results by module.
-    - Add a parameter to filter the results by command name.
-    - Add a parameter to filter the results by file name.
-    - Add a parameter to filter the results by command usage count.
     #>
 
     [CmdletBinding()]
     param (
+
+        # Parameter help description
+        [Parameter(Position = 0, HelpMessage = 'The path to the PowerShell scripts you want to analyze.')]
+        [ValidateScript({ Test-Path -Path $_ -PathType Container })]
+        [string]
+        $Path = (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/public'),
+
         # Exclude built-in PowerShell commands
-        [Parameter()]
+        [Parameter(HelpMessage = 'Exclude commands from built-in PowerShell modules in the results.')]
         [switch]
         $ExcludeBuiltIn,
 
         # Exclude unknown commands
-        [Parameter()]
+        [Parameter(HelpMessage = 'Exclude commands from unknown PowerShell modules in the results.')]
         [switch]
-        $ExcludeUnknown
+        $ExcludeUnknown,
+
+        # Exclude Maester functions
+        [Parameter(HelpMessage = 'Exclude Maester functions in the results.')]
+        [switch]
+        $ExcludeMaesterFunctions
     )
 
     # region FilterResults
@@ -59,7 +60,10 @@ function Get-CommandDependencyFrequency {
         $FilterConditions += ' -and ( $_.Module -notin @("Pester", "PowerShellGet") -and $_.Module -notlike "Microsoft.PowerShell*" -and $_.Module -notlike "DnsClient*")'
     }
     if ($ExcludeUnknown.IsPresent) {
-        $FilterConditions += ' -and ( $_.Module -ne "Unknown Module or Private Command" )'
+        $FilterConditions += ' -and -not ( [string]::IsNullOrEmpty($_.Module) )'
+    }
+    if ($ExcludeMaesterFunctions.IsPresent) {
+        $FilterConditions += ' -and ( $_.Module -notlike "Maester*" )'
     }
     $Filter = [scriptblock]::Create($FilterConditions)
     #endregion FilterResults
@@ -70,8 +74,9 @@ function Get-CommandDependencyFrequency {
         Select-Object -ExpandProperty BaseName
     #endregion GetInternalFunctions
 
-    $FileDependencies = New-Object System.Collections.Generic.List[PSCustomObject]
-    $Files = Get-ChildItem -Path (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/public') -File *.ps1 -Recurse
+    #region GetCommandDependencies
+    $FileDependencies = New-Object -TypeName System.Collections.Generic.List[PSCustomObject]
+    $Files = Get-ChildItem -Path $Path -File *.ps1 -Recurse
     foreach ($file in $Files) {
         $Content = Get-Content $file -Raw
         $Parse = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$null, [ref]$null)
@@ -79,15 +84,31 @@ function Get-CommandDependencyFrequency {
                 $args | Where-Object { $_ -is [System.Management.Automation.Language.CommandAst] }
             }, $true) | ForEach-Object {
                 ($_.CommandElements | Select-Object -First 1).Value
-            } | Group-Object | Sort-Object @{e = { $_.Count }; Descending = $true }, Name
+        } | Group-Object | Sort-Object @{Expression = { $_.Count }; Descending = $true }, Name
 
+        # Add each command detail to $FileDependencies
         foreach ($command in $Commands) {
             $FileDependencies.Add( [PSCustomObject]@{
-                Command = $command.Name
-                Count   = $command.Count
-                File    = $file
-            } )
+                    Command = $command.Name
+                    Count   = $command.Count
+                    File    = $file
+                } )
         }
+    }
+    #endregion GetCommandDependencies
+
+    # Create a reference hash table of all available commands on the system and their source module.
+    # Account for CommandType precedence when multiple commands have the same name to get the one that would be used.
+    $CommandList = [hashtable]@{}
+    $CommandTypePrecedence = @{
+        'Function' = 1
+        'Alias'    = 2
+        'Cmdlet'   = 3
+    }
+    $GroupedCommands = Get-Command | Group-Object -Property Name
+    foreach ($group in $GroupedCommands) {
+        $lowestPrecedenceCommand = $group.Group | Sort-Object { $CommandTypePrecedence["$($_.CommandType)"] } | Select-Object -First 1
+        $CommandList[$group.Name] = $lowestPrecedenceCommand.Source
     }
 
     # Loop through $FileDependencies. Create a list of custom objects that contain the command name, the number of times it appears, and the files it appears in.
@@ -99,24 +120,23 @@ function Get-CommandDependencyFrequency {
             $ListItem = $DependencyList | Where-Object { $_.command -eq $item.command }
             $ListItem.count = $ListItem.count + $item.count
             $ListItem.files += $item.file
-            continue
         } else {
             # Create a new item in the list.
-            $Module = (Get-Command -Name $item.command -ErrorAction SilentlyContinue).Source
+            $Module = $CommandList[$item.command]
             if ( [string]::IsNullOrEmpty($Module) -and $InternalFunctions -contains $item.command ) {
                 $Module = 'Maester (Internal Function)'
             }
 
             $DependencyList.Add( [PSCustomObject]@{
-                Command = $item.command
-                Module  = $Module
-                Count   = $item.count
-                Files   = @($item.file)
-            } )
+                    Command = $item.command
+                    Module  = $Module
+                    Count   = $item.count
+                    Files   = @($item.file)
+                } )
         }
     }
 
+    # Sort and output the results.
     $DependencyList = $DependencyList | Sort-Object -Property Module, Count, Name
     $DependencyList | Where-Object -FilterScript $Filter
-
 }
