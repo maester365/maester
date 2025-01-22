@@ -39,17 +39,17 @@ function Get-CommandDependencyFrequency {
         $Path = (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/public'),
 
         # Exclude built-in PowerShell commands
-        [Parameter(HelpMessage = 'Exclude commands from built-in PowerShell modules in the results.')]
+        [Parameter(HelpMessage = 'Exclude commands from built-in PowerShell modules from the results.')]
         [switch]
         $ExcludeBuiltIn,
 
         # Exclude unknown commands
-        [Parameter(HelpMessage = 'Exclude commands from unknown PowerShell modules in the results.')]
+        [Parameter(HelpMessage = 'Exclude commands from unidentified PowerShell modules from the results.')]
         [switch]
-        $ExcludeUnknown,
+        $ExcludeUnidentified,
 
         # Exclude Maester functions
-        [Parameter(HelpMessage = 'Exclude Maester functions in the results.')]
+        [Parameter(HelpMessage = 'Exclude Maester functions from the results.')]
         [switch]
         $ExcludeMaesterFunctions
     )
