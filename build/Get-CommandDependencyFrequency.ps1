@@ -8,6 +8,18 @@ function Get-CommandDependencyFrequency {
     It returns a list of all used commands, the number of times they are used, the module the command is from, and the
     files each command is used in.
 
+    .PARAMETER Path
+    The path to the PowerShell scripts you want to analyze. The default path is the public PowerShell scripts in the current project.
+
+    .PARAMETER ExcludeBuiltIn
+    Exclude commands from built-in PowerShell modules from the results.
+
+    .PARAMETER ExcludeUnidentified
+    Exclude commands from unidentified PowerShell modules from the results.
+
+    .PARAMETER ExcludeMaesterFunctions
+    Exclude Maester functions (public and private) from the results.
+
     .EXAMPLE
     Get-CommandDependencyFrequency
 
