@@ -8,6 +8,18 @@ function Get-CommandDependencyFrequency {
     It returns a list of all used commands, the number of times they are used, the module the command is from, and the
     files each command is used in.
 
+    .PARAMETER Path
+    The path to the directory containing the PowerShell scripts to inspect. Defaults to '/powershell/public'.
+
+    .PARAMETER InternalFunctionsPath
+    The path to the internal functions for this project. Defaults to '/powershell/internal'.
+
+    .PARAMETER ExcludeBuiltIn
+    Exclude built-in PowerShell commands from the results.
+
+    .PARAMETER ExcludeUnknown
+    Exclude unknown commands and private functions from the results.
+
     .EXAMPLE
     Get-CommandDependencyFrequency
 
@@ -24,20 +36,18 @@ function Get-CommandDependencyFrequency {
     Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding unknown commands and private functions.
 
     .EXAMPLE
-    Get-CommandDependencyFrequency -ExcludeBuiltIn -ExcludeUnknown
+    $CommandDependencies = Get-CommandDependencyFrequency -ExcludeBuiltIn | Sort-Object -Property Module,Command
+    $CommandDependencies | Select-Object Module -Unique
+    $CommandDependencies | Group-Object -Property Module -NoElement | Format-Table -AutoSize
 
-    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands, unknown commands, and private functions.
+    Gets all command dependencies in the public PowerShell scripts with their usage and source module, excluding built-in PowerShell commands.
+    Then returns a list of dependency unique module names.
+    Then returns a table showing each dependent module and the number of commands used from it.
 
     .NOTES
     To Do:
     - Track known, internal private functions so they can be reported accurately in the results. (In Progress)
-    - Add a parameter to scan directories other than the default (public).
-    - Define parameter sets as necessary to support the filters below:
-    - Add a parameter to only show unknown/private commands.
-    - Add a parameter to filter the results by module.
-    - Add a parameter to filter the results by command name.
-    - Add a parameter to filter the results by file name.
-    - Add a parameter to filter the results by command usage count.
+    - Possible improvements or automation for tracking Exchange Online remote commands.
     #>
 
     [CmdletBinding()]
@@ -54,12 +64,12 @@ function Get-CommandDependencyFrequency {
         [string]
         $InternalFunctionsPath = (Join-Path -Path (Split-Path $PSScriptRoot -Parent) -ChildPath 'powershell/internal'),
 
-        # Exclude built-in PowerShell commands
+        # Exclude built-in PowerShell commands.
         [Parameter()]
         [switch]
         $ExcludeBuiltIn,
 
-        # Exclude unknown commands
+        # Exclude unknown commands.
         [Parameter()]
         [switch]
         $ExcludeUnknown
