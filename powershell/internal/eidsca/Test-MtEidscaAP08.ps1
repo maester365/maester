@@ -21,7 +21,10 @@ function Test-MtEidscaAP08 {
     [OutputType([bool])]
     param()
 
-    
+    if ( ($AuthorizationPolicyAvailable | where-object permissionGrantPolicyIdsAssignedToDefaultUserRole -Match 'ManagePermissionGrantsForSelf*').Count -eq 0 ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'User Consent has been disabled or customized using Microsoft Graph or Microsoft Graph PowerShell without any assignment to custom policy.'
+            return $null
+    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'

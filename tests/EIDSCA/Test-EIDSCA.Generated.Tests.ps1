@@ -1,5 +1,5 @@
 BeforeDiscovery {
-$AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta).psobject.properties.name
+$AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
 $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
 $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
 $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
@@ -50,7 +50,7 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP08" {
-    It "EIDSCA.AP08: Default Authorization Settings - User consent policy assigned for applications. See https://maester.dev/docs/tests/EIDSCA.AP08" {
+    It "EIDSCA.AP08: Default Authorization Settings - User consent policy assigned for applications. See https://maester.dev/docs/tests/EIDSCA.AP08" -TestCases @{ AuthorizationPolicyAvailable = $AuthorizationPolicyAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
@@ -384,7 +384,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" {
-    It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .notifyReviewers -eq 'true'
@@ -393,7 +393,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" {
-    It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .remindersEnabled -eq 'true'
@@ -402,7 +402,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" {
-    It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .requestDurationInDays -le '30'

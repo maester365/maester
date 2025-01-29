@@ -21,7 +21,7 @@ function Test-MtEidscaCR02 {
     [OutputType([bool])]
     param()
 
-    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+    if ( $EnabledAdminConsentWorkflow -eq $false ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
             return $null
     }

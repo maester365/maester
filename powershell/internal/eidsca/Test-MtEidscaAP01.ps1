@@ -21,7 +21,7 @@ function Test-MtEidscaAP01 {
     [OutputType([bool])]
     param()
 
-    if ( $AuthorizationPolicyAvailable -notcontains 'allowedToUseSSPR' ) {
+    if ( $AuthorizationPolicyAvailable -notmatch 'allowedToUseSSPR' ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants or tenants that are not licensed for Entra ID P1.'
             return $null
     }
