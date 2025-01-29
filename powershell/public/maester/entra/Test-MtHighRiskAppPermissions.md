@@ -1,0 +1,53 @@
+Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+
+This test if any application has tier-0 graph permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+
+Following is a shortened copy from [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0), Date: 20.01.2025
+
+| Application permission | Path type | Known shortest path |
+| --- | --- | --- |
+| [AdministrativeUnit.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#administrativeunitreadwriteall) | Indirect | When combined with other types of access allowing to reset user passwords, can remove a Global Admin from a [Restricted Management Administrative Unit (RMAU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management) and take it over. |
+| [Application.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#applicationreadwriteall) | Indirect | Can impersonate any SP with more privileged application permissions granted for MS Graph, and impersonate it to escalate to Global Admin. |
+| [Application.ReadWrite.OwnedBy](https://learn.microsoft.com/en-us/graph/permissions-reference#applicationreadwriteownedby) | Indirect | Same as [Application.ReadWrite.All](#application-readwrite-all), but the impersonation is limited to the SP(s) for which the compromised SP is an owner. | 
+| [AppRoleAssignment.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#approleassignmentreadwriteall) | Indirect | Can assign the [RoleManagement.ReadWrite.Directory](#rolemanagement-readwrite-directory) permission to the compromised SP *without* requiring admin consent, and escalate to Global Admin. | 
+| [DeviceManagementConfiguration.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#devicemanagementconfigurationreadwriteall) | Indirect | Can run arbitrary commands on the InTune-managed endpoint of a Global Administrator and steal their tokens to impersonate them. | 
+| [DeviceManagementRBAC.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#devicemanagementrbacreadwriteall) | Indirect | Can assign InTune roles to a controlled user account, which allows running arbitrary commands on the InTune-managed endpoint of a Global Administrator and steal their tokens to impersonate them. | 
+| [Directory.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#directoryreadwriteall) | Indirect | Can become member of a non-role-assignable user group with assigned privileged Azure permissions, and leverage Azure resources to escalate to Global Admin. <br>**Note**: can also acquire access to external solutions integrated with Entra ID via SSO, and providing access based on non-role-assignable group memberships. | 
+| [EntitlementManagement.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#entitlementmanagementreadwriteall) | Indirect | Can update the assignment policy of an access package provisioning access to Global Admin, so that requesting the package without approval is possible from a controlled user account. | 
+| [Group.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#groupreadwriteall) | Indirect | Same as [Directory.ReadWrite.All](#directory-readwrite-all). | 
+| [GroupMember.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#groupmemberreadwriteall) | Indirect | Same as [Directory.ReadWrite.All](#directory-readwrite-all). | 
+| [Policy.ReadWrite.AuthenticationMethod](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwriteauthenticationmethod) | Indirect | When combined with [UserAuthenticationMethod.ReadWrite.All](#userauthenticationmethod-readwrite-all), can enable the [Temporary Access Pass (TAP)](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-temporary-access-pass) authentication method to help leveraging and follow the same path as that permission. | 
+| [Policy.ReadWrite.PermissionGrant](https://learn.microsoft.com/en-us/graph/permissions-reference#policyreadwritepermissiongrant) | Indirect | Can create a [permission grant policy](https://learn.microsoft.com/en-us/graph/api/permissiongrantpolicy-post-includes?view=graph-rest-1.0&tabs=http) for the compromised SP with the [RoleManagement.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#rolemanagementreadwritedirectory) permission, and leverage that policy to follow the same path as that permission and escalate to Global Admin. | 
+| [PrivilegedAccess.ReadWrite.AzureADGroup](https://learn.microsoft.com/en-us/graph/permissions-reference#privilegedaccessreadwriteazureadgroup) | Direct | Can add a controlled user account as owner or member of a group with an active Global Admin assignment (i.e. can update the membership of role-assignable groups). | 
+| [PrivilegedEligibilitySchedule.ReadWrite.AzureADGroup](https://learn.microsoft.com/en-us/graph/permissions-reference#privilegedeligibilityschedulereadwriteazureadgroup) | Indirect | Can make a controlled user account eligible to a group with an active Global Admin assignment, and activate the group membership to escalate to Global Admin. | 
+| [RoleAssignmentSchedule.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#roleassignmentschedulereadwritedirectory) | Direct | Can assign the Global Admin role to a controlled user account, by creating an active PIM role assignment. | 
+| [RoleEligibilitySchedule.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#roleeligibilityschedulereadwritedirectory) | Indirect | Can make a controlled user account eligible to the Global Admin role, and activate it to escalate to Global Admin. | 
+| [RoleManagement.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#rolemanagementreadwritedirectory) | Direct | Can assign the Global Admin role to a controlled principal. | 
+| [RoleManagementPolicy.ReadWrite.AzureADGroup](https://learn.microsoft.com/en-us/graph/permissions-reference#rolemanagementpolicyreadwriteazureadgroup) | Indirect | Can remove group role assignment and activation constrains, such as MFA requirements or admin approval, to help leveraging [PrivilegedAccess.ReadWrite.AzureADGroup](#privilegedaccess-readwrite-azureadgroup), [PrivilegedAssignmentSchedule.ReadWrite.AzureADGroup](#privilegedassignmentschedule-readwrite-azureadgroup) or [PrivilegedEligibilitySchedule.ReadWrite.AzureADGroup](#privilegedeligibilityschedule-readwrite-azureadgroup), and follow the same path as those permissions in a tenant with strict PIM settings. | 
+| [RoleManagementPolicy.ReadWrite.Directory](https://learn.microsoft.com/en-us/graph/permissions-reference#rolemanagementpolicyreadwritedirectory) | Indirect | Can remove Entra role assignment and activation constrains, such as MFA requirements or admin approval, to help leveraging [RoleAssignmentSchedule.ReadWrite.Directory](#roleassignmentschedule-readwrite-directory) or [RoleEligibilitySchedule.ReadWrite.Directory](#roleeligibilityschedule-readwrite-directory), and follow the same path as those permissions in a tenant with strict PIM settings. | 
+| [User.DeleteRestore.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userdeleterestoreall) | Direct | Can delete all user accounts in the tenant (making the latter unavailable), and ask for a ransomware to restore one of the break-glass accounts. <br>Note: this permission is "Global-Admin-like", as it affects the availability of the tenant in the same way as a Global Admin. | 
+| [User.EnableDisableAccount.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userenabledisableaccountall) | Direct | When combined with [User.Read.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userreadall), can disable all user accounts in the tenant (making the latter unavailable), and ask for a ransomware to re-enable one of the break-glass accounts. <br>Note: this permission is "Global-Admin-like", as it affects the availability of the tenant in the same way as a Global Admin. | 
+| [User.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userreadwriteall) | Indirect | Can edit sensitive properties of a controlled user account, such as "Employee ID" and "Department", to become member of a dynamic group with assigned privileged Azure permissions, and leverage Azure resources to escalate to Global Admin. | 
+| [User-PasswordProfile.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#user-passwordprofilereadwriteall) | Indirect | Same as [Directory.ReadWrite.All](#directory-readwrite-all). |
+| [UserAuthenticationMethod.ReadWrite.All](https://learn.microsoft.com/en-us/graph/permissions-reference#userauthenticationmethodreadwriteall) | Direct | Can generate a [Temporary Access Pass (TAP)](https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-temporary-access-pass) and take over any user account in the tenant. <br> Note: if TAP is not an enabled authentication method in the tenant, this path needs to be combined with [Policy.ReadWrite.AuthenticationMethod](#policy-readwrite-authenticationmethod) to be successful. | 
+
+#### Remediation action:
+
+To check the applications permissions:
+1. Navigate to Microsoft Entra admin center [https://entra.microsoft.com/](https://entra.microsoft.com/).
+2. Click to expand **Applications** then select **App registrations**.
+3. Select **All applications**.
+4. Search for the application that you want to check and select the application.
+5. Select **API permissions**.
+6. Check the **Microsoft Graph** permissions.
+7. Verify that **only authorized users** have access to this application and its secrets. 
+
+#### Related links
+
+* [Microsoft 365 Admin Center](https://admin.microsoft.com)
+* [Microsft Entra - App registrations](https://enappreg.cmd.ms/)
+* [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0)
+* [Microsoft Learn - Graph permissions](https://learn.microsoft.com/en-us/graph/permissions-reference)
+
+<!--- Results --->
+%TestResult%
