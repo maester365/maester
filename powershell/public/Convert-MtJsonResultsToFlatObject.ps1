@@ -35,6 +35,10 @@
     .OUTPUTS
     System.Collections.Generic.List[PSObject]
 
+    .NOTES
+    Due to limitations in CSV files and Excel cells, the ResultDetails property is truncated to only include the test
+    result and not details about impacted objects. The full details are still available in the JSON file.
+
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Generic.List[PSObject]])]
@@ -102,6 +106,9 @@
     if ($ExportExcel.IsPresent) {
         try {
             $MaesterResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
+        } catch [System.Management.Automation.CommandNotFoundException] {
+            Write-Error "The ImportExcel module is required to export the Maester test results to an Excel file. Install the module using ``Import-Module -Name 'ImportExcel'`` and try again."
+
         } catch {
             Write-Error "Failed to export the Maester test results to an Excel file. $_"
         }
