@@ -19,6 +19,9 @@
     .PARAMETER ExportExcel
     Export the flattened object to an Excel workbook using the ImportExcel module.
 
+    .PARAMETER Passthru
+    Return the flattened object to the pipeline.
+
     .EXAMPLE
     Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
 
@@ -52,7 +55,12 @@
         # Export the Maester test results to an Excel file.
         [Parameter()]
         [switch]
-        $ExportExcel
+        $ExportExcel,
+
+        # Return the flattened object to the pipeline.
+        [Parameter()]
+        [switch]
+        $Passthru
     )
 
     #region ReplacementStrings
@@ -97,5 +105,9 @@
         } catch {
             Write-Error "Failed to export the Maester test results to an Excel file. $_"
         }
+    }
+
+    if ($Passthru.IsPresent) {
+        $MaesterResults
     }
 } #end function Convert-MtJsonResultsToFlatObject
