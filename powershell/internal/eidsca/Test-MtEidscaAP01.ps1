@@ -29,7 +29,7 @@ function Test-MtEidscaAP01 {
 
     [string]$tenantValue = $result.allowedToUseSSPR
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"

@@ -21,7 +21,7 @@ function Test-MtEidscaAP08 {
     [OutputType([bool])]
     param()
 
-    if ( ($AuthorizationPolicyAvailable | where-object permissionGrantPolicyIdsAssignedToDefaultUserRole -Match 'ManagePermissionGrantsForSelf*').Count -eq 0 ) {
+    if ( ($AuthorizationPolicyAvailable | where-object permissionGrantPolicyIdsAssignedToDefaultUserRole -Match 'ManagePermissionGrantsForSelf.microsoft-').Count -eq 0 ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'User Consent has been disabled or customized using Microsoft Graph or Microsoft Graph PowerShell without any assignment to custom policy.'
             return $null
     }
@@ -29,7 +29,7 @@ function Test-MtEidscaAP08 {
 
     [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'ManagePermissionGrantsForSelf.microsoft-user-default-low'** for **policies/authorizationPolicy**"

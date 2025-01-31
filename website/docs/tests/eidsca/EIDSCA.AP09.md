@@ -1,10 +1,10 @@
 ---
-title: EIDSCA.AP09 - Default Authorization Settings - Risk-based step-up consent
+title: EIDSCA.AP09 - Default Authorization Settings - Allow user consent on risk-based apps
 slug: /tests/EIDSCA.AP09
 sidebar_class_name: hidden
 ---
 
-# Default Authorization Settings - Risk-based step-up consent
+# Default Authorization Settings - Allow user consent on risk-based apps
 
 Indicates whether user consent for risky apps is allowed. For example, consent requests for newly registered multi-tenant apps that are not publisher verified and require non-basic permissions are considered risky.
 

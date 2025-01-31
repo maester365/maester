@@ -22,14 +22,14 @@ function Test-MtEidscaCP01 {
     param()
 
     if ( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Group owner consent settings have been removed and replaced with Team owner consent settings.'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
     $testResult = $tenantValue -eq 'False'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'False' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'False' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'False'** for **settings**"

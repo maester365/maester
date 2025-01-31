@@ -17,7 +17,7 @@ Prevents all non-admins from reading user information from the directory. This f
 
 ## How to fix
 
-Update-MgPolicyAuthorizationPolicy -BodyParameter @{DefaultUserRolePermissions = @{AllowedToReadOtherUsers = $false}}
+Microsoft Graph PowerShell: ```PolicyAuthorizationPolicy -BodyParameter @{DefaultUserRolePermissions = @{AllowedToReadOtherUsers = $false}}```
 
 ### Details of configuration item
 | | |

@@ -21,15 +21,12 @@ function Test-MtEidscaCP04 {
     [OutputType([bool])]
     param()
 
-    if ( $SettingsApiAvailable -notcontains 'EnableAdminConsentRequests' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
-            return $null
-    }
+    
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **settings**"

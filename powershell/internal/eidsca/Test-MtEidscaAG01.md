@@ -5,7 +5,7 @@ On September 30th, 2025, the legacy multifactor authentication and self-service 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
-.policyMigrationState -eq 'migrationComplete'
+.policyMigrationState -in @('migrationComplete', '')
 ```
 
 #### Related links

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Authentication Method - General Settings - Manage migration is set to 'migrationComplete'
+    Checks if Authentication Method - General Settings - Manage migration is set to @('migrationComplete', '')
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries policies/authenticationMethodsPolicy
     and returns the result of
-     graph/policies/authenticationMethodsPolicy.policyMigrationState -eq 'migrationComplete'
+     graph/policies/authenticationMethodsPolicy.policyMigrationState -in @('migrationComplete', '')
 
 .EXAMPLE
     Test-MtEidscaAG01
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.policyMigrationState -eq 'migrationComplete'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.policyMigrationState -in @('migrationComplete', '')
 #>
 
 function Test-MtEidscaAG01 {
@@ -25,15 +25,15 @@ function Test-MtEidscaAG01 {
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.policyMigrationState
-    $testResult = $tenantValue -eq 'migrationComplete'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'migrationComplete' -notlike '*$null*'
+    $testResult = $tenantValue -in @('migrationComplete', '')
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('migrationComplete', '') -notlike '*$null*'
 
     if($testResult){
-        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**"
     } elseif ($tenantValueNotSet) {
-        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'migrationComplete'** for **policies/authenticationMethodsPolicy**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is one of the following values **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 

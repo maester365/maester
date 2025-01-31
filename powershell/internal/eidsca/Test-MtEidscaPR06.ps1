@@ -21,15 +21,12 @@ function Test-MtEidscaPR06 {
     [OutputType([bool])]
     param()
 
-    if ( $SettingsApiAvailable -notcontains 'LockoutThreshold' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants.'
-            return $null
-    }
+    
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
     $testResult = $tenantValue -eq '10'
-    $tenantValueNotSet = $null -eq $tenantValue -and '10' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '10' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'10'** for **settings**"

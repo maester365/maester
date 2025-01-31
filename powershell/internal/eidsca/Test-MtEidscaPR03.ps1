@@ -21,15 +21,15 @@ function Test-MtEidscaPR03 {
     [OutputType([bool])]
     param()
 
-    if ( $SettingsApiAvailable -notcontains 'EnableBannedPasswordCheck' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants or tenants that are not licensed for Entra ID P1.'
+    if ( $EntraIDPlan -eq 'Free' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value
     $testResult = $tenantValue -eq 'True'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'True' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'True' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'True'** for **settings**"

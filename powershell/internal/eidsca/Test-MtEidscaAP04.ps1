@@ -26,7 +26,7 @@ function Test-MtEidscaAP04 {
 
     [string]$tenantValue = $result.allowInvitesFrom
     $testResult = $tenantValue -in @('adminsAndGuestInviters','none')
-    $tenantValueNotSet = $null -eq $tenantValue -and @('adminsAndGuestInviters','none') -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('adminsAndGuestInviters','none')** for **policies/authorizationPolicy**"

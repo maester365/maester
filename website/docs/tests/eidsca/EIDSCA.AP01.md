@@ -17,7 +17,7 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 
 ## How to fix
 
-Update-MgPolicyAuthorizationPolicy -BodyParameter @{ allowedToUseSSPR = $false }
+Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -BodyParameter @{ allowedToUseSSPR = $false }```
 
 ### Details of configuration item
 | | |

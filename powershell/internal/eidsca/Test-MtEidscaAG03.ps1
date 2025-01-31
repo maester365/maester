@@ -26,7 +26,7 @@ function Test-MtEidscaAG03 {
 
     [string]$tenantValue = $result.reportSuspiciousActivitySettings.includeTarget.id
     $testResult = $tenantValue -eq 'all_users'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'all_users' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'all_users' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'all_users'** for **policies/authenticationMethodsPolicy**"

@@ -17,7 +17,7 @@ Controls if non-admin users may register custom-developed applications for use w
 
 ## How to fix
 
-Update-MgPolicyAuthorizationPolicy -BodyParameter @{DefaultUserRolePermissions = @{AllowedToCreateApps = $false}}
+Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -BodyParameter @{ DefaultUserRolePermissions = @{ AllowedToCreateApps = $false }}```
 
 ### Details of configuration item
 | | |
