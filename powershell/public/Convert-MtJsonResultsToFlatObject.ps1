@@ -76,19 +76,28 @@
         'youâ€™re'  = 'you are'
         'arenâ€™nt' = 'are not'
     } ; [void]$ReplacementStrings # Not Used Yet
+
+    [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
     #endregion ReplacementStrings
 
     $MaesterResults = New-Object System.Collections.Generic.List[PSObject]
 
     $JsonData = (Get-Content -Path $JsonFilePath | ConvertFrom-Json).Tests
     $JsonData | ForEach-Object {
+        # Truncate the ResultDetail.TestResult data if it is longer than 30000 characters.
+        if ($_.ResultDetail.TestResult.Length -gt 30000) {
+            $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
+        } else {
+            $TestResultDetail = $_.ResultDetail.TestResult
+        }
+
         $MaesterResults.Add([PSCustomObject]@{
                 Name           = $_.Name
                 Tag            = $_.Tag -join ', '
                 Block          = $_.Block
                 Result         = $_.Result
                 Description    = $_.ResultDetail.TestDescription
-                ResultDetail   = "$($_.ResultDetail.TestResult -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
+                ResultDetail   = $TestResultDetail
                 TestSkipped    = $_.ResultDetail.TestSkipped
                 SkippedReason  = $_.ResultDetail.SkippedReason
                 ErrorMessage   = $_.ErrorRecord.Exception.Message
@@ -99,6 +108,7 @@
 
     try {
         $MaesterResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
+        Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
     } catch {
         Write-Error "Failed to export the Maester test results to a CSV file. $_"
     }
@@ -106,6 +116,7 @@
     if ($ExportExcel.IsPresent) {
         try {
             $MaesterResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
+            Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
         } catch [System.Management.Automation.CommandNotFoundException] {
             Write-Error "The ImportExcel module is required to export the Maester test results to an Excel file. Install the module using ``Import-Module -Name 'ImportExcel'`` and try again."
 
@@ -117,4 +128,5 @@
     if ($Passthru.IsPresent) {
         $MaesterResults
     }
+
 } #end function Convert-MtJsonResultsToFlatObject
