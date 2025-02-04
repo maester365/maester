@@ -41,6 +41,9 @@
     .OUTPUTS
     System.Collections.Generic.List[PSObject]
 
+    .LINK
+    https://raw.githubusercontent.com/maester365/maester/refs/heads/main/powershell/README.md
+
     .NOTES
     Due to limitations in CSV files and Excel cells, the ResultDetails property is limited to 30000 characters. If the
     test result details are longer than this, that section will be truncated and a notification will be included in its
@@ -115,6 +118,7 @@
 
             # Truncate the ResultDetail.TestResult data if it is longer than 30000 characters.
             if ($_.ResultDetail.TestResult.Length -gt 30000) {
+                Write-Verbose -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters." -Verbose
                 $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
             } else {
                 $TestResultDetail = $_.ResultDetail.TestResult
