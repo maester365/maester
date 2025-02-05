@@ -1,6 +1,6 @@
 Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
 
-This test if any application has tier-0 graph permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+This test checks if any application has tier-0 graph permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
 
 Following is a shortened copy from [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0), Date: 20.01.2025
 
