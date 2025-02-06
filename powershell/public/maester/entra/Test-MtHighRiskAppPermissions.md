@@ -2,7 +2,10 @@ Ensure no graph application has permissions with a risk of having a direct or in
 
 This test checks if any application has tier-0 graph permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
 
-Following is a shortened copy from [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0), Date: 20.01.2025
+Note:\
+There are several use cases where Tier-0 permissions with an indirect attack path are required. For example, Maester itself requires the permission “RoleEligibilitySchedule.ReadWrite.Directory” to properly validate the PIM assignments. Nevertheless, an administrator should question the use of these permissions and check whether less critical permissions are also sufficient. Applications that are provided by third-party vendors that do have Tier-0 permissions with direct or indirect attack paths should strictly be questioned and monitored. 
+
+Following is a shortened copy from [Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0), Date: 20.01.2025:
 
 | Application permission | Path type | Known shortest path |
 | --- | --- | --- |
