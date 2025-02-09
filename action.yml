@@ -53,6 +53,11 @@ inputs:
     description: "Installs the preview version, allowing access to new cmdlets."
     required: false
     default: false
+  include_exchange:
+    type: boolean
+    description: "Include Exchange Online tests in the test run."
+    required: false
+    default: true
   disable_telemetry:
     type: boolean
     description: "If set, telemetry information will not be logged."
@@ -68,6 +73,7 @@ runs:
         client-id: ${{ inputs.client_id }}
         tenant-id: ${{ inputs.tenant_id }}
         allow-no-subscriptions: true
+        enable-AzPSSession: true
 
     - name: Set current date as env variable
       shell: bash
@@ -91,6 +97,18 @@ runs:
         inlineScript: |
           # Get Token
           $token = az account get-access-token --resource-type ms-graph
+
+          # Check if we need to connect to Exchange Online
+          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.include_exchange}}' ) -eq $true ) {
+            Install-Module ExchangeOnlineManagement -Force
+            Import-Module ExchangeOnlineManagement
+
+            $outlookToken = (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com/').Token
+            Connect-ExchangeOnline -AccessToken $outlookToken -AppId '${{ inputs.client_id }}' -Organization '${{ inputs.tenant_id}}' -ShowBanner:$false
+          }else{
+            Write-Host "Exchannge Online tests will be skipped"
+          }
+
 
           # Connect to Microsoft Graph
           $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
