@@ -37,13 +37,12 @@ GitLab for personal projects (Free):
 <!--
 ### 1. Create a blank new repository to always use the latest available public Maester Tests
 -->
-### 1. Create a new blank project to always use the latest available public Maester Tests
+### Create a new blank project to always use the latest available public Maester Tests
 
-1. On the left sidebar, at the top, select Create new () and New project/repository.
-2. Select Create blank project
-    Visibility Level: Private
+- On the left sidebar, at the top, select Create new () and New project/repository.
+- Select [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
 
-- [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
+  Visibility Level: Private
 
 <!--
 ### 2. Create a new project and import the Maester Tests repository, to keep updated yourself
@@ -195,7 +194,3 @@ Pipeline schedules are ...
 <!-- ## FAQ / Troubleshooting
 - Ensure you are monitoring your GitLab Runner cost
 -->
-
-## Contributors
-
-- Original author: [Stefan Wey](https://www.linkedin.com/in/stefanwey/) | Senior Solution Engineer (M365, MCT)
