@@ -47,7 +47,7 @@ BEGIN{
     Write-Host "Starting Maester tests"
 }
 PROCESS{
-    $graphToken = Get-AzAccessToken -ResourceUrl  "https://graph.microsoft.com"
+    $graphToken = Get-AzAccessToken -ResourceTypeName MSGraph
 
     # Connect to Microsoft Graph with the token as secure string
     $accessToken = $graphToken.Token | ConvertTo-SecureString -AsPlainText -Force
