@@ -47,10 +47,9 @@ BEGIN{
     Write-Host "Starting Maester tests"
 }
 PROCESS{
-    $graphToken = Get-AzAccessToken -ResourceTypeName MSGraph
+    $graphToken = Get-AzAccessToken -ResourceTypeName MSGraph -AsSecureString
 
     # Connect to Microsoft Graph with the token as secure string
-    $accessToken = $graphToken.Token | ConvertTo-SecureString -AsPlainText -Force
     Connect-MgGraph -AccessToken $accessToken -NoWelcome
 
     # Check if we need to connect to Exchange Online
