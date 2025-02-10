@@ -16,7 +16,7 @@ BeforeDiscovery {
 Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
     $portalLink_SecureScore = "https://security.microsoft.com/securescore"
 
-    It "MT.1037: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1037", "SetScl", "TransportRule" {
+    It "MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1043", "SetScl", "TransportRule" {
 
         $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
@@ -37,7 +37,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         }
     }
 
-    It "MT.1038: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1038", "OAuth2ClientProfileEnabled" {
+    It "MT.1044: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1044", "OAuth2ClientProfileEnabled" {
 
         $result = $OrganizationConfig.OAuth2ClientProfileEnabled
 

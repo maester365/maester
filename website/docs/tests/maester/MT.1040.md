@@ -1,6 +1,6 @@
 ---
 title: MT.1040 - Ensure additional storage providers are restricted in Outlook on the web
-description: TBD (Exchange)
+description: Checks if additional storage providers are restricted in Outlook on the web
 slug: /tests/MT.1040
 sidebar_class_name: hidden
 ---

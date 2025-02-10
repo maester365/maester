@@ -1,7 +1,7 @@
 ---
-title: MT.1038 - Only invited users should be automatically admitted to Teams meetings
-description: TBD (Teams)
-slug: /tests/MT.1038
+title: MT.1045 - Only invited users should be automatically admitted to Teams meetings
+description: Checks if only invited users are automatically admitted to Teams meetings
+slug: /tests/MT.1045
 sidebar_class_name: hidden
 ---
 

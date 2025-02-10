@@ -1,7 +1,7 @@
 ---
-title: MT.1039 - Restrict anonymous users from joining meetings
-description: TBD (Teams)
-slug: /tests/MT.1039
+title: MT.1046 - Restrict anonymous users from joining meetings
+description: Checks if anonymous users are restricted from joining Microsoft Teams meetings
+slug: /tests/MT.1046
 sidebar_class_name: hidden
 ---
 

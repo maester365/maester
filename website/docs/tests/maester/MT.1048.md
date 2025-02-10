@@ -1,7 +1,7 @@
 ---
-title: MT.1041 - Limit external participants from having control in a Teams meeting
-description: TBD (Teams)
-slug: /tests/MT.1041
+title: MT.1048 - Limit external participants from having control in a Teams meeting
+description: Checks if external participants can give or request control in a Teams meeting
+slug: /tests/MT.1048
 sidebar_class_name: hidden
 ---
 

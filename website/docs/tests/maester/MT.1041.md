@@ -1,6 +1,6 @@
 ---
 title: MT.1041 - Ensure users installing Outlook add-ins is not allowed
-description: TBD (Exchange)
+description: Checks if users can install and manage add-ins for Outlook in Exchange Online
 slug: /tests/MT.1041
 sidebar_class_name: hidden
 ---

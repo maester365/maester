@@ -1,6 +1,6 @@
 ---
 title: MT.1037 - Only users with Presenter role are allowed to present in Teams meetings
-description: TBD (Teams)
+description: Checks that only users with Presenter role are allowed to present in Teams meetings
 slug: /tests/MT.1037
 sidebar_class_name: hidden
 ---

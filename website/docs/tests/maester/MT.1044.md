@@ -1,7 +1,7 @@
 ---
-title: MT.1038 - Ensure modern authentication for Exchange Online is enabled
-description: TBD (Exchange)
-slug: /tests/MT.1038
+title: MT.1044 - Ensure modern authentication for Exchange Online is enabled
+description: Checks if modern authentication in Microsoft 365 is enabled. Modern authentication enables authentication features like multifactor authentication (MFA) using smart cards, certificate-based authentication (CBA), and third-party SAML identity providers.
+slug: /tests/MT.1044
 sidebar_class_name: hidden
 ---
 

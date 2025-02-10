@@ -1,6 +1,6 @@
 ---
 title: MT.1039 - Ensure MailTips are enabled for end users
-description: TBD (Exchange)
+description: Check if MailTips are enabled for end users
 slug: /tests/MT.1039
 sidebar_class_name: hidden
 ---

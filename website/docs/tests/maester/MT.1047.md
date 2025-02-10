@@ -1,7 +1,7 @@
 ---
-title: MT.1040 - Restrict anonymous users from starting Teams meetings
-description: TBD (Teams)
-slug: /tests/MT.1040
+title: MT.1047 - Restrict anonymous users from starting Teams meetings
+description: Checks if anonymous users are allowed to start meetings
+slug: /tests/MT.1047
 sidebar_class_name: hidden
 ---
 

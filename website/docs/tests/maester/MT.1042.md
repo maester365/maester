@@ -1,6 +1,6 @@
 ---
 title: MT.1042 - Restrict dial-in users from bypassing a meeting lobby
-description: TBD (Teams)
+description: Checks if dial-in users are restricted from bypassing a meeting lobby
 slug: /tests/MT.1042
 sidebar_class_name: hidden
 ---

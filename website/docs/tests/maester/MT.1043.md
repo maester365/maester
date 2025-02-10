@@ -1,7 +1,7 @@
 ---
-title: MT.1037 - Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains
-description: TBD (Exchange)
-slug: /tests/MT.1037
+title: MT.1043 - Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains
+description: Checks if the Spam confidence level (SCL) is configured in mail transport rules with specific domains.
+slug: /tests/MT.1043
 sidebar_class_name: hidden
 ---
 
