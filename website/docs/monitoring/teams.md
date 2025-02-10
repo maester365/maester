@@ -1,6 +1,6 @@
 ---
 sidebar_label: Teams Alerts
-sidebar_position: 9
+sidebar_position: 10
 title: Set up Maester Teams alerts
 ---
 

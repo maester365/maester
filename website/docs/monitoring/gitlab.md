@@ -1,6 +1,6 @@
 ---
 sidebar_label: GitLab
-sidebar_position: 10
+sidebar_position: 4
 title: Set up Maester in GitLab
 ---
 
@@ -9,7 +9,6 @@ import TabItem from '@theme/TabItem';
 import GraphPermissions from '../sections/permissions.md';
 import CreateEntraApp from '../sections/create-entra-app.md';
 import CreateEntraClientSecret from '../sections/create-entra-client-secret.md';
-<!-- import EnableGitHubActionsCreateWorkflow from '../sections/enable-github-actions-workflow.md'; -->
 
 # <IIcon icon="mdi:gitlab" height="48" /> Set up Maester in GitLab
 
@@ -67,7 +66,7 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
 <!--<TabItem value="wif" label="Custom workflow using Workload identity federation" >
 ToBeTested ...
 </TabItem>-->
-<TabItem value="cert" label="Custom workflow using Client secret (recommended)" default>
+<TabItem value="cert" label="Custom workflow using client secret" default>
 
 <CreateEntraApp/>
 
