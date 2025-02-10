@@ -109,11 +109,11 @@ runs:
             -IncludeTags '${{ inputs.include_tags }}' `
             -ExcludeTags '${{ inputs.exclude_tags }}' `
             -PesterVerbosity '${{ inputs.pester_verbosity }}' `
-            -GitHubStepSummary ([string]::IsNullOrWhiteSpace('${{ inputs.step_summary }}') -eq 'true') `
-            -Preview ([string]::IsNullOrWhiteSpace('${{ inputs.install_prerelease }}') -eq 'true') `
-            -IncludeExchange ([string]::IsNullOrWhiteSpace('${{ inputs.include_exchange }}') -eq 'true') `
-            -IncludeTeams ([string]::IsNullOrWhiteSpace('${{ inputs.include_teams }}') -eq 'true') `
-            -DisableTelemetry ([string]::IsNullOrWhiteSpace('${{ inputs.disable_telemetry}}') -eq 'true')
+            -GitHubStepSummary (${{ inputs.step_summary }} -eq 'true') `
+            -Preview (${{ inputs.install_prerelease }} -eq 'true') `
+            -IncludeExchange (${{ inputs.include_exchange }} -eq 'true') `
+            -IncludeTeams (${{ inputs.include_teams }} -eq 'true') `
+            -DisableTelemetry (${{ inputs.disable_telemetry}}') -eq 'true')
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
