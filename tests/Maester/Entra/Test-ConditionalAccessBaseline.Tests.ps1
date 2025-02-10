@@ -65,6 +65,9 @@
     It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038", "Warning" {
         Test-MtCaReferencedGroupsExist | Should -Be $true -Because "there are one or more policies relying on deleted groups."
     }
+    It "MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049" -Tag "MT.1049" {
+        Test-MtCaMisconfiguredIDProtection | Should -Be $false -Because "there is one or more policy with common misconfiguration for ID Protection "
+    }
     Context "License utilization" -Tag "LicenseUtilization" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
