@@ -100,7 +100,7 @@ runs:
       uses: azure/powershell@v2
       with:
         inlineScript: |
-          ${{ github.action_path }}\action\action.ps1 -TenantId '${{ inputs.tenant_id}}' `
+          ${{ github.action_path }}\action\Run-Maester.ps1 -TenantId '${{ inputs.tenant_id}}' `
             -ClientId '${{ inputs.client_id }}' `
             -Path '${{ github.workspace }}' `
             -MailRecipients '${{ inputs.mail_recipients }}' `
@@ -109,11 +109,11 @@ runs:
             -IncludeTags '${{ inputs.include_tags }}' `
             -ExcludeTags '${{ inputs.exclude_tags }}' `
             -PesterVerbosity '${{ inputs.pester_verbosity }}' `
-            -GitHubStepSummary [string]::IsNullOrWhiteSpace('${{ inputs.step_summary }}') `
-            -Preview [string]::IsNullOrWhiteSpace('${{ inputs.install_prerelease }}') `
-            -IncludeExchange [string]::IsNullOrWhiteSpace('${{ inputs.include_exchange }}') `
-            -IncludeTeams [string]::IsNullOrWhiteSpace('${{ inputs.include_teams }}') `
-            -DisableTelemetry [string]::IsNullOrWhiteSpace('${{ inputs.disable_telemetry}}')
+            -GitHubStepSummary ([string]::IsNullOrWhiteSpace('${{ inputs.step_summary }}') -eq 'true') `
+            -Preview ([string]::IsNullOrWhiteSpace('${{ inputs.install_prerelease }}') -eq 'true') `
+            -IncludeExchange ([string]::IsNullOrWhiteSpace('${{ inputs.include_exchange }}') -eq 'true') `
+            -IncludeTeams ([string]::IsNullOrWhiteSpace('${{ inputs.include_teams }}') -eq 'true') `
+            -DisableTelemetry ([string]::IsNullOrWhiteSpace('${{ inputs.disable_telemetry}}') -eq 'true')
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report

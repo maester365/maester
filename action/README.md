@@ -93,12 +93,12 @@ This PowerShell script is used to monitor your tenant's security configuration u
 ## Usage
 
 ```powershell
-.\action.ps1 -TenantId "your-tenant-id" -ClientId "your-client-id" -Path "path-to-tests" -PesterVerbosity "Normal" -MailUser "user@example.com" -MailTo "recipient1@example.com,recipient2@example.com" -TestResultURI "http://example.com/results" -IncludeTags "tag1,tag2" -ExcludeTags "tag3" -IncludeExchange $true -IncludeTeams $true -Preview $false -DisableTelemetry $false -GitHubStepSummary $true
+.\Run-Maester.ps1 -TenantId "your-tenant-id" -ClientId "your-client-id" -Path "path-to-tests" -PesterVerbosity "Normal" -MailUser "user@example.com" -MailTo "recipient1@example.com,recipient2@example.com" -TestResultURI "http://example.com/results" -IncludeTags "tag1,tag2" -ExcludeTags "tag3" -IncludeExchange $true -IncludeTeams $true -Preview $false -DisableTelemetry $false -GitHubStepSummary $true
 ```
 
 ## Example
 ```powershell
-.\action.ps1 -TenantId "12345678-1234-1234-1234-123456789012" -ClientId "87654321-4321-4321-4321-210987654321" -Path "./tests" -PesterVerbosity "Detailed" -MailUser "admin@example.com" -MailTo "user1@example.com,user2@example.com" -TestResultURI "http://example.com/results" -IncludeTags "security,compliance" -ExcludeTags "performance" -IncludeExchange $true -IncludeTeams $true -Preview $true -DisableTelemetry $true -GitHubStepSummary $true
+.\Run-Maester.ps1 -TenantId "12345678-1234-1234-1234-123456789012" -ClientId "87654321-4321-4321-4321-210987654321" -Path "./tests" -PesterVerbosity "Detailed" -MailUser "admin@example.com" -MailTo "user1@example.com,user2@example.com" -TestResultURI "http://example.com/results" -IncludeTags "security,compliance" -ExcludeTags "performance" -IncludeExchange $true -IncludeTeams $true -Preview $true -DisableTelemetry $true -GitHubStepSummary $true
 ```
 
 ## Notes
