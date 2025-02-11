@@ -10,11 +10,11 @@ sidebar_class_name: hidden
 ## Description
 
 There are two types of risk policies in Microsoft Entra Conditional Access you can set up. You can use these policies to automate the response to risks allowing users to self-remediate when sign-in risk or user risk is detected.
-Sign-in risk and user risk should not be configured in a single policy, but instead be seperated as Conditional Access policies will only be applied if ALL conditions match. 
+Sign-in risk and user risk should not be configured in a single policy, but instead be separated as Conditional Access policies will only be applied if ALL conditions match. 
 
 ## How to fix
 
-Configure seperate Conditional Access policies for sign-in risk and user risk
+Configure separate Conditional Access policies for sign-in risk and user risk
 
 ## Learn more
   - [Microsoft Learn | Configure and enable risk policies](https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies)
