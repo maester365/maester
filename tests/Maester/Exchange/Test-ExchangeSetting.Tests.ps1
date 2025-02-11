@@ -16,7 +16,7 @@ BeforeDiscovery {
 Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
     $portalLink_SecureScore = "https://security.microsoft.com/securescore"
 
-    It "MT.1037: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1037", "SetScl", "TransportRule" {
+    It "MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1043", "SetScl", "TransportRule" {
 
         $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
@@ -37,7 +37,7 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         }
     }
 
-    It "MT.1038: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1038", "OAuth2ClientProfileEnabled" {
+    It "MT.1044: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1044", "OAuth2ClientProfileEnabled" {
 
         $result = $OrganizationConfig.OAuth2ClientProfileEnabled
 
@@ -77,6 +77,8 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
 
     # Y
     It "MT.1040: Ensure additional storage providers are restricted in Outlook on the web" -Tag "MT.1040", "AdditionalStorageProvidersAvailable" {
+        # > CIS 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'
+
         #Get-OwaMailboxPolicy | fl Name, AdditionalStorageProvidersAvailable, ThirdPartyFileProvidersEnabled, ConditionalAccessPolicy, ChangePasswordEnabled, *Offline*, ReportJunkEmailEnabled
         #Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false
 
@@ -98,6 +100,8 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
 
     # Z
     It "MT.1041: Ensure users installing Outlook add-ins is not allowed" -Tag "MT.1041", "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps" {
+        # > CIS 1.3.4 (L1) Ensure 'User owned apps and services' is restricted
+
         #Get-ManagementRoleAssignment -Role "My Custom Apps" -RoleAssignee $defaultrole | ft -AutoSize
         #Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $defaultrole | ft -AutoSize
         #Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $defaultrole | ft -AutoSize
@@ -119,4 +123,14 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
             $result | Should -Be $false -Because "Apps in 'Default Role Assignment Policy' should be False"
         }
     }
+
+    # Ensure 'External sharing' of calendars is not available:
+    # > CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available
+    # > MS.EXO.6.2: Calendar details SHALL NOT be shared with all domains.
+
+    # Ensure the customer lockbox feature is enabled:
+    # > CIS 1.3.6 (L2) Ensure the customer lockbox feature is enabled
+
+    # Ensure mailbox auditing for all users is Enabled:
+    # > MS.EXO.13.1: Mailbox auditing SHALL be enabled.
 }

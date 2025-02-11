@@ -1,6 +1,6 @@
 ---
 sidebar_label: Azure Web App with Bicep
-sidebar_position: 6
+sidebar_position: 7
 title: Azure Web App
 ---
 import GraphPermissions from '../sections/permissions.md';
@@ -13,7 +13,7 @@ This guide will demonstrate how to get Maester running on an Azure Web App and p
 
 ## Why Azure Web App & Azure Automation & Azure Bicep?
 
-Azure Web Apps provide the functionality to host your own websites. By running Maester in an interactive web app, you can easily check the security recommendations for your organization. Azure Automation generates a new Maester report every Monday, Wednesday, and Friday, which is then uploaded to the Azure Web App using Managed Identities. 
+Azure Web Apps provide the functionality to host your own websites. By running Maester in an interactive web app, you can easily check the security recommendations for your organization. Azure Automation generates a new Maester report every Monday, Wednesday, and Friday, which is then uploaded to the Azure Web App using Managed Identities.
 
  Azure Bicep is a domain-specific language that uses declarative syntax to deploy Azure resources. It simplifies the process of defining, deploying, and managing Azure resources. Here’s why Azure Bicep stands out:
 - **Simplified Syntax**: Bicep provides concise syntax, reliable type safety, and support for reusing code.easier to read.
