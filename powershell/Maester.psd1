@@ -94,7 +94,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaExclusionForDirectorySyncAccount',
                'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
                'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
-               "Test-MtCaGroupsRestricted",
+               "Test-MtCaGroupsRestricted", 'Test-MtCaMisconfiguredIDProtection',
                "Test-MtCaGap", "Test-MtCaReferencedGroupsExist",
                'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn',
                'Test-MtCaRequirePasswordChangeForHighUserRisk',

@@ -10,6 +10,9 @@ Conditional Access policies' access controls are enforced only if ALL conditions
 
  .Example
   Test-MtCaMisconfiguredIDProtection
+
+  .LINK
+  https://maester.dev/docs/commands/Test-MtCaMisconfiguredIDProtection
 #>
 
 Function Test-MtCaMisconfiguredIDProtection {
