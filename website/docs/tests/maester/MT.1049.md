@@ -1,6 +1,6 @@
 ---
 title: MT.1049 - Sign-in risk and user risk conditions should be configured in separate Conditional Access policies
-description: Checks for common misconfigurations in Conditional Access: both user risk and sign-in risk are configured in one policy.
+description: Checks for common misconfigurations in Conditional Access; both user risk and sign-in risk are configured in one policy.
 slug: /tests/MT.1049
 sidebar_class_name: hidden
 ---
