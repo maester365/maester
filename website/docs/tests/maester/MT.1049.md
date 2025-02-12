@@ -9,8 +9,11 @@ sidebar_class_name: hidden
 
 ## Description
 
-There are two types of risk policies in Microsoft Entra Conditional Access you can set up. You can use these policies to automate the response to risks allowing users to self-remediate when sign-in risk or user risk is detected.
-Sign-in risk and user risk should not be configured in a single policy, but instead be separated as Conditional Access policies will only be applied if ALL conditions match. 
+There are two types of risk policies in Microsoft Entra Conditional Access you can set up. You can use these policies to automate the response to risks allowing users to self-remediate when sign-in risk or user risk is detected. Sign-in risk and user risk should not be configured in a single policy, but instead be separated as Conditional Access policies will only be applied if ALL conditions match. 
+
+## Rationale
+
+If you configure both conditions in one policy, it will only block access if both types of risk are detected. This means if only one type of risk is present (like user risk only), the sign-in will be not be blocked or interrupted. This could lead to a security gap, as some risky actions might slip by.
 
 ## How to fix
 

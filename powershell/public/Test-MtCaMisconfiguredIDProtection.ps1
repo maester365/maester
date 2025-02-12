@@ -42,7 +42,7 @@ Function Test-MtCaMisconfiguredIDProtection {
     if ( $result ) {
         $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
     } else {
-        $testResult = "No conditional access policies detected where sign-in risk and user risk are combined."
+        $testResult = "Well done! No conditional access policies detected where sign-in risk and user risk are combined."
     }
     Add-MtTestResultDetail -Description $testDescription -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
