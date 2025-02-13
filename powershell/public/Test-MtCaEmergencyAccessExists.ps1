@@ -26,8 +26,9 @@ function Test-MtCaEmergencyAccessExists {
         return $null
     }
 
-    # Only check policies that are not related to authentication context
+    # Only check policies that are not related to authentication context (the state of policy does not have to be enabled)
     $policies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
+
     # Remove policies that are scoped to service principals
     $policies = $policies | Where-Object { -not $_.conditions.clientApplications.includeServicePrincipals }
 

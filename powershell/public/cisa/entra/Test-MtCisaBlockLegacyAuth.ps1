@@ -29,10 +29,9 @@ function Test-MtCisaBlockLegacyAuth {
         return $null
     }
 
-    $result = Get-MtConditionalAccessPolicy
+    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $blockPolicies = $result | Where-Object {`
-            $_.state -eq "enabled" -and `
             $_.grantControls.builtInControls -contains "block" -and `
             $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and `
             $_.conditions.clientAppTypes -contains "other" -and `

@@ -91,7 +91,9 @@ function Get-MtUser {
         } elseif ( $UserType -in @("BreakGlass", "EmergencyAccess") ) {
             Write-Verbose "Getting $UserType users from the tenant."
             Write-Verbose "Get all conditional access policies."
+            # Get all policies (the state of policy does not have to be enabled)
             $CAPolicies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
+
             # Check which user object Id or group object Id is excluded from the most policies
             $PossibleEmergencyAccessUsers = $CAPolicies.conditions.users.excludeUsers | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 2
             if ($PossibleEmergencyAccessUsers.Count -eq 2) {

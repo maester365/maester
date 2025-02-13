@@ -31,11 +31,10 @@ function Test-MtCisaPrivilegedPhishResistant {
 
     $highlyPrivilegedRoles = Get-MtRole -CisaHighlyPrivilegedRoles
 
-    $result = Get-MtConditionalAccessPolicy
+    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     #Hacky approach to do validation of all objects
     $policies = $result | Where-Object {`
-        $_.state -eq "enabled" -and `
         $_.conditions.applications.includeApplications -contains "All" -and `
         $_.grantControls.authenticationStrength.displayName -eq "Phishing-resistant MFA" -and `
         ($_.conditions.users.includeRoles|Sort-Object) -join "," -like "*$(($highlyPrivilegedRoles.id|Sort-Object) -join "*")*" }
