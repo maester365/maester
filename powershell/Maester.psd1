@@ -154,6 +154,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordDkim',
                'Resolve-SpfRecord', 'Clear-MtDnsCache',
                'Test-MtTeamsRestrictParticipantGiveRequestControl',
+               'Test-MtHighRiskAppPermissions',
                'Test-ORCA100',
                'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103',
                'Test-ORCA104', 'Test-ORCA105', 'Test-ORCA106',

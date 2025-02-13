@@ -11,14 +11,13 @@
     Returns true if no application has Tier-0 graph permissions
 
 .LINK
-    https://maester.dev/docs/commands/
-    https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions
+    https://maester.dev/docs/commands/Test-MtHighRiskAppPermissions
 #>
 function Test-MtHighRiskAppPermissions {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     if (-not (Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
@@ -38,7 +37,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='41202f2c-f7ab-45be-b001-85c9728b9d69'; 
+            Id='41202f2c-f7ab-45be-b001-85c9728b9d69';
             Name='PrivilegedAssignmentSchedule.ReadWrite.AzureADGroup';
             Type='Application'
             Path='Direct'
@@ -50,7 +49,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='dd199f4a-f148-40a4-a2ec-f0069cc799ec'; 
+            Id='dd199f4a-f148-40a4-a2ec-f0069cc799ec';
             Name='RoleAssignmentSchedule.ReadWrite.Directory';
             Type='Application'
             Path='Direct'
@@ -62,7 +61,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='9e3f62cf-ca93-4989-b6ce-bf83c28f9fe8'; 
+            Id='9e3f62cf-ca93-4989-b6ce-bf83c28f9fe8';
             Name='RoleManagement.ReadWrite.Directory';
             Type='Application'
             Path='Direct'
@@ -74,7 +73,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='eccc023d-eccf-4e7b-9683-8813ab36cecc'; 
+            Id='eccc023d-eccf-4e7b-9683-8813ab36cecc';
             Name='User.DeleteRestore.All';
             Type='Application'
             Path='Direct'
@@ -86,7 +85,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='3011c876-62b7-4ada-afa2-506cbbecc68c'; 
+            Id='3011c876-62b7-4ada-afa2-506cbbecc68c';
             Name='User.EnableDisableAccount.All';
             Type='Application'
             Path='Direct'
@@ -98,7 +97,7 @@ function Test-MtHighRiskAppPermissions {
             Path='Direct'
         }
         [pscustomobject]@{
-            Id='50483e42-d915-4231-9639-7fdb7fd190e5'; 
+            Id='50483e42-d915-4231-9639-7fdb7fd190e5';
             Name='UserAuthenticationMethod.ReadWrite.All';
             Type='Application'
             Path='Direct'
@@ -318,13 +317,15 @@ function Test-MtHighRiskAppPermissions {
             Name='User-PasswordProfile.ReadWrite.All';
             Type='Delegated'
             Path='Indirect'
-        }        
+        }
    )
 
     $return = $true
+
+    Write-Verbose "Test-MtHighRiskAppPermissions: Checking applications for high-risk permissions"
     try {
         $allApplications = Invoke-MtGraphRequest -RelativeUri "applications"
-        $allApplicationsWithGraph = $allApplications | Where-Object { $_.requiredResourceAccess.resourceAppId -eq "00000003-0000-0000-c000-000000000000"} 
+        $allApplicationsWithGraph = $allApplications | Where-Object { $_.requiredResourceAccess.resourceAppId -eq "00000003-0000-0000-c000-000000000000"}
         $allAssignedCriticalPermissions = @()
         foreach ($app in $allApplicationsWithGraph) {
             $allAppPermissions = $app.requiredResourceAccess.resourceAccess.id
@@ -348,7 +349,7 @@ function Test-MtHighRiskAppPermissions {
 
         $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
         $result += "| --- | --- | --- | --- | --- |`n"
-        foreach ($assignedCriticalPermission in $allAssignedCriticalPermissions) {    
+        foreach ($assignedCriticalPermission in $allAssignedCriticalPermissions) {
             $result += "| $($assignedCriticalPermission.ApplicationName) | $($assignedCriticalPermission.ApplicationId) | $($assignedCriticalPermission.PermissionName) | $($assignedCriticalPermission.PermissionType) | $($assignedCriticalPermission.AttackPath) |`n"
         }
 
