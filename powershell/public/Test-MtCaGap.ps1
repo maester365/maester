@@ -191,7 +191,8 @@ function Test-MtCaGap {
         if ($differencesUsers.Count -ne 0) {
             $testResult = "The following user objects did not have a fallback:`n`n"
             $differencesUsers | ForEach-Object {
-                $testResult += "    - $_`n`n"
+                $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$_" -Select displayName | Select-Object -ExpandProperty displayName
+                $testResult += "    - $_ ($DisplayName)`n`n" # Add Name?
                 $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
@@ -199,7 +200,8 @@ function Test-MtCaGap {
         if ($differencesGroups.Count -ne 0) {
             $testResult += "The following group objects did not have a fallback:`n`n"
             $differencesGroups | ForEach-Object {
-                $testResult += "    - $_`n`n"
+                $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$_" -Select displayName | Select-Object -ExpandProperty displayName
+                $testResult += "    - $_ ($DisplayName)`n`n" # Add Name?
                 $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
