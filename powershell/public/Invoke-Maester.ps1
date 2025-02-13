@@ -295,6 +295,14 @@ function Invoke-Maester {
         $ExcludeTag += "CAWhatIf"
     }
 
+    # If $Tag is not set, run all tests except the ones with the tag "Full"
+    if (-not $Tag) {
+        $ExcludeTag += "Full"
+    } # Check if Full is included then add All to the include as default
+    elseif ("Full" -in $Tag) {
+        $Tag += "All"
+    }
+
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
     $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
