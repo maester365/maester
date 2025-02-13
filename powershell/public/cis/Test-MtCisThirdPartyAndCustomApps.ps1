@@ -11,28 +11,30 @@
     Returns true if all or a majority of third-party and custom apps are blocked
 
 .LINK
-    https://maester.dev/docs/commands/
+    https://maester.dev/docs/commands/Test-MtCisThirdPartyAndCustomApps
 #>
 function Test-MtCisThirdPartyAndCustomApps {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     if (-not (Test-MtConnection Teams)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
 
+    Write-Verbose "Test-MtCisThirdPartyAndCustomApps: Checking if all or a majority of third-party and custom apps are blocked"
+
     $return = $true
     try {
         $appPermPolicy = Get-CsTeamsAppPermissionPolicy -Identity Global
-        
+
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
-    
+
         if (($appPermPolicy.DefaultCatalogAppsType -eq "BlockedAppList") -and (-not $appPermPolicy.DefaultCatalogApps)) { # Microsoft apps
             $result += "| Microsoft apps | Allow all apps | $passResult |`n"
         } elseif (($appPermPolicy.DefaultCatalogAppsType -eq "AllowedAppList") -and ($appPermPolicy.DefaultCatalogApps)) {

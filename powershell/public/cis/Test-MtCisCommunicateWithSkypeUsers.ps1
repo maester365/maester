@@ -11,18 +11,18 @@
     Returns true if communication with Skype users is disabled
 
 .LINK
-    https://maester.dev/docs/commands/
+    https://maester.dev/docs/commands/Test-MtCisCommunicateWithSkypeUsers
 #>
 function Test-MtCisCommunicateWithSkypeUsers {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     if (-not (Test-MtConnection Teams)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
-
+    Write-Verbose "Test-MtCisCommunicateWithSkypeUsers: Checking if communication with Skype users is disabled"
     $return = $true
     try {
         $AllowPublicUsers = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowPublicUsers

@@ -11,17 +11,19 @@
     Returns true if communication with unmanaged Teams users is disabled
 
 .LINK
-    https://maester.dev/docs/commands/
+    https://maester.dev/docs/commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers
 #>
 function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     if (-not (Test-MtConnection Teams)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
+
+    Write-Verbose "Test-MtCisCommunicateWithUnmanagedTeamsUsers: Checking if communication with unmanaged Teams users is disabled"
 
     $return = $true
     try {

@@ -11,29 +11,31 @@
     Returns true if configured properly
 
 .LINK
-    https://maester.dev/docs/commands/
+    https://maester.dev/docs/commands/Test-MtCisTeamsReportSecurityConcerns
 #>
 function Test-MtCisTeamsReportSecurityConcerns {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
-    
+
     if (-not (Test-MtConnection Teams)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
 
+    Write-Verbose "Test-MtCisTeamsReportSecurityConcerns: Checking if users can report security concerns in Teams to internal destination"
+
     $return = $true
     try {
         $MicrosoftTeamsCheck = Get-CsTeamsMessagingPolicy -Identity Global | Select-Object AllowSecurityEndUserReporting
         $MicrosoftReportPolicy = Get-ReportSubmissionPolicy | Select-Object ReportJunkToCustomizedAddress, ReportNotJunkToCustomizedAddress, ReportPhishToCustomizedAddress, ReportJunkAddresses, ReportNotJunkAddresses, ReportPhishAddresses, ReportChatMessageEnabled, ReportChatMessageToCustomizedAddressEnabled
-        
+
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
-        
+
         if ($MicrosoftTeamsCheck.AllowSecurityEndUserReporting -eq $false) {
             $result += "| AllowSecurityEndUserReporting | $($MicrosoftTeamsCheck.AllowSecurityEndUserReporting) | $failResult |`n"
             $return = $false
@@ -46,13 +48,13 @@ function Test-MtCisTeamsReportSecurityConcerns {
         } else {
             $result += "| ReportJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportJunkToCustomizedAddress) | $passResult |`n"
         }
-            
+
         if ($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress -eq $false) {
             $result += "| ReportNotJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress) | $failResult |`n"
             $return = $false
         } else {
             $result += "| ReportNotJunkToCustomizedAddress | $($MicrosoftReportPolicy.ReportNotJunkToCustomizedAddress) | $passResult |`n"
-        } 
+        }
         if ($MicrosoftReportPolicy.ReportPhishToCustomizedAddress -eq $false) {
             $result += "| ReportPhishToCustomizedAddress | $($MicrosoftReportPolicy.ReportPhishToCustomizedAddress) | $failResult |`n"
             $return = $false
