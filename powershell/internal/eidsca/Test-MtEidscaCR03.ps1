@@ -21,7 +21,7 @@ function Test-MtEidscaCR03 {
     [OutputType([bool])]
     param()
 
-    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+    if ( $EnabledAdminConsentWorkflow -eq $false ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
             return $null
     }
@@ -29,7 +29,7 @@ function Test-MtEidscaCR03 {
 
     [string]$tenantValue = $result.remindersEnabled
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/adminConsentRequestPolicy**"

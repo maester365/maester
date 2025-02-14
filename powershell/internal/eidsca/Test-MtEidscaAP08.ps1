@@ -8,12 +8,12 @@
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+     graph/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 
 .EXAMPLE
     Test-MtEidscaAP08
 
-    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+    Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
 #>
 
 function Test-MtEidscaAP08 {
@@ -21,11 +21,15 @@ function Test-MtEidscaAP08 {
     [OutputType([bool])]
     param()
 
+    if ( ($AuthorizationPolicyAvailable | where-object permissionGrantPolicyIdsAssignedToDefaultUserRole -Match 'ManagePermissionGrantsForSelf.microsoft-').Count -eq 0 ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'User Consent has been disabled or customized using Microsoft Graph or Microsoft Graph PowerShell without any assignment to custom policy.'
+            return $null
+    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1
+    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'ManagePermissionGrantsForSelf.microsoft-user-default-low'** for **policies/authorizationPolicy**"

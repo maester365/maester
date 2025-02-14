@@ -29,7 +29,7 @@ function Test-MtEidscaAF02 {
 
     [string]$tenantValue = $result.isSelfServiceRegistrationAllowed
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"

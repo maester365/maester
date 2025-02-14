@@ -21,11 +21,12 @@ function Test-MtEidscaST09 {
     [OutputType([bool])]
     param()
 
+    
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [string]$tenantValue = $result.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value
     $testResult = $tenantValue -eq 'True'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'True' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'True' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'True'** for **settings**"

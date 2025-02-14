@@ -366,7 +366,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
 
         # Extract variable name from the condition to build syntax for TestCases
-        $SkipConditionVariable = ($controlItem.SkipCondition -split ' ')[0]
+        $SkipConditionVariable = ($controlItem.SkipCondition  | Select-String -Pattern '\$([^\s]+)').Matches.Value
         $SkipConditionVariableName = $SkipConditionVariable -replace '[$()]', ''
         $output = $output -replace '%TestCases%', " -TestCases @{ $($SkipConditionVariableName) = $($SkipConditionVariable) }"
     } else {

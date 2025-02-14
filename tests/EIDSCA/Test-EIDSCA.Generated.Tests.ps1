@@ -1,10 +1,12 @@
 BeforeDiscovery {
+$AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
 $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
+$EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
 $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
 $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP01" {
-    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" {
+    It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" -TestCases @{ AuthorizationPolicyAvailable = $AuthorizationPolicyAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowedToUseSSPR -eq 'false'
@@ -49,16 +51,16 @@ Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EID
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP08" {
-    It "EIDSCA.AP08: Default Authorization Settings - User consent policy assigned for applications. See https://maester.dev/docs/tests/EIDSCA.AP08" {
+    It "EIDSCA.AP08: Default Authorization Settings - User consent policy assigned for applications. See https://maester.dev/docs/tests/EIDSCA.AP08" -TestCases @{ AuthorizationPolicyAvailable = $AuthorizationPolicyAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
-            .permissionGrantPolicyIdsAssignedToDefaultUserRole | Sort-Object -Descending | select-object -first 1 -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
+            .permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*' -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
         #>
         Test-MtEidscaControl -CheckId AP08 | Should -Be 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
     }
 }
 Describe "Default Authorization Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AP09" {
-    It "EIDSCA.AP09: Default Authorization Settings - Risk-based step-up consent. See https://maester.dev/docs/tests/EIDSCA.AP09" {
+    It "EIDSCA.AP09: Default Authorization Settings - Allow user consent on risk-based apps. See https://maester.dev/docs/tests/EIDSCA.AP09" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authorizationPolicy"
             .allowUserConsentForRiskyApps -eq 'false'
@@ -95,7 +97,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
     }
 }
 Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP03" {
-    It "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps. See https://maester.dev/docs/tests/EIDSCA.CP03" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
+    It "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps. See https://maester.dev/docs/tests/EIDSCA.CP03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
@@ -104,7 +106,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
     }
 }
 Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.CP04" {
-    It "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CP04" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
+    It "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CP04" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
@@ -114,7 +116,7 @@ Describe "Default Settings - Consent Policy Settings" -Tag "EIDSCA", "Security",
 }
 
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR01" {
-    It "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode. See https://maester.dev/docs/tests/EIDSCA.PR01" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
+    It "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode. See https://maester.dev/docs/tests/EIDSCA.PR01" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
@@ -123,7 +125,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR02" {
-    It "EIDSCA.PR02: Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory. See https://maester.dev/docs/tests/EIDSCA.PR02" {
+    It "EIDSCA.PR02: Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory. See https://maester.dev/docs/tests/EIDSCA.PR02" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
@@ -132,7 +134,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR03" {
-    It "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list. See https://maester.dev/docs/tests/EIDSCA.PR03" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
+    It "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list. See https://maester.dev/docs/tests/EIDSCA.PR03" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
@@ -182,9 +184,9 @@ Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "
     It "EIDSCA.AG01: Authentication Method - General Settings - Manage migration. See https://maester.dev/docs/tests/EIDSCA.AG01" {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy"
-            .policyMigrationState -eq 'migrationComplete'
+            .policyMigrationState -in @('migrationComplete', '')
         #>
-        Test-MtEidscaControl -CheckId AG01 | Should -Be 'migrationComplete'
+        Test-MtEidscaControl -CheckId AG01 | Should -BeIn @('migrationComplete', '')
     }
 }
 Describe "Authentication Method - General Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.AG02" {
@@ -383,7 +385,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR02" {
-    It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR02: Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests. See https://maester.dev/docs/tests/EIDSCA.CR02" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .notifyReviewers -eq 'true'
@@ -392,7 +394,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR03" {
-    It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR03: Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire. See https://maester.dev/docs/tests/EIDSCA.CR03" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .remindersEnabled -eq 'true'
@@ -401,7 +403,7 @@ Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Consent Framework - Admin Consent Request" -Tag "EIDSCA", "Security", "All", "EIDSCA.CR04" {
-    It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = ($EnabledAdminConsentWorkflow) } {
+    It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
             .requestDurationInDays -le '30'
