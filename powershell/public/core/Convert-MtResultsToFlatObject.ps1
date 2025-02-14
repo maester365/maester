@@ -1,11 +1,16 @@
-﻿function Convert-MtJsonResultsToFlatObject {
+﻿function Convert-MtResultsToFlatObject {
     <#
     .SYNOPSIS
-    Convert Maester test results from JSON to a flattened object that can be exported to CSV or Excel.
+    Convert Maester test results to a flattened object that can be exported to CSV or Excel.
 
     .DESCRIPTION
-    Convert Maester test results from JSON to a flattened object that can be exported to CSV or Excel. This function exports
+    Convert Maester test results to a flattened object that can be exported to CSV or Excel. This function exports
     the data to a CSV file by default, but can also export to an Excel file if the ImportExcel module is installed.
+
+    The function also supports reading Maester test results from a JSON file and exporting the flattened object to a CSV.
+
+    .PARAMETER MaesterResults
+    The Maester test results returned from `Invoke-Maester -PassThru | Convert-MtResultsToFlatObject`.
 
     .PARAMETER JsonFilePath
     The path of the file containing the Maester test results in JSON format.
@@ -25,7 +30,7 @@
     .PARAMETER Force
     Force the export to a CSV/XLSX file even if the file already exists.
 
-    .PARAMETER Passthru
+    .PARAMETER PassThru
     Return the flattened object to the pipeline.
 
     .EXAMPLE
@@ -50,11 +55,15 @@
     place. This is most likely to happen when details about a large number of users is included in the result details.
     The full details are still available in the JSON file and the HTML report.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'FromResults')]
     [OutputType([System.Collections.Generic.List[PSObject]])]
     param (
+        # The Maester test results returned from `Invoke-Maester -PassThru`
+        [Parameter(Mandatory = $true, Position = 0, ParameterSetName = 'FromResults')]
+        [psobject] $MaesterResults,
+
         # The path to the JSON file containing the Maester test results.
-        [Parameter(Mandatory, Position = 0, HelpMessage = 'The path to the JSON file containing the Maester test results.')]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = 'FromFile', HelpMessage = 'The path to the JSON file containing the Maester test results.')]
         [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
         [string]$JsonFilePath,
 
@@ -66,16 +75,6 @@
         [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.')]
         [string]$ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
 
-        # Export the Maester test results to a CSV file.
-        [Parameter()]
-        [switch]
-        $ExportCsv,
-
-        # Export the Maester test results to an Excel file.
-        [Parameter()]
-        [switch]
-        $ExportExcel,
-
         # Force the export to a CSV/XLSX file even if the file already exists.
         [Parameter()]
         [switch]
@@ -84,7 +83,7 @@
         # Return the flattened object to the pipeline.
         [Parameter()]
         [switch]
-        $Passthru
+        $PassThru
     )
 
     begin {
@@ -108,9 +107,14 @@
         } ; [void]$ReplacementStrings # Not Used Yet
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
-        $MaesterResults = New-Object System.Collections.Generic.List[PSObject]
+        if ($PSCmdlet.ParameterSetName -eq 'FromFile') {
+            $JsonData = (Get-Content -Path $JsonFilePath | ConvertFrom-Json).Tests
+        } else {
+            $JsonData = $MaesterResults.Tests
+        }
 
-        $JsonData = (Get-Content -Path $JsonFilePath | ConvertFrom-Json).Tests
+        $FlattenedResults = New-Object System.Collections.Generic.List[PSObject]
+
     } #end begin
 
     process {
@@ -124,8 +128,8 @@
                 $TestResultDetail = $_.ResultDetail.TestResult
             }
 
-            # Add the flattened object to the MaesterResults list.
-            $MaesterResults.Add([PSCustomObject]@{
+            # Add the flattened object to the FlattenedResults list.
+            $FlattenedResults.Add([PSCustomObject]@{
                     Name           = $_.Name
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
@@ -140,20 +144,20 @@
                 })
         }
 
-        # Export the MaesterResults list to a CSV if requested.
-        if ($ExportCsv.IsPresent) {
+        # Export the FlattenedResults list to a CSV if requested.
+        if ($CsvFilePath) {
             try {
-                $MaesterResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
+                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
                 Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"
             }
         }
 
-        # Export the MaesterResults list to an Excel file if requested.
-        if ($ExportExcel.IsPresent) {
+        # Export the FlattenedResults list to an Excel file if requested.
+        if ($ExcelFilePath) {
             try {
-                $MaesterResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
+                $FlattenedResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
                 Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
             } catch [System.Management.Automation.CommandNotFoundException] {
                 Write-Error "The ImportExcel module is required to export the Maester test results to an Excel file. Install the module using ``Import-Module -Name 'ImportExcel'`` and try again."
@@ -166,8 +170,8 @@
 
     end {
         # Return the flattened object to the pipeline if requested or if no export is requested.
-        if ($Passthru.IsPresent -or (-not $ExportCsv.IsPresent -and -not $ExportExcel.IsPresent)) {
-            $MaesterResults
+        if ($PassThru.IsPresent -or (-not $ExcelFilePath -and -not $ExcelFilePath)) {
+            $FlattenedResults
         }
     }
 
