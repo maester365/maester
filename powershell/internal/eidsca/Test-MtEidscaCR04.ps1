@@ -27,9 +27,9 @@ function Test-MtEidscaCR04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.requestDurationInDays
-    $testResult = $tenantValue -le '30'
-    $tenantValueNotSet = $null -eq $tenantValue -and '30' -notlike '*$null*'
+    $tenantValue = $result.requestDurationInDays
+    $testResult = $tenantValue -le 30
+    $tenantValueNotSet = [string]::IsNullOrEmpty($tenantValue) -or $tenantValue -eq 0
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **'30'** for **policies/adminConsentRequestPolicy**"
