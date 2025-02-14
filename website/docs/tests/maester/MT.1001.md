@@ -22,7 +22,7 @@ Create a conditional access policy that requires devices to have device complian
 5. Under **Assignments**, select **Users or workload identities**.
     - Under **Target resources** > **Resources (formerly cloud apps)** > **Include**, select **All resources (formerly 'All cloud apps')**.
 6. Under **Access controls** > **Grant**.
-    - Select **Require multifactor authentication**, **Require device to be marked as compliant**, and **Require Microsoft Entra hybrid joined device**
+    - Select **Require device to be marked as compliant** and **Require Microsoft Entra hybrid joined device**
     - **For multiple controls** select **Require one of the selected controls**.
     - Select **Select**
 8. Confirm your settings and set **Enable policy** to **Enable**
