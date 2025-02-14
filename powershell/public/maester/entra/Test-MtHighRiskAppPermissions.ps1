@@ -380,7 +380,7 @@ function Test-MtHighRiskAppPermissions {
                 $compareAssignmet = if ($apiAssignment.type -eq "Application") { $apiAssignment.permissionId } else { $apiAssignment.permissionName }
                 $compareGraphPermission = if ($apiAssignment.type -eq "Application") { $criticalGraphPermission.Id } else { $criticalGraphPermission.Name }
 
-                if ($compareAssignmet -eq $compareGraphPermission) {
+                if (($compareAssignmet -eq $compareGraphPermission) -and ($apiAssignment.type -eq $criticalGraphPermission.Type)) {
                     $allAssignedCriticalPermissions.Add([PSCustomObject]@{
                         ApplicationName = $apiAssignment.appDisplayName
                         ApplicationId = $apiAssignment.appId
