@@ -47,7 +47,7 @@
     System.Collections.Generic.List[PSObject]
 
     .LINK
-    https://maester.dev/docs/commands/Convert-MtJsonResultsToFlatObject
+    https://maester.dev/docs/commands/Convert-MtResultsToFlatObject
 
     .NOTES
     Due to limitations in CSV files and Excel cells, the ResultDetails property is limited to 30000 characters. If the
