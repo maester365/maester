@@ -53,6 +53,16 @@ inputs:
     description: "Installs the preview version, allowing access to new cmdlets."
     required: false
     default: false
+  include_exchange:
+    type: boolean
+    description: "Include Exchange Online tests in the test run."
+    required: false
+    default: true
+  include_teams:
+    type: boolean
+    description: "Include Team tests in the test run."
+    required: false
+    default: true
   disable_telemetry:
     type: boolean
     description: "If set, telemetry information will not be logged."
@@ -68,6 +78,7 @@ runs:
         client-id: ${{ inputs.client_id }}
         tenant-id: ${{ inputs.tenant_id }}
         allow-no-subscriptions: true
+        enable-AzPSSession: true
 
     - name: Set current date as env variable
       shell: bash
@@ -89,77 +100,20 @@ runs:
       uses: azure/powershell@v2
       with:
         inlineScript: |
-          # Get Token
-          $token = az account get-access-token --resource-type ms-graph
-
-          # Connect to Microsoft Graph
-          $accessToken = ($token | ConvertFrom-Json).accessToken | ConvertTo-SecureString -AsPlainText -Force
-          Connect-MgGraph -AccessToken $accessToken -NoWelcome
-
-          # Install Maester
-           if ( '${{ inputs.install_prerelease}}' -eq $true ){
-            Write-Host "Installing prerelease version"
-            Install-Module Maester -AllowPrerelease -Force
-          } else {
-            Write-Host "Installing latest version"
-            Install-Module Maester -Force
-          }
-          
-
-          # Configure test results
-          $PesterConfiguration = New-PesterConfiguration
-          $PesterConfiguration.Output.Verbosity = '${{ inputs.pester_verbosity }}'
-          Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
-
-          $MaesterParameters = @{
-              Path                 = '${{ github.workspace }}'
-              PesterConfiguration  = $PesterConfiguration
-              OutputFolder         = 'test-results'
-              OutputFolderFileName = 'test-results'
-              PassThru             = $true
-          }
-
-          # Check if test tags are provided
-          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.include_tags }}' ) -eq $false ) {
-              $TestTags = '${{ inputs.include_tags }}' -split ','
-              $MaesterParameters.Add( 'Tag', $TestTags )
-              Write-Host "Running tests with tags: $TestTags"
-          }
-
-          # Check if exclude test tags are provided
-          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.exclude_tags }}' ) -eq $false ) {
-              $ExcludeTestTags = '${{ inputs.exclude_tags }}' -split ','
-              $MaesterParameters.Add( 'ExcludeTag', $ExcludeTestTags )
-              Write-Host "Excluding tests with tags: $ExcludeTestTags"
-          }
-
-          # Check if mail recipients and mail userid are provided
-          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.mail_userid }}' ) -eq $false ) {
-              if ( [string]::IsNullOrWhiteSpace( '${{ inputs.mail_recipients }}' ) -eq $false ) {
-                  # Add mail parameters
-                  $MaesterParameters.Add( 'MailUserId', '${{ inputs.mail_userid }}' )
-                  $Recipients = '${{ inputs.mail_recipients }}' -split ','
-                  $MaesterParameters.Add( 'MailRecipient', $Recipients )
-                  $MaesterParameters.Add( 'MailTestResultsUri', '${{ inputs.mail_testresultsuri }}' )
-                  Write-Host "Mail notification will be sent to: $Recipients"
-              } else {
-                  Write-Warning "Mail recipients are not provided. Skipping mail notification."
-              }
-          }
-
-          # Check if disable telemetry is provided
-          if ( [string]::IsNullOrWhiteSpace( '${{ inputs.disable_telemetry}}' ) -eq $true ) {
-            $MaesterParameters.Add( 'DisableTelemetry', $true )
-          }
-
-          # Run Maester tests
-          $results = Invoke-Maester @MaesterParameters
-
-          if('${{ inputs.step_summary }}' -ne $false) {
-            # Add step summary
-            $summary = Get-Content test-results/test-results.md
-            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
-          }
+          ${{ github.action_path }}\action\Run-Maester.ps1 -TenantId '${{ inputs.tenant_id}}' `
+            -ClientId '${{ inputs.client_id }}' `
+            -Path '${{ github.workspace }}' `
+            -MailRecipients '${{ inputs.mail_recipients }}' `
+            -MailUser '${{ inputs.mail_userid }}' `
+            -TestResultURI '${{ inputs.mail_testresultsuri }}' `
+            -IncludeTags '${{ inputs.include_tags }}' `
+            -ExcludeTags '${{ inputs.exclude_tags }}' `
+            -PesterVerbosity '${{ inputs.pester_verbosity }}' `
+            -GitHubStepSummary ('${{ inputs.step_summary }}' -eq 'true') `
+            -Preview ('${{ inputs.install_prerelease }}' -eq 'true') `
+            -IncludeExchange ('${{ inputs.include_exchange }}' -eq 'true') `
+            -IncludeTeams ('${{ inputs.include_teams }}' -eq 'true') `
+            -DisableTelemetry ('${{ inputs.disable_telemetry}}' -eq 'true')
         azPSVersion: "latest"
 
     - name: Archive Maester Html Report
