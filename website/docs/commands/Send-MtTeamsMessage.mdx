@@ -14,9 +14,18 @@ Send an adaptive card in a teams channel with the summary of the Maester test re
 
 ## SYNTAX
 
+### MSGraph
+
 ```powershell
 Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamId] <String> [-TeamChannelId] <String>
  [-Subject <String>] [-TestResultsUri <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### Webhook
+
+```powershell
+Send-MtTeamsMessage [-MaesterResults] <PSObject> [-TeamChannelWebhookUri] <String> [-Subject <String>]
+ [-TestResultsUri <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,6 +49,14 @@ must be granted to the application in the Microsoft Entra portal.
 
 ```powershell
 Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+```
+
+Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
+
+### EXAMPLE 2
+
+```powershell
+Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 ```
 
 Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
@@ -72,7 +89,7 @@ e.g.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: MSGraph
 Aliases:
 
 Required: True
@@ -94,11 +111,32 @@ e.g.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: MSGraph
 Aliases:
 
 Required: True
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamChannelWebhookUri
+
+The URL of the webhook where the message should be posted.
+e.g.
+'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+To get the webhook Url, right-click on the channel in Teams and select 'Workflow'.
+Create a workflow using the 'Post to a channel when a webhook request is received' template.
+Use the value after complete
+
+```yaml
+Type: String
+Parameter Sets: Webhook
+Aliases:
+
+Required: True
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

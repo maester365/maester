@@ -19,8 +19,9 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
- [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-SkipGraphConnect] [-DisableTelemetry]
- [-SkipVersionCheck] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
+ [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -108,12 +109,20 @@ Runs all the tests and posts a summary of the results to a Teams channel.
 ### EXAMPLE 10
 
 ```powershell
+Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+```
+
+Runs all the tests and posts a summary of the results to a Teams channel.
+
+### EXAMPLE 11
+
+```powershell
 Invoke-Maester -Verbosity Normal
 ```
 
 Shows results of tests as they are run including details on failed tests.
 
-### EXAMPLE 11
+### EXAMPLE 12
 
 ```powershell
 $configuration = New-PesterConfiguration
@@ -425,6 +434,28 @@ To get the TeamChannelId, right-click on the channel in Teams and select 'Get li
 Use the value found between channel and the channel name.
 e.g.
 /channel/&lt;TeamChannelId&gt;/my%20channel
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TeamChannelWebhookUri
+
+Optional.
+The webhook Uri where the message should be posted.
+e.g.
+https://some-url/?value=123
+To get the Webhook Uri, right-click on the channel in Teams and select 'Workflow'.
+Create a workflow using the 'Post to a channel when a webhook request is received' template.
+Use the value after complete
 
 ```yaml
 Type: String
