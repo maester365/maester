@@ -16,6 +16,7 @@ module.exports = [
     'commands/Clear-MtGraphCache',
     'commands/Compare-MtTestResult',
     'commands/Connect-Maester',
+    'commands/Convert-MtResultsToFlatObject',
     'commands/ConvertFrom-MailAuthenticationRecordDkim',
     'commands/ConvertFrom-MailAuthenticationRecordDmarc',
     'commands/ConvertFrom-MailAuthenticationRecordMx',
