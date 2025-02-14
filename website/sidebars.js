@@ -21,6 +21,7 @@ const sidebars = {
     },
     "ca-what-if",
     "updating-tests",
+    "export-results",
     {
       type: "category",
       label: "Connect-Maester",
