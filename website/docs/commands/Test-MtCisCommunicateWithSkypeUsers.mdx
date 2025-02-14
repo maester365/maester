@@ -1,46 +1,38 @@
 ---
 sidebar_class_name: hidden
-description: Converts Pester results to the Maester test results format which includes additional information.
-id: ConvertTo-MtMaesterResult
-title: ConvertTo-MtMaesterResult
+description: Ensure communication with Skype users is disabled
+id: Test-MtCisCommunicateWithSkypeUsers
+title: Test-MtCisCommunicateWithSkypeUsers
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/ConvertTo-MtMaesterResult.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisCommunicateWithSkypeUsers.ps1
 ---
 
 ## SYNOPSIS
 
-Converts Pester results to the Maester test results format which includes additional information.
+Ensure communication with Skype users is disabled
 
 ## SYNTAX
 
 ```powershell
-ConvertTo-MtMaesterResult [-PesterResults] <PSObject> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisCommunicateWithSkypeUsers [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Communication with Skype users is disabled
 
 ## EXAMPLES
 
-## PARAMETERS
+### EXAMPLE 1
 
-### -PesterResults
-
-The Pester test results returned from Invoke-Pester -PassThru
-
-```yaml
-Type: PSObject
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
+```powershell
+Test-MtCisCommunicateWithSkypeUsers
 ```
+
+Returns true if communication with Skype users is disabled
+
+## PARAMETERS
 
 ### -ProgressAction
 
@@ -66,6 +58,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
+### System.Boolean
+
 ## NOTES
 
 ## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCisCommunicateWithSkypeUsers](https://maester.dev/docs/commands/Test-MtCisCommunicateWithSkypeUsers)
