@@ -21,7 +21,10 @@ function Test-MtEidscaPR05 {
     [OutputType([bool])]
     param()
 
-    
+    if ( $EntraIDPlan -eq 'Free' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason ''
+            return $null
+    }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
