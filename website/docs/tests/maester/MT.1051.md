@@ -1,5 +1,5 @@
 ---
-title: MT.1051 - At least one Conditional Access policy is targeting the Device Code authentication flow.
+title: MT.1052 - At least one Conditional Access policy is targeting the Device Code authentication flow.
 description: Checks if at least one policy is targeting the Device Code condition. 
 slug: /tests/MT.1051
 sidebar_class_name: hidden
