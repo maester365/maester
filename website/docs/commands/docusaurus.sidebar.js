@@ -54,6 +54,7 @@ module.exports = [
     'commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
     'commands/Test-MtCaBlockLegacyOtherAuthentication',
     'commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
+    'commands/Test-MtCaDeviceCodeFlow',
     'commands/Test-MtCaDeviceComplianceAdminsExists',
     'commands/Test-MtCaDeviceComplianceExists',
     'commands/Test-MtCaEmergencyAccessExists',
