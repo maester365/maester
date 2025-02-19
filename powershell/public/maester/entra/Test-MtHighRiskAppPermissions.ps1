@@ -1,6 +1,7 @@
 ﻿<#
 .SYNOPSIS
-    Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+    Check if any applications or service principals have high risk Graph permissions that can lead to direct or indirect paths
+    to Global Admin and full tenant takeover. The permissions are based on the research published at https://github.com/emiliensocchi/azure-tiering/tree/main.
 
 .DESCRIPTION
     Applications that use Graph API permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
@@ -16,7 +17,11 @@
 function Test-MtHighRiskAppPermissions {
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # Check for direct path to Global Admin or indirect path through a combination of permissions. Default is "All".
+        [ValidateSet('All', 'Direct', 'Indirect')]
+        [String] $AttackPath = "All"
+    )
 
     if (-not (Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
@@ -324,42 +329,87 @@ function Test-MtHighRiskAppPermissions {
 
     Write-Verbose "Test-MtHighRiskAppPermissions: Checking applications for high-risk permissions"
     try {
-        $allApplications = Invoke-MtGraphRequest -RelativeUri "applications"
-        $allApplicationsWithGraph = $allApplications | Where-Object { $_.requiredResourceAccess.resourceAppId -eq "00000003-0000-0000-c000-000000000000"}
-        $allAssignedCriticalPermissions = @()
-        foreach ($app in $allApplicationsWithGraph) {
-            $allAppPermissions = $app.requiredResourceAccess.resourceAccess.id
-            foreach ($appPermission in $allAppPermissions) {
-                foreach ($criticalGraphPermission in $allCriticalGraphPermissions) {
-                    if ($appPermission -eq $criticalGraphPermission.Id) {
-                        $allAssignedCriticalPermissions += @(
-                            [pscustomobject]@{
-                                ApplicationName = $app.displayName;
-                                ApplicationId = $app.appId;
-                                PermissionName = $criticalGraphPermission.Name;
-                                PermissionType = $criticalGraphPermission.Type;
-                                AttackPath = $criticalGraphPermission.Path
-                            }
-                        )
-                        $return = $false
-                    }
+        $allApiAssignments = [System.Collections.Generic.List[PSCustomObject]]::new()
+        $msGraphResourceId = "9647a6cf-c144-4b57-92bc-34d54075f29b"
+
+        $allServicePrincipals = Invoke-MtGraphRequest -RelativeUri "servicePrincipals"
+        foreach ($sp in $allServicePrincipals) {
+            If (([string]::IsNullOrEmpty($sp.Id))) {
+                Continue
+            }
+            $spUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($sp.id)/appId/$($sp.appId)"
+
+            $spAppRoleAssignments = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/appRoleAssignments" -Method GET
+            $spAppRoleAssignments.value | Where-Object { $_.resourceId -eq $msGraphResourceId } | ForEach-Object {
+                $allApiAssignments.Add([PSCustomObject]@{
+                    appDisplayName = $sp.appDisplayName
+                    objectId = $sp.Id
+                    appId = $sp.appId
+                    appUrl = $spUrl
+                    permissionId = $_.appRoleId
+                    permissionName = $null
+                    type = "Application"
+                })
+            }
+
+            $spOauth2PermissionGrants = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/oauth2PermissionGrants" -Method GET
+            $spOauth2PermissionGrants.value | Where-Object { $_.resourceId -eq $msGraphResourceId } | ForEach-Object {
+                $_.scope.Split(" ") | ForEach-Object {
+                    $allApiAssignments.Add([PSCustomObject]@{
+                        appDisplayName = $sp.appDisplayName
+                        objectId = $sp.Id
+                        appId = $sp.appId
+                        appUrl = $spUrl
+                        permissionId = $null
+                        permissionName = $_.Trim()
+                        type = "Delegated"
+                    })
                 }
             }
         }
 
-        $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
-        $result += "| --- | --- | --- | --- | --- |`n"
-        foreach ($assignedCriticalPermission in $allAssignedCriticalPermissions) {
-            $result += "| $($assignedCriticalPermission.ApplicationName) | $($assignedCriticalPermission.ApplicationId) | $($assignedCriticalPermission.PermissionName) | $($assignedCriticalPermission.PermissionType) | $($assignedCriticalPermission.AttackPath) |`n"
+        if ($attackPath -ne "All") {
+            $allCriticalGraphPermissionsToCheck = $allCriticalGraphPermissions | Where-Object { $_.Path -eq $attackPath }
+            $attackPathStr = $attackPath.ToLower()
+        } else {
+            $attackPathStr = "direct or indirect"
+            $allCriticalGraphPermissionsToCheck = $allCriticalGraphPermissions
         }
 
+        $allAssignedCriticalPermissions = [System.Collections.Generic.List[PSCustomObject]]::new()
+        foreach ($apiAssignment in $allApiAssignments) {
+            foreach ($criticalGraphPermission in $allCriticalGraphPermissionsToCheck) {
+                $compareAssignmet = if ($apiAssignment.type -eq "Application") { $apiAssignment.permissionId } else { $apiAssignment.permissionName }
+                $compareGraphPermission = if ($apiAssignment.type -eq "Application") { $criticalGraphPermission.Id } else { $criticalGraphPermission.Name }
+
+                if (($compareAssignmet -eq $compareGraphPermission) -and ($apiAssignment.type -eq $criticalGraphPermission.Type)) {
+                    $allAssignedCriticalPermissions.Add([PSCustomObject]@{
+                        ApplicationName = $apiAssignment.appDisplayName
+                        ApplicationId = $apiAssignment.appId
+                        ApplicationUrl = $apiAssignment.appUrl
+                        PermissionName = $criticalGraphPermission.Name
+                        PermissionType = $criticalGraphPermission.Type
+                        AttackPath = $criticalGraphPermission.Path
+                    })
+                }
+            }
+        }
+        $return = if (($allAssignedCriticalPermissions | Measure-Object).Count -eq 0) { $true } else { $false }
+
         if ($return) {
-            $testResultMarkdown = "Well done. No graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover."
+            $testResultMarkdown = "Well done. No application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover."
         } else {
-            $testResultMarkdown = "At least one application has graph permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.`n`n%TestResult%"
+            $testResultMarkdown = "At least one application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover.`n`n%TestResult%"
+
+            $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
+            $result += "| --- | --- | --- | --- | --- |`n"
+            foreach ($assignedCriticalPermission in $allAssignedCriticalPermissions) {
+                $appMdLink = "[$($assignedCriticalPermission.ApplicationName)]($($assignedCriticalPermission.ApplicationUrl))"
+                $result += "| $($appMdLink) | $($assignedCriticalPermission.ApplicationId) | $($assignedCriticalPermission.PermissionName) | $($assignedCriticalPermission.PermissionType) | $($assignedCriticalPermission.AttackPath) |`n"
+            }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
-        Add-MtTestResultDetail -Result $result
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         $return = $false
         Write-Error $_.Exception.Message
