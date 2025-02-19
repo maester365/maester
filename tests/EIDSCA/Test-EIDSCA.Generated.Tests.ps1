@@ -143,7 +143,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR05" {
-    It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" {
+    It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
@@ -152,7 +152,7 @@ Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", 
     }
 }
 Describe "Default Settings - Password Rule Settings" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
-    It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" {
+    It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
             .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
