@@ -87,6 +87,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
                'Test-MtCaBlockLegacyOtherAuthentication',
                'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
+               'Test-MtCaDeviceCodeFlow',
                'Test-MtCaDeviceComplianceAdminsExists',
                'Test-MtCaDeviceComplianceExists', 'Test-MtCaEmergencyAccessExists',
                'Test-MtCaEnforceNonPersistentBrowserSession',
