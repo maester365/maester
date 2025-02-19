@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+description: Check if any applications or service principals have high risk Graph permissions that can lead to direct or indirect paths
 id: Test-MtHighRiskAppPermissions
 title: Test-MtHighRiskAppPermissions
 hide_title: false
@@ -10,12 +10,15 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Ensure no graph application has permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
+Check if any applications or service principals have high risk Graph permissions that can lead to direct or indirect paths
+to Global Admin and full tenant takeover.
+The permissions are based on the research published at https://github.com/emiliensocchi/azure-tiering/tree/main.
 
 ## SYNTAX
 
 ```powershell
-Test-MtHighRiskAppPermissions [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtHighRiskAppPermissions [[-AttackPath] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +36,23 @@ Test-MtHighRiskAppPermissions
 Returns true if no application has Tier-0 graph permissions
 
 ## PARAMETERS
+
+### -AttackPath
+
+Check for direct path to Global Admin or indirect path through a combination of permissions.
+Default is "All".
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
