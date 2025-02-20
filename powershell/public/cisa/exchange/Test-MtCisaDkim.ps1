@@ -17,6 +17,9 @@ function Test-MtCisaDkim {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # DNS-server to use for lookup.
+        [string]$DnsServerIpAddress,
+
         # Selector-name for the DKIM record to test..
         [string]$Selector = "selector1"
     )
@@ -51,7 +54,7 @@ function Test-MtCisaDkim {
             $selector = $config.SelectorBeforeRotateOnDate
         }
 
-        $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimSelector $Selector -Records DKIM
+        $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimSelector $Selector -Records DKIM -DnsServerIpAddress $DnsServerIpAddress
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 

@@ -22,6 +22,9 @@ function Test-MtCisaDmarcAggregateCisa {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # DNS-server to use for lookup.
+        [string]$DnsServerIpAddress,
+
         # Check all domains, not only .gov domains.
         [switch]$Force,
 
@@ -69,7 +72,7 @@ function Test-MtCisaDmarcAggregateCisa {
 
     $dmarcRecords = @()
     foreach($domain in $expandedDomains){
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain -Records DMARC
+        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain -Records DMARC -DnsServerIpAddress $DnsServerIpAddress
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 

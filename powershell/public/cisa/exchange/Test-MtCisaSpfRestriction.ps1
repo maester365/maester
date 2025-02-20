@@ -16,7 +16,10 @@
 function Test-MtCisaSpfRestriction {
     [CmdletBinding()]
     [OutputType([bool])]
-    param()
+    param(
+        # DNS-server to use for lookup.
+        [string]$DnsServerIpAddress
+    )
 
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
@@ -32,7 +35,7 @@ function Test-MtCisaSpfRestriction {
 
     $spfRecords = @()
     foreach($domain in $acceptedDomains){
-        $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF
+        $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF -DnsServerIpAddress $DnsServerIpAddress
         $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 

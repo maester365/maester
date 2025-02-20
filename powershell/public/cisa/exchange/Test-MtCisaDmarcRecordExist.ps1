@@ -17,6 +17,9 @@ function Test-MtCisaDmarcRecordExist {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # DNS-server to use for lookup.
+        [string]$DnsServerIpAddress,
+
         # Check 2nd Level Domains Explicitly per CISA
         [switch]$Strict
     )
@@ -45,7 +48,7 @@ function Test-MtCisaDmarcRecordExist {
             $domainName = $domain.domainname
         }
 
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domainName -Records DMARC
+        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domainName -Records DMARC -DnsServerIpAddress $DnsServerIpAddress
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 

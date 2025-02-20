@@ -76,6 +76,11 @@ Invoke-Maester -PesterConfiguration $configuration
 ```
 Runs all the Pester tests in the EIDSCA folder.
 
+.EXAMPLE
+Invoke-Maester -DnsServerIpAddress '8.8.8.8'
+
+Run all the tests while using a custom server IP address for DNS lookups.
+
 .LINK
     https://maester.dev/docs/commands/Invoke-Maester
 #>
@@ -164,7 +169,10 @@ function Invoke-Maester {
 `
         # Skip the version check.
         # If set, the version check will not be performed.
-        [switch] $SkipVersionCheck
+        [switch] $SkipVersionCheck,
+
+        # Optional. The DNS server IP address used for DNS lookups.
+        [string] $DnsServerIpAddress = '1.1.1.1'
     )
 
     function GetDefaultFileName() {
@@ -215,18 +223,18 @@ function Invoke-Maester {
         return $result
     }
 
-    function GetPesterConfiguration($Path, $Tag, $ExcludeTag, $PesterConfiguration) {
+    function GetPesterConfiguration($Path, $Tag, $ExcludeTag, $PesterConfiguration, $Data) {
         if (!$PesterConfiguration) {
             $PesterConfiguration = New-PesterConfiguration
         }
 
         $PesterConfiguration.Run.PassThru = $true
         $PesterConfiguration.Output.Verbosity = $Verbosity
-        if ($Path) { $PesterConfiguration.Run.Path = $Path }
+        if ($Path) { $PesterConfiguration.Run.Container = New-PesterContainer -Path $Path -Data $Data }
         else {
             if (Test-Path -Path "./powershell/tests/pester.ps1") {
                 # Internal dev, exclude Maester's core tests
-                $PesterConfiguration.Run.Path = "./tests"
+                $PesterConfiguration.Run.Container = New-PesterContainer -Path './tests' -Data $Data
             }
         }
         if ($Tag) { $PesterConfiguration.Filter.Tag = $Tag }
@@ -303,7 +311,7 @@ function Invoke-Maester {
         $Tag += "All"
     }
 
-    $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+    $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration -Data @{ DnsServerIpAddress = $DnsServerIpAddress }
     $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
