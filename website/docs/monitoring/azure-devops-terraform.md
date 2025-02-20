@@ -72,6 +72,12 @@ Plan and Apply:
 - Select **Pipelines** > **Runs** to view the status of the pipeline
 - Select on a run to view the test results
 
+### Summary view
+
+The summary view shows the status of the pipeline run, the duration, and the number of tests that passed, failed, and were skipped.
+
+![Screenshot of Azure DevOps Pipeline Run Summary Page](assets/azure-devops-terraform-summary.png)
+
 ### Maester report
 
 The Maester report can be downloaded and viewed by selecting the **Published** artifact.
