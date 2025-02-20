@@ -1,6 +1,6 @@
 ---
 sidebar_label: GitLab
-sidebar_position: 4
+sidebar_position: 5
 title: Set up Maester in GitLab
 ---
 
