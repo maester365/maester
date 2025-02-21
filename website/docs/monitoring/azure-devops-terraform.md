@@ -34,20 +34,21 @@ Terraform is an open-source Infrastructure as Code (IaC) tool used to configure 
     To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
     :::
 - You must have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity.
-- You must have the permissions to create a temporary PAT (Personal Access Token) in Azure DevOps to deploy the necessary Azure DevOps resources.
+- You must have the permissions to create a temporary PAT (Personal Access Token) with Full Access in Azure DevOps to deploy the necessary Azure DevOps resources.
+  - You can safely delete the PAT after deployment.
 - You must also have Terraform & Azure CLI installed on your machine:
   - [Azure CLI installation](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
   - [Terraform installation](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 ## Terraform Module Deployment
-To deploy, you can use the Maester Terraform Module:
-
-Create a temporary PAT (Personal Access Token) with Full Access, that can be safely deleted after deployment. 
+Now it's time to deploy the Maester Terraform module! 🔥
+First, add the temporary Personal Access Token (PAT) to your environment variables. 
 
 - `export AZDO_PERSONAL_ACCESS_TOKEN=<pat>`
 - `export AZDO_ORG_SERVICE_URL=https://dev.azure.com/<devOpsOrganizationName>`
 
-Define the Terraform Module: 
+You can then easily use the Terraform module by creating a `main.tf` file with the following content. 
+- Make sure to update the required variables based on your environment information.
 
 ```terraform
 module "maester" {
@@ -67,7 +68,10 @@ Plan and Apply:
 - `terraform plan -out main.tfplan`
 - `terraform apply main.tfplan`
 
+Grab a coffee and come back in a few minutes to check the resources. ☕️
+
 ## Viewing codebase
+
 - Select **Repos** > **Files** and switch to **Maester-tests** repository
 
 ## Viewing test results
