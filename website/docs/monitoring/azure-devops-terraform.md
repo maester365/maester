@@ -67,6 +67,9 @@ Plan and Apply:
 - `terraform plan -out main.tfplan`
 - `terraform apply main.tfplan`
 
+## Viewing codebase
+- Select **Repos** > **Files** and switch to **Maester-tests** repository
+
 ## Viewing test results
 
 - Select **Pipelines** > **Runs** to view the status of the pipeline
