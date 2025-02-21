@@ -1,6 +1,6 @@
 ---
 sidebar_label: Email Alerts
-sidebar_position: 9
+sidebar_position: 10
 title: Set up Maester email alerts
 ---
 
