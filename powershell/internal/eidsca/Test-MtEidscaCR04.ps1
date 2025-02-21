@@ -27,7 +27,7 @@ function Test-MtEidscaCR04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.requestDurationInDays
+    [int]$tenantValue = $result.requestDurationInDays
     $testResult = $tenantValue -le '30'
     $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '30' -notlike '*$null*'
 
