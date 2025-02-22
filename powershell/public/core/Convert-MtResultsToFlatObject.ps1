@@ -59,7 +59,7 @@
     [OutputType([System.Collections.Generic.List[PSObject]])]
     param (
         # The Maester test results returned from `Invoke-Maester -PassThru`
-        [Parameter(Mandatory = $true, Position = 0, ParameterSetName = 'FromResults')]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'FromResults')]
         [psobject] $MaesterResults,
 
         # The path to the JSON file containing the Maester test results.
@@ -175,4 +175,4 @@
         }
     }
 
-} #end function Convert-MtJsonResultsToFlatObject
+} #end function Convert-MtResultsToFlatObject
