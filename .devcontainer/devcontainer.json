@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README for image at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
-	"name": "Measter",
+	"name": "Maester",
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye",
 	"features": {
 		"ghcr.io/devcontainers/features/powershell:1": {
