@@ -25,8 +25,8 @@ function Test-MtCisaAttachmentFilter {
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    } elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+    } elseif ($null -eq (Get-MtLicenseInformation -Product Eop)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEop
         return $null
     }
 
