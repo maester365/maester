@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit')]
         [string] $Product
     )
 
@@ -52,6 +52,25 @@ function Get-MtLicenseInformation {
                     $LicenseType = $null
                 }
                 Write-Information "The license type for Entra ID is $LicenseType"
+                return $LicenseType
+                Break
+            }
+            "Eop" {
+                Write-Verbose "Retrieving license SKU for Eop"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $requiredSkus = @(
+                    #servicePlanId
+                    "326e2b78-9d27-42c9-8509-46c827743a17" # Exchange Online Protection / EOP_ENTERPRISE
+                )
+                $LicenseType = $null
+                foreach($sku in $requiredSkus){
+                    $skuId = $sku -in $skus.skuId
+                    $servicePlanId = $sku -in $skus.servicePlans.servicePlanId
+                    if($skuId -or $servicePlanId){
+                        $LicenseType = "Eop"
+                    }
+                }
+                Write-Information "The license type for Exchange Online Protection is $LicenseType"
                 return $LicenseType
                 Break
             }
