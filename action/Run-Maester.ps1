@@ -15,7 +15,7 @@ param (
     [Parameter(Mandatory=$false, HelpMessage="The mail user id")]
     [string]$MailUser = "",
 
-    [Parameter(Mandatory=$false, HelpMessage="The mail recipients seperated by comma")]
+    [Parameter(Mandatory=$false, HelpMessage="The mail recipients separated by comma")]
     [string]$MailRecipients = "",
 
     [Parameter(Mandatory=$false, HelpMessage="The test result uri")]
