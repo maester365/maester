@@ -1,4 +1,5 @@
-
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple ORCA tests.')]
+param ()
 
 # Get local repo path and set working dir
 $repo = & git rev-parse --show-toplevel

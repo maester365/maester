@@ -16,6 +16,7 @@
 function Test-MtCisTeamsReportSecurityConcerns {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]
     param()
 
     if (-not (Test-MtConnection Teams)) {

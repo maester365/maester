@@ -10,6 +10,7 @@
     ./build/eidsca/Update-EidscaTests.ps1
 #>
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple EIDSCA tests.')]
 param (
     # Folder where generated test file should be written to.
     [string] $TestFilePath = "$PSScriptRoot/../../tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
