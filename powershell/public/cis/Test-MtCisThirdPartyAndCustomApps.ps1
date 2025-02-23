@@ -15,6 +15,7 @@
 #>
 function Test-MtCisThirdPartyAndCustomApps {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple types of apps.')]
     [OutputType([bool])]
     param()
 

@@ -16,6 +16,7 @@
 #>
 function Test-MtHighRiskAppPermissions {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple permissions.')]
     [OutputType([bool])]
     param(
         # Check for direct path to Global Admin or indirect path through a combination of permissions. Default is "All".
