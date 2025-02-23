@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester THE PowerShell-based test automation framework"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework."
 branding:
   icon: "check-circle"
   color: "red"
@@ -60,7 +60,7 @@ inputs:
     default: true
   include_teams:
     type: boolean
-    description: "Include Team tests in the test run."
+    description: "Include Teams tests in the test run."
     required: false
     default: true
   disable_telemetry:
