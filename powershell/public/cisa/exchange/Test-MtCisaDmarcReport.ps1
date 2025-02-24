@@ -20,6 +20,9 @@ function Test-MtCisaDmarcReport {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
+        # DNS-server to use for lookup.
+        [string]$DnsServerIpAddress,
+
         # Check 2nd Level Domains Explicitly per CISA
         [switch]$Strict
     )
@@ -53,7 +56,7 @@ function Test-MtCisaDmarcReport {
 
     $dmarcRecords = @()
     foreach($expandedDomain in $expandedDomains){
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $expandedDomain -Records DMARC
+        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $expandedDomain -Records DMARC -DnsServerIpAddress $DnsServerIpAddress
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
