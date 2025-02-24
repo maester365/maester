@@ -62,7 +62,7 @@ We have the following [test](https://github.com/maester365/maester/tree/main/tes
 When contributing tests, please ensure the following:
 
 - [x] The test is not already covered by an existing test
-- [x] The test has a unique tag so it can be run independently (e.g. `Invoke-Maester -Tag MS.AAD.5.1`)
+- [x] The test has a unique tag so it can be run independently (e.g. `Invoke-Maester -Tag MS.AAD.5.1`). See [#️⃣ Pick next Maester test sequence number](https://github.com/maester365/maester/issues/697) on how to reserve a unique tag for your new test.
 - [x] The Pester file `Test-Mt<Name of test>.Tests.ps1` is easy to understand.
 - [x] The related cmdlet for the test has a .md file to explain the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:
   - [x] Link to the admin portal blade where the setting can be configured
