@@ -1,9 +1,9 @@
 <#
  .Synopsis
-Checks for common misconfigurations in Conditional Access: both user risk and sign-in risk are configured in one policy.
+Checks for common misconfigurations in Conditional Access - both user risk and sign-in risk are configured in one policy.
 
  .Description
-Conditional Access policies' access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
+Conditional Access policies access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
 
   Learn more:
   https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies
@@ -39,7 +39,8 @@ Function Test-MtCaMisconfiguredIDProtection {
             $result = $true
             $currentresult = $true
             $policiesResult.Add($policy) | Out-Null
-        } else {
+        }
+        else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
@@ -53,7 +54,8 @@ Function Test-MtCaMisconfiguredIDProtection {
 
     if ( $result ) {
         $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
-    } else {
+    }
+    else {
         $testResult = "Well done! No conditional access policies detected where sign-in risk and user risk are combined."
     }
     Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
