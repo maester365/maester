@@ -16,6 +16,7 @@
 function Test-MtCisCommunicateWithSkypeUsers {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users.')]
     param()
 
     if (-not (Test-MtConnection Teams)) {
