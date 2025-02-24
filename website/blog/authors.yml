@@ -44,3 +44,13 @@ mike:
     linkedin: https://linkedin.com/in/mikesoule/
     github: soulemike
     x: MySnozzberries
+brian:
+  name: Brian Veldman
+  title: Cloud Solution Architect, Fellowmind
+  url: https://www.linkedin.com/in/brian-veldman/
+  image_url: https://github.com/brianveldman.png
+  page: true
+  socials:
+    linkedin: https://www.linkedin.com/in/brian-veldman/
+    github: brian-veldman
+    bluesky: https://bsky.app/profile/brianveldman.bsky.social

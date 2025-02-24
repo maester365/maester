@@ -66,7 +66,6 @@ module.exports = [
     'commands/Test-MtCaLicenseUtilization',
     'commands/Test-MtCaMfaForAdmin',
     'commands/Test-MtCaMfaForAdminManagement',
-    'commands/Test-MtCaMfaForAllUsers',
     'commands/Test-MtCaMfaForGuest',
     'commands/Test-MtCaMfaForRiskySignIn',
     'commands/Test-MtCaMisconfiguredIDProtection',
