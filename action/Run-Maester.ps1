@@ -1,53 +1,53 @@
 param (
-    [Parameter(Mandatory=$true, HelpMessage="The Entra Tenant Id")]
+    [Parameter(Mandatory = $true, HelpMessage = 'The Entra Tenant Id')]
     [string]$TenantId,
 
-    [Parameter(Mandatory=$true, HelpMessage="The Client Id of the Service Principal")]
+    [Parameter(Mandatory = $true, HelpMessage = 'The Client Id of the Service Principal')]
     [string]$ClientId,
 
-    [Parameter(Mandatory=$true, HelpMessage="The path for the files and pester tests")]
+    [Parameter(Mandatory = $true, HelpMessage = 'The path for the files and pester tests')]
     [string]$Path,
 
-    [Parameter(Mandatory=$false, HelpMessage="The Pester verbosity level")]
-    [ValidateSet("None", "Normal", "Detailed", "Diagnostic")]
-    [string]$PesterVerbosity = "None",
+    [Parameter(Mandatory = $false, HelpMessage = 'The Pester verbosity level')]
+    [ValidateSet('None', 'Normal', 'Detailed', 'Diagnostic')]
+    [string]$PesterVerbosity = 'None',
 
-    [Parameter(Mandatory=$false, HelpMessage="The mail user id")]
-    [string]$MailUser = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'The mail user id')]
+    [string]$MailUser = '',
 
-    [Parameter(Mandatory=$false, HelpMessage="The mail recipients seperated by comma")]
-    [string]$MailRecipients = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'The mail recipients separated by comma')]
+    [string]$MailRecipients = '',
 
-    [Parameter(Mandatory=$false, HelpMessage="The test result uri")]
-    [string]$TestResultURI = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'The test result uri')]
+    [string]$TestResultURI = '',
 
-    [Parameter(Mandatory=$false, HelpMessage="The tags to include in the tests")]
-    [string]$IncludeTags = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'The tags to include in the tests')]
+    [string]$IncludeTags = '',
 
-    [Parameter(Mandatory=$false, HelpMessage="The tags to exclude in the tests")]
-    [string]$ExcludeTags = "",
+    [Parameter(Mandatory = $false, HelpMessage = 'The tags to exclude in the tests')]
+    [string]$ExcludeTags = '',
 
-    [Parameter(Mandatory=$false, HelpMessage="Include Exchange Online tests")]
+    [Parameter(Mandatory = $false, HelpMessage = 'Include Exchange Online tests')]
     [bool]$IncludeExchange = $true,
 
-    [Parameter(Mandatory=$false, HelpMessage="Include Teams tests")]
+    [Parameter(Mandatory = $false, HelpMessage = 'Include Teams tests')]
     [bool]$IncludeTeams = $true,
 
-    [Parameter(Mandatory=$false, HelpMessage="Install preview version of Maester")]
+    [Parameter(Mandatory = $false, HelpMessage = 'Install preview version of Maester')]
     [bool]$Preview = $false,
 
-    [Parameter(Mandatory=$false, HelpMessage="Disable telemetry")]
+    [Parameter(Mandatory = $false, HelpMessage = 'Disable telemetry')]
     [bool]$DisableTelemetry = $false,
 
-    [Parameter(Mandatory=$false, HelpMessage="Add test results to GitHub step summary")]
+    [Parameter(Mandatory = $false, HelpMessage = 'Add test results to GitHub step summary')]
     [bool]$GitHubStepSummary = $false
 )
 
-BEGIN{
-    Write-Host "Starting Maester tests"
+BEGIN {
+    Write-Host 'Starting Maester tests'
 }
-PROCESS{
-    $graphToken = Get-AzAccessToken -ResourceUrl  "https://graph.microsoft.com" -AsSecureString
+PROCESS {
+    $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
 
     # Connect to Microsoft Graph with the token as secure string
     Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
@@ -59,34 +59,34 @@ PROCESS{
 
         $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
         Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
-    }else{
-        Write-Host "Exchange Online tests will be skipped."
+    } else {
+        Write-Host 'Exchange Online tests will be skipped.'
     }
 
-    # Check if we need to connect to Exchange Online
+    # Check if we need to connect to Teams
     if ($IncludeTeams) {
         Install-Module MicrosoftTeams -Force
         Import-Module MicrosoftTeams
 
-        $teamsToken = Get-AzAccessToken -ResourceUrl "48ac35b8-9aa8-4d74-927d-1f4a14a0b239"
+        $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
 
         $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
         $tokens = @($regularGraphToken, $teamsToken.Token)
         Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
-    }else{
-        Write-Host "Teams tests will be skipped."
+    } else {
+        Write-Host 'Teams tests will be skipped.'
     }
 
     # Install Maester
-    if ($Preview){
-    Install-Module Maester -AllowPrerelease -Force
+    if ($Preview) {
+        Install-Module Maester -AllowPrerelease -Force
     } else {
-    Install-Module Maester -Force
+        Install-Module Maester -Force
     }
 
 
     # Delete Microsoft.Graph.Authentication 2.9.1 (tmp fix for issue #606)
-    Write-Host "Delete module version 2.9.1 of Microsoft.Graph.Authentication"
+    Write-Host 'Delete module version 2.9.1 of Microsoft.Graph.Authentication'
     rm -r /home/runner/.local/share/powershell/Modules/Microsoft.Graph.Authentication/2.9.1
 
     # Configure test results
@@ -126,7 +126,7 @@ PROCESS{
             $MaesterParameters.Add( 'MailTestResultsUri', $TestResultURI )
             Write-Host "Mail notification will be sent to: $Recipients"
         } else {
-            Write-Warning "Mail recipients are not provided. Skipping mail notification."
+            Write-Warning 'Mail recipients are not provided. Skipping mail notification.'
         }
     }
 
@@ -138,12 +138,12 @@ PROCESS{
     # Run Maester tests
     $results = Invoke-Maester @MaesterParameters
 
-    if($GitHubStepSummary) {
+    if ($GitHubStepSummary) {
         # Add step summary
         $summary = Get-Content test-results/test-results.md
         Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
     }
 }
-END{
-    Write-Host "Maester tests completed!"
+END {
+    Write-Host 'Maester tests completed!'
 }
