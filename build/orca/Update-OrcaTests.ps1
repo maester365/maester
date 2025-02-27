@@ -49,17 +49,17 @@ foreach($prereq in $prereqs){
 
     if($enum -or $class){
         $codeBlock = $parse.Find({
-            $args|Where-Object{`
-                $_.IsClass -eq $class -and `
-                $_.IsEnum -eq $enum -and `
+            $args | Where-Object {
+                $_.IsClass -eq $class -and
+                $_.IsEnum -eq $enum -and
                 $_.Name -eq $prereq.Name
             }
         },$true)
     }elseif($function){
         $codeBlock = $parse.FindAll({
-            $args|Where-Object{`
-                $_.Name -eq $prereq.Name -and`
-                $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and`
+            $args | Where-Object{
+                $_.Name -eq $prereq.Name -and
+                $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
                 $_.Parent -isnot [System.Management.Automation.Language.FunctionMemberAst]
             }
         },$true)
