@@ -3,11 +3,16 @@ param ()
 
 # Get local repo path and set working dir
 $repo = & git rev-parse --show-toplevel
+$cwd = Get-Location
 Set-Location -Path $repo\build\orca
 
 # Get orca remote repo
-#$orca = "https://github.com/cammurray/orca.git"
-#& git clone $orca
+$orca = "https://github.com/cammurray/orca.git"
+if (Test-Path ".\orca") {
+    & git pull --depth 1 $orca
+} else {
+    & git clone --depth 1 $orca
+}
 
 #region prereqs
 $prereqs = @(
@@ -90,16 +95,26 @@ foreach($prereq in $prereqs){
 }
 Write-Verbose "Found $($codeBlocks.Count)/$($prereqs.Count) code blocks"
 
+$orcaClassContent = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+$orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
+$orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]`n"
+$orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]`n"
+$orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]`n"
+$orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]`n"
+$orcaClassContent += "param()`n`n"
+$orcaClassContent += $codeBlocks -join "`n`n"
+$orcaClassContent = $orcaClassContent -replace "Write\-Host","Write-Verbose"
+Set-Content -Path $repo\powershell\internal\orca\orcaClass.psm1 -Value $orcaClassContent -Force
+
 $orcaPrereqContent = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+$orcaPrereqContent += "using module `".\orcaClass.psm1`"`n`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]`n"
-$orcaPrereqContent += "param()`n`n"
-$orcaPrereqContent += $codeBlocks -join "`n`n"
+$orcaPrereqContent += "param()`n"
 $orcaPrereqContent = $orcaPrereqContent -replace "Write\-Host","Write-Verbose"
-Set-Content -Path $repo\powershell\internal\orca\orcaClass.ps1 -Value $orcaPrereqContent -Force
 #endregion
 
 #region tests
@@ -119,12 +134,6 @@ foreach($file in $testFiles){
         links       = ""
     }
 
-    $content.content = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n" + $content.content
-
-    <#$content.content = $content.content -replace`
-        "using module `"..\\ORCA.psm1`"",`
-        "using module `"Maester`""
-        #>
     $content.content = $content.content -replace`
         "using module `"..\\ORCA.psm1`"",`
         ""
@@ -285,3 +294,5 @@ FunctionsToExport = @(
 )
 "@
 #endregion
+
+Set-Location -Path $cwd
