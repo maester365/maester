@@ -170,7 +170,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-ORCA119', 'Test-ORCA120',
                'Test-ORCA121', 'Test-ORCA123',
                'Test-ORCA124', 'Test-ORCA139', 'Test-ORCA140',
-               'Test-ORCA141', 'Test-ORCA142', 'Test-ORCA143',
+               'Test-ORCA141', 'Test-ORCA142',
                'Test-ORCA156', 'Test-ORCA158', 'Test-ORCA179',
                'Test-ORCA180', 'Test-ORCA189',
                'Test-ORCA205', 'Test-ORCA220', 'Test-ORCA221',

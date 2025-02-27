@@ -49,17 +49,17 @@ foreach($prereq in $prereqs){
 
     if($enum -or $class){
         $codeBlock = $parse.Find({
-            $args|Where-Object{`
-                $_.IsClass -eq $class -and `
-                $_.IsEnum -eq $enum -and `
+            $args | Where-Object {
+                $_.IsClass -eq $class -and
+                $_.IsEnum -eq $enum -and
                 $_.Name -eq $prereq.Name
             }
         },$true)
     }elseif($function){
         $codeBlock = $parse.FindAll({
-            $args|Where-Object{`
-                $_.Name -eq $prereq.Name -and`
-                $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and`
+            $args | Where-Object{
+                $_.Name -eq $prereq.Name -and
+                $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
                 $_.Parent -isnot [System.Management.Automation.Language.FunctionMemberAst]
             }
         },$true)
@@ -134,6 +134,13 @@ foreach($file in $testFiles){
         links       = ""
     }
 
+    # Skip early if we can
+    $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
+    $skip = [regex]::Match($content.content,"this.SkipInReport\s*=\s*[`$]True",$option)
+    if ($skip.Success) {
+        continue
+    }
+
     $content.content = $content.content -replace`
         "using module `"..\\ORCA.psm1`"",`
         ""
@@ -143,7 +150,6 @@ foreach($file in $testFiles){
     # Script Files
     Set-Content -Path "$repo\powershell\internal\orca\$($content.file)" -Value $content.content -Force
 
-    $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
     $name = [regex]::Match($content.content,"this.name.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $pass = [regex]::Match($content.content,"this.passtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $fail = [regex]::Match($content.content,"this.failtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
