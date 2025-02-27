@@ -331,7 +331,6 @@ function Test-MtHighRiskAppPermissions {
     Write-Verbose "Test-MtHighRiskAppPermissions: Checking applications for high-risk permissions"
     try {
         $allApiAssignments = [System.Collections.Generic.List[PSCustomObject]]::new()
-        $msGraphResourceId = "9647a6cf-c144-4b57-92bc-34d54075f29b"
 
         $allServicePrincipals = Invoke-MtGraphRequest -RelativeUri "servicePrincipals"
         foreach ($sp in $allServicePrincipals) {
@@ -341,7 +340,7 @@ function Test-MtHighRiskAppPermissions {
             $spUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($sp.id)/appId/$($sp.appId)"
 
             $spAppRoleAssignments = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/appRoleAssignments" -Method GET
-            $spAppRoleAssignments.value | Where-Object { $_.resourceId -eq $msGraphResourceId } | ForEach-Object {
+            $spAppRoleAssignments.value | ForEach-Object {
                 $allApiAssignments.Add([PSCustomObject]@{
                     appDisplayName = $sp.appDisplayName
                     objectId = $sp.Id
@@ -354,7 +353,7 @@ function Test-MtHighRiskAppPermissions {
             }
 
             $spOauth2PermissionGrants = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($sp.Id)/oauth2PermissionGrants" -Method GET
-            $spOauth2PermissionGrants.value | Where-Object { $_.resourceId -eq $msGraphResourceId } | ForEach-Object {
+            $spOauth2PermissionGrants.value | ForEach-Object {
                 $_.scope.Split(" ") | ForEach-Object {
                     $allApiAssignments.Add([PSCustomObject]@{
                         appDisplayName = $sp.appDisplayName
