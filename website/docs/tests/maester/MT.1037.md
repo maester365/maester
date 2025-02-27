@@ -15,8 +15,8 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. Log into Microsoft Teams admin center
-> 2. In the left navigation, go to Meetings > Meeting Policies
-> 3. Under Manage Policies, select a group/direct policy
-> 4. Under Content sharing section, toggle "Who can present" to Only organizers and co-organizers
+> 1. Log into [Microsoft Teams admin center](https://aka.ms/teamsadmincenter)
+> 2. In the left navigation, go to **Meetings** > **Meeting Policies**
+> 3. Under **Manage Policies**, select a group/direct policy
+> 4. Under **Content sharing** section, switch **Who can present** to "**Only organizers and co-organizers**"
 > 5. You’ll need to change this setting for each group/direct policy
