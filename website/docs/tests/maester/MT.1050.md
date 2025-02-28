@@ -1,5 +1,5 @@
 ---
-title: MT.1050 Apps with high-risk permissions having a direct path to Global Admin
+title: MT.1050 - Apps with high-risk permissions having a direct path to Global Admin
 description: Checks if any application has tier-0 graph permissions with a risk of having a direct path to Global Admin and full tenant takeover.
 slug: /docs/tests/MT.1050
 sidebar_class_name: hidden
@@ -17,8 +17,8 @@ There are several use cases where Tier-0 permissions with an indirect attack pat
 ## How to fix
 
 To check the applications permissions:
-1. Navigate to Microsoft Entra admin center [https://entra.microsoft.com/](https://entra.microsoft.com/).
-2. Click to expand **Applications** then select **App registrations**.
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com/).
+2. Expand **Identity** > **Applications**.
 3. Select **All applications**.
 4. Search for the application that you want to check and select the application.
 5. Select **API permissions**.
@@ -29,4 +29,3 @@ To check the applications permissions:
 
 * [Emilien Socchi | Application permissions - Tier 0: Family of Global Admins](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions#tier-0)
 * [Microsoft Learn | Graph permissions](https://learn.microsoft.com/en-us/graph/permissions-reference)
--
