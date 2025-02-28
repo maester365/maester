@@ -135,6 +135,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisGlobalAdminCount',
                'Test-MtCis365PublicGroup',
                'Test-MtCisCalendarSharing',
+               'Test-MtCisDkim',
                'Test-MtCisSharedMailboxSignIn',
                'Test-MtCisPasswordExpiry',
                'Test-MtCisCustomerLockBox',

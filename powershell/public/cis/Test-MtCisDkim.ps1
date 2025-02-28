@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks state of DKIM for all EXO domains
 
