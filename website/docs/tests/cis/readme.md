@@ -24,7 +24,8 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 It is important to note that a number of the policy checks ONLY check the default policy, and not every policy. CIS 2.1.7 `Test-MtCisSafeAntiPhishingPolicy` is one example.
 
 :::info
-TBD in this case refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
+TBD below refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
+N/A below refers to review checks which canont be automated.
 :::
 
 | Cmdlet Name | CIS Recommendation ID |
@@ -50,3 +51,9 @@ TBD in this case refers to CIS "manual" checks. It might be possible to automate
 | [Test-MtCisSafeAttachmentsAtpPolicy](/docs/commands/) | 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled |
 | [Test-MtCisOutboundSpamFilterPolicy](/docs/commands/) | 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators |
 | [Test-MtCisSafeAntiPhishingPolicy](/docs/commands/) | 2.1.7 (L1) Ensure that an anti-phishing policy has been created |
+| N/A | 2.3.1 (L1) Ensure the Account Provisioning Activity report is reviewed at least weekly |
+| N/A | 2.3.2 (L1) Ensure non-global administrator role group assignments are reviewed at least weekly |
+| TBD | 2.4.1 (L1) Ensure Priority account protection is enabled and configured |
+| TBD | 2.4.2 (L1) Ensure Priority accounts have 'Strict protection' presets applied |
+| TBD | 2.4.3 (L2) Ensure Microsoft Defender for Cloud Apps is enabled and configured |
+| [Test-MtCisZAP](/docs/commands/) | 2.4.4 (L1) Ensure Zero-hour auto purge for Microsoft Teams is on |
