@@ -62,6 +62,15 @@ function Test-MtCaExclusionForDirectorySyncAccount {
             continue
         }
 
+        if ( $policy.grantcontrols.builtincontrols -contains 'block' `
+            -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes `
+            -and "other" -in $policy.conditions.clientAppTypes){
+            # Skip this policy, because it just blocks legacy authentication
+            $currentresult = $true
+            Write-Verbose "Skipping $($policy.displayName) legacy auth is not used for sync - $currentresult"
+            continue
+        }
+
         $PolicyIncludesAllUsers = $false
         $PolicyIncludesRole = $false
         $DirectorySynchronizationAccounts | ForEach-Object {

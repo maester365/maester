@@ -29,10 +29,9 @@ function Test-MtCisaPhishResistant {
         return $null
     }
 
-    $result = Get-MtConditionalAccessPolicy
+    $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
     $policies = $result | Where-Object {`
-        $_.state -eq "enabled" -and `
         $_.conditions.applications.includeApplications -contains "All" -and `
         $_.conditions.users.includeUsers -contains "All" -and `
         $_.grantControls.authenticationStrength.displayName -eq "Phishing-resistant MFA" }

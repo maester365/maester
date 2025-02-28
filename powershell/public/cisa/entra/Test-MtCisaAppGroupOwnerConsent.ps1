@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Checks if group owners can consent to apps
 
@@ -20,6 +20,11 @@ function Test-MtCisaAppGroupOwnerConsent {
 
     if(!(Test-MtConnection Graph)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    if ( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recently created tenants.'
         return $null
     }
 

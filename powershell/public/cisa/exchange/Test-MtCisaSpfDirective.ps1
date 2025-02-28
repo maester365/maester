@@ -43,6 +43,9 @@ function Test-MtCisaSpfDirective {
         if(($directives|Measure-Object).Count -ge 1 -and $check){
             $spfRecord.pass = "Passed"
             $spfRecord.reason = "1+ mechanism targets"
+        }elseif($domain.IsCoexistenceDomain){
+            $spfRecord.pass = "Skipped"
+            $spfRecord.reason = "coexistence domain"
         }elseif(($directives|Measure-Object).Count -ge 1 -and -not $check){
             $spfRecord.reason = "No EXO directive"
         }elseif($spfRecord.spfRecord -like "*not available"){

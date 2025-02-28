@@ -1,6 +1,6 @@
 ---
 sidebar_label: Azure Automation
-sidebar_position: 4
+sidebar_position: 7
 title: Azure Automation
 ---
 import GraphPermissions from '../sections/permissions.md';

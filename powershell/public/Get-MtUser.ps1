@@ -77,21 +77,23 @@ function Get-MtUser {
             foreach ( $EntraIDRole in $EntraIDRoles ) {
                 $TmpUsers = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$($EntraIDRole.id)/members" -Select id, userPrincipalName, userType -OutputType Hashtable
                 if ( $TmpUsers.ContainsKey('userType') ) {
-                    Write-Verbose "Setting userType to Admin for $($TmpUsers.Count) users that are member of $($EntraIDRole.displayName)."
+                    Write-Verbose "Setting userType to Admin for $(($TmpUsers | Measure-Object).count) users that are member of $($EntraIDRole.displayName)."
                     $TmpUsers | ForEach-Object {
                         $_.userType = "Admin"
                         $Users.Add($_) | Out-Null
-                    }
-                    if ($Users.Count -ge $Count) {
-                        Write-Verbose "Found $Count $UserType users."
-                        break
+                        if ($Users.Count -ge $Count) {
+                            Write-Verbose "Found $Count $UserType users."
+                            break
+                        }
                     }
                 }
             }
         } elseif ( $UserType -in @("BreakGlass", "EmergencyAccess") ) {
             Write-Verbose "Getting $UserType users from the tenant."
             Write-Verbose "Get all conditional access policies."
+            # Get all policies (the state of policy does not have to be enabled)
             $CAPolicies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
+
             # Check which user object Id or group object Id is excluded from the most policies
             $PossibleEmergencyAccessUsers = $CAPolicies.conditions.users.excludeUsers | Group-Object -NoElement | Sort-Object -Property Count -Descending | Select-Object -First 2
             if ($PossibleEmergencyAccessUsers.Count -eq 2) {
@@ -109,33 +111,37 @@ function Get-MtUser {
             $EmergencyAccessUsersCount = $CApolicies.conditions.users.excludeUsers | Where-Object { $_ -in $EmergencyAccessUsers } | Measure-Object | Select-Object -ExpandProperty Count
             $EmergencyAccessGroupsCount = $CApolicies.conditions.users.excludeGroups | Where-Object { $_ -in $EmergencyAccessGroups } | Measure-Object | Select-Object -ExpandProperty Count
             if ( $EmergencyAccessUsersCount -gt $EmergencyAccessGroupsCount ) {
+                # Handling Emergency Access Users
                 foreach ( $EmergencyAccessUser in $EmergencyAccessUsers ) {
                     $TmpUsers = Invoke-MtGraphRequest -RelativeUri "users/$EmergencyAccessUser" -Select id, userPrincipalName, userType -OutputType Hashtable
                     if ( $TmpUsers.ContainsKey('userType') ) {
-                        Write-Verbose "Setting userType to $UserType for $($TmpUsers.Count) users that are member of EmergencyAccess."
+                        Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
                         $TmpUsers | ForEach-Object {
                             $_.userType = "EmergencyAccess"
                             $Users.Add($_) | Out-Null
-                        }
-                        if ($Users.Count -ge $Count) {
-                            Write-Verbose "Found $Count $UserType users."
-                            break
+
+                            if ($Users.Count -ge $Count) {
+                                Write-Verbose "Found $Count $UserType users."
+                                break
+                            }
                         }
                     }
                 }
             } else {
+                # Handling Emergency Access Groups
                 Write-Verbose "Emergency access group: $EmergencyAccessGroups"
                 foreach ( $EmergencyAccessGroup in $EmergencyAccessGroups ) {
                     $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable
                     if ( $TmpUsers.ContainsKey('userType') ) {
-                        Write-Verbose "Setting userType to $UserType for $($TmpUsers.Count) users that are member of EmergencyAccess."
+                        Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
                         $TmpUsers | ForEach-Object {
                             $_.userType = "EmergencyAccess"
                             $Users.Add($_) | Out-Null
-                        }
-                        if ($Users.Count -ge $Count) {
-                            Write-Verbose "Found $Count $UserType users."
-                            break
+
+                            if ($Users.Count -ge $Count) {
+                                Write-Verbose "Found $Count $UserType users."
+                                break
+                            }
                         }
                     }
                 }

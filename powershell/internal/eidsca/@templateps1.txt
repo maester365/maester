@@ -24,9 +24,9 @@ function %PSFunctionName% {
     %SkipCheck%
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
-    [string]$tenantValue = $result.%CurrentValue%
+    [%ValueType%]$tenantValue = $result.%CurrentValue%
     $testResult = $tenantValue -%PwshCompareOperator% %RecommendedValue%
-    $tenantValueNotSet = $null -eq $tenantValue -and %RecommendedValue% -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and %RecommendedValue% -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value %CompareOperatorText% **%RecommendedValue%** for **%RelativeUri%**"

@@ -15,7 +15,7 @@ Checks state of DMARC records for all exo domains
 ## SYNTAX
 
 ```powershell
-Test-MtCisaDmarcRecordReject [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaDmarcRecordReject [-Strict] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,22 @@ Test-MtCisaDmarcRecordExist
 Returns true if DMARC record with reject policy exists for every domain
 
 ## PARAMETERS
+
+### -Strict
+
+Check 2nd Level Domains Explicitly per CISA
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 

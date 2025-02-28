@@ -29,7 +29,7 @@ function Test-MtEidscaAM03 {
 
     [string]$tenantValue = $result.featureSettings.numberMatchingRequiredState.state
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"

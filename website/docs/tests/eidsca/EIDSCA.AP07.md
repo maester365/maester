@@ -12,7 +12,7 @@ Represents role templateId for the role that should be granted to guest user.
 |-|-|
 | **Name** | guestUserRoleId |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** |  |
 
 ## How to fix
@@ -22,7 +22,7 @@ Represents role templateId for the role that should be granted to guest user.
 ### Details of configuration item
 | | |
 |-|-|
-| **Recommendation** | CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory objects. |
+| **Recommendation** | CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects. |
 | **Configuration** | policies/authorizationPolicy |
 | **Setting** | `guestUserRoleId` |
 | **Recommended Value** | '2af84b1e-32c8-42b7-82bc-daa82404023b' |

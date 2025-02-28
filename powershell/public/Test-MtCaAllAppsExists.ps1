@@ -52,7 +52,7 @@ function Test-MtCaAllAppsExists {
   $result = $false
   foreach ($policy in $policies) {
     if ( ( $SkipCheckAllUsers.IsPresent -or $policy.conditions.users.includeUsers -eq "All" ) `
-        -and $policy.conditions.applications.includeApplications -eq 'all' `
+        -and $policy.conditions.applications.includeApplications -eq "All" `
     ) {
       $result = $true
       $currentresult = $true
