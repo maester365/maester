@@ -3,7 +3,7 @@
 Checks if the common attachment types filter is comprehensive
 
 .DESCRIPTION
-The commonattachment types filter should be comprehensive
+The common attachment types filter should be comprehensive
 
 .EXAMPLE
 Test-MtCisAttachmentFilterTypeList
