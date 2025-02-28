@@ -32,11 +32,16 @@ function Test-MtCisSharedMailboxSignIn {
     Write-Verbose "Getting all shared mailboxes"
     $sharedMailboxes = Get-MtExo -Request EXOMailbox | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
 
-    Write-Verbose "For each mailbox get mailbox an and AccountEnabled status"
+    Write-Verbose "For each mailbox get mailbox and AccountEnabled status"
     $mailboxDetails = @()
-    $mailboxDetails += $sharedMailboxes | ForEach-Object {
-        Get-MgUser -UserId $_.ExternalDirectoryObjectId -Property DisplayName, UserPrincipalName, AccountEnabled }
-
+    foreach ($mbx in $sharedMailboxes) {
+        $mgUser = Get-MgUser -UserId $mbx.ExternalDirectoryObjectId -Property DisplayName, UserPrincipalName, AccountEnabled
+        $mailboxDetails += [pscustomobject]@{
+            DisplayName = $mgUser.DisplayName
+            UserPrincipalName = $mgUser.UserPrincipalName
+            AccountEnabled = $mgUser.AccountEnabled
+        }
+    }
 
     Write-Verbose "Select shared mailboxes where sign-in is enabled"
     $result = $mailboxDetails | Where-Object { $_.AccountEnabled -eq "True" }
