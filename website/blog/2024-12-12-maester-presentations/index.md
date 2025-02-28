@@ -13,6 +13,8 @@ Are you interested in presenting about Maester at a conference or at your organi
 
 We've created a repository to host slide decks that you can use to get started.
 
+{/* truncate */}
+
 You can find the slide decks in the [Maester Content Hub](https://github.com/maester365/content-hub).
 
 ![Maester Presentation](./img/maester-presentation.png)

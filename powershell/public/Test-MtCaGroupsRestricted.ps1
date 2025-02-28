@@ -63,7 +63,9 @@ Function Test-MtCaGroupsRestricted {
   }
 
   foreach ($UnrestrictedGroup in $UnrestrictedGroups) {
+    # Get all policies (the state of policy does not have to be enabled)
     $ImpactedPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.conditions.users.includeGroups -contains $UnrestrictedGroup.id -or $_.conditions.users.excludeGroups -contains $UnrestrictedGroup.id }
+
     foreach ($ImpactedPolicy in $ImpactedPolicies) {
       if ($ImpactedPolicy.conditions.users.includeGroups -contains $UnrestrictedGroup.id) {
         $Condition = "include"

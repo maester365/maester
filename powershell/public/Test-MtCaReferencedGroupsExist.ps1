@@ -24,6 +24,7 @@ Function Test-MtCaReferencedGroupsExist {
   if ($PSVersionTable.PSEdition -eq 'Core') {
 
     $testDescription = ""
+    # Get all policies (the state of policy does not have to be enabled)
     $Policies = Get-MtConditionalAccessPolicy
 
     $Groups = $Policies.conditions.users.includeGroups + $Policies.conditions.users.excludeGroups | Select-Object -Unique
@@ -50,6 +51,7 @@ Function Test-MtCaReferencedGroupsExist {
 
     $GroupsWhichNotExist | Sort-Object | ForEach-Object {
       $InvalidGroupId = $_
+      # Get all policies (the state of policy does not have to be enabled)
       $ImpactedPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.conditions.users.includeGroups -contains $InvalidGroupId -or $_.conditions.users.excludeGroups -contains $InvalidGroupId }
       foreach ($ImpactedPolicy in $ImpactedPolicies) {
         if ($ImpactedPolicy.conditions.users.includeGroups -contains $InvalidGroupId) {

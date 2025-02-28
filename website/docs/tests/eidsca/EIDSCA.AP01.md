@@ -12,12 +12,12 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 |-|-|
 | **Name** | allowedToUseSSPR |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | Informational |
 
 ## How to fix
 
-
+Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -BodyParameter @{ allowedToUseSSPR = $false }```
 
 ### Details of configuration item
 | | |

@@ -25,7 +25,7 @@ function Test-MtCaDeviceComplianceExists {
     return $null
   }
 
-  $policies = Get-MtConditionalAccessPolicy
+  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
   $result = $false
 
@@ -36,9 +36,7 @@ See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - 
   $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
 
   foreach ($policy in $policies) {
-    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice' `
-        -and $policy.state -eq 'enabled' `
-    ) {
+    if ($policy.grantcontrols.builtincontrols -contains 'compliantDevice') {
       Write-Verbose -Message "Found a conditional access policy requiring device compliance: $($policy.displayname)"
       $result = $true
       $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"

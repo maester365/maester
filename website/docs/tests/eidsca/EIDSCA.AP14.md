@@ -12,12 +12,12 @@ Prevents all non-admins from reading user information from the directory. This f
 |-|-|
 | **Name** | allowedToReadOtherUsers |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | Informational |
 
 ## How to fix
 
-
+Microsoft Graph PowerShell: ```PolicyAuthorizationPolicy -BodyParameter @{DefaultUserRolePermissions = @{AllowedToReadOtherUsers = $false}}```
 
 ### Details of configuration item
 | | |

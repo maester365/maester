@@ -1,14 +1,64 @@
 ---
 sidebar_label: Teams Alerts
-sidebar_position: 9
+sidebar_position: 11
 title: Set up Maester Teams alerts
 ---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Set up Maester Teams Alerts
 
 Your Maester monitoring workflow can be configured to send an adaptive card in a team channel with the summary of the Maester test results at the end of each monitoring cycle in Slack. This guide will walk you through the steps to set up Teams alerts in Maester.
 
 ![Maester - Microsoft Teams Alerts](assets/maester-teams-alert-test-result.png)
+
+There are two ways you can send alerts to Teams:
+
+- **Teams webhook workflow**: Uses a Teams webhook triggered from Maester.
+  - This method is simpler to set up, does not require any additional Graph permissions and users a PowerAutomate workflow. However the workflow is tied to the account that set up the workflow which may need to be updated if the account is disabled.
+- **Graph API**: Uses a Graph API call to send the message to a Teams channel.
+  - This method takes a few extra steps and requires consenting to the ChannelMessage.Send Graph permissions. There are no dependencies on PowerAutomate workflows with this option.
+
+<Tabs>
+<TabItem value="wif" label="Teams webhook workflow" default>
+
+## Create a Teams webhook
+
+- To get the Webhook Uri, right-click on the channel in Teams and select `Workflow`.
+- Create a workflow using the `Post to a channel when a webhook request is received` template.
+- Copy the Webhook Uri provided. You will need this Uri for the next step.
+
+## Invoke-Maester with the webhook
+
+Update your GitHub/Azure DevOps daily monitoring workflow to send the alert using the `TeamChannelWebhookUri` parameter with the url from the previous step.
+
+```powershell
+Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+```
+
+Alternatively, you can use the `Send-MtTeamsMessage` cmdlet to send the message to a specific Teams channel.
+
+```powershell
+```powershell
+# Get the results of the Maester tests using -PassThru
+$results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
+
+# Send the summary using the results
+Send-MtTeamsMessage -MaesterResults $MaesterResults TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
+
+```
+
+
+:::note
+
+The TeamChannelWebhookUri should be kept secure and not shared publicly to avoid unauthorized users posting messages to your channel. If using GitHub Actions, it is recommended to store the webhook uri as a secret.
+
+:::
+
+</TabItem>
+
+  <TabItem value="gha-wif" label="Graph API" default>
 
 ## Prerequisites
 
@@ -25,7 +75,6 @@ The app that sends the Teams alerts needs the `ChannelMessage.Send` permission t
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 
-
 ## Add the Teams alert step to your workflow
 
 Update your GitHub/Azure DevOps daily monitoring workflow to send the alert using `Send-MtTeamsMessage` after the Maester tests have been run.
@@ -40,9 +89,14 @@ Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-
 ```
 
 :::info
-* To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=< TeamId >
-* To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/< TeamChannelId >/my%20channel
-:::
+
+- To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=< TeamId >
+- To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/< TeamChannelId >/my%20channel
+  :::
+
+</TabItem>
+
+</Tabs>
 
 ## Adding a link to detailed Maester results
 
@@ -57,15 +111,16 @@ To use this parameter, you need to provide the URL of the Maester results page. 
 ```powershell
 $testResultsUri = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-Send-MtTeamsMessage -MaesterResults $results -TeamId $teamId -TeamChannelId $teamChannelId -Subject 'Maester Results' -TestResultsUri $testResultsUri
+Send-MtTeamsMessage -MaesterResults $results -TestResultsUri $testResultsUri ...
 
 ```
 
 ### Azure DevOps
+
 **Link:** `$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)`
 
 ```powershell
 $testResultsUri = "$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)"
 
-Send-MtTeamsMessage -MaesterResults $results -TeamId $teamId -TeamChannelId $teamChannelId -Subject 'Maester Results' -TestResultsUri $testResultsUri
+Send-MtTeamsMessage -MaesterResults $results -TestResultsUri $testResultsUri ...
 ```

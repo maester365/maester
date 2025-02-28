@@ -4,7 +4,7 @@
 
 .DESCRIPTION
 
-    Manages controls who can invite guests to your directory to collaborate on resources secured by your Azure AD, such as SharePoint sites or Azure resources.
+    Manages controls who can invite guests to your directory to collaborate on resources secured by your Entra ID (Azure AD), such as SharePoint sites or Azure resources.
 
     Queries policies/authorizationPolicy
     and returns the result of
@@ -21,11 +21,12 @@ function Test-MtEidscaAP04 {
     [OutputType([bool])]
     param()
 
+    
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowInvitesFrom
     $testResult = $tenantValue -in @('adminsAndGuestInviters','none')
-    $tenantValueNotSet = $null -eq $tenantValue -and @('adminsAndGuestInviters','none') -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('adminsAndGuestInviters','none')** for **policies/authorizationPolicy**"

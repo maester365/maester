@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Default Authorization Settings - Risk-based step-up consent is set to 'false'
+    Checks if Default Authorization Settings - Allow user consent on risk-based apps is set to 'false'
 
 .DESCRIPTION
 
@@ -21,11 +21,12 @@ function Test-MtEidscaAP09 {
     [OutputType([bool])]
     param()
 
+    
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowUserConsentForRiskyApps
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"

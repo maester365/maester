@@ -41,7 +41,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
                 -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes `
                 -and ( `
                     $policy.conditions.applications.includeApplications -eq "00000002-0000-0ff1-ce00-000000000000" `
-                    -or $policy.conditions.applications.includeApplications -eq "all" `
+                    -or $policy.conditions.applications.includeApplications -eq "All" `
             ) `
                 -and $policy.conditions.users.includeUsers -eq "All" `
         ) {

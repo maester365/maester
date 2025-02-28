@@ -6,13 +6,13 @@ sidebar_class_name: hidden
 
 # Default Authorization Settings - Guest invite restrictions
 
-Manages controls who can invite guests to your directory to collaborate on resources secured by your Azure AD, such as SharePoint sites or Azure resources.
+Manages controls who can invite guests to your directory to collaborate on resources secured by your Entra ID (Azure AD), such as SharePoint sites or Azure resources.
 
 | | |
 |-|-|
 | **Name** | allowInvitesFrom |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | Medium |
 
 ## How to fix

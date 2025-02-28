@@ -1,6 +1,6 @@
 Indicating whether or not a guest user can be an owner of groups, manage
 
-CISA SCuBA 2.18: Guest users SHOULD have limited access to Azure AD directory objects
+CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) directory objects
 
 #### Test script
 ```

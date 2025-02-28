@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+.test
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -495,3 +495,6 @@ website/build/
 
 # Don't add any test files to this folder
 tests/Custom/*.ps1
+
+# ORCA Staging
+build/orca/orca/

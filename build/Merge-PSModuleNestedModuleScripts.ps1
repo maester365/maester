@@ -1,15 +1,19 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command merges multiple scripts.')]
 param
 (
     # Path to Module Manifest
     [Parameter(Mandatory = $false)]
     [string] $ModuleManifestPath = ".\release\*\*.*.*",
-    #
+
+    # Path to Output Module
     [Parameter(Mandatory = $false)]
     [string] $OutputModulePath,
-    #
+
+    # Merge Nested Module Scripts with Root Module
     [Parameter(Mandatory = $false)]
     [switch] $MergeWithRootModule,
-    #
+
+    # Remove Nested Module Script Files
     [Parameter(Mandatory = $false)]
     [switch] $RemoveNestedModuleScriptFiles
 )
@@ -66,14 +70,14 @@ if ($OutputModuleFileInfo.Extension -eq ".psm1") {
         ## Add remainder of root module content
         $NestedModuleEndRegion = "#endregion`r`n"
         $ExportModuleMember += "Export-ModuleMember -Function @({0}) -Cmdlet @({1}) -Variable @({2}) -Alias @({3})" -f (Join-ModuleMembers $ModuleManifest['FunctionsToExport']), (Join-ModuleMembers $ModuleManifest['CmdletsToExport']), (Join-ModuleMembers $ModuleManifest['VariablesToExport']), (Join-ModuleMembers $ModuleManifest['AliasesToExport'])
-        
+
         $NestedModuleEndRegion, $RootModuleContent, $ExportModuleMember | Add-Content $OutputModuleFileInfo.FullName -Encoding utf8BOM
     }
 
     if ($RemoveNestedModuleScriptFiles) {
         ## Remove Nested Module Scripts
         $NestedModulesFileInfo | Where-Object Extension -EQ '.ps1' | Where-Object { !$ScriptsToProcessFileInfo -or $_.FullName -notin $ScriptsToProcessFileInfo.FullName } | Remove-Item
-        
+
         ## Remove Empty Directories
         Get-ChildItem $ModuleManifestFileInfo.DirectoryName -Recurse -Directory | Where-Object { !(Get-ChildItem $_.FullName -Recurse -File) } | Remove-Item -Recurse
     }

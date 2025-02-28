@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Authentication Method - General Settings - Manage migration is set to 'migrationComplete'
+description: Checks if Authentication Method - General Settings - Manage migration is set to @('migrationComplete', '')
 id: Test-MtEidscaAG01
 title: Test-MtEidscaAG01
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if Authentication Method - General Settings - Manage migration is set to 'migrationComplete'
+Checks if Authentication Method - General Settings - Manage migration is set to @('migrationComplete', '')
 
 ## SYNTAX
 
@@ -26,7 +26,7 @@ Use this control to manage your migration from the legacy policies to the new un
 
 Queries policies/authenticationMethodsPolicy
 and returns the result of
- graph/policies/authenticationMethodsPolicy.policyMigrationState -eq 'migrationComplete'
+ graph/policies/authenticationMethodsPolicy.policyMigrationState -in @('migrationComplete', '')
 
 ## EXAMPLES
 
@@ -36,7 +36,7 @@ and returns the result of
 Test-MtEidscaAG01
 ```
 
-Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.policyMigrationState -eq 'migrationComplete'
+Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy.policyMigrationState -in @('migrationComplete', '')
 
 ## PARAMETERS
 

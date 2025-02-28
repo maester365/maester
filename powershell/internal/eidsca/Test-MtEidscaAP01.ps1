@@ -21,11 +21,15 @@ function Test-MtEidscaAP01 {
     [OutputType([bool])]
     param()
 
+    if ( $AuthorizationPolicyAvailable -notmatch 'allowedToUseSSPR' ) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recent created tenants or tenants that are not licensed for Entra ID P1.'
+            return $null
+    }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     [string]$tenantValue = $result.allowedToUseSSPR
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = $null -eq $tenantValue -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"

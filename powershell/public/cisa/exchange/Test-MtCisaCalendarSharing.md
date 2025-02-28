@@ -14,6 +14,7 @@ To restrict sharing with all domains:
 #### Related links
 
 * [Exchange admin center - Individual Sharing](https://admin.exchange.microsoft.com/#/individualsharing)
+* [Microsoft 365 admin center - Org settings - Calendar](https://admin.microsoft.com/#/Settings/Services/:/Settings/L1/Calendar)
 * [CISA 6 Calendar and Contact Sharing - MS.EXO.6.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo62v1)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L368)
 

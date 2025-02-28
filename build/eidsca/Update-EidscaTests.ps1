@@ -10,6 +10,7 @@
     ./build/eidsca/Update-EidscaTests.ps1
 #>
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple EIDSCA tests.')]
 param (
     # Folder where generated test file should be written to.
     [string] $TestFilePath = "$PSScriptRoot/../../tests/EIDSCA/Test-EIDSCA.Generated.Tests.ps1",
@@ -78,6 +79,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeIn'
             powershell = 'in'
             text       = 'is one of the following values'
+            valuetype  = 'string'
         }
     } elseif ($RecommendedValue.StartsWith(">=")) {
         $compareOperator = [PSCustomObject]@{
@@ -85,6 +87,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
+            valuetype  = 'string'
         }
     } elseif ($RecommendedValue.StartsWith("<=")) {
         $compareOperator = [PSCustomObject]@{
@@ -92,6 +95,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeLessOrEqual'
             powershell = 'le'
             text       = 'is less than or equal to'
+            valuetype  = 'int'
         }
     } elseif ($RecommendedValue.StartsWith(">")) {
         $compareOperator = [PSCustomObject]@{
@@ -99,6 +103,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterThan'
             powershell = 'gt'
             text       = 'is greater than'
+            valuetype  = 'int'
         }
     } elseif ($RecommendedValue.StartsWith("<")) {
         $compareOperator = [PSCustomObject]@{
@@ -106,6 +111,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeLessThan'
             powershell = 'lt'
             text       = 'is less than'
+            valuetype  = 'int'
         }
 
     } else {
@@ -114,6 +120,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'Be'
             powershell = 'eq'
             text       = 'is'
+            valuetype  = 'string'
         }
     }
     return $compareOperator
@@ -344,6 +351,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%CompareOperatorText%', $compareOperator.Text
         $output = $output -replace '%CompareOperator%', $compareOperator.Name
         $output = $output -replace '%PwshCompareOperator%', $compareOperator.powershell.Replace("'", "")
+        $output = $output -replace '%ValueType%', $compareOperator.valuetype
         $output = $output -replace '%RecommendedValue%', $recommendedValue
         $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
         $output = $output -replace '%CurrentValue%', $CurrentValue
@@ -366,7 +374,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
 
         # Extract variable name from the condition to build syntax for TestCases
-        $SkipConditionVariable = ($controlItem.SkipCondition -split ' ')[0]
+        $SkipConditionVariable = ($controlItem.SkipCondition  | Select-String -Pattern '\$([^\s]+)').Matches.Value
         $SkipConditionVariableName = $SkipConditionVariable -replace '[$()]', ''
         $output = $output -replace '%TestCases%', " -TestCases @{ $($SkipConditionVariableName) = $($SkipConditionVariable) }"
     } else {

@@ -21,15 +21,15 @@ function Test-MtEidscaCR04 {
     [OutputType([bool])]
     param()
 
-    if ( ($EnabledAdminConsentWorkflow) -eq $false ) {
+    if ( $EnabledAdminConsentWorkflow -eq $false ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Admin Consent Workflow is not enabled'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.requestDurationInDays
+    [int]$tenantValue = $result.requestDurationInDays
     $testResult = $tenantValue -le '30'
-    $tenantValueNotSet = $null -eq $tenantValue -and '30' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '30' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **'30'** for **policies/adminConsentRequestPolicy**"

@@ -20,6 +20,7 @@ $__MtSession = @{
 	Connections = @()
 	DnsCache = @()
 	ExoCache = @{}
+	OrcaCache = @{}
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

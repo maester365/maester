@@ -26,6 +26,7 @@ function Test-MtCaMfaForAdminManagement {
     }
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    $policiesResult = New-Object System.Collections.ArrayList
 
     $result = $false
     foreach ($policy in $policies) {
@@ -37,11 +38,19 @@ function Test-MtCaMfaForAdminManagement {
         ) {
             $result = $true
             $currentresult = $true
+            $policiesResult.Add($policy) | Out-Null
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ( $result ) {
+        $testResult = "The following conditional access policies require multi-factor authentication for azure management:`n`n%TestResult%"
+    } else {
+        $testResult = "No conditional access policy requires multi-factor authentication for azure management resources."
+    }
+    Add-MtTestResultDetail -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 
     return $result
 }

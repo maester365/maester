@@ -15,7 +15,7 @@ Checks state of DMARC records for all exo domains
 ## SYNTAX
 
 ```powershell
-Test-MtCisaDmarcReport [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaDmarcReport [-Strict] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,22 @@ Test-MtCisaDmarcReport
 Returns true if DMARC record inlcudes report targets within same domain
 
 ## PARAMETERS
+
+### -Strict
+
+Require the CISA explicit 2nd level validation
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 

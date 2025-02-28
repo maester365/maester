@@ -12,7 +12,7 @@ Controls whether users can join the tenant by email validation. To join, the use
 |-|-|
 | **Name** | allowEmailVerifiedUsersToJoinOrganization |
 | **Control** | Default Authorization Settings |
-| **Description** | Manages authorization settings in Azure AD |
+| **Description** | Manages authorization settings in Entra ID (Azure AD) |
 | **Severity** | Medium |
 
 ## How to fix

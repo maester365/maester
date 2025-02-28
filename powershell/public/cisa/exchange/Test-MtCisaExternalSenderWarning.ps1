@@ -50,7 +50,7 @@ function Test-MtCisaExternalSenderWarning {
 
     if ($rules) {
         # Only show table if there are rules
-        $result = "| Policy Name | Test Result |`n"
+        $result = "| Transport Rule Name | Test Result |`n"
         $result += "| --- | --- |`n"
         foreach ($item in $rules | Sort-Object -Property Name) {
             $portalLink = "https://admin.exchange.microsoft.com/#/transportrules/:/ruleDetails/$($item.Guid)/viewinflyoutpanel"
