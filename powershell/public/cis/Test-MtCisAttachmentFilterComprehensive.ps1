@@ -6,14 +6,14 @@ Checks if the common attachment types filter is comprehensive
 The common attachment types filter should be comprehensive
 
 .EXAMPLE
-Test-MtCisAttachmentFilterTypeList
+Test-MtCisAttachmentFilterComprehensive
 
 Returns true if the attachment types match the comprehensive list supplied by CIS
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisAttachmentFilterTypeList
+https://maester.dev/docs/commands/Test-MtCisAttachmentFilterComprehensive
 #>
-function Test-MtCisAttachmentFilterTypeList {
+function Test-MtCisAttachmentFilterComprehensive {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
