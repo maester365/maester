@@ -56,3 +56,4 @@ TBD in this case refers to CIS "manual" checks. It might be possible to automate
 | N/A | 2.1.11 (L1) Ensure the spoofed domains report is reviewed weekly |
 | N/A | 2.1.12 (L1) Ensure the 'Restricted entities' report is reviewed weekly |
 | N/A | 2.1.13 (L1) Ensure malware trends are reviewed at least weekly |
+| [Test-MtCisAttachmentFilterTypeList](/docs/commands/) | 2.1.14 (L2) Ensure comprehensive attachment filtering is applied |
