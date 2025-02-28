@@ -32,7 +32,7 @@ function Test-MtCisPasswordExpiry {
     }
 
     Write-Verbose "Get domain details the password expiry period"
-    $domains = Get-MgDomain
+    $domains = Invoke-MtGraphRequest -RelativeUri "domains"
 
     Write-Verbose "Get domains where passwords are set to expire"
     $result = $domains | Where-Object { $_.PasswordValidityPeriodInDays -ne "2147483647" }
