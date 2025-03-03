@@ -36,7 +36,7 @@ function Test-MtCis365PublicGroup {
         $testResultMarkdown = "Well done. Your tenant has no public 365 groups:`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant has 1 or more public 365 groups:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) public 365 groups:`n`n%TestResult%"
     }
     # $itemCount is used to limit the number of returned results shown in the table
     $itemCount = 0
