@@ -41,15 +41,17 @@ function Test-MtPimAlertsExists {
 
     # Get PIM Alerts and store as object to be used in the test
     Write-Verbose "Getting PIM Alerts"
-    $Alert = Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "privilegedAccess/aadroles/resources/$($tenantId)/alerts" | Where-Object { $_.id -eq $AlertId -and $_.isActive -eq "True" }
+    $Alert = Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "privilegedAccess/aadroles/resources/$($tenantId)/alerts" | Where-Object { $_.id -eq $AlertId }
 
-    $AffectedRoleAssignments = $Alert.additionalData | ForEach-Object {
-      $CurrentItem = $_.item
-      $result = New-Object psobject
-      foreach ($entry in $CurrentItem.GetEnumerator()) {
-        $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
+    if ($Alert.Where({$_.isActive -eq "True"}).additionalData) {
+      $AffectedRoleAssignments = $Alert.Where({$_.isActive -eq "True"}).additionalData | ForEach-Object {
+        $CurrentItem = $_.item
+        $result = New-Object psobject
+        foreach ($entry in $CurrentItem.GetEnumerator()) {
+          $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
+        }
+        $result
       }
-      $result
     }
 
     # Filtering based on (EntraOps) Enterprise Access Model Tiering
@@ -66,16 +68,14 @@ function Test-MtPimAlertsExists {
         Write-Verbose "$($_.AssigneeUserPrincipalName) has been defined as Break Glass and removed from $($Alert.id)"
       }
       $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.AssigneeId -notin $($FilteredBreakGlass).Id }
-
-      # Set number of affected Items to value of filtered items (for example, original alert has two affected items, but all of them are break glass and excluded from the test)
-      $Alert.numberOfAffectedItems = $AffectedRoleAssignments.Count
     }
+
+    # Set number of affected Items to value of filtered items (for example, original alert has two affected items, but all of them are break glass and excluded from the test)
+    $Alert.numberOfAffectedItems = $AffectedRoleAssignments.Count
 
     # Create test result and details
     $convertHtmlLinkToMD = '<a.*?href=["'']([^"'']*)["''][^>]*>([^<]*)<\/a>' # Regular expression to detect HTML links
-    if ($Alert.Count -gt "0" -and $AffectedRoleAssignments.Count -gt 0) {
-
-      $testDescription = "
+    $testDescription = "
 
 **Security Impact**`n`n
 $($Alert.securityImpact -replace $convertHtmlLinkToMD, '[$2]($1)')
@@ -87,23 +87,25 @@ $($Alert.mitigationSteps -replace $convertHtmlLinkToMD, '[$2]($1)')
 $($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
 "
 
-      $AffectedRoleAssignmentSummary = @()
-      $AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
-        if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
-          "  -  $($AffectedRoleAssignment.AssigneeDisplayName) with $($AffectedRoleAssignment.RoleDisplayName) by AssigneeId $($AffectedRoleAssignment.AssigneeId)`n"
-        } else {
-          "  -  $($AffectedRoleAssignment.AssigneeName) ($($AffectedRoleAssignment.AssigneeUserPrincipalName))`n"
-        }
+    $AffectedRoleAssignmentSummary = @()
+    $AffectedRoleAssignmentSummary += foreach ($AffectedRoleAssignment in $AffectedRoleAssignments) {
+      if ($null -ne $AffectedRoleAssignment.AssigneeDisplayName -or $null -ne $AffectedRoleAssignment.RoleDisplayName) {
+        "  -  $($AffectedRoleAssignment.AssigneeDisplayName) with $($AffectedRoleAssignment.RoleDisplayName) by AssigneeId $($AffectedRoleAssignment.AssigneeId)`n"
+      } else {
+        "  -  $($AffectedRoleAssignment.AssigneeName) ($($AffectedRoleAssignment.AssigneeUserPrincipalName))`n"
       }
+    }
 
+    if ($Alert.Count -gt "0" -and $AffectedRoleAssignments.Count -gt 0) {
       $testResult = "$($Alert.alertDescription)`n`n
 $($AffectedRoleAssignmentSummary)
 Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
 "
-
-      Add-MtTestResultDetail -Description $testDescription -Result $testResult
+    } else {
+      $testResult = "All privileged role assignments are managed by PIM. Well done!"
     }
 
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
     return $Alert
   }
 }
