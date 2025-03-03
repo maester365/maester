@@ -81,7 +81,7 @@ Function Test-MtCaGroupsRestricted {
   }
 
   $resultMarkdown = $ResultDescription + $ImpactedCaGroups
-  Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
+  Add-MtTestResultDetail -Result $resultMarkdown
 
   return $result
 }
