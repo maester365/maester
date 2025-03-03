@@ -144,8 +144,8 @@ function Test-MtCaGap {
         $_.Conditions.ClientApplications.IncludeServicePrincipals | ForEach-Object { $includedServicePrincipals.Add($_) | Out-Null }
         $_.Conditions.Locations.ExcludeLocations | ForEach-Object { $excludedLocations.Add($_) | Out-Null }
         $_.Conditions.Locations.IncludeLocations | ForEach-Object { $includedLocations.Add($_) | Out-Null }
-        $_.Conditions.Locations.Platforms | ForEach-Object { $excludedPlatforms.Add($_) | Out-Null }
-        $_.Conditions.Locations.Platforms | ForEach-Object { $includedPlatforms.Add($_) | Out-Null }
+        $_.Conditions.Platforms.ExcludePlatforms | ForEach-Object { $excludedPlatforms.Add($_) | Out-Null }
+        $_.Conditions.Platforms.IncludePlatforms | ForEach-Object { $includedPlatforms.Add($_) | Out-Null }
 
         # Create a mapping for each policy with excluded objects
         [System.Collections.ArrayList]$allExcluded = $_.Conditions.Users.ExcludeUsers + `
@@ -154,7 +154,7 @@ function Test-MtCaGap {
             $_.Conditions.Applications.ExcludeApplications + `
             $_.Conditions.ClientApplications.ExcludeServicePrincipals + `
             $_.Conditions.Locations.ExcludeLocations + `
-            $_.Conditions.Locations.Platforms
+            $_.Conditions.Platforms.ExcludePlatforms
         # Create the mapping
         $mapping = [PSCustomObject]@{
             PolicyName = $_.DisplayName
