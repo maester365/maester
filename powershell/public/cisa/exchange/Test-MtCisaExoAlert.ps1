@@ -44,7 +44,7 @@ function Test-MtCisaExoAlert {
     }
 
     $resultAlerts = $alerts | Where-Object { `
-        $_.ExchangeObjectId -in $cisaAlerts -and `
+        $_.ExchangeObjectId -in $cisaAlerts.Keys -and `
         $_.NotificationEnabled
     }
 
