@@ -194,10 +194,14 @@ function Test-MtCaGap {
         # Add user objects to results
         if ($differencesUsers.Count -ne 0) {
             $testResult = "The following user objects did not have a fallback:`n`n"
-            $differencesUsers | ForEach-Object {
-                $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$_" -Select displayName | Select-Object -ExpandProperty displayName
-                $testResult += "    - $_ ($DisplayName)`n`n" # Add Name?
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesUsers) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'users' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    User: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
         # Add group objects to results
