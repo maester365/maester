@@ -59,10 +59,10 @@ function Test-MtCisSharedMailboxSignIn {
         $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenant has 1 or more shared mailboxes with sign-in enabled:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
     }
 
-    $resultMd = "| Display Name | Shared Mailbox |`n"
+    $resultMd = "| Shared Mailbox | Sign-in disabled |`n"
     $resultMd += "| --- | --- |`n"
     foreach ($item in $mailboxDetails | Sort-Object @sortSplat) {
         $itemResult = "❌ Fail"
