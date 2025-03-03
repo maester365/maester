@@ -24,8 +24,8 @@ function Test-MtCisaSafeLinkClickTracking {
     }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+    }elseif("P1" -notin (Get-MtLicenseInformation -Product MdoV2)){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
 
