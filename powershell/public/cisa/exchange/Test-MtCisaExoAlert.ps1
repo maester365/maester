@@ -48,29 +48,29 @@ function Test-MtCisaExoAlert {
         $_.NotificationEnabled
     }
 
-    $testResult = (($resultAlerts|Measure-Object).Count -eq ($cisaAlerts|Measure-Object).Count)
+    $testResult = ($resultAlerts.Count -eq $cisaAlerts.Count)
 
-    $portalLink = "https://security.microsoft.com/alertpoliciesv2"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
+    $portalLink = 'https://security.microsoft.com/alertpoliciesv2'
+    $passResult = '✅ Pass'
+    $failResult = '❌ Fail'
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has [alerts configured]($portalLink).`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [alerts configured]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have all [alerts configured]($portalLink).`n`n%TestResult%"
     }
 
     $result = "| Alert Name | Alert Result |`n"
     $result += "| --- | --- |`n"
-    foreach($item in $filterAlerts | Sort-Object -Property Identity){
-        if($item.Guid -in $resultAlerts.Guid){
-            $result += "| $($item.Identity) | $passResult |`n"
-        }else{
-            $result += "| $($item.Identity) | $failResult |`n"
+    foreach ($item in $cisaAlerts.GetEnumerator()) {
+        if ($item.Key -in $resultAlerts.Guid) {
+            $result += "| $($item.Value) | $passResult |`n"
+        } else {
+            $result += "| $($item.Value) | $failResult |`n"
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
