@@ -21,13 +21,16 @@ function Test-MtCaDeviceCodeFlow {
     [OutputType([bool])]
     param ()
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
     $policiesResult = New-Object System.Collections.ArrayList
     $result = $false
 
     foreach ($policy in $policies) {
-        if ( $policy.conditions.authenticationFlows.transfermethods -eq "deviceCodeFlow")
-        {
+        if ($policy.conditions.authenticationFlows.transferMethods -contains 'deviceCodeFlow' `
+            -and $policy.conditions.users.includeUsers -eq 'All' `
+            -and $policy.conditions.clientAppTypes -eq 'all' `
+            -and $policy.grantcontrols.builtincontrols -contains 'block'
+        ) {
             $result = $true
             $currentresult = $true
             $policiesResult.Add($policy) | Out-Null
@@ -40,7 +43,7 @@ function Test-MtCaDeviceCodeFlow {
     if ( $result ) {
         $testResult = "Well done! The following conditional access policies are targeting the Device Code authentication flow:`n`n%TestResult%"
     } else {
-        $testResult = "No conditional access policy found that targets the Device Code authentication flow."
+        $testResult = 'No conditional access policy found that targets the Device Code authentication flow.'
     }
 
     Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
