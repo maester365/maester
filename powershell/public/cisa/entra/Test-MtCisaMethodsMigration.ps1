@@ -34,7 +34,7 @@ function Test-MtCisaMethodsMigration {
 
     $migrationState = $result.policyMigrationState
 
-    $testResult = $migrationState -eq "migrationComplete"
+    $testResult = $migrationState -eq "migrationComplete" -or $null -eq $migrationState # Can be 'null' in new tenants that never had legacy settings to migrate from.
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has completed the migration to Authentication Methods."
