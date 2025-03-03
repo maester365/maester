@@ -220,8 +220,13 @@ function Test-MtCaGap {
         # Add role objects to results
         if ($differencesRoles.Count -ne 0) {
             $testResult += "The following role objects did not have a fallback:`n`n"
-            $differencesRoles | ForEach-Object {
-                $testResult += "    - $_`n`n"
+            ForEach ($Object in $differencesRoles) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'directoryRoles' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Role: ${DisplayName}`n"
                 $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
             }
         }
