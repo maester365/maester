@@ -28,6 +28,11 @@ function Test-MtCaMfaForAdminManagement {
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     $policiesResult = New-Object System.Collections.ArrayList
 
+    $testDescription = "
+Microsoft recommends requiring MFA for Azure Management.
+
+See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa)"
+
     $result = $false
     foreach ($policy in $policies) {
         if ( ( $policy.grantcontrols.builtincontrols -contains 'mfa' `
@@ -50,7 +55,7 @@ function Test-MtCaMfaForAdminManagement {
     } else {
         $testResult = "No conditional access policy requires multi-factor authentication for azure management resources."
     }
-    Add-MtTestResultDetail -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
+    Add-MtTestResultDetail -Description $testDescription -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 
     return $result
 }
