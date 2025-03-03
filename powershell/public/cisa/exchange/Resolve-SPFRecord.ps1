@@ -27,7 +27,7 @@ function Resolve-SPFRecord {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             Position = 2)]
-        [string]$Server = "1.1.1.1",
+        [string]$Server,
 
         # If called nested provide a referrer to build valid objects
         [Parameter(Mandatory = $false)]
@@ -69,7 +69,11 @@ function Resolve-SPFRecord {
         # Query DNS Record
         try {
             if ($isWindows -or $PSVersionTable.PSEdition -eq "Desktop") {
-                $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT
+                if ($Server) {
+                    $DNSRecords = Resolve-DnsName -Server $Server -Name $Name -Type TXT -ErrorAction Stop
+                } else {
+                    $DNSRecords = Resolve-DnsName -Name $Name -Type TXT -ErrorAction Stop
+                }
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {

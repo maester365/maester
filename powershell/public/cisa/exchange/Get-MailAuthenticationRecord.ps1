@@ -28,7 +28,7 @@ function Get-MailAuthenticationRecord {
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ipaddress]$DnsServerIpAddress = "1.1.1.1",
+        [ipaddress]$DnsServerIpAddress,
 
         # Selector-name for the DKIM record to retrieve.
         [string]$DkimSelector = "selector1",
