@@ -32,6 +32,11 @@ function Test-MtCisSharedMailboxSignIn {
     Write-Verbose "Getting all shared mailboxes"
     $sharedMailboxes = Get-MtExo -Request EXOMailbox | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
 
+    if (($sharedMailboxes | Measure-Object).Count -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "There are no SharedMailbox in your Tenant."
+        return $null
+    }
+
     Write-Verbose "For each mailbox get mailbox and AccountEnabled status"
     $mailboxDetails = @()
     foreach ($mbx in $sharedMailboxes) {
@@ -45,41 +50,22 @@ function Test-MtCisSharedMailboxSignIn {
 
     Write-Verbose "Select shared mailboxes where sign-in is enabled"
     $result = $mailboxDetails | Where-Object { $_.AccountEnabled -eq "True" }
-
-    $testResult = ($result | Measure-Object).Count -eq 0
-
-    $sortSplat = @{
-        Property = @(
-            @{
-                Expression = "AccountEnabled"
-                Descending = "True"
-            },
-            @{
-                Expression = "DisplayName"
-            }
-        )
-    }
-
+    $resultCount = ($result | Measure-Object).Count
+    
+    $testResult = if ($resultCount -eq 0) { $true } else { $false }
+    
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenant has 1 or more shared mailboxes with sign-in enabled:`n`n%TestResult%"
-    }
-
-    $resultMd = "| Display Name | Shared Mailbox |`n"
-    $resultMd += "| --- | --- |`n"
-    foreach ($item in $mailboxDetails | Sort-Object @sortSplat) {
-        $itemResult = "❌ Fail"
-        if ($item.id -notin $result.id) {
-            $itemResult = "✅ Pass"
+        $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled."
+    } else {
+        $testResultMarkdown = "Your tenant has $($resultCount) shared mailboxes with sign-in enabled:`n`n%TestResult%"
+        $resultMd = "| Display Name | User Principal Name |`n"
+        $resultMd += "| --- | --- |`n"
+        foreach ($item in $mailboxDetails) {
+            $resultMd += "| $($item.displayName) | $($item.UserPrincipalName) |`n"
         }
-        $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
     }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
 
     Add-MtTestResultDetail -Result $testResultMarkdown
-
     return $testResult
 }
