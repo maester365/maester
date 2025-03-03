@@ -26,8 +26,8 @@ function Test-MtCisSafeAntiPhishingPolicy {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }
-    elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP2
+    elseif ("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
 
