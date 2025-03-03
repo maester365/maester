@@ -272,9 +272,9 @@ function Test-MtCaGap {
         # Add platform objects to results
         if ($differencesPlatforms.Count -ne 0) {
             $testResult += "The following platform objects did not have a fallback:`n`n"
-            $differencesPlatforms | ForEach-Object {
-                $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesPlatforms) {
+                $testResult += "`n    Platform: ${Object}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
     }
