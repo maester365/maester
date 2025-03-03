@@ -207,10 +207,14 @@ function Test-MtCaGap {
         # Add group objects to results
         if ($differencesGroups.Count -ne 0) {
             $testResult += "The following group objects did not have a fallback:`n`n"
-            $differencesGroups | ForEach-Object {
-                $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$_" -Select displayName | Select-Object -ExpandProperty displayName
-                $testResult += "    - $_ ($DisplayName)`n`n" # Add Name?
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesGroups) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'groups' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Group: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
         # Add role objects to results
