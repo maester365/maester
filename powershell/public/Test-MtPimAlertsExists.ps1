@@ -72,18 +72,19 @@ function Test-MtPimAlertsExists {
     }
 
     # Create test result and details
+    $convertHtmlLinkToMD = '<a.*?href=["'']([^"'']*)["''][^>]*>([^<]*)<\/a>' # Regular expression to detect HTML links
     if ($Alert.Count -gt "0" -and $AffectedRoleAssignments.Count -gt 0) {
 
       $testDescription = "
 
 **Security Impact**`n`n
-$($Alert.securityImpact)
+$($Alert.securityImpact -replace $convertHtmlLinkToMD, '[$2]($1)')
 
 **Mitigation steps**`n`n
-$($Alert.mitigationSteps)
+$($Alert.mitigationSteps -replace $convertHtmlLinkToMD, '[$2]($1)')
 
 **How to prevent**`n`n
-$($Alert.howToPrevent)
+$($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
 "
 
       $AffectedRoleAssignmentSummary = @()
