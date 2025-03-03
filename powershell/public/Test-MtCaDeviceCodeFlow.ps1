@@ -29,7 +29,9 @@ function Test-MtCaDeviceCodeFlow {
         if ($policy.conditions.authenticationFlows.transferMethods -contains 'deviceCodeFlow' `
             -and $policy.conditions.users.includeUsers -eq 'All' `
             -and $policy.conditions.clientAppTypes -eq 'all' `
-            -and $policy.grantcontrols.builtincontrols -contains 'block'
+            -and ($policy.grantcontrols.builtincontrols -contains 'block' `
+                -or ($policy.grantControls.builtInControls -contains 'compliantDevice' -or $policy.grantControls.builtInControls -contains 'domainJoinedDevice' )
+            )
         ) {
             $result = $true
             $currentresult = $true
