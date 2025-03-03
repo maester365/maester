@@ -246,9 +246,14 @@ function Test-MtCaGap {
         # Add service principal objects to results
         if ($differencesServicePrincipals.Count -ne 0) {
             $testResult += "The following service principal objects did not have a fallback:`n`n"
-            $differencesServicePrincipals | ForEach-Object {
-                $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesServicePrincipals) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'serviceprincipals' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Service Principal: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
         # Add location objects to results
