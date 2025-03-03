@@ -45,14 +45,14 @@ function Test-MtCis365PublicGroup {
     foreach ($item in $result) {
         $itemCount += 1
         $itemResult = "❌ Fail"
-        # We are restricting the table output to 6 below as it could be extremely large
-        if ($itemCount -lt 7) {
+        # We are restricting the table output to 50 below as it could be extremely large
+        if ($itemCount -lt 51) {
             $resultMd += "| $($item.displayName) | $($itemResult) |`n"
         }
     }
     # Add a limited results message if more than 6 results are returned
-    if ($itemCount -gt 6) {
-        $resultMd += "Results limited to 6`n"
+    if ($itemCount -gt 50) {
+        $resultMd += "Results limited to 50`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
