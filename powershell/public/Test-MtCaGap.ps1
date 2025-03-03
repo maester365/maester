@@ -233,9 +233,14 @@ function Test-MtCaGap {
         # Add application objects to results
         if ($differencesApplications.Count -ne 0) {
             $testResult += "The following application objects did not have a fallback:`n`n"
-            $differencesApplications | ForEach-Object {
-                $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesApplications) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'serviceprincipals' -ApiVersion v1.0 -Filter "appId eq '${Object}'" -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Application: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
         # Add service principal objects to results
