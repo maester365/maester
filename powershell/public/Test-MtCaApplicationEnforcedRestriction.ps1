@@ -26,6 +26,8 @@ function Test-MtCaApplicationEnforcedRestriction {
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
+    $testDescription = "Microsoft recommends blocking or limiting access to SharePoint, OneDrive, and Exchange content from unmanaged devices."
+
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.conditions.users.includeUsers -eq "All" `
@@ -40,6 +42,8 @@ function Test-MtCaApplicationEnforcedRestriction {
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    Add-MtTestResultDetail -Description $testDescription
 
     return $result
 }
