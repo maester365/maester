@@ -25,7 +25,7 @@ function Test-MtCisaSpamAlternative {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP2
         return $null
     }else{
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Unable to validate 3rd party solutions."

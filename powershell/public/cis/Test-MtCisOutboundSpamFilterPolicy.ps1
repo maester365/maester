@@ -27,7 +27,7 @@ function Test-MtCisOutboundSpamFilterPolicy {
         return $null
     }
     elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP2
         return $null
     }
 

@@ -25,7 +25,7 @@ function Test-MtCisaExoAlertSiem {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
+        Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP2
         return $null
     }else{
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not available for API validation."
