@@ -55,7 +55,7 @@ Function Test-MtCaGroupsRestricted {
   $result = ($UnrestrictedGroups | Measure-Object).Count -eq 0
 
   if ( $result ) {
-    $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected!"
+    $ResultDescription = "Well done! All security groups with assignment in Conditional Access are protected."
   } else {
     $ResultDescription = "These security groups with assignments in Conditional Access are not protected by Restricted Management Admin Units or Role Assignable groups."
     $ImpactedCaGroups = "`n`n#### Impacted Conditional Access Policies`n`n | Security Group | Condition | Policy name | `n"
