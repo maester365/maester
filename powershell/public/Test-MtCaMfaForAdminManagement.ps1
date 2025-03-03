@@ -53,7 +53,8 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
                 -and "7be44c8a-adaf-4e2a-84d6-ab2649e08a13" -in $policy.conditions.users.includeRoles `
                 -and "e8611ab8-c189-46e8-94e1-60213ab1f814" -in $policy.conditions.users.includeRoles )) `
                 -and ("797f4846-ba00-4fd7-ba43-dac1f8f63013" -in $policy.conditions.applications.includeApplications `
-                    -or $policy.conditions.applications.includeApplications -contains "All") `
+                -or "MicrosoftAdminPortals" -in $policy.conditions.applications.includeApplications `
+                -or $policy.conditions.applications.includeApplications -contains "All") `
         ) {
             $result = $true
             $currentresult = $true
