@@ -60,7 +60,7 @@ function Get-RelatedPolicy {
     foreach ($obj in $Arr) {
         # Check if the excluded object is present in the policy
         if ($obj.ExcludedObjects -contains $ObjName) {
-            $result += "        - Excluded in policy '$($obj.PolicyName)'`n`n"
+            $result += "        > Excluded in policy '$($obj.PolicyName)'`n"
         }
     }
 
