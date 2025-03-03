@@ -259,9 +259,14 @@ function Test-MtCaGap {
         # Add location objects to results
         if ($differencesLocations.Count -ne 0) {
             $testResult += "The following location objects did not have a fallback:`n`n"
-            $differencesLocations | ForEach-Object {
-                $testResult += "    - $_`n`n"
-                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $_
+            ForEach ($Object in $differencesLocations) {
+                Try {
+                    $DisplayName = (Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/namedLocations' -ApiVersion v1.0 -UniqueId $Object -ErrorAction Stop).displayName
+                } Catch {
+                    $DisplayName = "${Object} (Unable to resolve GUID)"
+                }
+                $testResult += "`n    Location: ${DisplayName}`n"
+                $testResult += Get-RelatedPolicy -Arr $mappingArray -ObjName $Object
             }
         }
         # Add platform objects to results
