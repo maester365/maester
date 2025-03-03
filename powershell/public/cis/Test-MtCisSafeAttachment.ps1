@@ -26,11 +26,7 @@ function Test-MtCisSafeAttachment {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     }
-    #elseif ($null -eq (Get-MtLicenseInformation -Product Mdo)) {
-    #    Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
-    #    return $null
-    #}
-    elseif ( ( Get-MtLicenseInformation -Product MdoV2 ) -eq "EOP") {
+    elseif ("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
