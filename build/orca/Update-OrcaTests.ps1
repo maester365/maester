@@ -145,7 +145,7 @@ foreach($file in $testFiles){
 
     $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
     $name = [regex]::Match($content.content, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
-    $pass = [regex]::Match($content.content,"this.passtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
+    $pass = [regex]::Match($content.content, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
     $fail = [regex]::Match($content.content,"this.failtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $control = [regex]::Match($content.content,"this.control.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $area = [regex]::Match($content.content,"this.area.*[\'\`"](?'capture'.*)[\'\`"]",$option)
