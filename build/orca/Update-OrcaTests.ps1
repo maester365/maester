@@ -151,7 +151,7 @@ foreach($file in $testFiles){
     $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
     $content.name = $name.Groups['capture'].Value
     $content.pass = $pass.Groups['capture'].Value
-    $content.fail = $fail.Groups['capture'].Value
+    $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '')
     $content.control = $control.Groups['capture'].Value
     $content.area = $area.Groups['capture'].Value
 
