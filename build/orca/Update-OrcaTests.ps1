@@ -211,7 +211,15 @@ function Test-$($content.func){
     }
     `$Collection = `$__MtSession.OrcaCache
     `$obj = New-Object -TypeName $($content.func)
-    `$obj.Run(`$Collection)
+    try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
+        `$obj.Run(`$Collection)
+    } catch {
+        throw
+    } finally {
+        if(`$obj.SkipInReport) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
+        }
+    }
     `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")
 
     `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
