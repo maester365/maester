@@ -14,7 +14,9 @@
 function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
   param(
-    [Switch]$DisableCache = $false
+    # Specify if this request should skip cache and go directly to Graph.
+    [Parameter(Mandatory = $false)]
+    [Switch]$DisableCache
   )
 
   Write-Verbose -Message "Getting conditional access policies."
