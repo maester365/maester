@@ -236,6 +236,7 @@ function Test-$($content.func){
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         `$obj.Run(`$Collection)
     } catch {
+        Write-Error "An error occurred during $($content.func): `$(`$_.Exception.Message)"
         throw
     } finally {
         if(`$obj.SkipInReport) {
