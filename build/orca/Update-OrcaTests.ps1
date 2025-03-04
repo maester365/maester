@@ -254,11 +254,12 @@ function Test-$($content.func){
     $content.links = $links.Groups['capture'].Value | ConvertFrom-StringData
 
     $md = @"
-$($content.pass)
-
 $($content.description)
 
-### Related Links
+#### Remediation action
+$($content.fail)
+
+#### Related Links
 
 "@
 
