@@ -151,11 +151,33 @@ foreach($file in $testFiles){
     $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
     $func = [regex]::Match($content.file, "check-(?'capture'.*).ps1", $option) # Capture between check and .ps1
     $content.name = $name.Groups['capture'].Value
-    $content.pass = $pass.Groups['capture'].Value
     $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '')
     $content.control = $control.Groups['capture'].Value
     $content.area = $area.Groups['capture'].Value
     $content.func = $func.Groups['capture'].Value
+    if ($func.Groups['capture'].Value -match '_') {
+        $funcFilesContentList = New-Object System.Collections.ArrayList
+        foreach ($funcFile in ($testFiles.Where({$_.Name -ne $file.Name -and $_.Name -like "check-$($func.Groups['capture'].Value.Split('_')[0])*"}))) {
+            $funcFileContent = Get-Content $funcFile -Raw
+            $funcFileArea = [regex]::Match($funcFileContent, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFileName = [regex]::Match($funcFileContent, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFilePass = [regex]::Match($funcFileContent, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFilesContentList.Add([PSCustomObject]@{
+                area = $funcFileArea.Groups['capture'].Value
+                name = $funcFileName.Groups['capture'].Value
+                pass = $funcFilePass.Groups['capture'].Value
+            }) | Out-Null
+        }
+        switch ($false) {
+            ($pass.Groups['capture'].Value -in $funcFilesContentList.pass) { $content.pass = $pass.Groups['capture'].Value; break; }
+            ($area.Groups['capture'].Value -in $funcFilesContentList.Where({$_.pass -eq $pass.Groups['capture'].Value}).area) { $content.pass = "$($pass.Groups['capture'].Value) in $($area.Groups['capture'].Value)"; break; }
+            ($name.Groups['capture'].Value -in $funcFilesContentList.name) { $content.pass = $name.Groups['capture'].Value; break; }
+            Default {$content.pass = $pass.Groups['capture'].Value; break;}
+        }
+    } else {
+        $content.pass = $pass.Groups['capture'].Value
+    }
+    $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass
 
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
