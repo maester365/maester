@@ -229,7 +229,7 @@ function Test-$($content.func){
         return `$null
     }
 
-    `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")
+    `$testResult = (`$obj.ResultStandard -eq "Pass" -or `$obj.ResultStandard -eq "Informational")
 
     `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
     if(`$testResult){
