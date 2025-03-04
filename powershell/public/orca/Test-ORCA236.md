@@ -1,8 +1,9 @@
-Safe Links is enabled for emails
-
 When Safe Links for emails is enabled, URLs in emails will be checked when users click on links.
 
-### Related Links
+#### Remediation action
+Enable Safe Links policy action for unknown potentially malicious URLs in emails.
+
+#### Related Links
 
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
 * [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
