@@ -253,9 +253,8 @@ function Test-$($content.func){
 
     `$testResult = (`$obj.ResultStandard -eq "Pass" -or `$obj.ResultStandard -eq "Informational")
 
-    `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
     if(`$testResult){
-        `$resultMarkdown += "Well done. $($content.pass)``n``n%ResultDetail%"
+        `$resultMarkdown += "Well done! $($content.pass)``n``n%ResultDetail%"
     }else{
         `$resultMarkdown += "The configured settings are not set as recommended.``n``n%ResultDetail%"
     }
