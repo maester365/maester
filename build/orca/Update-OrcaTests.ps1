@@ -151,7 +151,7 @@ foreach($file in $testFiles){
     $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
     $func = [regex]::Match($content.file, "check-(?'capture'.*).ps1", $option) # Capture between check and .ps1
     $content.name = $name.Groups['capture'].Value
-    $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '')
+    $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '') # Add punctuation to fail recommendation text if not present to stay consistent between tests
     $content.control = $control.Groups['capture'].Value
     $content.area = $area.Groups['capture'].Value
     $content.func = $func.Groups['capture'].Value
@@ -177,7 +177,7 @@ foreach($file in $testFiles){
     } else {
         $content.pass = $pass.Groups['capture'].Value
     }
-    $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass
+    $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass # Add punctuation to pass text if not present to stay consistent between tests
 
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
