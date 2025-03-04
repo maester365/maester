@@ -207,7 +207,7 @@ function Test-$($content.func){
 
     if((`$__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        `$__MtSession.OrcaCache = Get-ORCACollection
+        `$__MtSession.OrcaCache = Get-ORCACollection -SCC:`$true
     }
     `$Collection = `$__MtSession.OrcaCache
     `$obj = New-Object -TypeName $($content.func)
