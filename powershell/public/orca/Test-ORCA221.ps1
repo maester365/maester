@@ -3,7 +3,7 @@
     Mailbox intelligence is enabled in anti-phishing policies.
 
 .DESCRIPTION
-    Generated on 03/04/2025 09:42:24 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/04/2025 10:12:41 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA221
@@ -29,13 +29,14 @@ function Test-ORCA221{
 
     if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true
+        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true # Specify SCC to include tests in Security & Compliance
     }
     $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA221
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
+        Write-Error "An error occurred during ORCA221: $($_.Exception.Message)"
         throw
     } finally {
         if($obj.SkipInReport) {

@@ -1,4 +1,4 @@
-# Generated on 03/04/2025 09:42:24 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/04/2025 10:12:41 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA222", "EXO", "Security", "All" {
     It "ORCA222: Domain Impersonation action is set to move to Quarantine." {

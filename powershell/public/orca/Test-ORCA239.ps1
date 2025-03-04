@@ -3,7 +3,7 @@
     No exclusions for the built-in protection policies.
 
 .DESCRIPTION
-    Generated on 03/04/2025 09:42:24 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/04/2025 10:12:41 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA239
@@ -29,13 +29,14 @@ function Test-ORCA239{
 
     if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true
+        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true # Specify SCC to include tests in Security & Compliance
     }
     $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA239
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
+        Write-Error "An error occurred during ORCA239: $($_.Exception.Message)"
         throw
     } finally {
         if($obj.SkipInReport) {

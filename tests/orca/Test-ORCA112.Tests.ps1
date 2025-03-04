@@ -1,4 +1,4 @@
-# Generated on 03/04/2025 09:42:23 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/04/2025 10:12:40 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA112", "EXO", "Security", "All" {
     It "ORCA112: Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy." {

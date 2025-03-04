@@ -3,7 +3,7 @@
     Safe Links Synchronous URL detonation is enabled.
 
 .DESCRIPTION
-    Generated on 03/04/2025 09:42:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/04/2025 10:12:40 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA105
@@ -29,13 +29,14 @@ function Test-ORCA105{
 
     if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true
+        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true # Specify SCC to include tests in Security & Compliance
     }
     $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA105
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
+        Write-Error "An error occurred during ORCA105: $($_.Exception.Message)"
         throw
     } finally {
         if($obj.SkipInReport) {
