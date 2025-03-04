@@ -148,7 +148,7 @@ foreach($file in $testFiles){
     $pass = [regex]::Match($content.content, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
     $fail = [regex]::Match($content.content, "this\.failrecommendation=([\'\`"])(?'capture'.*)\1", $option)
     $control = [regex]::Match($content.content, "this\.control=([\'\`"])(?'capture'.*)\1", $option)
-    $area = [regex]::Match($content.content,"this.area.*[\'\`"](?'capture'.*)[\'\`"]",$option)
+    $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
     $content.name = $name.Groups['capture'].Value
     $content.pass = $pass.Groups['capture'].Value
     $content.fail = $fail.Groups['capture'].Value
