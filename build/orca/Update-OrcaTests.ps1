@@ -235,7 +235,7 @@ function Test-$($content.func){
     if(`$testResult){
         `$resultMarkdown += "Well done. $($content.pass)``n``n%ResultDetail%"
     }else{
-        `$resultMarkdown += "Your tenant did not pass. $($content.fail)``n``n%ResultDetail%"
+        `$resultMarkdown += "The configured settings are not set as recommended.``n``n%ResultDetail%"
     }
 
     `$passResult = "``u{2705} Pass"
