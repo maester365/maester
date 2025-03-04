@@ -161,7 +161,7 @@ foreach($file in $testFiles){
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "$($content.func)", "EXO", "Security", "All" {
-    It "$($content.func): $($content.name)" {
+    It "$($content.func): $($content.pass)" {
         `$result = Test-$($content.func)
 
         if(`$null -ne `$result) {
