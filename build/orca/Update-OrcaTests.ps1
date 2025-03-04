@@ -149,19 +149,19 @@ foreach($file in $testFiles){
     $fail = [regex]::Match($content.content, "this\.failrecommendation=([\'\`"])(?'capture'.*)\1", $option)
     $control = [regex]::Match($content.content, "this\.control=([\'\`"])(?'capture'.*)\1", $option)
     $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
+    $func = [regex]::Match($content.file, "check-(?'capture'.*).ps1", $option) # Capture between check and .ps1
     $content.name = $name.Groups['capture'].Value
     $content.pass = $pass.Groups['capture'].Value
     $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '')
     $content.control = $control.Groups['capture'].Value
     $content.area = $area.Groups['capture'].Value
-
-    $content.func = $content.file.Substring(6,7)
+    $content.func = $func.Groups['capture'].Value
 
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security", "All" {
-    It "$($content.file.Substring(6,7)): $($content.name)" {
+Describe "ORCA" -Tag "ORCA", "$($content.func)", "EXO", "Security", "All" {
+    It "$($content.func): $($content.name)" {
         `$result = Test-$($content.func)
 
         if(`$null -ne `$result) {
