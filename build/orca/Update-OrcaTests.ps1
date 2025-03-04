@@ -240,7 +240,7 @@ function Test-$($content.func){
 
     `$passResult = "``u{2705} Pass"
     `$failResult = "``u{274C} Fail"
-    `$skipResult = "``u{1F5C4}  Skip"
+    `$skipResult = "``u{1F5C4} Skip"
     `$resultDetail = "| `$(`$obj.ItemName) | `$(`$obj.DataType) | Result |``n"
     `$resultDetail += "| --- | --- | --- |``n"
     foreach(`$config in `$obj.Config){
