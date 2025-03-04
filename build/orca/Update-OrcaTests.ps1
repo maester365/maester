@@ -220,6 +220,15 @@ function Test-$($content.func){
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
         }
     }
+
+    if(`$obj.CheckFailed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason `$obj.CheckFailureReason
+        return `$null
+    }elseif(-not `$obj.Completed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Possibly missing license for specific feature.'
+        return `$null
+    }
+
     `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")
 
     `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
