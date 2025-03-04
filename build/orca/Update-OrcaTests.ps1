@@ -144,7 +144,7 @@ foreach($file in $testFiles){
     Set-Content -Path "$repo\powershell\internal\orca\$($content.file)" -Value $content.content -Force
 
     $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
-    $name = [regex]::Match($content.content,"this.name.*[\'\`"](?'capture'.*)[\'\`"]",$option)
+    $name = [regex]::Match($content.content, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
     $pass = [regex]::Match($content.content,"this.passtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $fail = [regex]::Match($content.content,"this.failtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
     $control = [regex]::Match($content.content,"this.control.*[\'\`"](?'capture'.*)[\'\`"]",$option)
