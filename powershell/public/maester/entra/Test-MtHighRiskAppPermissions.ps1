@@ -324,7 +324,67 @@ function Test-MtHighRiskAppPermissions {
             Type='Delegated'
             Path='Indirect'
         }
-   )
+        [pscustomobject]@{
+            Id='9241abd9-d0e6-425a-bd4f-47ba86e767a4';
+            Name='DeviceManagementConfiguration.ReadWrite.All';
+            Type='Application'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='0883f392-0a7a-443d-8c76-16a6d39c7b63';
+            Name='DeviceManagementConfiguration.ReadWrite.All';
+            Type='Delegated'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='e330c4f0-4170-414e-a55a-2f022ec2b57b';
+            Name='DeviceManagementRBAC.ReadWrite.All';
+            Type='Application'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='0c5e8a55-87a6-4556-93ab-adc52c4d862d';
+            Name='DeviceManagementRBAC.ReadWrite.All';
+            Type='Delegated'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='7e05723c-0bb0-42da-be95-ae9f08a6e53c';
+            Name='Domain.ReadWrite.All';
+            Type='Application'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='0b5d694c-a244-4bde-86e6-eb5cd07730fe';
+            Name='Domain.ReadWrite.All';
+            Type='Delegated'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='292d869f-3427-49a8-9dab-8c70152b74e9';
+            Name='Organization.ReadWrite.All';
+            Type='Application'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='46ca0847-7e6b-426e-9775-ea810a948356';
+            Name='Organization.ReadWrite.All';
+            Type='Delegated'
+            Path='Indirect'
+        }
+        [pscustomobject]@{
+            Id='01c0a623-fc9b-48e9-b794-0756f8e8f067';
+            Name='Policy.ReadWrite.ConditionalAccess';
+            Type='Application'
+            Path='Direct'
+        }
+        [pscustomobject]@{
+            Id='ad902697-1014-4ef5-81ef-2b4301988e8c';
+            Name='Policy.ReadWrite.ConditionalAccess';
+            Type='Delegated'
+            Path='Direct'
+        }
+    )
 
     $return = $true
 
