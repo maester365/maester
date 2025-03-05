@@ -124,9 +124,11 @@ function Get-MtLicenseInformation {
                 if ("8e0c0a52-6a6c-4d40-8370-dd62790dcd70" -in $skus -or "900018f1-0cdb-4ecb-94d4-90281760fdc6" -in $skus) {
                     $LicenseType = "P2","P1","EOP" # Microsoft Defender for Office 365 (Plan 2) / THREAT_INTELLIGENCE
                                                    # Microsoft Defender for Office 365 (Plan 2) for Government / THREAT_INTELLIGENCE_GOV
+                                                   # Includes P1 and EOP capabilities
                 } elseif ("f20fedf3-f3c3-43c3-8267-2bfdd51c0939" -in $skus -or "493ff600-6a2b-4db6-ad37-a7d4eb214516" -in $skus) {
                     $LicenseType = "P1","EOP" # Microsoft Defender for Office 365 (Plan 1) / ATP_ENTERPRISE
                                               # Microsoft Defender for Office 365 (Plan 1) for Government / ATP_ENTERPRISE_GOV
+                                              # Includes EOP capabilities
                 } else {
                     $LicenseType = "EOP" # Exchange Online Protection / EOP_ENTERPRISE (326e2b78-9d27-42c9-8509-46c827743a17)
                 }
