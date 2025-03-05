@@ -152,6 +152,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisTeamsLobbyBypass',
                'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps',
                'Test-MtCisThirdPartyFileSharing',
+               'Test-MtCisZAP',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtEidscaControl',
