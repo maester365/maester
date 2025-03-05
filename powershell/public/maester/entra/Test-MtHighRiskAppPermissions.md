@@ -1,4 +1,4 @@
-Ensure no applications or service prinicpals have graph permissions with a risk of having a direct or indirect path to a Global Admin or a full tenant takeover.
+Ensure no Microsoft Entra ID applications or service principals have Graph permissions with a risk of having a direct or indirect path to a Global Admin or a full tenant takeover.
 
 The tested permissions are based on the research published at [Microsoft Application permissions tiering](https://github.com/emiliensocchi/azure-tiering/tree/main/Microsoft%20Graph%20application%20permissions) by [Emilien Socchi](https://github.com/emiliensocchi).
 
