@@ -51,6 +51,13 @@ N/A below refers to review checks which canont be automated.
 | [Test-MtCisSafeAttachmentsAtpPolicy](/docs/commands/) | 2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled |
 | [Test-MtCisOutboundSpamFilterPolicy](/docs/commands/) | 2.1.6 (L1) Ensure Exchange Online Spam Policies are set to notify administrators |
 | [Test-MtCisSafeAntiPhishingPolicy](/docs/commands/) | 2.1.7 (L1) Ensure that an anti-phishing policy has been created |
+| TBD | 2.1.8 (L1) Ensure that SPF records are published for all Exchange Domains |
+| [Test-MtCisDkim](/docs/commands/) | 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains |
+| TBD | 2.1.10 (L1) Ensure DMARC Records for all Exchange Online domains are published |
+| N/A | 2.1.11 (L1) Ensure the spoofed domains report is reviewed weekly |
+| N/A | 2.1.12 (L1) Ensure the 'Restricted entities' report is reviewed weekly |
+| N/A | 2.1.13 (L1) Ensure malware trends are reviewed at least weekly |
+| [Test-MtCisAttachmentFilterComprehensive](/docs/commands/) | 2.1.14 (L2) Ensure comprehensive attachment filtering is applied |
 | N/A | 2.3.1 (L1) Ensure the Account Provisioning Activity report is reviewed at least weekly |
 | N/A | 2.3.2 (L1) Ensure non-global administrator role group assignments are reviewed at least weekly |
 | TBD | 2.4.1 (L1) Ensure Priority account protection is enabled and configured |
