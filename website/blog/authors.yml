@@ -44,6 +44,17 @@ mike:
     linkedin: https://linkedin.com/in/mikesoule/
     github: soulemike
     x: MySnozzberries
+wey:
+  name: Stefan Wey
+  title: Maester contributor
+  url: https://www.linkedin.com/in/stefanwey
+  image_url: https://avatars.githubusercontent.com/u/26062079?v=4
+  page: true
+  socials:
+    website: https://www.alweys.ch
+    linkedin: https://www.linkedin.com/in/stefanwey
+    bluesky: https://bsky.app/profile/stefanwey.bsky.social
+    github: weyCC81
 brian:
   name: Brian Veldman
   title: Cloud Solution Architect, Fellowmind
