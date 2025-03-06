@@ -1,38 +1,54 @@
 ---
 sidebar_class_name: hidden
-description: Checks if notifications for internal users sending malware are enabled
-id: Test-MtCisInternalMalwareNotification
-title: Test-MtCisInternalMalwareNotification
+description: Checks state of DKIM for all EXO domains
+id: Test-MtCisDkim
+title: Test-MtCisDkim
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisInternalMalwareNotification.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisDkim.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if notifications for internal users sending malware are enabled
+Checks state of DKIM for all EXO domains
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisInternalMalwareNotification [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisDkim [[-Selector] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Notifications for internal users sending malware should be enabled, and an administrator email set
+DKIM SHOULD be enabled for all domains.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisInternalMalwareNotification
+Test-MtCisDkim
 ```
 
-Returns true safe malware notifications are enabled, and an administrator email address is set
+Returns true if DKIM record exists and EXO shows DKIM enabled
 
 ## PARAMETERS
+
+### -Selector
+
+Selector-name for the DKIM record to test..
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: Selector1
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
@@ -64,4 +80,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification](https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification)
+[https://maester.dev/docs/commands/Test-MtCisDkim](https://maester.dev/docs/commands/Test-MtCisDkim)

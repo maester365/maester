@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: Checks if notifications for internal users sending malware are enabled
-id: Test-MtCisInternalMalwareNotification
-title: Test-MtCisInternalMalwareNotification
+description: Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'
+id: Test-MtDeviceComplianceSettings
+title: Test-MtDeviceComplianceSettings
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisInternalMalwareNotification.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtDeviceComplianceSettings.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if notifications for internal users sending malware are enabled
+Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisInternalMalwareNotification [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtDeviceComplianceSettings [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Notifications for internal users sending malware should be enabled, and an administrator email set
+The built-in Device Compliance Policy should mark devices with no compliance policy assigned as 'Not compliant'
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisInternalMalwareNotification
+Test-MtDeviceComplianceSettings
 ```
 
-Returns true safe malware notifications are enabled, and an administrator email address is set
+Returns true if the device compliance settings are configured
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification](https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification)
+[https://maester.dev/docs/commands/Test-MtDeviceComplianceSettings](https://maester.dev/docs/commands/Test-MtDeviceComplianceSettings)

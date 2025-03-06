@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: Checks if notifications for internal users sending malware are enabled
-id: Test-MtCisInternalMalwareNotification
-title: Test-MtCisInternalMalwareNotification
+description: Ensure device clean-up rule is configured
+id: Test-MtManagedDeviceCleanupSettings
+title: Test-MtManagedDeviceCleanupSettings
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisInternalMalwareNotification.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtManagedDeviceCleanupSettings.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if notifications for internal users sending malware are enabled
+Ensure device clean-up rule is configured
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisInternalMalwareNotification [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtManagedDeviceCleanupSettings [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Notifications for internal users sending malware should be enabled, and an administrator email set
+The device clean-up rule should be configured
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisInternalMalwareNotification
+Test-MtManagedDeviceCleanupSettings
 ```
 
-Returns true safe malware notifications are enabled, and an administrator email address is set
+Returns true if the device clean-up rule is configured
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification](https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification)
+[https://maester.dev/docs/commands/Test-MtManagedDeviceCleanupSettings](https://maester.dev/docs/commands/Test-MtManagedDeviceCleanupSettings)

@@ -1,36 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: Checks if notifications for internal users sending malware are enabled
-id: Test-MtCisInternalMalwareNotification
-title: Test-MtCisInternalMalwareNotification
+description: Checks if the Zero-hour auto purge (ZAP) for Microsoft Teams is enabled
+id: Test-MtCisZAP
+title: Test-MtCisZAP
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisInternalMalwareNotification.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisZAP.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if notifications for internal users sending malware are enabled
+Checks if the Zero-hour auto purge (ZAP) for Microsoft Teams is enabled
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisInternalMalwareNotification [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisZAP [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Notifications for internal users sending malware should be enabled, and an administrator email set
+Zero-hour auto purge (ZAP) should be enabled for Microsoft Teams
+CIS Microsoft 365 Foundations Benchmark v3.1.0
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisInternalMalwareNotification
+Test-MtCisZAP
 ```
 
-Returns true safe malware notifications are enabled, and an administrator email address is set
+Returns true if Zero-hour auto purge (ZAP) is enabled
 
 ## PARAMETERS
 
@@ -64,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification](https://maester.dev/docs/commands/Test-MtCisInternalMalwareNotification)
+[https://maester.dev/docs/commands/Test-MtCisZAP](https://maester.dev/docs/commands/Test-MtCisZAP)
