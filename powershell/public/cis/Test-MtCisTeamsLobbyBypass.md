@@ -10,10 +10,10 @@ For meetings that could contain sensitive information, it is best to allow the m
 #### Remediation action:
 
 To change who can bypass the lobby using the UI:
-1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
+1. Navigate to [Microsoft Teams admin center](https://admin.teams.microsoft.com).
 2. Click to expand **Meetings** select **Meeting policies**.
 3. Click **Global (Org-wide default)**.
-4. Seach for **Mmeeting join & lobby**.
+4. Seach for **Meeting join & lobby**.
 5. Set **Who can bypass the lobby** to **People in my org**.
 6. Click **Save**.
 

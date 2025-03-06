@@ -30,7 +30,7 @@ function Test-MtCisSharedMailboxSignIn {
     }
 
     Write-Verbose "Getting all shared mailboxes"
-    $sharedMailboxes = Get-MtExo -Request EXOMailbox | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
+    $sharedMailboxes = Get-MtExo -Request EXOMailbox -ErrorAction Stop | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
 
     if (($sharedMailboxes | Measure-Object).Count -eq 0) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "There are no SharedMailbox in your Tenant."
@@ -55,13 +55,18 @@ function Test-MtCisSharedMailboxSignIn {
     $testResult = if ($resultCount -eq 0) { $true } else { $false }
     
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled."
-    } else {
-        $testResultMarkdown = "Your tenant has $($resultCount) shared mailboxes with sign-in enabled:`n`n%TestResult%"
-        $resultMd = "| Display Name | User Principal Name |`n"
-        $resultMd += "| --- | --- |`n"
-        foreach ($item in $mailboxDetails) {
-            $resultMd += "| $($item.displayName) | $($item.UserPrincipalName) |`n"
+        $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
+    }
+    else {
+        $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
+    }
+
+    $resultMd = "| Shared Mailbox | Sign-in disabled |`n"
+    $resultMd += "| --- | --- |`n"
+    foreach ($item in $mailboxDetails | Sort-Object @sortSplat) {
+        $itemResult = "❌ Fail"
+        if ($item.id -notin $result.id) {
+            $itemResult = "✅ Pass"
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
     }
