@@ -156,6 +156,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisZAP',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
+               'Test-MtDeviceCleanupSettings', 'Test-MtDeviceComplianceSettings',
                'Test-MtEidscaControl',
                'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
                'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
