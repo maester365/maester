@@ -1,16 +1,16 @@
 ---
-title: MT.1054 - Intune built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'.
-description: Checks if the intune built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'
+title: MT.1054 - Intune built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'.
+description: Checks if the intune built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'
 slug: /tests/MT.1054
 sidebar_class_name: hidden
 ---
 
-# Intune built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'.
+# Intune built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'.
 
 ## Description
 
 Set your Intune built-in Device Compliance Policy to mark devices with no compliance policy assigned as 'Not compliant'.
-This ensures that new devices that do not have any policies assinged are not compliant per default.
+This ensures that new devices that do not have any policies assigned are not compliant per default.
 
 ## How to fix
 

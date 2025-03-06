@@ -1,7 +1,7 @@
-Ensure the built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'.
+Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'.
 
 Set your Intune built-in Device Compliance Policy to mark devices with no compliance policy assigned as 'Not compliant'.
-This ensures that new devices that do not have any policies assinged are not compliant per default.
+This ensures that new devices that do not have any policies assigned are not compliant per default.
 
 #### Remediation action:
 

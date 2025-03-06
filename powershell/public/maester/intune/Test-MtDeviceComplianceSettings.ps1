@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Ensure the built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'
+    Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'
 
 .DESCRIPTION
     The built-in Device Compliance Policy should mark devices with no compliance policy assigned as 'Not compliant'
@@ -24,21 +24,15 @@ function Test-MtDeviceComplianceSettings {
         return $null
     }
 
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "DeviceManagementManagedDevices.Read.All" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope 'DeviceManagementManagedDevices.Read.All'"
-        return $null
-    }
-
     $return = $true
     try {
         $deviceComplianceSettings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings" -ApiVersion beta
+        Write-Verbose "Device Compliance Settings: $deviceComplianceSettings"
         if ($deviceComplianceSettings.secureByDefault -ne $true) {
-            $testResultMarkdown = "Your Intune built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Compliant'."
+            $testResultMarkdown = "Your Intune built-in Device Compliance Policy **incorrectly** marks devices with no compliance policy assigned as 'Compliant'."
             $return = $false
         } else {
-            $testResultMarkdown = "Well done. Your Intune built-in Device Compliance Policy markes devices with no compliance policy assigned as 'Not compliant'."
+            $testResultMarkdown = "Well done. Your Intune built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'."
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {

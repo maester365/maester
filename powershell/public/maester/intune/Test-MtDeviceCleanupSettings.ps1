@@ -23,21 +23,14 @@ function Test-MtManagedDeviceCleanupSettings {
         return $null
     }
 
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "DeviceManagementManagedDevices.Read.All" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope 'DeviceManagementManagedDevices.Read.All'"
-        return $null
-    }
-
     $return = $true
     try {
         $deviceCleanupSettings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/managedDeviceCleanupSettings" -ApiVersion beta
         if ((-not $deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) -or ($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays -eq 0)) {
-            $testResultMarkdown = "Your intune device clean-up rule is not configured."
+            $testResultMarkdown = "Your Intune device clean-up rule is not configured."
             $return = $false
         } else {
-            $testResultMarkdown = "Well done. Your intune device clean-up rule is configured to retire inactive devices after $($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) days."
+            $testResultMarkdown = "Well done. Your Intune device clean-up rule is configured to retire inactive devices after $($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) days."
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
