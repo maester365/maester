@@ -8,7 +8,7 @@
 .EXAMPLE
     Test-MtCisaEmailFilterAlternative
 
-    Allways returns null
+    Always returns null
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaEmailFilterAlternative
@@ -23,9 +23,6 @@ function Test-MtCisaEmailFilterAlternative {
         return $null
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    } elseif ($null -eq (Get-MtLicenseInformation -Product Eop)) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEop
         return $null
     } else {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Only testing of MDO is supported"

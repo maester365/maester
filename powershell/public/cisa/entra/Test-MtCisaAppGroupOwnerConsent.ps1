@@ -23,6 +23,8 @@ function Test-MtCisaAppGroupOwnerConsent {
         return $null
     }
 
+    $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
+
     if ( $SettingsApiAvailable -notcontains 'EnableGroupSpecificConsent' ) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Settings value is not available. This may be due to the change that this API is no longer available for recently created tenants.'
         return $null

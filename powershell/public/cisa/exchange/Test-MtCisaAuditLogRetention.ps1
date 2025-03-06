@@ -45,26 +45,12 @@ function Test-MtCisaAuditLogRetention {
     $testResult = ($resultPolicies|Measure-Object).Count -ge 1
 
     $portalLink = "https://purview.microsoft.com/audit/auditpolicies"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [Exchange Online audit retention enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [Exchange Online audit retention enabled]($portalLink)."
     } else {
-        $testResultMarkdown = "Your tenant does not have [Exchange Online audit retention enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [Exchange Online audit retention enabled]($portalLink)."
     }
-
-    $result = "| Policy Result | Policy Name | Record Types | Retention Duration |`n"
-    $result += "| --- | --- | --- | --- |`n"
-    foreach($item in $mailboxes | Sort-Object -Property Name){
-        if($item.Guid -in $resultMailboxes.Guid){
-            $result += "| $passResult | $($item.Name) | $($item.RecordTypes -join ", ") | $($item.RetentionDuration) |`n"
-        }else{
-            $result += "| $failResult | $($item.Name) | $($item.RecordTypes -join ", ") | $($item.RetentionDuration) |`n"
-        }
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

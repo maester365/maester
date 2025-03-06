@@ -66,8 +66,6 @@ function Test-MtCisaDlpBaselineRule {
 
     $resultComposite = $resultCcn -and $resultSsn -and $resultItin
 
-    $testResult = ($resultComposite | Measure-Object).Count -ge 1
-
     $portalLink = "https://purview.microsoft.com/datalossprevention/policies"
 
     if ($resultComposite) {
@@ -97,5 +95,5 @@ function Test-MtCisaDlpBaselineRule {
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+    return $resultComposite
 }
