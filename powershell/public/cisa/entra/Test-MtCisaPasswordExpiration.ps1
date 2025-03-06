@@ -70,6 +70,8 @@ function Test-MtCisaPasswordExpiration {
             $testValue = $pass
         }elseif($domain.authenticationType -eq "Federated"){
             $testValue = $skip
+        }elseif($isVerified -eq "Unverified"){
+            $testValue = $skip
         }else{
             $testValue = $fail
         }
