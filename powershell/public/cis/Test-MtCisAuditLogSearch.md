@@ -5,7 +5,7 @@ Enabling audit log search in the Microsoft Purview compliance portal can help or
 
 #### Remediation action:
 
-To enable the Common Attachment Types Filter:
+To enable audit log search:
 1. Navigate to Microsoft Purview Audit Search [https://purview.microsoft.com/audit/auditsearch](https://purview.microsoft.com/audit/auditsearch)
 2. Select **Audit** to open the audit search
 3. Click**Start recording user and admin activity** next to the information warning at the top

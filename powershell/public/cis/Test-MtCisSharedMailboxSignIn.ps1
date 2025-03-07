@@ -51,9 +51,9 @@ function Test-MtCisSharedMailboxSignIn {
     Write-Verbose "Select shared mailboxes where sign-in is enabled"
     $result = $mailboxDetails | Where-Object { $_.AccountEnabled -eq "True" }
     $resultCount = ($result | Measure-Object).Count
-    
+
     $testResult = if ($resultCount -eq 0) { $true } else { $false }
-    
+
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
     }
@@ -64,10 +64,6 @@ function Test-MtCisSharedMailboxSignIn {
     $resultMd = "| Shared Mailbox | Sign-in disabled |`n"
     $resultMd += "| --- | --- |`n"
     foreach ($item in $mailboxDetails | Sort-Object @sortSplat) {
-        $itemResult = "❌ Fail"
-        if ($item.id -notin $result.id) {
-            $itemResult = "✅ Pass"
-        }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
     }
 

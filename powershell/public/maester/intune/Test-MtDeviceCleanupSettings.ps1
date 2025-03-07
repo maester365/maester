@@ -16,6 +16,7 @@
 function Test-MtManagedDeviceCleanupSettings {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param()
 
     if ((Get-MtLicenseInformation EntraID) -eq "Free") {
