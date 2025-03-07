@@ -25,7 +25,7 @@ It is important to note that a number of the policy checks ONLY check the defaul
 
 :::info
 TBD below refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
-N/A below refers to review checks which canont be automated.
+N/A below refers to review checks which cannot be automated.
 :::
 
 | Cmdlet Name | CIS Recommendation ID |

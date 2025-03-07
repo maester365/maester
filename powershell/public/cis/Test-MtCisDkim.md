@@ -4,7 +4,7 @@ Description: DKIM lets an organization add a digital signature to outbound email
 
 #### Remediation action:
 
-To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
+To enable DKIM:
 
 1. Navigate to Microsoft 365 Defender [https://security.microsoft.com](https://security.microsoft.com)
 2. Under **Email & collaboration** select **Policies & rules** then **Threat policies**
