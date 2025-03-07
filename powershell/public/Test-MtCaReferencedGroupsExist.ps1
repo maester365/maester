@@ -30,9 +30,9 @@ Function Test-MtCaReferencedGroupsExist {
     $Groups = $Policies.conditions.users.includeGroups + $Policies.conditions.users.excludeGroups | Select-Object -Unique
 
     $GroupsWhichNotExist = [System.Collections.Concurrent.ConcurrentBag[psobject]]::new()
-    $Groups | ForEach-Object -Parallel {
+    $Groups | ForEach-Object { # Removed -Parallel as it caused errors
       $Group = $_
-      $NotExistedGroup = $using:GroupsWhichNotExist
+      $NotExistedGroup = $GroupsWhichNotExist # Adjusted after not running in parallel anymore
       $GraphQueryResult = Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue
       if ([string]::IsNullOrEmpty($GraphQueryResult)) {
         $NotExistedGroup.Add($Group) | Out-Null

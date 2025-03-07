@@ -26,6 +26,12 @@ function Test-MtCaApplicationEnforcedRestriction {
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
+    $testDescription = "
+Microsoft recommends blocking or limiting access to SharePoint, OneDrive, and Exchange content from unmanaged devices.
+
+See [Use application enforced restrictions for unmanaged devices - Microsoft Learn](https://aka.ms/CATemplatesAppRestrictions)"
+    $testResult = "These conditional access policies enforce restrictions for unmanaged devices:`n`n"
+
     $result = $false
     foreach ($policy in $policies) {
         if ( $policy.conditions.users.includeUsers -eq "All" `
@@ -35,11 +41,17 @@ function Test-MtCaApplicationEnforcedRestriction {
         ) {
             $result = $true
             $currentresult = $true
+            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
         } else {
             $currentresult = $false
         }
         Write-Verbose "$($policy.displayName) - $currentresult"
     }
+
+    if ($result -eq $false) {
+        $testResult = "There was no conditional access policy enforcing restrictions for unmanaged devices."
+    }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
     return $result
 }
