@@ -242,6 +242,7 @@ function Test-$($content.func){
 
     if(`$obj.SkipInReport) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
+        return `$null
     }elseif(`$obj.CheckFailed) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason `$obj.CheckFailureReason
         return `$null
