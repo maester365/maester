@@ -238,13 +238,11 @@ function Test-$($content.func){
     } catch {
         Write-Error "An error occurred during $($content.func): `$(`$_.Exception.Message)"
         throw
-    } finally {
-        if(`$obj.SkipInReport) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
-        }
     }
 
-    if(`$obj.CheckFailed) {
+    if(`$obj.SkipInReport) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
+    }elseif(`$obj.CheckFailed) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason `$obj.CheckFailureReason
         return `$null
     }elseif(-not `$obj.Completed) {
