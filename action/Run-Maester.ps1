@@ -140,8 +140,23 @@ PROCESS {
 
     if ($GitHubStepSummary) {
         # Add step summary
-        $summary = Get-Content test-results/test-results.md
-        Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+        $filePath = "test-results/test-results.md"
+        if (Test-Path $filePath) {
+            $summary = Get-Content $filePath -Raw
+            $maxSize = 1024KB
+            $truncationMsg = "`n`n**⚠ TRUNCATED: Output exceeded GitHub's 1024 KB limit.**"
+
+            if ([System.Text.Encoding]::UTF8.GetByteCount($summary) -gt $maxSize) {
+                while ([System.Text.Encoding]::UTF8.GetByteCount($summary + $truncationMsg) -gt $maxSize) {
+                    $summary = $summary.Substring(0, $summary.Length - 100)
+                }
+                $summary += $truncationMsg
+            }
+
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+        } else {
+            Write-Host "File not found: $filePath"
+        }
     }
 }
 END {
