@@ -39,7 +39,7 @@ GitLab for personal projects (Free):
 -->
 ### Create a new blank project to always use the latest available public Maester Tests
 
-- On the left sidebar, at the top, select Create new () and New project/repository.
+- On the left sidebar, at the top, select 'Create new ()' and 'New project/repository'.
 - Select [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
 
   Visibility Level: Private
