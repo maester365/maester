@@ -2,7 +2,7 @@
 title: Maester Adds Support for GitLab
 description: Maester is now available for GitLab
 slug: maester-with-gitlab
-#authors: wey
+authors: wey
 tags: [gitlab]
 hide_table_of_contents: false
 date: 2025-03-17
