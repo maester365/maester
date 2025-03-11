@@ -5,5 +5,5 @@ Enable tracking of user clicks in Safe Links Policies.
 
 #### Related Links
 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)

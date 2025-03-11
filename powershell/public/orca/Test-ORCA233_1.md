@@ -5,5 +5,5 @@ Configure enhanced filtering on connectors when email path is not direct to EOP.
 
 #### Related Links
 
-* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1) 
-* [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting)
+* [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting) 
+* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1)

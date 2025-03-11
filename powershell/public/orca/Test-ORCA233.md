@@ -5,5 +5,5 @@ Send mail directly to EOP or configure enhanced filtering.
 
 #### Related Links
 
-* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1) 
-* [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting)
+* [Microsoft 365 Defender Portal - Enhanced Filtering](https://aka.ms/orca-connectors-action-skiplisting) 
+* [Enhanced Filtering for Connectors](https://aka.ms/orca-connectors-docs-1)

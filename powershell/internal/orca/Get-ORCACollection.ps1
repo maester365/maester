@@ -1,4 +1,4 @@
-# Generated on 03/04/2025 10:12:38 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:03 by .\build\orca\Update-OrcaTests.ps1
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]
@@ -18,7 +18,7 @@ Function Get-ORCACollection
     if($(Get-command Get-AtpPolicyForO365 -ErrorAction:SilentlyContinue))
     {
         $Collection["Services"] += [ORCAService]::MDO
-    } 
+    }
 
     If(!$Collection["Services"] -band [ORCAService]::MDO)
     {
@@ -101,7 +101,7 @@ Function Get-ORCACollection
         {
             Write-Verbose "$(Get-Date) Failed to get MX report for domain $($d.DomainName)"
         }
-        
+
     }
 
     # ARC Settings
@@ -123,7 +123,7 @@ Function Get-ORCACollection
         Add-IsPresetValue -CollectionEntity $Collection["ATPProtectionPolicyRule"]
         Add-IsPresetValue -CollectionEntity $Collection["AntiPhishPolicy"]
         Add-IsPresetValue -CollectionEntity $Collection["SafeAttachmentsPolicy"]
-        Add-IsPresetValue -CollectionEntity $Collection["SafeLinksPolicy"] 
+        Add-IsPresetValue -CollectionEntity $Collection["SafeLinksPolicy"]
     }
 
     Return $Collection

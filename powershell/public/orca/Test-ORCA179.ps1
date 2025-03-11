@@ -3,7 +3,7 @@
     Safe Links is enabled intra-organization.
 
 .DESCRIPTION
-    Generated on 03/04/2025 10:12:41 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA179
@@ -22,14 +22,16 @@ function Test-ORCA179{
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return = $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return = $null
+    }
+    if(Test-MtConnection SecurityCompliance){
+        $SCC = $true
+    } else {
+        $SCC = $false
     }
 
     if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$true # Specify SCC to include tests in Security & Compliance
+        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$SCC # Specify SCC to include tests in Security & Compliance
     }
     $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA179
@@ -50,6 +52,9 @@ function Test-ORCA179{
     }elseif(-not $obj.Completed) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Possibly missing license for specific feature.'
         return $null
+    }elseif($obj.SCC -and -not $SCC) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return = $null
     }
 
     $testResult = ($obj.ResultStandard -eq "Pass" -or $obj.ResultStandard -eq "Informational")

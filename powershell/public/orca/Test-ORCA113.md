@@ -5,6 +5,6 @@ Do not let users click through safe links to original URL.
 
 #### Related Links
 
-* [Microsoft Defender for Office 365 Safe Links policies](https://aka.ms/orca-atpp-docs-11) 
 * [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-8)
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-8) 
+* [Microsoft Defender for Office 365 Safe Links policies](https://aka.ms/orca-atpp-docs-11)

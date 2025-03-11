@@ -5,6 +5,6 @@ Remove allow listing on senders.
 
 #### Related Links
 
+* [Use Anti-Spam Policy Sender/Domain Allow lists](https://aka.ms/orca-antispam-docs-4) 
 * [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
-* [Use Anti-Spam Policy Sender/Domain Allow lists](https://aka.ms/orca-antispam-docs-4)
+* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)

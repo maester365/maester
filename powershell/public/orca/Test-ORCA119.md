@@ -5,5 +5,5 @@ Enable Similar Domains Safety Tips so that users can receive visible indication 
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)

@@ -5,6 +5,6 @@ Enable anti-spoofing protection in Anti-phishing policy.
 
 #### Related Links
 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
+* [Anti-spoofing protection in Office 365](https:/aka.ms/orca-atpp-docs-3) 
 * [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
-* [Anti-spoofing protection in Office 365](https:/aka.ms/orca-atpp-docs-3)
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)

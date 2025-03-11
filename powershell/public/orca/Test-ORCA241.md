@@ -5,5 +5,5 @@ Enable first contact safety tips to highlight suspicious messages to users.
 
 #### Related Links
 
-* [First Contact Safety Tip](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-phishing-policies-about?view=o365-worldwide#first-contact-safety-tip) 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing)
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
+* [First Contact Safety Tip](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/anti-phishing-policies-about?view=o365-worldwide#first-contact-safety-tip)
