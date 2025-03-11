@@ -5,7 +5,7 @@ slug: maester-with-gitlab
 authors: wey
 tags: [gitlab]
 hide_table_of_contents: false
-date: 2025-03-17
+date: 2025-03-12
 image: ./img/maester-gitlab.png
 #draft: true # Draft
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
@@ -17,7 +17,7 @@ Teams using GitLab pipelines can easily integrate Maester into their CI/CD workf
 
 <!-- truncate -->
 
-## Maester running on Gitlab
+## Maester running on GitLab
 
 ![Maester Gitlab](img/maester-gitlab.png)
 
