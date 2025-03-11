@@ -11,11 +11,13 @@ image: ./img/maester-gitlab.png
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---
 
-Maester now works seamlessly with GitLab! Teams using GitLab pipelines can easily integrate Maester into their CI/CD workflows to run automated security checks and enhance their security monitoring.
+Maester now works seamlessly with GitLab 👏!
+
+Teams using GitLab pipelines can easily integrate Maester into their CI/CD workflows to run automated security checks and enhance their security monitoring.
 
 <!-- truncate -->
 
-## Measter is running on Gitlab
+## Maester running on Gitlab
 
 ![Maester Gitlab](img/maester-gitlab.png)
 
