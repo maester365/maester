@@ -1,4 +1,4 @@
-# Generated on 03/04/2025 10:12:40 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:05 by .\build\orca\Update-OrcaTests.ps1
 
 using module ".\orcaClass.psm1"
 
@@ -15,9 +15,9 @@ param()
 class ORCA242 : ORCACheck
 {
     <#
-    
+
         Check for first contact safety tip
-    
+
     #>
 
     ORCA242()
@@ -38,12 +38,13 @@ class ORCA242 : ORCACheck
         $this.Links= @{
             "Automated investigation and response in Microsoft 365 Defender"="https://learn.microsoft.com/en-us/microsoft-365/security/defender/m365d-autoir"
         }
+        $this.SCC=$True
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -85,8 +86,8 @@ class ORCA242 : ORCACheck
                     if($FoundAlert.Disabled)
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                    } 
-                    else 
+                    }
+                    else
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                     }
