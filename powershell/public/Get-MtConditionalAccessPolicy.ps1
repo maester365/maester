@@ -13,10 +13,14 @@
 #>
 function Get-MtConditionalAccessPolicy {
   [CmdletBinding()]
-  param()
+  param(
+    # Specify if this request should skip cache and go directly to Graph.
+    [Parameter(Mandatory = $false)]
+    [Switch]$DisableCache
+  )
 
   Write-Verbose -Message "Getting conditional access policies."
 
-  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta
+  return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta -DisableCache:$DisableCache
 
 }
