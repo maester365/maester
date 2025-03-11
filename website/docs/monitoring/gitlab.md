@@ -19,9 +19,10 @@ This guide will walk you through setting up Maester in GitLab and automate the r
 GitLab for personal projects (Free):
     400 compute minutes per month
     5 users per top-level group
+
 --->
 
-## Set up your Maester tests project (Group) in GitLab
+## Set up your Maester tests project (group) in GitLab
 
 ### Pre-requisites
 
@@ -34,12 +35,9 @@ GitLab for personal projects (Free):
 - Option C: GitLab Dedicated (Self-Host)
 -->
 
-<!--
-### 1. Create a blank new repository to always use the latest available public Maester Tests
--->
-### Create a new blank project to always use the latest available public Maester Tests
+### Create a blank new project to always use the latest available public Maester Tests
 
-- On the left sidebar, at the top, select Create new () and New project/repository.
+- On the left sidebar, at the top, select 'Create new ()' and 'New project/repository'.
 - Select [Create a blank project](https://docs.gitlab.com/ee/user/project/index.html#create-a-blank-project)
 
   Visibility Level: Private
@@ -62,9 +60,11 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
 - <IIcon icon="material-symbols:password" height="18" /> **Client secret** uses a secret to authenticate with Microsoft Entra protected resources.
 
 <Tabs>
-<!--<TabItem value="wif" label="Custom workflow using Workload identity federation" >
-ToBeTested ...
-</TabItem>-->
+<!--
+<TabItem value="wif" label="Custom workflow using Workload identity federation" >
+    ToBeTested ...
+</TabItem>
+-->
 <TabItem value="cert" label="Custom workflow using client secret" default>
 
 <CreateEntraApp/>
@@ -82,7 +82,7 @@ ToBeTested ...
   - Visibility: Masked and hidden, Key: **AZURE_CLIENT_SECRET**, Value: The client secret you copied in the previous step
 - Save each secret by selecting **Add variable** at the bottom.
 
-### Create .gitlab-ci.yml file (or use Pipeline editor)
+### Create .gitlab-ci.yml file (or use pipeline editor)
 
 <!--
 More Text
@@ -158,7 +158,7 @@ run_maester_tests_inline:
     expire_in: 1 week
 
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web"'
 ```
 
   </TabItem>
@@ -191,6 +191,7 @@ Pipeline schedules are ...
 > **Summary view**
 > A summary view is not available with GitLab in comparison to GitHub.
 
-<!-- ## FAQ / Troubleshooting
+<!--
+## FAQ / Troubleshooting
 - Ensure you are monitoring your GitLab Runner cost
 -->

@@ -1,36 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: Safety Tips are enabled
-id: Test-ORCA143
-title: Test-ORCA143
+description: Checks if audit log search is enabled
+id: Test-MtCisAuditLogSearch
+title: Test-MtCisAuditLogSearch
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-ORCA143.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisAuditLogSearch.ps1
 ---
 
 ## SYNOPSIS
 
-Safety Tips are enabled
+Checks if audit log search is enabled
 
 ## SYNTAX
 
 ```powershell
-Test-ORCA143 [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisAuditLogSearch [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
+Microsoft 365 audit log search should be enabled
+CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-ORCA143
+Test-MtCisAuditLogSearch
 ```
 
-Returns true or false
+Returns true if audit log search is enabled
 
 ## PARAMETERS
 
@@ -64,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-ORCA143](https://maester.dev/docs/commands/Test-ORCA143)
+[https://maester.dev/docs/commands/Test-MtCisAuditLogSearch](https://maester.dev/docs/commands/Test-MtCisAuditLogSearch)

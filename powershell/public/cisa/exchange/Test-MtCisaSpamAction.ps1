@@ -24,9 +24,6 @@ function Test-MtCisaSpamAction {
     }elseif(!(Test-MtConnection SecurityCompliance)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    }elseif($null -eq (Get-MtLicenseInformation -Product Mdo)){
-        Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
-        return $null
     }
 
     $policies = Get-MtExo -Request HostedContentFilterPolicy

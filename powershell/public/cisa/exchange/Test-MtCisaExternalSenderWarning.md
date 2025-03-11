@@ -14,6 +14,7 @@ This feature is only available for Outlook, Outlook for Mac, Outlook on the web,
 2. Enable the feature with the cmdlet `Set-ExternalInOutlook`
 
 ```powershell
+Install-Module -Name ExchangeOnlineManagement
 Connect-ExchangeOnline
 Set-ExternalInOutlook -Enabled $true
 ```

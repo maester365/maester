@@ -61,16 +61,18 @@ function Test-MtCisaDlpPii {
         $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%TestResult%"
     }
 
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
-    $result = "| Status | Policy | Rule |`n"
-    $result += "| --- | --- | --- |`n"
-    foreach ($item in ($rules | Sort-Object -Property ParentPolicyName,Name)) {
-        $itemResult = $failResult
-        if($item.Guid -in $resultRules.Guid){
-            $itemResult = $passResult
+    if ($rules) {
+        $passResult = "✅ Pass"
+        $failResult = "❌ Fail"
+        $result = "| Status | Policy | Rule |`n"
+        $result += "| --- | --- | --- |`n"
+        foreach ($item in ($rules | Sort-Object -Property ParentPolicyName,Name)) {
+            $itemResult = $failResult
+            if($item.Guid -in $resultRules.Guid){
+                $itemResult = $passResult
+            }
+            $result += "| $($itemResult) | $($item.ParentPolicyName) | $($item.Name) |`n"
         }
-        $result += "| $($itemResult) | $($item.ParentPolicyName) | $($item.Name) |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

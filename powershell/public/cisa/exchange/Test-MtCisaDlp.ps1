@@ -29,10 +29,9 @@ function Test-MtCisaDlp {
         return $null
     }
 
-    $policies = Get-MtExo -Request DlpCompliancePolicy
+    $policies = Get-MtExo -Request DlpCompliancePolicy | Where-Object { $_.ExchangeLocation.DisplayName -contains "All" }
 
     $resultPolicies = $policies | Where-Object {`
-        $_.ExchangeLocation.DisplayName -contains "All" -and `
         $_.Workload -like "*Exchange*" -and `
         -not $_.IsSimulationPolicy -and `
         $_.Enabled
@@ -48,16 +47,18 @@ function Test-MtCisaDlp {
         $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%TestResult%"
     }
 
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
-    $result = "| Name | Status | Description |`n"
-    $result += "| --- | --- | --- |`n"
-    foreach ($item in ($policies | Where-Object {$_.ExchangeLocation.DisplayName -contains "All"}) | Sort-Object -Property name) {
-        $itemResult = $failResult
-        if($item.Guid -in $resultPolicies.Guid){
-            $itemResult = $passResult
+    if ($policies) {
+        $passResult = "✅ Pass"
+        $failResult = "❌ Fail"
+        $result = "| Name | Status | Description |`n"
+        $result += "| --- | --- | --- |`n"
+        foreach ($item in ($policies | Sort-Object -Property name)) {
+            $itemResult = $failResult
+            if($item.Guid -in $resultPolicies.Guid){
+                $itemResult = $passResult
+            }
+            $result += "| $($item.name) | $($itemResult) | $($item.comment) |`n"
         }
-        $result += "| $($item.name) | $($itemResult) | $($item.comment) |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result

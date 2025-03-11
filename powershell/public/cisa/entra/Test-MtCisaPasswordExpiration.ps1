@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Checks if passwords are set to not expire
 
@@ -8,7 +8,8 @@
 .EXAMPLE
     Test-MtCisaPasswordExpiration
 
-    Returns true if at least 1 domain has password expiration of 100 years or greater
+    Returns true if all verified managed domains have password expiration configured
+    to be of 100 years or greater
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaPasswordExpiration
@@ -33,21 +34,52 @@ function Test-MtCisaPasswordExpiration {
     #$users = Get-MgUser -All -Property PasswordPolicies
     #$users|?{$_.PasswordPolicies -like "*DisablePasswordExpiration*"}
 
-    #Would need to handle exception for federated domains
-    #$federatedDomains = $result | Where-Object {`
-    #    $_.authenticationType -ne "Managed"}
+    $verifiedDomains = $result | Where-Object isVerified
 
-    $managedDomains = $result | Where-Object {`
-        $_.authenticationType -eq "Managed" -and `
-        $_.PasswordValidityPeriodInDays -ge 36500}
+    $managedDomains = $verifiedDomains | Where-Object authenticationType -eq "Managed"
 
-    $testResult = ($managedDomains|Measure-Object).Count -ge 1
+    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -ge 36500
+
+    $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire."
+        $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have password expiration set to never expire."
+        $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%TestResult%"
     }
+
+    $pass = "✅ Pass"
+    $fail = "❌ Fail"
+    $skip = "🗄️ Skipped"
+    $default = "✔️"
+
+    $resultDetails = "| Domain (Default) | Verified | Type | Validation |`n"
+    $resultDetails += "| --- | --- | --- | --- |`n"
+    foreach($domain in $result){
+        if($domain.isDefault){
+            $isDefault = "$($domain.id) ($default)"
+        }else{
+            $isDefault = "$($domain.id) ()"
+        }
+        if($domain.isVerified){
+            $isVerified = "Verified"
+        }else{
+            $isVerified = "Unverified"
+        }
+        if($domain.id -in $compliantDomains.id){
+            $testValue = $pass
+        }elseif($domain.authenticationType -eq "Federated"){
+            $testValue = $skip
+        }elseif($isVerified -eq "Unverified"){
+            $testValue = $skip
+        }else{
+            $testValue = $fail
+        }
+
+        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue |`n"
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultDetails
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

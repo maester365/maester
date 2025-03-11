@@ -33,9 +33,9 @@ function Test-MtCisaAuditLog {
     $portalLink = "https://purview.microsoft.com/audit/auditsearch"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [unified audit log enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [unified audit log enabled]($portalLink)."
     } else {
-        $testResultMarkdown = "Your tenant does not have [unified audit log enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [unified audit log enabled]($portalLink)."
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
