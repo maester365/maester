@@ -1,11 +1,11 @@
-# Generated on 01/19/2025 07:06:35 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA111", "EXO", "Security", "All" {
-    It "ORCA111: Unauthenticated Sender (tagging)" {
+    It "ORCA111: Anti-phishing policy exists and EnableUnauthenticatedSender is true." {
         $result = Test-ORCA111
 
         if($null -ne $result) {
-            $result | Should -Be $true -Because "Anti-phishing policy exists and EnableUnauthenticatedSender is true"
+            $result | Should -Be $true -Because "Anti-phishing policy exists and EnableUnauthenticatedSender is true."
         }
     }
 }

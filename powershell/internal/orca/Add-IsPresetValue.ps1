@@ -1,4 +1,4 @@
-# Generated on 01/19/2025 07:06:34 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:03 by .\build\orca\Update-OrcaTests.ps1
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]
@@ -15,13 +15,13 @@ Function Add-IsPresetValue
 
     foreach($item in $CollectionEntity)
     {
-        
+
         if($null -ne $item.Name)
         {
             $IsPreset = $PresetNames -contains $item.Name
 
             $item | Add-Member -MemberType NoteProperty -Name IsPreset -Value $IsPreset -Force
         }
-        
+
     }
 }

@@ -1,4 +1,4 @@
-# Generated on 02/24/2025 14:55:44 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:05 by .\build\orca\Update-OrcaTests.ps1
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
@@ -22,7 +22,7 @@ Class ORCACheck
         - ExpandResults         : If we should create a table in the callout which points out which items fail and where
         - ObjectType            : When ExpandResults is set to, For Object, Property Value checks - what is the name of the Object, e.g a Spam Policy
         - ItemName              : When ExpandResults is set to, what does the check return as ConfigItem, for instance, is it a Transport Rule?
-        - DataType              : When ExpandResults is set to, what type of data is returned in ConfigData, for instance, is it a Domain?    
+        - DataType              : When ExpandResults is set to, what type of data is returned in ConfigData, for instance, is it a Domain?
 
     #>
 
@@ -53,7 +53,9 @@ Class ORCACheck
 
     [Boolean] $CheckFailed = $false
     [String] $CheckFailureReason = $null
-    
+
+    [Boolean] $SCC=$false
+
     # Overridden by check
     GetResults($Config) { }
 
@@ -101,7 +103,7 @@ Class ORCACheck
 
     AddConfig([ORCACheckConfig]$Config)
     {
-        
+
         $this.Config += $Config
 
         $this.ResultStandard = $this.GetLevelResult([ORCAConfigLevel]::Standard)
@@ -109,12 +111,12 @@ Class ORCACheck
 
         if($this.AssessmentLevel -eq [ORCAConfigLevel]::Standard)
         {
-            $this.Result = $this.ResultStandard 
+            $this.Result = $this.ResultStandard
         }
 
         if($this.AssessmentLevel -eq [ORCAConfigLevel]::Strict)
         {
-            $this.Result = $this.ResultStrict 
+            $this.Result = $this.ResultStrict
         }
 
     }
@@ -123,7 +125,7 @@ Class ORCACheck
     Run($Config)
     {
         Write-Verbose "$(Get-Date) Analysis - $($this.Area) - $($this.Name)"
-        
+
         $this.GetResults($Config)
 
         If($this.SkipInReport -eq $True)
@@ -204,13 +206,13 @@ Class ORCACheckConfig
             ($this.Results | Where-Object {$_.Level -eq [ORCAConfigLevel]::Strict}).Value = [ORCAResult]::Pass
         } else {
             ($this.Results | Where-Object {$_.Level -eq $Level}).Value = $InputResult
-        }        
+        }
 
         # The level of this configuration should be its strongest result (e.g if its currently standard and we have a strict pass, we should make the level strict)
         if($InputResult -eq [ORCAResult]::Pass -and ($this.Level -lt $Level -or $this.Level -eq [ORCAConfigLevel]::None))
         {
             $this.Level = $Level
-        } 
+        }
         elseif ($InputResult -eq [ORCAResult]::Fail -and ($Level -eq [ORCAConfigLevel]::Informational -and $this.Level -eq [ORCAConfigLevel]::None))
         {
             $this.Level = $Level
@@ -229,7 +231,7 @@ Class ORCACheckConfig
 
         if($Level -eq [ORCAConfigLevel]::Strict)
         {
-            return $StrictResult 
+            return $StrictResult
         }
 
         if($Level -eq [ORCAConfigLevel]::Standard)

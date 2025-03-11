@@ -1,11 +1,11 @@
-# Generated on 01/19/2025 07:06:35 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA108", "EXO", "Security", "All" {
-    It "ORCA108: Signing Configuration" {
+    It "ORCA108: DKIM signing is set up for all your custom domains." {
         $result = Test-ORCA108
 
         if($null -ne $result) {
-            $result | Should -Be $true -Because "DKIM signing is set up for all your custom domains"
+            $result | Should -Be $true -Because "DKIM signing is set up for all your custom domains."
         }
     }
 }

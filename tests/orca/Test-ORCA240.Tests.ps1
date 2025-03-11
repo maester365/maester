@@ -1,7 +1,7 @@
-# Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 03/11/2025 11:45:07 by .\build\orca\Update-OrcaTests.ps1
 
 Describe "ORCA" -Tag "ORCA", "ORCA240", "EXO", "Security", "All" {
-    It "ORCA240: External Tags" {
+    It "ORCA240: Outlook is configured to display external tags for external emails." {
         $result = Test-ORCA240
 
         if($null -ne $result) {

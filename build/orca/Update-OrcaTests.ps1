@@ -134,13 +134,6 @@ foreach($file in $testFiles){
         links       = ""
     }
 
-    # Skip early if we can
-    $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
-    $skip = [regex]::Match($content.content,"this.SkipInReport\s*=\s*[`$]True",$option)
-    if ($skip.Success) {
-        continue
-    }
-
     $content.content = $content.content -replace`
         "using module `"..\\ORCA.psm1`"",`
         ""
@@ -150,24 +143,47 @@ foreach($file in $testFiles){
     # Script Files
     Set-Content -Path "$repo\powershell\internal\orca\$($content.file)" -Value $content.content -Force
 
-    $name = [regex]::Match($content.content,"this.name.*[\'\`"](?'capture'.*)[\'\`"]",$option)
-    $pass = [regex]::Match($content.content,"this.passtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
-    $fail = [regex]::Match($content.content,"this.failtext.*[\'\`"](?'capture'.*)[\'\`"]",$option)
-    $control = [regex]::Match($content.content,"this.control.*[\'\`"](?'capture'.*)[\'\`"]",$option)
-    $area = [regex]::Match($content.content,"this.area.*[\'\`"](?'capture'.*)[\'\`"]",$option)
+    $option = [Text.RegularExpressions.RegexOptions]::IgnoreCase
+    $name = [regex]::Match($content.content, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
+    $pass = [regex]::Match($content.content, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
+    $fail = [regex]::Match($content.content, "this\.failrecommendation=([\'\`"])(?'capture'.*)\1", $option)
+    $control = [regex]::Match($content.content, "this\.control=([\'\`"])(?'capture'.*)\1", $option)
+    $area = [regex]::Match($content.content, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
+    $func = [regex]::Match($content.file, "check-(?'capture'.*).ps1", $option) # Capture between check and .ps1
     $content.name = $name.Groups['capture'].Value
-    $content.pass = $pass.Groups['capture'].Value
-    $content.fail = $fail.Groups['capture'].Value
+    $content.fail = $fail.Groups['capture'].Value + ($fail.Groups['capture'].Value -notmatch '\.$' ? '.' : '') # Add punctuation to fail recommendation text if not present to stay consistent between tests
     $content.control = $control.Groups['capture'].Value
     $content.area = $area.Groups['capture'].Value
-
-    $content.func = $content.file.Substring(6,7)
+    $content.func = $func.Groups['capture'].Value
+    if ($func.Groups['capture'].Value -match '_') {
+        $funcFilesContentList = New-Object System.Collections.ArrayList
+        foreach ($funcFile in ($testFiles.Where({$_.Name -ne $file.Name -and $_.Name -like "check-$($func.Groups['capture'].Value.Split('_')[0])*"}))) {
+            $funcFileContent = Get-Content $funcFile -Raw
+            $funcFileArea = [regex]::Match($funcFileContent, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFileName = [regex]::Match($funcFileContent, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFilePass = [regex]::Match($funcFileContent, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
+            $funcFilesContentList.Add([PSCustomObject]@{
+                area = $funcFileArea.Groups['capture'].Value
+                name = $funcFileName.Groups['capture'].Value
+                pass = $funcFilePass.Groups['capture'].Value
+            }) | Out-Null
+        }
+        switch ($false) {
+            ($pass.Groups['capture'].Value -in $funcFilesContentList.pass) { $content.pass = $pass.Groups['capture'].Value; break; }
+            ($area.Groups['capture'].Value -in $funcFilesContentList.Where({$_.pass -eq $pass.Groups['capture'].Value}).area) { $content.pass = "$($pass.Groups['capture'].Value) in $($area.Groups['capture'].Value)"; break; }
+            ($name.Groups['capture'].Value -in $funcFilesContentList.name) { $content.pass = $name.Groups['capture'].Value; break; }
+            Default {$content.pass = $pass.Groups['capture'].Value; break;}
+        }
+    } else {
+        $content.pass = $pass.Groups['capture'].Value
+    }
+    $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass # Add punctuation to pass text if not present to stay consistent between tests
 
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "$($content.file.Substring(6,7))", "EXO", "Security", "All" {
-    It "$($content.file.Substring(6,7)): $($content.name)" {
+Describe "ORCA" -Tag "ORCA", "$($content.func)", "EXO", "Security", "All" {
+    It "$($content.func): $($content.pass)" {
         `$result = Test-$($content.func)
 
         if(`$null -ne `$result) {
@@ -206,40 +222,65 @@ function Test-$($content.func){
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return = `$null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return = `$null
+    }
+    if(Test-MtConnection SecurityCompliance){
+        `$SCC = `$true
+    } else {
+        `$SCC = `$false
     }
 
     if((`$__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        `$__MtSession.OrcaCache = Get-ORCACollection
+        `$__MtSession.OrcaCache = Get-ORCACollection -SCC:`$SCC # Specify SCC to include tests in Security & Compliance
     }
     `$Collection = `$__MtSession.OrcaCache
     `$obj = New-Object -TypeName $($content.func)
-    `$obj.Run(`$Collection)
-    `$testResult = (`$obj.Completed -and `$obj.Result -eq "Pass")
+    try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
+        `$obj.Run(`$Collection)
+    } catch {
+        Write-Error "An error occurred during $($content.func): `$(`$_.Exception.Message)"
+        throw
+    } finally {
+        if(`$obj.SkipInReport) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
+        }
+    }
 
-    `$resultMarkdown = "$($content.area + " - " + $content.name + " - " + $content.control)``n``n"
+    if(`$obj.CheckFailed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason `$obj.CheckFailureReason
+        return `$null
+    }elseif(-not `$obj.Completed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Possibly missing license for specific feature.'
+        return `$null
+    }elseif(`$obj.SCC -and -not `$SCC) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return = `$null
+    }
+
+    `$testResult = (`$obj.ResultStandard -eq "Pass" -or `$obj.ResultStandard -eq "Informational")
+
     if(`$testResult){
-        `$resultMarkdown += "Well done. $($content.pass)``n``n%ResultDetail%"
+        `$resultMarkdown += "Well done! $($content.pass)``n``n%ResultDetail%"
     }else{
-        `$resultMarkdown += "Your tenant did not pass. $($content.fail)``n``n%ResultDetail%"
+        `$resultMarkdown += "The configured settings are not set as recommended.``n``n%ResultDetail%"
     }
 
     `$passResult = "``u{2705} Pass"
     `$failResult = "``u{274C} Fail"
-    `$skipResult = "``u{1F5C4}  Skip"
-    `$resultDetail = "| `$(`$obj.ItemName) | `$(`$obj.DataType) | Result |``n"
-    `$resultDetail += "| --- | --- | --- |``n"
-    foreach(`$config in `$obj.Config){
-        switch(`$config.ResultStandard){
-            "Pass" {`$itemResult = `$passResult}
-            "Informational" {`$itemResult = `$skipResult}
-            "None" {`$itemResult = `$skipResult}
-            "Fail" {`$itemResult = `$failResult}
+    `$skipResult = "``u{1F5C4} Skip"
+    if (`$obj.ExpandResults) {
+        `$resultDetail += "``n``n`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|`$(`$obj.ObjectType)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|`$(`$obj.ItemName)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|`$(`$obj.DataType)"})|Result|``n"
+        `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|-"})|-|``n"
+        ForEach (`$result in `$obj.Config) {
+            If (`$result.ResultStandard -eq "Pass") {
+                `$objResult = `$passResult
+            } ElseIf(`$result.ResultStandard -eq "Informational") {
+                `$objResult = `$skipResult
+            } Else {
+                `$objResult = `$failResult
+            }
+            `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$result.Object)) {"|`$(`$result.Object)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigItem)) {"|`$(`$result.ConfigItem)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigData)) {"|`$(`$result.ConfigData)"})|`$objResult|``n"
         }
-        `$resultDetail += "| `$(`$config.ConfigItem) | `$(`$config.ConfigData) | `$itemResult |``n"
     }
 
     `$resultMarkdown = `$resultMarkdown -replace "%ResultDetail%", `$resultDetail
@@ -254,18 +295,18 @@ function Test-$($content.func){
     Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).ps1" -Value $funcScript -Force
     $exports += "Test-$($content.func)"
 
-
-    $description = [regex]::Match($content.content,"this.importance.*[\'\`"](?'capture'.*)[\'\`"]",$option)
-    $content.description = $description.Groups['capture'].Value
-    $links = [regex]::Match($content.content,"this.Links.*@{(?'capture'[^}]*)}",$option)
-    $content.links = $links.Groups['capture'].Value|ConvertFrom-StringData
+    $description = [regex]::Match($content.content, "this\.Importance=([\'\`"])(?'capture'.*)\1", $option) # Capture between first identified apostrophe or qoute and it's last
+    $content.description = $description.Groups['capture'].Value -replace '<[^>]+>','' # Remove HTML tags
+    $links = [regex]::Match($content.content, "this.Links.*@{(?'capture'[^}]*)}", $option)
+    $content.links = $links.Groups['capture'].Value | ConvertFrom-StringData
 
     $md = @"
-$($content.pass)
-
 $($content.description)
 
-### Related Links
+#### Remediation action
+$($content.fail)
+
+#### Related Links
 
 "@
 

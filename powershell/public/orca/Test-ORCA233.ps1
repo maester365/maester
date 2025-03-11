@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Domains are pointed directly at EOP or enhanced filtering is used
+    Domains are pointed directly at EOP or enhanced filtering is used.
 
 .DESCRIPTION
-    Generated on 01/19/2025 07:06:36 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/11/2025 11:45:07 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA233
@@ -22,40 +22,65 @@ function Test-ORCA233{
     if(!(Test-MtConnection ExchangeOnline)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return = $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return = $null
+    }
+    if(Test-MtConnection SecurityCompliance){
+        $SCC = $true
+    } else {
+        $SCC = $false
     }
 
     if(($__MtSession.OrcaCache.Keys|Measure-Object).Count -eq 0){
         Write-Verbose "OrcaCache not set, Get-ORCACollection"
-        $__MtSession.OrcaCache = Get-ORCACollection
+        $__MtSession.OrcaCache = Get-ORCACollection -SCC:$SCC # Specify SCC to include tests in Security & Compliance
     }
     $Collection = $__MtSession.OrcaCache
     $obj = New-Object -TypeName ORCA233
-    $obj.Run($Collection)
-    $testResult = ($obj.Completed -and $obj.Result -eq "Pass")
+    try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
+        $obj.Run($Collection)
+    } catch {
+        Write-Error "An error occurred during ORCA233: $($_.Exception.Message)"
+        throw
+    } finally {
+        if($obj.SkipInReport) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'The statement "SkipInReport" was specified by ORCA.'
+        }
+    }
 
-    $resultMarkdown = "Connectors - Domains - `n`n"
+    if($obj.CheckFailed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason $obj.CheckFailureReason
+        return $null
+    }elseif(-not $obj.Completed) {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'Possibly missing license for specific feature.'
+        return $null
+    }elseif($obj.SCC -and -not $SCC) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return = $null
+    }
+
+    $testResult = ($obj.ResultStandard -eq "Pass" -or $obj.ResultStandard -eq "Informational")
+
     if($testResult){
-        $resultMarkdown += "Well done. Domains are pointed directly at EOP or enhanced filtering is used`n`n%ResultDetail%"
+        $resultMarkdown += "Well done! Domains are pointed directly at EOP or enhanced filtering is used.`n`n%ResultDetail%"
     }else{
-        $resultMarkdown += "Your tenant did not pass. `n`n%ResultDetail%"
+        $resultMarkdown += "The configured settings are not set as recommended.`n`n%ResultDetail%"
     }
 
     $passResult = "`u{2705} Pass"
     $failResult = "`u{274C} Fail"
-    $skipResult = "`u{1F5C4}  Skip"
-    $resultDetail = "| $($obj.ItemName) | $($obj.DataType) | Result |`n"
-    $resultDetail += "| --- | --- | --- |`n"
-    foreach($config in $obj.Config){
-        switch($config.ResultStandard){
-            "Pass" {$itemResult = $passResult}
-            "Informational" {$itemResult = $skipResult}
-            "None" {$itemResult = $skipResult}
-            "Fail" {$itemResult = $failResult}
+    $skipResult = "`u{1F5C4} Skip"
+    if ($obj.ExpandResults) {
+        $resultDetail += "`n`n$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|$($obj.ObjectType)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|$($obj.ItemName)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|$($obj.DataType)"})|Result|`n"
+        $resultDetail += "$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|-"})|-|`n"
+        ForEach ($result in $obj.Config) {
+            If ($result.ResultStandard -eq "Pass") {
+                $objResult = $passResult
+            } ElseIf($result.ResultStandard -eq "Informational") {
+                $objResult = $skipResult
+            } Else {
+                $objResult = $failResult
+            }
+            $resultDetail += "$(If (-not [string]::IsNullOrEmpty($result.Object)) {"|$($result.Object)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigItem)) {"|$($result.ConfigItem)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigData)) {"|$($result.ConfigData)"})|$objResult|`n"
         }
-        $resultDetail += "| $($config.ConfigItem) | $($config.ConfigData) | $itemResult |`n"
     }
 
     $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
