@@ -67,7 +67,7 @@ foreach ($perm in $getPerms){
 - Select **Runtime Environments**.
 - Select **Create**.
 - Define a name for the environment.
-- Select **PowerShell** for the language and set the **Runtime version** to **7.2**.
+- Select **PowerShell** for the language and set the **Runtime version** to **7.4**.
 - Select **Next**.
 - On the **Packages** tab, select **Add from gallery** and select the following packages:
   - **Maester**
