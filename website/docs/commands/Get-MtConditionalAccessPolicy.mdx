@@ -15,7 +15,7 @@ Returns all the conditional access policies in the tenant.
 ## SYNTAX
 
 ```powershell
-Get-MtConditionalAccessPolicy [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MtConditionalAccessPolicy [-DisableCache] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,6 +31,22 @@ Get-MtConditionalAccessPolicy
 ```
 
 ## PARAMETERS
+
+### -DisableCache
+
+Specify if this request should skip cache and go directly to Graph.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -ProgressAction
 
