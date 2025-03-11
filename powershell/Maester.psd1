@@ -189,6 +189,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-ORCA236', 'Test-ORCA237', 'Test-ORCA238',
                'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241',
                'Test-ORCA242', 'Test-ORCA243', 'Test-ORCA244',
+               'Test-ORCA143',
                'Convert-MtResultsToFlatObject'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
