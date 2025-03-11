@@ -18,7 +18,7 @@ There are two ways you can send alerts to Teams:
 - **Teams webhook workflow**: Uses a Teams webhook triggered from Maester.
   - This method is simpler to set up, does not require any additional Graph permissions and users a PowerAutomate workflow. However the workflow is tied to the account that set up the workflow which may need to be updated if the account is disabled.
 - **Graph API**: Uses a Graph API call to send the message to a Teams channel.
-  - This method takes a few extra steps and requires consenting to the ChannelMessage.Send Graph permissions. There are no dependencies on PowerAutomate workflows with this option.
+  - This method takes a few extra steps and requires consenting to the Teamwork.Migrate.All graph permissions. There are no dependencies on PowerAutomate workflows with this option.
 
 <Tabs>
 <TabItem value="wif" label="Teams webhook workflow" default>
@@ -64,13 +64,13 @@ The TeamChannelWebhookUri should be kept secure and not shared publicly to avoid
 
 ### ChannelMessage.Send graph permissions
 
-The app that sends the Teams alerts needs the `ChannelMessage.Send` permission to send messages. To configure
+The app that sends the Teams alerts needs the `Teamwork.Migrate.All` permission to send messages. To configure
 
 - Open the [Entra admin center](https://entra.microsoft.com) > **Identity** > **Applications** > **App registrations**
 - Search for the application you created to run as the `Maester DevOps Account`.
 - Select **API permissions** > **Add a permission**
 - Select **Microsoft Graph** > **Application permissions**
-- Search for `ChannelMessage.Send` and check the box next to the permission
+- Search for `Teamwork.Migrate.All` and check the box next to the permission
 - Select **Add permissions**
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
