@@ -55,7 +55,7 @@ PowerShellVersion = '5.1'
    pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
    if necessary by Install-MaesterTests.
 #>
-RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.2.0'; }
+RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.25.0'; }
                      @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
 
 # Assemblies that must be loaded prior to importing this module
