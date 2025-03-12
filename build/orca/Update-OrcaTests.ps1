@@ -310,7 +310,7 @@ $($content.fail)
 
 "@
 
-    $md += $($content.links.Keys|ForEach-Object{
+    $md += $($content.links.Keys|Sort-Object|ForEach-Object{
         "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
     })
     # MD Files

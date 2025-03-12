@@ -6,5 +6,5 @@ Apply a Safe Links policy to every domain.
 #### Related Links
 
 * [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
-* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
+* [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)

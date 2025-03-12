@@ -5,5 +5,5 @@ Remove IP addresses from IP allow list.
 
 #### Related Links
 
-* [Use Anti-Spam Policy IP Allow lists](https://aka.ms/orca-antispam-docs-3) 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Use Anti-Spam Policy IP Allow lists](https://aka.ms/orca-antispam-docs-3)
