@@ -274,8 +274,15 @@ function Test-$($content.func){
     `$passResult = "``u{2705} Pass"
     `$failResult = "``u{274C} Fail"
     `$skipResult = "``u{1F5C4} Skip"
-    `$resultDetail += "``n``n`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|`$(`$obj.ObjectType)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|`$(`$obj.ItemName)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|`$(`$obj.DataType)"})|Result|``n"
-    `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|-"})|-|``n"
+    `$showObject = ""+`$obj.CheckType -eq "ObjectPropertyValue"
+
+    `$resultDetail = "``n``n"
+    if (`$showObject) { `$resultDetail += "|`$(`$obj.ObjectType)" }
+    `$resultDetail += "|`$(`$obj.ItemName)|`$(`$obj.DataType)|Result|``n"
+
+    if (`$showObject) { `$resultDetail += "|-" }
+    `$resultDetail += "|-|-|-|``n"
+
     ForEach (`$result in `$obj.Config) {
         If (`$result.ResultStandard -eq "Pass") {
             `$objResult = `$passResult
@@ -284,9 +291,9 @@ function Test-$($content.func){
         } Else {
             `$objResult = `$failResult
         }
-        `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$result.Object)) {"|`$(`$result.Object)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigItem)) {"|`$(`$result.ConfigItem)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigData)) {"|`$(`$result.ConfigData)"})|`$objResult|``n"
+        If (`$showObject) { `$resultDetail += "|`$(`$result.Object)" }
+        `$resultDetail += "|`$(`$result.ConfigItem)|`$(`$result.ConfigData)|`$objResult|``n"
     }
-
     `$resultMarkdown = `$resultMarkdown -replace "%ResultDetail%", `$resultDetail
 
     Add-MtTestResultDetail -Result `$resultMarkdown
