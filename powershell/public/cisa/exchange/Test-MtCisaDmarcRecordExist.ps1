@@ -33,6 +33,7 @@ function Test-MtCisaDmarcRecordExist {
     }
     #>
 
+    $seen = @{}
     $dmarcRecords = @()
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios
@@ -45,12 +46,23 @@ function Test-MtCisaDmarcRecordExist {
             $domainName = $domain.domainname
         }
 
+        if ($seen[$domainName]) {
+            continue
+        }
+        $seen[$domainName] = $True
+
         $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domainName -Records DMARC
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
         if($dmarcRecord.dmarcRecord.GetType().Name -eq "DMARCRecord"){
             $dmarcRecord.pass = "Passed"
+        }elseif($domain.IsCoexistenceDomain){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = "Coexistence domain"
+        }elseif($domain.InitialDomain){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = "Initial domain"
         }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
@@ -84,14 +96,22 @@ function Test-MtCisaDmarcRecordExist {
 
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
+    $skipResult = "🗄️ Skip"
     $result = "| Domain | Result | Reason | Targets |`n"
     $result += "| --- | --- | --- | --- |`n"
     foreach ($item in $dmarcRecords | Sort-Object -Property domain) {
         switch($item.pass){
             "Passed" {$itemResult = $passResult}
             "Failed" {$itemResult = $failResult}
+            "Skipped" {$itemResult = $skipResult}
         }
-        $aggregates = $item.dmarcRecord.reportForensic.mailAddress
+
+        if ($item.pass -eq "Skipped") {
+            $result += "| $($item.domain) | $($itemResult) | $($item.reason) ||`n"
+            continue
+        }
+
+        $aggregates = $item.dmarcRecord.reportAggregate.mailAddress
         $aggregatesCount = ($aggregates|Measure-Object).Count
         if($aggregatesCount -ge 3){
             $aggregates = "$($aggregates[0]), $($aggregates[1]), "
