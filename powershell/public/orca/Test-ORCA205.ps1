@@ -3,7 +3,7 @@
     Common attachment type filter is enabled.
 
 .DESCRIPTION
-    Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 03/12/2025 10:37:56 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA205
@@ -65,22 +65,26 @@ function Test-ORCA205{
         $resultMarkdown += "The configured settings are not set as recommended.`n`n%ResultDetail%"
     }
 
+    # Return early if we don't need to expand the results
+    if (!$obj.ExpandResults) {
+        Add-MtTestResultDetail -Result $resultMarkdown.TrimEnd("%ResultDetail%")
+        return $testResult
+    }
+
     $passResult = "`u{2705} Pass"
     $failResult = "`u{274C} Fail"
     $skipResult = "`u{1F5C4} Skip"
-    if ($obj.ExpandResults) {
-        $resultDetail += "`n`n$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|$($obj.ObjectType)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|$($obj.ItemName)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|$($obj.DataType)"})|Result|`n"
-        $resultDetail += "$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|-"})|-|`n"
-        ForEach ($result in $obj.Config) {
-            If ($result.ResultStandard -eq "Pass") {
-                $objResult = $passResult
-            } ElseIf($result.ResultStandard -eq "Informational") {
-                $objResult = $skipResult
-            } Else {
-                $objResult = $failResult
-            }
-            $resultDetail += "$(If (-not [string]::IsNullOrEmpty($result.Object)) {"|$($result.Object)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigItem)) {"|$($result.ConfigItem)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigData)) {"|$($result.ConfigData)"})|$objResult|`n"
+    $resultDetail += "`n`n$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|$($obj.ObjectType)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|$($obj.ItemName)"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|$($obj.DataType)"})|Result|`n"
+    $resultDetail += "$(If (-not [string]::IsNullOrEmpty($obj.Config[0].Object)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigItem)) {"|-"})$(If (-not [string]::IsNullOrEmpty($obj.Config[0].ConfigData)) {"|-"})|-|`n"
+    ForEach ($result in $obj.Config) {
+        If ($result.ResultStandard -eq "Pass") {
+            $objResult = $passResult
+        } ElseIf($result.ResultStandard -eq "Informational") {
+            $objResult = $skipResult
+        } Else {
+            $objResult = $failResult
         }
+        $resultDetail += "$(If (-not [string]::IsNullOrEmpty($result.Object)) {"|$($result.Object)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigItem)) {"|$($result.ConfigItem)"})$(If (-not [string]::IsNullOrEmpty($result.ConfigData)) {"|$($result.ConfigData)"})|$objResult|`n"
     }
 
     $resultMarkdown = $resultMarkdown -replace "%ResultDetail%", $resultDetail
