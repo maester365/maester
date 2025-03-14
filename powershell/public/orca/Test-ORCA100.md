@@ -5,6 +5,6 @@ Set the Bulk Complaint Level threshold to be 6.
 
 #### Related Links
 
+* [Bulk Complaint Level values](https://aka.ms/orca-antispam-docs-1) 
 * [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
-* [Bulk Complaint Level values](https://aka.ms/orca-antispam-docs-1)
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)

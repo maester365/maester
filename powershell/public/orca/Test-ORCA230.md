@@ -5,7 +5,7 @@ Check your anti-phishing policies for duplicate rules. Some policies and setting
 
 #### Related Links
 
-* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
 * [Microsoft 365 Defender Portal - Antiphishing policies](https://security.microsoft.com/antiphishing) 
 * [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4) 
+* [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7) 
 * [Setting up antiphishing policies](https://aka.ms/orca-atpp-docs-2)

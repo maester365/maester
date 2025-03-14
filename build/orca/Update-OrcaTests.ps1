@@ -265,24 +265,35 @@ function Test-$($content.func){
         `$resultMarkdown += "The configured settings are not set as recommended.``n``n%ResultDetail%"
     }
 
+    # Return early if we don't need to expand the results
+    if (!`$obj.ExpandResults) {
+        Add-MtTestResultDetail -Result `$resultMarkdown.TrimEnd("%ResultDetail%")
+        return `$testResult
+    }
+
     `$passResult = "``u{2705} Pass"
     `$failResult = "``u{274C} Fail"
     `$skipResult = "``u{1F5C4} Skip"
-    if (`$obj.ExpandResults) {
-        `$resultDetail += "``n``n`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|`$(`$obj.ObjectType)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|`$(`$obj.ItemName)"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|`$(`$obj.DataType)"})|Result|``n"
-        `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].Object)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigItem)) {"|-"})`$(If (-not [string]::IsNullOrEmpty(`$obj.Config[0].ConfigData)) {"|-"})|-|``n"
-        ForEach (`$result in `$obj.Config) {
-            If (`$result.ResultStandard -eq "Pass") {
-                `$objResult = `$passResult
-            } ElseIf(`$result.ResultStandard -eq "Informational") {
-                `$objResult = `$skipResult
-            } Else {
-                `$objResult = `$failResult
-            }
-            `$resultDetail += "`$(If (-not [string]::IsNullOrEmpty(`$result.Object)) {"|`$(`$result.Object)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigItem)) {"|`$(`$result.ConfigItem)"})`$(If (-not [string]::IsNullOrEmpty(`$result.ConfigData)) {"|`$(`$result.ConfigData)"})|`$objResult|``n"
-        }
-    }
+    `$showObject = ""+`$obj.CheckType -eq "ObjectPropertyValue"
 
+    `$resultDetail = "``n``n"
+    if (`$showObject) { `$resultDetail += "|`$(`$obj.ObjectType)" }
+    `$resultDetail += "|`$(`$obj.ItemName)|`$(`$obj.DataType)|Result|``n"
+
+    if (`$showObject) { `$resultDetail += "|-" }
+    `$resultDetail += "|-|-|-|``n"
+
+    ForEach (`$result in `$obj.Config) {
+        If (`$result.ResultStandard -eq "Pass") {
+            `$objResult = `$passResult
+        } ElseIf(`$result.ResultStandard -eq "Informational") {
+            `$objResult = `$skipResult
+        } Else {
+            `$objResult = `$failResult
+        }
+        If (`$showObject) { `$resultDetail += "|`$(`$result.Object)" }
+        `$resultDetail += "|`$(`$result.ConfigItem)|`$(`$result.ConfigData)|`$objResult|``n"
+    }
     `$resultMarkdown = `$resultMarkdown -replace "%ResultDetail%", `$resultDetail
 
     Add-MtTestResultDetail -Result `$resultMarkdown
@@ -310,7 +321,7 @@ $($content.fail)
 
 "@
 
-    $md += $($content.links.Keys|ForEach-Object{
+    $md += $($content.links.Keys|Sort-Object|ForEach-Object{
         "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
     })
     # MD Files

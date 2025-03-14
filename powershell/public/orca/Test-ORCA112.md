@@ -5,6 +5,6 @@ Configure Anti-spoofing protection action to Move message to the recipients' Jun
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
 * [Configuring the anti-spoofing policy](https://aka.ms/orca-atpp-docs-5) 
+* [Microsoft 365 Defender Portal - Anti-phishing](https://security.microsoft.com/antiphishing) 
 * [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
