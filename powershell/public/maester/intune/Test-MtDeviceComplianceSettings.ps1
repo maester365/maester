@@ -17,6 +17,7 @@
 function Test-MtDeviceComplianceSettings {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple settings.')]
     param()
 
     if ((Get-MtLicenseInformation EntraID) -eq "Free") {
