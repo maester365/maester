@@ -42,9 +42,9 @@ function Test-MtCisSharedMailboxSignIn {
     foreach ($mbx in $sharedMailboxes) {
         $mgUser = Get-MgUser -UserId $mbx.ExternalDirectoryObjectId -Property DisplayName, UserPrincipalName, AccountEnabled
         $mailboxDetails += [pscustomobject]@{
-            DisplayName = $mgUser.DisplayName
+            DisplayName       = $mgUser.DisplayName
             UserPrincipalName = $mgUser.UserPrincipalName
-            AccountEnabled = $mgUser.AccountEnabled
+            AccountEnabled    = $mgUser.AccountEnabled
         }
     }
 
@@ -61,12 +61,20 @@ function Test-MtCisSharedMailboxSignIn {
         $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
     }
 
-    $resultMd = "| Shared Mailbox | Sign-in disabled |`n"
+
+
+    $resultMd = "| Shared Mailbox | Sign-in Disabled |`n"
     $resultMd += "| --- | --- |`n"
-    foreach ($item in $mailboxDetails | Sort-Object @sortSplat) {
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
+    foreach ($item in $result | Sort-Object @sortSplat) {
+        $itemResult = "❌ Fail"
+        if ($item.id -notin $result.id) {
+            $itemResult = "✅ Pass"
+        }
+        $resultMd += "| $($item.displayName) | $($itemResult) |`n"
     }
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+
     return $testResult
 }
