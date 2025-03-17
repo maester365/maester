@@ -7,7 +7,7 @@ Set your Intune device cleanup rules to delete Intune MDM enrolled devices that 
 #### Remediation action:
 
 To enable device clean-up rules:
-1. Navigate to Microsoft Intune admin center [https://intune.microsoft.com](https://intune.microsoft.com).
+1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Click **Devices** scroll down to **Organize devices**.
 3. Select **Device clean-up rules**.
 4. Set **Delete devices based on last check-in date** to **Yes**

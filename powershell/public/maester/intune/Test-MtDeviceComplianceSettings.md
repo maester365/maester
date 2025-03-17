@@ -6,7 +6,7 @@ This ensures that new devices that do not have any policies assigned are not com
 #### Remediation action:
 
 To change the built-in device compliance policy:
-1. Navigate to Microsoft Intune admin center [https://intune.microsoft.com](https://intune.microsoft.com).
+1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Click **Devices** scroll down to **Manage devices**.
 3. Select **Compliance** and Select **Compliance settings**.
 4. Set **Mark devices with no compliance policy assigned as** to **Not compliant**
