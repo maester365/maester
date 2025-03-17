@@ -22,10 +22,6 @@ function Test-MtCisAttachmentFilterComprehensive {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
     }
-    elseif (!(Test-MtConnection SecurityCompliance)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
-        return $null
-    }
 
     Write-Verbose "Executing checks"
 
