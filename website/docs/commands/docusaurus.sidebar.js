@@ -217,6 +217,7 @@ module.exports = [
     'commands/Test-MtEidscaPR06',
     'commands/Test-MtEidscaST08',
     'commands/Test-MtEidscaST09',
+    'commands/Test-MtGroupCreationRestricted',
     'commands/Test-MtHighRiskAppPermissions',
     'commands/Test-MtManagedDeviceCleanupSettings',
     'commands/Test-MtPimAlertsExists',
