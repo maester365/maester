@@ -1,6 +1,6 @@
 ---
 title: MT.1055 - Microsoft 365 Group (and Team) creation should be restricted to approved users
-description:
+description: Creating groups should be restricted to users who have undergone training and understand the responsibilities of group ownership, governance and compliance requirements
 slug: /tests/MT.1055
 sidebar_class_name: hidden
 ---
