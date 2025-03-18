@@ -60,3 +60,4 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 ## Learn more
 
 - [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
+- [Microsoft Entra application management policies API overview](https://learn.microsoft.com/en-us/graph/api/resources/applicationauthenticationmethodpolicy?view=graph-rest-1.0#requirements)
