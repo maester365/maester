@@ -23,7 +23,8 @@ function Test-MtContext {
     } else {
         $requiredScopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage
         $currentScopes = Get-MgContext | Select-Object -ExpandProperty Scopes
-        $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ }
+        $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_  -and $currentScopes -notcontains ($_ -replace '.Read.', '.ReadWrite.') }
+        $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_  }
 
         if ($missingScopes) {
             $message = "These Graph permissions are missing in the current connection => ($($missingScopes))."
