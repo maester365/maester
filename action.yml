@@ -57,7 +57,7 @@ inputs:
     type: boolean
     description: "Include Exchange Online tests in the test run."
     required: false
-    default: true
+    default: false
   include_teams:
     type: boolean
     description: "Include Teams tests in the test run."

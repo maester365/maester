@@ -110,6 +110,7 @@ jobs:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         include_public_tests: true # Optional
+        include_exchange: false # Optional
         pester_verbosity: None # Optional - 'None', 'Normal', 'Detailed', 'Diagnostic'
 
 ```
