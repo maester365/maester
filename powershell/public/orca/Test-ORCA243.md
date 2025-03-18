@@ -5,5 +5,5 @@ Enable Authenticated Receive Chain (ARC) trusted sealers for domains not pointed
 
 #### Related Links
 
-* [Improving 'Defense in Depth' with Trusted ARC Sealers for Microsoft Defender for Office 365](https://techcommunity.microsoft.com/t5/microsoft-defender-for-office/improving-defense-in-depth-with-trusted-arc-sealers-for/ba-p/3440707) 
-* [Configuring trusted ARC sealers](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide)
+* [Configuring trusted ARC sealers](https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/email-authentication-arc-configure?view=o365-worldwide) 
+* [Improving 'Defense in Depth' with Trusted ARC Sealers for Microsoft Defender for Office 365](https://techcommunity.microsoft.com/t5/microsoft-defender-for-office/improving-defense-in-depth-with-trusted-arc-sealers-for/ba-p/3440707)
