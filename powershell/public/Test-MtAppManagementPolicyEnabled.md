@@ -60,3 +60,4 @@ Update-MgPolicyDefaultAppManagementPolicy -BodyParameter $params
 ## Learn more
 
 - [Tenant App Management Policy - Microsoft Graph Reference](https://learn.microsoft.com/graph/api/resources/tenantappmanagementpolicy?view=graph-rest-1.0)
+- [What are Workload ID Premium features, and which are free?](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-faqs#what-are-workload-id-premium-features-and-which-are-free)
