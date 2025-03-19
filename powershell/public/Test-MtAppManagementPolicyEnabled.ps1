@@ -16,11 +16,6 @@ function Test-MtAppManagementPolicyEnabled {
   [OutputType([bool])]
   param()
 
-  if (!(Get-MtLicenseInformation EntraWorkloadID)) {
-    Add-MtTestResultDetail -SkippedBecause NotLicensedEntraWorkloadID
-    return $null
-  }
-
   $defaultAppManagementPolicy = Invoke-MtGraphRequest -RelativeUri "policies/defaultAppManagementPolicy"
   Write-Verbose -Message "Default App Management Policy: $($result.isEnabled)"
   $result = $defaultAppManagementPolicy.isEnabled -eq 'True'
