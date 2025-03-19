@@ -32,7 +32,7 @@ Maester includes optional [CISA](tests/cisa/) tests that require additional perm
 ### Installing Azure and Exchange Online modules
 
 ```powershell
-Install-Module Az -Scope CurrentUser
+Install-Module Az.Accounts -Scope CurrentUser
 Install-Module ExchangeOnlineManagement -Scope CurrentUser
 ```
 
