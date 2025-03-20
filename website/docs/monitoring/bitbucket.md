@@ -69,7 +69,7 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
   - Visibility: Masked and hidden, Key: **AZURE_CLIENT_SECRET**, Value: The client secret you copied in the previous step
 - Save each secret by selecting **Add variable** at the bottom.
 
-### Edit bitbucket-pipelines.yml file (using the pipeline editor)
+## Edit bitbucket-pipelines.yml file (using the pipeline editor or IDE)
 
 ```yaml
 # Global options
@@ -170,24 +170,16 @@ To manually run the Maester tests workflow
 - This will trigger the pipeline.
    ![Bitbucket Pipeline in progress](assets/bitbucket-run-pipeline-inprogress.png)
 
-<!--
-## Create a schedule (Optional)
-
-Pipeline schedules are ...
-
-- [Scheduled pipelines documentation](https://BitBucket.com/help/ci/pipelines/schedules)
--->
-
 ## Viewing the test results
 
 - Open your maester-tests Bitbucket repository and go to Pipelines.
-- Click on the latest pipeline run  to inspect. Click on the **Run Maester Tests** step and select the **artifacts** tab.
+- Click on the latest pipeline run  to inspect. Click on the **Run Maester Tests** step and select the **artifacts** tab on right.
     ![inspect bitbucket pipeline](assets/bitbucket-inspect-pipeline-step.png)
 - Click on the download icon to download the test results artifacts.
     ![Bitbucket Artifacts Download](assets/bitbucket-download-artifacts.png)
 - Open the folder `test-results` from the donloaded artifact to view the test results.
     ![Bitbucket Test Results](assets/bitbucket-test-results.png)
-- Click on the `test-results.html` page to view the test result in your briwser.\
+- Click on the `test-results.html` page to view the test result in your browser.\
     ![Bitbucket View Result](assets/bitbucket-view-test-result.png)
 
 ## Schedule the Pipeline
@@ -195,7 +187,7 @@ Pipeline schedules are ...
 - Go to the `Maester-Tests` repository in Bitbucket.
 - Click **Pipelines** then Schedules (at the top right), and then click **New schedule**.
 - Choose the **Branch** (e.g. main) and **Pipeline** `custom:run-maester-tests`:
-- Select how often you would like the pipeline to run (weekly).
+- Select how often you would like the pipeline to run (e.g. weekly).
 
 ## FAQ / Troubleshooting
 
