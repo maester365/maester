@@ -146,6 +146,11 @@
 
         # Export the FlattenedResults list to a CSV if requested.
         if ($PSBoundParameters.ContainsKey('CsvFilePath')) {
+            if ($CsvFilePath -match '\.xlsx$') {
+                Write-Output ''
+                Write-Warning -Message 'You are exporting a CSV file, but the file path ends with the .XLSX extension. Please rename with the proper extension or use the ''-ExcelFilePath'' parameter if you want an Excel file.' -WarningAction Continue
+            }
+
             try {
                 $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
                 Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
@@ -156,6 +161,11 @@
 
         # Export the FlattenedResults list to an Excel file if requested.
         if ($PSBoundParameters.ContainsKey('ExcelFilePath')) {
+            if ($ExcelFilePath -match '\.csv$') {
+                Write-Output ''
+                Write-Warning -Message 'You are exporting an Excel file, but the file path ends with the .CSV extension. Please rename with the proper extension or use the ''-CsvFilePath'' parameter if you want a CSV file.' -WarningAction Continue
+            }
+
             try {
                 $FlattenedResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
                 Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
