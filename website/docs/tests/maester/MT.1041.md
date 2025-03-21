@@ -14,9 +14,12 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. Navigate to Exchange admin center https://admin.exchange.microsoft.com.
-> 2. Click to expand Roles select User roles.
-> 3. Select Default Role Assignment Policy.
-> 4. In the properties pane on the right click on Manage permissions.
-> 5. Under Other roles uncheck My Custom Apps, My Marketplace Apps and My ReadWriteMailboxApps.
-> 6. Click Save changes.
+> 1. Navigate to [Exchange Admin Center](https://admin.cloud.microsoft.com/exchange)
+> 2. Click to expand **Roles** and select **User roles** in the navigation pane.
+> 3. Select **Default Role Assignment Policy**.
+> 4. In the properties pane on the right click on **Manage permissions**.
+> 5. Under **Other roles** uncheck the following:
+> * My Custom Apps
+> * My Marketplace Apps
+> * My ReadWriteMailboxApps
+> 6. Click **Save changes**.

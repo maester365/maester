@@ -13,8 +13,8 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. Log into Microsoft Teams admin center
-> 2. In the left navigation, go to Meetings > Meeting Policies
-> 3. Under Manage Policies, select a group/direct policy
-> 4. Under the Participants & guests section, toggle "Allow dial-in users to bypass the lobby" to Off
+> 1. Log into [Microsoft Teams Admin Center](https://aka.ms/teamsadmincenter)
+> 2. In the left navigation, go to **Meetings** > **Meeting Policies**
+> 3. Under **Manage Policies**, select a group/direct policy
+> 4. Under the **Meeting join & lobby**, toggle "**Allow dial-in users to bypass the lobby**" to **Off**
 > 5. You’ll need to change this setting for each group/direct policy

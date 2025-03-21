@@ -14,8 +14,10 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. >Navigate to Exchange admin center https://admin.exchange.microsoft.com.
-> 2. Click to expand Mail Flow and then select Rules.
+> 1. Navigate to [Exchange Admin Center](https://admin.cloud.microsoft.com/exchange)
+> 2. In the left navigation, go to **Mail Flow** and then select **Rules**.
 > 3. For each rule that allows specific domains, set the spam confident level (SCL) to 0 or greater.
->
->> In "Do the following" section, select "Modify the message properties" and "set the spam confidence level (SCL)" and set to at least 0 (specifying the action for this domain, read more in the references attached below, some options may entirely block mail from this domain).
+> 4. In "**Do the following**" section, select "**Modify the message properties**" > "**set the spam confidence level (SCL)**" and set the value to at least 0 (specifying the action for this domain, read more in the references attached below, some options may entirely block mail from this domain).
+
+## Learn more
+[Spam confidence level (SCL) in EOP](https://learn.microsoft.com/en-us/defender-office-365/anti-spam-spam-confidence-level-scl-about)

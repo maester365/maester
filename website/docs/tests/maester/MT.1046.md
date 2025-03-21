@@ -13,6 +13,6 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. Log into Microsoft Teams admin center
-> 2. In the left navigation, go to Meetings > Meeting Settings
-> 3. Under the Participants section, toggle “Anonymous users can join a meeting” to Off
+> 1. Log into [Microsoft Teams Admin Center](https://aka.ms/teamsadmincenter)
+> 2. In the left navigation, go to **Meetings** > **Meeting settings**
+> 3. Under the **Participants** section, toggle “**Anonymous users can join a meeting**” to **Off**
