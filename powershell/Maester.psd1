@@ -177,7 +177,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-ORCA120_malware', 'Test-ORCA120_phish', 'Test-ORCA120_spam',
                'Test-ORCA121', 'Test-ORCA123',
                'Test-ORCA124', 'Test-ORCA139', 'Test-ORCA140',
-               'Test-ORCA141', 'Test-ORCA142',
+               'Test-ORCA141', 'Test-ORCA142', 'Test-ORCA143',
                'Test-ORCA156', 'Test-ORCA158', 'Test-ORCA179',
                'Test-ORCA180', 'Test-ORCA189', 'Test-ORCA189_2',
                'Test-ORCA205', 'Test-ORCA220', 'Test-ORCA221',
@@ -189,7 +189,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-ORCA236', 'Test-ORCA237', 'Test-ORCA238',
                'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241',
                'Test-ORCA242', 'Test-ORCA243', 'Test-ORCA244',
-               'Test-ORCA143', 'Test-MtGroupCreationRestricted',
+               'Test-MtGroupCreationRestricted',
                'Convert-MtResultsToFlatObject'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
