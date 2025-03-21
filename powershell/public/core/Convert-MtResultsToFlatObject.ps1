@@ -145,7 +145,7 @@
         }
 
         # Export the FlattenedResults list to a CSV if requested.
-        if ($CsvFilePath) {
+        if ($PSBoundParameters.ContainsKey('CsvFilePath')) {
             try {
                 $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
                 Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
@@ -155,7 +155,7 @@
         }
 
         # Export the FlattenedResults list to an Excel file if requested.
-        if ($ExcelFilePath) {
+        if ($PSBoundParameters.ContainsKey('ExcelFilePath')) {
             try {
                 $FlattenedResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
                 Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
