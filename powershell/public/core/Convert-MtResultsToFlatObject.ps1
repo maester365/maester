@@ -88,12 +88,12 @@
 
     begin {
         # Check for an existing CSV file.
-        if ($CsvFilePath -and (Test-Path -Path $CsvFilePath -PathType Leaf) -and -not $Force.IsPresent) {
+        if ($PSBoundParameters.ContainsKey('CsvFilePath') -and (Test-Path -Path $CsvFilePath -PathType Leaf) -and -not $Force.IsPresent) {
             throw "The specified CSV file path '$CsvFilePath' already exists. Use -Force if you want to overwrite this file."
         }
 
         # Check for an existing Excel file.
-        if ($ExcelFilePath -and (Test-Path -Path $ExcelFilePath -PathType Leaf) -and -not $Force.IsPresent) {
+        if ($PSBoundParameters.ContainsKey('ExcelFilePath') -and (Test-Path -Path $ExcelFilePath -PathType Leaf) -and -not $Force.IsPresent) {
             throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file."
         }
 
