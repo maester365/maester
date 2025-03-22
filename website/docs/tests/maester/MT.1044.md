@@ -14,6 +14,5 @@ sidebar_class_name: hidden
 
 ## How to fix
 
-> 1. Run the Microsoft Exchange Online PowerShell Module.
-> 2. Connect to Exchange Online using "Connect-ExchangeOnline."
-> 3. Run the following PowerShell command: `Set-OrganizationConfig -OAuth2ClientProfileEnabled $True`
+> 1. Open Powershell and connect to Exchange Online: `Connect-ExchangeOnline`
+> 2. Run the following PowerShell command: `Set-OrganizationConfig -OAuth2ClientProfileEnabled $True`

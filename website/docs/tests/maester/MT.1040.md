@@ -21,7 +21,7 @@ opportunities for infection and data leakage.
 
 ## How to fix
 
-> 1. Connect to Exchange Online using Connect-ExchangeOnline.
+> 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 > 2. Run the following PowerShell command:
 > `Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false`
 > 3. Run the following Powershell command to verify that the value is now False:
