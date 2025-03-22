@@ -65,3 +65,12 @@ brian:
     linkedin: https://www.linkedin.com/in/brian-veldman/
     github: brian-veldman
     bluesky: https://bsky.app/profile/brianveldman.bsky.social
+suryendu:
+  name: Suryendu Bhattacharyya
+  title: Maester contributor
+  url: https://www.linkedin.com/in/suryendub/
+  image_url: https://avatars.githubusercontent.com/u/53970796
+  page: true
+  socials:
+    linkedin: https://www.linkedin.com/in/suryendub/
+    github: suryendub
