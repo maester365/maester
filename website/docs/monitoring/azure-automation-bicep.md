@@ -1,6 +1,6 @@
 ---
 sidebar_label: Azure Automation with Bicep
-sidebar_position: 6
+sidebar_position: 8
 title: Azure Automation
 ---
 import GraphPermissions from '../sections/permissions.md';
