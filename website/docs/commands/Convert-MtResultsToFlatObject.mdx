@@ -17,15 +17,15 @@ Convert Maester test results to a flattened object that can be exported to CSV o
 ### FromResults (Default)
 
 ```powershell
-Convert-MtResultsToFlatObject [-MaesterResults] <PSObject> [-CsvFilePath <String>] [-ExcelFilePath <String>]
- [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Convert-MtResultsToFlatObject [-MaesterResults] <PSObject> [-ExportCsv] [-CsvFilePath <String>] [-ExportExcel]
+ [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### FromFile
 
 ```powershell
-Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-CsvFilePath <String>] [-ExcelFilePath <String>]
- [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-ExportCsv] [-CsvFilePath <String>] [-ExportExcel]
+ [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -88,6 +88,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExportCsv
+
+Export the flattened object to a CSV file.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -CsvFilePath
 
 The path of the file to export CSV data to.
@@ -100,6 +116,22 @@ Aliases:
 Required: False
 Position: Named
 Default value: "$($JsonFilePath -replace '\.json$', '.csv')"
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExportExcel
+
+Export the flattened object to an Excel workbook using the ImportExcel module.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
