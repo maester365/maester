@@ -18,11 +18,11 @@
     .PARAMETER ExportCsv
     Export the flattened object to a CSV file.
 
-    .PARAMETER ExportExcel
-    Export the flattened object to an Excel workbook using the ImportExcel module.
-
     .PARAMETER CsvFilePath
     The path of the file to export CSV data to.
+
+    .PARAMETER ExportExcel
+    Export the flattened object to an Excel workbook using the ImportExcel module.
 
     .PARAMETER ExcelFilePath
     The path of the file to export an Excel worksheet to.
@@ -65,36 +65,42 @@
         # The path to the JSON file containing the Maester test results.
         [Parameter(Mandatory, Position = 0, ParameterSetName = 'FromFile', HelpMessage = 'The path to the JSON file containing the Maester test results.')]
         [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
-        [string]$JsonFilePath,
+        [string] $JsonFilePath,
+
+        # Export the results to a CSV file.
+        [Parameter(HelpMessage = 'Export the results to a CSV file.')]
+        [switch] $ExportCsv,
 
         # The path to the CSV file to which the Maester test results will be exported.
         [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.')]
-        [string]$CsvFilePath = "$($JsonFilePath -replace '\.json$', '.csv')",
+        [string] $CsvFilePath = "$($JsonFilePath -replace '\.json$', '.csv')",
+
+        # Export the results to an Excel file.
+        [Parameter(HelpMessage = 'Export the results to an Excel file.')]
+        [switch] $ExportExcel,
 
         # The path to the Excel file to which the Maester test results will be exported.
         [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.')]
-        [string]$ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
+        [string] $ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
 
         # Force the export to a CSV/XLSX file even if the file already exists.
         [Parameter()]
-        [switch]
-        $Force,
+        [switch] $Force,
 
         # Return the flattened object to the pipeline.
         [Parameter()]
-        [switch]
-        $PassThru
+        [switch] $PassThru
     )
 
     begin {
-        # Check for an existing CSV file.
-        if ($CsvFilePath -and (Test-Path -Path $CsvFilePath -PathType Leaf) -and -not $Force.IsPresent) {
-            throw "The specified CSV file path '$CsvFilePath' already exists. Use -Force if you want to overwrite this file."
+        # Check for an existing CSV file with the same name.
+        if ( ($PSBoundParameters.ContainsKey('CsvFilePath') -or $ExportCsv.IsPresent ) -and (Test-Path -Path $CsvFilePath -PathType Leaf) -and -not $Force.IsPresent) {
+            throw "The specified CSV file path '$CsvFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
         }
 
-        # Check for an existing Excel file.
-        if ($ExcelFilePath -and (Test-Path -Path $ExcelFilePath -PathType Leaf) -and -not $Force.IsPresent) {
-            throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file."
+        # Check for an existing Excel file with the same name.
+        if ( ($PSBoundParameters.ContainsKey('ExcelFilePath') -or $ExportExcel.IsPresent ) -and (Test-Path -Path $ExcelFilePath -PathType Leaf) -and -not $Force.IsPresent) {
+            throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
         }
 
         # Replacement strings for emoji characters and apostrophes that do not translate well to CSV files.
@@ -145,7 +151,14 @@
         }
 
         # Export the FlattenedResults list to a CSV if requested.
-        if ($CsvFilePath) {
+        if ($ExportCsv.IsPresent -or $PSBoundParameters.ContainsKey('CsvFilePath')) {
+
+            # Warn if the specified file path ends with the wrong extension.
+            if ($CsvFilePath -match '\.xlsx$') {
+                Write-Output ''
+                Write-Warning -Message 'You are exporting a CSV file, but the file path ends with the .XLSX extension. Please rename with the proper extension or use the ''-ExcelFilePath'' parameter if you want an Excel file.' -WarningAction Continue
+            }
+
             try {
                 $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
                 Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
@@ -155,7 +168,14 @@
         }
 
         # Export the FlattenedResults list to an Excel file if requested.
-        if ($ExcelFilePath) {
+        if ($ExportExcel.IsPresent -or $PSBoundParameters.ContainsKey('ExcelFilePath')) {
+
+            # Warn if the specified file path ends with the wrong extension.
+            if ($ExcelFilePath -match '\.csv$') {
+                Write-Output ''
+                Write-Warning -Message 'You are exporting an Excel file, but the file path ends with the .CSV extension. Please rename with the proper extension or use the ''-CsvFilePath'' parameter if you want a CSV file.' -WarningAction Continue
+            }
+
             try {
                 $FlattenedResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
                 Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
