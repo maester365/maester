@@ -31,7 +31,7 @@ Teams using BitBucket pipelines can easily integrate Maester into their CI/CD wo
 
 Follow the step-by-step guide to set up Maester in BitBucket:
 
-- Documentation: [Set up Maester in BitBucket](/docs/monitoring/BitBucket)
+- Documentation: [Set up Maester in BitBucket](/docs/monitoring/bitbucket)
 
 ## Contributor
 
