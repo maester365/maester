@@ -1,12 +1,12 @@
 ---
-title: Maester Adds Support for BitBucket
+title: Maester ❤️ BitBucket
 description: Maester is now available for BitBucket
 slug: maester-with-BitBucket
 authors: suryendu
 tags: [BitBucket]
 hide_table_of_contents: false
 date: 2025-03-20
-image: ./img/maester-BitBucket.png
+image: ./img/maester-bitbucket.png
 #draft: true # Draft
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---
@@ -19,7 +19,7 @@ Teams using BitBucket pipelines can easily integrate Maester into their CI/CD wo
 
 ## Maester running on BitBucket
 
-![Maester BitBucket](img/maester-BitBucket.png)
+![Maester BitBucket](img/maester-bitbucket.png)
 
 ### Why It Matters
 
