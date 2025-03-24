@@ -62,6 +62,7 @@ param __env__ = 'prod'
 param __cust__ = 'ct'
 param __location__ = 'westeurope'
 param __maesterAppRoles__ = [
+  'Domain.Read.All'
   'Directory.Read.All'
   'DirectoryRecommendations.Read.All'
   'IdentityRiskEvent.Read.All'
