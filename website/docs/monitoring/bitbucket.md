@@ -39,7 +39,6 @@ This guide will walk you through setting up Maester in BitBucket and automate th
 - Click on the **Configure bitbucket-pipelines.yml.** and Click on the **Starter Pipeline** to create a pipeline. This will add the `bitbuckets-pipelines.yml` file for **Bitbucket CI/CD Pipeline**. We need to edit the initial code for running public Maester tests.
     ![Configure Bitbucket Pipelines](assets/configure%20bitbucket-pipelines.png)
     ![Bitbucket Starter Pipeline](assets/bitbucket-starter-pipeline.png)
-- From
 
 There are many ways to authenticate with Microsoft Entra. We currently have tested client secrets, but there are probably more options available.
 
@@ -177,7 +176,7 @@ To manually run the Maester tests workflow
     ![inspect bitbucket pipeline](assets/bitbucket-inspect-pipeline-step.png)
 - Click on the download icon to download the test results artifacts.
     ![Bitbucket Artifacts Download](assets/bitbucket-download-artifacts.png)
-- Open the folder `test-results` from the donloaded artifact to view the test results.
+- Open the folder `test-results` from the downloaded artifact to view the test results.
     ![Bitbucket Test Results](assets/bitbucket-test-results.png)
 - Click on the `test-results.html` page to view the test result in your browser.\
     ![Bitbucket View Result](assets/bitbucket-view-test-result.png)
