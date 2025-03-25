@@ -24,13 +24,6 @@ function Test-MtCisPasswordExpiry {
         return $null
     }
 
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "Domain.Read.All" -notin $scopes
-    if ($permissionMissing) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope Domain.Read.All"
-        return $null
-    }
-
     Write-Verbose "Get domain details the password expiry period"
     $domains = Invoke-MtGraphRequest -RelativeUri "domains"
 
