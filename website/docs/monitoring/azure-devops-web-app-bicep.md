@@ -8,10 +8,10 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
 # <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Web App using Azure DevOps
 
-This guide will demonstrate how to get Maester running on an Azure Web App using Azure DevOps to produce the result and provide an Azure Bicep template for automated deployment
+This guide will demonstrate how to get Maester running on an Azure Web App using Azure DevOps pipeline to produce the result and provide an Azure Bicep template for automated deployment.
 -  This setup will allow you to perform security configuration checks on your Microsoft tenant by accessing the Azure Web App, which is protected with Entra ID Authentication through the Bicep deployment.🔥
 
-It will include support for Microsoft Teams, Exchange Online and Microsoft Azure Information Protection service (Using certificate for authentication).
+It includes support for Microsoft Teams, Exchange Online and Microsoft Azure Information Protection service (Using certificate for authentication).
 
 ## Why Azure Web App & Azure DevOps & Azure Bicep?
 
@@ -22,7 +22,7 @@ Azure Web Apps provide the functionality to host your own websites. By running M
 - **Support for all resource types and API versions**: Bicep immediately supports all preview and GA versions for Azure services.
 - **Modular and Reusable**: Bicep enables the creation of modular templates that can be reused across various projects, ensuring consistency and minimizing duplication.
 
-![Screenshot of the Bicep Solution](assets/azurewebapp-bicep-overview.png)
+![Screenshot of the Bicep Solution](assets/azure-devops-webapp-overview.png)
 
 ### Pre-requisites
 
@@ -35,8 +35,24 @@ winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.Bicep
 ```
 
+#### Optional pre-requisites
+- **Exchange Online** tests will require that you have **Exchange Administrator** role in your Entra tenant. This is so the necessary permissions can be manually assigned to the Workload Identity that Azure DevOps will use.
+After creation of the workload identity for the Azure DevOps service connection you can run the following commands to assign the role **View-only Configuration**:
+> [!IMPORTANT]
+> This requires the [Exchange Online Management PowerShell module](https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps).
+
+```PowerShell
+# Creates the Service Principal object in Exchange Online
+New-ServicePrincipal -AppId <Application ID> -ObjectId <Object ID> -DisplayName <ApppDisplayName>
+# Assigns the 'View-Only Configuration' role to the workload identity
+New-ManagementRoleAssignment -Role "View-Only Configuration" -App <ApppDisplayName>
+```
+- **Security & Compliance (IPPS)** tests require that you have **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the **Security Role** can be manually assigned to the Workload Identity that Azure DevOps will use.
+
+- **Microsoft Teams** tests require that you have **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the **Teams Communications Support Engineer** can be manually assigned to the Workload Identity that Azure DevOps will use.
+
 ## Template Walkthrough
-This section will guide you through the templates required to deploy Maester on Azure Automation Accounts. Depending on your needs, this can be done locally or through CI/CD pipelines.
+This section will guide you through the template required to deploy Maester on Azure. Depending on your needs, this can be done locally or through CI/CD pipelines.
 - For instance, using your favorite IDE such as VS Code.
 - Alternatively, through Azure DevOps.
 
@@ -54,16 +70,80 @@ To be able to declare Microsoft Graph resources in a Bicep file, you need to ena
 }
 ```
 
-The ```main.bicepparam``` template defines our input parameters, such as the environment, customer, location, and app roles for the Managed Identity (MI).
-
+The ```main.bicepparam``` template defines our input parameters, such as the environment, location, custom domain name, networking options and app roles for the workload identity.
+### Example with custom domain name and private networking
 ```bicep
 using 'main.bicep'
 
-// Defing our input parameters
-param __env__ = 'prod'
-param __cust__ = 'ct'
-param __location__ = 'westeurope'
-param __maesterAppRoles__ = [
+param publicNetworkAccess = 'Disabled'
+param environment = 'prod'
+param certificateResource = {
+  certificateReferenceName: 'maester-prod'
+  customHostName: 'maester.domainName.domainSuffix'
+  keyVaultName: 'kv-certificate-store'
+  resourceGroupName: 'rg-mgmt-cert-store'
+  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
+}
+
+param subnetResource = {
+  subnetName: 'snet-pe-001'
+  vnetName: 'vnet-maester-001'
+  resourceGroupName: 'rg-maester-infra'
+}
+```
+
+### Example with public networking and without custom domain name
+```bicep
+using 'main.bicep'
+
+param publicNetworkAccess = 'Enabled'
+param environment = 'prod'
+```
+
+### Example with public networking and custom domain name
+```bicep
+using 'main.bicep'
+
+param publicNetworkAccess = 'Enabled'
+param environment = 'prod'
+param certificateResource = {
+  certificateReferenceName: 'maester-prod'
+  customHostName: 'maester.domainName.domainSuffix'
+  keyVaultName: 'kv-certificate-store'
+  resourceGroupName: 'rg-mgmt-cert-store'
+  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
+}
+```
+
+The ```main.bicep``` template holds all the resources in Azure and Graph to be provisioned.
+
+```bicep
+metadata name = 'Maester Automation as Code <3'
+metadata owner = 'Maester'
+
+extension microsoftGraphV1_0
+
+@description('Web app name')
+@minLength(2)
+param webAppName string = 'app-maester-${uniqueString(subscription().id)}'
+
+@description('Location for all resources')
+param location string = resourceGroup().location
+
+@description('The public network access of the web app')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Enabled'
+
+param environment string = 'prod'
+
+param certificateResource certificateResourceType?
+
+param subnetResource subnetResourceType
+
+param __maesterAppRoles__ array = [
   'Directory.Read.All'
   'DirectoryRecommendations.Read.All'
   'IdentityRiskEvent.Read.All'
@@ -78,319 +158,57 @@ param __maesterAppRoles__ = [
   'Mail.Send'
 ]
 
-param __maesterAutomationAccountModules__ = [
-  {
-    name: 'Maester'
-    uri: 'https://www.powershellgallery.com/api/v2/package/Maester'
-  }
-  {
-    name: 'Microsoft.Graph.Authentication'
-    uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
-  }
-  {
-    name: 'Pester'
-    uri: 'https://www.powershellgallery.com/api/v2/package/Pester'
-  }
-  {
-    name: 'NuGet'
-    uri: 'https://www.powershellgallery.com/api/v2/package/NuGet'
-  }
-  {
-    name: 'PackageManagement'
-    uri: 'https://www.powershellgallery.com/api/v2/package/PackageManagement'
-  }
-]
-```
+@allowed([
+  'F1'
+  'B1'
+  'P1v3'
+  'I1v2'
+  'FC1'
+])
+@description('The name of the SKU will Determine the tier, size, family of the App Service Plan. Default value is B1')
+param skuASPName string = 'B1'
+@description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.')
+param skuASPCapacity int = 3
 
-The ```main.bicep``` template serves as the entry point for our Bicep configuration. It defines the parameters and variables used across the various modules.
-
-```bicep
-metadata name = 'Maester Automation as Code <3'
-metadata description = 'Deploys Maester Automation Account with modules and runbook for automated reports on Mon, Wed, Fri via Azure Web App with Entra ID Auth'
-metadata owner = 'Maester'
-targetScope = 'subscription'
-
-extension microsoftGraphV1_0
-
-@description('Defing our input parameters')
-param __env__ string
-param __cust__ string
-param __location__ string
-param __maesterAppRoles__ array
-param __maesterAutomationAccountModules__ array
-
-@description('Defining our variables')
-var _maesterResourceGroupName_ = 'rg-maester-${__env__}'
-var _maesterAutomationAccountName_ = 'aa-maester-${__env__}'
-var _maesterStorageAccountName_ = 'sa${__cust__}maester${__env__}'
-var _maesterStorageBlobName_ = 'maester'
-var _maesterStorageBlobFileName_ = 'maester.ps1'
-var _appServiceName_ = 'app-maester-${__env__}'
-var _appServicePlanName_ = 'asp-maester-${__env__}'
-@description('Resource Group Deployment')
-resource maesterResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: _maesterResourceGroupName_
-  location: __location__
+resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = if (!empty(certificateResource)) {
+  name: certificateResource.keyVaultName
+  scope: resourceGroup(
+    certificateResource.?subscriptionId ?? subscription().subscriptionId,
+    certificateResource.?resourceGroupName ?? resourceGroup().name
+  )
 }
 
-@description('Module Deployment')
-module modAutomationAccount './modules/aa.bicep' = {
-  name: 'module-automation-account-deployment'
-  params: {
-    __location__: __location__
-    _maesterAutomationAccountName_: _maesterAutomationAccountName_
-    _maesterStorageAccountName_: _maesterStorageAccountName_
-    _maesterStorageBlobName_: _maesterStorageBlobName_
-    _maesterStorageBlobFileName_: _maesterStorageBlobFileName_
-  }
-  scope: maesterResourceGroup
+resource vnet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!empty(subnetResource)) {
+  name: subnetResource.vnetName
+  scope: resourceGroup(
+    subnetResource.?subscriptionId ?? subscription().subscriptionId,
+    subnetResource.?resourceGroupName ?? resourceGroup().name
+  )
 }
 
-module modAutomationAccountAdvanced './modules/aa-advanced.bicep' = {
-  name: 'module-automation-account-advanced-deployment'
-  params: {
-    __location__: __location__
-    __ouMaesterAutomationMiId__: modAutomationAccount.outputs.__ouMaesterAutomationMiId__
-    __ouMaesterScriptBlobUri__: modAutomationAccount.outputs.__ouMaesterScriptBlobUri__
-    _maesterAutomationAccountName_: _maesterAutomationAccountName_
-    __maesterAppRoles__:  __maesterAppRoles__
-    __maesterAutomationAccountModules__: __maesterAutomationAccountModules__
-
-  }
-  scope: maesterResourceGroup
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' existing = if (!empty(subnetResource)) {
+  name: subnetResource.subnetName
+  parent: vnet
 }
 
-module modAppService './modules/app-service.bicep' = {
-  name: 'module-app-service-deployment'
-  params: {
-    __location__: __location__
-    __ouMaesterAutomationMiId__: modAutomationAccount.outputs.__ouMaesterAutomationMiId__
-    _appServiceName_: _appServiceName_
-    _appServicePlanName_: _appServicePlanName_
-  }
-  scope: maesterResourceGroup
-}
-```
-
-The ```aa.bicep``` module-file, automates the deployment of the Maester Azure Automation Account, a Storage Account, a container and uploads the Maester script to the Blob Container, which will be later used as input for our PowerShell runbook for the automation account to generate a security report.
-
-```bicep
-
-param __location__ string
-param _maesterAutomationAccountName_ string
-param _maesterStorageAccountName_ string
-param _maesterStorageBlobName_ string
-param _maesterStorageBlobFileName_ string
-
-@description('Automation Account Deployment')
-resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' = {
-  name: _maesterAutomationAccountName_
-  location: __location__
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    sku: {
-      name: 'Basic'
-    }
-  }
-}
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: _maesterStorageAccountName_
-  location: __location__
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: 'asp-maester-${environment}'
+  location: location
+  kind: 'linux'
   sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {
-    accessTier: 'Hot'
-    allowBlobPublicAccess: true
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-  }
-
-}
-
-@description('Create Blob Service')
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
-  parent: storageAccount
-  name: 'default'
-}
-
-@description('Create Blob Container')
-resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
-  parent: blobService
-  name: _maesterStorageBlobName_
-  properties: {
-    publicAccess: 'Blob'
-  }
-}
-
-@description('Upload .ps1 file to Blob Container using Deployment Script')
-resource uploadScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'deployscript-upload-blob-maester'
-  location: __location__
-  kind: 'AzureCLI'
-  properties: {
-    azCliVersion: '2.26.1'
-    timeout: 'PT5M'
-    retentionInterval: 'PT1H'
-    environmentVariables: [
-      {
-        name: 'AZURE_STORAGE_ACCOUNT'
-        value: storageAccount.name
-      }
-      {
-        name: 'AZURE_STORAGE_KEY'
-        secureValue: storageAccount.listKeys().keys[0].value
-      }
-      {
-        name: 'CONTENT'
-        value: loadTextContent('../pwsh/maester.ps1')
-      }
-    ]
-    // arguments: '-appName ${_appServiceName_} -rgName ${_maesterResourceGroupName}'
-    scriptContent: 'echo "$CONTENT" > ${_maesterStorageBlobFileName_} && az storage blob upload -f ${_maesterStorageBlobFileName_} -c ${_maesterStorageBlobName_} -n ${_maesterStorageBlobFileName_}'
-  }
-  dependsOn: [
-    blobContainer
-  ]
-}
-
-@description('Outputs')
-output __ouMaesterAutomationMiId__ string = automationAccount.identity.principalId
-output __ouMaesterScriptBlobUri__ string = 'https://${_maesterStorageAccountName_}.blob.${environment().suffixes.storage}/${_maesterStorageBlobName_}/maester.ps1'
-```
-
-The ```aa-advanced.bicep``` module file automates the configuration of the Maester Azure Automation Account by setting up role assignments, installing necessary PowerShell modules, creating a runbook, defining a schedule, and associating the runbook with the schedule. This configuration enables Maester to run automatically in Azure according to the specified schedule. This module is separate due to the need for replicating the Managed Service Identity (MSI) in Entra ID. By dividing the configuration into two module files, we can add the API consents 💪🏻
-
-
-```bicep
-extension microsoftGraphV1_0
-param __location__ string
-param __maesterAppRoles__ array
-param __maesterAutomationAccountModules__ array
-param __ouMaesterAutomationMiId__ string
-param __ouMaesterScriptBlobUri__ string
-param _maesterAutomationAccountName_ string
-param __currentUtcTime__ string = utcNow()
-
-@description('Role Assignment Deployment')
-resource graphId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
-  appId: '00000003-0000-0000-c000-000000000000'
-}
-
-resource managedIdentityRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' = [for appRole in __maesterAppRoles__: {
-    appRoleId: (filter(graphId.appRoles, role => role.value == appRole)[0]).id
-    principalId: __ouMaesterAutomationMiId__
-    resourceId: graphId.id
-}]
-
-@description('Existing Automation Account')
-resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' existing = {
-  name: _maesterAutomationAccountName_
-}
-
-@description('PowerShell Modules Deployment')
-resource automationAccountModules 'Microsoft.Automation/automationAccounts/powerShell72Modules@2023-11-01' = [ for module in __maesterAutomationAccountModules__: {
-  name: module.name
-  parent: automationAccount
-  properties: {
-    contentLink: {
-      uri: module.uri
-    }
-  }
-}]
-
-@description('Runbook Deployment')
-resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
-  name: 'runBookMaester'
-  location: __location__
-  parent: automationAccount
-  properties: {
-    runbookType: 'PowerShell72'
-    logProgress: true
-    logVerbose: true
-    description: 'Runbook to execute Maester report'
-    publishContentLink: {
-      uri: __ouMaesterScriptBlobUri__
-    }
-  }
-}
-
-@description('Schedule Deployment')
-resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11-01' = {
-  name: 'scheduleMaester'
-  parent: automationAccount
-  properties: {
-    advancedSchedule: {
-      weekDays:[
-        'Monday'
-        'Wednesday'
-        'Friday'
-      ]
-    }
-    expiryTime: '9999-12-31T23:59:59.9999999+00:00'
-    frequency: 'Week'
-    interval: 1
-    startTime: dateTimeAdd(__currentUtcTime__, 'PT1H')
-    timeZone: 'W. Europe Standard Time'
-  }
-}
-
-@description('Runbook Schedule Association')
-resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2023-11-01' = {
-  name: guid(automationAccount.id, 'runb', 'sched')
-  parent: automationAccount
-  properties: {
-    parameters: {}
-    runbook: {
-      name: automationAccountRunbook.name
-    }
-    schedule: {
-      name: automationAccountSchedule.name
-    }
-  }
-}
-```
-
-The ```app-service.bicep``` module-file automates deployment of an Azure App Service with an associated App Service Plan and configures Entra ID authentication. It ensures that the App Service can authenticate users via Entra ID and access Microsoft Graph API with the ```User.Read``` permissions.
-
-```bicep
-param __location__ string
-param _appServiceName_ string
-param _appServicePlanName_ string
-param __ouMaesterAutomationMiId__ string
-extension microsoftGraphV1_0
-
-@description('Role Assignments Deployment')
-resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: appService
-  name: guid(appService.id)
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c') // Contributor role ID
-    principalId: __ouMaesterAutomationMiId__
-  }
-}
-
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
-  name: _appServicePlanName_
-  location: __location__
-  sku: {
-    name: 'B1'
-    tier: 'Basic'
+      name: skuASPName
+      capacity: skuASPName == 'FC1' ? null : skuASPCapacity
+      tier: skuASPName == 'FC1' ? 'FlexConsumption' : null
   }
 }
 
 resource graphMaesterApp 'Microsoft.Graph/applications@v1.0' = {
-  uniqueName: 'app-maester-prod'
+  uniqueName: 'app-maester-${environment}'
   signInAudience: 'AzureADMyOrg'
-  displayName: 'app-maester-prod'
+  displayName: 'app-maester-${environment}'
   web: {
     redirectUris: [
-      'https://${_appServiceName_}.azurewebsites.net/.auth/login/aad/callback'
+      'https://${webAppName}.azurewebsites.net/.auth/login/aad/callback'
     ]
     implicitGrantSettings: {
       enableIdTokenIssuance: true
@@ -410,18 +228,62 @@ resource graphMaesterApp 'Microsoft.Graph/applications@v1.0' = {
   ]
 }
 
-resource graphMaesterSp 'Microsoft.Graph/servicePrincipals@v1.0' = {
-  appId: graphMaesterApp.appId
+@description('This is the built-in Website Contributor. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/web-and-mobile#website-contributor')
+resource websiteContributorRole 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+  scope: subscription()
+  name: 'de139f84-1756-47ae-9be6-808fbbe84772'
 }
 
-resource appService 'Microsoft.Web/sites@2024-04-01' = {
-  name: _appServiceName_
-  location: __location__
-  identity: {
-    type: 'SystemAssigned'
-  }
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+  name: guid(appService.id, subscription().id, websiteContributorRole.id)
+  scope: appService
   properties: {
+    roleDefinitionId: websiteContributorRole.id
+    principalId: serviceConnectionMaesterSp.id
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource serviceConnectionMaesterApp 'Microsoft.Graph/applications@v1.0' = {
+  uniqueName: 'sc-app-maester-${environment}'
+  signInAudience: 'AzureADMyOrg'
+  displayName: 'sc-app-maester-${environment}'
+}
+
+@description('Role Assignment Deployment')
+resource graphId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '00000003-0000-0000-c000-000000000000'
+}
+
+@description('Role Assignment Deployment')
+resource exchangeOnlineId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '00000002-0000-0ff1-ce00-000000000000'
+}
+
+resource serviceConnectionRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' = [for appRole in __maesterAppRoles__: {
+  appRoleId: (filter(graphId.appRoles, role => role.value == appRole)[0]).id
+  principalId: serviceConnectionMaesterSp.id
+  resourceId: graphId.id
+}]
+
+resource serviceConnectionRoleAssignmentExchange 'Microsoft.Graph/appRoleAssignedTo@v1.0' =  {
+  appRoleId: (filter(exchangeOnlineId.appRoles, role => role.value == 'Exchange.ManageAsApp')[0]).id
+  principalId: serviceConnectionMaesterSp.id
+  resourceId: exchangeOnlineId.id
+}
+
+// Identity for the Service Connection App
+resource serviceConnectionMaesterSp 'Microsoft.Graph/servicePrincipals@v1.0' = {
+  appId: serviceConnectionMaesterApp.appId
+}
+
+resource appService 'Microsoft.Web/sites@2023-01-01' = {
+  name: webAppName
+  location: location
+  properties: {
+    httpsOnly: true
     serverFarmId: appServicePlan.id
+    publicNetworkAccess: publicNetworkAccess
     siteConfig: {
       appSettings: [
         {
@@ -429,13 +291,19 @@ resource appService 'Microsoft.Web/sites@2024-04-01' = {
           value: '1'
         }
       ]
+      minTlsVersion: '1.2'
+      ftpsState: 'FtpsOnly'
+      publicNetworkAccess: publicNetworkAccess
+      defaultDocuments: [
+        'index.html'
+      ]
     }
   }
 }
 
 resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
- parent: appService
- name: 'authsettingsV2'
+  parent: appService
+  name: 'authsettingsV2'
   properties: {
     globalValidation: {
       redirectToProvider: 'Microsoft'
@@ -460,46 +328,214 @@ resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
     }
   }
 }
-```
 
-The PowerShell script has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the Managed Identity of the Automation Account, which has RBAC assignment on the Azure Web App.
-```PowerShell
-$appName = "app-maester-prod"
-$resourceGroupName = "rg-maester-prod"
-
-#Connect to Microsoft Graph with Mi
-Connect-MgGraph -Identity
-
-#create output folder
-$date = (Get-Date).ToString("yyyyMMdd-HHmm")
-$FileName = "MaesterReport" + $date + ".zip"
-
-$TempOutputFolder = $env:TEMP + $date
-if (!(Test-Path $TempOutputFolder -PathType Container)) {
-    New-Item -ItemType Directory -Force -Path $TempOutputFolder
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = if (!empty(subnetResource)) {
+  name: 'pep-${appService.name}'
+  location: location
+  properties: {
+    subnet: {
+      id: subnet.id
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'pe-sc-${appService.name}'
+        properties: {
+          privateLinkServiceId: appService.id
+          groupIds: ['sites']
+        }
+      }
+    ]
+  }
 }
 
-#Run Maester report
-cd $env:TEMP
-md maester-tests
-cd maester-tests
-Install-MaesterTests .\tests
+resource certificate 'Microsoft.Web/certificates@2023-12-01' = if (!empty(certificateResource)) {
+  name: '${certificateResource.customHostName}-certificate'
+  location: location
+  properties: {
+    keyVaultId: keyVault.id
+    keyVaultSecretName: certificateResource.certificateReferenceName
+    serverFarmId: appServicePlan.id
+  }
+}
 
-#Invoke Maester for HTML page
-Invoke-Maester -OutputHtmlFile "$TempOutputFolder\index.html"
+resource sslBinding 'Microsoft.Web/sites/hostNameBindings@2023-12-01' = if (!empty(certificateResource)) {
+  parent: appService
+  name: certificateResource.customHostName
+  properties: {
+    sslState: 'SniEnabled'
+    thumbprint: certificate.properties.thumbprint
+  }
+}
 
-# Create the zip file
-Compress-Archive -Path "$TempOutputFolder\*" -DestinationPath $FileName
+type subnetResourceType = {
+  subscriptionId: string?
+  resourceGroupName: string?
+  vnetName: string
+  subnetName: string
+}?
 
-# Connect Az Account using MI
-Connect-AzAccount -Identity
+type certificateResourceType = {
+  @description('Custom host name')
+  customHostName: string
+  @description('Name of the keyvault that holds the certificate')
+  keyVaultName: string
+  @description('The certificate needed for the domain')
+  certificateReferenceName: string
+  @description('The subscription id of where the keyvault resides, Defaults to the same subscription as deployment')
+  subscriptionId: string?
+  @description('The resource group name of where the keyvault resides, Defaults to the same resource group as deployment')
+  resourceGroupName: string?
+}
 
-#Publish to Azure Web App <3
-Publish-AzWebApp -ResourceGroupName $resourceGroupName -Name $appName -ArchivePath $FileName -Force
+output appServiceName string = appService.name
+output domainVerificationId string = !empty(certificateResource) ? appService.properties.customDomainVerificationId : 'Custom Domain Name not specified'
+
+```
+
+The Azure DevOps pipeline yaml has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the workload identity using federated credentials configured in Azure DevOps.
+```yaml
+trigger: none
+
+variables:
+  ## Define service connection to be used
+  ServiceConnection: sc-maester-prod
+  ## Web App information
+  WebAppSubscriptionId: e687a125-dd45-41af-ac62-42fe38cba48a
+  WebAppResourceGroup: rg-maester-prod
+  WebAppName: app-maester-3kl6lixbgbk40
+  ## Entra information
+  TenantId: bc81ae6d-e776-4673-a188-881ce2372d96
+  ClientId: a7918611-949c-4b97-8ae4-f6d84b9130ef
+  ## Included products (Optional)
+  IncludeTeams: false
+  IncludeExchange: false
+  ## ISSP Configuration requirements (Optional)
+  IncludeISSP: false
+  OrganizationName: contoso.onmicrosoft.com
+  ### Requires Keyvault Secrets User over the RBAC-enabled keyvault containing the certificate for authentication towards IPPS
+  KeyVaultName: kv-maester-prod
+  CertificateName: maester
+
+schedules:
+- cron: "0 0,12 * * *"
+  displayName: every 12h
+  always: true
+  branches:
+    include:
+    - main
+
+jobs:
+- job: maester
+  timeoutInMinutes: 0
+
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: '$(ServiceConnection)'
+      ScriptType: 'InlineScript'
+      pwsh: true
+      azurePowerShellVersion: latestVersion
+      Inline: |
+        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
+    displayName: 'Install required modules'
+
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: '$(ServiceConnection)'
+      ScriptType: 'InlineScript'
+      pwsh: true
+      azurePowerShellVersion: latestVersion
+      Inline: |
+        # Define script variables
+        $appName = "$(WebAppName)"
+        $resourceGroupName = "$(WebAppResourceGroup)"
+        $includeExchange = [bool]::parse('$(IncludeExchange)')
+        $IncludeTeams = [bool]::parse('$(IncludeTeams)')
+        $IncludeISSP = [bool]::parse('$(IncludeISSP)')
+        $TenantId = '$(TenantId)'
+        $ClientId = '$(ClientId)'
+
+        Write-verbose "Fetch a token to connect to Microsoft Graph API" -verbose
+        $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
+
+        # Connect to Microsoft Graph with Mi
+        Write-verbose "Connecting to Microsoft Graph API" -verbose
+
+        # Connect to Microsoft Graph with the token as secure string
+        Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
+
+        # Check if we need to connect to Exchange Online
+        if ($IncludeExchange) {
+            Import-Module ExchangeOnlineManagement
+            Write-verbose "Connecting to Exchange Online using Federated Credentials" -verbose
+            $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
+            Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+            if ($IncludeISSP) {
+              Write-Verbose "Connecting to Security and Compliance PowerShell"  -Verbose
+              $Secret = Get-AzKeyVaultSecret -VaultName '$(KeyVaultName)' -name '$(CertificateName)' -AsPlainText -ErrorAction SilentlyContinue
+              $PrivateCertKVBytes = [System.Convert]::FromBase64String($Secret)
+              $Certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -argumentlist $PrivateCertKVBytes, $null, "Exportable, PersistKeySet"
+              Connect-IPPSSession -AppId $ClientId -Certificate $Certificate -Organization '$(OrganizationName)'
+            }
+
+        } else {
+            Write-Host 'Exchange Online tests will be skipped.'
+        }
+
+        # Check if we need to connect to Teams
+        if ($IncludeTeams) {
+            Import-Module MicrosoftTeams
+            Write-verbose "Connecting to Teams using Federated Credentials" -verbose
+            $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
+
+            $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
+            $tokens = @($regularGraphToken, $teamsToken.Token)
+            Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
+        } else {
+            Write-Host 'Teams tests will be skipped.'
+        }
+
+        # Create output folder
+        $date = (Get-Date).ToString("yyyyMMdd-HHmm")
+        $FileName = "MaesterReport" + $date + ".zip"
+
+        Write-verbose "Installing Maester tests from GitHub" -verbose
+        # Run Maester report
+        md maester-tests
+        cd maester-tests
+        $TempOutputFolder = 'temp' + $date
+        if (!(Test-Path $TempOutputFolder -PathType Container)) {
+            New-Item -ItemType Directory -Force -Path $TempOutputFolder
+            New-Item -ItemType File -Force -Path $TempOutputFolder -name "index.html"
+        }
+        Install-MaesterTests .\tests
+
+        # Invoke Maester for HTML page
+        Write-verbose "Running Maester tests" -verbose
+        Invoke-Maester -OutputHtmlFile "$TempOutputFolder/index.html" -Verbosity Normal
+
+        # Create the zip file
+        Write-verbose "Compressing Maester results to a zip file for zip-deployment" -verbose
+        Compress-Archive -Path "$TempOutputFolder/*" -DestinationPath $FileName
+
+        Select-AzSubscription -Subscription '$(WebAppSubscriptionId)'
+
+        # Publish to Azure Web App <3
+        Write-verbose "Publishing zip file to $appName" -verbose
+        Publish-AzWebApp -ResourceGroupName $resourceGroupName -Name $appName -ArchivePath $FileName -Force
+    displayName: 'Run Maester tests and upload result to web app'
 ```
 
 
 ## Deployment
+> [!NOTE]
+> As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
 
 - You have the flexibility to deploy either based on deployment stacks or directly to the Azure Subscription.
 - Using Deployment Stacks allows you to bundle solutions into a single package, offering several advantages
@@ -520,8 +556,8 @@ Get-AzContext
 # Get-AzSubscription
 # Set-AzContext -SubscriptionID "ID"
 
-#Deploy to Azure Subscription
-New-AzSubscriptionDeployment -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+#Deploy to Azure Resource Group
+New-AzResourceGroupDeployment -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
 ```
 
 Deployment Stack based:
@@ -537,25 +573,29 @@ Get-AzContext
 # Set-AzContext -SubscriptionID "ID"
 
 #Change DenySettingsMode and ActionOnUnmanage based on your needs..
-New-AzSubscriptionDeploymentStack -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+New-AzResourceGroupDeploymentStack -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
 ```
 
 ## Viewing the Azure Resources
 We can see the resources located in the resource group called ```rg-maester-prod```.
 
-![Screenshot of the Maester Azure resources](assets/azurewebapp-bicep-resources.png)
+![Screenshot of the Maester Azure resources](assets/azure-devops-webapp-resourcegroup.png)
 
-The schedule of the Automation Account which will trigger on Monday, Wednesday, and Friday to upload new Maester report to the Azure Web App. You can easily adjust the schedule to suit your needs:
-![Screenshot of the Maester Azure schedule](assets/azurewebapp-bicep-schedule.png)
+The schedule of the Azure DevOps trigger, which will trigger every 12th hour to upload new Maester report to the Azure Web App. [You can easily adjust the schedule](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml#cron-syntax) to suit your needs:
+```yaml
+schedules:
+- cron: "0 0,12 * * *"
+  displayName: every 12h
+  always: true
+  branches:
+    include:
+    - main
+```
 
 ## Viewing the Azure Web App
 
-![Screenshot of the Maester report email](assets/azurewebapp-test-result.png)
+![Screenshot of the Maester report WebApp](assets/azure-devops-webapp-results.png)
 
 ## FAQ / Troubleshooting
 
 - Ensure you have the latest version of Azure Bicep, as the ```microsoftGraphV1_0``` module depends on the newer versions
-
-## Contributors
-
-- Original author: [Brian Veldman](https://www.linkedin.com/in/brian-veldman/) | Technology Enthusiast
