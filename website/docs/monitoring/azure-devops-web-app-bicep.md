@@ -392,6 +392,85 @@ output domainVerificationId string = !empty(certificateResource) ? appService.pr
 
 ```
 
+## Deployment
+> [!NOTE]
+> As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
+
+- You have the flexibility to deploy either based on deployment stacks or directly to the Azure Subscription.
+- Using Deployment Stacks allows you to bundle solutions into a single package, offering several advantages
+  - Management of resources across different scopes as a single unit
+  - Securing resources with deny settings to prevent configuration drift
+  - Easy cleanup of development environments by deleting the entire stack
+
+
+Directly deployed based:
+```PowerShell
+#Connect to Azure
+Connect-AzAccount
+
+#Getting current context to confirm we deploy towards right Azure Subscription
+Get-AzContext
+
+# If not correct context, change, using:
+# Get-AzSubscription
+# Set-AzContext -SubscriptionID "ID"
+
+#Deploy to Azure Resource Group
+New-AzResourceGroupDeployment -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+```
+
+Deployment Stack based:
+```PowerShell
+#Connect to Azure
+Connect-AzAccount
+
+#Getting current context to confirm we deploy towards right Azure Subscription
+Get-AzContext
+
+# If not correct context, change, using:
+# Get-AzSubscription
+# Set-AzContext -SubscriptionID "ID"
+
+#Change DenySettingsMode and ActionOnUnmanage based on your needs..
+New-AzResourceGroupDeploymentStack -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+```
+
+## Azure DevOps Pipeline
+
+Select/Create a new Azure DevOps repository.
+1. Add the main.yaml file (as defined below)
+1. Configure the variables to suit your environment
+```yaml
+variables:
+  ## Define service connection to be used
+  ServiceConnection: sc-maester-prod
+  ## Web App information
+  WebAppSubscriptionId: e687a125-dd45-41af-ac62-42fe38cba48a
+  WebAppResourceGroup: rg-maester-prod
+  WebAppName: app-maester-3kl6lixbgbk40
+  ## Entra information
+  TenantId: bc81ae6d-e776-4673-a188-881ce2372d96
+  ClientId: a7918611-949c-4b97-8ae4-f6d84b9130ef
+  ## Included products (Optional)
+  IncludeTeams: false
+  IncludeExchange: false
+  ## ISSP Configuration requirements (Optional)
+  IncludeISSP: false
+  OrganizationName: contoso.onmicrosoft.com
+  ### Requires Keyvault Secrets User over the RBAC-enabled keyvault containing the certificate for authentication towards IPPS
+  KeyVaultName: kv-maester-prod
+  CertificateName: maester
+
+```
+1. Import the pipeline in Azure DevOps
+![Screenshot of Import pipeline](assets/azure-devops-webapp-import-pipeline.png)
+   1. Select "Azure Repos Git"
+   1. Select the Maester repository
+   1. Select "Existing Azure Pipelines YAML file" and select the main.yaml file.
+![Screenshot of Existing Azure Pipelines YAML file](assets/azure-devops-webapp-select-existing-yaml.png)
+1. [Manually configure Federated Credential Service Connection in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/configure-workload-identity?view=azure-devops&tabs=app-registration)
+
+### Azure DevOps pipeline yaml
 The Azure DevOps pipeline yaml has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the workload identity using federated credentials configured in Azure DevOps.
 ```yaml
 trigger: none
@@ -530,50 +609,6 @@ jobs:
         Write-verbose "Publishing zip file to $appName" -verbose
         Publish-AzWebApp -ResourceGroupName $resourceGroupName -Name $appName -ArchivePath $FileName -Force
     displayName: 'Run Maester tests and upload result to web app'
-```
-
-
-## Deployment
-> [!NOTE]
-> As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
-
-- You have the flexibility to deploy either based on deployment stacks or directly to the Azure Subscription.
-- Using Deployment Stacks allows you to bundle solutions into a single package, offering several advantages
-  - Management of resources across different scopes as a single unit
-  - Securing resources with deny settings to prevent configuration drift
-  - Easy cleanup of development environments by deleting the entire stack
-
-
-Directly deployed based:
-```PowerShell
-#Connect to Azure
-Connect-AzAccount
-
-#Getting current context to confirm we deploy towards right Azure Subscription
-Get-AzContext
-
-# If not correct context, change, using:
-# Get-AzSubscription
-# Set-AzContext -SubscriptionID "ID"
-
-#Deploy to Azure Resource Group
-New-AzResourceGroupDeployment -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
-```
-
-Deployment Stack based:
-```PowerShell
-#Connect to Azure
-Connect-AzAccount
-
-#Getting current context to confirm we deploy towards right Azure Subscription
-Get-AzContext
-
-# If not correct context, change, using:
-# Get-AzSubscription
-# Set-AzContext -SubscriptionID "ID"
-
-#Change DenySettingsMode and ActionOnUnmanage based on your needs..
-New-AzResourceGroupDeploymentStack -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
 ```
 
 ## Viewing the Azure Resources
