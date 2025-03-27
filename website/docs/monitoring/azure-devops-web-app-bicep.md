@@ -28,6 +28,11 @@ Azure Web Apps provide the functionality to host your own websites. By running M
 
 - If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
 - You must have the **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Workload Identity that Azure DevOps will use.
+> [!NOTE]
+> **Required** Graph permissions<br>
+> <GraphPermissions/>
+> **Optional** Graph privileged permissions<br>
+> <PrivilegedPermissions/>
 - You must also have Azure Bicep & Azure CLI installed on your machine, this can be easily done with, using the following commands:
 
 ```PowerShell
@@ -389,57 +394,209 @@ type certificateResourceType = {
 
 output appServiceName string = appService.name
 output domainVerificationId string = !empty(certificateResource) ? appService.properties.customDomainVerificationId : 'Custom Domain Name not specified'
+output applicationClientId string = serviceConnectionMaesterApp.appId
 
 ```
 
 ## Deployment
 > [!NOTE]
 > As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
+> As part of the PowerShell script the resource group will be deployed.
 
-- You have the flexibility to deploy either based on deployment stacks or directly to the Azure Subscription.
-- Using Deployment Stacks allows you to bundle solutions into a single package, offering several advantages
-  - Management of resources across different scopes as a single unit
-  - Securing resources with deny settings to prevent configuration drift
-  - Easy cleanup of development environments by deleting the entire stack
-
-
-Directly deployed based:
+Deploy the Bicep, using the "maester-webapp.bicepparam" file and create the Azure DevOps service connection:
+> [!NOTE]
+> The PowerShell script depends on the PowerShell Module [ADOPS](https://github.com/AZDOPS/AZDOPS).
 ```PowerShell
-#Connect to Azure
-Connect-AzAccount
+$subscriptionId = '5df10289-c03d-4e13-b28b-8c77251a51e7'
+$resourceGroupName = 'rg-maester-prod'
+$ADOOrganization = 'contosodevelopment'
+$ADOProjectName = 'maesterproject'
+$location = 'westeurope'
+$bicepparameterFile = 'maester-webapp.bicepparam'
 
-#Getting current context to confirm we deploy towards right Azure Subscription
-Get-AzContext
+function New-ADOServiceConnection {
+    [CmdletBinding()]
+    param (
+        # SubscriptionId
+        [Parameter(Mandatory)]
+        [string]
+        $SubscriptionId,
 
-# If not correct context, change, using:
-# Get-AzSubscription
-# Set-AzContext -SubscriptionID "ID"
+        # SubscriptionName
+        [Parameter(Mandatory)]
+        [string]
+        $SubscriptionName,
 
-#Deploy to Azure Resource Group
-New-AzResourceGroupDeployment -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
-```
+        # Entra ID Application Registration Name
+        [Parameter(Mandatory)]
+        [string]
+        $AppRegistrationName,
 
-Deployment Stack based:
-```PowerShell
-#Connect to Azure
-Connect-AzAccount
+        # Azure DevOps Service Connection Name
+        [Parameter(Mandatory)]
+        [string]
+        $ServiceConnectionName,
 
-#Getting current context to confirm we deploy towards right Azure Subscription
-Get-AzContext
+        # Azure DevOps Organization
+        [Parameter(Mandatory)]
+        [string]
+        $ADOOrganization,
 
-# If not correct context, change, using:
-# Get-AzSubscription
-# Set-AzContext -SubscriptionID "ID"
+        # Azure DevOps Project Name
+        [Parameter(Mandatory)]
+        [string]
+        $ADOProjectName
+    )
 
-#Change DenySettingsMode and ActionOnUnmanage based on your needs..
-New-AzResourceGroupDeploymentStack -ResourceGroupName 'rg-maester-prod' -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
+    # The script requires the Az PowerShell Module
+    if (! (Get-Module 'Az' -ListAvailable)) {
+        Throw 'Please install the Az PowerShell Module "https://www.powershellgallery.com/packages/Az"'
+    }
+
+    # The script requires the ADOPS PowerShell Module
+    if (! (Get-Module 'ADOPS' -ListAvailable)) {
+        Throw 'Please install the ADOPS PowerShell Module "https://www.powershellgallery.com/packages/ADOPS"'
+    }
+
+    # Check if the user is already logged in to the Az PowerShell Module.
+    $AzureContext = Get-AzContext
+    if (!$AzureContext) {
+        # User is not logged into Az PowerShell Module
+        Write-verbose "Please login to the Az PowerShell Module, this is used for confirming the existance of the Application Id and obtain an Azure Access Token" -Verbose
+        Connect-AzAccount
+    }
+
+    $Description = "Federated Identity connection for Maester"
+
+    ## Azure
+    $TenantId = $AzureContext.Tenant.Id
+
+    if ((Get-Module Az.Accounts).Version -lt '4.0.0') {
+        $AccessToken = $(Get-AzAccessToken).Token
+    }
+    else {
+        $AccessToken = $(Get-AzAccessToken -AsSecureString).Token | ConvertFrom-SecureString -AsPlainText
+    }
+
+    # Connects to Azure DevOps
+    Connect-ADOPS -Organization $ADOOrganization -OAuthToken $AccessToken
+
+    # Gets the Azure DevOps project
+    $AzdoProject = Get-ADOPSProject -Name $ADOProjectName
+    if (!($AzdoProject)) {
+        Get-ADOPSProject | Select-Object name, id | Sort-Object Name
+        Throw "Unable to find $ADOProjectName"
+    }
+
+    # Gets the Azure DevOps Service Conection, if it already exists.
+    $AdopsSC = Get-ADOPSServiceConnection -Name $ServiceConnectionName -Project $ADOProjectName -IncludeFailed -ErrorAction SilentlyContinue
+    if (!($AdopsSC)) {
+        $Params = @{
+            TenantId                   = $TenantId
+            SubscriptionName           = $SubscriptionName
+            SubscriptionId             = $SubscriptionId
+            WorkloadIdentityFederation = $true
+            Project                    = $ADOProjectName
+            ConnectionName             = $ServiceConnectionName.ToLower()
+            CreationMode               = 'Manual'
+            Description                = $Description
+        }
+        $AdopsSC = New-ADOPSServiceConnection @Params
+    }
+    else {
+        Write-Verbose "Found '$ServiceConnectionName' in the Project $ADOProjectName" -Verbose
+    }
+
+    # Creates the Workload identity (Application Registration) using Az Module
+    $EntraIdAppParams = @{
+        DisplayName = "$AppRegistrationName".tolower()
+        Description = "Azure DevOps Service Connection used in '$ADOProjectName' for credential federation."
+        Confirm     = $false
+    }
+    $App = Get-AzADServicePrincipal -DisplayName $EntraIdAppParams.DisplayName
+    if (!($App)) {
+        Throw
+    }
+    else {
+        Write-Verbose "The Entra ID Service Principal '$($App.DisplayName)' already exists." -Verbose
+    }
+    $AppDetails = Get-AzADApplication -ApplicationId $App.AppId
+
+    # Creates Entra Id Federated Credentials for authentication between Azure DevOps and Entra id using our Workload identity
+
+    $FederatedCreds = Get-AzADAppFederatedCredential -ApplicationObjectId $AppDetails.Id
+
+    if ($AdopsSC.authorization.parameters.workloadIdentityFederationSubject -in $FederatedCreds.Subject) {
+        Write-Verbose "Azure DevOps Federated Credentials have already been configured." -Verbose
+    }
+    else {
+        $FederatedCredentialsParams = @{
+            ApplicationObjectId = $AppDetails.Id
+            Issuer              = $AdopsSC.authorization.parameters.workloadIdentityFederationIssuer
+            Subject             = $AdopsSC.authorization.parameters.workloadIdentityFederationSubject
+            Name                = 'AzureDevOpsAuthentication'
+            Description         = "Azure DevOps Federated Credentials"
+            Audience            = 'api://AzureADTokenExchange'
+        }
+        New-AzADAppFederatedCredential @FederatedCredentialsParams
+    }
+
+    # Completes the Service connection authentication details in Azure DevOps
+    $Params = @{
+        TenantId                          = $TenantId
+        SubscriptionName                  = $subscriptionName
+        SubscriptionId                    = $subscriptionId
+        Project                           = $ADOProjectName
+        ServiceEndpointId                 = $AdopsSC.Id
+        ConnectionName                    = $AdopsSC.name
+        ServicePrincipalId                = $App.AppId
+        WorkloadIdentityFederationIssuer  = $AdopsSC.authorization.parameters.workloadIdentityFederationIssuer
+        WorkloadIdentityFederationSubject = $AdopsSC.authorization.parameters.workloadIdentityFederationSubject
+        Description                       = $Description
+    }
+    Set-ADOPSServiceConnection @Params
+}
+
+# Select Azure Subscription
+$subscriptionInfo = Select-AzSubscription -Subscription $subscriptionId
+# Confirm the existance of the Resource Group in selected location
+New-AzResourceGroup -Name $resourceGroupName -location $location -force
+# Deploy the bicep module
+$DeploymentInfo = New-AzResourceGroupDeployment -Name 'Maester' -ResourceGroupName $resourceGroupName -TemplateParameterFile $bicepparameterFile
+
+$params = @{
+    SubscriptionId = $subscriptionInfo.Subscription.Id
+    SubscriptionName = $subscriptionInfo.Subscription.Name
+    AppRegistrationName = $DeploymentInfo.outputs.applicationRegistrationName.value
+    ServiceConnectionName = $DeploymentInfo.outputs.applicationRegistrationName.value
+    ADOOrganization = $ADOOrganization
+    ADOProjectName = $ADOProjectName
+}
+New-ADOServiceConnection @params
+
+[ordered]@{
+    'WebAppSubscriptionId' = $subscriptionInfo.Subscription.Id
+    'WebAppResourceGroup' = $DeploymentInfo.ResourceGroupName
+    'WebAppName' = $DeploymentInfo.outputs.appServiceName.value
+    'TenantId' = $subscriptionInfo.Tenant.Id
+    'ClientId' = $DeploymentInfo.outputs.applicationClientId.value
+}
 ```
 
 ## Azure DevOps Pipeline
 
-Select/Create a new Azure DevOps repository.
-1. Add the main.yaml file (as defined below)
-1. Configure the variables to suit your environment
+The PowerShell script will output the variables needed for the Azure DevOps Pipeline variables;
+- WebAppSubscriptionId
+- WebAppResourceGroup
+- WebAppName
+- TenantId
+- ClientId
+
+Select/Create a new Azure DevOps repository called "Maester".
+![Screenshot of create repo](assets/azure-devops-webapp-create-repo.png)
+1. Add the pipeline.yaml file (as defined below)
+![Screenshot of create file](assets/azure-devops-webapp-create-file.png)
+1. Configure the variables to suit your environment _(Output from the PowerShell script can be used to identify these easily)_
 ```yaml
 variables:
   ## Define service connection to be used
@@ -458,7 +615,9 @@ variables:
   IncludeISSP: false
   OrganizationName: contoso.onmicrosoft.com
   ### Requires Keyvault Secrets User over the RBAC-enabled keyvault containing the certificate for authentication towards IPPS
+  ### Name of the Keyvault holding the certificate
   KeyVaultName: kv-maester-prod
+  ### Name of the certificate within the keyvault
   CertificateName: maester
 
 ```
@@ -466,8 +625,10 @@ variables:
 ![Screenshot of Import pipeline](assets/azure-devops-webapp-import-pipeline.png)
    1. Select "Azure Repos Git"
    1. Select the Maester repository
-   1. Select "Existing Azure Pipelines YAML file" and select the main.yaml file.
+   1. Select "Existing Azure Pipelines YAML file" and select the pipeline.yaml file.
 ![Screenshot of Existing Azure Pipelines YAML file](assets/azure-devops-webapp-select-existing-yaml.png)
+   1. Save the pipeline
+  ![Screenshot of save pipeline](assets/azure-devops-webapp-save-pipeline.png)
 1. [Manually configure Federated Credential Service Connection in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/configure-workload-identity?view=azure-devops&tabs=app-registration)
 
 ### Azure DevOps pipeline yaml
@@ -595,7 +756,7 @@ jobs:
 
         # Invoke Maester for HTML page
         Write-verbose "Running Maester tests" -verbose
-        Invoke-Maester -OutputHtmlFile "$TempOutputFolder/index.html" -Verbosity Normal
+        Invoke-Maester -OutputHtmlFile "$TempOutputFolder/index.html"
 
         # Create the zip file
         Write-verbose "Compressing Maester results to a zip file for zip-deployment" -verbose
@@ -610,7 +771,7 @@ jobs:
 ```
 
 ## Viewing the Azure Resources
-We can see the resources located in the resource group called ```rg-maester-prod```.
+We can see the resources located in the resource group.
 
 ![Screenshot of the Maester Azure resources](assets/azure-devops-webapp-resourcegroup.png)
 
