@@ -354,6 +354,7 @@ type certificateResourceType = {
 output appServiceName string = appService.name
 output domainVerificationId string = !empty(certificateResource) ? appService.properties.customDomainVerificationId : 'Custom Domain Name not specified'
 output applicationClientId string = serviceConnectionMaesterApp.appId
+output applicationRegistrationName string = serviceConnectionMaesterSp.displayName
 
 ```
 ### Parameters
