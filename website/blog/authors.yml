@@ -74,3 +74,12 @@ suryendu:
   socials:
     linkedin: https://www.linkedin.com/in/suryendub/
     github: suryendub
+sebastian:
+  name: Sebastian Claesson
+  title: Cloud Solution Architect, Fora
+  url: https://www.linkedin.com/in/sebastianclaesson/
+  image_url: https://avatars.githubusercontent.com/sebastianclaesson
+  page: true
+  socials:
+    linkedin: https://www.linkedin.com/in/sebastianclaesson/
+    github: sebastianclaesson
