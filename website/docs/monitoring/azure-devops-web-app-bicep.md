@@ -1,17 +1,17 @@
 ---
-sidebar_label: Azure DevOps pipeline publishing to Azure Web App
+sidebar_label: Azure DevOps & Azure Web App
 sidebar_position: 9
 title: Azure DevOps pipeline publishing to Azure Web App
 ---
 import GraphPermissions from '../sections/permissions.md';
 import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 
-# <IIcon icon="devicon:azure" height="48" /> Setup Maester in Azure Web App using Azure DevOps
+# <IIcon icon="devicon:azure" height="48" /> Setup Maester in WebApp using Azure DevOps
 
 This guide will demonstrate how to get Maester running on an Azure Web App using Azure DevOps pipeline to produce the result and provide an Azure Bicep template for automated deployment.
--  This setup will allow you to perform security configuration checks on your Microsoft tenant by accessing the Azure Web App, which is protected with Entra ID Authentication through the Bicep deployment.🔥
+-  This setup will allow you to perform security configuration checks on your Microsoft tenant by accessing the Azure Web App, which is protected with Entra ID Authentication through the Bicep deployment🔥
 
-It includes support for Microsoft Teams, Exchange Online and Microsoft Azure Information Protection service (Using certificate for authentication).
+Including support for Microsoft Teams, Exchange Online and Security & Compliance 🚀 (certificate for authentication towards Security & Compliance)
 
 ## Why Azure Web App & Azure DevOps & Azure Bicep?
 
@@ -24,27 +24,32 @@ Azure Web Apps provide the functionality to host your own websites. By running M
 
 ![Screenshot of the Bicep Solution](assets/azure-devops-webapp-overview.png)
 
-### Pre-requisites
+## Pre-requisites
 
 - If this is your first time using Microsoft Azure, you must set up an [Azure Subscription](https://learn.microsoft.com/azure/cost-management-billing/manage/create-subscription) so you can create resources and are billed appropriately.
-- You must have the **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Workload Identity that Azure DevOps will use.
-> [!NOTE]
-> **Required** Graph permissions<br>
-> <GraphPermissions/>
-> **Optional** Graph privileged permissions<br>
-> <PrivilegedPermissions/>
+- You must have the **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Workload Identity that Azure DevOps will use and the Maester WebApp.
+:::info Important
+Graph permissions for the Maester workload identity
+
+**Required**
+<GraphPermissions/>
+**Optional**
+<PrivilegedPermissions/>
+:::
 - You must also have Azure Bicep & Azure CLI installed on your machine, this can be easily done with, using the following commands:
 
 ```PowerShell
+
 winget install -e --id Microsoft.AzureCLI
 winget install -e --id Microsoft.Bicep
 ```
 
-#### Optional pre-requisites
+### Optional pre-requisites
 - **Exchange Online** tests will require that you have **Exchange Administrator** role in your Entra tenant. This is so the necessary permissions can be manually assigned to the Workload Identity that Azure DevOps will use.
 After creation of the workload identity for the Azure DevOps service connection you can run the following commands to assign the role **View-only Configuration**:
-> [!IMPORTANT]
-> This requires the [Exchange Online Management PowerShell module](https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps).
+:::info Important
+This requires the [Exchange Online Management PowerShell module](https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps).
+:::
 
 ```PowerShell
 # Creates the Service Principal object in Exchange Online
@@ -61,7 +66,7 @@ This section will guide you through the template required to deploy Maester on A
 - For instance, using your favorite IDE such as VS Code.
 - Alternatively, through Azure DevOps.
 
-To be able to declare Microsoft Graph resources in a Bicep file, you need to enable the Bicep preview feature and specify the Microsoft Graph Bicep type versions, by configuring ```bicepconfig.json```
+To be able to declare Microsoft Graph resources in a Bicep file, you need to enable the Bicep preview feature and specify the Microsoft Graph Bicep type versions, by configuring ```bicepconfig.json```.
 
 ```json
 {
@@ -75,57 +80,9 @@ To be able to declare Microsoft Graph resources in a Bicep file, you need to ena
 }
 ```
 
-The ```main.bicepparam``` template defines our input parameters, such as the environment, location, custom domain name, networking options and app roles for the workload identity.
-### Example with custom domain name and private networking
-```bicep
-using 'main.bicep'
-
-param publicNetworkAccess = 'Disabled'
-param environment = 'prod'
-param certificateResource = {
-  certificateReferenceName: 'maester-prod'
-  customHostName: 'maester.domainName.domainSuffix'
-  keyVaultName: 'kv-certificate-store'
-  resourceGroupName: 'rg-mgmt-cert-store'
-  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
-}
-
-param subnetResource = {
-  subnetName: 'snet-pe-001'
-  vnetName: 'vnet-maester-001'
-  resourceGroupName: 'rg-maester-infra'
-}
-```
-
-### Example with public networking and without custom domain name
-```bicep
-using 'main.bicep'
-
-param publicNetworkAccess = 'Enabled'
-param environment = 'prod'
-```
-
-### Example with public networking and custom domain name
-```bicep
-using 'main.bicep'
-
-param publicNetworkAccess = 'Enabled'
-param environment = 'prod'
-param certificateResource = {
-  certificateReferenceName: 'maester-prod'
-  customHostName: 'maester.domainName.domainSuffix'
-  keyVaultName: 'kv-certificate-store'
-  resourceGroupName: 'rg-mgmt-cert-store'
-  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
-}
-```
-
 The ```main.bicep``` template holds all the resources in Azure and Graph to be provisioned.
 
 ```bicep
-metadata name = 'Maester Automation as Code <3'
-metadata owner = 'Maester'
-
 extension microsoftGraphV1_0
 
 @description('Web app name')
@@ -146,7 +103,7 @@ param environment string = 'prod'
 
 param certificateResource certificateResourceType?
 
-param subnetResource subnetResourceType
+param subnetResource subnetResourceType?
 
 param __maesterAppRoles__ array = [
   'Directory.Read.All'
@@ -162,6 +119,8 @@ param __maesterAppRoles__ array = [
   'UserAuthenticationMethod.Read.All'
   'Mail.Send'
 ]
+
+param registerExchangeOnlinePermission bool = false
 
 @allowed([
   'F1'
@@ -261,7 +220,7 @@ resource graphId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
 }
 
 @description('Role Assignment Deployment')
-resource exchangeOnlineId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+resource exchangeOnlineId 'Microsoft.Graph/servicePrincipals@v1.0' existing = if(registerExchangeOnlinePermission) {
   appId: '00000002-0000-0ff1-ce00-000000000000'
 }
 
@@ -271,7 +230,7 @@ resource serviceConnectionRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0
   resourceId: graphId.id
 }]
 
-resource serviceConnectionRoleAssignmentExchange 'Microsoft.Graph/appRoleAssignedTo@v1.0' =  {
+resource serviceConnectionRoleAssignmentExchange 'Microsoft.Graph/appRoleAssignedTo@v1.0' = if(registerExchangeOnlinePermission) {
   appRoleId: (filter(exchangeOnlineId.appRoles, role => role.value == 'Exchange.ManageAsApp')[0]).id
   principalId: serviceConnectionMaesterSp.id
   resourceId: exchangeOnlineId.id
@@ -397,22 +356,95 @@ output domainVerificationId string = !empty(certificateResource) ? appService.pr
 output applicationClientId string = serviceConnectionMaesterApp.appId
 
 ```
+### Parameters
+There are multiple parameters that can be defined.
 
-## Deployment
-> [!NOTE]
-> As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
-> As part of the PowerShell script the resource group will be deployed.
+#### webAppName
+This will define the name of the WebApp to be used for the static web page hosting.
+#### publicNetworkAccess
+When set to Enabled, the WebApp will be available through public networking.
+Set to Disabled to only allow private networking.
+#### environment
+Environment is used as a suffix for the App service plan, Application registration for the WebApp and for the workload identity used by Azure DevOps.
+#### certificateResource
+Defines the properties of the certificate that can be used for the WebApp, if a custom domain name is prefered.
+#### subnetResource
+Defines the properties of a subnet resource, where the private endpoint for the WebApp will be provisioned.
+#### registerExchangeOnlinePermission
+Defines if "Exchange.ManageAsApp" permissions should be assigned to the workload identity towards Exchange Online.<br></br>
+[Requirement for Exchange Online / ISSP tests](#optional-pre-requisites)
+#### __maesterAppRoles__
+Contains an array with Graph Roles.
+#### skuASPName
+The name of the SKU used by the App Service Plan.
+#### skuASPCapacity
+The capacity of the SKU used by the App Service Plan.
 
-Deploy the Bicep, using the "maester-webapp.bicepparam" file and create the Azure DevOps service connection:
-> [!NOTE]
-> The PowerShell script depends on the PowerShell Module [ADOPS](https://github.com/AZDOPS/AZDOPS).
+The ```main.bicepparam``` template defines our input parameters, such as the environment, location, custom domain name, networking options and app roles for the workload identity.
+
+## Examples
+
+### Public networking and without custom domain name
+```bicep
+using 'main.bicep'
+
+param publicNetworkAccess = 'Enabled'
+param environment = 'prod'
+```
+---
+### Public networking and custom domain name
+```bicep
+using 'main.bicep'
+
+param publicNetworkAccess = 'Enabled'
+param environment = 'prod'
+param certificateResource = {
+  certificateReferenceName: 'maester-prod'
+  customHostName: 'maester.domainName.domainSuffix'
+  keyVaultName: 'kv-certificate-store'
+  resourceGroupName: 'rg-mgmt-cert-store'
+  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
+}
+```
+---
+### Private networking and custom domain name
+```bicep
+using 'main.bicep'
+
+param publicNetworkAccess = 'Disabled'
+param environment = 'prod'
+param certificateResource = {
+  certificateReferenceName: 'maester-prod'
+  customHostName: 'maester.domainName.domainSuffix'
+  keyVaultName: 'kv-certificate-store'
+  resourceGroupName: 'rg-mgmt-cert-store'
+  subscriptionId: '6e5c9040-f1ad-4028-888d-4f98863e919a'
+}
+
+param subnetResource = {
+  subnetName: 'snet-pe-001'
+  vnetName: 'vnet-maester-001'
+  resourceGroupName: 'rg-maester-infra'
+}
+```
+
+## Maester Deployment
+:::note
+As we are using the New-AzResourceGroupDeployment command, it will require that the Resource group is created before deployment.
+The resoruce group will be provisioned as part of the PowerShell script.
+:::
+
+Deploy the Bicep, using the "main.bicepparam" file and create the Azure DevOps service connection:
+:::info important
+The PowerShell script depends on the PowerShell Module [ADOPS](https://github.com/AZDOPS/AZDOPS).
+:::
 ```PowerShell
 $subscriptionId = '5df10289-c03d-4e13-b28b-8c77251a51e7'
 $resourceGroupName = 'rg-maester-prod'
 $ADOOrganization = 'contosodevelopment'
 $ADOProjectName = 'maesterproject'
 $location = 'westeurope'
-$bicepparameterFile = 'maester-webapp.bicepparam'
+$bicepparameterFile = 'main.bicepparam'
 
 function New-ADOServiceConnection {
     [CmdletBinding()]
@@ -582,57 +614,37 @@ New-ADOServiceConnection @params
     'ClientId' = $DeploymentInfo.outputs.applicationClientId.value
 }
 ```
-
-## Azure DevOps Pipeline
-
-The PowerShell script will output the variables needed for the Azure DevOps Pipeline variables;
+:::note
+The PowerShell script will output the variables needed for the Azure DevOps Pipeline variables.<br></br>
+The output will be used when defining variables in the Azure DevOps Pipeline yaml.
 - WebAppSubscriptionId
 - WebAppResourceGroup
 - WebAppName
 - TenantId
 - ClientId
+:::
 
-Select/Create a new Azure DevOps repository called "Maester".
-![Screenshot of create repo](assets/azure-devops-webapp-create-repo.png)
-1. Add the pipeline.yaml file (as defined below)
-![Screenshot of create file](assets/azure-devops-webapp-create-file.png)
-1. Configure the variables to suit your environment _(Output from the PowerShell script can be used to identify these easily)_
-```yaml
-variables:
-  ## Define service connection to be used
-  ServiceConnection: sc-maester-prod
-  ## Web App information
-  WebAppSubscriptionId: e687a125-dd45-41af-ac62-42fe38cba48a
-  WebAppResourceGroup: rg-maester-prod
-  WebAppName: app-maester-3kl6lixbgbk40
-  ## Entra information
-  TenantId: bc81ae6d-e776-4673-a188-881ce2372d96
-  ClientId: a7918611-949c-4b97-8ae4-f6d84b9130ef
-  ## Included products (Optional)
-  IncludeTeams: false
-  IncludeExchange: false
-  ## ISSP Configuration requirements (Optional)
-  IncludeISSP: false
-  OrganizationName: contoso.onmicrosoft.com
-  ### Requires Keyvault Secrets User over the RBAC-enabled keyvault containing the certificate for authentication towards IPPS
-  ### Name of the Keyvault holding the certificate
-  KeyVaultName: kv-maester-prod
-  ### Name of the certificate within the keyvault
-  CertificateName: maester
+## Azure DevOps Pipeline
 
-```
-1. Import the pipeline in Azure DevOps
-![Screenshot of Import pipeline](assets/azure-devops-webapp-import-pipeline.png)
-   1. Select "Azure Repos Git"
-   1. Select the Maester repository
-   1. Select "Existing Azure Pipelines YAML file" and select the pipeline.yaml file.
-![Screenshot of Existing Azure Pipelines YAML file](assets/azure-devops-webapp-select-existing-yaml.png)
-   1. Save the pipeline
-  ![Screenshot of save pipeline](assets/azure-devops-webapp-save-pipeline.png)
-1. [Manually configure Federated Credential Service Connection in Azure DevOps](https://learn.microsoft.com/en-us/azure/devops/pipelines/release/configure-workload-identity?view=azure-devops&tabs=app-registration)
+Select/Create a new Azure DevOps repository called "Maester".<br></br>
+![Screenshot of create repo](assets/azure-devops-webapp-create-repo.png)<br></br>
+Add the [pipeline.yaml file](#azure-devops-pipeline-yaml)<br></br>
+![Screenshot of create file](assets/azure-devops-webapp-create-file.png)<br></br>
+Import the pipeline in Azure DevOps<br></br>
+![Screenshot of Import pipeline](assets/azure-devops-webapp-import-pipeline.png)<br></br>
+Select "Azure Repos Git"<br></br>
+Select the Maester repository<br></br>
+Select "Existing Azure Pipelines YAML file" and select the pipeline.yaml file.<br></br>
+![Screenshot of Existing Azure Pipelines YAML file](assets/azure-devops-webapp-select-existing-yaml.png)<br></br>
+Save the pipeline<br></br>
+![Screenshot of save pipeline](assets/azure-devops-webapp-save-pipeline.png)
 
 ### Azure DevOps pipeline yaml
 The Azure DevOps pipeline yaml has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the workload identity using federated credentials configured in Azure DevOps.
+
+:::note important
+Remember to configure the variables to suit your environment _(Output from the PowerShell script can be used to identify these easily)_
+:::
 ```yaml
 trigger: none
 
@@ -775,7 +787,7 @@ We can see the resources located in the resource group.
 
 ![Screenshot of the Maester Azure resources](assets/azure-devops-webapp-resourcegroup.png)
 
-The schedule of the Azure DevOps trigger, which will trigger every 12th hour to upload new Maester report to the Azure Web App. [You can easily adjust the schedule](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml#cron-syntax) to suit your needs:
+The schedule of the Azure DevOps trigger, which will trigger every 12th hour to upload new Maester report to the Azure Web App.<br></br> [Adjust the schedule](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml#cron-syntax) to suit your needs.
 ```yaml
 schedules:
 - cron: "0 0,12 * * *"
@@ -793,3 +805,4 @@ schedules:
 ## FAQ / Troubleshooting
 
 - Ensure you have the latest version of Azure Bicep, as the ```microsoftGraphV1_0``` module depends on the newer versions
+- If Exchange Online tests are failing, ensure you have set ```registerExchangeOnlinePermission``` to true in the [bicep parameter file](#parameters).
