@@ -540,13 +540,10 @@ jobs:
         $TenantId = '$(TenantId)'
         $ClientId = '$(ClientId)'
 
+        # Connect to Microsoft Graph using Federated Credentials
         Write-verbose "Fetch a token to connect to Microsoft Graph API" -verbose
         $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
-
-        # Connect to Microsoft Graph with Mi
         Write-verbose "Connecting to Microsoft Graph API" -verbose
-
-        # Connect to Microsoft Graph with the token as secure string
         Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
 
         # Check if we need to connect to Exchange Online
@@ -555,6 +552,8 @@ jobs:
             Write-verbose "Connecting to Exchange Online using Federated Credentials" -verbose
             $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
             Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+
+            # Check if we need to connect to ISSP
             if ($IncludeISSP) {
               Write-Verbose "Connecting to Security and Compliance PowerShell"  -Verbose
               $Secret = Get-AzKeyVaultSecret -VaultName '$(KeyVaultName)' -name '$(CertificateName)' -AsPlainText -ErrorAction SilentlyContinue
@@ -564,7 +563,7 @@ jobs:
             }
 
         } else {
-            Write-Host 'Exchange Online tests will be skipped.'
+            Write-Verbose 'Exchange Online & ISSP tests will be skipped.' -Verbose
         }
 
         # Check if we need to connect to Teams
@@ -572,12 +571,11 @@ jobs:
             Import-Module MicrosoftTeams
             Write-verbose "Connecting to Teams using Federated Credentials" -verbose
             $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
-
             $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
             $tokens = @($regularGraphToken, $teamsToken.Token)
             Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
         } else {
-            Write-Host 'Teams tests will be skipped.'
+            Write-Verbose 'Teams tests will be skipped.' -Verbose
         }
 
         # Create output folder
