@@ -607,7 +607,7 @@ $params = @{
 }
 New-ADOServiceConnection @params
 
-[ordered]@{
+[pscustomobject]@{
     'WebAppSubscriptionId' = $subscriptionInfo.Subscription.Id
     'WebAppResourceGroup' = $DeploymentInfo.ResourceGroupName
     'WebAppName' = $DeploymentInfo.outputs.appServiceName.value
