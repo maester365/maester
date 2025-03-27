@@ -651,7 +651,7 @@ trigger: none
 
 variables:
   ## Define service connection to be used
-  ServiceConnection: sc-maester-prod
+  ServiceConnection: sc-app-maester-prod
   ## Web App information
   WebAppSubscriptionId: e687a125-dd45-41af-ac62-42fe38cba48a
   WebAppResourceGroup: rg-maester-prod
