@@ -59,7 +59,7 @@ New-ManagementRoleAssignment -Role "View-Only Configuration" -App <ApppDisplayNa
 ```
 - **Security & Compliance (IPPS)** tests require that you have **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the **Security Role** can be manually assigned to the Workload Identity that Azure DevOps will use.
 
-- **Microsoft Teams** tests require that you have **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the **Teams Communications Support Engineer** can be manually assigned to the Workload Identity that Azure DevOps will use.
+- **Microsoft Teams** tests require that you have **Global Administrator** OR **Privileged Role Administrator** and **Application Administrator** role in your Entra tenant. This is so the **Teams Administrator** can be manually assigned to the Workload Identity that Azure DevOps will use.
 
 ## Template Walkthrough
 This section will guide you through the template required to deploy Maester on Azure. Depending on your needs, this can be done locally or through CI/CD pipelines.
