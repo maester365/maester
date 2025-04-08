@@ -1,5 +1,5 @@
 ---
-title: Maester ❤️ Azure DevOps
+title: Maester results on Azure Web App!
 description: Maester deployed to a Azure WebApp using Azure DevOps
 slug: maester-with-azdo-webapp
 authors: sebastian
@@ -11,9 +11,10 @@ image: ./img/azure-devops-webapp-diagram.png
 #unlisted: true # https://github.com/facebook/docusaurus/pull/1396#issuecomment-487561180
 ---
 
-Deploy your Maester results using Azure DevOps to a web app in Azure! 🚀
+We are excited to announce that you can now deploy your Maester results (using Azure DevOps) to a web app in Azure! 🚀
 
 Teams using Azure DevOps pipelines can now easily integrate Maester into their CI/CD workflows to run automated security checks and enhance their security monitoring on a daily basis.
+
 Utiziling an Azure web app providing access to the results using Entra id as authentication.
 
 <!-- truncate -->
