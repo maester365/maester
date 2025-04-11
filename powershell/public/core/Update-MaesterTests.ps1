@@ -36,11 +36,11 @@ function Update-MaesterTests {
 
         # Switch to control the toggling off of the "Are you sure?" prompt
         [Parameter(Mandatory = $false)]
-        [switch] $NoPrompt
+        [switch] $Force
     )
     Write-Verbose 'Checking if newer version is availble.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Updating Maester tests in '$Path'."
-    Update-MtMaesterTests -Path $Path -NoPrompt:$NoPrompt
+    Update-MtMaesterTests -Path $Path -Force:$Force
 }

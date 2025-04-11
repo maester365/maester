@@ -17,7 +17,7 @@ function Update-MtMaesterTests {
 
         # Switch to control the toggling off of the "Are you sure?" prompt
         [Parameter(Mandatory = $false)]
-        [switch] $NoPrompt
+        [switch] $Force
     )
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
@@ -50,14 +50,14 @@ function Update-MtMaesterTests {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
             $itemsToDelete | ForEach-Object { $message += "  $($_.FullName)`n" }
 
-            # Display prompt unless NoPrompt has been explicitly set
-            if (!$NoPrompt) {
+            # Display prompt unless Force has been explicitly set
+            if (!$Force) {
                 $message += "Do you want to continue? (y/n): "
                 $continue = Get-MtConfirmation $message
             }
 
-            # Continue if either user has accepted prompt, or NoPrompt has been explicitly set
-            if ($continue -or $NoPrompt) {
+            # Continue if either user has accepted prompt, or Force has been explicitly set
+            if ($continue -or $Force) {
                 foreach ($item in $itemsToDelete) {
                     if ($item.Attributes -ne "Directory") {
                         Remove-Item -Path $item.FullName -Force
