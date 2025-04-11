@@ -9,8 +9,8 @@
 
     The function also supports reading Maester test results from a JSON file and exporting the flattened object to a CSV.
 
-    .PARAMETER MaesterResults
-    The Maester test results returned from `Invoke-Maester -PassThru | Convert-MtResultsToFlatObject`.
+    .PARAMETER InputObject
+    Use the Maester test results from the pipeline or as an input object (JSON).
 
     .PARAMETER JsonFilePath
     The path of the file containing the Maester test results in JSON format.
@@ -36,12 +36,17 @@
     .EXAMPLE
     Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
 
-    Convert the Maester test results from JSON to a flattened object that is returned to the pipeline.
+    Convert the Maester test results in C:\path\to\results.json to a flattened object that is then returned to the pipeline.
 
     .EXAMPLE
     Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
 
-    Convert the Maester test results from JSON to a flattened object and then export that object to an Excel file.
+    Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to an Excel file (C:\path\to\results.xlsx). Requires the ImportExcel module.
+
+    .EXAMPLE
+    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
+
+    Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to C:\path\to\results.csv.
 
     .OUTPUTS
     System.Collections.Generic.List[PSObject]
@@ -55,15 +60,20 @@
     place. This is most likely to happen when details about a large number of users is included in the result details.
     The full details are still available in the JSON file and the HTML report.
     #>
-    [CmdletBinding(DefaultParameterSetName = 'FromResults')]
+    [CmdletBinding(DefaultParameterSetName = 'FromFile')]
     [OutputType([System.Collections.Generic.List[PSObject]])]
     param (
-        # The Maester test results returned from `Invoke-Maester -PassThru`
-        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'FromResults')]
-        [psobject] $MaesterResults,
+        # The Maester test results passed from the pipeline using `Invoke-Maester -PassThru` or as an input object.
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'FromInputObject')]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'CSV')]
+        [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'XLSX')]
+        [Alias('MaesterResults')]
+        [psobject] $InputObject,
 
         # The path to the JSON file containing the Maester test results.
-        [Parameter(Mandatory, Position = 0, ParameterSetName = 'FromFile', HelpMessage = 'The path to the JSON file containing the Maester test results.')]
+        [Parameter(Mandatory, Position = 0, HelpMessage = 'The path to the JSON file containing the Maester test results.', ParameterSetName = 'FromFile')]
+        [Parameter(Mandatory, Position = 0, HelpMessage = 'The path to the JSON file containing the Maester test results.', ParameterSetName = 'CSV')]
+        [Parameter(Mandatory, Position = 0, HelpMessage = 'The path to the JSON file containing the Maester test results.', ParameterSetName = 'XLSX')]
         [ValidateScript({ Test-Path -Path $_ -PathType Leaf })]
         [string] $JsonFilePath,
 
@@ -72,24 +82,32 @@
         [switch] $ExportCsv,
 
         # The path to the CSV file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.')]
+        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'CSV')]
+        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
         [string] $CsvFilePath = "$($JsonFilePath -replace '\.json$', '.csv')",
 
-        # Export the results to an Excel file.
-        [Parameter(HelpMessage = 'Export the results to an Excel file.')]
-        [switch] $ExportExcel,
-
         # The path to the Excel file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.')]
-        [string] $ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
+        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'XLSX')]
+        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
+        [string]$ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
 
         # Force the export to a CSV/XLSX file even if the file already exists.
-        [Parameter()]
-        [switch] $Force,
+        [Parameter(ParameterSetName = 'FromInputObject', HelpMessage = 'Force the export to a CSV/XLSX file even if the file already exists.')]
+        [Parameter(ParameterSetName = 'FromFile', HelpMessage = 'Force the export to a CSV/XLSX file even if the file already exists.')]
+        [Parameter(ParameterSetName = 'CSV', HelpMessage = 'Force the export to a CSV file even if the file already exists.')]
+        [Parameter(ParameterSetName = 'XLSX', HelpMessage = 'Force the export to an Excel file even if the file already exists.')]
+        [switch]
+        $Force,
 
         # Return the flattened object to the pipeline.
-        [Parameter()]
-        [switch] $PassThru
+        [Parameter(ParameterSetName = 'FromInputObject', HelpMessage = 'Return the flattened object to the pipeline.')]
+        [Parameter(ParameterSetName = 'FromFile', HelpMessage = 'Return the flattened object to the pipeline.')]
+        [Parameter(ParameterSetName = 'CSV', HelpMessage = 'Return the flattened object to the pipeline.')]
+        [Parameter(ParameterSetName = 'XLSX', HelpMessage = 'Return the flattened object to the pipeline.')]
+        [switch]
+        $PassThru
     )
 
     begin {
