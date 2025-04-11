@@ -68,6 +68,7 @@
         [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'CSV')]
         [Parameter(Mandatory, Position = 0, ValueFromPipeline, ParameterSetName = 'XLSX')]
         [Alias('MaesterResults')]
+        [ValidateNotNullOrEmpty()]
         [psobject] $InputObject,
 
         # The path to the JSON file containing the Maester test results.
@@ -111,6 +112,7 @@
     )
 
     begin {
+
         # Check for an existing CSV file with the same name.
         if ( ($PSBoundParameters.ContainsKey('CsvFilePath') -or $ExportCsv.IsPresent ) -and (Test-Path -Path $CsvFilePath -PathType Leaf) -and -not $Force.IsPresent) {
             throw "The specified CSV file path '$CsvFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
@@ -131,10 +133,12 @@
         } ; [void]$ReplacementStrings # Not Used Yet
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
+        if ($PSCmdlet.ParameterSetName -eq 'FromInputObject') {
+            $JsonData = $InputObject.Tests
+        }
+
         if ($PSCmdlet.ParameterSetName -eq 'FromFile') {
             $JsonData = (Get-Content -Path $JsonFilePath | ConvertFrom-Json).Tests
-        } else {
-            $JsonData = $MaesterResults.Tests
         }
 
         $FlattenedResults = New-Object System.Collections.Generic.List[PSObject]
