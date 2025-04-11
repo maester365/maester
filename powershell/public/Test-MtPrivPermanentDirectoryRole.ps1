@@ -55,7 +55,7 @@ Learn more about the best practices for privileges users:
   - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
       }
       HybridUser {
-        $DirectAssignments | Where-Object { $null -ne $_.principal.onPremisesImmutableId }
+        $DirectAssignments | Where-Object { $null -ne $_.principal.onPremisesImmutableId -and $_.principal.OnPremisesSyncEnabled -eq $true }
         $testDescription = "
 It's recommended to use cloud-only accounts for privileges with $($FilteredAccessLevel) privileges to avoid attack paths from on-premises environment.
 Learn more about the best practices for privileges users:
