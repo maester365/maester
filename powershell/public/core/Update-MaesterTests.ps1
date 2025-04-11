@@ -32,11 +32,15 @@ function Update-MaesterTests {
     param(
         # The path to install or update Maester tests in. Defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = '.\'
+        [string] $Path = '.\',
+
+        # Switch to control the toggling off of the "Are you sure?" prompt
+        [Parameter(Mandatory = $false)]
+        [switch] $Force
     )
     Write-Verbose 'Checking if newer version is availble.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Updating Maester tests in '$Path'."
-    Update-MtMaesterTests -Path $Path
+    Update-MtMaesterTests -Path $Path -Force:$Force
 }
