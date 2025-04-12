@@ -13,7 +13,11 @@ function Update-MtMaesterTests {
 
         # Defaults to update, used to show the correct message as 'installed' or 'updated'.
         [Parameter(Mandatory = $false)]
-        [switch] $Install
+        [switch] $Install,
+
+        # Switch to control the toggling off of the "Are you sure?" prompt
+        [Parameter(Mandatory = $false)]
+        [switch] $Force
     )
 
     $MaesterTestsPath = Get-MtMaesterTestFolderPath
@@ -45,9 +49,15 @@ function Update-MtMaesterTests {
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
             $itemsToDelete | ForEach-Object { $message += "  $($_.FullName)`n" }
-            $message += "Do you want to continue? (y/n): "
-            $continue = Get-MtConfirmation $message
-            if ($continue) {
+
+            # Display prompt unless Force has been explicitly set
+            if (!$Force) {
+                $message += "Do you want to continue? (y/n): "
+                $continue = Get-MtConfirmation $message
+            }
+
+            # Continue if either user has accepted prompt, or Force has been explicitly set
+            if ($continue -or $Force) {
                 foreach ($item in $itemsToDelete) {
                     if ($item.Attributes -ne "Directory") {
                         Remove-Item -Path $item.FullName -Force
