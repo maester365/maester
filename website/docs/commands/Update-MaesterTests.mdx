@@ -15,7 +15,7 @@ Updates the specified folder with the latest ready-made Maester tests built by t
 ## SYNTAX
 
 ```powershell
-Update-MaesterTests [[-Path] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Update-MaesterTests [[-Path] <String>] [-Force] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -56,6 +56,22 @@ Aliases:
 Required: False
 Position: 1
 Default value: .\
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+
+Switch to control the toggling off of the "Are you sure?" prompt
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

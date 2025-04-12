@@ -14,17 +14,31 @@ Convert Maester test results to a flattened object that can be exported to CSV o
 
 ## SYNTAX
 
-### FromResults (Default)
+### FromFile (Default)
 
 ```powershell
-Convert-MtResultsToFlatObject [-MaesterResults] <PSObject> [-ExportCsv] [-CsvFilePath <String>] [-ExportExcel]
+Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-ExportCsv] [-CsvFilePath <String>]
  [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
-### FromFile
+### XLSX
 
 ```powershell
-Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-ExportCsv] [-CsvFilePath <String>] [-ExportExcel]
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv]
+ [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### CSV
+
+```powershell
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv]
+ [-CsvFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### FromInputObject
+
+```powershell
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-ExportCsv] [-CsvFilePath <String>]
  [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -44,7 +58,7 @@ The function also supports reading Maester test results from a JSON file and exp
 Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
 ```
 
-Convert the Maester test results from JSON to a flattened object that is returned to the pipeline.
+Convert the Maester test results in C:\path\to\results.json to a flattened object that is then returned to the pipeline.
 
 ### EXAMPLE 2
 
@@ -52,18 +66,27 @@ Convert the Maester test results from JSON to a flattened object that is returne
 Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
 ```
 
-Convert the Maester test results from JSON to a flattened object and then export that object to an Excel file.
+Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to an Excel file (C:\path\to\results.xlsx).
+Requires the ImportExcel module.
+
+### EXAMPLE 3
+
+```powershell
+Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
+```
+
+Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to C:\path\to\results.csv.
 
 ## PARAMETERS
 
-### -MaesterResults
+### -InputObject
 
-The Maester test results returned from `Invoke-Maester -PassThru | Convert-MtResultsToFlatObject`.
+Use the Maester test results from the pipeline or as an input object (JSON).
 
 ```yaml
 Type: PSObject
-Parameter Sets: FromResults
-Aliases:
+Parameter Sets: XLSX, CSV, FromInputObject
+Aliases: MaesterResults
 
 Required: True
 Position: 1
@@ -78,7 +101,7 @@ The path of the file containing the Maester test results in JSON format.
 
 ```yaml
 Type: String
-Parameter Sets: FromFile
+Parameter Sets: FromFile, XLSX, CSV
 Aliases:
 
 Required: True
@@ -110,28 +133,12 @@ The path of the file to export CSV data to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: FromFile, CSV, FromInputObject
 Aliases:
 
 Required: False
 Position: Named
 Default value: "$($JsonFilePath -replace '\.json$', '.csv')"
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExportExcel
-
-Export the flattened object to an Excel workbook using the ImportExcel module.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -142,7 +149,7 @@ The path of the file to export an Excel worksheet to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: FromFile, XLSX, FromInputObject
 Aliases:
 
 Required: False
