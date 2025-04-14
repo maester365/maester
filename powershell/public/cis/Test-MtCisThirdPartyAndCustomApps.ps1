@@ -4,6 +4,7 @@
 
 .DESCRIPTION
     Ensure all or a majority of third-party and custom apps are blocked
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisThirdPartyAndCustomApps

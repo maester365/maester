@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if the common attachment types filter is comprehensive
+    Checks if the common attachment types filter is comprehensive
 
 .DESCRIPTION
-The common attachment types filter should be comprehensive
+    The common attachment types filter should be comprehensive
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisAttachmentFilterComprehensive
+    Test-MtCisAttachmentFilterComprehensive
 
-Returns true if the attachment types match the comprehensive list supplied by CIS
+    Returns true if the attachment types match the comprehensive list supplied by CIS
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisAttachmentFilterComprehensive
+    https://maester.dev/docs/commands/Test-MtCisAttachmentFilterComprehensive
 #>
 function Test-MtCisAttachmentFilterComprehensive {
     [CmdletBinding()]

@@ -1,6 +1,6 @@
-8.2.4 (L1) Ensure communication with Skype users is disabled 
+8.2.4 (L1) Ensure communication with Skype users is disabled
 
-This test checks if the communication with Skype users is disabled .
+This test checks if the communication with Skype users is disabled.
 
 This policy setting controls chat with external unmanaged Skype users. Note: Skype for business is deprecated as of July 31, 2021, although these settings may still be valid for a period of time. See the link in the reference section for more information.
 

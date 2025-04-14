@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if safe links for office applications are Enabled
+    Checks if safe links for office applications are Enabled
 
 .DESCRIPTION
-Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
+    Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisSafeLink
+    Test-MtCisSafeLink
 
-Returns true safe links are enabled
+    Returns true safe links are enabled
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeLink
+    https://maester.dev/docs/commands/Test-MtCisSafeLink
 #>
 function Test-MtCisSafeLink {
     [CmdletBinding()]

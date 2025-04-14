@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if Safe Attachments for SharePoint, OneDrive, and Microsoft Teams are enabled
+    Checks if Safe Attachments for SharePoint, OneDrive, and Microsoft Teams are enabled
 
 .DESCRIPTION
-Safe Attachments for SharePoint, OneDrive, and Microsoft Teams should be enabled
+    Safe Attachments for SharePoint, OneDrive, and Microsoft Teams should be enabled
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisSafeAttachmentsAtpPolicy
+    Test-MtCisSafeAttachmentsAtpPolicy
 
-Returns true if safe attachments are enabled for SharePoint, OneDrive, and Microsoft Teams
+    Enabled for SharePoint, OneDrive, and Microsoft Teams
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeAttachmentsAtpPolicy
+    https://maester.dev/docs/commands/Test-MtCisSafeAttachmentsAtpPolicy
 #>
 function Test-MtCisSafeAttachmentsAtpPolicy {
     [CmdletBinding()]
