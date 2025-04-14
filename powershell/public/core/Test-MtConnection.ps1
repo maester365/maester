@@ -24,7 +24,7 @@
         # Checks if the current session is connected to the specified service
         [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0, Mandatory = $false)]
-        [string[]]$Service = 'Graph'
+        [string[]]$Service = 'All'
     )
 
     $ConnectionState = $true
@@ -34,23 +34,12 @@
         try {
             $IsConnected = $null -ne (Get-AzContext -ErrorAction SilentlyContinue)
             # Validate that the credentials are still valid
-            Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' -ErrorAction Stop | Out-Null
+            Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' | Out-Null
         } catch {
             $IsConnected = $false
             Write-Debug "Azure: $false"
         }
         Write-Verbose "Azure: $IsConnected"
-        if (!$IsConnected) { $ConnectionState = $false }
-    }
-
-    if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
-        $IsConnected = $false
-        try {
-            $IsConnected = $null -ne ((Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' }))
-        } catch {
-            Write-Debug "Exchange Online: $false"
-        }
-        Write-Verbose "Exchange Online: $IsConnected"
         if (!$IsConnected) { $ConnectionState = $false }
     }
 
@@ -62,6 +51,17 @@
             Write-Debug "Graph: $false"
         }
         Write-Verbose "Graph: $IsConnected"
+        if (!$IsConnected) { $ConnectionState = $false }
+    }
+
+    if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
+        $IsConnected = $false
+        try {
+            $IsConnected = $null -ne ((Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' }))
+        } catch {
+            Write-Debug "Exchange Online: $false"
+        }
+        Write-Verbose "Exchange Online: $IsConnected"
         if (!$IsConnected) { $ConnectionState = $false }
     }
 
