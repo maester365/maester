@@ -76,8 +76,7 @@
         if (!$IsConnected) { $ConnectionState = $false }
     }
 
-    if ($Service -contains 'Teams') { #ToValidate: Preview
-    #if ($Service -contains 'Teams' -or $Service -contains 'All') {
+    if ($Service -contains 'Teams' -or $Service -contains 'All') {
         $IsConnected = $false
         try {
             $IsConnected = $null -ne (Get-CsTenant -ErrorAction SilentlyContinue)
