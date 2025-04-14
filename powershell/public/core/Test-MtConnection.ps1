@@ -34,7 +34,7 @@
         try {
             $IsConnected = $null -ne (Get-AzContext -ErrorAction SilentlyContinue)
             # Validate that the credentials are still valid
-            Invoke-AzRestMethod -Method GET -Path 'subscriptions' -ErrorAction Stop | Out-Null
+            Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' -ErrorAction Stop | Out-Null
         } catch {
             $IsConnected = $false
             Write-Debug "Azure: $false"
