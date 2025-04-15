@@ -55,7 +55,7 @@ N/A below refers to review checks which cannot be automated.
 | [Test-MtCisDkim](/docs/commands/) | 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains |
 | TBD | 2.1.10 (L1) Ensure DMARC Records for all Exchange Online domains are published |
 | [Test-MtCisAttachmentFilterComprehensive](/docs/commands/) | | 2.1.11 (L2) Ensure comprehensive attachment filtering is applied |
-| TBD | 2.1.12 (L1) Ensure the connection filter IP allow list is not used |
+| [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/) | 2.1.12 (L1) Ensure the connection filter IP allow list is not used |
 | TBD | 2.1.13 (L1) Ensure the connection filter safe list is off |
 | TBD | 2.1.14 (L1) Ensure inbound anti-spam policies do not contain allowed domains |
 | TBD | 2.4.1 (L1) Ensure Priority account protection is enabled and configured |
