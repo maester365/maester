@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if the anti-phishing policy matches CIS recommendations
+    Checks if the anti-phishing policy matches CIS recommendations
 
 .DESCRIPTION
-The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
+    The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisSafeAntiPhishingPolicy
+    Test-MtCisSafeAntiPhishingPolicy
 
-Returns true if the default anti-phishing policy matches CIS recommendations
+    Returns true if the default anti-phishing policy matches CIS recommendations
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
+    https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
 #>
 function Test-MtCisSafeAntiPhishingPolicy {
     [CmdletBinding()]

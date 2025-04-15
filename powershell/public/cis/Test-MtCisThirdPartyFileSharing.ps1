@@ -4,6 +4,7 @@
 
 .DESCRIPTION
     Ensure third-party file sharing cloud services in Teams are disabled
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisThirdPartyFileSharing

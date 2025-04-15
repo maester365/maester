@@ -1,4 +1,4 @@
-1.1.1 (L1) Ensure Administrative accounts are separate and cloud-only
+1.1.1 (L1) Ensure Administrative accounts are cloud-only
 
 Administrative accounts are special privileged accounts that could have varying levels of access to data, users, and settings. Regular user accounts should never be utilized for administrative tasks and care should be taken, in the case of a hybrid environment, to keep Administrative accounts separated from on-prem accounts. Administrative accounts should not have applications assigned so that they have no access to potentially vulnerable services (EX. email, Teams, SharePoint, etc.) and only access to perform tasks as needed for administrative purposes.
 
@@ -19,7 +19,7 @@ appropriate role then click **Next**.
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v3.1.0 - Page 16](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v 4.0.0 - Page 18](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

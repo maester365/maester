@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Calendar details SHALL NOT be shared with all domains.
-    CIS Microsoft 365 Foundations Benchmark v3.1.0
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisCalendarSharing
