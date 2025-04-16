@@ -82,16 +82,20 @@
         [Parameter(HelpMessage = 'Export the results to a CSV file.')]
         [switch] $ExportCsv,
 
+        # Export the results to an Excel file.
+        [Parameter(HelpMessage = 'Export the results to an Excel file.')]
+        [switch] $ExportExcel,
+
         # The path to the CSV file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'CSV')]
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'CSV')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
         [string] $CsvFilePath = "$($JsonFilePath -replace '\.json$', '.csv')",
 
         # The path to the Excel file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'XLSX')]
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'XLSX')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
         [string]$ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
 
         # Force the export to a CSV/XLSX file even if the file already exists.
@@ -163,6 +167,7 @@
                     Block          = $_.Block
                     Result         = $_.Result
                     Description    = $_.ResultDetail.TestDescription
+                    Duration       = $_.Duration
                     ResultDetail   = $TestResultDetail
                     TestSkipped    = $_.ResultDetail.TestSkipped
                     SkippedReason  = $_.ResultDetail.SkippedReason
