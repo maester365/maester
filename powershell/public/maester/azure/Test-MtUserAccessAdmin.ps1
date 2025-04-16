@@ -27,14 +27,15 @@ function Test-MtUserAccessAdmin {
     }
 
     Write-Verbose "Getting all User Access Administrators at Root Scope"
-    $result = az role assignment list --role 'User Access Administrator' --scope '/'
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to retrieve role assignments"
+    try {
+        $result = Get-AzRoleAssignment -Scope "/" -RoleDefinitionName 'User Access Administrator' -ErrorAction Stop
+    } catch {
+        Write-Error "Failed to retrieve role assignments at root scope"
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
         return $null
     }
 
-    $resultObject = $result | ConvertFrom-Json
+    $resultObject = $result
 
     # Get the count of role assignments
     $roleAssignmentCount = $resultObject.Count
@@ -56,7 +57,7 @@ function Test-MtUserAccessAdmin {
         $itemResult = "❌ Fail"
         # We are restricting the table output to 50 below as it could be extremely large
         if ($itemCount -lt 51) {
-            $resultMd += "| $($item.principalName) | $($itemResult) |`n"
+            $resultMd += "| $($item.SignInName) | $($itemResult) |`n"
         }
     }
     # Add a limited results message if more than 6 results are returned
