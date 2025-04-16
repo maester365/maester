@@ -153,6 +153,7 @@ module.exports = [
     'commands/Test-MtCisCloudAdmin',
     'commands/Test-MtCisCommunicateWithSkypeUsers',
     'commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers',
+    'commands/Test-MtCisConnectionFilterSafeList',
     'commands/Test-MtCisCustomerLockBox',
     'commands/Test-MtCisDkim',
     'commands/Test-MtCisGlobalAdminCount',

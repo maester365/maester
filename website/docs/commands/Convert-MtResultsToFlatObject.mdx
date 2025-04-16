@@ -17,28 +17,28 @@ Convert Maester test results to a flattened object that can be exported to CSV o
 ### FromFile (Default)
 
 ```powershell
-Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-ExportCsv] [-CsvFilePath <String>]
+Convert-MtResultsToFlatObject [-JsonFilePath] <String> [-ExportCsv] [-ExportExcel] [-CsvFilePath <String>]
  [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### XLSX
 
 ```powershell
-Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv]
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv] [-ExportExcel]
  [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### CSV
 
 ```powershell
-Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv]
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-JsonFilePath] <String> [-ExportCsv] [-ExportExcel]
  [-CsvFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### FromInputObject
 
 ```powershell
-Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-ExportCsv] [-CsvFilePath <String>]
+Convert-MtResultsToFlatObject [-InputObject] <PSObject> [-ExportCsv] [-ExportExcel] [-CsvFilePath <String>]
  [-ExcelFilePath <String>] [-Force] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -114,6 +114,22 @@ Accept wildcard characters: False
 ### -ExportCsv
 
 Export the flattened object to a CSV file.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExportExcel
+
+Export the flattened object to an Excel workbook using the ImportExcel module.
 
 ```yaml
 Type: SwitchParameter
