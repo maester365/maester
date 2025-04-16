@@ -31,17 +31,15 @@ function Test-MtUserAccessAdmin {
 
     Write-Verbose "Getting all User Access Administrators at Root Scope"
     try {
-        $result = Get-AzRoleAssignment -Scope "/" -RoleDefinitionName 'User Access Administrator' -ErrorAction Stop
+        $roles = Get-AzRoleAssignment -Scope "/" -RoleDefinitionName 'User Access Administrator' -ErrorAction Stop
     } catch {
         Write-Error "Failed to retrieve role assignments at root scope"
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
         return $null
     }
 
-    $resultObject = $result
-
     # Get the count of role assignments
-    $roleAssignmentCount = $resultObject.Count
+    $roleAssignmentCount = $roles.Count
 
     $testResult = $roleAssignmentCount -eq 0
 
@@ -51,6 +49,7 @@ function Test-MtUserAccessAdmin {
     else {
         $testResultMarkdown = "Your tenant has $roleAssignmentCount User Access Administrators:`n`n%TestResult%"
     }
+
     # $itemCount is used to limit the number of returned results shown in the table
     $itemCount = 0
     $resultMd = "| Display Name | User Access |`n"
