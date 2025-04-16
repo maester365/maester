@@ -8,7 +8,7 @@ BeforeDiscovery {
     }
 }
 
-Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All" {
+Describe "Maester/Teams" -Tag "Maester", "Teams", "MeetingPolicy", "All" {
 
     It "MT.1037: Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
         # Secure Score Name: Configure which users are allowed to present in Teams meetings

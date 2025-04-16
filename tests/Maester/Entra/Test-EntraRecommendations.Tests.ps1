@@ -7,7 +7,7 @@ BeforeDiscovery {
     }
 }
 
-Describe "Entra Recommendations" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
+Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
     It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
 
         $EntraPremiumRecommendations = @(

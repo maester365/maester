@@ -21,7 +21,7 @@ BeforeDiscovery {
     }
 }
 
-Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
+Describe "Maester/Exchange" -Tag "Maester", "Exchange", "SecureScore" {
     BeforeAll {
         # Skip all tests if Exchange Online is not connected
         if (-not $exchangeConnected) {
