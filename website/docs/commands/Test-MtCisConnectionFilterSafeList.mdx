@@ -1,36 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: Safe Documents is enabled for Office clients.
-id: Test-ORCA225
-title: Test-ORCA225
+description: Checks if connection filter IPs are allow listed
+id: Test-MtCisConnectionFilterSafeList
+title: Test-MtCisConnectionFilterSafeList
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-ORCA225.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisConnectionFilterSafeList.ps1
 ---
 
 ## SYNOPSIS
 
-Safe Documents is enabled for Office clients.
+Checks if connection filter IPs are allow listed
 
 ## SYNTAX
 
 ```powershell
-Test-ORCA225 [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisConnectionFilterSafeList [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+The connection filter should not have the safe list enabled
+CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-ORCA225
+Test-MtCisConnectionFilterSafeList
 ```
 
-Returns true or false
+Returns true if the safe list is not enabled
 
 ## PARAMETERS
 
@@ -64,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-ORCA225](https://maester.dev/docs/commands/Test-ORCA225)
+[https://maester.dev/docs/commands/Test-MtCisConnectionFilterSafeList](https://maester.dev/docs/commands/Test-MtCisConnectionFilterSafeList)
