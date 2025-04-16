@@ -63,10 +63,14 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
+        # A custom title for the test in the format of "MT.XXXX: <TestName>. Used in data driven tests like Entra recommendations 1024"
+        [Parameter(Mandatory = $false)]
+        [string] $TestTitle,
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
-            'NotLicensedMdo','NotLicensedMdoP2','NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop'
+            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop'
         )]
         # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
@@ -123,7 +127,12 @@ function Add-MtTestResultDetail {
         $Result = $Result -replace "%TestResult%", $graphResultMarkdown
     }
 
+    if ([string]::IsNullOrEmpty($TestTitle)) {
+        # If no test title is provided, use the test name
+        $TestTitle = $____Pester.CurrentTest.ExpandedName
+    }
     $testInfo = @{
+        TestTitle       = $TestTitle
         TestDescription = $Description
         TestResult      = $Result
         TestSkipped     = $SkippedBecause
