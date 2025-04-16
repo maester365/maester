@@ -1,4 +1,4 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.3.1", "CISA.MS.EXO.03.1", "CISA", "Security", "All" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.3.1", "CISA.MS.EXO.03.1", "CISA", "Security", "All" {
     It "CISA.MS.EXO.03.1: DKIM SHOULD be enabled for all domains." {
         $cisaDkim = Test-MtCisaDkim
 
