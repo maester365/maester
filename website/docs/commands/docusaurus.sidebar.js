@@ -156,6 +156,7 @@ module.exports = [
     'commands/Test-MtCisCustomerLockBox',
     'commands/Test-MtCisDkim',
     'commands/Test-MtCisGlobalAdminCount',
+    'commands/Test-MtCisHostedConnectionFilterPolicy',
     'commands/Test-MtCisInternalMalwareNotification',
     'commands/Test-MtCisOutboundSpamFilterPolicy',
     'commands/Test-MtCisPasswordExpiry',
