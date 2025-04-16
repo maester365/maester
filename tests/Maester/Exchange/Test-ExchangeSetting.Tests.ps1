@@ -1,26 +1,41 @@
 BeforeDiscovery {
-    $ExchangeTransportRule = Get-TransportRule
-    Write-Verbose "Found $($ExchangeTransportRule.Count) Exchange Transport rules"
-    $OrganizationConfig = Get-OrganizationConfig
-    Write-Verbose "Found Exchange Organization Config: $([bool]$OrganizationConfig)"
-    $OwaMailboxPolicy = Get-OwaMailboxPolicy
-    Write-Verbose "Found $($OwaMailboxPolicy.Count) Exchange Web mailbox policies"
-    $OwaMailboxPolicyDefault =  $OwaMailboxPolicy | Where-Object {$_.Identity -eq "OwaMailboxPolicy-Default"}
-    Write-Verbose "Filtered $($OwaMailboxPolicyDefault.Count) Default Web mailbox policy"
-    $RoleAssignmentPolicy = Get-RoleAssignmentPolicy
-    Write-Verbose "Found $($RoleAssignmentPolicy.Count) Exchange Role Assignment Policy"
-    $RoleAssignmentPolicyDefault =  $RoleAssignmentPolicy | Where-Object {$_.Identity -eq "Default Role Assignment Policy"}
-    Write-Verbose "Filtered $($RoleAssignmentPolicyDefault.Count) Default Web mailbox policy"
+
+    # Check if Exchange Online is connected using Test-MtConnection
+    $exchangeConnected = Test-MtConnection -Service ExchangeOnline
+    Write-Verbose "Exchange Online connection status: $exchangeConnected"
+
+    # Only attempt to get Exchange data if we're connected
+    if ($exchangeConnected) {
+        $ExchangeTransportRule = Get-TransportRule
+        Write-Verbose "Found $($ExchangeTransportRule.Count) Exchange Transport rules"
+        $OrganizationConfig = Get-OrganizationConfig
+        Write-Verbose "Found Exchange Organization Config: $([bool]$OrganizationConfig)"
+        $OwaMailboxPolicy = Get-OwaMailboxPolicy
+        Write-Verbose "Found $($OwaMailboxPolicy.Count) Exchange Web mailbox policies"
+        $OwaMailboxPolicyDefault = $OwaMailboxPolicy | Where-Object { $_.Identity -eq "OwaMailboxPolicy-Default" }
+        Write-Verbose "Filtered $($OwaMailboxPolicyDefault.Count) Default Web mailbox policy"
+        $RoleAssignmentPolicy = Get-RoleAssignmentPolicy
+        Write-Verbose "Found $($RoleAssignmentPolicy.Count) Exchange Role Assignment Policy"
+        $RoleAssignmentPolicyDefault = $RoleAssignmentPolicy | Where-Object { $_.Identity -eq "Default Role Assignment Policy" }
+        Write-Verbose "Filtered $($RoleAssignmentPolicyDefault.Count) Default Web mailbox policy"
+    }
 }
 
 Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
+    BeforeAll {
+        # Skip all tests if Exchange Online is not connected
+        if (-not $exchangeConnected) {
+            Set-ItResult -Skipped -Because "Exchange Online is not connected"
+        }
+    }
+
     $portalLink_SecureScore = "https://security.microsoft.com/securescore"
 
     It "MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1043", "SetScl", "TransportRule" {
 
         $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
-        $RuleWithSCL = $ExchangeTransportRule | Where-Object { $_.SetScl -match "-1"}
+        $RuleWithSCL = $ExchangeTransportRule | Where-Object { $_.SetScl -match "-1" }
         $result = ($RuleWithSCL).Count -gt 0
 
         if ($result -eq $false) {
@@ -106,9 +121,9 @@ Describe "Exchange Setting" -Tag "Maester", "Exchange", "SecureScore" {
         #Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $defaultrole | ft -AutoSize
         #Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $defaultrole | ft -AutoSize
 
-        $result = [bool](Get-ManagementRoleAssignment -Role "My Custom Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or  `
-        [bool](Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or  `
-        [bool](Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $RoleAssignmentPolicyDefault)
+        $result = [bool](Get-ManagementRoleAssignment -Role "My Custom Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or `
+            [bool](Get-ManagementRoleAssignment -Role "My Marketplace Apps" -RoleAssignee $RoleAssignmentPolicyDefault) -or `
+            [bool](Get-ManagementRoleAssignment -Role "My ReadWriteMailbox Apps" -RoleAssignee $RoleAssignmentPolicyDefault)
 
         if ($result -eq $false) {
             $testResultMarkdown = "Well done. Apps in 'Default Role Assignment Policy' is $($result)`n`n"
