@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:07 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA235", "EXO", "Security", "All" {
-    It "ORCA235: SPF records is set up for all your custom domains." {
+Describe "ORCA" -Tag "ORCA", "ORCA.235", "EXO", "Security", "All" {
+    It "ORCA.235: SPF records is set up for all your custom domains." {
         $result = Test-ORCA235
 
         if($null -ne $result) {

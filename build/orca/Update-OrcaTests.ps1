@@ -179,11 +179,30 @@ foreach($file in $testFiles){
     }
     $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass # Add punctuation to pass text if not present to stay consistent between tests
 
+    # Confirm to Maester convention
+    $testId = $content.func -replace "ORCA","ORCA."
+    $testId = $testId -replace "_","."
+
+    # Set fixed test id for ORCA.120 and replace ORCA.120.phish, ORCA.120.malware, ORCA.120.spam
+    $mapping = @{
+        "ORCA.120.phish" = "ORCA.120.1"
+        "ORCA.120.malware" = "ORCA.120.2"
+        "ORCA.120.spam" = "ORCA.120.3"
+    }
+    if ($mapping.ContainsKey($testId)) {
+        $testId = $mapping[$testId]
+    }
+    # IF testId is not in Maester format of (ORCA.n or ORCA.n.n) the last number is optional and can be any number of digits, display error and ask to update this code and abort
+    if ($testId -notmatch "^ORCA\.\d{1,3}(\.\d+)?$") {
+        Write-Error "Test ID '$testId' is not in the correct format (ORCA.nnn.n). Please update Update-OrcaTests.ps1 @ line 182 to use the correct format for this test."
+        exit 1
+    }
+
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "$($content.func)", "EXO", "Security", "All" {
-    It "$($content.func): $($content.pass)" {
+Describe "ORCA" -Tag "ORCA", "$($testId)", "EXO", "Security", "All" {
+    It "$($testId): $($content.pass)" {
         `$result = Test-$($content.func)
 
         if(`$null -ne `$result) {

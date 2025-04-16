@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA205", "EXO", "Security", "All" {
-    It "ORCA205: Common attachment type filter is enabled." {
+Describe "ORCA" -Tag "ORCA", "ORCA.205", "EXO", "Security", "All" {
+    It "ORCA.205: Common attachment type filter is enabled." {
         $result = Test-ORCA205
 
         if($null -ne $result) {
