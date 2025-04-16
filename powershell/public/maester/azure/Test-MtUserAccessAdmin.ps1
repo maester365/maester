@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if any Global Admins have User Access Control permissions at the Root Scope
 
