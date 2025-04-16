@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.9.4", "CISA", "Security", "All" {
-    It "MS.EXO.09.4: Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.9.4", "CISA.MS.EXO.9.4", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.9.4: Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter." {
 
         $result = Test-MtCisaEmailFilterAlternative
 

@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.6.1", "CISA", "Security", "All", "Entra ID Free" {
-    It "MS.AAD.6.1: User passwords SHALL NOT expire." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.6.1", "CISA.MS.AAD.6.1", "CISA", "Security", "All", "Entra ID Free" {
+    It "CISA.MS.AAD.6.1: User passwords SHALL NOT expire." {
         $result = Test-MtCisaPasswordExpiration
 
         if ($null -ne $result) {

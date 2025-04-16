@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.1", "CISA", "Security", "All", "Entra ID Free" {
-    It "MS.AAD.7.1: A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.1", "CISA.MS.AAD.7.1", "CISA", "Security", "All", "Entra ID Free" {
+    It "CISA.MS.AAD.7.1: A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role." {
         $result = Test-MtCisaGlobalAdminCount
 
         if ($null -ne $result) {

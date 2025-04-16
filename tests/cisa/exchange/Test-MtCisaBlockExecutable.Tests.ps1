@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.9.5", "CISA", "Security", "All" {
-    It "MS.EXO.09.5: At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.9.5", "CISA.MS.EXO.09.5", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.09.5: At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)." {
 
         $result = Test-MtCisaBlockExecutable
 

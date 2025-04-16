@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.8.2", "CISA", "Security", "All", "Entra ID Free" {
-    It "MS.AAD.8.2: Only users with the Guest Inviter role SHOULD be able to invite guest users." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.8.2", "CISA.MS.AAD.8.2", "CISA", "Security", "All", "Entra ID Free" {
+    It "CISA.MS.AAD.8.2: Only users with the Guest Inviter role SHOULD be able to invite guest users." {
         $result = Test-MtCisaGuestInvitation
 
         if ($null -ne $result) {

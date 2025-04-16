@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.12.2", "CISA", "Security", "All" {
-    It "MS.EXO.12.2: Safe lists SHOULD NOT be enabled." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.12.2", "CISA.MS.EXO.12.2", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.12.2: Safe lists SHOULD NOT be enabled." {
 
         $cisaAntiSpamSafeList = Test-MtCisaAntiSpamSafeList
 

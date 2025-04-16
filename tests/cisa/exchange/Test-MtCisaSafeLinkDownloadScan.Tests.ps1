@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.15.2", "CISA", "Security", "All" {
-    It "MS.EXO.15.2: Direct download links SHOULD be scanned for malware." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.15.2", "CISA.MS.EXO.15.2", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.15.2: Direct download links SHOULD be scanned for malware." {
 
         $result = Test-MtCisaSafeLinkDownloadScan
 

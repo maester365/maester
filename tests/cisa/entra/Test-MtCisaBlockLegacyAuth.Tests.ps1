@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.1.1", "CISA", "Security", "All", "MS.AAD", "Entra ID P1" {
-    It "MS.AAD.1.1: Legacy authentication SHALL be blocked." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.1.1", "CISA", "CISA.MS.AAD.1.1", "Security", "All", "MS.AAD", "Entra ID P1" {
+    It "CISA.MS.AAD.1.1: Legacy authentication SHALL be blocked." {
         $result = Test-MtCisaBlockLegacyAuth
 
         if ($null -ne $result) {

@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.3.6", "CISA", "Security", "All", "Entra ID P1" {
-    It "MS.AAD.3.6: Phishing-resistant MFA SHALL be required for highly privileged roles." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.3.6", "CISA.MS.AAD.3.6", "CISA", "Security", "All", "Entra ID P1" {
+    It "CISA.MS.AAD.3.6: Phishing-resistant MFA SHALL be required for highly privileged roles." {
         $result = Test-MtCisaPrivilegedPhishResistant
 
         if ($null -ne $result) {

@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.17.3", "CISA", "Security", "All" {
-    It "MS.EXO.17.3: Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C)." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.17.3", "CISA.MS.EXO.17.3", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.17.3: Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C)." {
 
         $result = Test-MtCisaAuditLogRetention
 

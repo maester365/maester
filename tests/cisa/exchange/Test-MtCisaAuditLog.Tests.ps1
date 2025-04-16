@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.17.1", "CISA", "Security", "All" {
-    It "MS.EXO.17.1: Microsoft Purview Audit (Standard) logging SHALL be enabled." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.17.1", "CISA.MS.EXO.17.1", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.17.1: Microsoft Purview Audit (Standard) logging SHALL be enabled." {
 
         $result = Test-MtCisaAuditLog
 

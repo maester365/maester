@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.12.1", "CISA", "Security", "All" {
-    It "MS.EXO.12.1: IP allow lists SHOULD NOT be created." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.12.1", "CISA.MS.EXO.12.1", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.12.1: IP allow lists SHOULD NOT be created." {
 
         $cisaAntiSpamAllowList = Test-MtCisaAntiSpamAllowList
 

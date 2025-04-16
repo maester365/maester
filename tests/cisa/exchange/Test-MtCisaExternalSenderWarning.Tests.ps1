@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.7.1", "CISA", "Security", "All" {
-    It "MS.EXO.07.1: External sender warnings SHALL be implemented." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.7.1", "CISA.MS.EXO.07.1", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.07.1: External sender warnings SHALL be implemented." {
 
         $cisaExternalSenderWarning = Test-MtCisaExternalSenderWarning
 

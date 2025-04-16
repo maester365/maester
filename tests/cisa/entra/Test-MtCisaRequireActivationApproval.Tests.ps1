@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.6", "CISA", "Security", "All", "Entra ID P2" {
-    It "MS.AAD.7.6: Activation of the Global Administrator role SHALL require approval." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.7.6", "CISA.MS.AAD.7.6", "CISA", "Security", "All", "Entra ID P2" {
+    It "CISA.MS.AAD.7.6: Activation of the Global Administrator role SHALL require approval." {
         $result = Test-MtCisaRequireActivationApproval
 
         if ($null -ne $result) {

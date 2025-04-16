@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.5.4", "CISA", "Security", "All", "Entra ID Free" {
-    It "MS.AAD.5.4: Group owners SHALL NOT be allowed to consent to applications." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.5.4", "CISA.MS.AAD.5.4", "CISA", "Security", "All", "Entra ID Free" {
+    It "CISA.MS.AAD.5.4: Group owners SHALL NOT be allowed to consent to applications." {
         $result = Test-MtCisaAppGroupOwnerConsent
 
         if ($null -ne $result) {

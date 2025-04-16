@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.3.7", "CISA", "Security", "All", "Entra ID P1" {
-    It "MS.AAD.3.7: Managed devices SHOULD be required for authentication." {
+Describe "CISA SCuBA" -Tag "MS.AAD", "MS.AAD.3.7", "CISA.MS.AAD.3.7", "CISA", "Security", "All", "Entra ID P1" {
+    It "CISA.MS.AAD.3.7: Managed devices SHOULD be required for authentication." {
         $result = Test-MtCisaManagedDevice
 
         if ($null -ne $result) {

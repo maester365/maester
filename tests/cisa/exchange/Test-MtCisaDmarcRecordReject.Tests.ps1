@@ -1,5 +1,5 @@
-Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.4.2", "CISA", "Security", "All" {
-    It "MS.EXO.04.2: The DMARC message rejection option SHALL be p=reject." {
+Describe "CISA SCuBA" -Tag "MS.EXO", "MS.EXO.4.2", "CISA.MS.EXO.4.2", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.4.2: The DMARC message rejection option SHALL be p=reject." {
         $cisaDmarcRecordReject = Test-MtCisaDmarcRecordReject
 
         if ($null -ne $cisaDmarcRecordReject) {
