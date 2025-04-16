@@ -9,7 +9,7 @@
 .EXAMPLE
     Test-MtCisHostedConnectionFilterPolicy
 
-    Returns true the IP allow list is not empty
+    Returns true if the IP allow list is empty
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisHostedConnectionFilterPolicy
@@ -34,9 +34,7 @@ function Test-MtCisHostedConnectionFilterPolicy {
 
     if ($testResult) {
         $testResultMarkdown = "Well done. The connection filter IP allow list was empty ✅"
-
-    }
-    else {
+    } else {
         $testResultMarkdown = "The connection filter IP allow list was not empty ❌"
     }
 
