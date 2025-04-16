@@ -147,6 +147,8 @@ function Add-MtTestResultDetail {
     if ($__MtSession -and $__MtSession.TestResultDetail) {
         if (![string]::IsNullOrEmpty($testName)) {
             # Only set if we are running in the context of Maester
+
+            # Check if the test name is already in the session and display a warning
             $__MtSession.TestResultDetail[$testName] = $testInfo
         }
     }

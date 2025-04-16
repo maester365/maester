@@ -1,5 +1,5 @@
-Describe "CIS" -Tag "CIS 2.1.11", "L2", "CIS E3 Level 2", "CIS E3", "CIS", "Security", "All", "CIS M365 v4.0.0" {
-    It "CIS 2.1.11 (L2) Ensure comprehensive attachment filtering is applied" {
+Describe "CIS" -Tag "CIS.M365.2.1.11", "L2", "CIS E3 Level 2", "CIS E3", "CIS", "Security", "All", "CIS M365 v4.0.0" {
+    It "CIS.M365.2.1.11: (L2) Ensure comprehensive attachment filtering is applied" {
 
         $result = Test-MtCisAttachmentFilterComprehensive
 

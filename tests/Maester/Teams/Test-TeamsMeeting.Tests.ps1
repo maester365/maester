@@ -10,7 +10,7 @@ BeforeDiscovery {
 
 Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All" {
 
-    It "MT.1037 Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
+    It "MT.1037: Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
         # Secure Score Name: Configure which users are allowed to present in Teams meetings
 
         $result = Test-MtTeamsRestrictParticipantGiveRequestControl -TeamsMeetingPolicy $TeamsMeetingPolicy
@@ -18,7 +18,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All
 
     }
 
-    It "MT.1045 Only invited users should be automatically admitted to Teams meetings" -Tag "MT.1045" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
+    It "MT.1045: Only invited users should be automatically admitted to Teams meetings" -Tag "MT.1045" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
         #($TeamsMeetingPolicyGlobal.AutoAdmittedUsers -eq "InvitedUsers")
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
@@ -41,7 +41,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All
         $result | Should -Be "InvitedUsers" -Because "AutoAdmittedUsers should be InvitedUsers"
     }
 
-    It "MT.1046 Restrict anonymous users from joining meetings" -Tag "MT.1046" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
+    It "MT.1046: Restrict anonymous users from joining meetings" -Tag "MT.1046" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy } {
 
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
@@ -64,7 +64,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All
         $result | Should -Be $false -Because "AllowAnonymousUsersToJoinMeeting should be False"
     }
 
-    It "MT.1047 Restrict anonymous users from starting Teams meetings" -Tag "MT.1047" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
+    It "MT.1047: Restrict anonymous users from starting Teams meetings" -Tag "MT.1047" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
@@ -87,7 +87,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All
         $result | Should -Be $false -Because "AllowAnonymousUsersToStartMeeting should be False"
     }
 
-    It "MT.1048 Limit external participants from having control in a Teams meeting" -Tag "MT.1048" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
+    It "MT.1048: Limit external participants from having control in a Teams meeting" -Tag "MT.1048" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
@@ -110,7 +110,7 @@ Describe "Teams Meeting policies" -Tag "Maester", "Teams", "MeetingPolicy", "All
         $result | Should -Be $false -Because "AllowExternalParticipantGiveRequestControl should be False"
     }
 
-    It "MT.1042 Restrict dial-in users from bypassing a meeting lobby " -Tag "MT.1042" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
+    It "MT.1042: Restrict dial-in users from bypassing a meeting lobby " -Tag "MT.1042" -TestCases @{ TeamsMeetingPolicy = $TeamsMeetingPolicy }{
 
         $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
         $portalLink_MeetingPolicy = "https://admin.teams.microsoft.com/policies/meetings"
