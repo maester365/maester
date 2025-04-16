@@ -8,11 +8,11 @@ Ensure that no User Access Administrator permissions at the Root Scope are appli
 
 To remove all Admins with Root Scope permissions, as a Global Admin:
 1. Navigate to Microsoft 365 admin center [https://portal.microsoft.com](https://portal.microsoft.com).
-2. Search for **Microsoft Entra ID** select **Microsoft Entra ID**.
-3. Expand the **Manage** menu, select **Properties**
+2. Search for **Microsoft Entra ID** and select **Microsoft Entra ID**.
+3. Expand the **Manage** menu and select **Properties**.
 3. On the **Properties** page, go to the **Access management for Azure resources** section.
-4. In the information bar, click: **Manage elevated access users**.
-5. Select all User Access Administrators, and click **Remove**
+4. In the information bar, click **Manage elevated access users**.
+5. Select all User Access Administrators and click **Remove**.
 
 To remove the admins through CLI:
 ```powershell
@@ -21,7 +21,7 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 
 #### Related links
 
-* [Microsoft Azure Portal](https://portal.azure.com)
+* [Manage who can create Microsoft 365 Groups](https://learn.microsoft.com/en-us/microsoft-365/solutions/manage-creation-of-groups?view=o365-worldwide)
 
 
 <!--- Results --->
