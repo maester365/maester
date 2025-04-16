@@ -14,6 +14,9 @@
     https://maester.dev/docs/commands/Test-MtUserAccessAdmin
 #>
 function Test-MtUserAccessAdmin {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
 
     Write-Verbose "Checking if connected to Graph"
     if (!(Test-MtConnection Graph)) {
