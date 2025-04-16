@@ -56,7 +56,7 @@ N/A below refers to review checks which cannot be automated.
 | TBD | 2.1.10 (L1) Ensure DMARC Records for all Exchange Online domains are published |
 | [Test-MtCisAttachmentFilterComprehensive](/docs/commands/) | | 2.1.11 (L2) Ensure comprehensive attachment filtering is applied |
 | [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/) | 2.1.12 (L1) Ensure the connection filter IP allow list is not used |
-| TBD | 2.1.13 (L1) Ensure the connection filter safe list is off |
+| [Test-MtCisConnectionFilterSafeList](/docs/commands/) | 2.1.13 (L1) Ensure the connection filter safe list is off |
 | TBD | 2.1.14 (L1) Ensure inbound anti-spam policies do not contain allowed domains |
 | TBD | 2.4.1 (L1) Ensure Priority account protection is enabled and configured |
 | TBD | 2.4.2 (L1) Ensure Priority accounts have 'Strict protection' presets applied |

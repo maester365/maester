@@ -155,6 +155,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtCisThirdPartyFileSharing',
                'Test-MtCisZAP',
                'Test-MtCisHostedConnectionFilterPolicy',
+               'Test-MtCisConnectionFilterSafeList',
                'Test-MtConditionalAccessWhatIf',
                'Test-MtConnection',
                'Test-MtDeviceCleanupSettings', 'Test-MtDeviceComplianceSettings',
