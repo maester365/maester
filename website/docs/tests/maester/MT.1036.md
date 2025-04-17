@@ -9,7 +9,7 @@ sidebar_class_name: hidden
 
 ## Description
 
-When exlcuding objects from consitional access policies, you are basically creating gaps into your protection mechanisms. To make sure these gaps are not left open, the excluded objects should be included in another 'fallback' policy. By doing this, you make sure al objects are protected and no gaps exists.
+When exlcuding objects from conditional access policies, you are basically creating gaps into your protection mechanisms. To make sure these gaps are not left open, the excluded objects should be included in another 'fallback' policy. By doing this, you make sure al objects are protected and no gaps exists.
 
 ## How to fix
 
