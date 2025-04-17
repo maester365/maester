@@ -16,7 +16,7 @@ Use -Verbose to see the connection status for each service.
 ## SYNTAX
 
 ```powershell
-Test-MtConnection [[-Service] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtConnection [[-Service] <String[]>] [-Details] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,24 +28,36 @@ Tests the connection for each service and returns $true if the session is connec
 ### EXAMPLE 1
 
 ```powershell
-Test-MtConnection
+Test-MtConnection -Service All
 ```
 
-Checks if the current session is connected to Microsoft Graph.
+Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams.
+Returns a Boolean value.
 
 ### EXAMPLE 2
 
 ```powershell
-Test-MtConnection -Service All
+Test-MtConnection -Details
 ```
 
-Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (via IPPSSession), and Microsoft Teams.
+Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams.
+Returns a custom object that contains the connection details for all services.
+
+### EXAMPLE 3
+
+```powershell
+Test-MtConnection -Service Azure
+```
+
+Checks if the current session is connected to Azure and returns a Boolean result.
 
 ## PARAMETERS
 
 ### -Service
 
-Checks if the current session is connected to the specified service
+The service to check the connection for.
+Valid values are 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'.
+Default is 'All'.
 
 ```yaml
 Type: String[]
@@ -55,6 +67,22 @@ Aliases:
 Required: False
 Position: 1
 Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Details
+
+Return the full details of all connections instead of just a boolean value.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
