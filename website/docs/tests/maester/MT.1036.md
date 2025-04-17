@@ -9,8 +9,10 @@ sidebar_class_name: hidden
 
 ## Description
 
-When exlcuding objects from conditional access policies, you are basically creating gaps into your protection mechanisms. To make sure these gaps are not left open, the excluded objects should be included in another 'fallback' policy. By doing this, you make sure al objects are protected and no gaps exists.
+Excluding specific users, groups, applications, or locations from a Conditional Access (CA) policy is sometimes necessary. However, doing so removes the protections of that policy for those specific items, potentially creating security vulnerabilities.
+
+To maintain a strong security posture, every item excluded from a CA policy must be included in at least one other CA policy. This other policy serves as a "fallback," guaranteeing that no user or resource is left completely outside your conditional access controls.
 
 ## How to fix
 
-Review the excluded objects and their related policies and try to create a fallback policy for them.
+Review policy exclusions. Create or confirm fallback policies exist to cover all excluded objects.
