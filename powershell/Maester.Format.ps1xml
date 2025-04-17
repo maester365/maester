@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+  <ViewDefinitions>
+    <!-- List View - For detailed multi-line display of details. -->
+    <View>
+      <Name>Maester.Connections.List</Name>
+      <ViewSelectedBy>
+        <TypeName>Maester.Connections</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <Label>Azure</Label>
+                <ScriptBlock>
+                  if ($_.Azure) {
+                    "Connected`n" +
+                    "Tenant ID:    $($_.Azure.Tenant)`n" +
+                    "Environment:  $($_.Azure.Environment)`n" +
+                    "Account:      $($_.Azure.Account)`n" +
+                    "Subscription: $($_.Azure.Subscription)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Microsoft Graph</Label>
+                <ScriptBlock>
+                  if ($_.Graph) {
+                    "Connected`n" +
+                    "Tenant ID:    $($_.Graph.TenantId)`n" +
+                    "Environment:  $($_.Graph.Environment)`n" +
+                    "Account:      $($_.Graph.Account)`n" +
+                    "Scopes:       $($_.Graph.Scopes.Count)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Exchange Online</Label>
+                <ScriptBlock>
+                  if ($_.ExchangeOnline) {
+                    "Connected`n" +
+                    "Tenant ID:     $($_.ExchangeOnline.TenantId)`n" +
+                    "Organization:  $($_.ExchangeOnline.Organization)`n" +
+                    "UPN:           $($_.ExchangeOnline.UserPrincipalName)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Exchange Online Protection</Label>
+                <ScriptBlock>
+                  if ($_.ExchangeOnlineProtection) {
+                    "Connected`n" +
+                    "Tenant ID:     $($_.ExchangeOnlineProtection.TenantId)`n" +
+                    "Organization:  $($_.ExchangeOnlineProtection.Organization)`n" +
+                    "UPN:           $($_.ExchangeOnlineProtection.UserPrincipalName)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <Label>Microsoft Teams</Label>
+                <ScriptBlock>
+                  if ($_.Teams) {
+                    "Connected`n" +
+                    "Tenant ID:        $($_.Teams.TenantId)`n" +
+                    "Display Name:     $($_.Teams.DisplayName) `n" +
+                    "Service Instance: $($_.Teams.ServiceInstance)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>
