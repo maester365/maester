@@ -52,9 +52,10 @@ PowerShellVersion = '5.1'
 
 # Modules that must be imported into the global environment prior to importing this module
 <# Requires Pester 5.5.0 but that is not declared here due to potential conflicts with the version of Pester that is
-   pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
-   if necessary by Install-MaesterTests.
+    pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
+    if necessary by Install-MaesterTests.
 #>
+
 RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.25.0'; }
                      @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
 
@@ -68,7 +69,7 @@ RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '88
 # TypesToProcess = @()
 
 # Format files (.ps1xml) to be loaded when importing this module
-# FormatsToProcess = @()
+FormatsToProcess = @('Maester.Format.ps1xml')
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 # NestedModules = @()
@@ -201,8 +202,11 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = 'Invoke-MtMaester', 'Connect-MtGraph', 'Connect-MtMaester',
-               'Disconnect-MtGraph', 'Disconnect-MtMaester'
+AliasesToExport = @(
+    'Invoke-MtMaester',
+    'Connect-MtGraph', 'Connect-MtMaester',
+    'Disconnect-MtGraph', 'Disconnect-MtMaester'
+)
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()
@@ -244,7 +248,7 @@ PrivateData = @{
 
     } # End of PSData hashtable
 
- } # End of PrivateData hashtable
+} # End of PrivateData hashtable
 
 # HelpInfo URI of this module
 HelpInfoURI = 'https://maester.dev/docs/commands/'
