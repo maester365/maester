@@ -10,3 +10,4 @@
 - **SharePointTenantSettings.Read.All**
 - **UserAuthenticationMethod.Read.All**
 - **DeviceManagementManagedDevices.Read.All**
+- **DeviceManagementConfiguration.Read.All**

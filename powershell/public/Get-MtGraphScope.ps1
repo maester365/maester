@@ -62,6 +62,8 @@ function Get-MtGraphScope {
         'Policy.Read.ConditionalAccess'
         'SharePointTenantSettings.Read.All'
         'UserAuthenticationMethod.Read.All'
+        'DeviceManagementConfiguration.Read.All'
+        'DeviceManagementManagedDevices.Read.All'
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
