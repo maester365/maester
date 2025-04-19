@@ -24,8 +24,11 @@ function Test-MtCisaEmailFilterAlternative {
     } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
+    } elseif("Eop" -notin (Get-MtLicenseInformation -Product Eop)){
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEop
+        return $null
     } else {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Only testing of MDO is supported"
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Tenant is not licensed for Exchange Online Protection and there is no implementation to check for alternate mail filters available."
         return $null
     }
 }
