@@ -9,7 +9,7 @@ title: Severity levels
 
 Maester uses Common Vulnerability Scoring System (CVSS) as a method of assessing security risk and prioritization for Maester test. CVSS is an industry standard vulnerability metric. You can learn more about CVSS at [FIRST.org](https://www.first.org/cvss/user-guide).
 
-In addition to the Critical, High, Medium and Low severity levels, Maester also includes an **Informational** severity level. This is used for tests that are not vulnerabilities, but rather provide information about the configuration of a system. No remediation is required for these tests, but they may be useful for understanding the configuration of a system.
+In addition to the Critical, High, Medium and Low severity levels, Maester also includes an **Info** severity level. This is used for tests that are not vulnerabilities, but rather provide information about the configuration of a system. No remediation is required for these tests, but they may be useful for understanding the configuration of a system.
 
 #### Severity Levels
 
@@ -19,7 +19,7 @@ Every Maester test includes a severity level. This severity level of Maester con
 -   High
 -   Medium
 -   Low
--   Informational
+-   Info
 
 For CVSS, Maester uses the following severity rating system:
 
@@ -29,7 +29,7 @@ For CVSS, Maester uses the following severity rating system:
 | 7.0 - 8.9  | High |
 | 4.0 - 6.9  | Medium |
 | 0.1 - 3.9  | Low |
-| 0  | Informational |
+| 0  | Info |
 
 In some cases, the additional factors unrelated to CVSS score may be used to determine the severity level of a vulnerability. This approach is supported by the [CVSS specification](https://www.first.org/cvss/specification-document):
 
@@ -77,5 +77,4 @@ Vulnerabilities in the low range typically have very little impact on an organ
 | High  | Within 4 weeks of being identified |
 | Medium | Within 12 weeks of being identified |
 | Low  | Within 25 weeks of being identified |
-| Informational  | Not applicable |
-
+| Info  | Not applicable |
