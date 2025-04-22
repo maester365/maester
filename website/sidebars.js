@@ -31,6 +31,7 @@ const sidebars = {
     },
     "watch",
     "contributing",
+    "severity-levels",
     "faq",
     {
       type: "html",
