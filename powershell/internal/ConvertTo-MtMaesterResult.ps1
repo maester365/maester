@@ -92,6 +92,12 @@ function ConvertTo-MtMaesterResult {
     foreach ($test in $sortedTests) {
 
         $name = $test.ExpandedName
+        $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
+        if (![string]::IsNullOrEmpty($testCustomName)) {
+            # Use the custom title if it's been provided.
+            $name = $testCustomName
+        }
+
         $helpUrl = ''
 
         $start = $name.IndexOf("See https")
@@ -101,25 +107,19 @@ function ConvertTo-MtMaesterResult {
             $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part
         }
 
-        $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
-        if ($null -eq $testCustomName) {
-            $testCustomName = $name
-        }
+
         # Find the first : and use the first part as $testId and remaining as $testTitle
         # If no : is found or if there are spaces before the first : display a warning that the test name is not in the correct format
-        $testSplit = $testCustomName -split ':'
-        $testId = $testCustomName # Default to the full test name if no split is found
-        $testTitle = $testCustomName # Default to the full test name if no split is found
+        $titleStart = $name.IndexOf(':')
+        $testId = $name # Default to the full test name if no split is found
+        $testTitle = $name # Default to the full test name if no split is found
 
-        if ($testSplit.Count -eq 1) {
-            Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $testCustomName"
-        } elseif ($testSplit[0] -match '\s') {
-            Write-Warning "Test name contains spaces before the ':' character. Please use the format 'TestId: TestTitle' → $testCustomName"
+        if ($titleStart -gt 0) {
+            $testId = $name.Substring(0, $titleStart).Trim()
+            $testTitle = $name.Substring($titleStart + 1).Trim()
         } else {
-            $testId = $testSplit[0].Trim()
-            $testTitle = $testSplit[1].Trim()
+            Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
         }
-
 
         $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
