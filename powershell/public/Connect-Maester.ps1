@@ -146,7 +146,7 @@
 
    $ExchangeModuleNotInstalledWarningShown = $false
    if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
-      Write-Verbose 'Connecting to Microsoft Exchage Online'
+      Write-Verbose 'Connecting to Microsoft Exchange Online'
       try {
          if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq 'Desktop') {
             Write-Host "The Exchange Online module in Windows PowerShell does not support device code flow authentication." -ForegroundColor Red
