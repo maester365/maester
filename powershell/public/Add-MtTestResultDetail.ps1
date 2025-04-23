@@ -81,8 +81,8 @@ function Add-MtTestResultDetail {
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info')]
-        # Severity level of the test result.
-        [string] $Severity = 'Info'
+        # Severity level of the test result. Leave empty if no Severity is defined yet.
+        [string] $Severity
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
