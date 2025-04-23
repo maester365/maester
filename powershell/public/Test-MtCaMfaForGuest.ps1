@@ -46,7 +46,7 @@ function Test-MtCaMfaForGuest {
         $AppliesToGuests = $policy.conditions.users.includeUsers -contains "GuestsOrExternalUsers" -or $AllGuestTypesPresent
         $AppliesToAllUsers = $policy.conditions.users.includeUsers -contains "All"
         $AppliesToAllApps = $policy.conditions.applications.includeApplications -contains "All"
-        $ExcludesAnyGuests = $policy.conditions.users.excludeGuestsOrExternalUsers -ne $null
+        $ExcludesAnyGuests = $null -ne $policy.conditions.users.excludeGuestsOrExternalUsers
 
         if ($RequiresMfa -and $AppliesToAllApps -and -not $ExcludesAnyGuests -and ($AppliesToGuests -or $AppliesToAllUsers)) {
             $result = $true

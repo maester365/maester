@@ -31,6 +31,7 @@
     https://maester.dev/docs/commands/Test-MtConnection
     #>
     [CmdletBinding()]
+    [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service

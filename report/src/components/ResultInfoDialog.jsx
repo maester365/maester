@@ -5,6 +5,7 @@ import { ArrowTopRightOnSquareIcon, WindowIcon } from "@heroicons/react/24/outli
 import { Divider } from "@tremor/react";
 import StatusLabel from "./StatusLabel";
 import StatusLabelSm from "./StatusLabelSm";
+import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -72,6 +73,11 @@ export default function ResultInfoDialog(props) {
           <span className="truncate whitespace-normal tremor-Button-text text-tremor-default" >{props.Item.Name}</span>
         </button>
       }
+      {props.DisplayText !== undefined &&
+        <button onClick={() => setIsOpen(true)} className="text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors">
+          <span className="whitespace-normal tremor-Button-text text-tremor-default">{props.DisplayText}</span>
+        </button>
+      }
       {props.Button &&
         <div className="text-right">
           <Button size="xs" variant="secondary" color="gray" tooltip="View details" icon={WindowIcon} onClick={() => setIsOpen(true)}></Button>
@@ -80,7 +86,12 @@ export default function ResultInfoDialog(props) {
       <Dialog open={isOpen} onClose={(val) => setIsOpen(val)} static={true}>
         <DialogPanel className="max-w-4xl">
           <div className="grid grid-cols-1">
-            <div className="text-right">
+            <div className="text-right flex justify-end space-x-2 items-center">
+              {props.Item.ResultDetail && props.Item.ResultDetail.Severity && (
+                <div title="Severity" className="flex items-center">
+                  <SeverityBadge Severity={props.Item.ResultDetail.Severity} />
+                </div>
+              )}
               <StatusLabel Result={props.Item.Result} />
             </div>
             <Title>{props.Item.Name}</Title>

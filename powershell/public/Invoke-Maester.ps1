@@ -81,6 +81,7 @@ Runs all the Pester tests in the EIDSCA folder.
 #>
 function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Incorrectly flags ExportCsv and ExportExcel as unused')]
     [Alias("Invoke-MtMaester")]
     [CmdletBinding()]
     param (
