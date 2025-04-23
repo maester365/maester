@@ -35,7 +35,7 @@ function Test-MtEidscaAV01 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 
     return $tenantValue
 }

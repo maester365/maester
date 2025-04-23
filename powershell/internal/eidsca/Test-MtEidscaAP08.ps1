@@ -38,7 +38,7 @@ function Test-MtEidscaAP08 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'ManagePermissionGrantsForSelf.microsoft-user-default-low'** for **policies/authorizationPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 
     return $tenantValue
 }

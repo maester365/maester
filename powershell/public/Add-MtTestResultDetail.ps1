@@ -77,7 +77,12 @@ function Add-MtTestResultDetail {
 
         [Parameter(Mandatory = $false)]
         # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
-        [string] $SkippedCustomReason
+        [string] $SkippedCustomReason,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info')]
+        # Severity level of the test result.
+        [string] $Severity = 'Info'
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
@@ -137,6 +142,7 @@ function Add-MtTestResultDetail {
         TestResult      = $Result
         TestSkipped     = $SkippedBecause
         SkippedReason   = $SkippedReason
+        Severity        = $Severity
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName
