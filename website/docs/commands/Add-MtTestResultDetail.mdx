@@ -17,7 +17,8 @@ Add detailed information about a test so that it can be displayed in the test re
 ```powershell
 Add-MtTestResultDetail [[-Description] <String>] [[-Result] <String>] [[-GraphObjects] <Object[]>]
  [[-GraphObjectType] <String>] [[-TestName] <String>] [[-TestTitle] <String>] [[-SkippedBecause] <String>]
- [[-SkippedCustomReason] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-SkippedCustomReason] <String>] [[-Severity] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -188,6 +189,23 @@ Aliases:
 
 Required: False
 Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severity
+
+Severity level of the test result.
+Leave empty if no Severity is defined yet.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
