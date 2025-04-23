@@ -48949,7 +48949,55 @@ function ArrowTopRightOnSquareIcon({
     d: "M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
   }));
 }
-const ForwardRef$c = /* @__PURE__ */ reactExports.forwardRef(ArrowTopRightOnSquareIcon);
+const ForwardRef$e = /* @__PURE__ */ reactExports.forwardRef(ArrowTopRightOnSquareIcon);
+function ChevronLeftIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
+  return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    strokeWidth: 1.5,
+    stroke: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    d: "M15.75 19.5 8.25 12l7.5-7.5"
+  }));
+}
+const ForwardRef$d = /* @__PURE__ */ reactExports.forwardRef(ChevronLeftIcon);
+function ChevronRightIcon({
+  title,
+  titleId,
+  ...props
+}, svgRef) {
+  return /* @__PURE__ */ reactExports.createElement("svg", Object.assign({
+    xmlns: "http://www.w3.org/2000/svg",
+    fill: "none",
+    viewBox: "0 0 24 24",
+    strokeWidth: 1.5,
+    stroke: "currentColor",
+    "aria-hidden": "true",
+    "data-slot": "icon",
+    ref: svgRef,
+    "aria-labelledby": titleId
+  }, props), title ? /* @__PURE__ */ reactExports.createElement("title", {
+    id: titleId
+  }, title) : null, /* @__PURE__ */ reactExports.createElement("path", {
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    d: "m8.25 4.5 7.5 7.5-7.5 7.5"
+  }));
+}
+const ForwardRef$c = /* @__PURE__ */ reactExports.forwardRef(ChevronRightIcon);
 function WindowIcon({
   title,
   titleId,
@@ -61817,9 +61865,63 @@ function remarkGfm(options) {
   toMarkdownExtensions.push(gfmToMarkdown(settings));
 }
 function ResultInfoDialog(props) {
+  const itemId = props.Item.Id || props.Item.Name;
   const [isOpen, setIsOpen] = React.useState(false);
   const openInNewTab = (url) => {
     window.open(url, "_blank", "noreferrer");
+  };
+  reactExports.useEffect(() => {
+    if (props.activeDialog === itemId) {
+      setIsOpen(true);
+    } else if (isOpen && props.activeDialog !== itemId) {
+      setIsOpen(false);
+    }
+  }, [props.activeDialog, itemId, isOpen]);
+  reactExports.useEffect(() => {
+  }, [isOpen, itemId]);
+  reactExports.useEffect(() => {
+    const handleKeyboard = (event) => {
+      if (!isOpen) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        if (props.onNavigateNext) {
+          props.onNavigateNext(itemId);
+        }
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (props.onNavigatePrevious) {
+          props.onNavigatePrevious(itemId);
+        }
+      }
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyboard);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyboard);
+    };
+  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemId]);
+  const handleOpenDialog = () => {
+    if (props.onDialogOpen) {
+      props.onDialogOpen(itemId);
+    }
+    setIsOpen(true);
+  };
+  const handleCloseDialog = () => {
+    if (props.onDialogClose) {
+      props.onDialogClose();
+    }
+    setIsOpen(false);
+  };
+  const navigateToNextResult = () => {
+    if (props.onNavigateNext) {
+      props.onNavigateNext(itemId);
+    }
+  };
+  const navigateToPreviousResult = () => {
+    if (props.onNavigatePrevious) {
+      props.onNavigatePrevious(itemId);
+    }
   };
   function getTestResult() {
     if (props.Item.ResultDetail) {
@@ -61862,16 +61964,26 @@ function ResultInfoDialog(props) {
     return "bg-gray-100";
   }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    props.Title && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setIsOpen(true), className: "text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate whitespace-normal tremor-Button-text text-tremor-default", children: props.Item.Name }) }),
-    props.DisplayText !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setIsOpen(true), className: "text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "whitespace-normal tremor-Button-text text-tremor-default", children: props.DisplayText }) }),
-    props.Button && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx(b$8, { size: "xs", variant: "secondary", color: "gray", tooltip: "View details", icon: ForwardRef$b, onClick: () => setIsOpen(true) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(n$3, { open: isOpen, onClose: (val) => setIsOpen(val), static: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(i$5, { className: "max-w-4xl", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1", children: [
+    props.Title && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleOpenDialog, className: "text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate whitespace-normal tremor-Button-text text-tremor-default", children: props.Item.Name }) }),
+    props.DisplayText !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleOpenDialog, className: "text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "whitespace-normal tremor-Button-text text-tremor-default", children: props.DisplayText }) }),
+    props.Button && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      b$8,
+      {
+        size: "xs",
+        variant: "secondary",
+        color: "gray",
+        tooltip: "View details",
+        icon: ForwardRef$b,
+        onClick: handleOpenDialog
+      }
+    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(n$3, { open: isOpen, onClose: handleCloseDialog, static: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(i$5, { className: "max-w-4xl", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-right flex justify-end space-x-2 items-center", children: [
         props.Item.ResultDetail && props.Item.ResultDetail.Severity && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { title: "Severity", className: "flex items-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SeverityBadge, { Severity: props.Item.ResultDetail.Severity }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLabel, { Result: props.Item.Result })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(s$1, { children: props.Item.Name }),
-      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-left mt-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(b$8, { icon: ForwardRef$c, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: [
+      props.Item.HelpUrl && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-left mt-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(b$8, { icon: ForwardRef$e, variant: "light", onClick: () => openInNewTab(props.Item.HelpUrl), children: [
         "Learn more @ ",
         new URL(props.Item.HelpUrl).hostname
       ] }) }),
@@ -61893,13 +62005,38 @@ function ResultInfoDialog(props) {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { className: "mt-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(s$1, { children: "Tags" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { justifyContent: "start", children: props.Item.Tag.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(m$h, { className: "mr-3", children: item })) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { justifyContent: "start", children: props.Item.Tag && props.Item.Tag.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(m$h, { className: "mr-3", children: item }, item)) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { className: "mt-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(s$1, { children: "Source" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(m$h, { children: props.Item.ScriptBlockFile })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(b$8, { variant: "primary", onClick: () => setIsOpen(false), children: "Close" }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(a$9, { className: "mt-6 justify-between", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          b$8,
+          {
+            variant: "secondary",
+            icon: ForwardRef$d,
+            onClick: navigateToPreviousResult,
+            disabled: !props.onNavigatePrevious,
+            tooltip: "Previous result (Left arrow key)",
+            children: "Previous"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(b$8, { variant: "primary", onClick: handleCloseDialog, children: "Close" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          b$8,
+          {
+            variant: "secondary",
+            icon: ForwardRef$c,
+            iconPosition: "right",
+            onClick: navigateToNextResult,
+            disabled: !props.onNavigateNext,
+            tooltip: "Next result (Right arrow key)",
+            children: "Next"
+          }
+        )
+      ] })
     ] }) }) })
   ] });
 }
@@ -61911,6 +62048,7 @@ function TestResultsTable(props) {
   const [searchQuery, setSearchQuery] = reactExports.useState("");
   const [sortColumn, setSortColumn] = reactExports.useState("Id");
   const [sortDirection, setSortDirection] = reactExports.useState("asc");
+  const [activeDialog, setActiveDialog] = reactExports.useState(null);
   const testResults2 = props.TestResults;
   const isStatusSelected = (item) => {
     const matchesSearch = !searchQuery || item.Id && item.Id.toLowerCase().includes(searchQuery.toLowerCase()) || item.Title && item.Title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -61951,6 +62089,37 @@ function TestResultsTable(props) {
       }
     });
   };
+  const getFilteredSortedData = () => {
+    return getSortedData(testResults2.Tests.filter((item) => isStatusSelected(item)));
+  };
+  const handleDialogOpen = (itemId) => {
+    setActiveDialog(itemId);
+  };
+  const handleDialogClose = () => {
+    setActiveDialog(null);
+  };
+  const handleNavigateToNext = (currentItemId) => {
+    const filteredData = getFilteredSortedData();
+    const currentIndex = filteredData.findIndex(
+      (item) => (item.Id || item.Name) === currentItemId
+    );
+    if (currentIndex !== -1 && currentIndex < filteredData.length - 1) {
+      const nextItem = filteredData[currentIndex + 1];
+      const nextItemId = nextItem.Id || nextItem.Name;
+      setActiveDialog(nextItemId);
+    }
+  };
+  const handleNavigateToPrevious = (currentItemId) => {
+    const filteredData = getFilteredSortedData();
+    const currentIndex = filteredData.findIndex(
+      (item) => (item.Id || item.Name) === currentItemId
+    );
+    if (currentIndex > 0) {
+      const prevItem = filteredData[currentIndex - 1];
+      const prevItemId = prevItem.Id || prevItem.Name;
+      setActiveDialog(prevItemId);
+    }
+  };
   const SortableHeader = ({ column, label, className }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
     l$1,
     {
@@ -61964,7 +62133,8 @@ function TestResultsTable(props) {
   );
   const status = ["Passed", "Failed", "NotRun", "Skipped"];
   const severities = ["Critical", "High", "Medium", "Low", "Info", "None"];
-  const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag))];
+  const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag || []))];
+  const filteredSortedData = getFilteredSortedData();
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(a$9, { justifyContent: "between", className: "gap-2 mb-2", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -62024,13 +62194,53 @@ function TestResultsTable(props) {
         /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Status", label: "Status", className: "text-center whitespace-nowrap" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(l$1, { className: "text-center whitespace-nowrap", children: "Info" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(i$3, { children: getSortedData(testResults2.Tests.filter((item) => isStatusSelected(item))).map((item) => /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResultInfoDialog, { Title: false, Item: item, DisplayText: item.Id || item.Name }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResultInfoDialog, { Title: false, Item: item, DisplayText: item.Title || item.Name && item.Name.split(": ")[1] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: item.ResultDetail && item.ResultDetail.Severity && item.ResultDetail.Severity !== "" ? /* @__PURE__ */ jsxRuntimeExports.jsx(SeverityBadge, { Severity: item.ResultDetail.Severity }) : "" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLabel, { Result: item.Result }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResultInfoDialog, { Button: true, Item: item }) })
-      ] }, item.Id || item.Name)) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx(i$3, { children: filteredSortedData.map((item, index2) => {
+        const itemId = item.Id || item.Name;
+        const hasPrevious = index2 > 0;
+        const hasNext = index2 < filteredSortedData.length - 1;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ResultInfoDialog,
+            {
+              Title: false,
+              Item: item,
+              DisplayText: itemId,
+              onNavigateNext: hasNext ? handleNavigateToNext : null,
+              onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
+              onDialogOpen: handleDialogOpen,
+              onDialogClose: handleDialogClose,
+              activeDialog
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ResultInfoDialog,
+            {
+              Title: false,
+              Item: item,
+              DisplayText: item.Title || item.Name && item.Name.split(": ")[1],
+              onNavigateNext: hasNext ? handleNavigateToNext : null,
+              onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
+              onDialogOpen: handleDialogOpen,
+              onDialogClose: handleDialogClose,
+              activeDialog
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: item.ResultDetail && item.ResultDetail.Severity && item.ResultDetail.Severity !== "" ? /* @__PURE__ */ jsxRuntimeExports.jsx(SeverityBadge, { Severity: item.ResultDetail.Severity }) : "" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLabel, { Result: item.Result }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ResultInfoDialog,
+            {
+              Button: true,
+              Item: item,
+              onNavigateNext: hasNext ? handleNavigateToNext : null,
+              onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
+              onDialogOpen: handleDialogOpen,
+              onDialogClose: handleDialogClose,
+              activeDialog
+            }
+          ) })
+        ] }, itemId);
+      }) })
     ] })
   ] });
 }
@@ -64168,6 +64378,9 @@ video {
 }
 .mt-4 {
   margin-top: 1rem;
+}
+.mt-6 {
+  margin-top: 1.5rem;
 }
 .block {
   display: block;
@@ -82739,6 +82952,6 @@ code {
 }</style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
