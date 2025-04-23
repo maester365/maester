@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid } from "@tremor/react";
 import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
@@ -13,6 +13,8 @@ export default function TestResultsTable(props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState("Id");
   const [sortDirection, setSortDirection] = useState("asc");
+  // Track the currently active dialog
+  const [activeDialog, setActiveDialog] = useState(null);
   const testResults = props.TestResults;
 
   const isStatusSelected = (item) => {
@@ -72,6 +74,55 @@ export default function TestResultsTable(props) {
     });
   };
 
+  // Get the filtered and sorted data (reused for navigation and rendering)
+  const getFilteredSortedData = () => {
+    return getSortedData(testResults.Tests.filter((item) => isStatusSelected(item)));
+  };
+
+  // Dialog management methods
+  const handleDialogOpen = (itemId) => {
+    setActiveDialog(itemId);
+  };
+
+  const handleDialogClose = () => {
+    setActiveDialog(null);
+  };
+
+  // Navigation handlers for moving between result items
+  const handleNavigateToNext = (currentItemId) => {
+    const filteredData = getFilteredSortedData();
+    const currentIndex = filteredData.findIndex(
+      (item) => (item.Id || item.Name) === currentItemId
+    );
+
+    // If current item found and not the last one, move to next
+    if (currentIndex !== -1 && currentIndex < filteredData.length - 1) {
+      const nextItem = filteredData[currentIndex + 1];
+      const nextItemId = nextItem.Id || nextItem.Name;
+
+      // Simply set the active dialog to the next item
+      // The dialog component will handle showing/hiding appropriately
+      setActiveDialog(nextItemId);
+    }
+  };
+
+  const handleNavigateToPrevious = (currentItemId) => {
+    const filteredData = getFilteredSortedData();
+    const currentIndex = filteredData.findIndex(
+      (item) => (item.Id || item.Name) === currentItemId
+    );
+
+    // If current item found and not the first one, move to previous
+    if (currentIndex > 0) {
+      const prevItem = filteredData[currentIndex - 1];
+      const prevItemId = prevItem.Id || prevItem.Name;
+
+      // Simply set the active dialog to the previous item
+      // The dialog component will handle showing/hiding appropriately
+      setActiveDialog(prevItemId);
+    }
+  };
+
   // Create a sortable header cell
   const SortableHeader = ({ column, label, className }) => (
     <TableHeaderCell
@@ -91,7 +142,10 @@ export default function TestResultsTable(props) {
 
   const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
-  const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag))];
+  const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
+
+  // Get the filtered and sorted data once for rendering
+  const filteredSortedData = getFilteredSortedData();
 
   return (
     <Card>
@@ -176,14 +230,36 @@ export default function TestResultsTable(props) {
         </TableHead>
 
         <TableBody>
-          {getSortedData(testResults.Tests.filter((item) => isStatusSelected(item)))
-            .map((item) => (
-              <TableRow key={item.Id || item.Name}>
+          {filteredSortedData.map((item, index) => {
+            const itemId = item.Id || item.Name;
+            const hasPrevious = index > 0;
+            const hasNext = index < filteredSortedData.length - 1;
+
+            return (
+              <TableRow key={itemId}>
                 <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                  <ResultInfoDialog Title={false} Item={item} DisplayText={item.Id || item.Name} />
+                  <ResultInfoDialog
+                    Title={false}
+                    Item={item}
+                    DisplayText={itemId}
+                    onNavigateNext={hasNext ? handleNavigateToNext : null}
+                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
+                    onDialogOpen={handleDialogOpen}
+                    onDialogClose={handleDialogClose}
+                    activeDialog={activeDialog}
+                  />
                 </TableCell>
                 <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
-                  <ResultInfoDialog Title={false} Item={item} DisplayText={item.Title || (item.Name && item.Name.split(': ')[1])} />
+                  <ResultInfoDialog
+                    Title={false}
+                    Item={item}
+                    DisplayText={item.Title || (item.Name && item.Name.split(': ')[1])}
+                    onNavigateNext={hasNext ? handleNavigateToNext : null}
+                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
+                    onDialogOpen={handleDialogOpen}
+                    onDialogClose={handleDialogClose}
+                    activeDialog={activeDialog}
+                  />
                 </TableCell>
                 <TableCell className="text-center">
                   {item.ResultDetail && item.ResultDetail.Severity && item.ResultDetail.Severity !== "" ? <SeverityBadge Severity={item.ResultDetail.Severity} /> : ""}
@@ -191,9 +267,20 @@ export default function TestResultsTable(props) {
                 <TableCell className="text-center">
                   <StatusLabel Result={item.Result} />
                 </TableCell>
-                <TableCell className="text-center"><ResultInfoDialog Button={true} Item={item} /></TableCell>
+                <TableCell className="text-center">
+                  <ResultInfoDialog
+                    Button={true}
+                    Item={item}
+                    onNavigateNext={hasNext ? handleNavigateToNext : null}
+                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
+                    onDialogOpen={handleDialogOpen}
+                    onDialogClose={handleDialogClose}
+                    activeDialog={activeDialog}
+                  />
+                </TableCell>
               </TableRow>
-            ))}
+            );
+          })}
         </TableBody>
       </Table>
     </Card>
