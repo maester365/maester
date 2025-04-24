@@ -155,9 +155,9 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "EIDSCA.PR06" {
     It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
         #>
-        Test-MtEidscaControl -CheckId PR06 | Should -Be '10'
+        Test-MtEidscaControl -CheckId PR06 | Should -BeLessOrEqual '10'
     }
 }
 
