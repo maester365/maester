@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 # Set up Maester Teams Alerts
 
-Your Maester monitoring workflow can be configured to send an adaptive card in a team channel with the summary of the Maester test results at the end of each monitoring cycle in Slack. This guide will walk you through the steps to set up Teams alerts in Maester.
+Your Maester monitoring workflow can be configured to send an adaptive card in a team channel with the summary of the Maester test results at the end of each monitoring cycle. This guide will walk you through the steps to set up Teams alerts in Maester.
 
 ![Maester - Microsoft Teams Alerts](assets/maester-teams-alert-test-result.png)
 
