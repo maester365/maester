@@ -25,7 +25,7 @@ If the first sign-in after a lockout also fails, the account locks out again.
 
 Queries settings
 and returns the result of
- graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+ graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ and returns the result of
 Test-MtEidscaPR06
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
 
 ## PARAMETERS
 
