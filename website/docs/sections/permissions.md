@@ -7,6 +7,8 @@
 - **Reports.Read.All**
 - **RoleEligibilitySchedule.Read.Directory**
 - **RoleManagement.Read.All**
+- **SecurityIdentitiesSensors.Read.All**
+- **SecurityIdentitiesHealth.Read.All**
 - **SharePointTenantSettings.Read.All**
 - **UserAuthenticationMethod.Read.All**
 - **DeviceManagementManagedDevices.Read.All**
