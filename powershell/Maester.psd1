@@ -158,6 +158,7 @@ FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Mae
                'Test-MtConnection',
                'Test-MtDeviceCleanupSettings', 'Test-MtDeviceComplianceSettings',
                'Test-MtEidscaControl',
+               'Test-MtMdiHealthIssues.Tests',
                'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
                'Update-MaesterTests', 'Compare-MtTestResult',  'Get-MailAuthenticationRecord',
                'ConvertFrom-MailAuthenticationRecordSpf', 'ConvertFrom-MailAuthenticationRecordMx',
