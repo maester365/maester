@@ -111,7 +111,7 @@ export default function ResultInfoDialog(props) {
     }
     else {
       if (props.Item.Result === "Passed") {
-        return "Tested succesfully.";
+        return "Tested successfully.";
       }
       if (props.Item.Result === "Failed") {
         return "Test failed.";
