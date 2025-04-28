@@ -36,7 +36,7 @@ function Test-MtCisaNotifyHighRisk {
     #Connect-MgGraph -UseDeviceCode -Scopes IdentityRiskEvent.Read.All
     $result = Invoke-MtGraphRequest -RelativeUri "identityProtection/settings/notifications" -ApiVersion "beta"
 
-    $notficationRecipients = $result.notificationRecipients | Where-Object {`
+    $notficationRecipients =  ($result.notificationRecipients + $result.additionalRecipients) | Where-Object {`
             $_.isRiskyUsersAlertsRecipient }
 
     $testResult = ($notficationRecipients|Measure-Object).Count -ge 1
