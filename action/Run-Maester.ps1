@@ -50,7 +50,7 @@ PROCESS {
     $graphToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
 
     # Connect to Microsoft Graph with the token as secure string
-    Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
+    Connect-MgGraph -AccessToken $graphToken -NoWelcome
 
     # Check if we need to connect to Exchange Online
     if ($IncludeExchange) {
@@ -58,7 +58,7 @@ PROCESS {
         Import-Module ExchangeOnlineManagement
 
         $outlookToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://outlook.office365.com'
-        Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+        Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ShowBanner:$false
     } else {
         Write-Host 'Exchange Online tests will be skipped.'
     }
@@ -70,8 +70,8 @@ PROCESS {
 
         $teamsToken = Get-MtAccessTokenUsingCli -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
 
-        $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
-        $tokens = @($regularGraphToken, $teamsToken.Token)
+        $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken -AsPlainText
+        $tokens = @($regularGraphToken, $teamsToken)
         Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
     } else {
         Write-Host 'Teams tests will be skipped.'
