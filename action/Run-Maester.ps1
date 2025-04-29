@@ -47,7 +47,7 @@ BEGIN {
     Write-Host 'Starting Maester tests'
 }
 PROCESS {
-    $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
+    $graphToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
 
     # Connect to Microsoft Graph with the token as secure string
     Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
@@ -57,7 +57,7 @@ PROCESS {
         Install-Module ExchangeOnlineManagement -Force
         Import-Module ExchangeOnlineManagement
 
-        $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
+        $outlookToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://outlook.office365.com'
         Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
     } else {
         Write-Host 'Exchange Online tests will be skipped.'
@@ -68,7 +68,7 @@ PROCESS {
         Install-Module MicrosoftTeams -Force
         Import-Module MicrosoftTeams
 
-        $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
+        $teamsToken = Get-MtAccessTokenUsingCli -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
 
         $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
         $tokens = @($regularGraphToken, $teamsToken.Token)
