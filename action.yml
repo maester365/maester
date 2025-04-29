@@ -99,7 +99,7 @@ runs:
     - name: Run Maester
       shell: pwsh
       run: |
-        . ${{ github.action_path }}\powershell\internal\Get-MtAccessTokenUsingCli.ps1
+        . ${{ github.action_path }}\action\Get-MtAccessTokenUsingCli.ps1
         ${{ github.action_path }}\action\Run-Maester.ps1 -TenantId '${{ inputs.tenant_id}}' `
           -ClientId '${{ inputs.client_id }}' `
           -Path '${{ github.workspace }}' `
