@@ -30,19 +30,24 @@ function Get-MtPesterTagValue {
         return $null
     }
 
-    # Check if the test has the specified tag
-    $tagPattern = "$TagName`:"
-    $matchingTag = $____Pester.CurrentTest.Tag | Where-Object { $_ -match $tagPattern }
+    try {
+        # Check if the test has the specified tag
+        $tagPattern = "$TagName`:"
+        $matchingTag = $____Pester.CurrentTest.Tag | Where-Object { $_ -match $tagPattern }
 
-    # If not found in current test, check parent block
-    if ([string]::IsNullOrEmpty($matchingTag)) {
-        $matchingTag = $____Pester.CurrentTest.Block.Tag | Where-Object { $_ -match $tagPattern }
+        # If not found in current test, check parent block
+        if ([string]::IsNullOrEmpty($matchingTag)) {
+            $matchingTag = $____Pester.CurrentTest.Block.Tag | Where-Object { $_ -match $tagPattern }
+        }
+
+        if ($matchingTag) {
+            # Extract the tag value and trim it
+            $tagValue = $matchingTag -replace $tagPattern, ''
+            return $tagValue.Trim()
+        }
     }
-
-    if ($matchingTag) {
-        # Extract the tag value and trim it
-        $tagValue = $matchingTag -replace $tagPattern, ''
-        return $tagValue.Trim()
+    catch {
+        Write-Verbose "Error getting tag value for '$TagName': $_"
     }
 
     return $null
