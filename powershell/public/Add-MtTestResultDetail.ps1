@@ -80,7 +80,7 @@ function Add-MtTestResultDetail {
         [string] $SkippedCustomReason,
 
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info')]
+        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info', '')]
         # Severity level of the test result. Leave empty if no Severity is defined yet.
         [string] $Severity
     )
