@@ -15,7 +15,7 @@ function Get-MtMaesterConfig {
     [OutputType([object])]
     param(
         # Path to the Maester config file or the directory containing the config file (maester-config.json).
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         $Path
     )
 
