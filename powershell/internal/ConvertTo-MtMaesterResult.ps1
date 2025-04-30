@@ -120,6 +120,15 @@ function ConvertTo-MtMaesterResult {
         } else {
             Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
         }
+        $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
+
+        # Add the other test metadata to the test result
+        $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
+        $severity = $testResultDetail.Severity # Default to the test result severity
+        if ($testSetting -and [string]::IsNullOrEmpty($testSetting.Severity) -eq $false) {
+            # Overwrite the settings if it is set in the config
+            $severity = $testSetting.Severity
+        }
 
         $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
@@ -127,6 +136,7 @@ function ConvertTo-MtMaesterResult {
             Title           = $testTitle
             Name            = $name
             HelpUrl         = $helpUrl
+            Severity       =  $severity
             Tag             = @($test.Block.Tag + $test.Tag | Select-Object -Unique)
             Result          = $test.Result
             ScriptBlock     = $test.ScriptBlock.ToString()
@@ -134,7 +144,7 @@ function ConvertTo-MtMaesterResult {
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.ExpandedName
             Duration        = $test.Duration.ToString($timeSpanFormat)
-            ResultDetail    = $__MtSession.TestResultDetail[$test.ExpandedName]
+            ResultDetail    = $testResultDetail
         }
         $mtTests += $mtTestInfo
     }

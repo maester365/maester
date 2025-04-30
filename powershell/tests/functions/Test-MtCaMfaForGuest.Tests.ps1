@@ -1,11 +1,15 @@
-﻿
-Describe 'Test-MtCaMfaForGuest' {
-    BeforeAll {
-        Import-Module $PSScriptRoot/../../Maester.psd1 -Force
-        Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
+﻿BeforeDiscovery {
+  # Skip this PEster test if running on Windows PowerShell
+  $skip = $PSVersionTable.PSEdition -eq 'Desktop'
+}
 
-        function Get-AllUserMfaPolicyNoExcludeGuest {
-            $policyJson = @"
+Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
+  BeforeAll {
+    Import-Module $PSScriptRoot/../../Maester.psd1 -Force
+    Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
+
+    function Get-AllUserMfaPolicyNoExcludeGuest {
+      $policyJson = @"
 [
   {
     "state": "enabled",
@@ -33,11 +37,11 @@ Describe 'Test-MtCaMfaForGuest' {
   }
 ]
 "@
-            return $policyJson | ConvertFrom-Json
-        }
+      return $policyJson | ConvertFrom-Json
+    }
 
-        function Get-AllUserMfaPolicyExcludeGuest {
-            $policyJson = @"
+    function Get-AllUserMfaPolicyExcludeGuest {
+      $policyJson = @"
 [
   {
     "state": "enabled",
@@ -79,12 +83,12 @@ Describe 'Test-MtCaMfaForGuest' {
   }
 ]
 "@
-            return $policyJson | ConvertFrom-Json
-        }
+      return $policyJson | ConvertFrom-Json
+    }
 
 
-        function Get-GuestMfaPolicyNoExcludeGuest {
-            $policyJson = @"
+    function Get-GuestMfaPolicyNoExcludeGuest {
+      $policyJson = @"
 [
   {
     "state": "enabled",
@@ -117,11 +121,11 @@ Describe 'Test-MtCaMfaForGuest' {
   }
 ]
 "@
-            return $policyJson | ConvertFrom-Json
-        }
+      return $policyJson | ConvertFrom-Json
+    }
 
-        function Get-GuestMfaPolicyExcludeGuest {
-            $policyJson = @"
+    function Get-GuestMfaPolicyExcludeGuest {
+      $policyJson = @"
 [
   {
     "state": "enabled",
@@ -160,44 +164,44 @@ Describe 'Test-MtCaMfaForGuest' {
   }
 ]
 "@
-            return $policyJson | ConvertFrom-Json
-        }
+      return $policyJson | ConvertFrom-Json
+    }
+  }
+
+  Context "CA: MFA for Guest" {
+
+    It 'MFA for All users should pass even if not targeting guests' {
+      $policy = Get-AllUserMfaPolicyNoExcludeGuest
+
+      Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+
+      Test-MtCaMfaForGuest | Should -BeTrue
     }
 
-    Context "CA: MFA for Guest" {
+    It 'MFA for All users that excludes any guest type should fail' {
+      $policy = Get-AllUserMfaPolicyExcludeGuest
 
-        It 'MFA for All users should pass even if not targeting guests' {
-            $policy = Get-AllUserMfaPolicyNoExcludeGuest
+      Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
 
-            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-
-            Test-MtCaMfaForGuest | Should -BeTrue
-        }
-
-        It 'MFA for All users that excludes any guest type should fail' {
-            $policy = Get-AllUserMfaPolicyExcludeGuest
-
-            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-
-            Test-MtCaMfaForGuest | Should -BeFalse
-        }
-
-        It 'MFA for Guests should pass' {
-            $policy = Get-GuestMfaPolicyNoExcludeGuest
-
-            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-
-            Test-MtCaMfaForGuest | Should -BeTrue
-        }
-
-        It 'MFA for Guests that excludes any guest type should fail' {
-            $policy = Get-GuestMfaPolicyExcludeGuest
-
-            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
-
-            Test-MtCaMfaForGuest | Should -BeFalse
-        }
-
+      Test-MtCaMfaForGuest | Should -BeFalse
     }
+
+    It 'MFA for Guests should pass' {
+      $policy = Get-GuestMfaPolicyNoExcludeGuest
+
+      Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+
+      Test-MtCaMfaForGuest | Should -BeTrue
+    }
+
+    It 'MFA for Guests that excludes any guest type should fail' {
+      $policy = Get-GuestMfaPolicyExcludeGuest
+
+      Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+
+      Test-MtCaMfaForGuest | Should -BeFalse
+    }
+
+  }
 }
 

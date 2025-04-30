@@ -32,7 +32,7 @@ A common scenario for this test would be a security group that is used in a crit
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "Check 'Contoso MFA Users' group" {
+    It "Check 'Contoso MFA Users' group" -Tag 'Severity:Medium' {
 
         $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
 
@@ -54,6 +54,7 @@ Copy the code above and paste it into your **ContosoEntra.Tests.ps1** file.
 - Replace the **Contoso** tag with your company name.
 - Replace the **Contoso MFA Users** label for the test with the name of the group you want to test.
 - Replace the groupID GUID with the **Object ID** of a group in your tenant.
+- Provide a [Severity level](../severity-levels.md) in the -Tag for the test. The available severity levels are **Critical**, **High**, **Medium**, **Low** and **Info**.
 - Save the file.
 
 ## Running the custom test

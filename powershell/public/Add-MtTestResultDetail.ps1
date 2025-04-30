@@ -80,7 +80,7 @@ function Add-MtTestResultDetail {
         [string] $SkippedCustomReason,
 
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info')]
+        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info', '')]
         # Severity level of the test result. Leave empty if no Severity is defined yet.
         [string] $Severity
     )
@@ -136,6 +136,14 @@ function Add-MtTestResultDetail {
         # If no test title is provided, use the test name
         $TestTitle = $____Pester.CurrentTest.ExpandedName
     }
+
+    if ([string]::IsNullOrEmpty($Severity)) {
+        # Check if the test has a severity tag using the internal helper function
+        $Severity = Get-MtPesterTagValue -TagName 'Severity'
+    }
+
+    $Service = Get-MtPesterTagValue -TagName 'Service'
+
     $testInfo = @{
         TestTitle       = $TestTitle
         TestDescription = $Description
@@ -143,6 +151,7 @@ function Add-MtTestResultDetail {
         TestSkipped     = $SkippedBecause
         SkippedReason   = $SkippedReason
         Severity        = $Severity
+        Service         = $Service
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName
