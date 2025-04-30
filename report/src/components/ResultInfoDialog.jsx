@@ -178,9 +178,9 @@ export default function ResultInfoDialog(props) {
         <DialogPanel className="max-w-4xl">
           <div className="grid grid-cols-1">
             <div className="text-right flex justify-end space-x-2 items-center">
-              {props.Item.ResultDetail && props.Item.ResultDetail.Severity && (
+              {props.Item.Severity && (
                 <div title="Severity" className="flex items-center">
-                  <SeverityBadge Severity={props.Item.ResultDetail.Severity} />
+                  <SeverityBadge Severity={props.Item.Severity} />
                 </div>
               )}
               <StatusLabel Result={props.Item.Result} />

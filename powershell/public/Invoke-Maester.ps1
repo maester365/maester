@@ -350,6 +350,9 @@ function Invoke-Maester {
     $maesterResults = $null
 
     Set-MtProgressView
+    Write-MtProgress -Activity "Starting Maester" -Status "Reading Maester config..." -Force
+    $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path
+
     Write-MtProgress -Activity "Starting Maester" -Status "Discovering tests to run..." -Force
 
     $pesterResults = Invoke-Pester -Configuration $pesterConfig

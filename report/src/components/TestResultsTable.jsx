@@ -26,8 +26,8 @@ export default function TestResultsTable(props) {
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
       (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag))) &&
       (selectedSeverity.length === 0 ||
-        (item.ResultDetail && selectedSeverity.includes(item.ResultDetail.Severity)) ||
-        (selectedSeverity.includes("None") && (!item.ResultDetail || !item.ResultDetail.Severity))) &&
+        (selectedSeverity.includes(item.Severity)) ||
+        (selectedSeverity.includes("None") && (!item.Severity))) &&
       matchesSearch;
   }
 
@@ -56,8 +56,8 @@ export default function TestResultsTable(props) {
       } else if (sortColumn === "Severity") {
         // Sort by severity with a specific order: Critical, High, Medium, Low, Info, undefined
         const severityOrder = { "Critical": 5, "High": 4, "Medium": 3, "Low": 2, "Info": 1, "": 0 };
-        valueA = a.ResultDetail?.Severity ? severityOrder[a.ResultDetail.Severity] : 0;
-        valueB = b.ResultDetail?.Severity ? severityOrder[b.ResultDetail.Severity] : 0;
+        valueA = a.Severity ? severityOrder[a.Severity] : 0;
+        valueB = b.Severity ? severityOrder[b.Severity] : 0;
       } else if (sortColumn === "Status") {
         // Sort by status with a specific order: Failed, Passed, Skipped, NotRun
         const statusOrder = { "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
@@ -262,7 +262,7 @@ export default function TestResultsTable(props) {
                   />
                 </TableCell>
                 <TableCell className="text-center">
-                  {item.ResultDetail && item.ResultDetail.Severity && item.ResultDetail.Severity !== "" ? <SeverityBadge Severity={item.ResultDetail.Severity} /> : ""}
+                  {item.Severity && item.Severity !== "" ? <SeverityBadge Severity={item.Severity} /> : ""}
                 </TableCell>
                 <TableCell className="text-center">
                   <StatusLabel Result={item.Result} />
