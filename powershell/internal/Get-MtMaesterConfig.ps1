@@ -60,7 +60,7 @@ function Get-MtMaesterConfig {
     }
 
     # Read the custom config file if it exists
-    $customConfigPath = Join-Path (Split-Path -Path $ConfigFilePath -Parent) 'custom' 'maester-config.json'
+    $customConfigPath = Join-Path -Path (Split-Path -Path $ConfigFilePath -Parent) 'custom' 'maester-config.json'
     if (Test-Path $customConfigPath) {
         Write-Verbose "Custom config file found at $customConfigPath. Merging with main config."
         $customConfig = Get-Content -Path $customConfigPath -Raw | ConvertFrom-Json
