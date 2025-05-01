@@ -40,7 +40,16 @@ param (
     [bool]$DisableTelemetry = $false,
 
     [Parameter(Mandatory = $false, HelpMessage = 'Add test results to GitHub step summary')]
-    [bool]$GitHubStepSummary = $false
+    [bool]$GitHubStepSummary = $false,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams Webhook Uri to send test results to, see: https://maester.dev/docs/monitoring/teams')]
+    [string]$TeamsWebhookUri = $null,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification channel ID')]
+    [string]$TeamsChannelId = $null,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification teams ID')]
+    [string]$TeamsTeamId = $null
 )
 
 BEGIN {
@@ -130,9 +139,22 @@ PROCESS {
         }
     }
 
+    if ([string]::IsNullOrWhiteSpace($TeamsChannelId) -eq $false -and [string]::IsNullOrWhiteSpace($TeamsTeamId) -eq $false) {
+        $MaesterParameters.Add( 'TeamChannelId', $TeamsChannelId )
+        $MaesterParameters.Add( 'TeamId', $TeamsTeamId )
+        Write-Host "Results will be sent to Teams Team Id: $TeamsTeamId"
+    }
+
     # Check if disable telemetry is provided
     if ($DisableTelemetry ) {
         $MaesterParameters.Add( 'DisableTelemetry', $true )
+    }
+
+    # Check if Teams Webhook Uri is provided
+    if ($TeamsWebhookUri) {
+        $MaesterParameters.Add( 'TeamChannelWebhookUri', $TeamsWebhookUri )
+        Write-Host "::add-mask::$TeamsWebhookUri"
+        Write-Host "Sending test results to Teams Webhook Uri: $TeamsWebhookUri"
     }
 
     # Run Maester tests
@@ -158,6 +180,15 @@ PROCESS {
             Write-Host "File not found: $filePath"
         }
     }
+
+    # Write output variable
+    $testResultsFile = "test-results/test-results.json"
+    if (Test-Path $testResultsFile -and $null -ne $env:GITHUB_OUTPUT) {
+        Write-Host "Writing test result location to output variable"
+        Add-Content -Path $env:GITHUB_OUTPUT -Value "results_json=$(Get-Item $testResultsFile | Select-Object -ExpandProperty FullName)"
+    }
+
+
 }
 END {
     Write-Host 'Maester tests completed!'
