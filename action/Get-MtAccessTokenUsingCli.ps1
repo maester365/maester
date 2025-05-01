@@ -36,6 +36,7 @@ function Get-MtAccessTokenUsingCli {
         [switch]$AsSecureString
     )
 
+    Write-Host "Getting access token for resource: $ResourceUrl"
     # Construct the command to get the access token using Azure CLI
     $command = "az account get-access-token --resource $ResourceUrl --query accessToken -o tsv"
 

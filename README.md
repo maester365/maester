@@ -105,12 +105,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run Maester action
+      id: maester # this is important, by setting the id you can use the output of the action in the next steps
       uses: maester365/maester@main
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         include_public_tests: true # Optional
         include_exchange: false # Optional
+        include_teams: false # Optional
         pester_verbosity: None # Optional - 'None', 'Normal', 'Detailed', 'Diagnostic'
+        mail_recipients: '' # optional a list of email addresses to send the report to
+        mail_userid: '' # optional the user id to use for sending the email
+        include_tags: '' # optional a list of tags to include in the test run
+        exclude_tags: '' # optional a list of tags to exclude in the test run
+        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
+        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
+        install_prerelease: false  # Optional: Set to true if you want to use Measter Preview Build when running tests
+        disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
+        notification_teams_webhook: '' # Optional: Set to the URL of your Teams webhook if you want to send notifications to Teams
 
 ```
