@@ -48,7 +48,7 @@ param (
     [Parameter(Mandatory = $false, HelpMessage = 'Teams notification channel ID')]
     [string]$TeamsChannelId = $null,
 
-    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification teams ID')]
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification team ID')]
     [string]$TeamsTeamId = $null
 )
 
@@ -161,21 +161,35 @@ PROCESS {
     $results = Invoke-Maester @MaesterParameters
 
     if ($GitHubStepSummary) {
+        Write-Host "Adding test results to GitHub step summary"
         # Add step summary
         $filePath = "test-results/test-results.md"
         if (Test-Path $filePath) {
-            $summary = Get-Content $filePath -Raw
             $maxSize = 1024KB
             $truncationMsg = "`n`n**⚠ TRUNCATED: Output exceeded GitHub's 1024 KB limit.**"
 
-            if ([System.Text.Encoding]::UTF8.GetByteCount($summary) -gt $maxSize) {
-                while ([System.Text.Encoding]::UTF8.GetByteCount($summary + $truncationMsg) -gt $maxSize) {
-                    $summary = $summary.Substring(0, $summary.Length - 100)
-                }
-                $summary += $truncationMsg
-            }
+            # Check file size
+            $fileSize = (Get-Item $filePath).Length
+            if ($fileSize -gt $maxSize) {
+                Write-Host "File size exceeds 1MB. Truncating the file."
 
-            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
+                # Read the file content
+                $content = Get-Content $filePath -Raw
+
+                # Calculate the maximum content size to fit within the limit
+                $maxContentSize = $maxSize - ($truncationMsg.Length * [System.Text.Encoding]::UTF8.GetByteCount("a")) - 4KB
+
+                # Truncate the content
+                $truncatedContent = $content.Substring(0, $maxContentSize / [System.Text.Encoding]::UTF8.GetByteCount("a"))
+
+                # Write the truncated content and truncation message to the new file
+                $truncatedContent | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding UTF8 -Append
+                Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $truncationMsg
+
+            } else {
+                Write-Host "File size is within the limit. No truncation needed."
+                Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $(Get-Content $filePath)
+            }
         } else {
             Write-Host "File not found: $filePath"
         }
@@ -183,9 +197,16 @@ PROCESS {
 
     # Write output variable
     $testResultsFile = "test-results/test-results.json"
-    if (Test-Path $testResultsFile -and $null -ne $env:GITHUB_OUTPUT) {
-        Write-Host "Writing test result location to output variable"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "results_json=$(Get-Item $testResultsFile | Select-Object -ExpandProperty FullName)"
+    $fullTestResultsFile = Resolve-Path -Path $testResultsFile -ErrorAction SilentlyContinue
+    Write-Host "Test results file: $fullTestResultsFile"
+    if (Test-Path $fullTestResultsFile) {
+        try {
+            Write-Host "Writing test result location to output variable"
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "results_json=$fullTestResultsFile"
+        } catch {
+            Write-Host "Failed to write test result location to output variable. $($_.Exception.Message) at $($_.InvocationInfo.Line) in $($_.InvocationInfo.ScriptName)"
+            Write-Host "::error file=$($_.InvocationInfo.ScriptName),line=$($_.InvocationInfo.Line),title=Maester exception::Failed to write test result location to output variable."
+        }
     }
 
 
