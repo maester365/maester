@@ -183,7 +183,7 @@ function Test-MtConditionalAccessWhatIf {
             }
         } else {
             $CAContext = @{
-                "@odata.type"         = "#microsoft.graph.whatIfApplicationContext"
+                "@odata.type"         = "#microsoft.graph.applicationContext"
                 "includeApplications" = @(
                     $IncludeApplications
                 )
@@ -192,12 +192,12 @@ function Test-MtConditionalAccessWhatIf {
 
         $ConditionalAccessWhatIfBodyParameter = @{
             "AppliedPoliciesOnly" = -not $AllResults
-            "conditionalAccessWhatIfSubject"    = @{
-                "@odata.type" = "#microsoft.graph.userSubject"
+            "signInIdentity"    = @{
+                "@odata.type" = "#microsoft.graph.userSignIn"
                 "userId"      = $UserId
             }
-            "conditionalAccessContext"          = $CAContext
-            "conditionalAccessWhatIfConditions" = @{}
+            "signInContext"          = $CAContext
+            "signInConditions" = @{}
         }
 
         $whatIfConditions = $ConditionalAccessWhatIfBodyParameter.conditionalAccessWhatIfConditions
