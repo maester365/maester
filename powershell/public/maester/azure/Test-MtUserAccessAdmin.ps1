@@ -30,44 +30,23 @@ function Test-MtUserAccessAdmin {
     }
 
     Write-Verbose "Getting all User Access Administrators at Root Scope"
-    try {
-        $roles = Get-AzRoleAssignment -Scope "/" -RoleDefinitionName 'User Access Administrator' -ErrorAction Stop
-    } catch {
-        Write-Error "Failed to retrieve role assignments at root scope"
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
-        return $null
-    }
+
+    $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()'
+    $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
 
     # Get the count of role assignments
-    $roleAssignmentCount = $roles.Count
+    $roleAssignmentCount = $userAccessAdmins | Measure-Object | Select-Object -ExpandProperty Count
 
     $testResult = $roleAssignmentCount -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no User Access Administrators:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has no User Access Administrators."
     }
     else {
-        $testResultMarkdown = "Your tenant has $roleAssignmentCount User Access Administrators:`n`n%TestResult%"
-    }
+        $testResultMarkdown = "Your tenant has $roleAssignmentCount resource(s) with access to manage access to all Azure subscriptions and management groups in this tenant.`n`n"
 
-    # $itemCount is used to limit the number of returned results shown in the table
-    $itemCount = 0
-    $resultMd = "| Display Name | User Access |`n"
-    $resultMd += "| --- | --- |`n"
-    foreach ($item in $resultObject) {
-        $itemCount += 1
-        $itemResult = "❌ Fail"
-        # We are restricting the table output to 50 below as it could be extremely large
-        if ($itemCount -lt 51) {
-            $resultMd += "| $($item.SignInName) | $($itemResult) |`n"
-        }
+        $testResultMarkdown += Get-MtDirectoryObjects $userAccessAdmins.properties.principalId -AsMarkdown
     }
-    # Add a limited results message if more than 6 results are returned
-    if ($itemCount -gt 50) {
-        $resultMd += "Results limited to 50`n"
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
