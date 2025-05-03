@@ -8,6 +8,7 @@
 #>
 
 function Get-MtDirectoryObjects {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [CmdletBinding()]
     param(
         # The object id's of the directory objects to retrieve.

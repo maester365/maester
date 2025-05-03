@@ -18,7 +18,7 @@ function Invoke-MtAzureRequest {
     [CmdletBinding()]
     param(
         # Graph endpoint such as "users".
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true)]
         [string[]] $RelativeUri,
 
         # The HTTP method to use. Default is GET.
@@ -32,12 +32,7 @@ function Invoke-MtAzureRequest {
 
         # The filter to use.
         [Parameter(Mandatory = $false)]
-        [string] $Filter,
-
-        # The type of object to be returned
-        [Parameter(Mandatory = $false)]
-        [ValidateSet('PSObject', 'PSCustomObject', 'Hashtable')]
-        [string] $OutputType = 'PSObject'
+        [string] $Filter
     )
 
     $resourceUrl = (Get-AzContext).Environment.ResourceManagerUrl
