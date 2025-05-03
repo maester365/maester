@@ -1,10 +1,17 @@
 ﻿<#
-.SYNOPSIS
+    .SYNOPSIS
     Invoke a REST API request to the Azure Management API.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function allows you to make REST API requests to the Azure Management API.
     It is a wrapper around the Invoke-AzRest function, providing a simplified interface.
+
+    .EXAMPLE
+    Invoke-MtAzureRequest -RelativeUri 'subscriptions'
+
+
+    .LINK
+    https://maester.dev/docs/commands/Invoke-MtAzureRequest
 #>
 
 function Invoke-MtAzureRequest {
@@ -19,14 +26,15 @@ function Invoke-MtAzureRequest {
         [ValidateSet("GET")]
         [string] $Method = "GET",
 
-        # The API version to use. Default is 2022-04-01
+        # The API version to use. Default is 2024-11-01
         [Parameter(Mandatory = $false)]
-        $ApiVersion = '2022-04-01',
+        $ApiVersion = '2024-11-01',
 
         # The filter to use.
         [Parameter(Mandatory = $false)]
         [string] $Filter,
 
+        # The type of object to be returned
         [Parameter(Mandatory = $false)]
         [ValidateSet('PSObject', 'PSCustomObject', 'Hashtable')]
         [string] $OutputType = 'PSObject'
@@ -38,6 +46,7 @@ function Invoke-MtAzureRequest {
         $restApi += '&$Filter=' + $Filter
     }
 
+    Write-Verbose "Invoke-AzRest $restApi"
     $result = Invoke-AzRest -Method $Method -Uri $restApi
     return $result.Content | ConvertFrom-Json
 }

@@ -31,7 +31,7 @@ function Test-MtUserAccessAdmin {
 
     Write-Verbose "Getting all User Access Administrators at Root Scope"
 
-    $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()'
+    $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'
     $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
 
     # Get the count of role assignments
