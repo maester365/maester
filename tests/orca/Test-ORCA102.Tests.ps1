@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:05 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA102", "EXO", "Security", "All" {
-    It "ORCA102: Advanced Spam filter options are turned off." {
+Describe "ORCA" -Tag "ORCA", "ORCA.102", "EXO", "Security", "All" {
+    It "ORCA.102: Advanced Spam filter options are turned off." {
         $result = Test-ORCA102
 
         if($null -ne $result) {

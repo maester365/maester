@@ -61,7 +61,7 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 This guide is based on [Use GitHub Actions to connect to Azure](https://learn.microsoft.com/azure/developer/github/connect-from-azure) and uses the maester GitHub action.
 
-### Pre-requisites
+### Pre-requisites Workload identity federation
 
 <CreateEntraApp/>
 
@@ -113,6 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run Maester action
+      id: maester # this is important, by setting the id you can use the output of the action in the next steps
       uses: maester365/maester@main
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -123,7 +124,7 @@ jobs:
         artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
         install_prerelease: false  # Optional: Set to true if you want to use Measter Preview Build when running tests
         disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
-        # Other inputs are available and can be reviewed in the action.yml in the Maester repository
+        # Other inputs are available and can be reviewed in the action.yml in https://github.com/maester365/maester
 
 ```
 

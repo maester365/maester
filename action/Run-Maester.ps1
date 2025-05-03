@@ -40,25 +40,34 @@ param (
     [bool]$DisableTelemetry = $false,
 
     [Parameter(Mandatory = $false, HelpMessage = 'Add test results to GitHub step summary')]
-    [bool]$GitHubStepSummary = $false
+    [bool]$GitHubStepSummary = $false,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams Webhook Uri to send test results to, see: https://maester.dev/docs/monitoring/teams')]
+    [string]$TeamsWebhookUri = $null,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification channel ID')]
+    [string]$TeamsChannelId = $null,
+
+    [Parameter(Mandatory = $false, HelpMessage = 'Teams notification teams ID')]
+    [string]$TeamsTeamId = $null
 )
 
 BEGIN {
     Write-Host 'Starting Maester tests'
 }
 PROCESS {
-    $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
+    $graphToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
 
     # Connect to Microsoft Graph with the token as secure string
-    Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
+    Connect-MgGraph -AccessToken $graphToken -NoWelcome
 
     # Check if we need to connect to Exchange Online
     if ($IncludeExchange) {
         Install-Module ExchangeOnlineManagement -Force
         Import-Module ExchangeOnlineManagement
 
-        $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
-        Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+        $outlookToken = Get-MtAccessTokenUsingCli -ResourceUrl 'https://outlook.office365.com'
+        Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ShowBanner:$false
     } else {
         Write-Host 'Exchange Online tests will be skipped.'
     }
@@ -68,10 +77,10 @@ PROCESS {
         Install-Module MicrosoftTeams -Force
         Import-Module MicrosoftTeams
 
-        $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
+        $teamsToken = Get-MtAccessTokenUsingCli -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
 
-        $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
-        $tokens = @($regularGraphToken, $teamsToken.Token)
+        $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken -AsPlainText
+        $tokens = @($regularGraphToken, $teamsToken)
         Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
     } else {
         Write-Host 'Teams tests will be skipped.'
@@ -130,9 +139,22 @@ PROCESS {
         }
     }
 
+    if ([string]::IsNullOrWhiteSpace($TeamsChannelId) -eq $false -and [string]::IsNullOrWhiteSpace($TeamsTeamId) -eq $false) {
+        $MaesterParameters.Add( 'TeamChannelId', $TeamsChannelId )
+        $MaesterParameters.Add( 'TeamId', $TeamsTeamId )
+        Write-Host "Results will be sent to Teams Team Id: $TeamsTeamId"
+    }
+
     # Check if disable telemetry is provided
     if ($DisableTelemetry ) {
         $MaesterParameters.Add( 'DisableTelemetry', $true )
+    }
+
+    # Check if Teams Webhook Uri is provided
+    if ($TeamsWebhookUri) {
+        $MaesterParameters.Add( 'TeamChannelWebhookUri', $TeamsWebhookUri )
+        Write-Host "::add-mask::$TeamsWebhookUri"
+        Write-Host "Sending test results to Teams Webhook Uri: $TeamsWebhookUri"
     }
 
     # Run Maester tests
@@ -158,6 +180,15 @@ PROCESS {
             Write-Host "File not found: $filePath"
         }
     }
+
+    # Write output variable
+    $testResultsFile = "test-results/test-results.json"
+    if (Test-Path $testResultsFile -and $null -ne $env:GITHUB_OUTPUT) {
+        Write-Host "Writing test result location to output variable"
+        Add-Content -Path $env:GITHUB_OUTPUT -Value "results_json=$(Get-Item $testResultsFile | Select-Object -ExpandProperty FullName)"
+    }
+
+
 }
 END {
     Write-Host 'Maester tests completed!'

@@ -12,45 +12,303 @@ import MtBlocksArea from './components/MtBlocksArea';
 
 /*The sample data will be replaced by the New-MtReport when it runs the generation.*/
 const testResults = {
-  "Result": "Passed",
-  "FailedCount": 0,
+  "Result": "Failed",
+  "FailedCount": 1,
   "PassedCount": 0,
-  "SkippedCount": 1,
-  "TotalCount": 1,
-  "ExecutedAt": "2024-06-26T13:56:40.895722+10:00",
+  "SkippedCount": 0,
+  "TotalCount": 284,
+  "ExecutedAt": "2025-04-30T21:42:11.493075+10:00",
+  "TotalDuration": "00:00:35",
+  "UserDuration": "00:00:00",
+  "DiscoveryDuration": "00:00:35",
+  "FrameworkDuration": "00:00:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
-  "TenantName": "Pora",
+  "TenantName": "Entra.Chat",
   "Account": "merill@elapora.com",
   "CurrentVersion": "0.1.0",
-  "LatestVersion": "0.1.0",
+  "LatestVersion": "1.0.0",
   "Tests": [
     {
-      "Name": "MT.1002: App management restrictions on applications and service principals is configured and enabled.",
-      "HelpUrl": "https://maester.dev/docs/tests/MT.1002",
+      "Id": "CIS.M365.1.2.1",
+      "Title": "(L2) Ensure that only organizationally managed/approved public groups exist",
+      "Name": "CIS.M365.1.2.1: (L2) Ensure that only organizationally managed/approved public groups exist",
+      "HelpUrl": "",
+      "Severity": "Medium",
       "Tag": [
-        "App",
+        "CIS.M365.1.2.1",
+        "L2",
+        "CIS E3 Level 2",
+        "CIS E3",
+        "CIS",
         "Security",
-        "All"
+        "All",
+        "CIS M365 v4.0.0",
+        "Severity:Medium"
       ],
-      "Result": "Skipped",
-      "ScriptBlock": "\n        Test-MtAppManagementPolicyEnabled | Should -Be $true -Because \"an app policy for workload identities should be defined to enforce strong credentials instead of passwords and a maximum expiry period (e.g. credential should be renewed every six months)\"\n    ",
-      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-AppManagementPolicies.Tests.ps1",
+      "Result": "Failed",
+      "ScriptBlock": "\n\n        $result = Test-MtCis365PublicGroup\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"365 groups are private\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cis/Test-MtCis365PublicGroup.Tests.ps1",
+      "ErrorRecord": [
+        {
+          "Exception": {
+            "TargetSite": null,
+            "Message": "Expected $true, because 365 groups are private, but got $false.",
+            "Data": "System.Collections.ListDictionaryInternal",
+            "InnerException": null,
+            "HelpLink": null,
+            "Source": null,
+            "HResult": -2146233088,
+            "StackTrace": null
+          },
+          "TargetObject": {
+            "Message": "Expected $true, because 365 groups are private, but got $false.",
+            "File": "/Users/merill/GitHub/maester/tests/cis/Test-MtCis365PublicGroup.Tests.ps1",
+            "Line": "7",
+            "LineText": "            $result | Should -Be $true -Because \"365 groups are private\"",
+            "Terminating": true
+          },
+          "CategoryInfo": {
+            "Category": 8,
+            "Activity": "",
+            "Reason": "Exception",
+            "TargetName": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
+            "TargetType": "Dictionary`2"
+          },
+          "FullyQualifiedErrorId": "PesterAssertionFailed",
+          "ErrorDetails": null,
+          "InvocationInfo": {
+            "MyCommand": null,
+            "BoundParameters": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
+            "UnboundArguments": "",
+            "ScriptLineNumber": 8106,
+            "OffsetInLine": 13,
+            "HistoryId": 68,
+            "ScriptName": "/Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1",
+            "Line": "            throw $errorRecord\r\n",
+            "Statement": "throw $errorRecord",
+            "PositionMessage": "At /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1:8106 char:13\n+             throw $errorRecord\n+             ~~~~~~~~~~~~~~~~~~",
+            "PSScriptRoot": "/Users/merill/.local/share/powershell/Modules/Pester/5.5.0",
+            "PSCommandPath": "/Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1",
+            "InvocationName": "",
+            "PipelineLength": 0,
+            "PipelinePosition": 0,
+            "ExpectingInput": false,
+            "CommandOrigin": 1,
+            "DisplayScriptPosition": null
+          },
+          "ScriptStackTrace": "at Invoke-Assertion, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 8106\nat Should<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 8044\nat <ScriptBlock>, /Users/merill/GitHub/maester/tests/cis/Test-MtCis365PublicGroup.Tests.ps1: line 7\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2012\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1973\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2145\nat Invoke-TestItem, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1198\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 834\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 892\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2012\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1973\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2148\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 939\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 892\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2012\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1973\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2148\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 939\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1676\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.ps1: line 3\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 3203\nat Invoke-InNewScriptScope, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 3210\nat Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 1679\nat Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 2500\nat Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.5.0/Pester.psm1: line 5046\nat Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 358\nat <ScriptBlock>, <No file>: line 1",
+          "PipelineIterationInfo": []
+        }
+      ],
+      "Block": "CIS",
+      "Duration": "00:00:00",
+      "ResultDetail": "\nYour tenant has 6 public 365 groups:\n\n| Display Name | Group Public |\n| --- | --- |\n| test spo session enforced | ❌ Fail |\n| Watercooler - Public | ❌ Fail |\n| Microsoft 365 Ops Team | ❌ Fail |\n| New group in Graph Explorer! | ❌ Fail |\n| Pora | ❌ Fail |\n| All Company | ❌ Fail |\n"
+    },
+    {
+      "Id": "CIS.M365.1.1.1",
+      "Title": "(L1) Ensure Administrative accounts are cloud-only",
+      "Name": "CIS.M365.1.1.1: (L1) Ensure Administrative accounts are cloud-only",
+      "HelpUrl": "",
+      "Severity": "High",
+      "Tag": [
+        "CIS.M365.1.1.1",
+        "L1",
+        "CIS E3 Level 1",
+        "CIS E3",
+        "CIS",
+        "Security",
+        "All",
+        "CIS M365 v4.0.0"
+      ],
+      "Result": "NotRun",
+      "ScriptBlock": "\n\n        $result = Test-MtCisCloudAdmin\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"admin accounts are cloud-only\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cis/Test-MtCisCloudAdmin.Tests.ps1",
       "ErrorRecord": [],
-      "Block": "App Management Policies",
+      "Block": "CIS",
+      "Duration": "00:00:00",
+      "ResultDetail": null
+    },
+    {
+      "Id": "CIS.M365.1.1.3",
+      "Title": "(L1) Ensure that between two and four global admins are designated",
+      "Name": "CIS.M365.1.1.3: (L1) Ensure that between two and four global admins are designated",
+      "HelpUrl": "",
+      "Severity": "High",
+      "Tag": [
+        "CIS.M365.1.1.3",
+        "L1",
+        "CIS E3 Level 1",
+        "CIS E3",
+        "CIS",
+        "Security",
+        "All",
+        "CIS M365 v4.0.0"
+      ],
+      "Result": "NotRun",
+      "ScriptBlock": "\n\n        $result = Test-MtCisGlobalAdminCount\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"only 2-4 Global Administrators exist\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cis/Test-MtCisGlobalAdminCount.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "CIS",
+      "Duration": "00:00:00",
+      "ResultDetail": null
+    },
+    {
+      "Id": "CIS.M365.1.2.2",
+      "Title": "(L1) Ensure sign-in to shared mailboxes is blocked",
+      "Name": "CIS.M365.1.2.2: (L1) Ensure sign-in to shared mailboxes is blocked",
+      "HelpUrl": "",
+      "Severity": "High",
+      "Tag": [
+        "CIS.M365.1.2.2",
+        "L1",
+        "CIS E3 Level 1",
+        "CIS E3",
+        "CIS",
+        "Security",
+        "All",
+        "CIS M365 v4.0.0"
+      ],
+      "Result": "NotRun",
+      "ScriptBlock": "\n\n        $result = Test-MtCisSharedMailboxSignIn\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"Sign ins are blocked for shared mailboxes\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cis/Test-MtCisSharedMailboxSignIn.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "CIS",
+      "Duration": "00:00:00",
       "ResultDetail": null
     }
   ],
   "Blocks": [
     {
-      "Name": "App Management Policies",
-      "Result": "Skipped",
+      "Name": "EIDSCA",
+      "Result": "NotRun",
       "FailedCount": 0,
       "PassedCount": 0,
-      "SkippedCount": 1,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "EIDSCA",
+        "Security",
+        "All",
+        "EIDSCA.AP01"
+      ]
+    },
+    {
+      "Name": "CISA",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "MS.EXO",
+        "MS.EXO.12.1",
+        "CISA.MS.EXO.12.1",
+        "CISA",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "Contoso.ConditionalAccess",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": []
+    },
+    {
+      "Name": "CIS",
+      "Result": "Failed",
+      "FailedCount": 1,
+      "PassedCount": 0,
+      "SkippedCount": 0,
       "NotRunCount": 0,
       "TotalCount": 1,
       "Tag": [
+        "CIS.M365.1.2.1",
+        "L2",
+        "CIS E3 Level 2",
+        "CIS E3",
+        "CIS",
+        "Security",
+        "All",
+        "CIS M365 v4.0.0"
+      ]
+    },
+    {
+      "Name": "Maester/Exchange",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "Maester",
+        "Exchange",
+        "SecureScore"
+      ]
+    },
+    {
+      "Name": "Maester/Teams",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "Maester",
+        "Teams",
+        "MeetingPolicy",
+        "All"
+      ]
+    },
+    {
+      "Name": "Maester/Intune",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "Maester",
+        "Intune",
+        "All"
+      ]
+    },
+    {
+      "Name": "Maester/Entra",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "Maester",
         "App",
+        "Security",
+        "All"
+      ]
+    },
+    {
+      "Name": "ORCA",
+      "Result": "NotRun",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 0,
+      "Tag": [
+        "ORCA",
+        "ORCA.100",
+        "EXO",
         "Security",
         "All"
       ]

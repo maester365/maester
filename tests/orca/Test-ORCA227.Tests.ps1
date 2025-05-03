@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:07 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA227", "EXO", "Security", "All" {
-    It "ORCA227: Each domain has a Safe Attachments policy applied to it." {
+Describe "ORCA" -Tag "ORCA", "ORCA.227", "EXO", "Security", "All" {
+    It "ORCA.227: Each domain has a Safe Attachments policy applied to it." {
         $result = Test-ORCA227
 
         if($null -ne $result) {

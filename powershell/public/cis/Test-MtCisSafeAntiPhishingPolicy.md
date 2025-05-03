@@ -16,7 +16,7 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v3.1.0 - Page 80](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 85](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

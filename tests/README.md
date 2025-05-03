@@ -30,3 +30,50 @@ Update-Module Maester -Force
 Import-Module Maester
 Update-MaesterTests
 ```
+
+## Customizing Severity Levels
+
+### Customizing Severity Levels for Out of the Box Tests
+
+You can customize the severity levels of the out of the box tests tests.
+
+To do this create a file named `maester-config.json` in your `./Custom` folder.
+
+Provide the severity levels for the tests you want to customize, using the format below.
+
+The severity levels are:
+
+- Critical
+- High
+- Medium
+- Low
+- Info
+
+```json
+{
+    "TestSettings": [
+        {
+            "Id": "CIS.M365.1.1.1",
+            "Severity": "High"
+        }
+    ]
+}
+```
+
+### Defining severity levels for custom tests
+
+You can define severity levels for your custom tests using the above approach (`maester-config.json`) or by using the `-Tag` parameter in the `Describe` or `It` block of your Pester tests.
+
+The tag needs to be in the format of `Severity:<SeverityLevel>`.
+
+E.g.
+
+```powershell
+Describe 'My Custom Test' {
+    It 'Cus.1001: My custom test' -Tag 'Severity:High' {
+        # Your test code here
+    }
+}
+```
+
+If a Severity level is defined in both the `maester-config.json` file and the test, the one in the `./Custom/maester-config.json` will take precedence.

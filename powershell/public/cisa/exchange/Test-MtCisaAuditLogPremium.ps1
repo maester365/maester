@@ -29,7 +29,7 @@ function Test-MtCisaAuditLogPremium {
         return $null
     }
 
-    Write-Warning "In tenants with a substantial number of mailboxes this test may take time"
+    Write-Verbose "In tenants with a substantial number of mailboxes this test may take time"
     $mailboxes = Get-EXOMailbox -Properties AuditOwner
 
     $resultMailboxes = $mailboxes | Where-Object { `

@@ -4,6 +4,7 @@
 
 .DESCRIPTION
     The common attachment types filter should be enabled
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisAttachmentFilter

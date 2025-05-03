@@ -16,7 +16,7 @@ To enable only organizationally managed/approved public groups exist:
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v3.1.0 - Page 30](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 33](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

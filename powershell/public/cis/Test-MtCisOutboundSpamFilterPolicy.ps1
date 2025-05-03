@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if Exchange Online Spam Policies are set to notify administrators
+    Checks if Exchange Online Spam Policies are set to notify administrators
 
 .DESCRIPTION
-Ensure Exchange Online Spam Policies are set to notify administrators
+    Ensure Exchange Online Spam Policies are set to notify administrators
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisOutboundSpamFilterPolicy
+    Test-MtCisOutboundSpamFilterPolicy
 
-Returns true if Exchange Online Spam Policies are set to notify administrators
+    Returns true if Exchange Online Spam Policies are set to notify administrators
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisOutboundSpamFilterPolicy
+    https://maester.dev/docs/commands/Test-MtCisOutboundSpamFilterPolicy
 #>
 function Test-MtCisOutboundSpamFilterPolicy {
     [CmdletBinding()]

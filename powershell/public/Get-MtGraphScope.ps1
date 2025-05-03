@@ -45,21 +45,23 @@ function Get-MtGraphScope {
 
     # Any changes made to these permission scopes should be reflected in the documentation.
     # /maester/website/docs/sections/permissions.md
-    #
+    # - Use alphabetical sort order.
     # NOTE: We should only include read-only permissions in the default scopes.
     # Other permissions should be opted-in by the user with switches like -SendMail.
 
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
+        'DeviceManagementConfiguration.Read.All'
+        'DeviceManagementManagedDevices.Read.All'
         'Directory.Read.All'
-        'Policy.Read.All'
-        'Reports.Read.All'
         'DirectoryRecommendations.Read.All'
-        'PrivilegedAccess.Read.AzureAD'
         'IdentityRiskEvent.Read.All'
+        'Policy.Read.All'
+        'Policy.Read.ConditionalAccess'
+        'PrivilegedAccess.Read.AzureAD'
+        'Reports.Read.All'
         'RoleEligibilitySchedule.Read.Directory'
         'RoleManagement.Read.All'
-        'Policy.Read.ConditionalAccess'
         'SharePointTenantSettings.Read.All'
         'UserAuthenticationMethod.Read.All'
     )

@@ -22,7 +22,7 @@ If set to Yes, password protection is turned on for Active Directory domain cont
 ### Details of configuration item
 | | |
 |-|-|
-| **Recommendation** | [Azure identity & access security best practices - Microsoft Learn](https://learn.microsoft.com/en-us/azure/security/fundamentals/identity-management-best-practices#enable-password-management) |
+| **Recommendation** | [Azure identity &amp; access security best practices - Microsoft Learn](https://learn.microsoft.com/en-us/azure/security/fundamentals/identity-management-best-practices#enable-password-management) |
 | **Configuration** | settings |
 | **Setting** | `values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value` |
 | **Recommended Value** | 'True' |

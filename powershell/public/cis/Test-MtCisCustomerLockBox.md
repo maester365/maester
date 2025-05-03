@@ -17,7 +17,7 @@ To enable the Customer Lockbox feature:
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v3.1.0 - Page 52](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 55](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

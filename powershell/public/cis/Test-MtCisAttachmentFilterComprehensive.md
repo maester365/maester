@@ -1,4 +1,4 @@
-2.1.14 (L2) Ensure comprehensive attachment filtering is applied
+2.1.11 (L2) Ensure comprehensive attachment filtering is applied
 
 **Rationale:**
 Blocking known malicious file types can help prevent malware-infested files from infecting a host or performing other malicious attacks such as phishing and data extraction. Defining a comprehensive list of attachments can help protect against additional unknown and known threats.
@@ -62,7 +62,7 @@ New-MalwareFilterRule @Rule
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v3.1.0 - Page 102](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 101](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

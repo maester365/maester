@@ -8,12 +8,12 @@
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+     graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
 
 .EXAMPLE
     Test-MtEidscaPR06
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -eq '10'
+    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
 #>
 
 function Test-MtEidscaPR06 {
@@ -27,18 +27,18 @@ function Test-MtEidscaPR06 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
-    $testResult = $tenantValue -eq '10'
+    [int]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
+    $testResult = $tenantValue -le '10'
     $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '10' -notlike '*$null*'
 
     if($testResult){
-        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'10'** for **settings**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **'10'** for **settings**"
     } elseif ($tenantValueNotSet) {
         $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'10'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'10'** for **settings**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is less than or equal to **'10'** for **settings**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 
     return $tenantValue
 }

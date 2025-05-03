@@ -19,6 +19,7 @@ function Test-MtManagedDeviceCleanupSettings {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param()
 
+    Write-Verbose "Testing device clean-up rule configuration"
     if ((Get-MtLicenseInformation EntraID) -eq "Free") {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
         return $null

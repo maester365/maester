@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 # Set up Maester Teams Alerts
 
-Your Maester monitoring workflow can be configured to send an adaptive card in a team channel with the summary of the Maester test results at the end of each monitoring cycle in Slack. This guide will walk you through the steps to set up Teams alerts in Maester.
+Your Maester monitoring workflow can be configured to send an adaptive card in a team channel with the summary of the Maester test results at the end of each monitoring cycle. This guide will walk you through the steps to set up Teams alerts in Maester.
 
 ![Maester - Microsoft Teams Alerts](assets/maester-teams-alert-test-result.png)
 
@@ -40,7 +40,6 @@ Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflow
 Alternatively, you can use the `Send-MtTeamsMessage` cmdlet to send the message to a specific Teams channel.
 
 ```powershell
-```powershell
 # Get the results of the Maester tests using -PassThru
 $results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
 
@@ -49,12 +48,35 @@ Send-MtTeamsMessage -MaesterResults $MaesterResults TeamChannelWebhookUri 'https
 
 ```
 
-
 :::note
 
 The TeamChannelWebhookUri should be kept secure and not shared publicly to avoid unauthorized users posting messages to your channel. If using GitHub Actions, it is recommended to store the webhook uri as a secret.
 
 :::
+
+### Github Action Webhook
+
+The latest version of the Github action has support for sending the notification to Teams. Add the url as a secret for your github actions with the name `TEAMS_WEBHOOK_URL`, and update your workflow.
+
+```yaml
+jobs:
+  run-maester-tests:
+    name: Run Maester Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Maester action
+      uses: maester365/maester@main
+      with:
+        client_id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+        include_public_tests: true # Optional: Set to false if you are keeping to a certain version of tests or have your own tests
+        include_exchange: false    # Optional: Set to true if you want to include Exchange tests
+        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
+        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
+        install_prerelease: false  # Optional: Set to true if you want to use Measter Preview Build when running tests
+        disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
+        notification_teams_webhook: ${{ secrets.TEAMS_WEBHOOK_URL }} # Optional: Send the results to this Teams Webhook URI
+```
 
 </TabItem>
 
@@ -93,6 +115,31 @@ Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-
 - To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'. Use the value of groupId. e.g. ?groupId=< TeamId >
 - To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'. Use the value found between channel and the channel name. e.g. /channel/< TeamChannelId >/my%20channel
   :::
+
+### Github Action Teams notification
+
+The latest version of the Github action has support for sending the notification to Teams. Add the TeamId and TeamChannelId as secrets for your github actions with the names `TEAMS_TEAM_ID` and `TEAMS_CHANNEL_ID`, and update your workflow.
+
+```yaml
+jobs:
+  run-maester-tests:
+    name: Run Maester Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Maester action
+      uses: maester365/maester@main
+      with:
+        client_id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+        include_public_tests: true # Optional: Set to false if you are keeping to a certain version of tests or have your own tests
+        include_exchange: false    # Optional: Set to true if you want to include Exchange tests
+        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
+        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
+        install_prerelease: false  # Optional: Set to true if you want to use Measter Preview Build when running tests
+        disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
+        notification_teams_team_id: ${{ secrets.TEAMS_TEAM_ID }} # Optional: Send the results to this Team
+        notification_teams_channel_id: ${{ secrets.TEAMS_CHANNEL_ID }} # Optional: Send the results to this Teams Channel
+```
 
 </TabItem>
 

@@ -35,7 +35,7 @@ function %PSFunctionName% {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value %CompareOperatorText% **%RecommendedValue%** for **%RelativeUri%**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity '%Severity%'
 
     return $tenantValue
 }

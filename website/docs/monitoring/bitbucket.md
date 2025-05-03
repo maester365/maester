@@ -130,6 +130,7 @@ pipelines:
                         OutputFolder         = "test-results"
                         OutputFolderFileName = "test-results"
                         PassThru             = $true
+                        NonInteractive       = $true
                       }
 
                       # Add DisableTelemetry parameter

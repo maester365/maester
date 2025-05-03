@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA124", "EXO", "Security", "All" {
-    It "ORCA124: Safe attachments unknown malware response set to block messages." {
+Describe "ORCA" -Tag "ORCA", "ORCA.124", "EXO", "Security", "All" {
+    It "ORCA.124: Safe attachments unknown malware response set to block messages." {
         $result = Test-ORCA124
 
         if($null -ne $result) {
