@@ -61,12 +61,12 @@ jobs:
             --azure-key-vault-certificate "${{ vars.CODE_SIGN_CERTIFICATENAME }}" `
             --timestamp-rfc3161 "http://timestamp.digicert.com" `
             --input-file-list ./signfiles.txt
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
 
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
         run: |
+          Rename-Item -Path ${{ github.workspace }}/powershell -NewName ${{ github.workspace }}/maester
           dir ${{ github.workspace }}/maester
           Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }} -Debug
 
