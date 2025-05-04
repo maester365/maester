@@ -63,12 +63,18 @@ jobs:
             --timestamp-rfc3161 "http://timestamp.digicert.com" `
             --input-file-list ./signfiles.txt
 
+      - name: Archive PowerShell build
+        uses: actions/upload-artifact@v4
+        with:
+          name: maester-module
+          path: |
+            ${{ github.workspace }}/build/maester
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
         run: |
           dir ${{ github.workspace }}/build/maester
-          Publish-PSResource -Path ${{ github.workspace }}/build/maester -APIKey ${{ secrets.PS_GALLERY_KEY }} -Debug
+          Publish-PSResource -Path ${{ github.workspace }}/build/maester -APIKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
