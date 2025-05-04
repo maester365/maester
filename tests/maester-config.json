@@ -1071,6 +1071,51 @@
       "Severity": "Medium"
     },
     {
+      "Id": "MT.1056",
+      "Title": "Ensure that no person has permanent access to all Azure subscriptions at the root scope",
+      "Severity": "High"
+    },
+    {
+      "Id": "MT.1057",
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to notify users.",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "MT.1058",
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups.",
+      "Severity": "Medium"
+    },
+    {
+      "Id": "ORCA.1000",
+      "Title": "Exchange Online Protection (EOP) is enabled.",
+      "Severity": "High"
+    },
+    {
+      "Id": "ORCA.1001",
+      "Title": "Spam filter policy settings configured.",
+      "Severity": "High"
+    },
+    {
+      "Id": "ORCA.1002",
+      "Title": "Malware filter policy settings configured.",
+      "Severity": "High"
+    },
+    {
+      "Id": "ORCA.1003",
+      "Title": "Phishing filter policy settings configured.",
+      "Severity": "High"
+    },
+    {
+      "Id": "ORCA.1004",
+      "Title": "<URL> filtering policy settings configured.",
+      "Severity": "High"
+    },
+    {
+      "Id": "<URL> filtering policy settings configured.",
+      "Title": "<URL> filtering policy settings configured.",
+      "Severity": "<URL>"
+    },
+    {
       "Id": "ORCA.100",
       "Title": "Bulk Complaint Level threshold is between 4 and 6.",
       "Severity": "Medium"
