@@ -68,7 +68,7 @@ jobs:
         shell: pwsh
         run: |
           dir ${{ github.workspace }}/build/maester
-          Publish-Module -Path ${{ github.workspace }}/build/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }} -Debug
+          Publish-PSResource -Path ${{ github.workspace }}/build/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }} -Debug
 
       - name: Build PowerShell module for GitHub
         id: module-creation
