@@ -351,6 +351,7 @@ function Invoke-Maester {
 
     Set-MtProgressView
     Write-MtProgress -Activity "Starting Maester" -Status "Reading Maester config..." -Force
+    Write-Verbose "Reading Maester config from: $Path"
     $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path
 
     Write-MtProgress -Activity "Starting Maester" -Status "Discovering tests to run..." -Force
