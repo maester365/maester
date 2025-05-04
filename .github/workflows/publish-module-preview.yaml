@@ -67,7 +67,8 @@ jobs:
         id: publish-to-gallery
         shell: pwsh
         run: |
-          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          dir ${{ github.workspace }}/maester
+          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }} -Debug
 
       - name: Build PowerShell module for GitHub
         id: module-creation
