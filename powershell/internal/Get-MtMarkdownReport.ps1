@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
   Generates a markdown report using the Maester test results format.
 

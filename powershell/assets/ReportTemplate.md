@@ -1,4 +1,4 @@
-# <img src="https://maester.dev/img/logo.svg" alt="Maester logo" height="40" width="40" /> Maester Test Results
+﻿# <img src="https://maester.dev/img/logo.svg" alt="Maester logo" height="40" width="40" /> Maester Test Results
 
 This is a summary of the test results from the Maester test run.
 
