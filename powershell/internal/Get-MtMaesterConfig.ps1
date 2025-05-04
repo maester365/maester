@@ -19,6 +19,8 @@ function Get-MtMaesterConfig {
         $Path
     )
 
+    Write-Verbose "Getting Maester config from $Path"
+
     # If the path is a directory, look for the maester-config.json file in it
     # check up 5 levels up the directory tree for the maester-config.json file
     if (Test-Path $Path -PathType Container) {
