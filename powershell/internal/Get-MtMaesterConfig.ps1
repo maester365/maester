@@ -57,7 +57,7 @@ function Get-MtMaesterConfig {
     }
 
     if (-not (Test-Path -Path $ConfigFilePath)) {
-        Write-Warning "Maester config file not found at $ConfigFilePath. Please update your tests to the latest version with Update-MtMaesterTests." -ForegroundColor Yellow
+        Write-Warning "Maester config file not found at $ConfigFilePath. Please update your tests to the latest version with Update-MtMaesterTests."
         return $null
     }
 
