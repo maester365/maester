@@ -49,10 +49,10 @@ The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resou
 > The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
 
 The following PowerShell script will enable you, with a Global Administrator role assignment, to:
-- Identify the Service Principal Object ID that will be authorized as a Reader and the Subscription ID to authorize for
+- Identify the Service Principal Object ID that will be authorized as a Reader (Enterprise app Object ID)
 - Install the necessary Az module and prompt for connection
 - Elevate your account access to the root scope
-- Create a role assignment for Reader access over the Subscription and objects within
+- Create a role assignment for Reader access over the Root Scope
 - Create a role assignment for Reader access over the Entra ID (i.e., [aadiam provider](https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/identity#microsoftaadiam))
 - Identify the role assignment authorizing your account access to the root scope
 - Delete the root scope role assignment for your account
@@ -65,8 +65,11 @@ Install-Module Az.Resources -Force
 Connect-AzAccount
 #Elevate to root scope access
 $elevateAccess = Invoke-AzRestMethod -Path "/providers/Microsoft.Authorization/elevateAccess?api-version=2015-07-01" -Method POST
-New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/subscriptions/$subscription" -RoleDefinitionName "Reader" -ObjectType "ServicePrincipal"
+
+#Assign permissions to Enterprise App
+New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/" -RoleDefinitionName "Reader" -ObjectType "ServicePrincipal"
 New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/providers/Microsoft.aadiam" -RoleDefinitionName "Reader" -ObjectType "ServicePrincipal"
+
 #Remove root scope access
 $assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9|?{$_.Scope -eq "/" -and $_.SignInName -eq (Get-AzContext).Account.Id}
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
