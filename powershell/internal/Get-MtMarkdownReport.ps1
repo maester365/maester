@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
   Generates a markdown report using the Maester test results format.
 
@@ -22,12 +22,14 @@ function Get-MtMarkdownReport {
         Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+        Skipped = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Skipped"/>'
     }
 
     $StatusIconSm = @{
-        Passed = '<img src="https://maester.dev/img/test-result/icon-pass.png" alt="Passed icon" height="18" />'
-        Failed = '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
-        NotRun = '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
+        Passed = '✅' # '<img src="https://maester.dev/img/test-result/icon-pass.png" alt="Passed icon" height="18" />'
+        Failed = '❌' # '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
+        NotRun = '❔' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
+        Skipped = '🚫' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
     }
 
     function GetTestSummary() {
@@ -46,37 +48,39 @@ function Get-MtMarkdownReport {
 
         foreach ($test in $MaesterResults.Tests) {
 
-            $details += "`n`n## $($StatusIconSm[$test.Result]) $($test.Name)`n`n`n"
+            $details += "### $($StatusIconSm[$test.Result]) $($test.Name)`n`n"
 
             $details += $StatusIcon[$test.Result] -replace 'src', 'align="right" src'
             $details += "`n`n"
 
             if (![string]::IsNullOrEmpty($test.ResultDetail)) {
                 # Test author has provided details
-                $details += "`n`n#### Overview`n`n$($test.ResultDetail.TestDescription)"
-                $details += "`n#### Test Results`n`n$($test.ResultDetail.TestResult)"
+                $details += "#### Overview`n`n$($test.ResultDetail.TestDescription)`n`n"
+                $details += "#### Test Results`n`n$($test.ResultDetail.TestResult)`n`n"
             } else {
                 # Test author has not provided details, use default code in script
-                $details += "`n`n#### Overview`n`n> $($test.ScriptBlock.Trim())"
+                # make sure we do not execute the code in the script block!
+                $cleanedScriptBlock = $test.ScriptBlock.ToString() -replace '%\w+%', '' -replace '\$_', '€_' # or show me how I can make it not execute the $_ thing
+                $details += "#### Overview`n`n``````ps1`n$cleanedScriptBlock`n```````n`n"
                 if (![string]::IsNullOrEmpty($test.ErrorRecord)) {
-                    $details += "`n`n#### Reason for failure`n`n$($test.ErrorRecord)"
+                    $details += "#### Reason for failure`n`n$($test.ErrorRecord)`n`n"
                 }
             }
 
-            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "`n`n**Learn more**: [$($test.HelpUrl)]($($test.HelpUrl))" }
+            if (![string]::IsNullOrEmpty($test.HelpUrl)) { $details += "**Learn more**: [$($test.HelpUrl)]($($test.HelpUrl))`n`n" }
             if (![string]::IsNullOrEmpty($test.Tag)) {
                 $tags = '`{0}`' -f ($test.Tag -join '` `')
-                $details += "`n`n**Tag**: $tags"
+                $details += "**Tag**: $tags`n`n"
             }
 
             if (![string]::IsNullOrEmpty($test.Block)) {
                 $category = '`{0}`' -f ($test.Block -join '` `')
-                $details += "`n`n**Category**: $category"
+                $details += "**Category**: $category`n`n"
             }
 
-            if (![string]::IsNullOrEmpty($test.ScriptBlockFile)) { $details += "`n`n**Source**: ``$($test.ScriptBlockFile)``" }
+            if (![string]::IsNullOrEmpty($test.ScriptBlockFile)) { $details += "**Source**: ``$($test.ScriptBlockFile)```n`n" }
 
-            $details += "`n`n---`n`n"
+            $details += "---`n`n"
         }
 
         return $details
@@ -84,6 +88,10 @@ function Get-MtMarkdownReport {
 
     $markdownFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../assets/ReportTemplate.md'
     $templateMarkdown = Get-Content -Path $markdownFilePath -Raw
+
+    # Execute functions first so they don't mess with the markdown template
+    $textSummary = GetTestSummary
+    $textDetails = GetTestDetails
 
     $templateMarkdown = $templateMarkdown -replace '%TenandId%', $MaesterResults.TenantId
     $templateMarkdown = $templateMarkdown -replace '%TenantName%', $MaesterResults.TenantName
@@ -95,8 +103,8 @@ function Get-MtMarkdownReport {
     $templateMarkdown = $templateMarkdown -replace '%FailedCount%', $MaesterResults.FailedCount
     $templateMarkdown = $templateMarkdown -replace '%NotRunCount%', $MaesterResults.NotRunCount
 
-    $templateMarkdown = $templateMarkdown -replace '%TestSummary%', (GetTestSummary)
-    $templateMarkdown = $templateMarkdown -replace '%TestDetails%', (GetTestDetails)
+    $templateMarkdown = $templateMarkdown -replace '%TestSummary%', $textSummary
+    $templateMarkdown = $templateMarkdown -replace '%TestDetails%', $textDetails
 
     return $templateMarkdown
 }
