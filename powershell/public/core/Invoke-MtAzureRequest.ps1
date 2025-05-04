@@ -15,6 +15,7 @@
 #>
 
 function Invoke-MtAzureRequest {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '', Justification = 'Invoke-MtAzureRequest is required')]
     [CmdletBinding()]
     param(
         # Graph endpoint such as "users".
