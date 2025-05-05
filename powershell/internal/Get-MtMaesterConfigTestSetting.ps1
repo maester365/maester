@@ -20,7 +20,7 @@ function Get-MtMaesterConfigTestSetting {
 
     # Check if the Maester config is loaded
     if (-not ($__MtSession -and $__MtSession.MaesterConfig)) {
-        Write-Warning "Maester config not loaded. Please run Get-MtMaesterConfig first."
+        Write-Verbose "Maester config not loaded. Please run Get-MtMaesterConfig first to get config for TestId: $TestId"
         return $null
     }
 
