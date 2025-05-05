@@ -139,22 +139,31 @@ PROCESS {
         }
     }
 
-    if ([string]::IsNullOrWhiteSpace($TeamsChannelId) -eq $false -and [string]::IsNullOrWhiteSpace($TeamsTeamId) -eq $false) {
-        $MaesterParameters.Add( 'TeamChannelId', $TeamsChannelId )
-        $MaesterParameters.Add( 'TeamId', $TeamsTeamId )
-        Write-Host "Results will be sent to Teams Team Id: $TeamsTeamId"
+    $maesterCommand = Get-Command -Name Invoke-Maester
+    # Skip if running older version of Maester
+    if ($maesterCommand.Parameters.ContainsKey('TeamChannelWebhookUri')) {
+
+        if ([string]::IsNullOrWhiteSpace($TeamsChannelId) -eq $false -and [string]::IsNullOrWhiteSpace($TeamsTeamId) -eq $false) {
+            $MaesterParameters.Add( 'TeamChannelId', $TeamsChannelId )
+            $MaesterParameters.Add( 'TeamId', $TeamsTeamId )
+            Write-Host "Results will be sent to Teams Team Id: $TeamsTeamId"
+        }
+
+
+        # Check if Teams Webhook Uri is provided
+        if ($TeamsWebhookUri) {
+            # Query the Invoke-Maester cmdlet and check if it has this parameter.
+            $MaesterParameters.Add( 'TeamChannelWebhookUri', $TeamsWebhookUri )
+            Write-Host "::add-mask::$TeamsWebhookUri"
+            Write-Host "Sending test results to Teams Webhook Uri: $TeamsWebhookUri"
+        } else {
+            Write-Verbose "Invoke-Maester does not have the TeamsWebhookUri parameter."
+        }
     }
 
     # Check if disable telemetry is provided
     if ($DisableTelemetry ) {
         $MaesterParameters.Add( 'DisableTelemetry', $true )
-    }
-
-    # Check if Teams Webhook Uri is provided
-    if ($TeamsWebhookUri) {
-        $MaesterParameters.Add( 'TeamChannelWebhookUri', $TeamsWebhookUri )
-        Write-Host "::add-mask::$TeamsWebhookUri"
-        Write-Host "Sending test results to Teams Webhook Uri: $TeamsWebhookUri"
     }
 
     # Run Maester tests
