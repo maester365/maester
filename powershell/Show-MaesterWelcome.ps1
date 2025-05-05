@@ -2,7 +2,13 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
 param ()
 
-Show-MtLogo
+try {
+    . "$PSScriptRoot/internal/Show-MtLogo.ps1" -ErrorAction Stop
+    Show-MtLogo
+} catch {
+    Write-Host "Importing Maester v$((Import-PowerShellDataFile -Path "$PSScriptRoot/../Maester.psd1" -ErrorAction SilentlyContinue).ModuleVersion)." -ForegroundColor Green
+}
+
 Write-Host "    To get started, install Maester tests and connect before running Maester:`n" -ForegroundColor Yellow
 Write-Host "`tmd 'Maester-Tests'           " -ForegroundColor Black -BackgroundColor Gray -NoNewline
 Write-Host ''
