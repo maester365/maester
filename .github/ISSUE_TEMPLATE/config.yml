@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions 💬
+    url: https://github.com/maester365/maester/discussions
+    about: Please share any questions or ideas in the project discussions.
+  - name: Documentation 📖
+    url: https://maester.dev/docs/intro
+    about: Maester Docs
+  - name: Known Issues ⚠️
+    url: https://github.com/maester365/maester/issues
+    # Replace URL with a 'known issues' segment in the README.
+    about: Please review the known issues before creating a new one.
