@@ -21,44 +21,55 @@ function Get-MtMaesterConfig {
 
     Write-Verbose "Getting Maester config from $Path"
 
-    # If the path is a directory, look for the maester-config.json file in it
-    # check up 5 levels up the directory tree for the maester-config.json file
-    if (Test-Path $Path -PathType Container) {
-        $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
-        if (-not (Test-Path -Path $ConfigFilePath)) {
-            Write-Verbose "Config file not found in $Path. Looking for maester-config.json in parent directories."
-            # Check if it's there in the ./tests folder
-            $testsDir = Join-Path -Path $Path -ChildPath 'tests/maester-config.json'
-            if (Test-Path -Path $testsDir) {
-                $ConfigFilePath = $testsDir
-            } else {
-                # Check if there are any parent directories
-                # and look for the maester-config.json file in each parent directory
-                # up to 5 levels up
-                # This is to ensure that we can find the config file even if the user is in a subdirectory
-                # of the tests directory
-                for ($i = 1; $i -le 5; $i++) {
-                    if (Test-Path -Path $ConfigFilePath) {
-                        break
+    try {
+        # If the path is a directory, look for the maester-config.json file in it
+        # check up 5 levels up the directory tree for the maester-config.json file
+        if (Test-Path $Path -PathType Container) {
+            $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
+            if (-not (Test-Path -Path $ConfigFilePath)) {
+                Write-Verbose "Config file not found in $Path. Looking for maester-config.json in parent directories."
+                # Check if it's there in the ./tests folder
+                $testsDir = Join-Path -Path $Path -ChildPath 'tests/maester-config.json'
+                if (Test-Path -Path $testsDir) {
+                    $ConfigFilePath = $testsDir
+                } else {
+                    # Check if there are any parent directories
+                    # and look for the maester-config.json file in each parent directory
+                    # up to 5 levels up
+                    # This is to ensure that we can find the config file even if the user is in a subdirectory
+                    # of the tests directory
+                    for ($i = 1; $i -le 5; $i++) {
+                        if (Test-Path -Path $ConfigFilePath) {
+                            break
+                        }
+                        $parentDir = Split-Path -Path $Path -Parent
+                        if ($parentDir -eq $Path -or [string]::IsNullOrEmpty($parentDir)) {
+                            break
+                        }
+                        $Path = $parentDir
+                        $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
                     }
-                    $parentDir = Split-Path -Path $Path -Parent
-                    if ($parentDir -eq $Path -or [string]::IsNullOrEmpty($parentDir)) {
-                        break
-                    }
-                    $Path = $parentDir
-                    $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
                 }
             }
         }
-    }
-    # If the path is a file, use it directly
-    elseif (Test-Path -Path $Path -PathType Leaf) {
-        $ConfigFilePath = $Path
+        # If the path is a file, use it directly
+        elseif (Test-Path -Path $Path -PathType Leaf) {
+            $ConfigFilePath = $Path
+        }
+    } catch {
+        # write the error as a warning
+        Write-Verbose "Error while trying to seek the config file: $_"
     }
 
+
     if (-not (Test-Path -Path $ConfigFilePath)) {
-        Write-Warning "Maester config file not found at $ConfigFilePath. Please update your tests to the latest version with Update-MtMaesterTests."
-        return $null
+        # If we didn't find it anywhere, let's use the default config file
+        Write-Verbose "Config file not found. Using default config file."
+        $ConfigFilePath = Join-Path (Get-MtMaesterTestFolderPath) -ChildPath 'maester-config.json'
+        if (-not (Test-Path -Path $ConfigFilePath)) {
+            Write-Warning "Default config file not found at $ConfigFilePath. Please provide a valid path to the config file."
+            return $null
+        }
     }
 
     $maesterConfig = Get-Content -Path $ConfigFilePath -Raw | ConvertFrom-Json
