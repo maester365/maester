@@ -6,11 +6,6 @@ labels: 'bug'
 assignees: ''
 
 ---
-<!-- markdownlint-disable MD012 -->
-<!--- Provide a general summary of the issue in the Title above -->
-
-
-<!-- markdownlint-disable MD033 -->
 Thanks for reporting the bug. Please ensure you've gone through the following checklist before opening an issue:
 
 - Make sure you can reproduce this issue using the latest released version of `Maester`.
@@ -20,12 +15,14 @@ Thanks for reporting the bug. Please ensure you've gone through the following ch
 <!-- 📝 Please provide a clear and concise description of what the bug is. -->
 
 
+
 ## To Reproduce
 
 Steps to reproduce the behavior:
 
 1. Execute `<Command>` with `<Parameters>`...
 2. See error at `...`
+
 
 
 ## Expected behavior
@@ -40,6 +37,7 @@ Steps to reproduce the behavior:
 <summary>Debug Output</summary>
 <!-- Please paste the debug output here. 👇 -->
 
+
 <!-- Please paste the debug output here. 👆 -->
 </details>
 
@@ -48,16 +46,20 @@ Steps to reproduce the behavior:
 If a module cannot be installed or imported, please run `Get-Module -ListAvailable` and paste the output. -->
 
 
+
 ## Environment Data
 <!-- 🖥️ Please run `$PSVersionTable` and paste the output below. If running the Docker container image, indicate the tag of the image used and the version of Docker engine. -->
+
 
 
 ## Screenshots
 <!-- 📸 If applicable, add screenshots to help explain your problem. -->
 
 
+
 ## Additional context
 <!-- 💡 Add any other context about the problem here. -->
+
 
 
 <!-- 🤝 Thank you for taking the time to submit this report! -->
