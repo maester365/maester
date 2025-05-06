@@ -77,7 +77,8 @@ Invoke-Maester -PesterConfiguration $configuration
 Runs all the Pester tests in the EIDSCA folder.
 
 .LINK
-    https://maester.dev/docs/commands/Invoke-Maester
+    https://maester.dev/docs/commands/
+    Invoke-Maester
 #>
 function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
@@ -282,6 +283,9 @@ function Invoke-Maester {
     } else {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
     }
+
+    # Initialize after graph connected
+    Initialize-MtSession
 
     if ($isWebUri) {
         # Check if TeamChannelWebhookUri is a valid URL
