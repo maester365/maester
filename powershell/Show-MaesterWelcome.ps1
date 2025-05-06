@@ -10,11 +10,11 @@ try {
 }
 
 Write-Host "    To get started, install Maester tests and connect before running Maester:`n" -ForegroundColor Yellow
-Write-Host "`tmd 'Maester-Tests'           " -ForegroundColor Black -BackgroundColor Gray -NoNewline
+Write-Host "`tmd 'maester-tests'           " -ForegroundColor Black -BackgroundColor Gray -NoNewline
 Write-Host ''
-Write-Host "`tcd 'Maester-Tests'           " -ForegroundColor Black -BackgroundColor Gray -NoNewline
+Write-Host "`tcd 'maester-tests'           " -ForegroundColor Black -BackgroundColor Gray -NoNewline
 Write-Host ''
-Write-Host "`tInstall-MtTests              " -ForegroundColor Black -BackgroundColor Gray -NoNewline
+Write-Host "`tInstall-MaesterTests         " -ForegroundColor Black -BackgroundColor Gray -NoNewline
 Write-Host ''
 Write-Host "`tConnect-Maester -Service All " -ForegroundColor Black -BackgroundColor Gray -NoNewline
 Write-Host ''

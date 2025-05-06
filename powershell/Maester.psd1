@@ -76,7 +76,9 @@ FormatsToProcess = @('Maester.Format.ps1xml')
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail', 'Clear-MtGraphCache', 'Connect-Maester',
-               'Disconnect-Maester', 'Get-MtAuthenticationMethodPolicyConfig', 'Get-MtRoleMember',
+               'Disconnect-Maester',
+               'Get-MtAdminPortalUrl',
+               'Get-MtAuthenticationMethodPolicyConfig', 'Get-MtRoleMember',
                'Get-MtConditionalAccessPolicy', 'Get-MtGraphScope', 'Get-MtGroupMember',
                'Get-MtHtmlReport', 'Get-MtLicenseInformation',
                'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',

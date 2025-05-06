@@ -1,5 +1,5 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.6.1", "CISA.MS.EXO.06.1", "CISA", "Security", "All" {
-    It "CISA.MS.EXO.06.1: Contact folders SHALL NOT be shared with all domains." {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.6.1", "CISA.MS.EXO.6.1", "CISA", "Security", "All" {
+    It "CISA.MS.EXO.6.1: Contact folders SHALL NOT be shared with all domains." {
 
         $cisaContactSharing = Test-MtCisaContactSharing
 

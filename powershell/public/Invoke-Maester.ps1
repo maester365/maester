@@ -283,6 +283,9 @@ function Invoke-Maester {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
     }
 
+    # Initialize after graph connected
+    Initialize-MtSession
+
     if ($isWebUri) {
         # Check if TeamChannelWebhookUri is a valid URL
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'

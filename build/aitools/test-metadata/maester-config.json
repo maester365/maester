@@ -281,27 +281,27 @@
       "Severity": "Medium"
     },
     {
-      "Id": "CISA.MS.EXO.03.1",
+      "Id": "CISA.MS.EXO.3.1",
       "Title": "DKIM SHOULD be enabled for all domains.",
       "Severity": "Medium"
     },
     {
-      "Id": "CISA.MS.EXO.06.1",
+      "Id": "CISA.MS.EXO.6.1",
       "Title": "Contact folders SHALL NOT be shared with all domains.",
       "Severity": "Medium"
     },
     {
-      "Id": "CISA.MS.EXO.06.2",
+      "Id": "CISA.MS.EXO.6.2",
       "Title": "Calendar details SHALL NOT be shared with all domains.",
       "Severity": "Medium"
     },
     {
-      "Id": "CISA.MS.EXO.07.1",
+      "Id": "CISA.MS.EXO.7.1",
       "Title": "External sender warnings SHALL be implemented.",
       "Severity": "Medium"
     },
     {
-      "Id": "CISA.MS.EXO.08.1",
+      "Id": "CISA.MS.EXO.8.1",
       "Title": "A DLP solution SHALL be used.",
       "Severity": "High"
     },
