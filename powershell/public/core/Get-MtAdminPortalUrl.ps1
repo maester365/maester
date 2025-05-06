@@ -20,6 +20,7 @@ function Get-MtAdminPortalUrl {
         [string] $Portal
     )
 
+    Write-Verbose -Message "Getting admin portal URL for environment: $Environment"
 
     if ([string]::IsNullOrEmpty($Environment) -or $Environment -eq 'Global') {
         $adminPortalUrl = @{

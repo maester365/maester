@@ -77,8 +77,7 @@ Invoke-Maester -PesterConfiguration $configuration
 Runs all the Pester tests in the EIDSCA folder.
 
 .LINK
-    https://maester.dev/docs/commands/
-    Invoke-Maester
+    https://maester.dev/docs/commands/Invoke-Maester
 #>
 function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
