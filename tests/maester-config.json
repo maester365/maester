@@ -41,21 +41,6 @@
       "Title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)"
     },
     {
-      "Id": "CIS.M365.2.1.11",
-      "Severity": "High",
-      "Title": "(L2) Ensure comprehensive attachment filtering is applied"
-    },
-    {
-      "Id": "CIS.M365.2.1.12",
-      "Severity": "Medium",
-      "Title": "(L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)"
-    },
-    {
-      "Id": "CIS.M365.2.1.13",
-      "Severity": "Medium",
-      "Title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)"
-    },
-    {
       "Id": "CIS.M365.2.1.2",
       "Severity": "Medium",
       "Title": "(L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)"
@@ -89,6 +74,21 @@
       "Id": "CIS.M365.2.1.9",
       "Severity": "High",
       "Title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains"
+    },
+    {
+      "Id": "CIS.M365.2.1.11",
+      "Severity": "High",
+      "Title": "(L2) Ensure comprehensive attachment filtering is applied"
+    },
+    {
+      "Id": "CIS.M365.2.1.12",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.13",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)"
     },
     {
       "Id": "CIS.M365.2.4.4",
@@ -281,44 +281,104 @@
       "Title": "Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes."
     },
     {
+      "Id": "CISA.MS.EXO.1.1",
+      "Severity": "High",
+      "Title": "Automatic forwarding to external domains SHALL be disabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.2.1",
+      "Severity": "Medium",
+      "Title": "A list of approved IP addresses for sending mail SHALL be maintained."
+    },
+    {
+      "Id": "CISA.MS.EXO.2.2",
+      "Severity": "Medium",
+      "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
+    },
+    {
       "Id": "CISA.MS.EXO.03.1",
       "Severity": "Medium",
       "Title": "DKIM SHOULD be enabled for all domains."
     },
     {
-      "Id": "CISA.MS.EXO.06.1",
+      "Id": "CISA.MS.EXO.4.1",
+      "Severity": "Medium",
+      "Title": "A DMARC policy SHALL be published for every second-level domain."
+    },
+    {
+      "Id": "CISA.MS.EXO.4.2",
+      "Severity": "High",
+      "Title": "The DMARC message rejection option SHALL be p=reject."
+    },
+    {
+      "Id": "CISA.MS.EXO.4.3",
+      "Severity": "Medium",
+      "Title": "The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov."
+    },
+    {
+      "Id": "CISA.MS.EXO.5.1",
+      "Severity": "High",
+      "Title": "SMTP AUTH SHALL be disabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.6.1",
       "Severity": "Medium",
       "Title": "Contact folders SHALL NOT be shared with all domains."
     },
     {
-      "Id": "CISA.MS.EXO.06.2",
+      "Id": "CISA.MS.EXO.6.2",
       "Severity": "Medium",
       "Title": "Calendar details SHALL NOT be shared with all domains."
     },
     {
-      "Id": "CISA.MS.EXO.07.1",
+      "Id": "CISA.MS.EXO.7.1",
       "Severity": "Medium",
       "Title": "External sender warnings SHALL be implemented."
     },
     {
-      "Id": "CISA.MS.EXO.08.1",
+      "Id": "CISA.MS.EXO.8.1",
       "Severity": "High",
       "Title": "A DLP solution SHALL be used."
     },
     {
-      "Id": "CISA.MS.EXO.09.3",
+      "Id": "CISA.MS.EXO.8.2",
+      "Severity": "Medium",
+      "Title": "The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.3",
+      "Severity": "Medium",
+      "Title": "The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.4",
+      "Severity": "High",
+      "Title": "At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.1",
+      "Severity": "Medium",
+      "Title": "Emails SHALL be filtered by attachment file types."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.2",
+      "Severity": "Medium",
+      "Title": "The attachment filter SHOULD attempt to determine the true file type and assess the file extension."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.3",
       "Severity": "High",
       "Title": "Disallowed file types SHALL be determined and enforced."
     },
     {
-      "Id": "CISA.MS.EXO.09.5",
-      "Severity": "High",
-      "Title": "At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)."
+      "Id": "CISA.MS.EXO.9.4",
+      "Severity": "Medium",
+      "Title": "Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter."
     },
     {
-      "Id": "CISA.MS.EXO.1.1",
+      "Id": "CISA.MS.EXO.9.5",
       "Severity": "High",
-      "Title": "Automatic forwarding to external domains SHALL be disabled."
+      "Title": "At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)."
     },
     {
       "Id": "CISA.MS.EXO.10.1",
@@ -426,66 +486,6 @@
       "Title": "Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C)."
     },
     {
-      "Id": "CISA.MS.EXO.2.1",
-      "Severity": "Medium",
-      "Title": "A list of approved IP addresses for sending mail SHALL be maintained."
-    },
-    {
-      "Id": "CISA.MS.EXO.2.2",
-      "Severity": "Medium",
-      "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
-    },
-    {
-      "Id": "CISA.MS.EXO.4.1",
-      "Severity": "Medium",
-      "Title": "A DMARC policy SHALL be published for every second-level domain."
-    },
-    {
-      "Id": "CISA.MS.EXO.4.2",
-      "Severity": "High",
-      "Title": "The DMARC message rejection option SHALL be p=reject."
-    },
-    {
-      "Id": "CISA.MS.EXO.4.3",
-      "Severity": "Medium",
-      "Title": "The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov."
-    },
-    {
-      "Id": "CISA.MS.EXO.5.1",
-      "Severity": "High",
-      "Title": "SMTP AUTH SHALL be disabled."
-    },
-    {
-      "Id": "CISA.MS.EXO.8.2",
-      "Severity": "Medium",
-      "Title": "The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency."
-    },
-    {
-      "Id": "CISA.MS.EXO.8.3",
-      "Severity": "Medium",
-      "Title": "The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft."
-    },
-    {
-      "Id": "CISA.MS.EXO.8.4",
-      "Severity": "High",
-      "Title": "At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email."
-    },
-    {
-      "Id": "CISA.MS.EXO.9.1",
-      "Severity": "Medium",
-      "Title": "Emails SHALL be filtered by attachment file types."
-    },
-    {
-      "Id": "CISA.MS.EXO.9.2",
-      "Severity": "Medium",
-      "Title": "The attachment filter SHOULD attempt to determine the true file type and assess the file extension."
-    },
-    {
-      "Id": "CISA.MS.EXO.9.4",
-      "Severity": "Medium",
-      "Title": "Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter."
-    },
-    {
       "Id": "CISA.MS.SHAREPOINT.1.1",
       "Severity": "Medium",
       "Title": "External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization."
@@ -494,11 +494,6 @@
       "Id": "CISA.MS.SHAREPOINT.1.3",
       "Severity": "High",
       "Title": "External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs."
-    },
-    {
-      "Id": "CTSO.001",
-      "Severity": "High",
-      "Title": "SharePoint Online access requires MFA"
     },
     {
       "Id": "EIDSCA.AF01",
@@ -841,41 +836,6 @@
       "Title": "Entra Recommendation - Protect your tenant with Insider Risk condition in Conditional Access policy"
     },
     {
-      "Id": "MT.1024.10",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Do not allow users to grant consent to unreliable applications"
-    },
-    {
-      "Id": "MT.1024.11",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Enable policy to block legacy authentication"
-    },
-    {
-      "Id": "MT.1024.12",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Require multifactor authentication for administrative roles"
-    },
-    {
-      "Id": "MT.1024.13",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring service principal credentials"
-    },
-    {
-      "Id": "MT.1024.14",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring application credentials"
-    },
-    {
-      "Id": "MT.1024.15",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Remove unused credentials from applications"
-    },
-    {
-      "Id": "MT.1024.16",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Remove unused applications"
-    },
-    {
       "Id": "MT.1024.2",
       "Severity": "High",
       "Title": "Entra Recommendation - Protect all users with a user risk policy"
@@ -915,6 +875,42 @@
       "Severity": "High",
       "Title": "Entra Recommendation - Ensure all users can complete multifactor authentication"
     },
+    {
+      "Id": "MT.1024.10",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Do not allow users to grant consent to unreliable applications"
+    },
+    {
+      "Id": "MT.1024.11",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Enable policy to block legacy authentication"
+    },
+    {
+      "Id": "MT.1024.12",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Require multifactor authentication for administrative roles"
+    },
+    {
+      "Id": "MT.1024.13",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Renew expiring service principal credentials"
+    },
+    {
+      "Id": "MT.1024.14",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Renew expiring application credentials"
+    },
+    {
+      "Id": "MT.1024.15",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Remove unused credentials from applications"
+    },
+    {
+      "Id": "MT.1024.16",
+      "Severity": "Medium",
+      "Title": "Entra Recommendation - Remove unused applications"
+    },
+
     {
       "Id": "MT.1025",
       "Severity": "High",
@@ -1084,36 +1080,6 @@
       "Id": "MT.1058",
       "Severity": "Medium",
       "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
-    },
-    {
-      "Id": "ORCA.1000",
-      "Severity": "High",
-      "Title": "Exchange Online Protection (EOP) is enabled."
-    },
-    {
-      "Id": "ORCA.1001",
-      "Severity": "High",
-      "Title": "Spam filter policy settings configured."
-    },
-    {
-      "Id": "ORCA.1002",
-      "Severity": "High",
-      "Title": "Malware filter policy settings configured."
-    },
-    {
-      "Id": "ORCA.1003",
-      "Severity": "High",
-      "Title": "Phishing filter policy settings configured."
-    },
-    {
-      "Id": "ORCA.1004",
-      "Severity": "High",
-      "Title": "<URL> filtering policy settings configured."
-    },
-    {
-      "Id": "<URL> filtering policy settings configured.",
-      "Severity": "<URL>",
-      "Title": "<URL> filtering policy settings configured."
     },
     {
       "Id": "ORCA.100",
@@ -1449,6 +1415,31 @@
       "Id": "ORCA.244",
       "Severity": "Medium",
       "Title": "Policies are configured to honor sending domains DMARC."
+    },
+    {
+      "Id": "ORCA.1000",
+      "Severity": "High",
+      "Title": "Exchange Online Protection (EOP) is enabled."
+    },
+    {
+      "Id": "ORCA.1001",
+      "Severity": "High",
+      "Title": "Spam filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1002",
+      "Severity": "High",
+      "Title": "Malware filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1003",
+      "Severity": "High",
+      "Title": "Phishing filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1004",
+      "Severity": "High",
+      "Title": "<URL> filtering policy settings configured."
     }
   ]
 }

@@ -4,6 +4,13 @@
 
     .DESCRIPTION
         This function returns the URL for the specific Microsoft admin portal based on the environment.
+
+    .EXAMPLE
+        Get-MtAdminPortalUrl -Environment 'USGov' -Portal 'Azure'
+        Returns the URL for the Azure portal in the Global environment.
+
+    .LINK
+        https://maester.dev/docs/commands/Get-MtAdminPortalUrl
 #>
 
 function Get-MtAdminPortalUrl {
@@ -11,7 +18,7 @@ function Get-MtAdminPortalUrl {
     param(
         # The environment to use. If not specified, will use Global as default.
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Global', 'USGov', 'USGovDoD', 'Germany')]
+        [ValidateSet('Global', 'USGov', 'USGovDoD', 'Germany', 'China')]
         [string] $Environment = 'Global',
 
         # The portal to use. If not specified, returns all the portals.
