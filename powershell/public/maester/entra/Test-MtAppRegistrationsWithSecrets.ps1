@@ -15,12 +15,10 @@
 #>
 function Test-MtAppRegistrationsWithSecrets {
     [CmdletBinding()]
-    # [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple permissions.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks credentials for all apps.')]
     [OutputType([bool])]
     param(
-        # # Check for direct path to Global Admin or indirect path through a combination of permissions. Default is "All".
-        # [ValidateSet('All', 'Direct', 'Indirect')]
-        # [String] $AttackPath = "All"
+
     )
 
     if (-not (Test-MtConnection Graph)) {
