@@ -90,56 +90,38 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: 🕑 Set current date as env variable
+    - name: ❌ Write outdated action warning
       shell: bash
-      run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
-
-    - name: 🧑‍💻 Checkout latest public tests
-      if: ${{ inputs.include_public_tests == 'true' }}
-      uses: actions/checkout@v4
-      with:
-        repository: maester365/maester-tests
-        path: public-tests
-
-    - name: 🧑‍💻 Checkout latest private tests
-      uses: actions/checkout@v4
-      with:
-        path: private-tests
-
-    - name: 🔑 Sign in to Entra ID
-      uses: azure/login@v2
-      with:
-        client-id: ${{ inputs.client_id }}
-        tenant-id: ${{ inputs.tenant_id }}
-        allow-no-subscriptions: true
-
-    - name: 🧪 Run Maester
-      id: maester
-      shell: pwsh
       run: |
-        . ${{ github.action_path }}\action\Get-MtAccessTokenUsingCli.ps1
-        ${{ github.action_path }}\action\Run-Maester.ps1 -TenantId '${{ inputs.tenant_id}}' `
-          -ClientId '${{ inputs.client_id }}' `
-          -Path '${{ github.workspace }}' `
-          -MailRecipients '${{ inputs.mail_recipients }}' `
-          -MailUser '${{ inputs.mail_userid }}' `
-          -TestResultURI '${{ inputs.mail_testresultsuri }}' `
-          -IncludeTags '${{ inputs.include_tags }}' `
-          -ExcludeTags '${{ inputs.exclude_tags }}' `
-          -PesterVerbosity '${{ inputs.pester_verbosity }}' `
-          -GitHubStepSummary ('${{ inputs.step_summary }}' -eq 'true') `
-          -Preview ('${{ inputs.install_prerelease }}' -eq 'true') `
-          -IncludeExchange ('${{ inputs.include_exchange }}' -eq 'true') `
-          -IncludeTeams ('${{ inputs.include_teams }}' -eq 'true') `
-          -DisableTelemetry ('${{ inputs.disable_telemetry}}' -eq 'true') `
-          -TeamsWebhookUri '${{ inputs.notification_teams_webhook }}' `
-          -TeamsChannelId '${{ inputs.notification_teams_channel_id }}' `
-          -TeamsTeamId '${{ inputs.notification_teams_team_id }}'
+        echo "This action has been replaced by https://github.com/maester365/maester-action  Please use that action instead."
+        echo "::warning title=Outdated action::The action you are using is outdated. Check documentation for the new action at https://github.com/maester365/maester-action"
+        echo "## ⚠️ Maester action replaced" >> $GITHUB_STEP_SUMMARY
+        echo " " >> $GITHUB_STEP_SUMMARY
+        echo "Check out new Maester action at https://github.com/maester365/maester-action" >> $GITHUB_STEP_SUMMARY
 
-    - name: 📃 Archive Maester Html Report
-      uses: actions/upload-artifact@v4
-      if: always() && steps.maester.outputs.results_json != '' && inputs.artifact_upload == 'true'
+    - name: Run Maester 🔥
+      id: maester
+      # Set the action version to a specific version, to keep using that exact version.
+      uses: maester365/maester-action@v1.0.0
       with:
-        name: maester-test-results-${{ env.NOW }}
-        path: test-results
-        include-hidden-files: true
+        tenant_id: ${{ inputs.tenant_id }}
+        client_id: ${{ inputs.client_id }}
+        include_public_tests: ${{ inputs.include_public_tests }}
+        include_private_tests: true
+        include_exchange: ${{ inputs.include_exchange }}
+        include_teams: ${{ inputs.include_teams }}
+        maester_version: ${{ inputs.install_prerelease && 'preview' || 'latest' }}
+        disable_telemetry: ${{ inputs.disable_telemetry }}
+        step_summary: ${{ inputs.step_summary }}
+        mail_recipients: ${{ inputs.mail_recipients }}
+        mail_userid: ${{ inputs.mail_userid }}
+        mail_testresultsuri: ${{ inputs.mail_testresultsuri }}
+        include_tags: ${{ inputs.include_tags }}
+        exclude_tags: ${{ inputs.exclude_tags }}
+        pester_verbosity: ${{ inputs.pester_verbosity }}
+        artifact_upload: ${{ inputs.artifact_upload }}
+        notification_teams_webhook: ${{ inputs.notification_teams_webhook }}
+        notification_teams_channel_id: ${{ inputs.notification_teams_channel_id }}
+        notification_teams_team_id: ${{ inputs.notification_teams_team_id }}
+
+

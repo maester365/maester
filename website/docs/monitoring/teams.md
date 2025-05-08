@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run Maester action
-      uses: maester365/maester@main
+      uses: maester365/maester-action@main
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run Maester action
-      uses: maester365/maester@main
+      uses: maester365/maester-action@main
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
