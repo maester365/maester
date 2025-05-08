@@ -34,11 +34,15 @@ function Test-MtAppRegistrationsWithSecrets {
         } else {
             $testResultMarkdown = "You have $($apps.Count) app registrations that still use secrets.`n`n%TestResult%"
 
+            Write-Verbose "Found $($apps.Count) app registrations using secrets."
+            Write-Verbose "Creating markdown table for app registrations using secrets."
+
             $result = "| ApplicationName | ApplicationId |`n"
             $result += "| --- | --- |`n"
             foreach ($app in $apps) {
                 $appMdLink = "[$($app.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/$($app.appId)/isMSAApp~/false)"
                 $result += "| $($appMdLink) | $($app.appId) |`n"
+                Write-Verbose "Adding app registration $($app.displayName) with id $($app.appId) to markdown table."
             }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
