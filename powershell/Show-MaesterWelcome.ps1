@@ -2,6 +2,13 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
 param ()
 
+$NonInteractive = if ( (-not [Environment]::UserInteractive) -or ([Environment]::GetCommandLineArgs() -match 'NonInteractive') -or ($env:GITHUB_ACTIONS -eq 'true') -or ($env:GITLAB_CI -eq 'true') ) { $true }
+
+if ($NonInteractive) {
+    Write-Verbose "Maester is running in non-interactive mode. Skipping welcome message."
+    return
+}
+
 try {
     . "$PSScriptRoot/internal/Show-MtLogo.ps1" -ErrorAction Stop
     Show-MtLogo
