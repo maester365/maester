@@ -9,6 +9,12 @@ For more advanced configuration, you can directly use the Pester module and the 
 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
+.PARAMETER NoLogo
+Do not show the Maester logo.
+
+.PARAMETER NonInteractive
+This will suppress the logo when Maester starts and prevent the test results from being opened in the default browser.
+
 .EXAMPLE
 Invoke-Maester
 
@@ -162,7 +168,7 @@ function Invoke-Maester {
         # Disable Telemetry
         # If set, telemetry information will not be logged.
         [switch] $DisableTelemetry,
-`
+
         # Skip the version check.
         # If set, the version check will not be performed.
         [switch] $SkipVersionCheck,
@@ -173,7 +179,11 @@ function Invoke-Maester {
 
         # Export the results to an Excel file.
         [Parameter(HelpMessage = 'Export the results to an Excel file. Use with -OutputFolder to specify the folder.')]
-        [switch] $ExportExcel
+        [switch] $ExportExcel,
+
+        # Do not show the Maester logo.
+        [Parameter(HelpMessage = 'Do not show the logo when starting Maester.')]
+        [switch] $NoLogo
     )
 
     function GetDefaultFileName() {
@@ -252,8 +262,12 @@ function Invoke-Maester {
     }
 
     $version = Get-MtModuleVersion
-    # ASCII Art using style "ANSI Shadow"
-    $motd = @"
+
+    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
+        Write-Verbose "Running Maester v$Version"
+    } else {
+        # ASCII Art using style "ANSI Shadow"
+        $motd = @"
 
 ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗
 ████╗ ████║██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗
@@ -263,7 +277,8 @@ function Invoke-Maester {
 ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v$version
 
 "@
-    Write-Host -ForegroundColor Green $motd
+        Write-Host -ForegroundColor Green $motd
+    }
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
