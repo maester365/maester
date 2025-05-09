@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework."
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/actions/depreciation.md)"
 branding:
   icon: "check-circle"
   color: "red"
@@ -90,14 +90,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: ❌ Write outdated action warning
+    - name: ⚠️ Write action update notice
       shell: bash
       run: |
         echo "This action has been replaced by https://github.com/maester365/maester-action  Please use that action instead."
-        echo "::warning title=Outdated action::The action you are using is outdated. Check documentation for the new action at https://github.com/maester365/maester-action"
-        echo "## ⚠️ Maester action replaced" >> $GITHUB_STEP_SUMMARY
-        echo " " >> $GITHUB_STEP_SUMMARY
-        echo "Check out new Maester action at https://github.com/maester365/maester-action" >> $GITHUB_STEP_SUMMARY
+        echo "::notice title=New Action Available::We will be migrating to a new action, see [depreciation notice](https://github.com/maester365/maester/actions/depreciation.md)"
+        cat ${{ github.action_path }}/action/depreciation.md >> $GITHUB_STEP_SUMMARY
+
 
     - name: Run Maester 🔥
       id: maester
