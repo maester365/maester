@@ -91,40 +91,53 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 <EnableGitHubActionsCreateWorkflow/>
 
 ```yaml
-name: Maester Daily Tests
+name: Run Maester 🔥
 
 on:
   push:
-    branches: ["main"]
-  # Run once a day at midnight
+    branches:
+      - main
+
   schedule:
-    - cron: "0 0 * * *"
+    # Daily at 7:30 UTC, change accordingly
+    - cron: "30 7 * * *"
+
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-permissions:
-      id-token: write
-      contents: read
-      checks: write
-
 jobs:
-  run-maester-tests:
-    name: Run Maester Tests
+  test:
+    name:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Run Maester action
-      id: maester # this is important, by setting the id you can use the output of the action in the next steps
-      uses: maester365/maester@main
-      with:
-        client_id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-        include_public_tests: true # Optional: Set to false if you are keeping to a certain version of tests or have your own tests
-        include_exchange: false    # Optional: Set to true to include the Exchange tests
-        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
-        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
-        install_prerelease: false  # Optional: Set to true if you want to use Measter Preview Build when running tests
-        disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
-        # Other inputs are available and can be reviewed in the action.yml in https://github.com/maester365/maester
+      - name: Maester
+        id: maester
+        # Set the action version to a specific version, to keep using that exact version, see https://github.com/marketplace/actions/run-maester
+        uses: maester365/maester-action@main
+        with:
+          tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          include_public_tests: true
+          include_private_tests: false
+          include_exchange: false
+          include_teams: true
+          # Set a specific version of the powershell module here or 'latest' or 'preview'
+          # check out https://www.powershellgallery.com/packages/Maester/
+          maester_version: preview
+          disable_telemetry: false
+          step_summary: true
+          # check out all other inputs at https://github.com/maester365/maester-action
+
+      - name: Write status 📃
+        shell: bash
+        run: |
+          echo "The result of the test run is: ${{ steps.maester.outputs.result }}"
+          echo "Total tests: ${{ steps.maester.outputs.tests_total }}"
+          echo "Passed tests: ${{ steps.maester.outputs.tests_passed }}"
+          echo "Failed tests: ${{ steps.maester.outputs.tests_failed }}"
+          echo "Skipped tests: ${{ steps.maester.outputs.tests_skipped }}"
+        # Other inputs are available and can be reviewed in the action.yml in https://github.com/maester365/maester-action
 
 ```
 
