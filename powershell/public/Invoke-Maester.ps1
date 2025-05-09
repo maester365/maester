@@ -71,15 +71,15 @@ Invoke-Maester -Verbosity Normal
 Shows results of tests as they are run including details on failed tests.
 
 .EXAMPLE
-```
+```powershell
 $configuration = New-PesterConfiguration
 $configuration.Run.Path = './tests/Maester'
 $configuration.Filter.Tag = 'CA'
 $configuration.Filter.ExcludeTag = 'App'
 
 Invoke-Maester -PesterConfiguration $configuration
-
 ```
+
 Runs all the Pester tests in the EIDSCA folder.
 
 .LINK
