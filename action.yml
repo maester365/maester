@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/actions/depreciation.md)"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/action/depreciation.md)"
 branding:
   icon: "check-circle"
   color: "red"
