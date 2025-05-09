@@ -124,4 +124,4 @@ jobs:
 
 ### Migrate from old action
 
-If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/actions/depreciation.md) for more details.
+If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/action/depreciation.md) for more details.
