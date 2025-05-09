@@ -118,7 +118,7 @@ jobs:
         pester_verbosity: None # Optional - 'None', 'Normal', 'Detailed', 'Diagnostic'
         step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
         artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
-        maester_version: latest  # Optional: Set to true if you want to use Measter Preview Build when running tests
+        maester_version: latest  # Optional: Set to 'latest' or 'preview' to use the latest version of the Maester module or a specific version like '1.0.83-preview'
         disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
 ```
 
