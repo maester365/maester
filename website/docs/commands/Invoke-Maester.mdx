@@ -20,7 +20,7 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
  [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
  [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
- [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel]
+ [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -131,8 +131,9 @@ $configuration.Filter.Tag = 'CA'
 $configuration.Filter.ExcludeTag = 'App'
 
 Invoke-Maester -PesterConfiguration $configuration
-
 ```
+
+Runs all the Pester tests in the EIDSCA folder.
 
 ## PARAMETERS
 
@@ -318,8 +319,7 @@ Accept wildcard characters: False
 
 ### -NonInteractive
 
-Run the tests in non-interactive mode.
-This will prevent the test results from being opened in the default browser.
+This will suppress the logo when Maester starts and prevent the test results from being opened in the default browser.
 
 ```yaml
 Type: SwitchParameter
@@ -539,6 +539,22 @@ Accept wildcard characters: False
 ### -ExportExcel
 
 Export the results to an Excel file.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoLogo
+
+Do not show the Maester logo.
 
 ```yaml
 Type: SwitchParameter

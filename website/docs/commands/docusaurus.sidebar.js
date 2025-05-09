@@ -24,6 +24,7 @@ module.exports = [
     'commands/Disconnect-Maester',
     'commands/Get-AnyPolicyState',
     'commands/Get-MailAuthenticationRecord',
+    'commands/Get-MtAdminPortalUrl',
     'commands/Get-MtAuthenticationMethodPolicyConfig',
     'commands/Get-MtConditionalAccessPolicy',
     'commands/Get-MtExo',
