@@ -29,7 +29,7 @@ GitHub is the quickest and easiest way to get started with automating Maester. T
 
 You may want to always use the latest, or you may want to control the tests running each time. The two options below provide a choice for each.
 
-### 1. Create a blank new repository to always use the latest available public Maester Tests
+### Create a blank new repository to always use the latest available public Maester Tests
 
 - Open [https://github.com/new](https://github.com/new)
 - Fill in the following fields:
@@ -37,15 +37,6 @@ You may want to always use the latest, or you may want to control the tests runn
   - **Add a README file**: Select this option to initialize your repository
   - **Private**: Select this option to keep your tests private
 - Select **Create repository**
-
-### 2. Create a new repository and import the Maester Tests repository, to keep updated yourself
-
-- Open [https://github.com/new/import](https://github.com/new/import)
-- Fill in the following fields:
-  - **Your old repository’s clone URL**: `https://github.com/maester365/maester-tests`
-  - **Repository name**: E.g. `maester-tests`
-  - **Private**: Select this option to keep your tests private
-- Select **Begin Import**
 
 ## Set up the GitHub Actions workflow
 
@@ -104,6 +95,11 @@ on:
 
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+      checks: write
 
 jobs:
   test:
