@@ -9,7 +9,6 @@
  */
 
 module.exports = [
-    'commands/Add-IsPresetValue',
     'commands/Add-MtTestResultDetail',
     'commands/Clear-MtDnsCache',
     'commands/Clear-MtExoCache',
@@ -22,7 +21,6 @@ module.exports = [
     'commands/ConvertFrom-MailAuthenticationRecordMx',
     'commands/ConvertFrom-MailAuthenticationRecordSpf',
     'commands/Disconnect-Maester',
-    'commands/Get-AnyPolicyState',
     'commands/Get-MailAuthenticationRecord',
     'commands/Get-MtAdminPortalUrl',
     'commands/Get-MtAuthenticationMethodPolicyConfig',
@@ -39,9 +37,6 @@ module.exports = [
     'commands/Get-MtUserAuthenticationMethod',
     'commands/Get-MtUserAuthenticationMethodInfoByType',
     'commands/Get-ObjectDifference',
-    'commands/Get-ORCACollection',
-    'commands/Get-PolicyStateInt',
-    'commands/Get-PolicyStates',
     'commands/Get-RelatedPolicy',
     'commands/Install-MaesterTests',
     'commands/Invoke-Maester',
@@ -51,6 +46,7 @@ module.exports = [
     'commands/Send-MtMail',
     'commands/Send-MtTeamsMessage',
     'commands/Test-MtAppManagementPolicyEnabled',
+    'commands/Test-MtAppRegistrationsWithSecrets',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',
     'commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
