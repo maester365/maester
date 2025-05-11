@@ -26,7 +26,7 @@ function Test-MtAppRegistrationsWithSecrets {
         return $null
     }
     try {
-        $apps = Invoke-MtGraphRequest -RelativeUri '/applications?$select=id,displayName,appId,passwordCredentials' -ErrorAction Stop | Where-Object { $_.passwordCredentials.Count -gt 0 } | Select-Object -Property id, displayName, passwordCredentials, appId
+        $apps = Invoke-MtGraphRequest -RelativeUri 'applications?$select=id,displayName,appId,passwordCredentials' -ErrorAction Stop | Where-Object { $_.passwordCredentials.Count -gt 0 } | Select-Object -Property id, displayName, passwordCredentials, appId
         $return = $apps.Count -eq 0
 
         if ($return) {
