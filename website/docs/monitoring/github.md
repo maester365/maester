@@ -77,7 +77,7 @@ This guide is based on [Use GitHub Actions to connect to Azure](https://learn.mi
 <EnableGitHubActionsCreateWorkflow/>
 
 ```yaml
-name: Run Maester Tests
+name: Run Maester 🔥
 
 on:
   push:
