@@ -79,9 +79,9 @@ Update-MaesterTests
 
 ## Use as GitHub action
 
-Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/run-maester) and can be used directly in any GitHub workflow. Because it is specially built for GitHub it nicely integrates with all the features of GitHub Actions, like uploading artifacts and writing a summary to the workflow run.
+Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/run-maester) and can be used directly in any GitHub workflow. Because it is specially built for GitHub, it nicely integrates with all the features of GitHub Actions, like uploading artifacts and writing a summary to the workflow run.
 
-For more details please refer to the [docs](https://maester.dev/docs/monitoring/github/) or the [action repository](https://github.com/maester365/maester-action).
+For more details, please refer to the [docs](https://maester.dev/docs/monitoring/github/) or the [action repository](https://github.com/maester365/maester-action).
 
 ```yaml
 name: Daily tests
@@ -107,7 +107,7 @@ jobs:
     steps:
     - name: Maester 🔥
       id: maester # this is important, by setting the id you can use the output of the action in the next steps
-      uses: maester365/maester-action@v1.0.0 # this is the new action
+      uses: maester365/maester-action@v1.0.1 # this is the new action
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -124,4 +124,7 @@ jobs:
 
 ### Migrate from old action
 
-If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/action/depreciation.md) for more details.
+The Github Action is moved to a new [repository](https://github.com/maester365/maester-action).
+
+> [!NOTE]
+> If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/action/depreciation.md) for more details.
