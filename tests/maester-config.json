@@ -296,7 +296,7 @@
       "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
     },
     {
-      "Id": "CISA.MS.EXO.03.1",
+      "Id": "CISA.MS.EXO.3.1",
       "Severity": "Medium",
       "Title": "DKIM SHOULD be enabled for all domains."
     },
