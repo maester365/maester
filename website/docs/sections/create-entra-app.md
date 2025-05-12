@@ -22,6 +22,8 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 - Select **Grant admin consent for [your organization]**
 - Select **Yes** to confirm
 
+<details>
+  <summary>(Optional) Grant permissions to Exchange Online</summary>
 ### (Optional) Grant permissions to Exchange Online
 
 The Exchange Online Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
@@ -41,7 +43,10 @@ The Exchange Online Role Based Access Control (RBAC) implementation utilizes ser
 New-ServicePrincipal -AppId <Application ID> -ObjectId <Object ID> -DisplayName <Name>
 New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName from previous command>
 ```
+</details>
 
+<details>
+  <summary>(Optional) Grant permissions to Azure</summary>
 ### (Optional) Grant permissions to Azure
 
 The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resource Names (URN) with a "/" separator for heirarchical scoping. There exists resources within the root (e.g., "/") scope that Microsoft retains strict control over by limiting supported interactions. As a Global Administrator you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
@@ -74,3 +79,4 @@ New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/providers/Microsoft.aa
 $assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9|?{$_.Scope -eq "/" -and $_.SignInName -eq (Get-AzContext).Account.Id}
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
 ```
+</details>
