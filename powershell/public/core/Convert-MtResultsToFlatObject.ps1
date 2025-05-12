@@ -165,7 +165,7 @@
                     ID             = $_.ID
                     Title          = $_.Title
                     Result         = $_.Result
-                    Severity       = $_.ResultDetail.Severity
+                    Severity       = $_.Severity
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
                     Duration       = $_.Duration
