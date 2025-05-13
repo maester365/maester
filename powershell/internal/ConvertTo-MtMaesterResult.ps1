@@ -89,7 +89,10 @@ function ConvertTo-MtMaesterResult {
     $mtTests = @()
     $sortedTests = GetTestsSorted
 
+    $testIndex = 0
+
     foreach ($test in $sortedTests) {
+        $testIndex++
 
         $name = $test.ExpandedName
         $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
@@ -132,6 +135,7 @@ function ConvertTo-MtMaesterResult {
 
         $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
+            Index           = $testIndex
             Id              = $testId
             Title           = $testTitle
             Name            = $name

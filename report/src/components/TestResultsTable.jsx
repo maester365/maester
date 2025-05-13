@@ -26,8 +26,8 @@ export default function TestResultsTable(props) {
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
       (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag))) &&
       (selectedSeverity.length === 0 ||
-        (selectedSeverity.includes(item.Severity)) ||
-        (selectedSeverity.includes("None") && (!item.Severity))) &&
+      (selectedSeverity.includes(item.Severity)) ||
+      (selectedSeverity.includes("None") && (!item.Severity))) &&
       matchesSearch;
   }
 
@@ -155,26 +155,13 @@ export default function TestResultsTable(props) {
           icon={MagnifyingGlassIcon}
           placeholder="Search by ID or Title..."
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-1/2"
+          className="w-1/3"
         />
-
-        <MultiSelect
-          onValueChange={setSelectedStatus}
-          placeholder="Status"
-          defaultValue={['Passed', 'Failed', 'Skipped']}
-          className="w-1/4"
-        >
-          {status.map((item) => (
-            <MultiSelectItem key={item} value={item}>
-              <StatusLabel Result={item} />
-            </MultiSelectItem>
-          ))}
-        </MultiSelect>
 
         <MultiSelect
           onValueChange={setSelectedSeverity}
           placeholder="Severity"
-          className="w-1/4"
+          className="w-1/3"
         >
           {severities.map((severity) => (
             <MultiSelectItem key={severity} value={severity}>
@@ -182,6 +169,19 @@ export default function TestResultsTable(props) {
                 <SeverityBadge Severity={severity} /> :
                 "None"
               }
+            </MultiSelectItem>
+          ))}
+        </MultiSelect>
+
+        <MultiSelect
+          onValueChange={setSelectedStatus}
+          placeholder="Status"
+          defaultValue={['Passed', 'Failed', 'Skipped']}
+          className="w-1/3"
+        >
+          {status.map((item) => (
+            <MultiSelectItem key={item} value={item}>
+              <StatusLabel Result={item} />
             </MultiSelectItem>
           ))}
         </MultiSelect>
@@ -236,7 +236,7 @@ export default function TestResultsTable(props) {
             const hasNext = index < filteredSortedData.length - 1;
 
             return (
-              <TableRow key={itemId}>
+              <TableRow key={item.Index}>
                 <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   <ResultInfoDialog
                     Title={false}
