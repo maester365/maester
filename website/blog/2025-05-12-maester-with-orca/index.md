@@ -38,7 +38,7 @@ With this build script, the Maester module can now dynamically build the necessa
 ## Acknowledgements
 
 Huge shoutout to the Maester team for all of their awesome contributions in this substantial addition, including:
-* [Thomas Schmidt](https://github.com/tdcthosc)
+* [Thomas S. Schmidt](https://github.com/tdcthosc)
 * [Cameron Moore](https://github.com/moorereason)
 * [Cam Murray](https://github.com/cammurray)
 
