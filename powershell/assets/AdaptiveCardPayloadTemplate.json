@@ -199,7 +199,7 @@
                 {
                     "type": "Action.OpenUrl",
                     "title": "Full test results",
-                    "url": "${$run.TestResultURL}",
+                    "url": "${$root.run.TestResultURL}",
                     "tooltip": "Full test results of the Maester run.",
                     "style": "positive",
                     "iconUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzZjNzI4MSIgYXJpYS1oaWRkZW49InRydWUiIGRhdGEtc2xvdD0iaWNvbiIgY2xhc3M9InRyZW1vci1JY29uLWljb24gc2hyaW5rLTAgaC01IHctNSI+PHBhdGggZD0iTTMuMzc1IDNDMi4zMzkgMyAxLjUgMy44NCAxLjUgNC44NzV2Ljc1YzAgMS4wMzYuODQgMS44NzUgMS44NzUgMS44NzVoMTcuMjVjMS4wMzUgMCAxLjg3NS0uODQgMS44NzUtMS44NzV2LS43NUMyMi41IDMuODM5IDIxLjY2IDMgMjAuNjI1IDNIMy4zNzVaIj48L3BhdGg+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBkPSJtMy4wODcgOSAuNTQgOS4xNzZBMyAzIDAgMCAwIDYuNjIgMjFoMTAuNzU3YTMgMyAwIDAgMCAyLjk5NS0yLjgyNEwyMC45MTMgOUgzLjA4N1ptNi4xNjMgMy43NUEuNzUuNzUgMCAwIDEgMTAgMTJoNGEuNzUuNzUgMCAwIDEgMCAxLjVoLTRhLjc1Ljc1IDAgMCAxLS43NS0uNzVaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48L3N2Zz4="
@@ -220,6 +220,6 @@
             "color": "Light"
         }
     ],
-    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
     "version": "1.5"
 }
