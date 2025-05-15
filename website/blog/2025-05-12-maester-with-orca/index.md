@@ -140,4 +140,4 @@ Huge shoutout to the Maester team for all of their awesome contributions in this
 ## Contributors
 
 - [Mike Soule](/blog/authors/mike)
-- [Thomas S. Schmidt](/blog/authors/thomas)
+- [Thomas S. Schmidt](/blog/authors/thomasschmidt)
