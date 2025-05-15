@@ -15,6 +15,10 @@ The Maester module can now dynamically build the necessary files for testing and
 
 <!-- truncate -->
 
+Here's a sneak peek at the some of the checks from ORCA that will be included in the next Maester release.
+
+![Subset of Orca results in Maester](img/maester-results.png)
+
 ## What is ORCA?
 
 [Cam Murray](https://github.com/cammurray) created the [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) PowerShell module to help align tenant configuration with Microsoft's recommended configurations. Many of these settings are available in the [configuration analyzer](https://learn.microsoft.com/en-us/defender-office-365/configuration-analyzer-for-security-policies) today, but ORCA provided these insights earlier and often in a more concise approach. Building these configuration items as tests in Maester provided an awesome way to build on the core ORCA module value and bring even more context into the configuration state of a tenant.
