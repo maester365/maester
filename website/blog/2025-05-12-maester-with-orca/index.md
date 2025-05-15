@@ -2,7 +2,7 @@
 title: Maester adds ORCA tests
 description: Maester now includes the valuable tests from the ORCA project
 slug: maester-with-orca
-authors: mike
+authors: [mike, thomass]
 tags: [release,ORCA,Tests]
 hide_table_of_contents: false
 date: 2025-05-12
