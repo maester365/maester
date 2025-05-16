@@ -38,48 +38,56 @@
             ]
         },
         {
-            "type": "ColumnSet",
-            "columns": [
+            "type": "Container",
+            "showBorder": true,
+            "items": [
                 {
-                    "type": "Column",
-                    "width": "auto",
-                    "spacing": "None",
-                    "horizontalAlignment": "Left",
-                    "minHeight": "15px",
-                    "verticalContentAlignment": "Center",
-                    "rtl": false,
-                    "items": [
+                    "type": "ColumnSet",
+                    "columns": [
                         {
-                            "type": "Image",
-                            "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIiBjbGFzcz0idHJlbW9yLUJhZGdlLWljb24gc2hyaW5rLTAgLW1sLTEgbXItMS41IGgtNCB3LTQiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQuNSAyLjI1YS43NS43NSAwIDAgMCAwIDEuNXYxNi41aC0uNzVhLjc1Ljc1IDAgMCAwIDAgMS41aDE2LjVhLjc1Ljc1IDAgMCAwIDAtMS41aC0uNzVWMy43NWEuNzUuNzUgMCAwIDAgMC0xLjVoLTE1Wk05IDZhLjc1Ljc1IDAgMCAwIDAgMS41aDEuNWEuNzUuNzUgMCAwIDAgMC0xLjVIOVptLS43NSAzLjc1QS43NS43NSAwIDAgMSA5IDloMS41YS43NS43NSAwIDAgMSAwIDEuNUg5YS43NS43NSAwIDAgMS0uNzUtLjc1Wk05IDEyYS43NS43NSAwIDAgMCAwIDEuNWgxLjVhLjc1Ljc1IDAgMCAwIDAtMS41SDlabTMuNzUtNS4yNUEuNzUuNzUgMCAwIDEgMTMuNSA2SDE1YS43NS43NSAwIDAgMSAwIDEuNWgtMS41YS43NS43NSAwIDAgMS0uNzUtLjc1Wk0xMy41IDlhLjc1Ljc1IDAgMCAwIDAgMS41SDE1QS43NS43NSAwIDAgMCAxNSA5aC0xLjVabS0uNzUgMy43NWEuNzUuNzUgMCAwIDEgLjc1LS43NUgxNWEuNzUuNzUgMCAwIDEgMCAxLjVoLTEuNWEuNzUuNzUgMCAwIDEtLjc1LS43NVpNOSAxOS41di0yLjI1YS43NS43NSAwIDAgMSAuNzUtLjc1aDQuNWEuNzUuNzUgMCAwIDEgLjc1Ljc1djIuMjVhLjc1Ljc1IDAgMCAxLS43NS43NWgtNC41QS43NS43NSAwIDAgMSA5IDE5LjVaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48L3N2Zz4=",
-                            "width": "16px",
-                            "backgroundColor": "#fdf1e5"
-                        }
-                    ]
-                },
-                {
-                    "type": "Column",
-                    "width": "stretch",
-                    "items": [
-                        {
-                            "type": "TextBlock",
-                            "text": "${$root.run.TenantName} (${$root.run.TenantId})",
-                            "wrap": true,
+                            "type": "Column",
+                            "width": "auto",
                             "spacing": "None",
                             "horizontalAlignment": "Left",
-                            "size": "Small",
-                            "weight": "Default",
-                            "color": "Attention",
-                            "isSubtle": true,
-                            "fontType": "Default"
+                            "minHeight": "15px",
+                            "verticalContentAlignment": "Center",
+                            "rtl": false,
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIiBjbGFzcz0idHJlbW9yLUJhZGdlLWljb24gc2hyaW5rLTAgLW1sLTEgbXItMS41IGgtNCB3LTQiPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTQuNSAyLjI1YS43NS43NSAwIDAgMCAwIDEuNXYxNi41aC0uNzVhLjc1Ljc1IDAgMCAwIDAgMS41aDE2LjVhLjc1Ljc1IDAgMCAwIDAtMS41aC0uNzVWMy43NWEuNzUuNzUgMCAwIDAgMC0xLjVoLTE1Wk05IDZhLjc1Ljc1IDAgMCAwIDAgMS41aDEuNWEuNzUuNzUgMCAwIDAgMC0xLjVIOVptLS43NSAzLjc1QS43NS43NSAwIDAgMSA5IDloMS41YS43NS43NSAwIDAgMSAwIDEuNUg5YS43NS43NSAwIDAgMS0uNzUtLjc1Wk05IDEyYS43NS43NSAwIDAgMCAwIDEuNWgxLjVhLjc1Ljc1IDAgMCAwIDAtMS41SDlabTMuNzUtNS4yNUEuNzUuNzUgMCAwIDEgMTMuNSA2SDE1YS43NS43NSAwIDAgMSAwIDEuNWgtMS41YS43NS43NSAwIDAgMS0uNzUtLjc1Wk0xMy41IDlhLjc1Ljc1IDAgMCAwIDAgMS41SDE1QS43NS43NSAwIDAgMCAxNSA5aC0xLjVabS0uNzUgMy43NWEuNzUuNzUgMCAwIDEgLjc1LS43NUgxNWEuNzUuNzUgMCAwIDEgMCAxLjVoLTEuNWEuNzUuNzUgMCAwIDEtLjc1LS43NVpNOSAxOS41di0yLjI1YS43NS43NSAwIDAgMSAuNzUtLjc1aDQuNWEuNzUuNzUgMCAwIDEgLjc1Ljc1djIuMjVhLjc1Ljc1IDAgMCAxLS43NS43NWgtNC41QS43NS43NSAwIDAgMSA5IDE5LjVaIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48L3N2Zz4=",
+                                    "width": "16px",
+                                    "backgroundColor": "#fdf1e5"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${$root.run.TenantName} (${$root.run.TenantId})",
+                                    "wrap": true,
+                                    "spacing": "None",
+                                    "horizontalAlignment": "Left",
+                                    "size": "Small",
+                                    "weight": "Default",
+                                    "color": "Attention",
+                                    "isSubtle": true,
+                                    "fontType": "Default"
+                                }
+                            ],
+                            "horizontalAlignment": "Left"
                         }
                     ],
-                    "horizontalAlignment": "Left"
+                    "spacing": "ExtraSmall",
+                    "horizontalAlignment": "Center",
+                    "minHeight": "6px",
+                    "bleed": true
                 }
             ],
-            "spacing": "None",
-            "horizontalAlignment": "Center",
-            "minHeight": "6px",
+            "roundedCorners": true,
             "style": "emphasis"
         },
         {
@@ -95,103 +103,131 @@
                     "weight": "Bolder"
                 },
                 {
-                    "type": "ColumnSet",
-                    "columns": [
+                    "title": "Test status",
+                    "id": "resultdonut",
+                    "colorSet": "categorical",
+                    "type": "Chart.Donut",
+                    "data": [
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": "Total tests",
-                                    "wrap": true,
-                                    "isSubtle": true,
-                                    "weight": "Lighter",
-                                    "size": "Small",
-                                    "fontType": "Default",
-                                    "style": "columnHeader"
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "text": "${$root.run.TotalCount}",
-                                    "wrap": true,
-                                    "weight": "Bolder",
-                                    "size": "Large"
-                                }
-                            ]
+                            "color": "good",
+                            "legend": "Passed",
+                            "value": 99990
                         },
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": "Passed",
-                                    "wrap": true,
-                                    "isSubtle": true,
-                                    "weight": "Lighter",
-                                    "size": "Small",
-                                    "fontType": "Default",
-                                    "style": "columnHeader"
-                                },
-                                {
-                                    "type": "TextBlock",
-                                    "text": "${$root.run.PassedCount}",
-                                    "wrap": true,
-                                    "size": "Large",
-                                    "weight": "Bolder"
-                                }
-                            ]
-                        },
+                            "color": "attention",
+                            "legend": "Failed",
+                            "value": 99991
+                        }
+                    ]
+                },
+                {
+                    "type": "Container",
+                    "style": "default",
+                    "roundedCorners": true,
+                    "items": [
                         {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
+                            "type": "ColumnSet",
+                            "columns": [
                                 {
-                                    "type": "TextBlock",
-                                    "text": "Failed",
-                                    "wrap": true,
-                                    "isSubtle": true,
-                                    "weight": "Lighter",
-                                    "size": "Small",
-                                    "fontType": "Default",
-                                    "style": "columnHeader"
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Total tests",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.TotalCount}",
+                                            "wrap": true,
+                                            "weight": "Bolder",
+                                            "size": "Large"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "type": "TextBlock",
-                                    "text": "${$root.run.FailedCount}",
-                                    "wrap": true,
-                                    "size": "Large",
-                                    "weight": "Bolder"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "Column",
-                            "width": "stretch",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": "Not tested",
-                                    "wrap": true,
-                                    "isSubtle": true,
-                                    "weight": "Lighter",
-                                    "size": "Small",
-                                    "fontType": "Default",
-                                    "style": "columnHeader"
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Passed",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.PassedCount}",
+                                            "wrap": true,
+                                            "size": "Large",
+                                            "weight": "Bolder"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "type": "TextBlock",
-                                    "text": "${$root.run.NotRunCount}",
-                                    "wrap": true,
-                                    "size": "Large",
-                                    "weight": "Bolder"
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Failed",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.FailedCount}",
+                                            "wrap": true,
+                                            "size": "Large",
+                                            "weight": "Bolder"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Not tested",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.NotRunCount}",
+                                            "wrap": true,
+                                            "size": "Large",
+                                            "weight": "Bolder"
+                                        }
+                                    ]
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "showBorder": true
                 }
-            ]
+            ],
+            "id": "test-summary",
+            "style": "default"
         },
         {
             "type": "ActionSet",
@@ -221,5 +257,7 @@
         }
     ],
     "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
-    "version": "1.5"
+    "version": "1.5",
+    "fallbackText": "Maester test results: ${$root.run.PassedCount} tests passed. ${$root.run.FailedCount} tests failed.",
+    "speak": "Maester test results: ${$root.run.PassedCount} tests passed. ${$root.run.FailedCount} tests failed."
 }
