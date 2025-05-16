@@ -149,6 +149,10 @@ function Send-MtTeamsMessage {
             $currentValue
         })
 
+        # Set donut values
+        $adaptiveCardBody = $adaptiveCardBody.replace('99990',$adaptiveCardData.run.PassedCount)
+        $adaptiveCardBody = $adaptiveCardBody.replace('99991',$adaptiveCardData.run.FailedCount)
+
     if (!$TeamChannelWebhookUri)
     {
         $attachmentGuid = New-Guid
@@ -176,8 +180,7 @@ function Send-MtTeamsMessage {
       $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
 
       Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
-    }
-    else
+    }else
     {
         $params = @{
             type     = "message"
