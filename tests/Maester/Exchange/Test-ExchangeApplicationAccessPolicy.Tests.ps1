@@ -1,4 +1,4 @@
-Describe "Maester/Exchange" -Tag "Maester", "Exchange", "Security", "MT.1058" {
+Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
     BeforeAll {
         # Skip all tests if Exchange Online or Graph is not connected
         if (-not (Test-MtConnection ExchangeOnline)) {
@@ -79,7 +79,7 @@ Best practices:
 Learn more: https://learn.microsoft.com/graph/auth-limit-mailbox-access
 "@
 
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'High'
 
         # Test should fail if any apps are missing policies
         $missingPolicies = $principalsWithExchangePerms | Where-Object { $appAccessPolicies.AppId -notcontains $_.AppId }
