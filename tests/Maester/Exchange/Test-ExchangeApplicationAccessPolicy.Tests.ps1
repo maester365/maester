@@ -1,4 +1,4 @@
-Describe "Maester/Exchange" -Tag "Maester", "Exchange", "Security", "MT.1060" {
+Describe "Maester/Exchange" -Tag "Maester", "Exchange", "Security", "MT.1058" {
     BeforeAll {
         # Skip all tests if Exchange Online or Graph is not connected
         if (-not (Test-MtConnection ExchangeOnline)) {
