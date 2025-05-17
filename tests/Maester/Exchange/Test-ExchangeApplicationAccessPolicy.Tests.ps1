@@ -12,15 +12,10 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "Security", "MT.1060" {
     It "MT.1060: Ensure Exchange Application Access Policy is configured" -Tag "MT.1060", "ApplicationAccess" {
         # Define Exchange permissions that require app access policies (from Microsoft docs)
         $exchangePermissions = @(
-            # Mail permissions
-            "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite",
-            "Mail.Send", "Mail.Read.All", "Mail.ReadWrite.All", "Mail.Send.All",
-            # MailboxSettings permissions
+            "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite", "Mail.Send",
             "MailboxSettings.Read", "MailboxSettings.ReadWrite",
-            # Calendar permissions
-            "Calendars.Read", "Calendars.ReadWrite", "Calendars.Read.All", "Calendars.ReadWrite.All",
-            # Contacts permissions
-            "Contacts.Read", "Contacts.ReadWrite", "Contacts.Read.All", "Contacts.ReadWrite.All"
+            "Calendars.Read", "Calendars.ReadWrite",
+            "Contacts.Read", "Contacts.ReadWrite"
         )
 
         # Get service principals with Exchange permissions
