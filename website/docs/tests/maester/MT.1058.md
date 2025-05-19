@@ -1,11 +1,11 @@
 ---
-title: MT.1058 - Exchange Application Access Policies must be configured
+title: MT.1058 - Exchange Application Access Policies should be configured
 description: Checks if applications with Exchange permissions have application access policies configured
 slug: /tests/MT.1058
 sidebar_class_name: hidden
 ---
 
-# Exchange Application Access Policies must be configured
+# Exchange Application Access Policies should be configured
 
 ## Description
 
@@ -37,8 +37,7 @@ The following Microsoft Graph permissions require application access policies:
 - Contacts.Read
 - Contacts.ReadWrite
 
-
-
+**Note: Only the listed permissions are restricted by the application access policy.**
 
 ## How to fix
 

@@ -9,7 +9,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
         }
     }
 
-    It "MT.1060: Ensure Exchange Application Access Policy is configured" -Tag "MT.1060", "ApplicationAccess" {
+    It "MT.1058: Ensure Exchange Application Access Policy is configured" -Tag "MT.1058", "ApplicationAccess" {
         # Define Exchange permissions that require app access policies (from Microsoft docs)
         $exchangePermissions = @(
             "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite", "Mail.Send",
@@ -52,7 +52,8 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
         foreach ($app in $principalsWithExchangePerms) {
             $hasPolicy = $appAccessPolicies.AppId -contains $app.AppId
             $policyStatus = if ($hasPolicy) { "✅ Yes" } else { "❌ No" }
-            $testResultMarkdown += "| $($app.Name) | $($app.AppId) | $($app.Permissions) | $policyStatus |`n"
+            $filteredPermissions = $app.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
+            $testResultMarkdown += "| $($app.Name) | $($app.AppId) | $($filteredPermissions -join ', ') | $policyStatus |`n"
         }
 
         $testDetailsMarkdown = @"
@@ -72,11 +73,7 @@ Microsoft Graph permissions that should be secured by application access policie
 - Contacts.Read
 - Contacts.ReadWrite
 
-Best practices:
-- Create policies to restrict application access to only required mailboxes
-- Ensure every application with Exchange permissions has an access policy
-
-Learn more: https://learn.microsoft.com/graph/auth-limit-mailbox-access
+See https://learn.microsoft.com/graph/auth-limit-mailbox-access
 "@
 
         Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'High'
