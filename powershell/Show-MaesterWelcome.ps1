@@ -2,7 +2,44 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
 param ()
 
-$NonInteractive = if ( (-not [Environment]::UserInteractive) -or ([Environment]::GetCommandLineArgs() -match 'NonInteractive') -or ($env:GITHUB_ACTIONS -eq 'true') -or ($env:GITLAB_CI -eq 'true') ) { $true }
+# Check if environment variables indicate running in a CI/CD environment.
+$CiCdEnvironment = @(
+    # GitHub Actions
+    $env:GITHUB_ACTIONS -eq 'true',
+    # GitLab CI
+    $env:GITLAB_CI -eq 'true',
+    # Azure DevOps
+    $env:TF_BUILD -eq 'true',
+    # Bitbucket Pipelines
+    $null -ne $env:BITBUCKET_BUILD_NUMBER,
+    # Jenkins
+    $null -ne $env:JENKINS_URL,
+    # CircleCI
+    $env:CIRCLECI -eq 'true',
+    # Travis CI
+    $env:TRAVIS -eq 'true',
+    # TeamCity
+    $null -ne $env:TEAMCITY_VERSION
+)
+
+# Check if environment variables indicate running within a container environment.
+$ContainerEnvironment = @(
+    # Check for Docker
+    (Test-Path -Path '/.dockerenv'),
+    # Check for common container environment variables
+    $env:KUBERNETES_SERVICE_HOST -ne $null,
+    # Check for Windows container
+    $env:CONTAINER -eq 'true'
+)
+
+$NonInteractive = if (
+    (-not [Environment]::UserInteractive) -or
+    ([Environment]::GetCommandLineArgs() -match 'NonInteractive') -or
+    $CiCdEnvironment -or
+    $ContainerEnvironment
+) {
+    $true
+}
 
 if ($NonInteractive) {
     Write-Verbose "Maester is running in non-interactive mode. Skipping welcome message."
