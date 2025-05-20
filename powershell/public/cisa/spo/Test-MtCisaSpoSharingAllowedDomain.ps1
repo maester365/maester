@@ -6,14 +6,14 @@
     External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
 
 .EXAMPLE
-    Test-MtCisaSharePointOnlineSharingAllowedDomains
+    Test-MtCisaSpoSharingAllowedDomains
 
     Returns true if sharing uses restricted domains
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSharePointOnlineSharingAllowedDomain
+    https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain
 #>
-function Test-MtCisaSharePointOnlineSharingAllowedDomain {
+function Test-MtCisaSpoSharingAllowedDomain {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
