@@ -76,7 +76,7 @@ Microsoft Graph permissions that should be secured by application access policie
 See https://learn.microsoft.com/graph/auth-limit-mailbox-access
 "@
 
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'High'
+        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'Medium'
 
         # Test should fail if any apps are missing policies
         $missingPolicies = $principalsWithExchangePerms | Where-Object { $appAccessPolicies.AppId -notcontains $_.AppId }
