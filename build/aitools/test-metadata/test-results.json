@@ -6022,7 +6022,7 @@
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n\n        $result = Test-MtCisaSharePointOnlineSharing\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"external sharing is limited.\"\n        }\n    ",
+      "ScriptBlock": "\n\n        $result = Test-Test-MtCisaSpoSharing\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"external sharing is limited.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cisa/spo/Test-MtCisaSpoSharing.Tests.ps1",
       "ErrorRecord": [
         {
@@ -6102,7 +6102,7 @@
         "All"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n\n        $result = Test-MtCisaSharePointOnlineSharingAllowedDomain\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"external sharing is limited.\"\n        }\n    ",
+      "ScriptBlock": "\n\n        $result = Test-MtCisaSpoSharingAllowedDomain\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"external sharing is limited.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cisa/spo/Test-MtCisaSpoSharingAllowedDomain.Tests.ps1",
       "ErrorRecord": [
         {
