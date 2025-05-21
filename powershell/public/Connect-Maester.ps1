@@ -8,7 +8,7 @@
 
    This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
-   ```
+   ```powershell
    Connect-MgGraph -Scopes (Get-MtGraphScope)
    ```
 
@@ -112,6 +112,28 @@
    )
 
    $__MtSession.Connections = $Service
+
+   #region WorkingDraft
+   # Import all required modules using Import-MtDependency to resolve dependency conflicts.
+   $dependentModules = @()
+   if ($Service -contains 'Graph' -or $Service -contains 'All') {
+      $dependentModules += 'Microsoft.Graph.Authentication'
+   }
+   if ($Service -contains 'Azure' -or $Service -contains 'All') {
+      $dependentModules += 'Az.Accounts'
+   }
+   if ($Service -contains 'ExchangeOnline' -or $Service -contains 'SecurityCompliance' -or $Service -contains 'All') {
+      $dependentModules += 'ExchangeOnlineManagement'
+   }
+   if ($Service -contains 'Teams' -or $Service -contains 'All') {
+      $dependentModules += 'MicrosoftTeams'
+   }
+
+   if ($dependentModules.Count -gt 0) {
+      Write-Verbose "Importing dependent modules: $($dependentModules -join ', ')"
+      Import-MtDependency -ModuleNames $dependentModules
+   }
+   #endregion WorkingDraft
 
    if ($Service -contains 'Graph' -or $Service -contains 'All') {
       Write-Verbose 'Connecting to Microsoft Graph'
