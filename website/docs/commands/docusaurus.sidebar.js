@@ -133,8 +133,6 @@ module.exports = [
     'commands/Test-MtCisaSafeLink',
     'commands/Test-MtCisaSafeLinkClickTracking',
     'commands/Test-MtCisaSafeLinkDownloadScan',
-    'commands/Test-Test-MtCisaSpoSharing',
-    'commands/Test-MtCisaSpoSharingAllowedDomain',
     'commands/Test-MtCisaSmtpAuthentication',
     'commands/Test-MtCisaSpamAction',
     'commands/Test-MtCisaSpamAlternative',
@@ -142,6 +140,7 @@ module.exports = [
     'commands/Test-MtCisaSpamFilter',
     'commands/Test-MtCisaSpfDirective',
     'commands/Test-MtCisaSpfRestriction',
+    'commands/Test-MtCisaSpoSharingAllowedDomain',
     'commands/Test-MtCisAttachmentFilter',
     'commands/Test-MtCisAttachmentFilterComprehensive',
     'commands/Test-MtCisAuditLogSearch',
@@ -291,5 +290,6 @@ module.exports = [
     'commands/Test-ORCA242',
     'commands/Test-ORCA243',
     'commands/Test-ORCA244',
+    'commands/Test-Test-MtCisaSpoSharing',
     'commands/Update-MaesterTests'
 ];
