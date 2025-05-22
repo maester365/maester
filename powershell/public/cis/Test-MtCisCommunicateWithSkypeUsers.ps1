@@ -27,8 +27,8 @@ function Test-MtCisCommunicateWithSkypeUsers {
     Write-Verbose "Test-MtCisCommunicateWithSkypeUsers: Checking if communication with Skype users is disabled"
     $return = $true
     try {
-        $AllowPublicUsers = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowPublicUsers
-        if ($AllowPublicUsers -eq $false) {
+        $CsTenantFederationConfiguration = Get-CsTenantFederationConfiguration
+        if ($CsTenantFederationConfiguration.AllowPublicUsers -ne $true) {
             Add-MtTestResultDetail -Result "Well done. Communication with Skype users is disabled."
         } else {
             Add-MtTestResultDetail -Result "Communication with Skype users is enabled."
