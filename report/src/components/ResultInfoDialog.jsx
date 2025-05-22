@@ -9,56 +9,48 @@ import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-// Global dialog state manager
 const dialogState = {
   currentOpenItemId: null,
 };
 
 export default function ResultInfoDialog(props) {
-  const itemId = props.Item.Id || props.Item.Name;
-  // Control dialog state based on either direct interaction or parent control
+  const itemIndex = props.Item.Index;
   const [isOpen, setIsOpen] = React.useState(false);
 
   const openInNewTab = (url) => {
     window.open(url, "_blank", "noreferrer");
   };
 
-  // Handle dialog open/close from parent via the activeDialog prop
   useEffect(() => {
-    // If this is the active dialog that should be opened
-    if (props.activeDialog === itemId) {
+    if (props.isOpen) {
       setIsOpen(true);
     }
-    // If another dialog is being opened, or no dialog should be active, close this one
-    else if (isOpen && props.activeDialog !== itemId) {
+    else if (isOpen && !props.isOpen) {
       setIsOpen(false);
     }
-  }, [props.activeDialog, itemId, isOpen]);
+  }, [props.isOpen, isOpen]);
 
-  // Update global dialog state when this dialog opens/closes
   useEffect(() => {
     if (isOpen) {
-      dialogState.currentOpenItemId = itemId;
-    } else if (dialogState.currentOpenItemId === itemId) {
+      dialogState.currentOpenItemId = itemIndex;
+    } else if (dialogState.currentOpenItemId === itemIndex) {
       dialogState.currentOpenItemId = null;
     }
-  }, [isOpen, itemId]);
+  }, [isOpen, itemIndex]);
 
-  // Handle keyboard navigation events
   useEffect(() => {
     const handleKeyboard = (event) => {
-      // Only handle keyboard events if this dialog is currently open
       if (!isOpen) return;
 
       if (event.key === 'ArrowRight') {
         event.preventDefault();
         if (props.onNavigateNext) {
-          props.onNavigateNext(itemId);
+          props.onNavigateNext(itemIndex);
         }
       } else if (event.key === 'ArrowLeft') {
         event.preventDefault();
         if (props.onNavigatePrevious) {
-          props.onNavigatePrevious(itemId);
+          props.onNavigatePrevious(itemIndex);
         }
       }
     };
@@ -70,18 +62,15 @@ export default function ResultInfoDialog(props) {
     return () => {
       window.removeEventListener('keydown', handleKeyboard);
     };
-  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemId]);
+  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
 
-  // Handle opening the dialog
   const handleOpenDialog = () => {
-    // Tell the parent table that this is the active dialog
     if (props.onDialogOpen) {
-      props.onDialogOpen(itemId);
+      props.onDialogOpen(itemIndex);
     }
     setIsOpen(true);
   };
 
-  // Handle closing the dialog
   const handleCloseDialog = () => {
     if (props.onDialogClose) {
       props.onDialogClose();
@@ -89,16 +78,15 @@ export default function ResultInfoDialog(props) {
     setIsOpen(false);
   };
 
-  // Navigation handlers
   const navigateToNextResult = () => {
     if (props.onNavigateNext) {
-      props.onNavigateNext(itemId);
+      props.onNavigateNext(itemIndex);
     }
   };
 
   const navigateToPreviousResult = () => {
     if (props.onNavigatePrevious) {
-      props.onNavigatePrevious(itemId);
+      props.onNavigatePrevious(itemIndex);
     }
   };
 
@@ -128,7 +116,6 @@ export default function ResultInfoDialog(props) {
       return props.Item.ResultDetail.TestDescription;
     }
     else {
-      //trim the scriptblock whitespace at the beginning and end
       if (props.Item.ScriptBlock) {
         return props.Item.ScriptBlock.replace(/^\s+|\s+$/g, '');
       }
@@ -136,7 +123,6 @@ export default function ResultInfoDialog(props) {
     return "";
   }
 
-  //Set bgcolor based on result
   function getBgColor(result) {
     if (result === "Passed") {
       return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";

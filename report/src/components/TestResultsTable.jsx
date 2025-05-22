@@ -13,7 +13,6 @@ export default function TestResultsTable(props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState("Id");
   const [sortDirection, setSortDirection] = useState("asc");
-  // Track the currently active dialog
   const [activeDialog, setActiveDialog] = useState(null);
   const testResults = props.TestResults;
 
@@ -46,7 +45,6 @@ export default function TestResultsTable(props) {
     return [...data].sort((a, b) => {
       let valueA, valueB;
 
-      // Handle different column types
       if (sortColumn === "Id") {
         valueA = a.Id || "";
         valueB = b.Id || "";
@@ -54,18 +52,15 @@ export default function TestResultsTable(props) {
         valueA = a.Title || "";
         valueB = b.Title || "";
       } else if (sortColumn === "Severity") {
-        // Sort by severity with a specific order: Critical, High, Medium, Low, Info, undefined
         const severityOrder = { "Critical": 5, "High": 4, "Medium": 3, "Low": 2, "Info": 1, "": 0 };
         valueA = a.Severity ? severityOrder[a.Severity] : 0;
         valueB = b.Severity ? severityOrder[b.Severity] : 0;
       } else if (sortColumn === "Status") {
-        // Sort by status with a specific order: Failed, Passed, Skipped, NotRun
         const statusOrder = { "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
         valueA = statusOrder[a.Result] || 0;
         valueB = statusOrder[b.Result] || 0;
       }
 
-      // Apply sort direction
       if (sortDirection === "asc") {
         return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
       } else {
@@ -74,82 +69,87 @@ export default function TestResultsTable(props) {
     });
   };
 
-  // Get the filtered and sorted data (reused for navigation and rendering)
   const getFilteredSortedData = () => {
     return getSortedData(testResults.Tests.filter((item) => isStatusSelected(item)));
   };
 
-  // Dialog management methods
-  const handleDialogOpen = (itemId) => {
-    setActiveDialog(itemId);
+  const filteredSortedData = getFilteredSortedData();
+
+  const handleDialogOpen = (dialogId) => {
+    setActiveDialog(dialogId);
   };
 
   const handleDialogClose = () => {
     setActiveDialog(null);
   };
 
-  // Navigation handlers for moving between result items
-  const handleNavigateToNext = (currentItemId) => {
-    const filteredData = getFilteredSortedData();
-    const currentIndex = filteredData.findIndex(
-      (item) => (item.Id || item.Name) === currentItemId
-    );
+  const dialogRefs = useRef({});
 
-    // If current item found and not the last one, move to next
-    if (currentIndex !== -1 && currentIndex < filteredData.length - 1) {
-      const nextItem = filteredData[currentIndex + 1];
-      const nextItemId = nextItem.Id || nextItem.Name;
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!activeDialog) return;
 
-      // Simply set the active dialog to the next item
-      // The dialog component will handle showing/hiding appropriately
-      setActiveDialog(nextItemId);
+      const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
+      if (currentItemIndex === null) return;
+
+      const currentDialogIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
+      if (currentDialogIndexInFiltered === -1) return;
+
+      if (event.key === "ArrowRight") {
+        const nextIndex = currentDialogIndexInFiltered + 1;
+        if (nextIndex < filteredSortedData.length) {
+          setActiveDialog(`dialog-${filteredSortedData[nextIndex].Index}-button`);
+        }
+      } else if (event.key === "ArrowLeft") {
+        const prevIndex = currentDialogIndexInFiltered - 1;
+        if (prevIndex >= 0) {
+          setActiveDialog(`dialog-${filteredSortedData[prevIndex].Index}-button`);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeDialog, filteredSortedData]);
+
+  const handleNavigateToNext = () => {
+    const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
+    if (currentItemIndex === null) return;
+    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
+    if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
+      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered + 1].Index}-button`);
     }
   };
 
-  const handleNavigateToPrevious = (currentItemId) => {
-    const filteredData = getFilteredSortedData();
-    const currentIndex = filteredData.findIndex(
-      (item) => (item.Id || item.Name) === currentItemId
-    );
-
-    // If current item found and not the first one, move to previous
-    if (currentIndex > 0) {
-      const prevItem = filteredData[currentIndex - 1];
-      const prevItemId = prevItem.Id || prevItem.Name;
-
-      // Simply set the active dialog to the previous item
-      // The dialog component will handle showing/hiding appropriately
-      setActiveDialog(prevItemId);
+  const handleNavigateToPrevious = () => {
+    const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
+    if (currentItemIndex === null) return;
+    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
+    if (currentIndexInFiltered > 0) {
+      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered - 1].Index}-button`);
     }
   };
 
-  // Create a sortable header cell
-  const SortableHeader = ({ column, label, className }) => (
-    <TableHeaderCell
-      className={`cursor-pointer hover:bg-tremor-background-subtle transition-colors ${className || ""}`}
-      onClick={() => handleSort(column)}
-    >
-      <div className="flex items-center justify-center gap-1">
-        {label}
-        {sortColumn === column && (
-          sortDirection === "asc" ?
-            <ArrowUpIcon className="h-4 w-4" /> :
-            <ArrowDownIcon className="h-4 w-4" />
-        )}
-      </div>
-    </TableHeaderCell>
-  );
+  const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
   const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
 
-  // Get the filtered and sorted data once for rendering
-  const filteredSortedData = getFilteredSortedData();
+  const SortableTableHeaderCell = ({ column, label, className }) => {
+    const isSorted = sortColumn === column;
+    const icon = isSorted ? (sortDirection === "asc" ? <ArrowUpIcon className="h-4 w-4 inline" /> : <ArrowDownIcon className="h-4 w-4 inline" />) : null;
+    return (
+      <TableHeaderCell onClick={() => handleSort(column)} className={`cursor-pointer ${className}`}>
+        {label} {icon}
+      </TableHeaderCell>
+    );
+  };
 
   return (
     <Card>
-      {/* First row: Search, Status, Severity in one row */}
       <Flex justifyContent="between" className="gap-2 mb-2">
         <TextInput
           icon={MagnifyingGlassIcon}
@@ -187,7 +187,6 @@ export default function TestResultsTable(props) {
         </MultiSelect>
       </Flex>
 
-      {/* Second row: Category and Tag in one row */}
       <Flex justifyContent="between" className="gap-2 mb-4">
         <MultiSelect
           onValueChange={setSelectedBlock}
@@ -221,19 +220,21 @@ export default function TestResultsTable(props) {
       <Table className="mt-2 w-full">
         <TableHead>
           <TableRow>
-            <SortableHeader column="Id" label="ID" className="text-left w-auto whitespace-nowrap" />
-            <SortableHeader column="Title" label="Title" className="text-left w-full" />
-            <SortableHeader column="Severity" label="Severity" className="text-center whitespace-nowrap" />
-            <SortableHeader column="Status" label="Status" className="text-center whitespace-nowrap" />
+            <SortableTableHeaderCell column="Id" label="ID" className="text-left w-auto whitespace-nowrap" />
+            <SortableTableHeaderCell column="Title" label="Title" className="text-left w-full" />
+            <SortableTableHeaderCell column="Severity" label="Severity" className="text-center whitespace-nowrap" />
+            <SortableTableHeaderCell column="Status" label="Status" className="text-center whitespace-nowrap" />
             <TableHeaderCell className="text-center whitespace-nowrap">Info</TableHeaderCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
           {filteredSortedData.map((item, index) => {
-            const itemId = item.Id || item.Name;
             const hasPrevious = index > 0;
             const hasNext = index < filteredSortedData.length - 1;
+            const dialogIdForId = `dialog-${item.Index}-id`;
+            const dialogIdForTitle = `dialog-${item.Index}-title`;
+            const dialogIdForButton = `dialog-${item.Index}-button`;
 
             return (
               <TableRow key={item.Index}>
@@ -241,12 +242,13 @@ export default function TestResultsTable(props) {
                   <ResultInfoDialog
                     Title={false}
                     Item={item}
-                    DisplayText={itemId}
+                    DisplayText={item.Id || item.Name}
                     onNavigateNext={hasNext ? handleNavigateToNext : null}
                     onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={handleDialogOpen}
+                    onDialogOpen={() => handleDialogOpen(dialogIdForId)}
                     onDialogClose={handleDialogClose}
-                    activeDialog={activeDialog}
+                    isOpen={activeDialog === dialogIdForId}
+                    dialogId={dialogIdForId}
                   />
                 </TableCell>
                 <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
@@ -256,9 +258,10 @@ export default function TestResultsTable(props) {
                     DisplayText={item.Title || (item.Name && item.Name.split(': ')[1])}
                     onNavigateNext={hasNext ? handleNavigateToNext : null}
                     onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={handleDialogOpen}
+                    onDialogOpen={() => handleDialogOpen(dialogIdForTitle)}
                     onDialogClose={handleDialogClose}
-                    activeDialog={activeDialog}
+                    isOpen={activeDialog === dialogIdForTitle}
+                    dialogId={dialogIdForTitle}
                   />
                 </TableCell>
                 <TableCell className="text-center">
@@ -273,9 +276,10 @@ export default function TestResultsTable(props) {
                     Item={item}
                     onNavigateNext={hasNext ? handleNavigateToNext : null}
                     onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={handleDialogOpen}
+                    onDialogOpen={() => handleDialogOpen(dialogIdForButton)}
                     onDialogClose={handleDialogClose}
-                    activeDialog={activeDialog}
+                    isOpen={activeDialog === dialogIdForButton}
+                    dialogId={dialogIdForButton}
                   />
                 </TableCell>
               </TableRow>
