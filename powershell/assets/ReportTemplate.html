@@ -61865,32 +61865,32 @@ function remarkGfm(options) {
   toMarkdownExtensions.push(gfmToMarkdown(settings));
 }
 function ResultInfoDialog(props) {
-  const itemId = props.Item.Id || props.Item.Name;
+  const itemIndex = props.Item.Index;
   const [isOpen, setIsOpen] = React.useState(false);
   const openInNewTab = (url) => {
     window.open(url, "_blank", "noreferrer");
   };
   reactExports.useEffect(() => {
-    if (props.activeDialog === itemId) {
+    if (props.isOpen) {
       setIsOpen(true);
-    } else if (isOpen && props.activeDialog !== itemId) {
+    } else if (isOpen && !props.isOpen) {
       setIsOpen(false);
     }
-  }, [props.activeDialog, itemId, isOpen]);
+  }, [props.isOpen, isOpen]);
   reactExports.useEffect(() => {
-  }, [isOpen, itemId]);
+  }, [isOpen, itemIndex]);
   reactExports.useEffect(() => {
     const handleKeyboard = (event) => {
       if (!isOpen) return;
       if (event.key === "ArrowRight") {
         event.preventDefault();
         if (props.onNavigateNext) {
-          props.onNavigateNext(itemId);
+          props.onNavigateNext(itemIndex);
         }
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         if (props.onNavigatePrevious) {
-          props.onNavigatePrevious(itemId);
+          props.onNavigatePrevious(itemIndex);
         }
       }
     };
@@ -61900,10 +61900,10 @@ function ResultInfoDialog(props) {
     return () => {
       window.removeEventListener("keydown", handleKeyboard);
     };
-  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemId]);
+  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
   const handleOpenDialog = () => {
     if (props.onDialogOpen) {
-      props.onDialogOpen(itemId);
+      props.onDialogOpen(itemIndex);
     }
     setIsOpen(true);
   };
@@ -61915,12 +61915,12 @@ function ResultInfoDialog(props) {
   };
   const navigateToNextResult = () => {
     if (props.onNavigateNext) {
-      props.onNavigateNext(itemId);
+      props.onNavigateNext(itemIndex);
     }
   };
   const navigateToPreviousResult = () => {
     if (props.onNavigatePrevious) {
-      props.onNavigatePrevious(itemId);
+      props.onNavigatePrevious(itemIndex);
     }
   };
   function getTestResult() {
@@ -62049,6 +62049,7 @@ function TestResultsTable(props) {
   const [sortColumn, setSortColumn] = reactExports.useState("Id");
   const [sortDirection, setSortDirection] = reactExports.useState("asc");
   const [activeDialog, setActiveDialog] = reactExports.useState(null);
+  const [isNavigating, setIsNavigating] = reactExports.useState(false);
   const testResults2 = props.TestResults;
   const isStatusSelected = (item) => {
     const matchesSearch = !searchQuery || item.Id && item.Id.toLowerCase().includes(searchQuery.toLowerCase()) || item.Title && item.Title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -62091,49 +62092,78 @@ function TestResultsTable(props) {
   const getFilteredSortedData = () => {
     return getSortedData(testResults2.Tests.filter((item) => isStatusSelected(item)));
   };
-  const handleDialogOpen = (itemId) => {
-    setActiveDialog(itemId);
+  const filteredSortedData = getFilteredSortedData();
+  const handleDialogOpen = (dialogId) => {
+    setActiveDialog(dialogId);
   };
   const handleDialogClose = () => {
     setActiveDialog(null);
   };
-  const handleNavigateToNext = (currentItemId) => {
-    const filteredData = getFilteredSortedData();
-    const currentIndex = filteredData.findIndex(
-      (item) => (item.Id || item.Name) === currentItemId
-    );
-    if (currentIndex !== -1 && currentIndex < filteredData.length - 1) {
-      const nextItem = filteredData[currentIndex + 1];
-      const nextItemId = nextItem.Id || nextItem.Name;
-      setActiveDialog(nextItemId);
+  reactExports.useRef({});
+  reactExports.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!activeDialog) return;
+      const currentItemIndex = activeDialog ? parseInt(activeDialog.split("-")[1]) : null;
+      if (currentItemIndex === null) return;
+      const currentDialogIndexInFiltered = filteredSortedData.findIndex((item) => item.Index === currentItemIndex);
+      if (currentDialogIndexInFiltered === -1) return;
+      if (event.key === "ArrowRight") {
+        const nextIndex = currentDialogIndexInFiltered + 1;
+        if (nextIndex < filteredSortedData.length) {
+          setIsNavigating(true);
+          setActiveDialog(`dialog-${filteredSortedData[nextIndex].Index}-button`);
+        }
+      } else if (event.key === "ArrowLeft") {
+        const prevIndex = currentDialogIndexInFiltered - 1;
+        if (prevIndex >= 0) {
+          setIsNavigating(true);
+          setActiveDialog(`dialog-${filteredSortedData[prevIndex].Index}-button`);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeDialog, filteredSortedData]);
+  reactExports.useEffect(() => {
+    if (isNavigating) {
+      requestAnimationFrame(() => {
+        setIsNavigating(false);
+      });
+    }
+  }, [activeDialog, isNavigating]);
+  const handleNavigateToNext = () => {
+    const currentItemIndex = activeDialog ? parseInt(activeDialog.split("-")[1]) : null;
+    if (currentItemIndex === null) return;
+    const currentIndexInFiltered = filteredSortedData.findIndex((item) => item.Index === currentItemIndex);
+    if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
+      setIsNavigating(true);
+      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered + 1].Index}-button`);
     }
   };
-  const handleNavigateToPrevious = (currentItemId) => {
-    const filteredData = getFilteredSortedData();
-    const currentIndex = filteredData.findIndex(
-      (item) => (item.Id || item.Name) === currentItemId
-    );
-    if (currentIndex > 0) {
-      const prevItem = filteredData[currentIndex - 1];
-      const prevItemId = prevItem.Id || prevItem.Name;
-      setActiveDialog(prevItemId);
+  const handleNavigateToPrevious = () => {
+    const currentItemIndex = activeDialog ? parseInt(activeDialog.split("-")[1]) : null;
+    if (currentItemIndex === null) return;
+    const currentIndexInFiltered = filteredSortedData.findIndex((item) => item.Index === currentItemIndex);
+    if (currentIndexInFiltered > 0) {
+      setIsNavigating(true);
+      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered - 1].Index}-button`);
     }
   };
-  const SortableHeader = ({ column, label, className }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-    l$1,
-    {
-      className: `cursor-pointer hover:bg-tremor-background-subtle transition-colors ${className || ""}`,
-      onClick: () => handleSort(column),
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-center gap-1", children: [
-        label,
-        sortColumn === column && (sortDirection === "asc" ? /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$8, { className: "h-4 w-4" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$9, { className: "h-4 w-4" }))
-      ] })
-    }
-  );
+  [...new Set(testResults2.Tests.map((item) => item.Block).filter(Boolean))];
   const status = ["Passed", "Failed", "NotRun", "Skipped"];
   const severities = ["Critical", "High", "Medium", "Low", "Info", "None"];
   const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag || []))];
-  const filteredSortedData = getFilteredSortedData();
+  const SortableTableHeaderCell = ({ column, label, className }) => {
+    const isSorted = sortColumn === column;
+    const icon = isSorted ? sortDirection === "asc" ? /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$8, { className: "h-4 w-4 inline" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$9, { className: "h-4 w-4 inline" }) : null;
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(l$1, { onClick: () => handleSort(column), className: `cursor-pointer ${className}`, children: [
+      label,
+      " ",
+      icon
+    ] });
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(a$9, { justifyContent: "between", className: "gap-2 mb-2", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -62187,28 +62217,32 @@ function TestResultsTable(props) {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(l$4, { className: "mt-2 w-full", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(l$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Id", label: "ID", className: "text-left w-auto whitespace-nowrap" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Title", label: "Title", className: "text-left w-full" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Severity", label: "Severity", className: "text-center whitespace-nowrap" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Status", label: "Status", className: "text-center whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Id", label: "ID", className: "text-left w-auto whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Title", label: "Title", className: "text-left w-full" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Severity", label: "Severity", className: "text-center whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Status", label: "Status", className: "text-center whitespace-nowrap" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(l$1, { className: "text-center whitespace-nowrap", children: "Info" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(i$3, { children: filteredSortedData.map((item, index2) => {
-        const itemId = item.Id || item.Name;
         const hasPrevious = index2 > 0;
         const hasNext = index2 < filteredSortedData.length - 1;
+        const dialogIdForId = `dialog-${item.Index}-id`;
+        const dialogIdForTitle = `dialog-${item.Index}-title`;
+        const dialogIdForButton = `dialog-${item.Index}-button`;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             ResultInfoDialog,
             {
               Title: false,
               Item: item,
-              DisplayText: itemId,
+              DisplayText: item.Id || item.Name,
               onNavigateNext: hasNext ? handleNavigateToNext : null,
               onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
-              onDialogOpen: handleDialogOpen,
+              onDialogOpen: () => handleDialogOpen(dialogIdForId),
               onDialogClose: handleDialogClose,
-              activeDialog
+              isOpen: activeDialog === dialogIdForId,
+              isNavigating,
+              dialogId: dialogIdForId
             }
           ) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -62219,9 +62253,11 @@ function TestResultsTable(props) {
               DisplayText: item.Title || item.Name && item.Name.split(": ")[1],
               onNavigateNext: hasNext ? handleNavigateToNext : null,
               onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
-              onDialogOpen: handleDialogOpen,
+              onDialogOpen: () => handleDialogOpen(dialogIdForTitle),
               onDialogClose: handleDialogClose,
-              activeDialog
+              isOpen: activeDialog === dialogIdForTitle,
+              isNavigating,
+              dialogId: dialogIdForTitle
             }
           ) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-center", children: item.Severity && item.Severity !== "" ? /* @__PURE__ */ jsxRuntimeExports.jsx(SeverityBadge, { Severity: item.Severity }) : "" }),
@@ -62233,9 +62269,11 @@ function TestResultsTable(props) {
               Item: item,
               onNavigateNext: hasNext ? handleNavigateToNext : null,
               onNavigatePrevious: hasPrevious ? handleNavigateToPrevious : null,
-              onDialogOpen: handleDialogOpen,
+              onDialogOpen: () => handleDialogOpen(dialogIdForButton),
               onDialogClose: handleDialogClose,
-              activeDialog
+              isOpen: activeDialog === dialogIdForButton,
+              isNavigating,
+              dialogId: dialogIdForButton
             }
           ) })
         ] }, item.Index);
@@ -64393,6 +64431,9 @@ video {
 .inline-block {
   display: inline-block;
 }
+.inline {
+  display: inline;
+}
 .flex {
   display: flex;
 }
@@ -64752,9 +64793,6 @@ video {
 }
 .justify-evenly {
   justify-content: space-evenly;
-}
-.gap-1 {
-  gap: 0.25rem;
 }
 .gap-12 {
   gap: 3rem;
@@ -82954,6 +82992,6 @@ code {
 }</style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
