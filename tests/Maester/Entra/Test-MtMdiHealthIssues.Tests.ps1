@@ -31,7 +31,7 @@ BeforeDiscovery {
 }
 
 Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Security", "All", "MDI" -ForEach $MdiHealthIssues {
-    It "MT.1057: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1057" -Tag "MT.1057", $displayName {
+    It "MT.1058: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1058" -Tag "MT.1058", $displayName {
 
         $issueUrl = "https://security.microsoft.com/identities/health-issues"
         $recommendationLinkMd = "`n`n➡️ Open [Health issue - $displayName]($issueUrl) in the Microsoft Defender portal."
@@ -40,6 +40,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Securit
             Add-MtTestResultDetail -Description $description -SkippedBecause Custom -SkippedCustomReason "This health issue has been **Suppressed** by an administrator.`n`nIf this issue is valid for your MDI instance you can change it's state from **suppressed** to **Re-open**. $recommendationLinkMd"
             return $null
         }
+
 
         #region Add detailed test description
         $actionSteps = $recommendations | ForEach-Object {
@@ -54,6 +55,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Securit
         $affectedItems = $affectedItems -join "`n`n"
 
         $ResultMarkdown = $description + "`n`n" + $affectedItems + "`n`n#### Remediation actions:`n`n" + $actionSteps  + "`n`n#### Issue updated:`n`n" + $lastModifiedDateTime + "`n`n#### Issue created:`n`n" + $createdDateTime
+        #endregion
 
         Add-MtTestResultDetail -Description $description -Result $ResultMarkdown
 

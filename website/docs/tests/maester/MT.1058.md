@@ -1,7 +1,7 @@
 ---
-title: MT.1057 - Microsoft Defender for Identity health issues
+title: MT.1058 - Microsoft Defender for Identity health issues
 description: Checks for global and sensor health issues of your Microsoft Defender for Identity instance
-slug: /tests/MT.1057
+slug: /tests/MT.1058
 sidebar_class_name: hidden
 ---
 
