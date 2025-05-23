@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework."
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md)"
 branding:
   icon: "check-circle"
   color: "red"
@@ -68,58 +68,59 @@ inputs:
     description: "If set, telemetry information will not be logged."
     required: false
     default: false
+  notification_teams_webhook:
+    description: "Webhook URL for sending test results to Teams."
+    required: false
+    default: ""
+  notification_teams_channel_id:
+    description: "The ID of the Teams channel to send the test results to."
+    required: false
+    default: ""
+  notification_teams_team_id:
+    description: "The ID of the Teams team to send the test results to."
+    required: false
+    default: ""
+
+outputs:
+  results_json:
+    description: "The file location of the JSON output of the test results."
+    value: ${{ steps.maester.outputs.results_json }}
+
 
 runs:
   using: "composite"
   steps:
-    - name: Sign in to Entra ID
-      uses: azure/login@v2
-      with:
-        client-id: ${{ inputs.client_id }}
-        tenant-id: ${{ inputs.tenant_id }}
-        allow-no-subscriptions: true
-        enable-AzPSSession: true
-
-    - name: Set current date as env variable
+    - name: ⚠️ Write action update notice
       shell: bash
-      run: echo "NOW=$(date +'%Y-%m-%d-T%H%M%S')" >> $GITHUB_ENV
+      run: |
+        echo "⚠️ This action has been replaced by https://github.com/maester365/maester-action  Please use that action instead."
+        echo "::notice title=New Action Available::We will be migrating to a new action, see [depreciation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md)"
+        cat ${{ github.action_path }}/action/depreciation.md >> $GITHUB_STEP_SUMMARY
 
-    - name: Checkout latest public tests
-      if: ${{ inputs.include_public_tests == 'true' }}
-      uses: actions/checkout@v4
-      with:
-        repository: maester365/maester-tests
-        path: public-tests
 
-    - name: Checkout latest private tests
-      uses: actions/checkout@v4
+    - name: Run Maester 🔥
+      id: maester
+      # Set the action version to a specific version, to keep using that exact version.
+      uses: maester365/maester-action@v1.0.1
       with:
-        path: private-tests
+        tenant_id: ${{ inputs.tenant_id }}
+        client_id: ${{ inputs.client_id }}
+        include_public_tests: ${{ inputs.include_public_tests }}
+        include_private_tests: true
+        include_exchange: ${{ inputs.include_exchange }}
+        include_teams: ${{ inputs.include_teams }}
+        maester_version: ${{ inputs.install_prerelease && 'preview' || 'latest' }}
+        disable_telemetry: ${{ inputs.disable_telemetry }}
+        step_summary: ${{ inputs.step_summary }}
+        mail_recipients: ${{ inputs.mail_recipients }}
+        mail_userid: ${{ inputs.mail_userid }}
+        mail_testresultsuri: ${{ inputs.mail_testresultsuri }}
+        include_tags: ${{ inputs.include_tags }}
+        exclude_tags: ${{ inputs.exclude_tags }}
+        pester_verbosity: ${{ inputs.pester_verbosity }}
+        artifact_upload: ${{ inputs.artifact_upload }}
+        notification_teams_webhook: ${{ inputs.notification_teams_webhook }}
+        notification_teams_channel_id: ${{ inputs.notification_teams_channel_id }}
+        notification_teams_team_id: ${{ inputs.notification_teams_team_id }}
 
-    - name: Run Maester
-      uses: azure/powershell@v2
-      with:
-        inlineScript: |
-          ${{ github.action_path }}\action\Run-Maester.ps1 -TenantId '${{ inputs.tenant_id}}' `
-            -ClientId '${{ inputs.client_id }}' `
-            -Path '${{ github.workspace }}' `
-            -MailRecipients '${{ inputs.mail_recipients }}' `
-            -MailUser '${{ inputs.mail_userid }}' `
-            -TestResultURI '${{ inputs.mail_testresultsuri }}' `
-            -IncludeTags '${{ inputs.include_tags }}' `
-            -ExcludeTags '${{ inputs.exclude_tags }}' `
-            -PesterVerbosity '${{ inputs.pester_verbosity }}' `
-            -GitHubStepSummary ('${{ inputs.step_summary }}' -eq 'true') `
-            -Preview ('${{ inputs.install_prerelease }}' -eq 'true') `
-            -IncludeExchange ('${{ inputs.include_exchange }}' -eq 'true') `
-            -IncludeTeams ('${{ inputs.include_teams }}' -eq 'true') `
-            -DisableTelemetry ('${{ inputs.disable_telemetry}}' -eq 'true')
-        azPSVersion: "latest"
 
-    - name: Archive Maester Html Report
-      uses: actions/upload-artifact@v4
-      if: ${{ inputs.artifact_upload == 'true' }}
-      with:
-        name: maester-test-results-${{ env.NOW }}
-        path: test-results
-        include-hidden-files: true

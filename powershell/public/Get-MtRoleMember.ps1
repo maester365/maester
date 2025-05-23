@@ -15,11 +15,6 @@
 
   Returns all the Global administrators that are currently active and excludes those that are eligible but not yet active.
 
- .Example
-  Get-MtRoleMember -Role GlobalAdministrator -MemberStatus Active
-
-  Returns all the Global administrators that are currently active and excludes those that are eligible but not yet active.
-
  .EXAMPLE
   Get-MtRoleMember -Role GlobalAdministrator,PrivilegedRoleAdministrator
 

@@ -1,3 +1,5 @@
+- **DeviceManagementConfiguration.Read.All**
+- **DeviceManagementManagedDevices.Read.All**
 - **Directory.Read.All**
 - **DirectoryRecommendations.Read.All**
 - **IdentityRiskEvent.Read.All**
@@ -11,4 +13,3 @@
 - **SecurityIdentitiesHealth.Read.All**
 - **SharePointTenantSettings.Read.All**
 - **UserAuthenticationMethod.Read.All**
-- **DeviceManagementManagedDevices.Read.All**

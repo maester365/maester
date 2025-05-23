@@ -445,7 +445,7 @@ foreach ($control in $aadsc) {
         $docName = $controlItem.CheckId
 
 $testTemplate = @'
-Describe "%ControlName%" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
+Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"

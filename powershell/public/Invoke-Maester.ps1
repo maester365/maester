@@ -9,6 +9,12 @@ For more advanced configuration, you can directly use the Pester module and the 
 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
+.PARAMETER NoLogo
+Do not show the Maester logo.
+
+.PARAMETER NonInteractive
+This will suppress the logo when Maester starts and prevent the test results from being opened in the default browser.
+
 .EXAMPLE
 Invoke-Maester
 
@@ -65,15 +71,15 @@ Invoke-Maester -Verbosity Normal
 Shows results of tests as they are run including details on failed tests.
 
 .EXAMPLE
-```
+```powershell
 $configuration = New-PesterConfiguration
 $configuration.Run.Path = './tests/Maester'
 $configuration.Filter.Tag = 'CA'
 $configuration.Filter.ExcludeTag = 'App'
 
 Invoke-Maester -PesterConfiguration $configuration
-
 ```
+
 Runs all the Pester tests in the EIDSCA folder.
 
 .LINK
@@ -81,6 +87,7 @@ Runs all the Pester tests in the EIDSCA folder.
 #>
 function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Incorrectly flags ExportCsv and ExportExcel as unused')]
     [Alias("Invoke-MtMaester")]
     [CmdletBinding()]
     param (
@@ -161,10 +168,22 @@ function Invoke-Maester {
         # Disable Telemetry
         # If set, telemetry information will not be logged.
         [switch] $DisableTelemetry,
-`
+
         # Skip the version check.
         # If set, the version check will not be performed.
-        [switch] $SkipVersionCheck
+        [switch] $SkipVersionCheck,
+
+        # Export the results to a CSV file.
+        [Parameter(HelpMessage = 'Export the results to a CSV file. Use with -OutputFolder to specify the folder.')]
+        [switch] $ExportCsv,
+
+        # Export the results to an Excel file.
+        [Parameter(HelpMessage = 'Export the results to an Excel file. Use with -OutputFolder to specify the folder.')]
+        [switch] $ExportExcel,
+
+        # Do not show the Maester logo.
+        [Parameter(HelpMessage = 'Do not show the logo when starting Maester.')]
+        [switch] $NoLogo
     )
 
     function GetDefaultFileName() {
@@ -211,6 +230,13 @@ function Invoke-Maester {
             $out.OutputHtmlFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).html"
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
+
+            if($ExportCsv.IsPresent) {
+                $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
+            }
+            if($ExportExcel.IsPresent) {
+                $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
+            }
         }
         return $result
     }
@@ -236,8 +262,12 @@ function Invoke-Maester {
     }
 
     $version = Get-MtModuleVersion
-    # ASCII Art using style "ANSI Shadow"
-    $motd = @"
+
+    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
+        Write-Verbose "Running Maester v$Version"
+    } else {
+        # ASCII Art using style "ANSI Shadow"
+        $motd = @"
 
 ███╗   ███╗ █████╗ ███████╗███████╗████████╗███████╗██████╗
 ████╗ ████║██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗
@@ -247,7 +277,8 @@ function Invoke-Maester {
 ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ v$version
 
 "@
-    Write-Host -ForegroundColor Green $motd
+        Write-Host -ForegroundColor Green $motd
+    }
 
     Clear-ModuleVariable # Reset the graph cache and urls to avoid stale data
 
@@ -267,9 +298,12 @@ function Invoke-Maester {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
     }
 
+    # Initialize after graph connected
+    Initialize-MtSession
+
     if ($isWebUri) {
         # Check if TeamChannelWebhookUri is a valid URL
-       $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
+        $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
         if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
             Write-Output "Invalid Webhook URL: $TeamChannelWebhookUri"
             return
@@ -282,6 +316,8 @@ function Invoke-Maester {
         OutputHtmlFile       = $OutputHtmlFile
         OutputMarkdownFile   = $OutputMarkdownFile
         OutputJsonFile       = $OutputJsonFile
+        OutputCsvFile        = $null
+        OutputExcelFile      = $null
     }
 
     $result = ValidateAndSetOutputFiles $out
@@ -332,6 +368,10 @@ function Invoke-Maester {
     $maesterResults = $null
 
     Set-MtProgressView
+    Write-MtProgress -Activity "Starting Maester" -Status "Reading Maester config..." -Force
+    Write-Verbose "Reading Maester config from: $Path"
+    $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path
+
     Write-MtProgress -Activity "Starting Maester" -Status "Discovering tests to run..." -Force
 
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
@@ -349,6 +389,16 @@ function Invoke-Maester {
             Write-MtProgress -Activity "Creating markdown report"
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
+            Write-MtProgress -Activity "Creating CSV"
+            Convert-MtResultsToFlatObject -InputObject $maesterResults -CsvFilePath $out.OutputCsvFile
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputExcelFile)) {
+            Write-MtProgress -Activity "Creating Excel workbook"
+            Convert-MtResultsToFlatObject -InputObject $maesterResults -ExcelFilePath $out.OutputExcelFile
         }
 
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {

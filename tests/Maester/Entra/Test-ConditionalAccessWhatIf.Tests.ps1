@@ -13,18 +13,18 @@ BeforeDiscovery {
 }
 
 
-Describe "Conditional Access WhatIf" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
+Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
 
-    Context "Regular users" -ForEach @( $RegularUsers ) {
-
+    Context "Maester/Entra" -ForEach @( $RegularUsers ) {
+        # Regular users
         It "MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)" -Tag "MT.1033" {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 
     }
 
-    Context "Emergency access users" -ForEach @( $EmergencyAccessUsers ) {
-
+    Context "Maester/Entra" -ForEach @( $EmergencyAccessUsers ) {
+        # Emergency access users
         It "MT.1034: Emergency access users should not be blocked (<userPrincipalName>)" -Tag "MT.1034" {
             if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
                 Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1

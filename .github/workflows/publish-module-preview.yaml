@@ -54,26 +54,33 @@ jobs:
         id: module-signing
         shell: pwsh
         run: |
-          Get-ChildItem ${{ github.workspace }}/powershell -Recurse -Force -Filter *.ps* | Select-Object -ExpandProperty FullName | Out-File -FilePath ./signfiles.txt
+          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/build/maester -Force
+          Get-ChildItem ${{ github.workspace }}/build/maester -Recurse -Force -Filter *.ps* | Select-Object -ExpandProperty FullName | Out-File -FilePath ./signfiles.txt
           azuresigntool.exe sign --verbose `
             --azure-key-vault-url "${{ secrets.CODE_SIGN_KEYVAULT }}" `
             --azure-key-vault-accesstoken ${{ env.CODE_SIGN_AKV_ACCESS_TOKEN }} `
             --azure-key-vault-certificate "${{ vars.CODE_SIGN_CERTIFICATENAME }}" `
             --timestamp-rfc3161 "http://timestamp.digicert.com" `
             --input-file-list ./signfiles.txt
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
 
+      - name: Archive PowerShell build
+        uses: actions/upload-artifact@v4
+        with:
+          name: maester-module
+          path: |
+            ${{ github.workspace }}/build/maester
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
         run: |
-          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          dir ${{ github.workspace }}/build/maester
+          Publish-Module -Path ${{ github.workspace }}/build/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
         shell: pwsh
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
+          Compress-Archive -Path ${{ github.workspace }}/build/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
         uses: ncipollo/release-action@v1

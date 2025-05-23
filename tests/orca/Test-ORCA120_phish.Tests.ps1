@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA120_phish", "EXO", "Security", "All" {
-    It "ORCA120_phish: Zero Hour Autopurge Enabled for Phish." {
+Describe "ORCA" -Tag "ORCA", "ORCA.120.1", "EXO", "Security", "All" {
+    It "ORCA.120.1: Zero Hour Autopurge Enabled for Phish." {
         $result = Test-ORCA120_phish
 
         if($null -ne $result) {

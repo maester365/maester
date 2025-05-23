@@ -170,7 +170,6 @@ function Test-MtConditionalAccessWhatIf {
     )
 
     process {
-        # Definition of conditional access
         if ($PSCmdlet.ParameterSetName -eq "UserActionBasedCA") {
             if ($UserAction.Length -eq 1) {
                 $UserActionValue = $UserAction[0] # Array not supported by userAction when there is only one item.
@@ -178,12 +177,12 @@ function Test-MtConditionalAccessWhatIf {
                 $UserActionValue = $UserAction
             }
             $CAContext = @{
-                "@odata.type" = "#microsoft.graph.whatIfUserActionContext"
+                "@odata.type" = "#microsoft.graph.userActionContext"
                 "userAction"  = $UserActionValue
             }
         } else {
             $CAContext = @{
-                "@odata.type"         = "#microsoft.graph.whatIfApplicationContext"
+                "@odata.type"         = "#microsoft.graph.applicationContext"
                 "includeApplications" = @(
                     $IncludeApplications
                 )
@@ -192,25 +191,23 @@ function Test-MtConditionalAccessWhatIf {
 
         $ConditionalAccessWhatIfBodyParameter = @{
             "AppliedPoliciesOnly" = -not $AllResults
-            "conditionalAccessWhatIfSubject"    = @{
-                "@odata.type" = "#microsoft.graph.userSubject"
+            "signInIdentity"    = @{
+                "@odata.type" = "#microsoft.graph.userSignIn"
                 "userId"      = $UserId
             }
-            "conditionalAccessContext"          = $CAContext
-            "conditionalAccessWhatIfConditions" = @{}
+            "signInContext"          = $CAContext
+            "signInConditions" = @{}
         }
 
-        $whatIfConditions = $ConditionalAccessWhatIfBodyParameter.conditionalAccessWhatIfConditions
-
-        if ($UserRiskLevel) { $whatIfConditions.userRiskLevel = $UserRiskLevel }
-        if ($InsiderRiskLevel) { $whatIfConditions.insiderRiskLevel = $InsiderRiskLevel }
-        if ($ServicePrincipalRiskLevel) { $whatIfConditions.servicePrincipalRiskLevel = $ServicePrincipalRiskLevel }
-        if ($SignInRiskLevel) { $whatIfConditions.signInRiskLevel = $SignInRiskLevel }
-        if ($ClientAppType) { $whatIfConditions.clientAppType = $ClientAppType }
-        if ($DevicePlatform) { $whatIfConditions.devicePlatform = $DevicePlatform }
-        if ($DeviceInfo) { $whatIfConditions.deviceInfo = $DeviceInfo }
-        if ($Country) { $whatIfConditions.country = $Country }
-        if ($IpAddress) { $whatIfConditions.ipAddress = $IpAddress }
+        if ($UserRiskLevel) { $ConditionalAccessWhatIfBodyParameter.signInConditions.userRiskLevel = $UserRiskLevel }
+        if ($InsiderRiskLevel) { $ConditionalAccessWhatIfBodyParameter.signInConditions.insiderRiskLevel = $InsiderRiskLevel }
+        if ($ServicePrincipalRiskLevel) { $ConditionalAccessWhatIfBodyParameter.signInConditions.servicePrincipalRiskLevel = $ServicePrincipalRiskLevel }
+        if ($SignInRiskLevel) { $ConditionalAccessWhatIfBodyParameter.signInConditions.signInRiskLevel = $SignInRiskLevel }
+        if ($ClientAppType) { $ConditionalAccessWhatIfBodyParameter.signInConditions.clientAppType = $ClientAppType }
+        if ($DevicePlatform) { $ConditionalAccessWhatIfBodyParameter.signInConditions.devicePlatform = $DevicePlatform }
+        if ($DeviceInfo) { $ConditionalAccessWhatIfBodyParameter.signInConditions.deviceInfo = $DeviceInfo }
+        if ($Country) { $ConditionalAccessWhatIfBodyParameter.signInConditions.country = $Country }
+        if ($IpAddress) { $ConditionalAccessWhatIfBodyParameter.signInConditions.ipAddress = $IpAddress }
 
         Write-Verbose ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress )
 

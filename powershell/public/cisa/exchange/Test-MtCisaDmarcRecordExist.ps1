@@ -82,8 +82,12 @@ function Test-MtCisaDmarcRecordExist {
             $testResult = $true
         }
     }elseif("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass){
-        Add-MtTestResultDetail -SkippedBecause NotSupported
-        return $null
+        if($dmarcRecords.reason -like "*not available"){
+            Add-MtTestResultDetail -SkippedBecause NotSupported
+            return $null
+        }else{
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Skipped for $($dmarcRecords.reason)"
+        }
     }else{
         $testResult = $true
     }

@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if safe links for office applications are Enabled
+    Checks if safe links for office applications are Enabled
 
 .DESCRIPTION
-Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
+    Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisSafeLink
+    Test-MtCisSafeLink
 
-Returns true safe links are enabled
+    Returns true safe links are enabled
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeLink
+    https://maester.dev/docs/commands/Test-MtCisSafeLink
 #>
 function Test-MtCisSafeLink {
     [CmdletBinding()]
@@ -32,10 +33,12 @@ function Test-MtCisSafeLink {
     }
 
     Write-Verbose "Getting Safe Links Policy..."
-    $policies = Get-MtExo -Request SafeLinksPolicy
 
-    # We grab the default policy as that is what CIS checks
-    $policy = $policies | Where-Object { $_.Name -eq 'Built-In Protection Policy' }
+    # Get the name of highest priority policy
+    $priority0Policy = Get-MtExo -Request SafeLinksRule | Where-Object { $_.Priority -eq "0" }
+
+    # Get policy highest priority policy
+    $policy = Get-MtExo -Request SafeLinksPolicy | Where-Object { $_.Name -eq $priority0Policy }
 
     $safeLinkCheckList = @()
 
@@ -111,10 +114,10 @@ function Test-MtCisSafeLink {
     $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenants default safe link policy matches CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Safe link policy" + $priority0Policy.Name + " (Priority 0 policy) matches CIS recommendations ($portalLink).`n`n%TestResult%"
     }
     else {
-        $testResultMarkdown = "Your tenants default safe link policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Safe link policy" + $priority0Policy.Name + " (Priority 0 policy) does not match CIS recommendations ($portalLink).`n`n%TestResult%"
     }
 
 

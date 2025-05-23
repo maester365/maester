@@ -21,7 +21,8 @@ function Get-GraphObjectMarkdown {
         [Object[]] $GraphObjects,
 
         # The type of graph object, this will be used to show the right deeplink to the test results report.
-        [Parameter(Mandatory = $true)]
+        # If not specified, the function will try to determine the type based on the object.
+        [Parameter(Mandatory = $false)]
         [ValidateSet('AuthenticationMethod', 'AuthorizationPolicy', 'ConditionalAccess', 'ConsentPolicy',
             'Devices', 'Domains', 'Groups', 'IdentityProtection', 'Users', 'UserRole'
             )]
@@ -32,26 +33,50 @@ function Get-GraphObjectMarkdown {
     )
 
     $markdownLinkTemplate = @{
-        AuthenticationMethod = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
-        AuthorizationPolicy  = "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
-        ConditionalAccess    = "https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
-        ConsentPolicy        = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
-        Devices              = "https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
-        Domains              = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/DomainsManagementMenuBlade/~/CustomDomainNames"
-        Groups               = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/{0}"
-        IdentityProtection   = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"
-        Users                = "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/{0}"
-        UserRole             = "https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/AdministrativeRole/userId/{0}"
+        AuthenticationMethod = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods"
+        AuthorizationPolicy  = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/UserSettings"
+        ConditionalAccess    = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/{0}"
+        ConsentPolicy        = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings"
+        Devices              = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_Devices/DeviceDetailsMenuBlade/~/Properties/objectId/{0}"
+        Domains              = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/DomainsManagementMenuBlade/~/CustomDomainNames"
+        Groups               = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/{0}"
+        IdentityProtection   = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_IAM/IdentityProtectionMenuBlade/~/UsersAtRiskAlerts/fromNav/Identity"
+        Users                = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/{0}"
+        UserRole             = "$($__MtSession.AdminPortalUrl.Entra)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/AdministrativeRole/userId/{0}"
+    }
+
+    $graphObjectTypeMapping = @{
+        '#microsoft.graph.user' = 'Users'
+        '#microsoft.graph.group' = 'Groups'
+        '#microsoft.graph.device' = 'Devices'
     }
 
     # This will work for now, will need to add switch as we add support for complex urls like Applications blade, etc..
     $result = ""
     foreach ($item in $GraphObjects) {
-        $link = $markdownLinkTemplate[$GraphObjectType] -f $item.id
+        $displayName = Get-ObjectProperty $item 'displayName'
+        $currentGraphObjectType = $GraphObjectType
+        if (-not $currentGraphObjectType) {
+            $dataType = Get-ObjectProperty $item '@odata.type'
+            if ($graphObjectTypeMapping.ContainsKey($dataType)) {
+                $currentGraphObjectType = $graphObjectTypeMapping[$dataType]
+            } else {
+                # Unknown type
+                $displayName = "$displayName ($dataType - $($item.id))"
+            }
+        }
+
+        if($currentGraphObjectType) {
+            $link = $markdownLinkTemplate[$currentGraphObjectType] -f $item.id
+        }
+        else {
+            $link = "#"
+        }
+
         if ($AsPlainTextLink) {
-            $result += "[$($item.displayName)]($link)"
+            $result += "[$displayName]($link)"
         } else {
-            $result += "  - [$($item.displayName)]($link)`n"
+            $result += "  - [$displayName]($link)`n"
         }
     }
 

@@ -89,9 +89,18 @@ function ConvertTo-MtMaesterResult {
     $mtTests = @()
     $sortedTests = GetTestsSorted
 
+    $testIndex = 0
+
     foreach ($test in $sortedTests) {
+        $testIndex++
 
         $name = $test.ExpandedName
+        $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
+        if (![string]::IsNullOrEmpty($testCustomName)) {
+            # Use the custom title if it's been provided.
+            $name = $testCustomName
+        }
+
         $helpUrl = ''
 
         $start = $name.IndexOf("See https")
@@ -100,16 +109,46 @@ function ConvertTo-MtMaesterResult {
             $helpUrl = $name.Substring($start + 4).Trim() #Strip away the "See https://maester.dev" part
             $name = $name.Substring(0, $start).Trim() #Strip away the "See https://maester.dev" part
         }
+
+
+        # Find the first : and use the first part as $testId and remaining as $testTitle
+        # If no : is found or if there are spaces before the first : display a warning that the test name is not in the correct format
+        $titleStart = $name.IndexOf(':')
+        $testId = $name # Default to the full test name if no split is found
+        $testTitle = $name # Default to the full test name if no split is found
+
+        if ($titleStart -gt 0) {
+            $testId = $name.Substring(0, $titleStart).Trim()
+            $testTitle = $name.Substring($titleStart + 1).Trim()
+        } else {
+            Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
+        }
+        $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
+
+        # Add the other test metadata to the test result
+        $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
+        $severity = $testResultDetail.Severity # Default to the test result severity
+        if ($testSetting -and [string]::IsNullOrEmpty($testSetting.Severity) -eq $false) {
+            # Overwrite the settings if it is set in the config
+            $severity = $testSetting.Severity
+        }
+
+        $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
+            Index           = $testIndex
+            Id              = $testId
+            Title           = $testTitle
             Name            = $name
             HelpUrl         = $helpUrl
+            Severity       =  $severity
             Tag             = @($test.Block.Tag + $test.Tag | Select-Object -Unique)
             Result          = $test.Result
             ScriptBlock     = $test.ScriptBlock.ToString()
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.ExpandedName
-            ResultDetail    = $__MtSession.TestResultDetail[$test.ExpandedName]
+            Duration        = $test.Duration.ToString($timeSpanFormat)
+            ResultDetail    = $testResultDetail
         }
         $mtTests += $mtTestInfo
     }
@@ -142,19 +181,23 @@ function ConvertTo-MtMaesterResult {
     }
 
     $mtTestResults = [PSCustomObject]@{
-        Result         = $PesterResults.Result
-        FailedCount    = $PesterResults.FailedCount
-        PassedCount    = $PesterResults.PassedCount
-        SkippedCount   = $PesterResults.SkippedCount
-        TotalCount     = $PesterResults.TotalCount
-        ExecutedAt     = GetFormattedDate($PesterResults.ExecutedAt)
-        TenantId       = $tenantId
-        TenantName     = $tenantName
-        Account        = $account
-        CurrentVersion = $currentVersion
-        LatestVersion  = $latestVersion
-        Tests          = $mtTests
-        Blocks         = $mtBlocks
+        Result            = $PesterResults.Result
+        FailedCount       = $PesterResults.FailedCount
+        PassedCount       = $PesterResults.PassedCount
+        SkippedCount      = $PesterResults.SkippedCount
+        TotalCount        = $PesterResults.TotalCount
+        ExecutedAt        = GetFormattedDate($PesterResults.ExecutedAt)
+        TotalDuration     = $PesterResults.Duration.ToString($timeSpanFormat)
+        UserDuration      = $PesterResults.UserDuration.ToString($timeSpanFormat)
+        DiscoveryDuration = $PesterResults.DiscoveryDuration.ToString($timeSpanFormat)
+        FrameworkDuration = $PesterResults.FrameworkDuration.ToString($timeSpanFormat)
+        TenantId          = $tenantId
+        TenantName        = $tenantName
+        Account           = $account
+        CurrentVersion    = $currentVersion
+        LatestVersion     = $latestVersion
+        Tests             = $mtTests
+        Blocks            = $mtBlocks
     }
 
     return $mtTestResults

@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:06 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA158", "EXO", "Security", "All" {
-    It "ORCA158: Safe Attachments is enabled for SharePoint and Teams." {
+Describe "ORCA" -Tag "ORCA", "ORCA.158", "EXO", "Security", "All" {
+    It "ORCA.158: Safe Attachments is enabled for SharePoint and Teams." {
         $result = Test-ORCA158
 
         if($null -ne $result) {

@@ -4,6 +4,7 @@
 
 .DESCRIPTION
     Report security concerns in Teams only to internal destination
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisTeamsReportSecurityConcerns

@@ -82,16 +82,20 @@
         [Parameter(HelpMessage = 'Export the results to a CSV file.')]
         [switch] $ExportCsv,
 
+        # Export the results to an Excel file.
+        [Parameter(HelpMessage = 'Export the results to an Excel file.')]
+        [switch] $ExportExcel,
+
         # The path to the CSV file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'CSV')]
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
-        [Parameter(HelpMessage = 'The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'CSV')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the CSV file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
         [string] $CsvFilePath = "$($JsonFilePath -replace '\.json$', '.csv')",
 
         # The path to the Excel file to which the Maester test results will be exported.
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'XLSX')]
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
-        [Parameter(HelpMessage = 'The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'XLSX')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromInputObject')]
+        [Parameter(HelpMessage = 'Optional when JsonFilePath is provided. The path to the Excel file to which the Maester test results will be exported.', ParameterSetName = 'FromFile')]
         [string]$ExcelFilePath = "$($JsonFilePath -replace '\.json$', '.xlsx')",
 
         # Force the export to a CSV/XLSX file even if the file already exists.
@@ -158,15 +162,19 @@
 
             # Add the flattened object to the FlattenedResults list.
             $FlattenedResults.Add([PSCustomObject]@{
-                    Name           = $_.Name
+                    ID             = $_.ID
+                    Title          = $_.Title
+                    Result         = $_.Result
+                    Severity       = $_.Severity
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
-                    Result         = $_.Result
+                    Duration       = $_.Duration
                     Description    = $_.ResultDetail.TestDescription
                     ResultDetail   = $TestResultDetail
                     TestSkipped    = $_.ResultDetail.TestSkipped
                     SkippedReason  = $_.ResultDetail.SkippedReason
                     ErrorMessage   = $_.ErrorRecord.Exception.Message
+                    Name           = $_.Name
                     HelpUrl        = $_.HelpUrl
                     TestScriptFile = [System.IO.Path]::GetFileName($_.ScriptBlockFile)
                 })
@@ -183,7 +191,7 @@
 
             try {
                 $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
-                Write-Information "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
+                Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"
             }
@@ -200,7 +208,7 @@
 
             try {
                 $FlattenedResults | Export-Excel -Path $ExcelFilePath -FreezeTopRow -AutoFilter -BoldTopRow -WorksheetName 'Results'
-                Write-Information "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
+                Write-Verbose "Exported the Maester test results to '$ExcelFilePath'." -InformationAction Continue
             } catch [System.Management.Automation.CommandNotFoundException] {
                 Write-Error "The ImportExcel module is required to export the Maester test results to an Excel file. Install the module using ``Import-Module -Name 'ImportExcel'`` and try again."
 
@@ -212,7 +220,7 @@
 
     end {
         # Return the flattened object to the pipeline if requested or if no export is requested.
-        if ($PassThru.IsPresent -or (-not $ExcelFilePath -and -not $ExcelFilePath)) {
+        if ($PassThru.IsPresent -or (-not $ExcelFilePath -and -not $CsvFilePath)) {
             $FlattenedResults
         }
     }

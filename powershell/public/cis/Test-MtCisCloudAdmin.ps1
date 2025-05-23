@@ -3,8 +3,8 @@
     Checks if Global Admins are cloud users
 
 .DESCRIPTION
-    Ensure Administrative accounts are separate and cloud-only
-    CIS Microsoft 365 Foundations Benchmark v3.1.0
+    Ensure Administrative accounts are cloud-only
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
     Test-MtCisCloudAdmin

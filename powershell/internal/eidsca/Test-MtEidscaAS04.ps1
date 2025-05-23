@@ -38,7 +38,7 @@ function Test-MtEidscaAS04 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 
     return $tenantValue
 }

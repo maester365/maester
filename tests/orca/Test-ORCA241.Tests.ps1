@@ -1,7 +1,7 @@
-# Generated on 03/11/2025 11:45:07 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA241", "EXO", "Security", "All" {
-    It "ORCA241: Anti-phishing policy exists and EnableFirstContactSafetyTips is true." {
+Describe "ORCA" -Tag "ORCA", "ORCA.241", "EXO", "Security", "All" {
+    It "ORCA.241: Anti-phishing policy exists and EnableFirstContactSafetyTips is true." {
         $result = Test-ORCA241
 
         if($null -ne $result) {

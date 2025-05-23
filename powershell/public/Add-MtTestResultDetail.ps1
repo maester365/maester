@@ -63,17 +63,26 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [string] $TestName = $____Pester.CurrentTest.ExpandedName,
 
+        # A custom title for the test in the format of "MT.XXXX: <TestName>. Used in data driven tests like Entra recommendations 1024"
+        [Parameter(Mandatory = $false)]
+        [string] $TestTitle,
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
-            'NotLicensedMdo','NotLicensedMdoP2','NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop'
+            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop'
         )]
         # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
 
         [Parameter(Mandatory = $false)]
         # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
-        [string] $SkippedCustomReason
+        [string] $SkippedCustomReason,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info', '')]
+        # Severity level of the test result. Leave empty if no Severity is defined yet.
+        [string] $Severity
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
@@ -123,11 +132,26 @@ function Add-MtTestResultDetail {
         $Result = $Result -replace "%TestResult%", $graphResultMarkdown
     }
 
+    if ([string]::IsNullOrEmpty($TestTitle)) {
+        # If no test title is provided, use the test name
+        $TestTitle = $____Pester.CurrentTest.ExpandedName
+    }
+
+    if ([string]::IsNullOrEmpty($Severity)) {
+        # Check if the test has a severity tag using the internal helper function
+        $Severity = Get-MtPesterTagValue -TagName 'Severity'
+    }
+
+    $Service = Get-MtPesterTagValue -TagName 'Service'
+
     $testInfo = @{
+        TestTitle       = $TestTitle
         TestDescription = $Description
         TestResult      = $Result
         TestSkipped     = $SkippedBecause
         SkippedReason   = $SkippedReason
+        Severity        = $Severity
+        Service         = $Service
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName
@@ -138,6 +162,8 @@ function Add-MtTestResultDetail {
     if ($__MtSession -and $__MtSession.TestResultDetail) {
         if (![string]::IsNullOrEmpty($testName)) {
             # Only set if we are running in the context of Maester
+
+            # Check if the test name is already in the session and display a warning
             $__MtSession.TestResultDetail[$testName] = $testInfo
         }
     }

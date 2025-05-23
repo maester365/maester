@@ -1,4 +1,4 @@
-﻿Describe "Conditional Access Baseline Policies" -Tag "Maester", "CA", "Security", "All" {
+﻿Describe "Maester/Entra" -Tag "Maester", "CA", "Security", "All" {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }
@@ -71,7 +71,7 @@
     It "MT.1052: At least one Conditional Access policy is targeting the Device Code authentication flow. See https://maester.dev/docs/tests/MT.1052" -Tag "MT.1052" {
         Test-MtCaDeviceCodeFlow | Should -Be $true -Because "there is no policy that targets the device code authentication flow."
     }
-    Context "License utilization" -Tag "LicenseUtilization" {
+    Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
             $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
@@ -83,7 +83,7 @@
     }
 }
 
-Describe "Security Defaults" -Tag "CA", "Security", "All" {
+Describe "Maester/Entra" -Tag "CA", "Security", "All" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
         $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if ($EntraIDPlan -ne "Free") {

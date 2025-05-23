@@ -1,0 +1,1445 @@
+{
+  "TestSettings": [
+    {
+      "Id": "CIS.M365.1.1.1",
+      "Severity": "High",
+      "Title": "(L1) Ensure Administrative accounts are cloud-only"
+    },
+    {
+      "Id": "CIS.M365.1.1.3",
+      "Severity": "High",
+      "Title": "(L1) Ensure that between two and four global admins are designated"
+    },
+    {
+      "Id": "CIS.M365.1.2.1",
+      "Severity": "Medium",
+      "Title": "(L2) Ensure that only organizationally managed/approved public groups exist"
+    },
+    {
+      "Id": "CIS.M365.1.2.2",
+      "Severity": "High",
+      "Title": "(L1) Ensure sign-in to shared mailboxes is blocked"
+    },
+    {
+      "Id": "CIS.M365.1.3.1",
+      "Severity": "High",
+      "Title": "(L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'"
+    },
+    {
+      "Id": "CIS.M365.1.3.3",
+      "Severity": "Medium",
+      "Title": "(L2) Ensure 'External sharing' of calendars is not available"
+    },
+    {
+      "Id": "CIS.M365.1.3.6",
+      "Severity": "High",
+      "Title": "(L2) Ensure the customer lockbox feature is enabled"
+    },
+    {
+      "Id": "CIS.M365.2.1.1",
+      "Severity": "Medium",
+      "Title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.2",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.3",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.4",
+      "Severity": "High",
+      "Title": "(L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.5",
+      "Severity": "High",
+      "Title": "(L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled"
+    },
+    {
+      "Id": "CIS.M365.2.1.6",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.7",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.9",
+      "Severity": "High",
+      "Title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains"
+    },
+    {
+      "Id": "CIS.M365.2.1.11",
+      "Severity": "High",
+      "Title": "(L2) Ensure comprehensive attachment filtering is applied"
+    },
+    {
+      "Id": "CIS.M365.2.1.12",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.1.13",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)"
+    },
+    {
+      "Id": "CIS.M365.2.4.4",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)"
+    },
+    {
+      "Id": "CIS.M365.3.1.1",
+      "Severity": "High",
+      "Title": "(L1) Ensure Microsoft 365 audit log search is Enabled"
+    },
+    {
+      "Id": "CIS.M365.8.1.1",
+      "Severity": "Medium",
+      "Title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services"
+    },
+    {
+      "Id": "CIS.M365.8.2.2",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure communication with unmanaged Teams users is disabled"
+    },
+    {
+      "Id": "CIS.M365.8.2.4",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure communication with Skype users is disabled"
+    },
+    {
+      "Id": "CIS.M365.8.4.1",
+      "Severity": "High",
+      "Title": "(L1) Ensure all or a majority of third-party and custom apps are blocked"
+    },
+    {
+      "Id": "CIS.M365.8.5.3",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure only people in my org can bypass the lobby"
+    },
+    {
+      "Id": "CIS.M365.8.6.1",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure users can report security concerns in Teams to internal destination"
+    },
+    {
+      "Id": "CISA.MS.AAD.1.1",
+      "Severity": "High",
+      "Title": "Legacy authentication SHALL be blocked."
+    },
+    {
+      "Id": "CISA.MS.AAD.2.1",
+      "Severity": "High",
+      "Title": "Users detected as high risk SHALL be blocked."
+    },
+    {
+      "Id": "CISA.MS.AAD.2.2",
+      "Severity": "High",
+      "Title": "A notification SHOULD be sent to the administrator when high-risk users are detected."
+    },
+    {
+      "Id": "CISA.MS.AAD.2.3",
+      "Severity": "High",
+      "Title": "Sign-ins detected as high risk SHALL be blocked."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.1",
+      "Severity": "High",
+      "Title": "Phishing-resistant MFA SHALL be enforced for all users."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.2",
+      "Severity": "High",
+      "Title": "If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.3",
+      "Severity": "Medium",
+      "Title": "If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.4",
+      "Severity": "High",
+      "Title": "The Authentication Methods Manage Migration feature SHALL be set to Migration Complete."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.5",
+      "Severity": "High",
+      "Title": "The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.6",
+      "Severity": "High",
+      "Title": "Phishing-resistant MFA SHALL be required for highly privileged roles."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.7",
+      "Severity": "High",
+      "Title": "Managed devices SHOULD be required for authentication."
+    },
+    {
+      "Id": "CISA.MS.AAD.3.8",
+      "Severity": "High",
+      "Title": "Managed Devices SHOULD be required to register MFA."
+    },
+    {
+      "Id": "CISA.MS.AAD.4.1",
+      "Severity": "High",
+      "Title": "Security logs SHALL be sent to the agency's security operations center for monitoring."
+    },
+    {
+      "Id": "CISA.MS.AAD.5.1",
+      "Severity": "High",
+      "Title": "Only administrators SHALL be allowed to register applications."
+    },
+    {
+      "Id": "CISA.MS.AAD.5.2",
+      "Severity": "High",
+      "Title": "Only administrators SHALL be allowed to consent to applications."
+    },
+    {
+      "Id": "CISA.MS.AAD.5.3",
+      "Severity": "High",
+      "Title": "An admin consent workflow SHALL be configured for applications."
+    },
+    {
+      "Id": "CISA.MS.AAD.5.4",
+      "Severity": "High",
+      "Title": "Group owners SHALL NOT be allowed to consent to applications."
+    },
+    {
+      "Id": "CISA.MS.AAD.6.1",
+      "Severity": "High",
+      "Title": "User passwords SHALL NOT expire."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.1",
+      "Severity": "High",
+      "Title": "A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.2",
+      "Severity": "High",
+      "Title": "Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.3",
+      "Severity": "High",
+      "Title": "Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.4",
+      "Severity": "High",
+      "Title": "Permanent active role assignments SHALL NOT be allowed for highly privileged roles."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.5",
+      "Severity": "High",
+      "Title": "Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.6",
+      "Severity": "High",
+      "Title": "Activation of the Global Administrator role SHALL require approval."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.7",
+      "Severity": "High",
+      "Title": "Eligible and Active highly privileged role assignments SHALL trigger an alert."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.8",
+      "Severity": "High",
+      "Title": "User activation of the Global Administrator role SHALL trigger an alert."
+    },
+    {
+      "Id": "CISA.MS.AAD.7.9",
+      "Severity": "High",
+      "Title": "User activation of other highly privileged roles SHOULD trigger an alert."
+    },
+    {
+      "Id": "CISA.MS.AAD.8.1",
+      "Severity": "Medium",
+      "Title": "Guest users SHOULD have limited or restricted access to Azure AD directory objects."
+    },
+    {
+      "Id": "CISA.MS.AAD.8.2",
+      "Severity": "High",
+      "Title": "Only users with the Guest Inviter role SHOULD be able to invite guest users."
+    },
+    {
+      "Id": "CISA.MS.AAD.8.3",
+      "Severity": "Medium",
+      "Title": "Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes."
+    },
+    {
+      "Id": "CISA.MS.EXO.1.1",
+      "Severity": "High",
+      "Title": "Automatic forwarding to external domains SHALL be disabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.2.1",
+      "Severity": "Medium",
+      "Title": "A list of approved IP addresses for sending mail SHALL be maintained."
+    },
+    {
+      "Id": "CISA.MS.EXO.2.2",
+      "Severity": "Medium",
+      "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
+    },
+    {
+      "Id": "CISA.MS.EXO.3.1",
+      "Severity": "Medium",
+      "Title": "DKIM SHOULD be enabled for all domains."
+    },
+    {
+      "Id": "CISA.MS.EXO.4.1",
+      "Severity": "Medium",
+      "Title": "A DMARC policy SHALL be published for every second-level domain."
+    },
+    {
+      "Id": "CISA.MS.EXO.4.2",
+      "Severity": "High",
+      "Title": "The DMARC message rejection option SHALL be p=reject."
+    },
+    {
+      "Id": "CISA.MS.EXO.4.3",
+      "Severity": "Medium",
+      "Title": "The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov."
+    },
+    {
+      "Id": "CISA.MS.EXO.5.1",
+      "Severity": "High",
+      "Title": "SMTP AUTH SHALL be disabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.6.1",
+      "Severity": "Medium",
+      "Title": "Contact folders SHALL NOT be shared with all domains."
+    },
+    {
+      "Id": "CISA.MS.EXO.6.2",
+      "Severity": "Medium",
+      "Title": "Calendar details SHALL NOT be shared with all domains."
+    },
+    {
+      "Id": "CISA.MS.EXO.7.1",
+      "Severity": "Medium",
+      "Title": "External sender warnings SHALL be implemented."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.1",
+      "Severity": "High",
+      "Title": "A DLP solution SHALL be used."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.2",
+      "Severity": "Medium",
+      "Title": "The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.3",
+      "Severity": "Medium",
+      "Title": "The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft."
+    },
+    {
+      "Id": "CISA.MS.EXO.8.4",
+      "Severity": "High",
+      "Title": "At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.1",
+      "Severity": "Medium",
+      "Title": "Emails SHALL be filtered by attachment file types."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.2",
+      "Severity": "Medium",
+      "Title": "The attachment filter SHOULD attempt to determine the true file type and assess the file extension."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.3",
+      "Severity": "High",
+      "Title": "Disallowed file types SHALL be determined and enforced."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.4",
+      "Severity": "Medium",
+      "Title": "Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter."
+    },
+    {
+      "Id": "CISA.MS.EXO.9.5",
+      "Severity": "High",
+      "Title": "At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)."
+    },
+    {
+      "Id": "CISA.MS.EXO.10.1",
+      "Severity": "High",
+      "Title": "Emails SHALL be scanned for malware."
+    },
+    {
+      "Id": "CISA.MS.EXO.10.2",
+      "Severity": "High",
+      "Title": "Emails identified as containing malware SHALL be quarantined or dropped."
+    },
+    {
+      "Id": "CISA.MS.EXO.10.3",
+      "Severity": "High",
+      "Title": "Email scanning SHALL be capable of reviewing emails after delivery."
+    },
+    {
+      "Id": "CISA.MS.EXO.11.1",
+      "Severity": "High",
+      "Title": "Impersonation protection checks SHOULD be used."
+    },
+    {
+      "Id": "CISA.MS.EXO.11.2",
+      "Severity": "Medium",
+      "Title": "User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed."
+    },
+    {
+      "Id": "CISA.MS.EXO.11.3",
+      "Severity": "Medium",
+      "Title": "The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence."
+    },
+    {
+      "Id": "CISA.MS.EXO.12.1",
+      "Severity": "Medium",
+      "Title": "IP allow lists SHOULD NOT be created."
+    },
+    {
+      "Id": "CISA.MS.EXO.12.2",
+      "Severity": "Medium",
+      "Title": "Safe lists SHOULD NOT be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.13.1",
+      "Severity": "High",
+      "Title": "Mailbox auditing SHALL be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.14.1",
+      "Severity": "High",
+      "Title": "A spam filter SHALL be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.14.2",
+      "Severity": "Medium",
+      "Title": "Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder."
+    },
+    {
+      "Id": "CISA.MS.EXO.14.3",
+      "Severity": "Medium",
+      "Title": "Allowed domains SHALL NOT be added to inbound anti-spam protection policies."
+    },
+    {
+      "Id": "CISA.MS.EXO.14.4",
+      "Severity": "Medium",
+      "Title": "If a third-party party filtering solution is used, the solution SHOULD offer services comparable to the native spam filtering offered by Microsoft."
+    },
+    {
+      "Id": "CISA.MS.EXO.15.1",
+      "Severity": "Medium",
+      "Title": "URL comparison with a block-list SHOULD be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.15.2",
+      "Severity": "High",
+      "Title": "Direct download links SHOULD be scanned for malware."
+    },
+    {
+      "Id": "CISA.MS.EXO.15.3",
+      "Severity": "Medium",
+      "Title": "User click tracking SHOULD be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.16.1",
+      "Severity": "High",
+      "Title": "Alerts SHALL be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.16.2",
+      "Severity": "Medium",
+      "Title": "Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system."
+    },
+    {
+      "Id": "CISA.MS.EXO.17.1",
+      "Severity": "High",
+      "Title": "Microsoft Purview Audit (Standard) logging SHALL be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.17.2",
+      "Severity": "Medium",
+      "Title": "Microsoft Purview Audit (Premium) logging SHALL be enabled."
+    },
+    {
+      "Id": "CISA.MS.EXO.17.3",
+      "Severity": "Medium",
+      "Title": "Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C)."
+    },
+    {
+      "Id": "CISA.MS.SHAREPOINT.1.1",
+      "Severity": "Medium",
+      "Title": "External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization."
+    },
+    {
+      "Id": "CISA.MS.SHAREPOINT.1.3",
+      "Severity": "High",
+      "Title": "External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs."
+    },
+    {
+      "Id": "EIDSCA.AF01",
+      "Severity": "High",
+      "Title": "Authentication Method - FIDO2 security key - State."
+    },
+    {
+      "Id": "EIDSCA.AF02",
+      "Severity": "Medium",
+      "Title": "Authentication Method - FIDO2 security key - Allow self-service set up."
+    },
+    {
+      "Id": "EIDSCA.AF03",
+      "Severity": "High",
+      "Title": "Authentication Method - FIDO2 security key - Enforce attestation."
+    },
+    {
+      "Id": "EIDSCA.AF04",
+      "Severity": "High",
+      "Title": "Authentication Method - FIDO2 security key - Enforce key restrictions."
+    },
+    {
+      "Id": "EIDSCA.AF05",
+      "Severity": "High",
+      "Title": "Authentication Method - FIDO2 security key - Restricted."
+    },
+    {
+      "Id": "EIDSCA.AF06",
+      "Severity": "Medium",
+      "Title": "Authentication Method - FIDO2 security key - Restrict specific keys."
+    },
+    {
+      "Id": "EIDSCA.AG01",
+      "Severity": "High",
+      "Title": "Authentication Method - General Settings - Manage migration."
+    },
+    {
+      "Id": "EIDSCA.AG02",
+      "Severity": "Medium",
+      "Title": "Authentication Method - General Settings - Report suspicious activity - State."
+    },
+    {
+      "Id": "EIDSCA.AG03",
+      "Severity": "Medium",
+      "Title": "Authentication Method - General Settings - Report suspicious activity - Included users/groups."
+    },
+    {
+      "Id": "EIDSCA.AM01",
+      "Severity": "High",
+      "Title": "Authentication Method - Microsoft Authenticator - State."
+    },
+    {
+      "Id": "EIDSCA.AM02",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP."
+    },
+    {
+      "Id": "EIDSCA.AM03",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Require number matching for push notifications."
+    },
+    {
+      "Id": "EIDSCA.AM04",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications."
+    },
+    {
+      "Id": "EIDSCA.AM06",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications."
+    },
+    {
+      "Id": "EIDSCA.AM07",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications."
+    },
+    {
+      "Id": "EIDSCA.AM09",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications."
+    },
+    {
+      "Id": "EIDSCA.AM10",
+      "Severity": "Medium",
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications."
+    },
+    {
+      "Id": "EIDSCA.AP01",
+      "Severity": "High",
+      "Title": "Default Authorization Settings - Enabled Self service password reset for administrators."
+    },
+    {
+      "Id": "EIDSCA.AP04",
+      "Severity": "Medium",
+      "Title": "Default Authorization Settings - Guest invite restrictions."
+    },
+    {
+      "Id": "EIDSCA.AP05",
+      "Severity": "Medium",
+      "Title": "Default Authorization Settings - Sign-up for email based subscription."
+    },
+    {
+      "Id": "EIDSCA.AP06",
+      "Severity": "Medium",
+      "Title": "Default Authorization Settings - User can join the tenant by email validation."
+    },
+    {
+      "Id": "EIDSCA.AP07",
+      "Severity": "High",
+      "Title": "Default Authorization Settings - Guest user access."
+    },
+    {
+      "Id": "EIDSCA.AP08",
+      "Severity": "Medium",
+      "Title": "Default Authorization Settings - User consent policy assigned for applications."
+    },
+    {
+      "Id": "EIDSCA.AP09",
+      "Severity": "Medium",
+      "Title": "Default Authorization Settings - Allow user consent on risk-based apps."
+    },
+    {
+      "Id": "EIDSCA.AP10",
+      "Severity": "High",
+      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Apps."
+    },
+    {
+      "Id": "EIDSCA.AP14",
+      "Severity": "High",
+      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users."
+    },
+    {
+      "Id": "EIDSCA.AS04",
+      "Severity": "High",
+      "Title": "Authentication Method - SMS - Use for sign-in."
+    },
+    {
+      "Id": "EIDSCA.AT01",
+      "Severity": "High",
+      "Title": "Authentication Method - Temporary Access Pass - State."
+    },
+    {
+      "Id": "EIDSCA.AT02",
+      "Severity": "High",
+      "Title": "Authentication Method - Temporary Access Pass - One-time."
+    },
+    {
+      "Id": "EIDSCA.AV01",
+      "Severity": "High",
+      "Title": "Authentication Method - Voice call - State."
+    },
+    {
+      "Id": "EIDSCA.CP01",
+      "Severity": "High",
+      "Title": "Default Settings - Consent Policy Settings - Group owner consent for apps accessing data."
+    },
+    {
+      "Id": "EIDSCA.CP03",
+      "Severity": "High",
+      "Title": "Default Settings - Consent Policy Settings - Block user consent for risky apps."
+    },
+    {
+      "Id": "EIDSCA.CP04",
+      "Severity": "Medium",
+      "Title": "Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to."
+    },
+    {
+      "Id": "EIDSCA.CR01",
+      "Severity": "High",
+      "Title": "Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature."
+    },
+    {
+      "Id": "EIDSCA.CR02",
+      "Severity": "Medium",
+      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests."
+    },
+    {
+      "Id": "EIDSCA.CR03",
+      "Severity": "Medium",
+      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire."
+    },
+    {
+      "Id": "EIDSCA.CR04",
+      "Severity": "High",
+      "Title": "Consent Framework - Admin Consent Request - Consent request duration (days)."
+    },
+    {
+      "Id": "EIDSCA.PR01",
+      "Severity": "High",
+      "Title": "Default Settings - Password Rule Settings - Password Protection - Mode."
+    },
+    {
+      "Id": "EIDSCA.PR02",
+      "Severity": "High",
+      "Title": "Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory."
+    },
+    {
+      "Id": "EIDSCA.PR03",
+      "Severity": "Medium",
+      "Title": "Default Settings - Password Rule Settings - Enforce custom list."
+    },
+    {
+      "Id": "EIDSCA.PR05",
+      "Severity": "Medium",
+      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds."
+    },
+    {
+      "Id": "EIDSCA.PR06",
+      "Severity": "Medium",
+      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold."
+    },
+    {
+      "Id": "EIDSCA.ST08",
+      "Severity": "Medium",
+      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner."
+    },
+    {
+      "Id": "EIDSCA.ST09",
+      "Severity": "Medium",
+      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content."
+    },
+    {
+      "Id": "MT.1001",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy is configured with device compliance."
+    },
+    {
+      "Id": "MT.1002",
+      "Severity": "High",
+      "Title": "App management restrictions on applications and service principals is configured and enabled."
+    },
+    {
+      "Id": "MT.1003",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured with All Apps."
+    },
+    {
+      "Id": "MT.1004",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured with All Apps and All Users."
+    },
+    {
+      "Id": "MT.1005",
+      "Severity": "High",
+      "Title": "All Conditional Access policies are configured to exclude at least one emergency/break glass account or group."
+    },
+    {
+      "Id": "MT.1006",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require MFA for admins."
+    },
+    {
+      "Id": "MT.1007",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require MFA for all users."
+    },
+    {
+      "Id": "MT.1008",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require MFA for Azure management."
+    },
+    {
+      "Id": "MT.1009",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to block other legacy authentication."
+    },
+    {
+      "Id": "MT.1010",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync."
+    },
+    {
+      "Id": "MT.1011",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to secure security info registration only from a trusted location."
+    },
+    {
+      "Id": "MT.1012",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require MFA for risky sign-ins."
+    },
+    {
+      "Id": "MT.1013",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require new password when user risk is high."
+    },
+    {
+      "Id": "MT.1014",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins."
+    },
+    {
+      "Id": "MT.1015",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms."
+    },
+    {
+      "Id": "MT.1016",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to require MFA for guest access."
+    },
+    {
+      "Id": "MT.1017",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices."
+    },
+    {
+      "Id": "MT.1018",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices."
+    },
+    {
+      "Id": "MT.1019",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy is configured to enable application enforced restrictions."
+    },
+    {
+      "Id": "MT.1020",
+      "Severity": "High",
+      "Title": "All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them."
+    },
+    {
+      "Id": "MT.1021",
+      "Severity": "High",
+      "Title": "Security Defaults are enabled."
+    },
+    {
+      "Id": "MT.1022",
+      "Severity": "Medium",
+      "Title": "All users utilizing a P1 license should be licensed."
+    },
+    {
+      "Id": "MT.1023",
+      "Severity": "Medium",
+      "Title": "All users utilizing a P2 license should be licensed."
+    },
+    {
+      "Id": "MT.1024.1",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Protect your tenant with Insider Risk condition in Conditional Access policy"
+    },
+    {
+      "Id": "MT.1024.2",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Protect all users with a user risk policy"
+    },
+    {
+      "Id": "MT.1024.3",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Protect all users with a sign-in risk policy"
+    },
+    {
+      "Id": "MT.1024.4",
+      "Severity": "Medium",
+      "Title": "Entra Recommendation - Enable self-service password reset"
+    },
+    {
+      "Id": "MT.1024.5",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Use least privileged administrative roles"
+    },
+    {
+      "Id": "MT.1024.6",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Designate more than one global admin"
+    },
+    {
+      "Id": "MT.1024.7",
+      "Severity": "Medium",
+      "Title": "Entra Recommendation - Enable password hash sync if hybrid"
+    },
+    {
+      "Id": "MT.1024.8",
+      "Severity": "Medium",
+      "Title": "Entra Recommendation - Do not expire passwords"
+    },
+    {
+      "Id": "MT.1024.9",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Ensure all users can complete multifactor authentication"
+    },
+    {
+      "Id": "MT.1024.10",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Do not allow users to grant consent to unreliable applications"
+    },
+    {
+      "Id": "MT.1024.11",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Enable policy to block legacy authentication"
+    },
+    {
+      "Id": "MT.1024.12",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Require multifactor authentication for administrative roles"
+    },
+    {
+      "Id": "MT.1024.13",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Renew expiring service principal credentials"
+    },
+    {
+      "Id": "MT.1024.14",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Renew expiring application credentials"
+    },
+    {
+      "Id": "MT.1024.15",
+      "Severity": "High",
+      "Title": "Entra Recommendation - Remove unused credentials from applications"
+    },
+    {
+      "Id": "MT.1024.16",
+      "Severity": "Medium",
+      "Title": "Entra Recommendation - Remove unused applications"
+    },
+
+    {
+      "Id": "MT.1025",
+      "Severity": "High",
+      "Title": "No external user with permanent role assignment on Control Plane."
+    },
+    {
+      "Id": "MT.1026",
+      "Severity": "High",
+      "Title": "No hybrid user with permanent role assignment on Control Plane."
+    },
+    {
+      "Id": "MT.1027",
+      "Severity": "High",
+      "Title": "No Service Principal with Client Secret and permanent role assignment on Control Plane."
+    },
+    {
+      "Id": "MT.1028",
+      "Severity": "High",
+      "Title": "No user with mailbox and permanent role assignment on Control Plane."
+    },
+    {
+      "Id": "MT.1029",
+      "Severity": "High",
+      "Title": "Stale accounts are not assigned to privileged roles."
+    },
+    {
+      "Id": "MT.1030",
+      "Severity": "High",
+      "Title": "Eligible role assignments on Control Plane are in use by administrators."
+    },
+    {
+      "Id": "MT.1031",
+      "Severity": "High",
+      "Title": "Privileged role on Control Plane are managed by PIM only."
+    },
+    {
+      "Id": "MT.1032",
+      "Severity": "High",
+      "Title": "Limited number of Global Admins are assigned."
+    },
+    {
+      "Id": "MT.1033",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1035",
+      "Severity": "High",
+      "Title": "All security groups assigned to Conditional Access Policies should be protected by RMAU."
+    },
+    {
+      "Id": "MT.1036",
+      "Severity": "Medium",
+      "Title": "All excluded objects should have a fallback include in another policy."
+    },
+    {
+      "Id": "MT.1037",
+      "Severity": "High",
+      "Title": "Only users with Presenter role are allowed to present in Teams meetings"
+    },
+    {
+      "Id": "MT.1038",
+      "Severity": "Medium",
+      "Title": "Conditional Access policies should not include or exclude deleted groups."
+    },
+    {
+      "Id": "MT.1039",
+      "Severity": "Low",
+      "Title": "Ensure MailTips are enabled for end users"
+    },
+    {
+      "Id": "MT.1040",
+      "Severity": "Medium",
+      "Title": "Ensure additional storage providers are restricted in Outlook on the web"
+    },
+    {
+      "Id": "MT.1041",
+      "Severity": "High",
+      "Title": "Ensure users installing Outlook add-ins is not allowed"
+    },
+    {
+      "Id": "MT.1042",
+      "Severity": "Medium",
+      "Title": "Restrict dial-in users from bypassing a meeting lobby"
+    },
+    {
+      "Id": "MT.1043",
+      "Severity": "Medium",
+      "Title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains"
+    },
+    {
+      "Id": "MT.1044",
+      "Severity": "High",
+      "Title": "Ensure modern authentication for Exchange Online is enabled"
+    },
+    {
+      "Id": "MT.1045",
+      "Severity": "Medium",
+      "Title": "Only invited users should be automatically admitted to Teams meetings"
+    },
+    {
+      "Id": "MT.1046",
+      "Severity": "Medium",
+      "Title": "Restrict anonymous users from joining meetings"
+    },
+    {
+      "Id": "MT.1047",
+      "Severity": "Medium",
+      "Title": "Restrict anonymous users from starting Teams meetings"
+    },
+    {
+      "Id": "MT.1048",
+      "Severity": "Medium",
+      "Title": "Limit external participants from having control in a Teams meeting"
+    },
+    {
+      "Id": "MT.1049",
+      "Severity": "High",
+      "Title": "Conditional Access policies for User Risk and Sign-in Risk should be configured separately."
+    },
+    {
+      "Id": "MT.1050",
+      "Severity": "High",
+      "Title": "Apps with high-risk permissions having a direct path to Global Admin"
+    },
+    {
+      "Id": "MT.1051",
+      "Severity": "High",
+      "Title": "Apps with high-risk permissions having an indirect path to Global Admin"
+    },
+    {
+      "Id": "MT.1052",
+      "Severity": "High",
+      "Title": "At least one Conditional Access policy is targeting the Device Code authentication flow."
+    },
+    {
+      "Id": "MT.1053",
+      "Severity": "Medium",
+      "Title": "Ensure intune device clean-up rule is configured"
+    },
+    {
+      "Id": "MT.1054",
+      "Severity": "Medium",
+      "Title": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'"
+    },
+    {
+      "Id": "MT.1055",
+      "Severity": "Medium",
+      "Title": "Microsoft 365 Group (and Team) creation should be restricted to approved users."
+    },
+    {
+      "Id": "MT.1056",
+      "Severity": "High",
+      "Title": "Ensure that no person has permanent access to all Azure subscriptions at the root scope"
+    },
+    {
+      "Id": "MT.1057",
+      "Severity": "Medium",
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to notify users."
+    },
+    {
+      "Id": "MT.1058",
+      "Severity": "Medium",
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
+    },
+    {
+      "Id": "ORCA.100",
+      "Severity": "Medium",
+      "Title": "Bulk Complaint Level threshold is between 4 and 6."
+    },
+    {
+      "Id": "ORCA.101",
+      "Severity": "Medium",
+      "Title": "Bulk is marked as spam."
+    },
+    {
+      "Id": "ORCA.102",
+      "Severity": "Medium",
+      "Title": "Advanced Spam filter options are turned off."
+    },
+    {
+      "Id": "ORCA.103",
+      "Severity": "Medium",
+      "Title": "Outbound spam filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.104",
+      "Severity": "High",
+      "Title": "High Confidence Phish action set to Quarantine message."
+    },
+    {
+      "Id": "ORCA.105",
+      "Severity": "Medium",
+      "Title": "Safe Links Synchronous URL detonation is enabled."
+    },
+    {
+      "Id": "ORCA.106",
+      "Severity": "Medium",
+      "Title": "Quarantine retention period is 30 days."
+    },
+    {
+      "Id": "ORCA.107",
+      "Severity": "Low",
+      "Title": "End-user spam notification is enabled."
+    },
+    {
+      "Id": "ORCA.108",
+      "Severity": "Medium",
+      "Title": "DKIM signing is set up for all your custom domains."
+    },
+    {
+      "Id": "ORCA.108.1",
+      "Severity": "Medium",
+      "Title": "DNS Records have been set up to support DKIM."
+    },
+    {
+      "Id": "ORCA.109",
+      "Severity": "Medium",
+      "Title": "Senders are not being allow listed in an unsafe manner."
+    },
+    {
+      "Id": "ORCA.110",
+      "Severity": "Medium",
+      "Title": "Internal Sender notifications are disabled."
+    },
+    {
+      "Id": "ORCA.111",
+      "Severity": "High",
+      "Title": "Anti-phishing policy exists and EnableUnauthenticatedSender is true."
+    },
+    {
+      "Id": "ORCA.112",
+      "Severity": "Medium",
+      "Title": "Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy."
+    },
+    {
+      "Id": "ORCA.113",
+      "Severity": "Medium",
+      "Title": "AllowClickThrough is disabled in Safe Links policies."
+    },
+    {
+      "Id": "ORCA.114",
+      "Severity": "High",
+      "Title": "No IP Allow Lists have been configured."
+    },
+    {
+      "Id": "ORCA.115",
+      "Severity": "Medium",
+      "Title": "Mailbox intelligence based impersonation protection is enabled in anti-phishing policies."
+    },
+    {
+      "Id": "ORCA.116",
+      "Severity": "Medium",
+      "Title": "Mailbox intelligence based impersonation protection action set to move message to junk mail folder."
+    },
+    {
+      "Id": "ORCA.118.1",
+      "Severity": "High",
+      "Title": "Domains are not being allow listed in an unsafe manner in Anti-Spam Policies."
+    },
+    {
+      "Id": "ORCA.118.2",
+      "Severity": "High",
+      "Title": "Domains are not being allow listed in an unsafe manner in Transport Rules."
+    },
+    {
+      "Id": "ORCA.118.3",
+      "Severity": "Medium",
+      "Title": "Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies."
+    },
+    {
+      "Id": "ORCA.118.4",
+      "Severity": "Medium",
+      "Title": "Your own domains are not being allow listed in an unsafe manner in Transport Rules."
+    },
+    {
+      "Id": "ORCA.119",
+      "Severity": "Info",
+      "Title": "Similar Domains Safety Tips is enabled."
+    },
+    {
+      "Id": "ORCA.120.1",
+      "Severity": "Medium",
+      "Title": "Zero Hour Autopurge Enabled for Phish."
+    },
+    {
+      "Id": "ORCA.120.2",
+      "Severity": "Medium",
+      "Title": "Zero Hour Autopurge Enabled for Malware."
+    },
+    {
+      "Id": "ORCA.120.3",
+      "Severity": "Medium",
+      "Title": "Zero Hour Autopurge Enabled for Spam."
+    },
+    {
+      "Id": "ORCA.121",
+      "Severity": "Low",
+      "Title": "Supported filter policy action used."
+    },
+    {
+      "Id": "ORCA.123",
+      "Severity": "Info",
+      "Title": "Unusual Characters Safety Tips is enabled."
+    },
+    {
+      "Id": "ORCA.124",
+      "Severity": "High",
+      "Title": "Safe attachments unknown malware response set to block messages."
+    },
+    {
+      "Id": "ORCA.139",
+      "Severity": "Low",
+      "Title": "Spam action set to move message to junk mail folder or quarantine."
+    },
+    {
+      "Id": "ORCA.140",
+      "Severity": "High",
+      "Title": "High Confidence Spam action set to Quarantine message."
+    },
+    {
+      "Id": "ORCA.141",
+      "Severity": "Medium",
+      "Title": "Bulk action set to Move message to Junk Email Folder."
+    },
+    {
+      "Id": "ORCA.142",
+      "Severity": "Medium",
+      "Title": "Phish action set to Quarantine message."
+    },
+    {
+      "Id": "ORCA.143",
+      "Severity": "Info",
+      "Title": "Safety Tips are enabled."
+    },
+    {
+      "Id": "ORCA.156",
+      "Severity": "Medium",
+      "Title": "Safe Links Policies are tracking when user clicks on safe links."
+    },
+    {
+      "Id": "ORCA.158",
+      "Severity": "Medium",
+      "Title": "Safe Attachments is enabled for SharePoint and Teams."
+    },
+    {
+      "Id": "ORCA.179",
+      "Severity": "Medium",
+      "Title": "Safe Links is enabled intra-organization."
+    },
+    {
+      "Id": "ORCA.180",
+      "Severity": "Medium",
+      "Title": "Anti-phishing policy exists and EnableSpoofIntelligence is true."
+    },
+    {
+      "Id": "ORCA.189",
+      "Severity": "Medium",
+      "Title": "Safe Attachments is not bypassed."
+    },
+    {
+      "Id": "ORCA.189.2",
+      "Severity": "High",
+      "Title": "Safe Links is not bypassed."
+    },
+    {
+      "Id": "ORCA.205",
+      "Severity": "Medium",
+      "Title": "Common attachment type filter is enabled."
+    },
+    {
+      "Id": "ORCA.220",
+      "Severity": "Medium",
+      "Title": "Advanced Phish filter Threshold level is adequate."
+    },
+    {
+      "Id": "ORCA.221",
+      "Severity": "Medium",
+      "Title": "Mailbox intelligence is enabled in anti-phishing policies."
+    },
+    {
+      "Id": "ORCA.222",
+      "Severity": "Medium",
+      "Title": "Domain Impersonation action is set to move to Quarantine."
+    },
+    {
+      "Id": "ORCA.223",
+      "Severity": "High",
+      "Title": "User impersonation action is set to move to Quarantine."
+    },
+    {
+      "Id": "ORCA.224",
+      "Severity": "Info",
+      "Title": "Similar Users Safety Tips is enabled."
+    },
+    {
+      "Id": "ORCA.225",
+      "Severity": "Medium",
+      "Title": "Safe Documents is enabled for Office clients."
+    },
+    {
+      "Id": "ORCA.226",
+      "Severity": "Medium",
+      "Title": "Each domain has a Safe Link policy applied to it."
+    },
+    {
+      "Id": "ORCA.227",
+      "Severity": "Medium",
+      "Title": "Each domain has a Safe Attachments policy applied to it."
+    },
+    {
+      "Id": "ORCA.228",
+      "Severity": "High",
+      "Title": "No trusted senders in Anti-phishing policy."
+    },
+    {
+      "Id": "ORCA.229",
+      "Severity": "Medium",
+      "Title": "No trusted domains in Anti-phishing policy."
+    },
+    {
+      "Id": "ORCA.230",
+      "Severity": "Medium",
+      "Title": "Each domain has a Anti-phishing policy applied to it, or the default policy is being used."
+    },
+    {
+      "Id": "ORCA.231",
+      "Severity": "Medium",
+      "Title": "Each domain has a anti-spam policy applied to it, or the default policy is being used."
+    },
+    {
+      "Id": "ORCA.232",
+      "Severity": "High",
+      "Title": "Each domain has a malware filter policy applied to it, or the default policy is being used."
+    },
+    {
+      "Id": "ORCA.233",
+      "Severity": "Medium",
+      "Title": "Domains are pointed directly at EOP or enhanced filtering is used."
+    },
+    {
+      "Id": "ORCA.233.1",
+      "Severity": "Medium",
+      "Title": "Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors."
+    },
+    {
+      "Id": "ORCA.234",
+      "Severity": "Medium",
+      "Title": "Click through is disabled for Safe Documents."
+    },
+    {
+      "Id": "ORCA.235",
+      "Severity": "Medium",
+      "Title": "SPF records is set up for all your custom domains."
+    },
+    {
+      "Id": "ORCA.236",
+      "Severity": "Medium",
+      "Title": "Safe Links is enabled for emails."
+    },
+    {
+      "Id": "ORCA.237",
+      "Severity": "Medium",
+      "Title": "Safe Links is enabled for teams messages."
+    },
+    {
+      "Id": "ORCA.238",
+      "Severity": "Medium",
+      "Title": "Safe Links is enabled for office documents."
+    },
+    {
+      "Id": "ORCA.239",
+      "Severity": "High",
+      "Title": "No exclusions for the built-in protection policies."
+    },
+    {
+      "Id": "ORCA.240",
+      "Severity": "Medium",
+      "Title": "Outlook is configured to display external tags for external emails."
+    },
+    {
+      "Id": "ORCA.241",
+      "Severity": "Medium",
+      "Title": "Anti-phishing policy exists and EnableFirstContactSafetyTips is true."
+    },
+    {
+      "Id": "ORCA.242",
+      "Severity": "High",
+      "Title": "Important protection alerts responsible for AIR activities are enabled."
+    },
+    {
+      "Id": "ORCA.243",
+      "Severity": "Medium",
+      "Title": "Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO."
+    },
+    {
+      "Id": "ORCA.244",
+      "Severity": "Medium",
+      "Title": "Policies are configured to honor sending domains DMARC."
+    },
+    {
+      "Id": "ORCA.1000",
+      "Severity": "High",
+      "Title": "Exchange Online Protection (EOP) is enabled."
+    },
+    {
+      "Id": "ORCA.1001",
+      "Severity": "High",
+      "Title": "Spam filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1002",
+      "Severity": "High",
+      "Title": "Malware filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1003",
+      "Severity": "High",
+      "Title": "Phishing filter policy settings configured."
+    },
+    {
+      "Id": "ORCA.1004",
+      "Severity": "High",
+      "Title": "<URL> filtering policy settings configured."
+    }
+  ]
+}

@@ -25,5 +25,5 @@ The tests in this section verifies that a Microsoft 365 tenant’s configuration
 
 ## [🌀 CIS Tests](/docs/tests/cis)
 
-The tests in this section verifies that a Micorosft 365 tenant's configuration conforms to the [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) recommendations (v3.1.0).
+The tests in this section verifies that a Microsoft 365 tenant's configuration conforms to the [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) recommendations (v3.1.0).
 ```

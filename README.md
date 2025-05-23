@@ -17,6 +17,7 @@ To learn more about Maester and to get started, visit [Maester.dev](https://maes
 - **Automated Testing**: Maester provides a comprehensive set of automated tests to ensure the security of your Microsoft 365 setup.
 - **Customizable**: Tailor Maester to your specific needs by adding custom Pester tests.
 - **More to come...**
+
 ---
 
 ## Getting Started
@@ -78,39 +79,52 @@ Update-MaesterTests
 
 ## Use as GitHub action
 
-Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/maester-action) and can be used directly in any GitHub workflow.
+Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/run-maester) and can be used directly in any GitHub workflow. Because it is specially built for GitHub, it nicely integrates with all the features of GitHub Actions, like uploading artifacts and writing a summary to the workflow run.
 
-Just provide the required client and tenant id. For more details please refer to the [docs](https://maester.dev/docs/monitoring/github/).
+For more details, please refer to the [docs](https://maester.dev/docs/monitoring/github/) or the [action repository](https://github.com/maester365/maester-action).
 
 ```yaml
-name: Maester Daily Tests
+name: Daily tests
 
 on:
   push:
     branches: ["main"]
   # Run once a day at midnight
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 6 * * *"
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
-      id-token: write
+      id-token: write # important because the actions needs it to authenticate to Entra using workload identity
       contents: read
       checks: write
 
 jobs:
-  run-maester-tests:
-    name: Run Maester Tests
+  daily-tests:
+    name: Daily security scan
     runs-on: ubuntu-latest
     steps:
-    - name: Run Maester action
-      uses: maester365/maester@main
+    - name: Maester 🔥
+      id: maester # this is important, by setting the id you can use the output of the action in the next steps
+      uses: maester365/maester-action@v1.0.1 # this is the new action
       with:
         client_id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         include_public_tests: true # Optional
+        include_private_tests: true # Optional
         include_exchange: false # Optional
+        include_teams: false # Optional
         pester_verbosity: None # Optional - 'None', 'Normal', 'Detailed', 'Diagnostic'
-
+        step_summary: true         # Optional: Set to false if you don't want a summary added to your GitHub Action run
+        artifact_upload: true      # Optional: Set to false if you don't want summaries uploaded to GitHub Artifacts
+        maester_version: latest  # Optional: Set to 'latest' or 'preview' to use the latest version of the Maester module or a specific version like '1.0.83-preview'
+        disable_telemetry: false   # Optional: Set to true If you want telemetry information not to be logged.
 ```
+
+### Migrate from old action
+
+The Github Action is moved to a new [repository](https://github.com/maester365/maester-action).
+
+> [!NOTE]
+> If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md) for more details.

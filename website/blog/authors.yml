@@ -83,3 +83,12 @@ sebastian:
   socials:
     linkedin: https://www.linkedin.com/in/sebastianclaesson/
     github: sebastianclaesson
+thomasschmidt:
+  name: Thomas S. Schmidt
+  title: Cybersecurity Architect, TDC Erhverv
+  url: https://www.linkedin.com/in/sindalschmidt/
+  image_url: https://avatars.githubusercontent.com/tdcthosc
+  page: true
+  socials:
+    linkedin: https://www.linkedin.com/in/sindalschmidt/
+    github: tdcthosc

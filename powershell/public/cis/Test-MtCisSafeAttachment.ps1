@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Checks if the Safe Attachments policy is enabled
+    Checks if the Safe Attachments policy is enabled
 
 .DESCRIPTION
-The Safe Attachments policy is enabled
+    The Safe Attachments policy is enabled
+    CIS Microsoft 365 Foundations Benchmark v4.0.0
 
 .EXAMPLE
-Test-MtCisSafeAttachment
+    Test-MtCisSafeAttachment
 
-Returns true safe attachments policy is enabled
+    Returns true safe attachments policy is enabled
 
 .LINK
-https://maester.dev/docs/commands/Test-MtCisSafeAttachment
+    https://maester.dev/docs/commands/Test-MtCisSafeAttachment
 #>
 function Test-MtCisSafeAttachment {
     [CmdletBinding()]
