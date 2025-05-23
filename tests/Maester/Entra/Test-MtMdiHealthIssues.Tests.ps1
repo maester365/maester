@@ -9,8 +9,7 @@ BeforeDiscovery {
     if($MdiSecurityApiError -match "Tenant is not onboarded to Microsoft Defender for Identity") {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason "Tenant is not onboarded to Microsoft Defender for Identity"
         return $null
-    }
-    elseif (($MdiAllHealthIssues | Where-Object { $_.status -ne "closed" } | Measure-Object) -eq 0) {
+    } elseif (($MdiAllHealthIssues | Where-Object { $_.status -ne "closed" } | Measure-Object) -eq 0) {
         Add-MtTestResultDetail -SkippedBecause NoResults
         return $null
     } else {
@@ -35,9 +34,10 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Securit
 
         $issueUrl = "https://security.microsoft.com/identities/health-issues"
         $recommendationLinkMd = "`n`n➡️ Open [Health issue - $displayName]($issueUrl) in the Microsoft Defender portal."
+        $testTitle = "MT.1058.$($id): MDI Health Issues - $displayName"
 
         if ( $status -match "dismissed" -or $status -match "suppressed" ) {
-            Add-MtTestResultDetail -Description $description -SkippedBecause Custom -SkippedCustomReason "This health issue has been **Suppressed** by an administrator.`n`nIf this issue is valid for your MDI instance you can change it's state from **suppressed** to **Re-open**. $recommendationLinkMd"
+            Add-MtTestResultDetail -TestTitle $testTitle -Description $description -SkippedBecause Custom -SkippedCustomReason "This health issue has been **Suppressed** by an administrator.`n`nIf this issue is valid for your MDI instance you can change it's state from **suppressed** to **Re-open**. $recommendationLinkMd"
             return $null
         }
 
@@ -57,7 +57,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Securit
         $ResultMarkdown = $description + "`n`n" + $affectedItems + "`n`n#### Remediation actions:`n`n" + $actionSteps  + "`n`n#### Issue updated:`n`n" + $lastModifiedDateTime + "`n`n#### Issue created:`n`n" + $createdDateTime
         #endregion
 
-        Add-MtTestResultDetail -Description $description -Result $ResultMarkdown
+        Add-MtTestResultDetail -TestTitle $testTitle -Description $description -Result $ResultMarkdown
 
         $status | Should -Be "closed" -Because $displayName
     }
