@@ -42,12 +42,19 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Entra", "Securit
         }
 
         #region Add detailed test description
-        $ActionSteps = $recommendations | ForEach-Object {
+        $actionSteps = $recommendations | ForEach-Object {
             "- " + $_
         }
-        $ActionSteps = $ActionSteps -join "`n`n"
+        $actionSteps = $actionSteps -join "`n`n"
 
-        $ResultMarkdown = $displayName + $description + $additionalInformation + "`n`n#### Remediation actions:`n`n" + $ActionSteps  + "`n`n#### Issue updated:`n`n" + $lastModifiedDateTime + "`n`n#### Issue created:`n`n" + $createdDateTime
+        #
+        $affectedItems = $additionalInformation | ForEach-Object {
+            "- " + $_
+        }
+        $affectedItems = $affectedItems -join "`n`n"
+
+        $ResultMarkdown = $description + "`n`n" + $affectedItems + "`n`n#### Remediation actions:`n`n" + $actionSteps  + "`n`n#### Issue updated:`n`n" + $lastModifiedDateTime + "`n`n#### Issue created:`n`n" + $createdDateTime
+
         Add-MtTestResultDetail -Description $description -Result $ResultMarkdown
 
         $status | Should -Be "closed" -Because $displayName
