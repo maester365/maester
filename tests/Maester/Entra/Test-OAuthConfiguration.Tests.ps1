@@ -8,12 +8,12 @@ BeforeDiscovery {
 }
 
 Describe "Application Management - No ownership on sensitive apps" -Tag "Maester", "Privileged", "Security", "All" {
-    It "MT.1057: Ownership on apps with sensitive API permissions. See https://maester.dev/docs/tests/MT.1057" -Tag "MT.1057" {
+    It "MT.1059: Ownership on apps with sensitive API permissions. See https://maester.dev/docs/tests/MT.1059" -Tag "MT.1059" {
 
         $AppsWithOwners = $OAuthAppDetails | Where-Object { $null -ne $_.OwnedBy }
         $SensitiveApiRolesOnAppsWithOwners = $AppsWithOwners | Where-Object {$_.ApiPermissions -match '"EAMTierLevelName":"ControlPlane"' -or $_.ApiPermissions -match '"PrivilegeLevel":"High"'}
 
-        if ($return) {
+        if ([string]::IsNullOrWhiteSpace($SensitiveApiRolesOnAppsWithOwners) -eq $true ){
             $testResultMarkdown = "Well done. No application and workload identity has a high privilege API permission with an owner."
         } else {
             $testResultMarkdown = "At least one application has API permissions with a risk of sensitive API permissions.`n`n%TestResult%"
@@ -29,8 +29,6 @@ Describe "Application Management - No ownership on sensitive apps" -Tag "Maester
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
-        #endregion
-        # Actual test
         $SensitiveApiRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because $benefits
     }
 }
