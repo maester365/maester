@@ -1,4 +1,4 @@
-8.4.1 (L1) Ensure app permission policies are configured 
+8.4.1 (L1) Ensure app permission policies are configured
 
 This test checks if the usage of third-party and custom apps are disabled.
 
@@ -29,7 +29,7 @@ Make sure to also check the Org-wide app settings:
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 359](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 391](https://www.cisecurity.org/benchmark/microsoft_365)
 * [CISA MS.TEAMS.5.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams52v1)
 * [CISA MS.TEAMS.5.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams53v1)
 
