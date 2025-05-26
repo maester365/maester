@@ -9,12 +9,14 @@ import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
+// Global dialog state manager
 const dialogState = {
   currentOpenItemId: null,
 };
 
 export default function ResultInfoDialog(props) {
   const itemIndex = props.Item.Index;
+    // Control dialog state based on either direct interaction or parent control
   const [isOpen, setIsOpen] = React.useState(false);
 
   const openInNewTab = (url) => {
@@ -30,6 +32,7 @@ export default function ResultInfoDialog(props) {
     }
   }, [props.isOpen, isOpen]);
 
+  // Update global dialog state when this dialog opens/closes
   useEffect(() => {
     if (isOpen) {
       dialogState.currentOpenItemId = itemIndex;
@@ -116,6 +119,7 @@ export default function ResultInfoDialog(props) {
       return props.Item.ResultDetail.TestDescription;
     }
     else {
+      //trim the scriptblock whitespace at the beginning and end
       if (props.Item.ScriptBlock) {
         return props.Item.ScriptBlock.replace(/^\s+|\s+$/g, '');
       }
@@ -123,6 +127,7 @@ export default function ResultInfoDialog(props) {
     return "";
   }
 
+  //Set bgcolor based on result
   function getBgColor(result) {
     if (result === "Passed") {
       return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";
