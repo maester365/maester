@@ -62049,7 +62049,6 @@ function TestResultsTable(props) {
   const [sortColumn, setSortColumn] = reactExports.useState("Id");
   const [sortDirection, setSortDirection] = reactExports.useState("asc");
   const [activeDialog, setActiveDialog] = reactExports.useState(null);
-  const [isNavigating, setIsNavigating] = reactExports.useState(false);
   const testResults2 = props.TestResults;
   const isStatusSelected = (item) => {
     const matchesSearch = !searchQuery || item.Id && item.Id.toLowerCase().includes(searchQuery.toLowerCase()) || item.Title && item.Title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -62110,13 +62109,11 @@ function TestResultsTable(props) {
       if (event.key === "ArrowRight") {
         const nextIndex = currentDialogIndexInFiltered + 1;
         if (nextIndex < filteredSortedData.length) {
-          setIsNavigating(true);
           setActiveDialog(`dialog-${filteredSortedData[nextIndex].Index}-button`);
         }
       } else if (event.key === "ArrowLeft") {
         const prevIndex = currentDialogIndexInFiltered - 1;
         if (prevIndex >= 0) {
-          setIsNavigating(true);
           setActiveDialog(`dialog-${filteredSortedData[prevIndex].Index}-button`);
         }
       }
@@ -62126,19 +62123,11 @@ function TestResultsTable(props) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [activeDialog, filteredSortedData]);
-  reactExports.useEffect(() => {
-    if (isNavigating) {
-      requestAnimationFrame(() => {
-        setIsNavigating(false);
-      });
-    }
-  }, [activeDialog, isNavigating]);
   const handleNavigateToNext = () => {
     const currentItemIndex = activeDialog ? parseInt(activeDialog.split("-")[1]) : null;
     if (currentItemIndex === null) return;
     const currentIndexInFiltered = filteredSortedData.findIndex((item) => item.Index === currentItemIndex);
     if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
-      setIsNavigating(true);
       setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered + 1].Index}-button`);
     }
   };
@@ -62147,7 +62136,6 @@ function TestResultsTable(props) {
     if (currentItemIndex === null) return;
     const currentIndexInFiltered = filteredSortedData.findIndex((item) => item.Index === currentItemIndex);
     if (currentIndexInFiltered > 0) {
-      setIsNavigating(true);
       setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered - 1].Index}-button`);
     }
   };
@@ -62155,7 +62143,7 @@ function TestResultsTable(props) {
   const status = ["Passed", "Failed", "NotRun", "Skipped"];
   const severities = ["Critical", "High", "Medium", "Low", "Info", "None"];
   const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag || []))];
-  const SortableTableHeaderCell = ({ column, label, className }) => {
+  const SortableHeader = ({ column, label, className }) => {
     const isSorted = sortColumn === column;
     const icon = isSorted ? sortDirection === "asc" ? /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$8, { className: "h-4 w-4 inline" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ForwardRef$9, { className: "h-4 w-4 inline" }) : null;
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(l$1, { onClick: () => handleSort(column), className: `cursor-pointer ${className}`, children: [
@@ -62217,10 +62205,10 @@ function TestResultsTable(props) {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(l$4, { className: "mt-2 w-full", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(l$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Id", label: "ID", className: "text-left w-auto whitespace-nowrap" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Title", label: "Title", className: "text-left w-full" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Severity", label: "Severity", className: "text-center whitespace-nowrap" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHeaderCell, { column: "Status", label: "Status", className: "text-center whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Id", label: "ID", className: "text-left w-auto whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Title", label: "Title", className: "text-left w-full" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Severity", label: "Severity", className: "text-center whitespace-nowrap" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableHeader, { column: "Status", label: "Status", className: "text-center whitespace-nowrap" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(l$1, { className: "text-center whitespace-nowrap", children: "Info" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(i$3, { children: filteredSortedData.map((item, index2) => {
@@ -62241,7 +62229,6 @@ function TestResultsTable(props) {
               onDialogOpen: () => handleDialogOpen(dialogIdForId),
               onDialogClose: handleDialogClose,
               isOpen: activeDialog === dialogIdForId,
-              isNavigating,
               dialogId: dialogIdForId
             }
           ) }),
@@ -62256,7 +62243,6 @@ function TestResultsTable(props) {
               onDialogOpen: () => handleDialogOpen(dialogIdForTitle),
               onDialogClose: handleDialogClose,
               isOpen: activeDialog === dialogIdForTitle,
-              isNavigating,
               dialogId: dialogIdForTitle
             }
           ) }),
@@ -62272,7 +62258,6 @@ function TestResultsTable(props) {
               onDialogOpen: () => handleDialogOpen(dialogIdForButton),
               onDialogClose: handleDialogClose,
               isOpen: activeDialog === dialogIdForButton,
-              isNavigating,
               dialogId: dialogIdForButton
             }
           ) })
