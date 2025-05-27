@@ -9,23 +9,7 @@ Allowing users to install third-party or unverified apps poses a potential risk 
 
 #### Remediation action:
 
-##### Microsoft Teams Admin Center
-
-To change app permission policies using the UI:
-1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
-2. Click to expand **Teams apps** select **Permission policies**.
-3. Select **Global (Org-wide default)** policy.
-4. For **Microsoft apps** set **Let users install and use available apps by default** to **On** or less permissive.
-5. For **Third-party apps** set **Let users install and use available apps by default** to **Off**.
-6. For **Custom apps** set **Let users install and use available apps by default** to **Off**.
-
-Make sure to also check the Org-wide app settings:
-1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
-2. Click to expand **Teams apps** select **Manage apps**.
-3. In the upper right click **Actions** > **Org-wide app settings**.
-4. For **Third-party apps** set **Third-party apps** and **New third-party apps published to the store** to **Off**.
-5. For **Custom apps** set **Let users interact with custom apps in preview** to **Off**.
-6. Click **Save**.
+> **NOTE:** Previously, this could be managed from the Permission policies under Teams apps in the Teams admin portal. The Permission policies now redirects you to the Manage Apps page. You can manage apps there now using the `Org-wide app settings` under _Actions_, but it's easier to remediate the recommended settings using PowerShell.
 
 ##### PowerShell
 
@@ -38,6 +22,18 @@ To change app permission policies using PowerShell
 ## Enable all Microsoft Apps and Disable Third-party and Custom Apps
 Set-CsTeamsAppPermissionPolicy -Identity Global -DefaultCatalogAppsType BlockedAppList -DefaultCatalogApps @() -GlobalCatalogAppsType AllowedAppList -GlobalCatalogApps @() -PrivateCatalogAppsType AllowedAppList -PrivateCatalogApps @()
 ```
+
+##### Microsoft Teams Admin Center
+
+To change app permission policies using the UI:
+1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
+2. Click to expand **Teams Apps** [Teams apps | Teams admin center](https://admin.teams.microsoft.com/policies/manage-apps)
+3. Under **Actions**, select **Org-wide app settings**
+4. For **Microsoft apps** set **Let users install and use available apps by default** to **On** or less permissive.
+5. For **Third-party apps** set **Let users install and use available apps by default** to **Off**.
+6. For **Custom apps** set **Let users install and use available apps by default** to **Off**.
+7. For **Custom apps** set **Let users interact with custom apps in preview** to **Off**.
+8. Click **Save**.
 
 #### Related links
 
