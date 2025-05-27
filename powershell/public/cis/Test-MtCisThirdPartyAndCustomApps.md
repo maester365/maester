@@ -1,4 +1,4 @@
-8.4.1 (L1) Ensure app permission policies are configured 
+8.4.1 (L1) Ensure app permission policies are configured
 
 This test checks if the usage of third-party and custom apps are disabled.
 
@@ -8,6 +8,8 @@ Rationale:\
 Allowing users to install third-party or unverified apps poses a potential risk of  introducing malicious software to the environment.
 
 #### Remediation action:
+
+##### Microsoft Teams Admin Center
 
 To change app permission policies using the UI:
 1. Navigate to **Microsoft Teams admin center** [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com).
@@ -24,6 +26,18 @@ Make sure to also check the Org-wide app settings:
 4. For **Third-party apps** set **Third-party apps** and **New third-party apps published to the store** to **Off**.
 5. For **Custom apps** set **Let users interact with custom apps in preview** to **Off**.
 6. Click **Save**.
+
+##### PowerShell
+
+To change app permission policies using PowerShell
+
+```powershell
+# This cmdlet requires the MicrosoftTeams PowerShell module
+# Make sure you're connected to Microsoft Teams using the Connect-MicrosoftTeams cmdlet before executing
+
+## Enable all Microsoft Apps and Disable Third-party and Custom Apps
+Set-CsTeamsAppPermissionPolicy -Identity Global -DefaultCatalogAppsType BlockedAppList -DefaultCatalogApps @() -GlobalCatalogAppsType AllowedAppList -GlobalCatalogApps @() -PrivateCatalogAppsType AllowedAppList -PrivateCatalogApps @()
+```
 
 #### Related links
 
