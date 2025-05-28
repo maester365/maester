@@ -26,6 +26,7 @@ It is important to note that a number of the policy checks ONLY check the defaul
 :::info
 TBD below refers to CIS "manual" checks. It might be possible to automate these, but skipping for now to focus on automated checks.
 N/A below refers to review checks which cannot be automated.
+Obsolete below refers to a check which is no longer valid or required.
 :::
 
 | Cmdlet Name | CIS Recommendation ID |
@@ -136,7 +137,7 @@ N/A below refers to review checks which cannot be automated.
 | TBD | 8.2.1 (L2) Ensure external domains are restricted in the Teams admin center |
 | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](/docs/commands/) | 8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled |
 | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](/docs/commands/) | 8.2.3 (L1) Ensure external Teams users cannot initiate conversations |
-| [Test-MtCisCommunicateWithSkypeUsers](/docs/commands/) | 8.2.4 (L1) Ensure communication with Skype users is disabled |
+| Obsolete | 8.2.4 (L1) Ensure communication with Skype users is disabled |
 | [Test-MtCisThirdPartyAndCustomApps](/docs/commands/) | 8.4.1 (L1) Ensure app permission policies are configured |
 | TBD | 8.5.1 (L2) Ensure anonymous users can't join a meeting |
 | TBD | 8.5.2 (L1) Ensure anonymous users and dial-in callers can't start a meeting |
