@@ -9,7 +9,7 @@ description: Implementation of CIS Microsoft 365 Foundations Benchmark Controls
 
 ## Overview
 
-The tests in this section verifies that a Microsoft 365 tenant's configuration conforms to the [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) recommendations (v4.0.0).
+The tests in this section verifies that a Microsoft 365 tenant's configuration conforms to the [CIS Microsoft 365 Foundations Benchmark](https://www.cisecurity.org/benchmark/microsoft_365) recommendations (v5.0.0).
 
 The CIS published material is shared for these tests as it aligns with their licensing of [CC BY-NC-SA 4.0](https://www.cisecurity.org/terms-and-conditions-table-of-contents).
 
@@ -65,8 +65,9 @@ N/A below refers to review checks which cannot be automated.
 | [Test-MtCisAuditLogSearch](/docs/commands/) | 3.1.1 (L1) Ensure Microsoft 365 audit log search is Enabled |
 | TBD | 3.2.1 (L1) Ensure DLP policies are enabled |
 | TBD | 3.2.2 (L1) Ensure DLP policies are enabled for Microsoft Teams |
-| TBD | 3.3.1 (L1) Ensure SharePoint Online Information Protection policies are set up and used |
-| TBD | 5.1.1.1 (L1) Ensure Security Defaults is disabled |
+| TBD | 3.3.1 (L1) Ensure Information Protection sensitivity label policies are published |
+| TBD | 4.1 (L2) Ensure devices without a compliance policy are marked 'not compliant' |
+| TBD | 4.2 (L2) Ensure device enrollment for personally owned devices is blocked by default |
 | TBD | 5.1.2.1 (L1) Ensure 'Per-user MFA' is disabled |
 | TBD | 5.1.2.2 (L2) Ensure third party integrated applications are not allowed |
 | TBD | 5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' |
@@ -87,24 +88,26 @@ N/A below refers to review checks which cannot be automated.
 | TBD | 5.2.2.5 (L2) Ensure 'Phishing-resistant MFA strength' is required for Administrators |
 | TBD | 5.2.2.6 (L1) Enable Identity Protection user risk policies |
 | TBD | 5.2.2.7 (L1) Enable Identity Protection sign-in risk policies |
-| TBD | 5.2.2.8 (L2) Ensure admin center access is limited to administrative roles |
-| TBD | 5.2.2.9 (L2) Ensure 'sign-in risk' is blocked for medium and high risk |
-| TBD | 5.2.2.10 (L1) Ensure a managed device is required for authentication |
-| TBD | 5.2.2.11 (L1) Ensure a managed device is required for MFA registration |
+| TBD | 5.2.2.8 (L2) Ensure 'sign-in risk' is blocked for medium and high risk |
+| TBD | 5.2.2.9 (L1) Ensure a managed device is required for authentication |
+| TBD | 5.2.2.10 (L1) Ensure a managed device is required for MFA registration |
+| TBD | 5.2.2.11 (L1) Ensure sign-in frequency for Intune Enrollment is set to 'Every time'|
+| TBD | 5.2.2.12 (L1) Ensure the device code sign-in flow is blocked |
 | TBD | 5.2.3.1 (L1) Ensure Microsoft Authenticator is configured to protect against MFA fatigue |
 | TBD | 5.2.3.2 (L1) Ensure custom banned passwords lists are used |
 | TBD | 5.2.3.3 (L1) Ensure password protection is enabled for on-prem Active Directory |
 | TBD | 5.2.3.4 (L1) Ensure all member users are 'MFA capable' |
 | TBD | 5.2.3.5 (L1) Ensure weak authentication methods are disabled |
+| TBD | 5.2.3.6 (L1) Ensure system-preferred multifactor authentication is enabled |
 | TBD | 5.2.4.1 (L1) Ensure 'Self service password reset enabled' is set to 'All' |
 | TBD | 5.3.1 (L2) Ensure 'Privileged Identity Management' is used to manage roles |
 | TBD | 5.3.2 (L1) Ensure 'Access reviews' for Guest Users are configured |
 | TBD | 5.3.3 (L1) Ensure 'Access reviews' for privileged roles are configured |
 | TBD | 5.3.4 (L1) Ensure approval is required for Global Administrator role activation |
+| TBD | 5.3.5 (L1) Ensure approval is required for Privileged Role Administrator activation |
 | TBD | 6.1.1 (L1) Ensure 'AuditDisabled' organizationally is set to 'False' |
-| TBD | 6.1.2 (L1) Ensure mailbox auditing for E3 users is Enabled |
-| TBD | 6.1.3 (L1) Ensure mailbox auditing for E5 users is Enabled |
-| TBD | 6.1.4 (L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes |
+| TBD | 6.1.2 (L1) Ensure mailbox audit actions are configured |
+| TBD | 6.1.3 (L1) Ensure 'AuditBypassEnabled' is not enabled on mailboxes |
 | TBD | 6.2.1 (L1) Ensure all forms of mail forwarding are blocked and/or disabled |
 | TBD | 6.2.2 (L1) Ensure mail transport rules do not whitelist specific domains |
 | TBD | 6.2.3 (L1) Ensure email from external senders is identified |

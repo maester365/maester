@@ -28,7 +28,7 @@ Set-CsTenantFederationConfiguration -AllowPublicUsers $false
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 * [Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/en-us/microsoftteams/trusted-organizations-external-meetings-chat)
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 357](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 386](https://www.cisecurity.org/benchmark/microsoft_365)
 * [CISA MS.TEAMS.3.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams14v1)
 * [MITRE ATT&CK TTP Mapping](https://attack.mitre.org/techniques/T1567/)
 
