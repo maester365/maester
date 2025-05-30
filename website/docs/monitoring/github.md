@@ -94,6 +94,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Run Maester 🔥

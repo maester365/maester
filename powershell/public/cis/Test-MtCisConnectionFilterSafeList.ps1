@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     The connection filter should not have the safe list enabled
-    CIS Microsoft 365 Foundations Benchmark v4.0.0
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
 
 .EXAMPLE
     Test-MtCisConnectionFilterSafeList

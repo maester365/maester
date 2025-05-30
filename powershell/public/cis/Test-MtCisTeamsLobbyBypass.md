@@ -29,7 +29,7 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "EveryoneInCompanyE
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 * [Overview of lobby settings and policies](https://learn.microsoft.com/en-us/microsoftteams/who-can-bypass-meeting-lobby#overview-of-lobby-settings-and-policies)
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 368](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 400](https://www.cisecurity.org/benchmark/microsoft_365)
 * [CISA MS.TEAMS.1.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams14v1)
 
 <!--- Results --->
