@@ -31,36 +31,82 @@ function Import-MtDependency {
     param (
         # List of modules to check for dependency conflicts
         [Parameter()]
-        [string[]]$ModuleNames = @('Microsoft.Graph.Authentication', 'Az.Accounts', 'ExchangeOnlineManagement', 'MicrosoftTeams')
+        [string[]]$ModuleNames = @(
+            'Az.Accounts',
+            'ExchangeOnlineManagement',
+            'Microsoft.Graph.Authentication',
+            'MicrosoftTeams'
+        )
     )
 
     begin {
         Write-Verbose "Starting Import-MtDependency"
+
+        # Platform-specific variables
         $DirectorySeparator = [System.IO.Path]::DirectorySeparatorChar
+        $PathSeparator = [System.IO.Path]::PathSeparator
 
-        # Define possible installation locations for PowerShell modules
-        $PossibleModulePaths = @(
-            # PowerShell Core paths
-            "$env:ProgramFiles\PowerShell\Modules",
-            "$env:USERPROFILE\Documents\PowerShell\Modules",
+        # Create an ordered dictionary (list) of unique module installation location paths.
+        $PSModulePathCollection = [System.Collections.Specialized.OrderedDictionary]::new()
+        # Loop through the environment variable targets in order of precedence (Process, User, Machine) to get PSModulePath values.
+        foreach ($Target in [System.Enum]::GetValues([System.EnvironmentVariableTarget])) {
+            # Split the PSModulePath environment variable into individual paths and add them to the ordered dictionary.
+            foreach ($PathEntry in [System.Environment]::GetEnvironmentVariable('PSModulePath', $Target) -split $PathSeparator) {
+                if ($PathEntry) {
+                    $PathEntry = [System.IO.Path]::GetFullPath($PathEntry)
+                } else {
+                    # If the path entry is empty, skip it.
+                    continue
+                }
+                # Add the path if it is not already in the collection.
+                if (-not $PSModulePathCollection.Contains($PathEntry)) {
+                    # Add each fully resolved path entry to the ordered dictionary as a key and create an empty list object in the value.
+                    $PSModulePathCollection.Add($PathEntry, [System.Collections.Generic.List[PSObject]]::new() )
+                }
+            }
+        }
 
-            # Windows PowerShell paths
-            "$env:ProgramFiles\WindowsPowerShell\Modules",
-            "$env:USERPROFILE\Documents\WindowsPowerShell\Modules",
-
-            # PSModulePath
-            $env:PSModulePath -split [IO.Path]::PathSeparator
-        ) | Select-Object -Unique
-
-        # Add modules loaded in memory that may not be in a standard path
-        $LoadedModules = Get-Module | Where-Object { $_.Name -in $ModuleNames } | Select-Object -ExpandProperty Path
-        $LoadedModulePaths = $LoadedModules | ForEach-Object { [System.IO.Path]::GetDirectoryName($_.ToString()) } | Where-Object { $_ }
-
-        $PossibleModulePaths += $LoadedModulePaths
-        $PossibleModulePaths = $PossibleModulePaths | Where-Object { $_ -and (Test-Path $_ -ErrorAction SilentlyContinue) } | Select-Object -Unique
     }
 
     process {
+
+
+        # Get a list of the installed modules and all of their versions.
+        [System.Collections.Generic.List[PSObject]]$Modules = Get-Module $ModuleNames -ListAvailable | Sort-Object -Property Name,Version -Descending
+
+        foreach ($Path in $PSModulePathCollection.GetEnumerator()) {
+            $PathName = $Path.Key
+            foreach ($Module in $Modules) {
+                # Check if the module is installed in this path.
+                $ModuleName = $Module.Name
+                $ModulePath = $Module.Path
+                if ($ModulePath.StartsWith($PathName)) {
+                    # Add the module to the ordered dictionary.
+                    $PSModulePathCollection[$($PathName)].Add($Module)
+                }
+            }
+        }
+
+        $ModulesByLocation = $Modules | Group-Object {
+            # This script block is used by the Group-Object cmdlet to determine the key for each grouping.
+
+            # Get the module's root directory
+            $ModulePath = [System.IO.Path]::GetFullPath($_.ModuleBase)
+
+            # Find which PSModulePath entry contains this module
+            foreach ($PathEntry in $PSModulePathEntries) {
+                $NormalizedPathEntry = [System.IO.Path]::GetFullPath($PathEntry)
+                if ($ModulePath.StartsWith($NormalizedPathEntry, [System.StringComparison]::OrdinalIgnoreCase)) {
+                    return $NormalizedPathEntry
+                }
+            }
+            # ... fallback logic
+        }
+        $ModulesByLocation
+
+
+
+
         # Create a hashtable to store module information
         $ModuleInfo = @{}
 
@@ -101,12 +147,12 @@ function Import-MtDependency {
         $HighestVersions = @{}
         foreach ($ModuleName in $ModuleNames) {
             if ($ModuleInfo.ContainsKey($ModuleName) -and $ModuleInfo[$ModuleName].Count -gt 0) {
-                $HighestVersions[$ModuleName] = $ModuleInfo[$ModuleName] | Sort-Object -Property DllVersion -Descending | Select-Object -First 1
+                $HighestVersions[$ModuleName] = $ModuleInfo[$ModuleName] | Sort-Object -Property DllVersion | Select-Object -First 1
             }
         }
 
         # Sort modules by version (descending)
-        $SortedModules = $HighestVersions.Values | Sort-Object -Property DllVersion -Descending
+        $SortedModules = $HighestVersions.Values | Sort-Object -Property DllVersion #-Descending
 
         # Display the detected modules and their versions
         Write-Verbose "Detected modules with Microsoft.Identity.Client.dll versions:" -Verbose
