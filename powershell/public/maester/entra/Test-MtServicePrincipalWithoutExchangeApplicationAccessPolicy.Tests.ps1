@@ -82,17 +82,7 @@ Application access policies in Exchange Online help you control which applicatio
 Without these policies, applications with Exchange permissions can access all mailboxes in your organization.
 
 Microsoft Graph permissions that should be secured by application access policies:
-- Mail.Read
-- Mail.ReadBasic
-- Mail.ReadBasic.All
-- Mail.ReadWrite
-- Mail.Send
-- MailboxSettings.Read
-- MailboxSettings.ReadWrite
-- Calendars.Read
-- Calendars.ReadWrite
-- Contacts.Read
-- Contacts.ReadWrite
+$($exchangePermissions | ForEach-Object { "- $_" } | Out-String)
 
 See https://learn.microsoft.com/graph/auth-limit-mailbox-access
 "@
