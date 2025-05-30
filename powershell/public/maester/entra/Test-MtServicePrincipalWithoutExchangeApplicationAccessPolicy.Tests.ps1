@@ -1,16 +1,33 @@
-Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
-    BeforeAll {
-        # Skip all tests if Exchange Online or Graph is not connected
-        if (-not (Test-MtConnection ExchangeOnline)) {
-            Set-ItResult -Skipped -Because "Exchange Online is not connected"
-        }
-        if (-not (Test-MtConnection Graph)) {
-            Set-ItResult -Skipped -Because "Graph API is not connected"
-        }
+<#
+.SYNOPSIS
+    Check if service principals with Exchange permissions have application access policies configured.
+
+.DESCRIPTION
+    Service principals with Exchange permissions can access all mailboxes by default. This test verifies that proper access policies are in place.
+
+.EXAMPLE
+    Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy
+
+    Returns true if all service principals with Exchange permissions have access policies configured.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy
+#>
+function Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (-not (Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+    if (-not (Test-MtConnection ExchangeOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchangeOnline
+        return $null
     }
 
-    It "MT.1058: Ensure Exchange Application Access Policy is configured" -Tag "MT.1058", "ApplicationAccess" {
-        # Define Exchange permissions that require app access policies (from Microsoft docs)
+    try {
         $exchangePermissions = @(
             "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite", "Mail.Send",
             "MailboxSettings.Read", "MailboxSettings.ReadWrite",
@@ -40,7 +57,6 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
             }
         }
 
-
         # Get application access policies
         $appAccessPolicies = Get-ApplicationAccessPolicy
 
@@ -49,11 +65,16 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "MT.1058" {
         $testResultMarkdown += "| Application Name | AppId | Permissions | Has Access Policy |`n"
         $testResultMarkdown += "| --- | --- | --- | --- |`n"
 
+        $missingPolicies = @()
         foreach ($app in $principalsWithExchangePerms) {
             $hasPolicy = $appAccessPolicies.AppId -contains $app.AppId
             $policyStatus = if ($hasPolicy) { "✅ Yes" } else { "❌ No" }
             $filteredPermissions = $app.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
             $testResultMarkdown += "| $($app.Name) | $($app.AppId) | $($filteredPermissions -join ', ') | $policyStatus |`n"
+
+            if (-not $hasPolicy) {
+                $missingPolicies += $app
+            }
         }
 
         $testDetailsMarkdown = @"
@@ -76,10 +97,12 @@ Microsoft Graph permissions that should be secured by application access policie
 See https://learn.microsoft.com/graph/auth-limit-mailbox-access
 "@
 
+        $return = $missingPolicies.Count -eq 0
         Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'Medium'
-
-        # Test should fail if any apps are missing policies
-        $missingPolicies = $principalsWithExchangePerms | Where-Object { $appAccessPolicies.AppId -notcontains $_.AppId }
-        $missingPolicies.Count | Should -Be 0 -Because "all applications with Exchange permissions should have an access policy configured"
     }
+    catch {
+        $return = $false
+        Write-Error $_.Exception.Message
+    }
+    return $return
 }
