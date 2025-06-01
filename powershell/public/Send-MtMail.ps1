@@ -13,8 +13,8 @@
     Connect-MtGraph -SendMail
     ```
 
-    When running in a non-interactive environment (Azure DevOps, GitHub) the Mail.Send permission
-    must be granted to the application, see https://maester.dev/docs/monitoring/email/ for instructions.
+    When running in a non-interactive environment (Azure DevOps, GitHub) the app needs permission to send from a mailbox,
+    see https://maester.dev/docs/monitoring/email/ for instructions.
 
 .EXAMPLE
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
