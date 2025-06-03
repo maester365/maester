@@ -89,7 +89,7 @@ foreach ($perm in $getPerms){
 - Click **Create**.
 
 - Copy and paste this example code:
-  - If you need to send an email, make sure to replace the value of the variable  MailRecipient`.
+  - If you need to send an email, make sure to replace the value of the variable `MailRecipient`.
 
 ```PowerShell
 Connect-MgGraph -Identity
