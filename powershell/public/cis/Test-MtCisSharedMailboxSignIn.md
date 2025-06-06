@@ -9,7 +9,7 @@ Block sign-in to shared mailboxes in the UI:
 2. Click to expand **Teams & groups** and select **Shared mailboxes**.
 3. Take note of all shared mailboxes.
 4. Click to expand **Users** and select **Active users**.
-5. Select a shared mailbox account to open it's properties pane and then select **Block sign-in**.
+5. Select a shared mailbox account to open its properties pane and then select **Block sign-in**.
 6. Check the box for Block this user from signing in.
 7. Repeat for any additional shared mailboxes.
 
