@@ -47,8 +47,8 @@ function Test-MtCaExclusionForDirectorySyncAccount {
     foreach ($policy in ( $policies | Sort-Object -Property displayName ) ) {
         if ( $policy.conditions.applications.includeApplications -ne "All" ) {
             # Skip this policy, because it does not apply to all applications
-            $currentresult = $true
-            Write-Verbose "Skipping $($policy.displayName) because it's not scoped to all apps - $currentresult"
+            $CurrentResult = $true
+            Write-Verbose "Skipping $($policy.displayName) because it's not scoped to all apps - $CurrentResult"
             continue
         }
 
@@ -57,8 +57,8 @@ function Test-MtCaExclusionForDirectorySyncAccount {
                 [string]::IsNullOrWhiteSpace($policy.conditions.users.includeRoles) -and `
             ( -not [string]::IsNullOrWhiteSpace($policy.conditions.users.includeGuestsOrExternalUsers) ) ) {
             # Skip this policy, because it does not apply to any internal users, but only guests
-            $currentresult = $true
-            Write-Verbose "Skipping $($policy.displayName) because no internal users is scoped - $currentresult"
+            $CurrentResult = $true
+            Write-Verbose "Skipping $($policy.displayName) because no internal users is scoped - $CurrentResult"
             continue
         }
 
@@ -66,8 +66,8 @@ function Test-MtCaExclusionForDirectorySyncAccount {
             -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes `
             -and "other" -in $policy.conditions.clientAppTypes){
             # Skip this policy, because it just blocks legacy authentication
-            $currentresult = $true
-            Write-Verbose "Skipping $($policy.displayName) legacy auth is not used for sync - $currentresult"
+            $CurrentResult = $true
+            Write-Verbose "Skipping $($policy.displayName) legacy auth is not used for sync - $CurrentResult"
             continue
         }
 
@@ -84,21 +84,21 @@ function Test-MtCaExclusionForDirectorySyncAccount {
 
         if ( $PolicyIncludesAllUsers -or $PolicyIncludesRole ) {
             # Skip this policy, because all directory synchronization accounts are included and therefor must not be excluded
-            $currentresult = $true
-            Write-Verbose "Skipping $($policy.displayName) - $currentresult"
+            $CurrentResult = $true
+            Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
         } else {
             if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) {
                 # Directory synchronization accounts are excluded
-                $currentresult = $true
+                $CurrentResult = $true
             } else {
                 # Directory synchronization accounts are not excluded
-                $currentresult = $false
+                $CurrentResult = $false
                 $result = $false
                 $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
             }
         }
 
-        Write-Verbose "$($policy.displayName) - $currentresult"
+        Write-Verbose "$($policy.displayName) - $CurrentResult"
     }
 
     if ( $result ) {

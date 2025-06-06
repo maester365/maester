@@ -325,7 +325,7 @@ function Test-$($content.func){
     Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).ps1" -Value $funcScript -Force
     $exports += "Test-$($content.func)"
 
-    $description = [regex]::Match($content.content, "this\.Importance=([\'\`"])(?'capture'.*)\1", $option) # Capture between first identified apostrophe or qoute and it's last
+    $description = [regex]::Match($content.content, "this\.Importance=([\'\`"])(?'capture'.*)\1", $option) # Capture between first identified apostrophe or quote and its last
     $content.description = $description.Groups['capture'].Value -replace '<[^>]+>','' # Remove HTML tags
     $links = [regex]::Match($content.content, "this.Links.*@{(?'capture'[^}]*)}", $option)
     $content.links = $links.Groups['capture'].Value | ConvertFrom-StringData

@@ -6,7 +6,7 @@ Rationale: This stopgap security policy helps protect the tenant when phishing-r
 
 If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator is in use, configure Authenticator to display context information to users when they log in.
 
-1. In Azure Active Directory, click Security > Authentication methods > **Microsoft Authenticator**.
+1. In Entra ID, click Security > Authentication methods > **Microsoft Authenticator**.
 2. Click the **Configure tab**.
 3. For Allow use of Microsoft Authenticator OTP select **No**.
 4. Under Show application name in push and passwordless notifications select Status > **Enabled** and Target > Include > **All users**.
