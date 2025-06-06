@@ -23,19 +23,24 @@ Function Test-MtCaReferencedGroupsExist {
   # Execute the test only when PowerShell Core and parallel processing is supported
   if ($PSVersionTable.PSEdition -eq 'Core') {
 
-    $testDescription = ""
+    $testDescription = "Invalid or deleted security groups are referenced in Conditional Access policies."
     # Get all policies (the state of policy does not have to be enabled)
     $Policies = Get-MtConditionalAccessPolicy
 
     $Groups = $Policies.conditions.users.includeGroups + $Policies.conditions.users.excludeGroups | Select-Object -Unique
 
     $GroupsWhichNotExist = [System.Collections.Concurrent.ConcurrentBag[psobject]]::new()
+
     $Groups | ForEach-Object { # Removed -Parallel as it caused errors
-      $Group = $_
-      $NotExistedGroup = $GroupsWhichNotExist # Adjusted after not running in parallel anymore
-      $GraphQueryResult = Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue
-      if ([string]::IsNullOrEmpty($GraphQueryResult)) {
-        $NotExistedGroup.Add($Group) | Out-Null
+      try {
+        $GraphErrorResult = $null
+        $Group = $_
+        Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue | Out-Null
+      }
+      catch {
+        if ($GraphErrorResult.Message -match "404 Not Found") {
+          $GroupsWhichNotExist.Add($Group) | Out-Null
+        }
       }
     }
 
