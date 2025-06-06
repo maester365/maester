@@ -70,7 +70,7 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
-            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop'
+            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error'
         )]
         # Common reasons for why the test was skipped.
         [string] $SkippedBecause,
@@ -78,6 +78,10 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
         [string] $SkippedCustomReason,
+
+        [Parameter(Mandatory = $false)]
+        # The error object that caused the test to be skipped.
+        $SkippedError,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('Critical', 'High', 'Medium', 'Low', 'Info', '')]
@@ -93,13 +97,19 @@ function Add-MtTestResultDetail {
                 throw "SkippedBecause is set to 'Custom' but no SkippedCustomReason was provided."
             }
             $SkippedReason = $SkippedCustomReason
+        } elseif ($SkippedBecause -eq 'Error') {
+
+            $SkippedReason = "An error occurred while running the test. ⚠️"
+            if ($SkippedError) {
+                $SkippedReason += "`n`n" + '```' + "`n`n" + ($SkippedError | Out-String) + "`n`n" + '```' + "`n`n"
+            }
         } else {
             $SkippedReason = Get-MtSkippedReason $SkippedBecause
         }
+    }
 
-        if ([string]::IsNullOrEmpty($Result)) {
-            $Result = "Skipped. $SkippedReason"
-        }
+    if ([string]::IsNullOrEmpty($Result)) {
+        $Result = "Skipped. $SkippedReason"
     }
 
     if ([string]::IsNullOrEmpty($Description)) {

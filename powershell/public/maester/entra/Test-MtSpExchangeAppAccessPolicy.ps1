@@ -6,28 +6,28 @@
     Service principals with Exchange permissions can access all mailboxes by default. This test verifies that proper access policies are in place.
 
 .EXAMPLE
-    Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy
+    Test-MtSpExchangeAppAccessPolicy
 
     Returns true if all service principals with Exchange permissions have access policies configured.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy
+    https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy
 #>
-function Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy {
+function Test-MtSpExchangeAppAccessPolicy {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if (-not (Test-MtConnection Graph)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
+    Write-Verbose "Running Test-MtSpExchangeAppAccessPolicy"
+
     if (-not (Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchangeOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
     }
 
     try {
+        # Note: If you make any changes to this list, please keep it in sync
+        # with the markdown file Test-MtSpExchangeAppAccessPolicy.md
         $exchangePermissions = @(
             "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite", "Mail.Send",
             "MailboxSettings.Read", "MailboxSettings.ReadWrite",
@@ -50,8 +50,9 @@ function Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy {
 
             if ($permissions | Where-Object { $_ -in $exchangePermissions }) {
                 [PSCustomObject]@{
-                    Name = $sp.DisplayName
-                    AppId = $sp.AppId
+                    Id          = $sp.Id
+                    DisplayName = $sp.DisplayName
+                    AppId       = $sp.AppId
                     Permissions = $permissions -join ", "
                 }
             }
@@ -61,38 +62,37 @@ function Test-MtServicePrincipalWithoutExchangeApplicationAccessPolicy {
         $appAccessPolicies = Get-ApplicationAccessPolicy
 
         # Prepare result table showing all apps with Exchange permissions
-        $testResultMarkdown = "### Applications with Exchange Permissions`n`n"
-        $testResultMarkdown += "| Application Name | AppId | Permissions | Has Access Policy |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- |`n"
+        $detailMarkdown = "### Applications with Exchange Permissions`n`n"
+        $detailMarkdown += "| Application | Permissions | Access Policy? |`n"
+        $detailMarkdown += "| --- | --- | --- |`n"
 
         $missingPolicies = @()
-        foreach ($app in $principalsWithExchangePerms) {
-            $hasPolicy = $appAccessPolicies.AppId -contains $app.AppId
+        foreach ($sp in $principalsWithExchangePerms) {
+            $hasPolicy = $appAccessPolicies.AppId -contains $sp.AppId
             $policyStatus = if ($hasPolicy) { "✅ Yes" } else { "❌ No" }
-            $filteredPermissions = $app.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
-            $testResultMarkdown += "| $($app.Name) | $($app.AppId) | $($filteredPermissions -join ', ') | $policyStatus |`n"
+            $filteredPermissions = $sp.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
+            $portalLink = Get-MtLinkServicePrincipal -ServicePrincipal $sp -Blade Permissions
+            $detailMarkdown += "| $portalLink | $($filteredPermissions -join ', ') | $policyStatus |`n"
 
             if (-not $hasPolicy) {
-                $missingPolicies += $app
+                $missingPolicies += $sp
             }
         }
 
-        $testDetailsMarkdown = @"
-Application access policies in Exchange Online help you control which applications can access which mailboxes.
-Without these policies, applications with Exchange permissions can access all mailboxes in your organization.
+        $invalidCount = ($missingPolicies | Measure-Object).Count
+        $result = $invalidCount -eq 0
 
-Microsoft Graph permissions that should be secured by application access policies:
-$($exchangePermissions | ForEach-Object { "- $_" } | Out-String)
+        if ($result) {
+            $testResultMarkdown = "Well done. We did not find any applications with tenant-wide Exchange permissions to all mailboxes."
+        } else {
+            $testResultMarkdown = "Found **$invalidCount** applications with tenant-wide access to all Exchange mailboxes."
+        }
+        $testResultMarkdown += "`n`n" + $detailMarkdown
 
-See https://learn.microsoft.com/graph/auth-limit-mailbox-access
-"@
-
-        $return = $missingPolicies.Count -eq 0
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown -Severity 'Medium'
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
-    catch {
-        $return = $false
-        Write-Error $_.Exception.Message
-    }
-    return $return
+
+    return $result
 }
