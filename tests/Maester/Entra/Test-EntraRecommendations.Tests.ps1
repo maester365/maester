@@ -61,7 +61,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "All", "Recommenda
         }
 
         if ( $status -match "dismissed" ) {
-            Add-MtTestResultDetail -TestTitle $testTitle -Description $benefits -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change it's state from **Dismissed** to **Active**. $recommendationLinkMd"
+            Add-MtTestResultDetail -TestTitle $testTitle -Description $benefits -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
             return $null
         }
 
