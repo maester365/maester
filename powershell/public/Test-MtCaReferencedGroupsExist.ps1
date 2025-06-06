@@ -35,7 +35,7 @@ Function Test-MtCaReferencedGroupsExist {
       try {
         $GraphErrorResult = $null
         $Group = $_
-        $GraphQueryResult = Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue
+        Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue | Out-Null
       }
       catch {
         if ($GraphErrorResult.Message -match "404 Not Found") {
