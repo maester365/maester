@@ -31,8 +31,8 @@ function Test-MtCisAttachmentFilter {
     Write-Verbose "Getting Malware Filter Policy..."
     $policies = Get-MtExo -Request MalwareFilterPolicy
 
-    # We grab the default policy as that is what CIS checks
-    $policy = $policies | Where-Object { $_.Name -eq 'Default' }
+    # We grab the default policy
+    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
     Write-Verbose "Executing checks"
     $fileFilter = $policy | Where-Object {
