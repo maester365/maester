@@ -13,8 +13,8 @@
     Connect-MtGraph -SendMail
     ```
 
-    When running in a non-interactive environment (Azure DevOps, GitHub) the Mail.Send permission
-    must be granted to the application in the Microsoft Entra portal.
+    When running in a non-interactive environment (Azure DevOps, GitHub) the app needs permission to send from a mailbox,
+    see https://maester.dev/docs/monitoring/email/ for instructions.
 
 .EXAMPLE
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
@@ -47,6 +47,13 @@ function Send-MtMail {
 
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
+        [ValidateScript({
+            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$') {
+                throw "Invalid UserId format. It should be a valid GUID."
+            }
+            return $true
+        })]
+        [ValidateNotNullOrEmpty()]
         [string] $UserId
     )
 
@@ -60,6 +67,9 @@ function Send-MtMail {
     #>
     if (! ($CreateBodyOnly)) {
         if (!(Test-MtContext -SendMail)) { return }
+        if ($context.AuthType -ne 'Delegated' -and -not $PSBoundParameters.ContainsKey('UserId')) {
+            throw "When running as an application, the UserId parameter must be specified."
+        }
 
         if (!$Subject) { $Subject = "Maester Test Results" }
     }
@@ -156,7 +166,16 @@ function Send-MtMail {
     if ($CreateBodyOnly) {
         return $mailRequestBody
     }
-    else {
+
+    # Send email
+    try {
         Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
+    }
+    catch {
+        if ($_.Exception.Response.StatusCode -eq 403) {
+            # Delegated Mail.Send permission is checked earlier, so this is likely an application permission issue
+            Write-Error -Message "Sending email failed with access denied. Make sure you've granted Mail.Send permission to the specified mailbox, see https://maester.dev/docs/monitoring/email/ for instructions."
+        }
+        throw
     }
 }

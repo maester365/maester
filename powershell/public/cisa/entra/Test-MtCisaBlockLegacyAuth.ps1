@@ -8,7 +8,7 @@
 .EXAMPLE
     Test-MtCisaBlockLegacyAuth
 
-    Returns true if a CA policy exists that blocks legacy authentication.
+    Returns true if one or more CA policies exist that block legacy authentication.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCisaBlockLegacyAuth
@@ -31,18 +31,28 @@ function Test-MtCisaBlockLegacyAuth {
 
     $result = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
-    $blockPolicies = $result | Where-Object {`
-            $_.grantControls.builtInControls -contains "block" -and `
-            $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and `
-            $_.conditions.clientAppTypes -contains "other" -and `
-            $_.conditions.users.includeUsers -contains "All" }
+    $blockOther = $result | Where-Object {
+        $_.grantControls.builtInControls -contains "block" -and
+        $_.conditions.clientAppTypes -contains "other" -and
+        $_.conditions.users.includeUsers -contains "All"
+    }
+
+    $blockExchangeActiveSync = $result | Where-Object {
+        $_.grantControls.builtInControls -contains "block" -and
+        $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and
+        $_.conditions.users.includeUsers -contains "All"
+    }
+
+    if (($blockOther | Measure-Object).Count -ge 1 -and ($blockExchangeActiveSync | Measure-Object).Count -ge 1) {
+        $blockPolicies = @($blockOther) + @($blockExchangeActiveSync)  | Sort-Object id -Unique
+    }
 
     $testResult = ($blockPolicies|Measure-Object).Count -ge 1
 
     if ($testResult) {
         $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that block legacy authentication."
+        $testResultMarkdown = "Your tenant lacks sufficient conditional access policies that block legacy authentication."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $blockPolicies
 

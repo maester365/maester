@@ -137,7 +137,7 @@ steps:
       ScriptType: InlineScript
       Inline: |
         # Connect to Microsoft Graph
-        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+        $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token
         Connect-MgGraph $accessToken
 
         # Install Maester
@@ -227,7 +227,7 @@ jobs:
             import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
 
             # Connect to Microsoft Graph
-            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token
             Connect-MgGraph $accessToken
 
             # Install Maester
@@ -394,7 +394,7 @@ jobs:
             import-module /usr/share/microsoft.graph_2.19.0/Microsoft.Graph.Authentication
 
             # Connect to Microsoft Graph
-            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token | ConvertTo-SecureString -AsPlainText -Force
+            $accessToken = (Get-AzAccessToken -ResourceTypeName MSGraph).Token
             Connect-MgGraph $accessToken
 
             # Install Maester

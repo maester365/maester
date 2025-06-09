@@ -26,9 +26,10 @@ Azure Automation provides a simple and effective method to automate email report
   - Select a **Subscription** and **Resource Group**.
   - Enter a name for the account (e.g. `Maester-Automation-Account`) and select a **region**.
 - Select **Next**.
-- Leave **System assigned** selected
-- Select **Next**.
-- Select **Create**.
+- Leave **System assigned** selected.
+- Select **Review + Create**.
+- Click **Create**.
+
 
 ## Assign permissions to the System-assigned Managed Identity
 
@@ -80,12 +81,15 @@ foreach ($perm in $getPerms){
 
 ## Create a new Runbook
 
-- Under **Process Automation** click **Create**.
-- Select **Create new** next to Runbook.
+- Under **Process Automation** Select **Runbooks**
+- Select **Create** to Runbook.
 - Define a name for the Runbook.
 - Next to Runbook type, select **PowerShell**, then choose the Runtime Environment you previously created.
+- Select **Review + Create**.
 - Click **Create**.
+
 - Copy and paste this example code:
+  - If you need to send an email, make sure to replace the value of the variable `MailRecipient`.
 
 ```PowerShell
 Connect-MgGraph -Identity
