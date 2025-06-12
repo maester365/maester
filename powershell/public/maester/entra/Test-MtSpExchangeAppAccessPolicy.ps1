@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Check if service principals with Exchange permissions have application access policies configured.
 
