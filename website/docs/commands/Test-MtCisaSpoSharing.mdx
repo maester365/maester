@@ -1,37 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: Ensure communication with Skype users is disabled
-id: Test-MtCisCommunicateWithSkypeUsers
-title: Test-MtCisCommunicateWithSkypeUsers
+description: Checks state of SharePoint Online sharing
+id: Test-MtCisaSpoSharing
+title: Test-MtCisaSpoSharing
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisCommunicateWithSkypeUsers.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoSharing.ps1
 ---
 
 ## SYNOPSIS
 
-Ensure communication with Skype users is disabled
+Checks state of SharePoint Online sharing
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisCommunicateWithSkypeUsers [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaSpoSharing [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Communication with Skype users is disabled
-CIS Microsoft 365 Foundations Benchmark v4.0.0
+External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisCommunicateWithSkypeUsers
+Test-MtCisaSpoSharing
 ```
 
-Returns true if communication with Skype users is disabled
+Returns true if sharing is restricted
 
 ## PARAMETERS
 
@@ -65,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisCommunicateWithSkypeUsers](https://maester.dev/docs/commands/Test-MtCisCommunicateWithSkypeUsers)
+[https://maester.dev/docs/commands/Test-MtCisaSpoSharing](https://maester.dev/docs/commands/Test-MtCisaSpoSharing)
