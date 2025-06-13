@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
-    CIS Microsoft 365 Foundations Benchmark v4.0.0
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
 
 .EXAMPLE
     Test-MtCisSafeLink

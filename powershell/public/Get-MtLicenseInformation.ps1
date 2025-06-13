@@ -27,7 +27,7 @@ function Get-MtLicenseInformation {
         switch ($Product) {
             "EntraID" {
                 Write-Verbose "Retrieving license information for Entra ID"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'} | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
                 if ( "eec0eb4f-6444-4f95-aba0-50c24d67f998" -in $skus ) {
                     $LicenseType = "P2" # Microsoft Entra ID P2 / AAD_PREMIUM_P2
                 } elseif ( "e866a266-3cff-43a3-acca-0c90a7e00c8b" -in $skus ) {
@@ -43,7 +43,7 @@ function Get-MtLicenseInformation {
             }
             "EntraWorkloadID" {
                 Write-Verbose "Retrieving license SKU"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'} | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
                 if ("84c289f0-efcb-486f-8581-07f44fc9efad" -in $skus) {
                     $LicenseType = "P1" # Microsoft Entra Workload ID P1 / AAD_WRKLDID_P1
                 } elseif ("7dc0e92d-bf15-401d-907e-0884efe7c760" -in $skus) {
@@ -57,7 +57,7 @@ function Get-MtLicenseInformation {
             }
             "Eop" {
                 Write-Verbose "Retrieving license SKU for Eop"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
                 $requiredSkus = @(
                     #servicePlanId
                     "326e2b78-9d27-42c9-8509-46c827743a17" # Exchange Online Protection / EOP_ENTERPRISE
@@ -76,7 +76,7 @@ function Get-MtLicenseInformation {
             }
             "ExoDlp" {
                 Write-Verbose "Retrieving license SKU for ExoDlp"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
                 $requiredSkus = @(
                     #skuId
                     "cbdc14ab-d96c-4c30-b9f4-6ada7cdc1d46", # Microsoft 365 Business Premium > could be removed after add of 'Data Loss Prevention'
@@ -100,7 +100,7 @@ function Get-MtLicenseInformation {
             }
             "Mdo" {
                 Write-Verbose "Retrieving license SKU for Mdo"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
                 $requiredSkus = @(
                     #servicePlanId
                     "8e0c0a52-6a6c-4d40-8370-dd62790dcd70", # Microsoft Defender for Office 365 (Plan 2) / THREAT_INTELLIGENCE
@@ -120,7 +120,7 @@ function Get-MtLicenseInformation {
             }
             "MdoV2" {
                 Write-Verbose "Retrieving license SKU for MDO"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'} | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId
                 if ("8e0c0a52-6a6c-4d40-8370-dd62790dcd70" -in $skus -or "900018f1-0cdb-4ecb-94d4-90281760fdc6" -in $skus) {
                     $LicenseType = "P2","P1","EOP" # Microsoft Defender for Office 365 (Plan 2) / THREAT_INTELLIGENCE
                                                    # Microsoft Defender for Office 365 (Plan 2) for Government / THREAT_INTELLIGENCE_GOV
@@ -138,7 +138,7 @@ function Get-MtLicenseInformation {
             }
             "AdvAudit" {
                 Write-Verbose "Retrieving license SKU for AdvAudit"
-                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus"
+                $skus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
                 $requiredSkus = @(
                     #servicePlanId
                     "2f442157-a11c-46b9-ae5b-6e39ff4e5849" # Microsoft 365 Advanced Auditing / M365_ADVANCED_AUDITING

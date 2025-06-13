@@ -12,9 +12,55 @@ Your Maester monitoring workflow can be configured to send an email summary at t
 
 ## Prerequisites
 
-### Mail.Send graph permissions
+Before you can send email alerts using Exchange Online you need to grant the application access to a mailbox. There's two ways to assign the this permissions:
+- [Using RBAC for Applications](#using-rbac-for-applications) for scoped access **(Recommended)**
+- [Using Graph permission](#using-graph-permissions) in Entra and limiting access to mailbox using Application Access Policy
 
-The app that sends the email alerts needs the `Mail.Send` permission to send emails. To configure
+### Using RBAC for Applications
+
+[RBAC for Applications](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac) is the newest and most secure way to grant least privilege access to applications in Exchange Online. The example below will dynamically grant an app `Mail.Send` permission for the specific mailbox only.
+
+The application should **not** be assigned `Mail.Send` application permission in Entra, see warning below.
+
+```powershell
+Import-Module ExchangeOnlineManagement
+
+# Authenticate to Entra and Exchange Online
+Connect-MgGraph -Scopes 'Application.Read.All'
+Connect-ExchangeOnline
+
+# Find your Maester service principal. Update filter with the name of your app registration or managed identity
+$entraSP = Get-MgServicePrincipal -Filter "DisplayName eq 'Maester'"
+
+# Register Maester service principal in Exchange
+New-ServicePrincipal -AppId $entraSP.AppId -ObjectId $entraSP.Id -DisplayName $entraSP.DisplayName
+
+# Find the mailbox you'd like to send from
+$mailbox = Get-Mailbox maesterdemo@contoso.onmicrosoft.com
+# Or create a new shared mailbox:
+# $mailbox = New-Mailbox -Shared -Name "Maester" -PrimarySmtpAddress maester@contoso.onmicrosoft.com
+
+# Create a RBAC scope to reference the mailbox
+New-ManagementScope -Name "rbac_Maester" -RecipientRestrictionFilter "GUID -eq '$($mailbox.GUID)'"
+
+# Assign Mail.Send role limited to only the Maester scope/mailbox
+New-ManagementRoleAssignment -App $entraSP.AppId -Role "Application Mail.Send" -CustomResourceScope "rbac_Maester" -Name "Maester Send Mail RBAC"
+
+# Verify access. This should show a line with Mail.Send permission and InScope = True
+Test-ServicePrincipalAuthorization $entraSP.AppId -Resource $mailbox
+
+Write-Host "Use '$($mailbox.ExternalDirectoryObjectId)' when calling Invoke-Maester -MailUserId or Send-MtMail -UserId"
+```
+
+:::warning Remove Mail.Send Graph Permission in Entra
+Make sure the app has not been granted `Mail.Send` permissions in Entra. RBAC and Graph permissions live side-by-side. Leaving the `Mail.Send` application permission could grant the app tenant-wide access to all mailboxes.
+
+If you previously used Graph Permission and optionally [Application Access Policy](https://learn.microsoft.com/graph/auth-limit-mailbox-access), removing both is important.
+:::
+
+### Using Graph permissions
+
+This method is no longer recommended, but included for reference. To configure:
 
 - Open the [Entra admin center](https://entra.microsoft.com) > **Identity** > **Applications** > **App registrations**
 - Search for the application you created to run as the `Maester DevOps Account`.

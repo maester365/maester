@@ -65,7 +65,7 @@ function Send-MtTeamsMessage {
     <#
         # Developer guide for editing the Adaptive Card.
         - Authoring of the Adaptive Card is done using the Adaptive Card Designer.
-        - Card Payload can be found in /powershell/assets/AdaptiveCard.json
+        - Card Payload can be found in /powershell/assets/AdaptiveCardPayloadTemplate.json
         - Open https://adaptivecards.io/designer/, insert the payload and example data ($adaptiveCardData | ConvertTo-Json -depth 5)
         - Make changes as needed
         - Copy the payload and paste it into the /powershell/assets/AdaptiveCardPayloadTemplate.json file in the assets folder
@@ -126,7 +126,7 @@ function Send-MtTeamsMessage {
     }
 
     # Identify and replace variables because 'Inline Data' is not supported by Microsoft Teams...
-    # This regex matches placeholders like ${$root.run.TestResultURL}
+    # This regex matches placeholders like ${$root.run.TestResultURL} and ${$root.TenantName}
     $pattern = '\$\{\$root\.([a-zA-Z0-9_.]+)\}'
 
     $adaptiveCardBody = [regex]::Replace($adaptiveCardTemplate, $pattern, {
@@ -148,6 +148,10 @@ function Send-MtTeamsMessage {
             # Return the final value to replace the placeholder
             $currentValue
         })
+
+        # Set donut values
+        $adaptiveCardBody = $adaptiveCardBody.replace('99990',$adaptiveCardData.run.PassedCount)
+        $adaptiveCardBody = $adaptiveCardBody.replace('99991',$adaptiveCardData.run.FailedCount)
 
     if (!$TeamChannelWebhookUri)
     {
@@ -176,8 +180,7 @@ function Send-MtTeamsMessage {
       $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
 
       Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
-    }
-    else
+    }else
     {
         $params = @{
             type     = "message"
