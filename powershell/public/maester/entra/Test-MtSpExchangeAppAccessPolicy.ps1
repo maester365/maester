@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Check if service principals with Exchange permissions have application access policies configured.
 
@@ -8,7 +8,7 @@
 .EXAMPLE
     Test-MtSpExchangeAppAccessPolicy
 
-    Returns true if all service principals with Exchange permissions have access policies configured.
+    Returns true if all service principals with Exchange permissions have access policies configured
 
 .LINK
     https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy
