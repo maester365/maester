@@ -114,7 +114,7 @@
    $__MtSession.Connections = $Service
 
    $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
-   switch ($OrderedImport) {
+   switch ($OrderedImport.Name) {
 
       'Az.Accounts' {
          if ($Service -contains 'Azure' -or $Service -contains 'All') {
