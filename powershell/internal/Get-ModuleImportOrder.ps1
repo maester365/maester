@@ -224,5 +224,3 @@ function Get-ModuleImportOrder {
     } # end begin block
 
 } # end function
-
-Get-ModuleImportOrder
