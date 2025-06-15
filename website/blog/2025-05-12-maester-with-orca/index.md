@@ -40,7 +40,7 @@ To handle this, PowerShell has this awesome feature called the [abstract syntax 
 Located in `/build/orca/Update-OrcaTests.ps1` is the build mechanism for each test derived from ORCA.
 
 1. The latest ORCA module is pulled from [orca.git](https://github.com/cammurray/orca.git) into the subfolder `/orca`.
-2. Prerequisits are initialized as decribed above and the following files are created in `/powershell/internal/orca`:
+2. Prerequisites are initialized as described above and the following files are created in `/powershell/internal/orca`:
     - Add-IsPresetValue.ps1
     - Get-ORCACollection.ps1
     - Get-PolicyStateInt.ps1
@@ -88,7 +88,7 @@ Each test function generated for each ORCA check contains various logic:
 
 ### Markdown file
 
-Each test function has it's associated markdown file that provides Maester with test descriptions. It is comprised of description, remediation action and related links from the ORCA check.
+Each test function has its associated markdown file that provides Maester with test descriptions. It is comprised of description, remediation action and related links from the ORCA check.
 
 ## Caveats to be aware of
 
@@ -111,14 +111,14 @@ Regular expressions used to capture the raw content of each ORCA check is carefu
 - Always add punctuation to fail recommendation text if not present to stay consistent between tests.
 - Dynamically populate name of the test if there are more than one ORCA check (The file name contains `_`) determined by property uniqueness.
 - Replace `_` with `.`
-- Capture entire text of ORCA check importance, even if it varies between apostrophe and qoutes.
+- Capture entire text of ORCA check importance, even if it varies between apostrophe and quotes.
 - Remove HTML tags from ORCA check description.
 
 ### Security & Compliance
 
 The command `Get-ORCACollection` requires the parameter of `-SCC` in order to include Security & Compliance tests in each test. However, we only set this to true if we are connected to Security & Compliance.
 
-> ⚠️ WARNING: We require each ORCA check to include the property `SCC` in it's object output in order for us to skip it in Maester if we are not connected to Security & Compliance. A [pull request](https://github.com/cammurray/orca/pull/326) has been submitted by [Thomas S. Schmidt](https://github.com/tdcthosc) to add this in the upstream module and is awaiting approval. For now it has been manually implemented in `/build/orca/orca/ORCA.psm1 @ line 388` and `/build/orca/orca/Checks/check-ORCA242.ps1 @ line 29`.
+> ⚠️ WARNING: We require each ORCA check to include the property `SCC` in its object output in order for us to skip it in Maester if we are not connected to Security & Compliance. A [pull request](https://github.com/cammurray/orca/pull/326) has been submitted by [Thomas S. Schmidt](https://github.com/tdcthosc) to add this in the upstream module and is awaiting approval. For now it has been manually implemented in `/build/orca/orca/ORCA.psm1 @ line 388` and `/build/orca/orca/Checks/check-ORCA242.ps1 @ line 29`.
 
 ### ORCA config level
 

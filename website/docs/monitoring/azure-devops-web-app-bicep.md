@@ -117,7 +117,6 @@ param __maesterAppRoles__ array = [
   'RoleManagement.Read.All'
   'SharePointTenantSettings.Read.All'
   'UserAuthenticationMethod.Read.All'
-  'Mail.Send'
 ]
 
 param registerExchangeOnlinePermission bool = false
