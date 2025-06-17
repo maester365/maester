@@ -40,6 +40,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "All", "Recommenda
             "staleAppCreds" = 15
             "staleApps" = 16
             "aadGraphDeprecationServicePrincipal" = 17
+            "unusedEnterpriseApps" = 18
         }
 
         # Get sequential number for current recommendation, default to the key if not found
