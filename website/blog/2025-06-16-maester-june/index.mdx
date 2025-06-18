@@ -1,41 +1,48 @@
 ---
-title: Maester May 2025 Release
+title: Maester June 2025 Release
 description: Find out all about the new Maester May release
-slug: maester-v1-1
+slug: maester-june-25
 authors: merill
 tags: [release]
 hide_table_of_contents: false
-date: 2024-12-12
+date: 2025-06-12
 ---
 
-The Maester contributors have been hard at work and we are excited to announce a new release of Maester! 🎉
+The Maester community of contributors have been hard at work and we are excited to announce the June 2025 release of Maester! 🎉
+
+Here are some quick stats for you:
+
+* ❇️ 55,000+ tenants using Maester
+* 🚀 260,000+ downloads of Maester on PowerShell Gallery
+* 💻 2,600+ commits on GitHub
+* 🤝 72+ contributors
+* ✳️ 286 Maester tests (92 new tests!)
+* 📦 252 releases
 
 There's a lot to cover, so let's dive right in!
 
 {/* truncate */}
 
-Here are some quick stats for you:
-TODO:
-* 🚀 100,000+ downloads on PowerShell Gallery
-* 🌐 17,000 monthly visitors to [maester.dev](https://maester.dev)
-* 💻 1,800+ commits on GitHub
-* 🤝 48+ contributors
-* ✳️ 194 Maester tests
-* 📦 155 releases
-
 We have added a lot of new features and improvements based on your feedback. Thank you for that! 🙏
 
-## What's new since we launched v1 in December
+## What's new since we launched v1 in December 2024
 
-It’s taken a whole village to bring you **Maester v1**. 🌟 Here are some of the highlights:
+It’s taken a whole village to bring you **Maester v1**. Here are some of the highlights:
 
-### 🧪 **New Tests**
-We've almost doubled the number of tests, growing from 194 to nnn! 🎉 Check out the [test list](https://github.com/maester365/maester/blob/main/docs/tests.md) for the full breakdown.
+### 🌟 **New Tests**
+
+We've added a whole bunch of new tests to check your security configuration, growing from 194 to 286! 🎉 Check out the [test list](/docs/tests) for the full breakdown.
 
 #### ORCA
-TODO: Short write up and link to blog
+
+[Mike Soule](/blog/authors/mike) came up with the idea to integrate [Cam Murray](https://github.com/cammurray)'s excellent [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) with Maester.
+
+We reached out to Cam and he was all for helping Microsoft customers become more secure. With the greenlight, Mike started integrating ORCA and we had amazing support from [Thomas Schmidt](/blog/authors/thomasschmidt) who really helped improve the quality and polish of the ORCA tests in Maester. Call out to [Cameron Moore](https://github.com/moorereason) who pitched in with a huge number of PRs.
+
+You can read more about this in our previous blog post [Maester adds ORCA tests](/blog/maester-with-orca)
 
 #### App risk tests
+
 * New application risk tests based on the Azure Tiering research by Emilien Socchi. Thanks to ... (todo put names) for their contributions.
 
 Note: Since these tests take a long time to run (downloads all service principals which can take hours for large tenants) we don't run them by default. Use -Tag 'Full' to run these.
