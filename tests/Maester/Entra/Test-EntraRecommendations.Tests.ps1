@@ -18,34 +18,38 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "All", "Recommenda
         $recommendationUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/$id"
         $recommendationLinkMd = "`n`n➡️ Open [Recommendation - $displayName]($recommendationUrl) in the Entra admin portal."
 
-        # Hashtable to map recommendation IDs to sequential numbers
+        # The $id looks like "{tenantId}_{recommendationKey}"
+        # Extract the recommendation key (the part after the underscore)
+        $recommendationKey = $id -replace '^[^_]+_', ''
+
         $recommendationSequence = @{
-            "0817c655-a853-4d8f-9723-3a333b5b9235_insiderRiskPolicy" = 1
-            "0817c655-a853-4d8f-9723-3a333b5b9235_userRiskPolicy" = 2
-            "0817c655-a853-4d8f-9723-3a333b5b9235_signinRiskPolicy" = 3
-            "0817c655-a853-4d8f-9723-3a333b5b9235_selfServicePasswordReset" = 4
-            "0817c655-a853-4d8f-9723-3a333b5b9235_roleOverlap" = 5
-            "0817c655-a853-4d8f-9723-3a333b5b9235_oneAdmin" = 6
-            "0817c655-a853-4d8f-9723-3a333b5b9235_passwordHashSync" = 7
-            "0817c655-a853-4d8f-9723-3a333b5b9235_pwagePolicyNew" = 8
-            "0817c655-a853-4d8f-9723-3a333b5b9235_mfaRegistrationV2" = 9
-            "0817c655-a853-4d8f-9723-3a333b5b9235_integratedApps" = 10
-            "0817c655-a853-4d8f-9723-3a333b5b9235_blockLegacyAuthentication" = 11
-            "0817c655-a853-4d8f-9723-3a333b5b9235_adminMFAV2" = 12
-            "0817c655-a853-4d8f-9723-3a333b5b9235_servicePrincipalKeyExpiry" = 13
-            "0817c655-a853-4d8f-9723-3a333b5b9235_applicationCredentialExpiry" = 14
-            "0817c655-a853-4d8f-9723-3a333b5b9235_staleAppCreds" = 15
-            "0817c655-a853-4d8f-9723-3a333b5b9235_staleApps" = 16
+            "insiderRiskPolicy" = 1
+            "userRiskPolicy" = 2
+            "signinRiskPolicy" = 3
+            "selfServicePasswordReset" = 4
+            "roleOverlap" = 5
+            "oneAdmin" = 6
+            "passwordHashSync" = 7
+            "pwagePolicyNew" = 8
+            "mfaRegistrationV2" = 9
+            "integratedApps" = 10
+            "blockLegacyAuthentication" = 11
+            "adminMFAV2" = 12
+            "servicePrincipalKeyExpiry" = 13
+            "applicationCredentialExpiry" = 14
+            "staleAppCreds" = 15
+            "staleApps" = 16
+            "aadGraphDeprecationServicePrincipal" = 17
+            "unusedEnterpriseApps" = 18
         }
 
-        # Get sequential number for current recommendation, default to the id if not found
-        $sequentialNumber = $id
-        if ($recommendationSequence.ContainsKey($id)) {
-            $sequentialNumber = $recommendationSequence[$id]
+        # Get sequential number for current recommendation, default to the key if not found
+        $sequentialNumber = $recommendationKey
+        if ($recommendationSequence.ContainsKey($recommendationKey)) {
+            $sequentialNumber = $recommendationSequence[$recommendationKey]
         }
 
-        $recommendationName = $id -replace "0817c655-a853-4d8f-9723-3a333b5b9235_", ""
-        $recommendationName = $recommendationName -replace "_", " "
+        $recommendationName = $recommendationKey -replace "_", " "
         $recommendationName = $recommendationName -replace "Policy", "policy"
 
         $testTitle = "MT.1024.$($sequentialNumber): Entra Recommendation - $displayName"
