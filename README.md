@@ -127,4 +127,4 @@ jobs:
 The Github Action is moved to a new [repository](https://github.com/maester365/maester-action).
 
 > [!NOTE]
-> If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md) for more details.
+> If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/blob/main/action/deprecation.md) for more details.
