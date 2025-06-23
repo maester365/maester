@@ -10,14 +10,21 @@ date: 2025-06-12
 
 The Maester community of contributors have been hard at work and we are excited to announce the June 2025 release of Maester! 🎉
 
+![June stats](img/maester-june-release-stats.png)
+
 Here are some quick stats for you:
 
-* ❇️ 55,000+ tenants using Maester
-* 🚀 260,000+ downloads of Maester on PowerShell Gallery
-* 💻 2,600+ commits on GitHub
-* 🤝 72+ contributors
-* ✳️ 285 Maester tests (90+ new tests!)
-* 📦 252 releases
+❇️ 55,000+ tenants have used Maester to improve their security posture
+
+🚀 260,000+ downloads of Maester on PowerShell Gallery
+
+💻 2,600+ commits on GitHub
+
+🤝 72+ contributors
+
+✳️ 285 Maester tests (90+ new tests!)
+
+📦 252 releases
 
 There's a lot to cover, so let's dive right in!
 
@@ -52,7 +59,7 @@ The application risk tests are based on the excellent Azure Tiering research by 
 
 ## Maester - Platform Updates
 
-Special call out to Thomas Schmidt, Sam Erde and Stephan van Rooij for their amazing contributions to this release. They have been instrumental in making Maester more robust, performant and easier to use.
+Special call out to Thomas Schmidt, Sam Erde, Stephan van Rooij and Cameron Moore for their amazing contributions to this release. They have been instrumental in making Maester more robust, performant and easier to use.
 
 In addition, we have had a **lot** of contributions from the community, which has helped us improve Maester even further. Thank you to all our contributors! 🙏
 
@@ -70,7 +77,7 @@ However, this means that you will need to update your workflow files to use the 
 
 ![New tests in Maester](img/maester-github-action.png)
 
-### Excel and CSV Export Formats
+### 📋 Excel and CSV Export Formats
 
 We have added new export formats for the Maester report. You can now export the report in Excel and CSV formats, which makes it even more easier to share and analyze the results.
 
@@ -78,33 +85,26 @@ It's as simple as adding an `-ExportExcel` or `-ExportCsv` switch when running `
 
 ![Export to Excel](img/maester-results-excel.png)
 
-### Severity levels
+### 🚥 Severity levels
 
+Each test now includes a severity rating. This will help you prioritize the tests and focus on the most critical issues first.
 
 ![Severity rating](img/maester-severity-rating.png)
 
-Each test now has severity, plus they are customizable.
-Link to web page on how to customize severity levels using config file as well as severity tags for custom tests
-Also call out order of precedence
+You can also change the severity levels of the tests to suite your needs.
 
+Check the [Severity Levels documentation](/docs/severity-levels) for all the details including how you can add Severity to your custom tests.
 
 ### 📊 **Maester Report Improvements**
-- Filtering and severity levels now shown
 
+You can now search and filter the results list by name, severity, tags and more.
 
-### 🛠️ **New & Improved Test Folder Installation**
-Thanks to [**Sam Erde**](https://github.com/SamErde) for making Maester more robust. From improving the test install/update process to fixing PowerShell mistakes (😉), Sam has been a powerhouse!
+![Search filter](img/maester-report-filters.png)
 
-### New Excel and CSV export formats
+The test details view now support navigating to the next and previous test, making it easier to review the results.
 
-TODO: Write up on this and screenshot
+![Results navigate](img/maester-results-navigate.png)
 
 ## Thank you to all our amazing contributors! 🙏
+
 There are many, many more new features, improvements and fixes that have gone in by this amazing list of contributors 👇
-
-
-
-
-## What's next?
-
-We are super excited about the future of Maester and we have a lot of ideas for new features and improvements. We are even more excited to have you come and shape the future of Maester with us! 🙌
