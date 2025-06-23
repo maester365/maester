@@ -100,7 +100,7 @@
 
       # The services to connect to such as Azure and EXO. Default is Graph.
       [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
-      [string[]]$Service = 'All',
+      [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId

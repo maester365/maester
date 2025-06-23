@@ -37,7 +37,7 @@
         # Checks if the current session is connected to the specified service
         [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0)]
-        [string[]]$Service = 'All',
+        [string[]]$Service = 'Graph',
 
         # Return the full details of the connections
         [Parameter()]
