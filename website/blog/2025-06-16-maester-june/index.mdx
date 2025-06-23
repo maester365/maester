@@ -16,7 +16,7 @@ Here are some quick stats for you:
 * 🚀 260,000+ downloads of Maester on PowerShell Gallery
 * 💻 2,600+ commits on GitHub
 * 🤝 72+ contributors
-* ✳️ 286 Maester tests (92 new tests!)
+* ✳️ 285 Maester tests (90+ new tests!)
 * 📦 252 releases
 
 There's a lot to cover, so let's dive right in!
@@ -25,41 +25,63 @@ There's a lot to cover, so let's dive right in!
 
 We have added a lot of new features and improvements based on your feedback. Thank you for that! 🙏
 
-## What's new since we launched v1 in December 2024
+Here are all the new features and improvements in this release:
 
-It’s taken a whole village to bring you **Maester v1**. Here are some of the highlights:
-
-### 🌟 **New Tests**
+## 🌟 **New Tests**
 
 We've added a whole bunch of new tests to check your security configuration, growing from 194 to 286! 🎉 Check out the [test list](/docs/tests) for the full breakdown.
 
-#### ORCA
+![New tests in Maester](img/maester-new-tests.png)
+### ORCA
 
 [Mike Soule](/blog/authors/mike) came up with the idea to integrate [Cam Murray](https://github.com/cammurray)'s excellent [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) with Maester.
 
 We reached out to Cam and he was all for helping Microsoft customers become more secure. With the greenlight, Mike started integrating ORCA and we had amazing support from [Thomas Schmidt](/blog/authors/thomasschmidt) who really helped improve the quality and polish of the ORCA tests in Maester. Call out to [Cameron Moore](https://github.com/moorereason) who pitched in with a huge number of PRs.
 
-You can read more about this in our previous blog post [Maester adds ORCA tests](/blog/maester-with-orca)
+You can read more about this  in our previous blog post [Maester adds ORCA tests](/blog/maester-with-orca)
 
-#### App risk tests
+### Entra app tests
 
-* New application risk tests based on the Azure Tiering research by Emilien Socchi. Thanks to ... (todo put names) for their contributions.
+We have a number of app related tests that help you identify potential security issues with your Entra applications.
 
-Note: Since these tests take a long time to run (downloads all service principals which can take hours for large tenants) we don't run them by default. Use -Tag 'Full' to run these.
-MT.1050 Apps with high-risk permissions having a direct path to Global Admin
-MT.1051 Apps with high-risk permissions having an indirect path to Global Admin
+Note: We don't run these new app related tests by default since they can take a long time to run. You will need to explicitly include them using `Invoke-Maester -Tag 'Full'`.
 
-svrooij - App with secret test
+This is because it needs to query all applications and service principals in the tenant which can take many hours in large tenants.
 
-#### TODO: Other tests? Intune etc call out
+The application risk tests are based on the excellent Azure Tiering research by [Emilien Socchi](https://github.com/emiliensocchi/azure-tiering). These help identity apps that have a path to Global Admin permissions, which can lead to a full tenant takeover.
 
-#### CIS v4/5? update - need to confirm
+## Maester - Platform Updates
+
+Special call out to Thomas Schmidt, Sam Erde and Stephan van Rooij for their amazing contributions to this release. They have been instrumental in making Maester more robust, performant and easier to use.
+
+In addition, we have had a **lot** of contributions from the community, which has helped us improve Maester even further. Thank you to all our contributors! 🙏
+
+![New tests in Maester](img/maester-contributors.png)
 
 ### 🤖 **Maester GitHub Action**
-Huge update and perf improvements (you need to manually switch to this version) old one is deprecated.
-TODO: small write up and should link to a detailed blog on migrating
+
+We are excited to announce the new [Maester GitHub Action](https://github.com/marketplace/actions/run-maester)! 🎉
+
+This version is a huge update and adds performance improvements as well a number of new features and configuration options.
+
+We moved the Maester GitHub Action to a new repository, which allows us to better manage the action and its dependencies.
+
+However, this means that you will need to update your workflow files to use the new action. See the Usage section in the [Maester GitHub Action documentation](https://github.com/marketplace/actions/run-maester#%EF%B8%8F-usage) for more details.
+
+![New tests in Maester](img/maester-github-action.png)
+
+### Excel and CSV Export Formats
+
+We have added new export formats for the Maester report. You can now export the report in Excel and CSV formats, which makes it even more easier to share and analyze the results.
+
+It's as simple as adding an `-ExportExcel` or `-ExportCsv` switch when running `Invoke-Maester`!
+
+![Export to Excel](img/maester-results-excel.png)
 
 ### Severity levels
+
+
+![Severity rating](img/maester-severity-rating.png)
 
 Each test now has severity, plus they are customizable.
 Link to web page on how to customize severity levels using config file as well as severity tags for custom tests
@@ -80,69 +102,7 @@ TODO: Write up on this and screenshot
 ## Thank you to all our amazing contributors! 🙏
 There are many, many more new features, improvements and fixes that have gone in by this amazing list of contributors 👇
 
-TODO: this needs to be updated to the list of contributors between v1 and now
-<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-    {[
-        { username: 'soulemike', name: 'Mike Soule' },
-        { username: 'f-bader', name: 'Fabian' },
-        { username: 'Cloud-Architekt', name: 'Thomas' },
-        { username: 'fflaten', name: 'Frode Flaten' },
-        { username: 'NZLostboy', name: 'Ben' },
-        { username: 'SamErde', name: 'Sam Erde' },
-        { username: 'michaelmsonne', name: 'Michael Sonne' },
-        { username: 'ChrFrohn', name: 'Christian Frohn' },
-        { username: 'weyCC81', name: 'Stefan Wey' },
-        { username: 'DanielBradley1', name: 'Daniel Bradley' },
-        { username: 'tdcthosc', name: 'Thomas Schmidt' },
-        { username: 'Arcath', name: 'Adam Laycock' },
-        { username: 'GuidoBaijense', name: 'Guido Baijense' },
-        { username: 'corpca-Admin', name: 'corpca-Admin' },
-        { username: 'BenStreet365', name: 'Ben Street' },
-        { username: 'dnsinit', name: 'dnsinit' },
-        { username: 'Oppedijk', name: 'Erik Oppedijk' },
-        { username: 'tbisque', name: 'Tom Biscardi' },
-        { username: 'brianveldman', name: 'Brian Veldman' },
-        { username: 'DrPye', name: 'Tom Pye' },
-        { username: 'deleugpn', name: 'Marco Deleu' },
-        { username: 'pkothare', name: 'Pranav Kothare' },
-        { username: 'PTMohr', name: 'PT Mohr' },
-        { username: 'DanielWahlgren', name: 'Daniel Wahlgren' },
-        { username: 'tlaukkanen', name: 'Tommi Laukkanen' },
-        { username: 'wesmacdonald', name: 'Wes MacDonald' },
-        { username: 'nathanmcnulty', name: 'Nathan McNulty' },
-        { username: 'joshuafdo', name: 'Joshua Fernando' },
-        { username: 'milanschwartz', name: 'Milan Schwartz' },
-        { username: 'irwins', name: 'Irwin Strachan' },
-        { username: 'fdicarlo', name: 'Fabrizio Di Carlo' },
-        { username: 'iranogajec', name: 'Ilija Ranogajec' },
-        { username: 'BakkerJan', name: 'Jan Bakker' },
-        { username: 'RobinDadswell', name: 'Robin Dadswell' },
-        { username: 'FrederikLeed', name: 'Frederik Leed' },
-        { username: 'ThorstenSauter', name: 'Thorsten Sauter' },
-        { username: 'Haakonak', name: 'Håkon Kristiansen' },
-        { username: 'BurgerhoutJ', name: 'Jeroen Burgerhout' },
-        { username: 'm-hanisch', name: 'm-hanisch' },
-        { username: 'mattcave', name: 'Matt Cave' },
-        { username: 'lbrauns', name: 'Lennart' },
-        { username: 'DevSecNinja', name: 'Jean-Paul' },
-        { username: 'PetterFauske', name: 'Petter Fauske' },
-        { username: 'gerlasch', name: 'Gerald Lasch' },
-        { username: 'tbalthazar', name: 'Thomas Balthazar' },
-        { username: 'svrooij', name: 'Stephan van Rooij' },
-        { username: 'mircodemo', name: 'mircodemo' },
 
-
-
-    ].map(contributor => (
-        <div key={contributor.username} style={{ margin: '10px', textAlign: 'center' }}>
-            <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
-                <img src={`https://github.com/${contributor.username}.png`} width="60px" style={{ borderRadius: '50%' }} alt={contributor.name} />
-                <br />
-                <sub>{contributor.name}</sub>
-            </a>
-        </div>
-    ))}
-</div>
 
 
 ## What's next?
