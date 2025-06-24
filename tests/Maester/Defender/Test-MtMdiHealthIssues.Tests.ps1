@@ -4,36 +4,37 @@ BeforeDiscovery {
         $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
     } catch {
         Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        return $null
     }
 
-    if($MdiSecurityApiError -match "Tenant is not onboarded to Microsoft Defender for Identity") {
+    if ($MdiSecurityApiError -match "Tenant is not onboarded to Microsoft Defender for Identity") {
         Add-MtTestResultDetail -TestName "MT.1058: MDI Health Issues" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity. The tenant is not onboarded to Microsoft Defender for Identity, so no health issues can be retrieved." -SkippedBecause 'Custom' -SkippedCustomReason 'Tenant is not onboarded to Microsoft Defender for Identity'
         return $null
     } elseif (($MdiAllHealthIssues | Where-Object { $_.status -ne "closed" } | Measure-Object) -eq 0) {
         Add-MtTestResultDetail -TestName "MT.1058: MDI Health Issues" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity" -SkippedBecause "Custom" -SkippedCustomReason "No health issues found"
         return $null
-    } else {
-        $MdiHealthIssues = New-Object System.Collections.ArrayList
-
-        # Add domainNames and sensorDNSNames as string properties to identify unique health issues
-        $MdiAllHealthIssues | ForEach-Object {
-            $_ | Add-Member -NotePropertyName 'domainNamesString' -NotePropertyValue ($_.domainNames -join ',') -Force
-            $_ | Add-Member -NotePropertyName 'sensorDNSNamesString' -NotePropertyValue ($_.sensorDNSNames -join ',') -Force
-        }
-
-        # Get unique health issues (duplicated entries will be created when status of an issue has been changed)
-        $MdiAllHealthIssues | Group-Object -Property displayName, domainNamesString, sensorDNSNamesString | ForEach-Object {
-            $UniqueHealthIssue = $_.Group | Sort-Object -Property createdDateTime | Select-Object -First 1
-
-            # Add the displayName to the health issue to avoid confusion of same health issue name
-            if ($UniqueHealthIssue.displayName -eq "Sensor stopped communicating") {
-                $UniqueHealthIssue.displayName = $UniqueHealthIssue.displayName + " - " + $UniqueHealthIssue.sensorDNSNames
-            }
-            $MdiHealthIssues.Add($UniqueHealthIssue) | Out-Null
-        }
-
-        $MdiHealthActiveIssues = $MdiHealthIssues | Where-Object { $_.status -ne "closed" }
     }
+
+$MdiHealthIssues = [System.Collections.Generic.List[Object]]::new()
+
+# Add domainNames and sensorDNSNames as string properties to identify unique health issues
+$MdiAllHealthIssues | ForEach-Object {
+    $_ | Add-Member -NotePropertyName 'domainNamesString' -NotePropertyValue ($_.domainNames -join ',') -Force
+    $_ | Add-Member -NotePropertyName 'sensorDNSNamesString' -NotePropertyValue ($_.sensorDNSNames -join ',') -Force
+}
+
+# Get unique health issues (duplicated entries will be created when status of an issue has been changed)
+$MdiAllHealthIssues | Group-Object -Property displayName, domainNamesString, sensorDNSNamesString | ForEach-Object {
+    $UniqueHealthIssue = $_.Group | Sort-Object -Property createdDateTime | Select-Object -First 1
+
+    # Add the displayName to the health issue to avoid confusion of same health issue name
+    if ($UniqueHealthIssue.displayName -eq "Sensor stopped communicating") {
+        $UniqueHealthIssue.displayName = $UniqueHealthIssue.displayName + " - " + $UniqueHealthIssue.sensorDNSNames
+    }
+    $MdiHealthIssues.Add($UniqueHealthIssue) | Out-Null
+}
+
+$MdiHealthActiveIssues = $MdiHealthIssues | Where-Object { $_.status -ne "closed" }
 }
 
 Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthActiveIssues {
