@@ -1,4 +1,4 @@
-8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services 
+8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services
 
 This test checks if the third-party cloud services are disabled.
 - DropBox
@@ -38,7 +38,7 @@ Set-CsTeamsClientConfiguration @storageParams
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 340](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 369](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

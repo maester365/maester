@@ -75,7 +75,6 @@ param __maesterAppRoles__ = [
   'SecurityIdentitiesHealth.Read.All'
   'SharePointTenantSettings.Read.All'
   'UserAuthenticationMethod.Read.All'
-  'Mail.Send'
 ]
 
 param __maesterAutomationAccountModules__ = [
