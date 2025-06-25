@@ -74,7 +74,11 @@ function Test-MtCisCloudAdmin {
     }
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $testResult
 }

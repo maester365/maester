@@ -38,7 +38,11 @@ function Test-MtCisHostedConnectionFilterPolicy {
         $testResultMarkdown = "The connection filter IP allow list was not empty ❌"
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $testResult
 }

@@ -50,10 +50,14 @@ function Test-MtCisThirdPartyFileSharing {
             $testResultMarkdown = "All or specific third-party cloud services are enabled.`n`n%TestResult%"
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        try {
+            Add-MtTestResultDetail -Result $testResultMarkdown
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
     } catch {
         $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
     return $return
 }

@@ -34,10 +34,14 @@ function Test-MtManagedDeviceCleanupSettings {
         } else {
             $testResultMarkdown = "Well done. Your Intune device clean-up rule is configured to retire inactive devices after $($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) days."
         }
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        try {
+            Add-MtTestResultDetail -Result $testResultMarkdown
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
     } catch {
         $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
     return $return
 }

@@ -38,7 +38,11 @@ function Test-MtCisConnectionFilterSafeList {
         $testResultMarkdown = "The connection filter safe list was enabled ❌"
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $testResult
 }
