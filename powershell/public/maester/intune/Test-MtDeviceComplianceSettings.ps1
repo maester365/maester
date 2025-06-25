@@ -35,10 +35,14 @@ function Test-MtDeviceComplianceSettings {
         } else {
             $testResultMarkdown = "Well done. Your Intune built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'."
         }
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        try {
+            Add-MtTestResultDetail -Result $testResultMarkdown
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
     } catch {
         $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
     return $return
 }

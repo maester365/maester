@@ -41,7 +41,11 @@ function Test-MtTeamsRestrictParticipantGiveRequestControl {
         $testResultMarkdown = "Standard attendees who are not in the **Presenter** role are allowed to share content during Teams meetings.`n`n"
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $result
 }

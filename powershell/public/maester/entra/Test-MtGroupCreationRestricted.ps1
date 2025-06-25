@@ -39,7 +39,11 @@ function Test-MtGroupCreationRestricted {
         $testResultMarkdown = "Microsoft 365 Group creation is not restricted and any user can create groups."
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $groupCreationRestricted
 }

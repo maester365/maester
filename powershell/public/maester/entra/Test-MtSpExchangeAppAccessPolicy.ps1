@@ -89,7 +89,11 @@ function Test-MtSpExchangeAppAccessPolicy {
         }
         $testResultMarkdown += "`n`n" + $detailMarkdown
 
-        Add-MtTestResultDetail -Result $testResultMarkdown
+        try {
+            Add-MtTestResultDetail -Result $testResultMarkdown
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
