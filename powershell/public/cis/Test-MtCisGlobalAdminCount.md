@@ -25,7 +25,7 @@ To remove Global Admins:
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 26](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 28](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

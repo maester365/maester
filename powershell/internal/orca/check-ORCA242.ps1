@@ -15,9 +15,9 @@ param()
 class ORCA242 : ORCACheck
 {
     <#
-    
+
         Check for first contact safety tip
-    
+
     #>
 
     ORCA242()
@@ -41,9 +41,9 @@ class ORCA242 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -72,7 +72,7 @@ class ORCA242 : ORCACheck
             {
                 $FoundAlert = $Config["ProtectionAlert"] | Where-Object {$_.Name -eq $ImportantAlert}
 
-                # These alerts cannot be removed, so if it's $null, then the alert isnt deployed to this tenant, so we dont want
+                # These alerts cannot be removed, so if it's $null, then the alert isn't deployed to this tenant, so we don't want
                 # to flag them at all.
 
                 if($null -ne $FoundAlert)
@@ -85,8 +85,8 @@ class ORCA242 : ORCACheck
                     if($FoundAlert.Disabled)
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                    } 
-                    else 
+                    }
+                    else
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                     }

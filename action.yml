@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md)"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/blob/main/action/deprecation.md)"
 branding:
   icon: "check-circle"
   color: "red"
@@ -94,8 +94,8 @@ runs:
       shell: bash
       run: |
         echo "⚠️ This action has been replaced by https://github.com/maester365/maester-action  Please use that action instead."
-        echo "::notice title=New Action Available::We will be migrating to a new action, see [depreciation notice](https://github.com/maester365/maester/blob/main/action/depreciation.md)"
-        cat ${{ github.action_path }}/action/depreciation.md >> $GITHUB_STEP_SUMMARY
+        echo "::notice title=New Action Available::We will be migrating to a new action, see [depreciation notice](https://github.com/maester365/maester/blob/main/action/deprecation.md)"
+        cat ${{ github.action_path }}/action/deprecation.md >> $GITHUB_STEP_SUMMARY
 
 
     - name: Run Maester 🔥
@@ -122,5 +122,3 @@ runs:
         notification_teams_webhook: ${{ inputs.notification_teams_webhook }}
         notification_teams_channel_id: ${{ inputs.notification_teams_channel_id }}
         notification_teams_team_id: ${{ inputs.notification_teams_team_id }}
-
-

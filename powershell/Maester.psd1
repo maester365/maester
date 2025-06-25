@@ -57,7 +57,7 @@ PowerShellVersion = '5.1'
     if necessary by Install-MaesterTests.
 #>
 
-RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.25.0'; }
+RequiredModules = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.27.0'; }
                      @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
 
 # Assemblies that must be loaded prior to importing this module
@@ -91,8 +91,8 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Install-MaesterTests',
     'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtGraphRequest',
     'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
-    'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtCaAllAppsExists',
-    'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+    'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
+    'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
     'Test-MtCaBlockLegacyOtherAuthentication', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
     'Test-MtCaDeviceCodeFlow', 'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaDeviceComplianceExists',
     'Test-MtCaEmergencyAccessExists', 'Test-MtCaEnforceNonPersistentBrowserSession', 'Test-MtCaEnforceSignInFrequency',
@@ -102,7 +102,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtCaReferencedGroupsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
     'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup',
     'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
-    'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin', 'Test-MtCisCommunicateWithSkypeUsers',
+    'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin',
     'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox',
     'Test-MtCisDkim', 'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy',
     'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
@@ -130,8 +130,8 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtCisaPrivilegedPhishResistant', 'Test-MtCisaRequireActivationApproval', 'Test-MtCisaSafeLink',
     'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaSafeLinkDownloadScan', 'Test-MtCisaSmtpAuthentication',
     'Test-MtCisaSpamAction', 'Test-MtCisaSpamAlternative', 'Test-MtCisaSpamBypass', 'Test-MtCisaSpamFilter',
-    'Test-MtCisaSpfDirective', 'Test-MtCisaSpfRestriction', 'Test-MtCisaSharePointOnlineSharing',
-    'Test-MtCisaSharePointOnlineSharingAllowedDomain', 'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor',
+    'Test-MtCisaSpfDirective', 'Test-MtCisaSpfRestriction', 'Test-MtCisaSpoSharing',
+    'Test-MtCisaSpoSharingAllowedDomain', 'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor',
     'Test-MtConditionalAccessWhatIf', 'Test-MtConnection', 'Test-MtDeviceComplianceSettings',
     'Test-MtEidscaControl', 'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions',
     'Test-MtManagedDeviceCleanupSettings', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
