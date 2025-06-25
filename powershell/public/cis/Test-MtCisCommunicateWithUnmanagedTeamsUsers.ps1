@@ -32,14 +32,22 @@ function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
         $AllowTeamsConsumer = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumer
         $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
         if (($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $false) -or ($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $true)) {
-            Add-MtTestResultDetail -Result "Well done. Communication with unmanaged Teams users is disabled."
+            try {
+                Add-MtTestResultDetail -Result "Well done. Communication with unmanaged Teams users is disabled."
+            } catch {
+                Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            }
         } else {
-            Add-MtTestResultDetail -Result "Communication with unmanaged Teams users is enabled."
+            try {
+                Add-MtTestResultDetail -Result "Communication with unmanaged Teams users is enabled."
+            } catch {
+                Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            }
             $return = $false
         }
     } catch {
         $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
     return $return
 }

@@ -29,14 +29,22 @@ function Test-MtCisTeamsLobbyBypass {
     try {
         $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy -Identity Global | Select-Object -ExpandProperty AutoAdmittedUsers
         if ($TeamsMeetingPolicy -eq "EveryoneInCompanyExcludingGuests") {
-            Add-MtTestResultDetail -Result "Well done. Only people in your org (excluding guests) can bypass the lobby."
+            try {
+                Add-MtTestResultDetail -Result "Well done. Only people in your org (excluding guests) can bypass the lobby."
+            } catch {
+                Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            }
         } else {
-            Add-MtTestResultDetail -Result "Following people can bypass your lobby: '$($TeamsMeetingPolicy)'."
+            try {
+                Add-MtTestResultDetail -Result "Following people can bypass your lobby: '$($TeamsMeetingPolicy)'."
+            } catch {
+                Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            }
             $return = $false
         }
     } catch {
         $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
     return $return
 }
