@@ -52,7 +52,11 @@ function Test-MtCisGlobalAdminCount {
     else {
         $testResultMarkdown = "Your tenant does not have the appropriate number of Global Administrators."
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $globalAdministrators
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $globalAdministrators
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $testResult
 }

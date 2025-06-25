@@ -51,7 +51,11 @@ function Test-MtCisCustomerLockBox {
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    try {
+        Add-MtTestResultDetail -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
 
     return $testResult
 }
