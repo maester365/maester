@@ -8,10 +8,10 @@ BeforeDiscovery {
     }
 
     if ($MdiSecurityApiError -match "Tenant is not onboarded to Microsoft Defender for Identity") {
-        Add-MtTestResultDetail -TestName "MT.1058: MDI Health Issues" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity. The tenant is not onboarded to Microsoft Defender for Identity, so no health issues can be retrieved." -SkippedBecause 'Custom' -SkippedCustomReason 'Tenant is not onboarded to Microsoft Defender for Identity'
+        Add-MtTestResultDetail -TestName "MT.1059: MDI Health issues should be resolved" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity. The tenant is not onboarded to Microsoft Defender for Identity, so no health issues can be retrieved." -SkippedBecause 'Custom' -SkippedCustomReason 'Tenant is not onboarded to Microsoft Defender for Identity'
         return $null
     } elseif (($MdiAllHealthIssues | Where-Object { $_.status -ne "closed" } | Measure-Object) -eq 0) {
-        Add-MtTestResultDetail -TestName "MT.1058: MDI Health Issues" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity" -SkippedBecause "Custom" -SkippedCustomReason "No health issues found"
+        Add-MtTestResultDetail -TestName "MT.1059: MDI Health issues should be resolved" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity" -SkippedBecause "Custom" -SkippedCustomReason "No health issues found"
         return $null
     }
 
