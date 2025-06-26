@@ -147,6 +147,13 @@ function Invoke-Maester {
 
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
+        [ValidateScript({
+            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$') {
+                throw "Invalid UserId format. It should be a valid GUID."
+            }
+            return $true
+        })]
+        [ValidateNotNullOrEmpty()]
         [string] $MailUserId,
 
         # Optional. The Teams team where the test results should be posted.
