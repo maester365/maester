@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Card, Button, Dialog, DialogPanel, Title, Text, Flex } from "@tremor/react";
 import { ArrowTopRightOnSquareIcon, WindowIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Divider } from "@tremor/react";
@@ -14,14 +14,14 @@ const dialogState = {
   currentOpenItemId: null,
 };
 
-export default function ResultInfoDialog(props) {
+function ResultInfoDialog(props) {
   const itemIndex = props.Item.Index;
-    // Control dialog state based on either direct interaction or parent control
+  // Control dialog state based on either direct interaction or parent control
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const openInNewTab = (url) => {
+  const openInNewTab = useCallback((url) => {
     window.open(url, "_blank", "noreferrer");
-  };
+  }, []);
 
   useEffect(() => {
     if (props.isOpen) {
@@ -67,31 +67,31 @@ export default function ResultInfoDialog(props) {
     };
   }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = useCallback(() => {
     if (props.onDialogOpen) {
       props.onDialogOpen(itemIndex);
     }
     setIsOpen(true);
-  };
+  }, [props.onDialogOpen, itemIndex]);
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     if (props.onDialogClose) {
       props.onDialogClose();
     }
     setIsOpen(false);
-  };
+  }, [props.onDialogClose]);
 
-  const navigateToNextResult = () => {
+  const navigateToNextResult = useCallback(() => {
     if (props.onNavigateNext) {
       props.onNavigateNext(itemIndex);
     }
-  };
+  }, [props.onNavigateNext, itemIndex]);
 
-  const navigateToPreviousResult = () => {
+  const navigateToPreviousResult = useCallback(() => {
     if (props.onNavigatePrevious) {
       props.onNavigatePrevious(itemIndex);
     }
-  };
+  }, [props.onNavigatePrevious, itemIndex]);
 
   function getTestResult() {
     if (props.Item.ResultDetail) {
@@ -244,3 +244,5 @@ export default function ResultInfoDialog(props) {
     </>
   );
 }
+
+export default React.memo(ResultInfoDialog);

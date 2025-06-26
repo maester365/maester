@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid } from "@tremor/react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid, Button } from "@tremor/react";
 import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { WindowIcon } from "@heroicons/react/24/outline";
 
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped']);
@@ -13,8 +14,12 @@ export default function TestResultsTable(props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortColumn, setSortColumn] = useState("Id");
   const [sortDirection, setSortDirection] = useState("asc");
-  const [activeDialog, setActiveDialog] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const testResults = props.TestResults;
+  
+  const handleDialogClose = useCallback(() => {
+    setSelectedItem(null);
+  }, []);
 
   const isStatusSelected = (item) => {
     const matchesSearch = !searchQuery ||
@@ -80,36 +85,17 @@ export default function TestResultsTable(props) {
 
   const filteredSortedData = getFilteredSortedData();
 
-  const handleDialogOpen = (dialogId) => {
-    setActiveDialog(dialogId);
-  };
-
-  const handleDialogClose = () => {
-    setActiveDialog(null);
-  };
-
   const dialogRefs = useRef({});
-
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!activeDialog) return;
-
-      const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
-      if (currentItemIndex === null) return;
-
-      const currentDialogIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
-      if (currentDialogIndexInFiltered === -1) return;
+      if (!selectedItem) return;
 
       if (event.key === "ArrowRight") {
-        const nextIndex = currentDialogIndexInFiltered + 1;
-        if (nextIndex < filteredSortedData.length) {
-          setActiveDialog(`dialog-${filteredSortedData[nextIndex].Index}-button`);
-        }
+        event.preventDefault();
+        handleNavigateToNext();
       } else if (event.key === "ArrowLeft") {
-        const prevIndex = currentDialogIndexInFiltered - 1;
-        if (prevIndex >= 0) {
-          setActiveDialog(`dialog-${filteredSortedData[prevIndex].Index}-button`);
-        }
+        event.preventDefault();
+        handleNavigateToPrevious();
       }
     };
 
@@ -117,23 +103,23 @@ export default function TestResultsTable(props) {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [activeDialog, filteredSortedData]);
+  }, [selectedItem, filteredSortedData]);
 
   const handleNavigateToNext = () => {
-    const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
-    if (currentItemIndex === null) return;
-    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
+    if (!selectedItem) return;
+    
+    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
     if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
-      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered + 1].Index}-button`);
+      setSelectedItem(filteredSortedData[currentIndexInFiltered + 1]);
     }
   };
 
   const handleNavigateToPrevious = () => {
-    const currentItemIndex = activeDialog ? parseInt(activeDialog.split('-')[1]) : null;
-    if (currentItemIndex === null) return;
-    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === currentItemIndex);
+    if (!selectedItem) return;
+    
+    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
     if (currentIndexInFiltered > 0) {
-      setActiveDialog(`dialog-${filteredSortedData[currentIndexInFiltered - 1].Index}-button`);
+      setSelectedItem(filteredSortedData[currentIndexInFiltered - 1]);
     }
   };
 
@@ -238,63 +224,61 @@ export default function TestResultsTable(props) {
 
         <TableBody>
           {filteredSortedData.map((item, index) => {
+            // These are used for the single dialog navigation logic
             const hasPrevious = index > 0;
             const hasNext = index < filteredSortedData.length - 1;
-            const dialogIdForId = `dialog-${item.Index}-id`;
-            const dialogIdForTitle = `dialog-${item.Index}-title`;
-            const dialogIdForButton = `dialog-${item.Index}-button`;
 
-            return (
-              <TableRow key={item.Index}>
-                <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                  <ResultInfoDialog
-                    Title={false}
-                    Item={item}
-                    DisplayText={item.Id || item.Name}
-                    onNavigateNext={hasNext ? handleNavigateToNext : null}
-                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={() => handleDialogOpen(dialogIdForId)}
-                    onDialogClose={handleDialogClose}
-                    isOpen={activeDialog === dialogIdForId}
-                    dialogId={dialogIdForId}
+            return (<TableRow key={item.Index}>
+              <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                <button
+                  onClick={() => setSelectedItem(item)}
+                  className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate"
+                >
+                  <span className="truncate whitespace-normal tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
+                </button>
+              </TableCell>
+              <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
+                <button
+                  onClick={() => setSelectedItem(item)}
+                  className="text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors"
+                >
+                  <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                </button>
+              </TableCell>
+              <TableCell className="text-center">
+                {item.Severity && item.Severity !== "" ? <SeverityBadge Severity={item.Severity} /> : ""}
+              </TableCell>
+              <TableCell className="text-center">
+                <StatusLabel Result={item.Result} />
+              </TableCell>
+              <TableCell className="text-center">
+                <div className="text-right">
+                  <Button
+                    size="xs"
+                    variant="secondary"
+                    color="gray"
+                    tooltip="View details"
+                    icon={WindowIcon}
+                    onClick={() => setSelectedItem(item)}
                   />
-                </TableCell>
-                <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
-                  <ResultInfoDialog
-                    Title={false}
-                    Item={item}
-                    DisplayText={item.Title || (item.Name && item.Name.split(': ')[1])}
-                    onNavigateNext={hasNext ? handleNavigateToNext : null}
-                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={() => handleDialogOpen(dialogIdForTitle)}
-                    onDialogClose={handleDialogClose}
-                    isOpen={activeDialog === dialogIdForTitle}
-                    dialogId={dialogIdForTitle}
-                  />
-                </TableCell>
-                <TableCell className="text-center">
-                  {item.Severity && item.Severity !== "" ? <SeverityBadge Severity={item.Severity} /> : ""}
-                </TableCell>
-                <TableCell className="text-center">
-                  <StatusLabel Result={item.Result} />
-                </TableCell>
-                <TableCell className="text-center">
-                  <ResultInfoDialog
-                    Button={true}
-                    Item={item}
-                    onNavigateNext={hasNext ? handleNavigateToNext : null}
-                    onNavigatePrevious={hasPrevious ? handleNavigateToPrevious : null}
-                    onDialogOpen={() => handleDialogOpen(dialogIdForButton)}
-                    onDialogClose={handleDialogClose}
-                    isOpen={activeDialog === dialogIdForButton}
-                    dialogId={dialogIdForButton}
-                  />
-                </TableCell>
-              </TableRow>
+                </div>
+              </TableCell>
+            </TableRow>
             );
           })}
         </TableBody>
       </Table>
+      
+      {/* Single dialog instance for all items */}
+      {selectedItem && (
+        <ResultInfoDialog
+          Item={selectedItem}
+          isOpen={Boolean(selectedItem)}
+          onDialogClose={handleDialogClose}
+          onNavigateNext={handleNavigateToNext}
+          onNavigatePrevious={handleNavigateToPrevious}
+        />
+      )}
     </Card>
   );
 }
