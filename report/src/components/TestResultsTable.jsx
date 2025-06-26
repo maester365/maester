@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
 import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid, Button } from "@tremor/react";
-import ResultInfoDialog from "./ResultInfoDialog";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { WindowIcon } from "@heroicons/react/24/outline";
+
+// Lazy load the ResultInfoDialog component
+const ResultInfoDialog = lazy(() => import("./ResultInfoDialog"));
 
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped']);
@@ -269,15 +271,17 @@ export default function TestResultsTable(props) {
         </TableBody>
       </Table>
       
-      {/* Single dialog instance for all items */}
+      {/* Single dialog instance for all items - lazy loaded with Suspense */}
       {selectedItem && (
-        <ResultInfoDialog
-          Item={selectedItem}
-          isOpen={Boolean(selectedItem)}
-          onDialogClose={handleDialogClose}
-          onNavigateNext={handleNavigateToNext}
-          onNavigatePrevious={handleNavigateToPrevious}
-        />
+        <Suspense fallback={null}>
+          <ResultInfoDialog
+            Item={selectedItem}
+            isOpen={Boolean(selectedItem)}
+            onDialogClose={handleDialogClose}
+            onNavigateNext={handleNavigateToNext}
+            onNavigatePrevious={handleNavigateToPrevious}
+          />
+        </Suspense>
       )}
     </Card>
   );
