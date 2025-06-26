@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from "react";
 import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid, Button } from "@tremor/react";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
@@ -18,7 +18,7 @@ export default function TestResultsTable(props) {
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedItem, setSelectedItem] = useState(null);
   const testResults = props.TestResults;
-  
+
   const handleDialogClose = useCallback(() => {
     setSelectedItem(null);
   }, []);
@@ -32,8 +32,8 @@ export default function TestResultsTable(props) {
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
       (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag))) &&
       (selectedSeverity.length === 0 ||
-      (selectedSeverity.includes(item.Severity)) ||
-      (selectedSeverity.includes("None") && (!item.Severity))) &&
+        (selectedSeverity.includes(item.Severity)) ||
+        (selectedSeverity.includes("None") && (!item.Severity))) &&
       matchesSearch;
   }
 
@@ -79,13 +79,10 @@ export default function TestResultsTable(props) {
       }
     });
   };
-
-  // Get the filtered and sorted data (reused for navigation and rendering)
-  const getFilteredSortedData = () => {
+  // Memoize the filtered and sorted data to prevent unnecessary recalculations
+  const filteredSortedData = useMemo(() => {
     return getSortedData(testResults.Tests.filter((item) => isStatusSelected(item)));
-  };
-
-  const filteredSortedData = getFilteredSortedData();
+  }, [testResults.Tests, selectedStatus, selectedBlock, selectedTag, selectedSeverity, searchQuery, sortColumn, sortDirection]);
 
   const dialogRefs = useRef({});
   useEffect(() => {
@@ -109,7 +106,7 @@ export default function TestResultsTable(props) {
 
   const handleNavigateToNext = () => {
     if (!selectedItem) return;
-    
+
     const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
     if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
       setSelectedItem(filteredSortedData[currentIndexInFiltered + 1]);
@@ -118,7 +115,7 @@ export default function TestResultsTable(props) {
 
   const handleNavigateToPrevious = () => {
     if (!selectedItem) return;
-    
+
     const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
     if (currentIndexInFiltered > 0) {
       setSelectedItem(filteredSortedData[currentIndexInFiltered - 1]);
@@ -270,7 +267,7 @@ export default function TestResultsTable(props) {
           })}
         </TableBody>
       </Table>
-      
+
       {/* Single dialog instance for all items - lazy loaded with Suspense */}
       {selectedItem && (
         <Suspense fallback={null}>

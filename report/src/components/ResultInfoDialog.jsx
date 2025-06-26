@@ -9,89 +9,71 @@ import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-// Global dialog state manager
-const dialogState = {
-  currentOpenItemId: null,
-};
+// We've removed the global dialog state manager since we now use a single dialog instance
 
 function ResultInfoDialog(props) {
   const itemIndex = props.Item.Index;
-  // Control dialog state based on either direct interaction or parent control
-  const [isOpen, setIsOpen] = React.useState(false);
+  // Control dialog state based on parent control only
+  const [isOpen, setIsOpen] = React.useState(props.isOpen);
 
   const openInNewTab = useCallback((url) => {
     window.open(url, "_blank", "noreferrer");
   }, []);
 
+  // Only update local state when props.isOpen changes, not when isOpen changes
   useEffect(() => {
-    if (props.isOpen) {
-      setIsOpen(true);
-    }
-    else if (isOpen && !props.isOpen) {
-      setIsOpen(false);
-    }
-  }, [props.isOpen, isOpen]);
+    setIsOpen(props.isOpen);
+  }, [props.isOpen]);
+  // Memoize the keyboard handler to prevent recreating it on every render
+  const handleKeyboard = useCallback((event) => {
+    if (!isOpen) return;
 
-  // Update global dialog state when this dialog opens/closes
-  useEffect(() => {
-    if (isOpen) {
-      dialogState.currentOpenItemId = itemIndex;
-    } else if (dialogState.currentOpenItemId === itemIndex) {
-      dialogState.currentOpenItemId = null;
-    }
-  }, [isOpen, itemIndex]);
-
-  useEffect(() => {
-    const handleKeyboard = (event) => {
-      if (!isOpen) return;
-
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        if (props.onNavigateNext) {
-          props.onNavigateNext(itemIndex);
-        }
-      } else if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        if (props.onNavigatePrevious) {
-          props.onNavigatePrevious(itemIndex);
-        }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      if (props.onNavigateNext) {
+        props.onNavigateNext(itemIndex);
       }
-    };
-
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyboard);
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      if (props.onNavigatePrevious) {
+        props.onNavigatePrevious(itemIndex);
+      }
     }
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyboard);
-    };
   }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
 
+  // Add and remove the event listener
+  useEffect(() => {
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyboard);
+      return () => {
+        window.removeEventListener('keydown', handleKeyboard);
+      };
+    }
+  }, [isOpen, handleKeyboard]);
+  // Since we're now controlled by the parent component, simplify these handlers
   const handleOpenDialog = useCallback(() => {
     if (props.onDialogOpen) {
       props.onDialogOpen(itemIndex);
     }
-    setIsOpen(true);
   }, [props.onDialogOpen, itemIndex]);
 
   const handleCloseDialog = useCallback(() => {
     if (props.onDialogClose) {
       props.onDialogClose();
     }
-    setIsOpen(false);
   }, [props.onDialogClose]);
 
   const navigateToNextResult = useCallback(() => {
     if (props.onNavigateNext) {
-      props.onNavigateNext(itemIndex);
+      props.onNavigateNext();
     }
-  }, [props.onNavigateNext, itemIndex]);
+  }, [props.onNavigateNext]);  // No need to pass itemIndex since parent already has access to it
 
   const navigateToPreviousResult = useCallback(() => {
     if (props.onNavigatePrevious) {
-      props.onNavigatePrevious(itemIndex);
+      props.onNavigatePrevious();
     }
-  }, [props.onNavigatePrevious, itemIndex]);
+  }, [props.onNavigatePrevious]);
 
   function getTestResult() {
     if (props.Item.ResultDetail) {
