@@ -1,3 +1,18 @@
+class MtPropertyDifference {
+    [string]$PropertyName
+    [object]$ExpectedValue
+    [object]$ActualValue
+    [string]$Description
+    [string]$Reason
+    MtPropertyDifference([string]$PropertyName, [object]$ExpectedValue, [object]$ActualValue, [string]$Description, [string]$Reason) {
+        $this.PropertyName = $PropertyName
+        $this.ExpectedValue = $ExpectedValue
+        $this.ActualValue = $ActualValue
+        $this.Description = $Description
+        $this.Reason = $Reason
+    }
+}
+
 <#
 .SYNOPSIS
     Compares two PowerShell objects (typically JSON objects) and returns a list of differences.
@@ -21,7 +36,7 @@
     (Optional) An object that may contain an ExcludeProperties property (array of property names to skip).
 
 .OUTPUTS
-    [PSCustomObject[]] Returns an array of objects describing each difference found.
+    [MtPropertyDifference[]] Returns an array of objects describing each difference found.
 
 .EXAMPLE
     # Compare two JSON files and output the differences
@@ -43,6 +58,7 @@
     https://maester.dev/docs/commands/Compare-MtJsonObject
 #>
 function Compare-MtJsonObject {
+    [OutputType([MtPropertyDifference[]])]
     param (
         [Parameter(Mandatory = $true)]
         [object]$Baseline,
@@ -59,106 +75,64 @@ function Compare-MtJsonObject {
     if ($Settings -and $Settings.PSObject.Properties.Match('ExcludeProperties')) {
         $excludeProperties = $Settings.ExcludeProperties
     }
+
     if ($null -eq $Baseline) {
-        $issue = [PSCustomObject]@{
-            PropertyName = $Path
-            ExpectedValue = $null
-            ActualValue = $Current
-            Description = "Baseline is null at path: $Path"
-            Reason = "NullBaseline"
-        }
-        $differences += $issue
+        $differences += [MtPropertyDifference]::new($Path, $null, $Current, "Baseline is null at path: $Path", "NullBaseline")
         return $differences
     }
+
     if ($null -eq $Current) {
-        $issue = [PSCustomObject]@{
-            PropertyName = $Path
-            ExpectedValue = $Baseline
-            ActualValue = $null
-            Description = "Current is null at path: $Path"
-            Reason = "NullCurrent"
-        }
-        $differences += $issue
+        $differences += [MtPropertyDifference]::new($Path, $Baseline, $null, "Current is null at path: $Path", "NullCurrent")
         return $differences
     }
-    if ($Baseline -is [System.Collections.IDictionary] -or $Baseline -is [PSCustomObject]) {
-        $properties = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline.Keys } else { $Baseline.PSObject.Properties.Name }
-        foreach ($property in $properties) {
-            if ($excludeProperties -contains $property) { continue } # Skip excluded properties
-            $currentPath = if ([string]::IsNullOrEmpty($Path)) { $property } else { "$Path.$property" }
-            if (($Current -is [System.Collections.IDictionary] -and -not $Current.ContainsKey($property)) -or
-                ($Current -is [PSCustomObject] -and -not $Current.PSObject.Properties.Name.Contains($property))) {
-                $issue = [PSCustomObject]@{
-                    PropertyName = $currentPath
-                    ExpectedValue = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline[$property] } else { $Baseline.$property }
-                    ActualValue = $null
-                    Description = "Property not found: $currentPath"
-                    Reason = "MissingProperty"
-                }
-                $differences += $issue
-                continue
+
+    if (-not ($Baseline -is [System.Collections.IDictionary] -or $Baseline -is [PSCustomObject])) {
+        return $differences
+    }
+
+    $properties = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline.Keys } else { $Baseline.PSObject.Properties.Name }
+    foreach ($property in $properties) {
+        if ($excludeProperties -contains $property) { continue } # Skip excluded properties
+        $currentPath = if ([string]::IsNullOrEmpty($Path)) { $property } else { "$Path.$property" }
+        if (($Current -is [System.Collections.IDictionary] -and -not $Current.ContainsKey($property)) -or
+            ($Current -is [PSCustomObject] -and -not $Current.PSObject.Properties.Name.Contains($property))) {
+            $expected = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline[$property] } else { $Baseline.$property }
+            $differences += [MtPropertyDifference]::new($currentPath, $expected, $null, "Property not found: $currentPath", "MissingProperty")
+            continue
+        }
+        $baselineValue = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline[$property] } else { $Baseline.$property }
+        $currentValue = if ($Current -is [System.Collections.IDictionary]) { $Current[$property] } else { $Current.$property }
+        if ($null -eq $baselineValue -and $null -eq $currentValue) {
+            Write-Verbose "Both baseline and current values are null for property: $currentPath"
+        }
+        elseif ($null -eq $baselineValue -or $null -eq $currentValue) {
+            $differences += [MtPropertyDifference]::new($currentPath, $baselineValue, $currentValue, "One of the values is null at path: $currentPath", "NullValue")
+        }
+        elseif (($baselineValue -is [System.Collections.IDictionary] -or $baselineValue -is [PSCustomObject]) -and
+            ($currentValue -is [System.Collections.IDictionary] -or $currentValue -is [PSCustomObject])) {
+            $differences += Compare-MtJsonObject -Baseline $baselineValue -Current $currentValue -Path $currentPath -Settings $Settings -ErrorAction SilentlyContinue
+        }
+        elseif ($baselineValue -is [Array] -and $currentValue -is [Array]) {
+            if ($baselineValue.Count -ne $currentValue.Count) {
+                $differences += [MtPropertyDifference]::new($currentPath, $baselineValue.Count, $currentValue.Count, "Array size mismatch at $($currentPath)", "ArraySizeMismatch")
             }
-            $baselineValue = if ($Baseline -is [System.Collections.IDictionary]) { $Baseline[$property] } else { $Baseline.$property }
-            $currentValue = if ($Current -is [System.Collections.IDictionary]) { $Current[$property] } else { $Current.$property }
-            if ($null -eq $baselineValue -and $null -eq $currentValue) {
-                Write-Verbose "Both baseline and current values are null for property: $currentPath"
-            }
-            elseif ($null -eq $baselineValue -or $null -eq $currentValue) {
-                $issue = [PSCustomObject]@{
-                    PropertyName = $currentPath
-                    ExpectedValue = $baselineValue
-                    ActualValue = $currentValue
-                    Description = "One of the values is null at path: $currentPath"
-                    Reason = "NullValue"
-                }
-                $differences += $issue
-            }
-            elseif (($baselineValue -is [System.Collections.IDictionary] -or $baselineValue -is [PSCustomObject]) -and
-                ($currentValue -is [System.Collections.IDictionary] -or $currentValue -is [PSCustomObject])) {
-                $differences += Compare-MtJsonObject -Baseline $baselineValue -Current $currentValue -Path $currentPath -Settings $Settings -ErrorAction SilentlyContinue
-            }
-            elseif ($baselineValue -is [Array] -and $currentValue -is [Array]) {
-                if ($baselineValue.Count -ne $currentValue.Count) {
-                    $issue = [PSCustomObject]@{
-                        PropertyName = $currentPath
-                        ExpectedValue = $baselineValue.Count
-                        ActualValue = $currentValue.Count
-                        Description = "Array size mismatch at $($currentPath)"
-                        Reason = "ArraySizeMismatch"
+            else {
+                for ($i = 0; $i -lt $baselineValue.Count; $i++) {
+                    $itemPath = "$currentPath[$i]"
+                    if (($baselineValue[$i] -is [System.Collections.IDictionary] -or $baselineValue[$i] -is [PSCustomObject]) -and
+                        ($currentValue[$i] -is [System.Collections.IDictionary] -or $currentValue[$i] -is [PSCustomObject])) {
+                        $differences += Compare-MtJsonObject -Baseline $baselineValue[$i] -Current $currentValue[$i] -Path $itemPath -Settings $Settings -ErrorAction SilentlyContinue
                     }
-                    $differences += $issue
-                }
-                else {
-                    for ($i = 0; $i -lt $baselineValue.Count; $i++) {
-                        $itemPath = "$currentPath[$i]"
-                        if (($baselineValue[$i] -is [System.Collections.IDictionary] -or $baselineValue[$i] -is [PSCustomObject]) -and
-                            ($currentValue[$i] -is [System.Collections.IDictionary] -or $currentValue[$i] -is [PSCustomObject])) {
-                            $differences += Compare-MtJsonObject -Baseline $baselineValue[$i] -Current $currentValue[$i] -Path $itemPath -Settings $Settings -ErrorAction SilentlyContinue
-                        }
-                        elseif ($baselineValue[$i] -ne $currentValue[$i]) {
-                            $issue = [PSCustomObject]@{
-                                PropertyName = $itemPath
-                                ExpectedValue = $baselineValue[$i]
-                                ActualValue = $currentValue[$i]
-                                Description = "Value mismatch at $($itemPath)"
-                                Reason = "ValueMismatch"
-                            }
-                            $differences += $issue
-                        }
+                    elseif ($baselineValue[$i] -ne $currentValue[$i]) {
+                        $differences += [MtPropertyDifference]::new($itemPath, $baselineValue[$i], $currentValue[$i], "Value mismatch at $($itemPath)", "ValueMismatch")
                     }
                 }
-            }
-            elseif ($baselineValue -ne $currentValue) {
-                $issue = [PSCustomObject]@{
-                    PropertyName = $currentPath
-                    ExpectedValue = $baselineValue
-                    ActualValue = $currentValue
-                    Description = "Value mismatch at $($currentPath)"
-                    Reason = "ValueMismatch"
-                }
-                $differences += $issue
             }
         }
+        elseif ($baselineValue -ne $currentValue) {
+            $differences += [MtPropertyDifference]::new($currentPath, $baselineValue, $currentValue, "Value mismatch at $($currentPath)", "ValueMismatch")
+        }
     }
+
     return $differences
 }

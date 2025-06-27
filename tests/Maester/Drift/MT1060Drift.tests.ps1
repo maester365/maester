@@ -102,13 +102,8 @@ Describe "Maester/Drift" -ForEach $driftFolders {
                 $script:driftIssues = Compare-MtJsonObject -Baseline $baselineData -Current $currentData -Settings $settingsObject
             } catch {
                 # If an error occurs during comparison, capture it as an issue
-                $script:driftIssues = @([PSCustomObject]@{
-                    PropertyName = "Comparison Error"
-                    ExpectedValue = "N/A"
-                    ActualValue = "N/A"
-                    Description = "An error occurred while comparing JSON objects: $($_.Exception.Message)"
-                    Reason = "ComparisonError"
-                })
+                $script:driftIssues = @([MtPropertyDifference]::new("", "N/A", "N/A", "An error occurred while comparing JSON objects: $($_.Exception.Message)", "ComparisonError"))
+
             }
         }
     }
@@ -168,6 +163,9 @@ Describe "Maester/Drift" -ForEach $driftFolders {
             $formattedIssues += "|----------|---------|----------------|--------------|-------------|" + "`n"
             $propertyIssues | ForEach-Object {
                 $formattedIssues += "| ``$($_.PropertyName)`` | $($_.Reason) | ``$($_.ExpectedValue)`` | ``$($_.ActualValue)`` | $($_.Description) |`n"
+            }
+            $script:driftIssues | ForEach-Object {
+
             }
             $formattedIssues += "`n"
             $formattedIssues += "Files compared in folder: ``$($driftFolder.FullName)```n"
