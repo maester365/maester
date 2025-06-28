@@ -145,7 +145,7 @@ function Invoke-Maester {
         # Uri to the detailed test results page.
         [string] $MailTestResultsUri,
 
-        # The user id of the sender of the mail. Defaults to the current user.
+        # The user id or user principal name of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
         [string] $MailUserId,
 
