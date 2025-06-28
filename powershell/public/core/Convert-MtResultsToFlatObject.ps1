@@ -127,14 +127,6 @@
             throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
         }
 
-        # Replacement strings for emoji characters and apostrophes that do not translate well to CSV files.
-        [hashtable]$ReplacementStrings = @{
-            'âŒ'       = ''
-            'âž¡ï¸'    = ''
-            'âœ…'       = ''
-            'youâ€™re'  = 'you are'
-            'arenâ€™nt' = 'are not'
-        } ; [void]$ReplacementStrings # Not Used Yet
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
         if ($PSCmdlet.ParameterSetName -eq 'FromInputObject') {
@@ -157,7 +149,7 @@
                 Write-Verbose -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters." -Verbose
                 $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
             } else {
-                $TestResultDetail = $_.ResultDetail.TestResult
+                $TestResultDetail = [System.Web.HttpUtility]::HtmlDecode($_.ResultDetail.TestResult)
             }
 
             # Add the flattened object to the FlattenedResults list.
@@ -169,7 +161,7 @@
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
                     Duration       = $_.Duration
-                    Description    = $_.ResultDetail.TestDescription
+                    Description    = [System.Web.HttpUtility]::HtmlDecode($_.ResultDetail.TestDescription)
                     ResultDetail   = $TestResultDetail
                     TestSkipped    = $_.ResultDetail.TestSkipped
                     SkippedReason  = $_.ResultDetail.SkippedReason
