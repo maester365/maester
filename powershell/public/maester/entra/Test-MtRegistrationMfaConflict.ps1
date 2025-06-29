@@ -11,7 +11,7 @@
     Test-MtRegistrationMfaConflict
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtRegistrationMfa
+    https://maester.dev/docs/commands/Test-MtRegistrationMfaConflict
 #>
 
 function Test-MtRegistrationMfaConflict {
