@@ -72,6 +72,7 @@ module.exports = [
     'commands/Test-MtCaRequirePasswordChangeForHighUserRisk',
     'commands/Test-MtCaSecureSecurityInfoRegistration',
     'commands/Test-MtCaWIFBlockLegacyAuthentication',
+    'commands/Test-MtRegistrationMfaConflict',
     'commands/Test-MtCis365PublicGroup',
     'commands/Test-MtCisaActivationNotification',
     'commands/Test-MtCisaAntiSpamAllowList',
