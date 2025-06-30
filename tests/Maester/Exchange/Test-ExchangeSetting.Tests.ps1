@@ -137,6 +137,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "SecureScore" {
 
         Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
 
+        $result | Should -Not -Be $null -Because "Result should not be null"
         if ($null -ne $result) {
             $result | Should -Be $true -Because "RejectDirectSend should be True"
         }
