@@ -125,6 +125,23 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange", "SecureScore" {
         }
     }
 
+     It "MT.1062: Ensure Direct Send is configured to reject" -Tag "MT.1062", "RejectDirectSend" {
+        $result = $OrganizationConfig.RejectDirectSend
+
+        if ($result) {
+            $testResultMarkdown = "Well done. RejectDirectSend is ``$($result)``.`n`n"
+        } else {
+            $testResultMarkdown = "``RejectDirectSend`` should be ``True``. RejectDirectSend is ``$($result)``.`n`n"
+        }
+        $testDetailsMarkdown = "This test checks if the Direct Send feature in Exchange Online is configured to reject. Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain to your organization's mailboxes using the tenant MX xxx.mail.protection.outlook.com (smarthost).`n`nSuch traffic may include third-party services (applications, devices, or cloud providers) authorized to use your domain. By rejecting Direct Send, you ensure that only authenticated users can send email messages, which helps to prevent unauthorized access and potential abuse of your email system."
+
+        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "RejectDirectSend should be True"
+        }
+    }
+
     # Ensure 'External sharing' of calendars is not available:
     # > CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available
     # > MS.EXO.6.2: Calendar details SHALL NOT be shared with all domains.
