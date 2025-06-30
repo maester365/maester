@@ -149,7 +149,7 @@
                 Write-Verbose -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters." -Verbose
                 $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
             } else {
-                $TestResultDetail = [System.Web.HttpUtility]::HtmlDecode($_.ResultDetail.TestResult)
+                $TestResultDetail = $_.ResultDetail.TestResult
             }
 
             # Add the flattened object to the FlattenedResults list.
@@ -161,7 +161,7 @@
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
                     Duration       = $_.Duration
-                    Description    = [System.Web.HttpUtility]::HtmlDecode($_.ResultDetail.TestDescription)
+                    Description    = $_.ResultDetail.TestDescription
                     ResultDetail   = $TestResultDetail
                     TestSkipped    = $_.ResultDetail.TestSkipped
                     SkippedReason  = $_.ResultDetail.SkippedReason
@@ -182,7 +182,7 @@
             }
 
             try {
-                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
+                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8 -NoTypeInformation
                 Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"
