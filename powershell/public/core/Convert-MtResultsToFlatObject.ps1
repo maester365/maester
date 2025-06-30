@@ -182,7 +182,7 @@
             }
 
             try {
-                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8 -NoTypeInformation
+                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8BOM -NoTypeInformation
                 Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"
