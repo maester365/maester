@@ -33,7 +33,7 @@ function Test-MtCaRequirePasswordChangeForHighUserRisk {
         $result = $false
         foreach ($policy in $policies) {
             if (
-                $policy.grantControls.buildInControls -contains 'passwordChange' -and
+                $policy.grantControls.builtInControls -contains 'passwordChange' -and
                 $policy.conditions.users.includeUsers -eq 'All' -and
                 $policy.conditions.applications.includeApplications -eq 'All' -and
                 'high' -in $policy.conditions.userRiskLevels
