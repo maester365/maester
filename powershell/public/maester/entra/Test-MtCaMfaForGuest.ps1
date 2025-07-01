@@ -43,7 +43,7 @@ function Test-MtCaMfaForGuest {
             }
 
             # Simplified logic for checking MFA requirements
-            $RequiresMfa = $policy.grantControls.buildInControls -contains 'mfa' -or $policy.grantControls.authenticationStrength.requirementsSatisfied -contains 'mfa'
+            $RequiresMfa = $policy.grantControls.builtInControls -contains 'mfa' -or $policy.grantControls.authenticationStrength.requirementsSatisfied -contains 'mfa'
             $AppliesToGuests = $policy.conditions.users.includeUsers -contains "GuestsOrExternalUsers" -or $AllGuestTypesPresent
             $AppliesToAllUsers = $policy.conditions.users.includeUsers -contains "All"
             $AppliesToAllApps = $policy.conditions.applications.includeApplications -contains "All"
