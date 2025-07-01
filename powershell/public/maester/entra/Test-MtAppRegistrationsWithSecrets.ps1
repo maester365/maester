@@ -3,7 +3,7 @@
     Check if any service principals are still using secrets instead of certificates or managed identities.
 
 .DESCRIPTION
-    It is adviced to use certificates or managed identities instead of secrets for service principals. This test checks if any service principals are still using secrets.
+    It is advised to use certificates or managed identities instead of secrets for service principals. This test checks if any service principals are still using secrets.
 
 .EXAMPLE
     Test-MtAppRegistrationsWithSecrets
@@ -30,12 +30,12 @@ function Test-MtAppRegistrationsWithSecrets {
         $return = $apps.Count -eq 0
 
         if ($return) {
-            $testResultMarkdown = "Well done. No app registrations using secrets."
+            $testResultMarkdown = 'Well done. No app registrations using secrets.'
         } else {
             $testResultMarkdown = "You have $($apps.Count) app registrations that still use secrets.`n`n%TestResult%"
 
             Write-Verbose "Found $($apps.Count) app registrations using secrets."
-            Write-Verbose "Creating markdown table for app registrations using secrets."
+            Write-Verbose 'Creating markdown table for app registrations using secrets.'
 
             $result = "| ApplicationName | ApplicationId |`n"
             $result += "| --- | --- |`n"
@@ -44,12 +44,12 @@ function Test-MtAppRegistrationsWithSecrets {
                 $result += "| $($appMdLink) | $($app.appId) |`n"
                 Write-Verbose "Adding app registration $($app.displayName) with id $($app.appId) to markdown table."
             }
-            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+            $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $return
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }
