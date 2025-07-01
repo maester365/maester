@@ -1,3 +1,5 @@
+**This is no longer applicable, and is deprecated by CISA. The content below is retained as a historical archive and will be removed in a future version.**
+
 Microsoft Purview Audit (Premium) logging SHALL be enabled.
 
 Rationale: Standard logging may not include relevant details necessary for visibility into user actions during an incident. Enabling Microsoft Purview Audit (Premium) captures additional event types not included with Standard. Furthermore, it is required for government agencies by OMB M-21-13 (referred to therein by its former name, Unified Audit Logs w/Advanced Features).
