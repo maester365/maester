@@ -63,7 +63,6 @@ function Test-MtCisAttachmentFilterComprehensive {
 
             # We grab the policy we are checking
             $policy = $policies | Where-Object { $_.Id -eq $policyId }
-
             if ($policy.EnableFileFilter -ne 'True') {
                 # If the policy isn't enabled, skip
                 break
