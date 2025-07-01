@@ -19,37 +19,42 @@ function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+    if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
         return $null
     }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    try {
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
-    $testDescription = "
+        $testDescription = '
 Microsoft recommends blocking access for unknown or unsupported device platforms.
 
-See [Block access for unknown or unsupported device platform - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device)"
-    $testResult = "These conditional access policies block access for unknown or unsupported device platforms:`n`n"
+See [Block access for unknown or unsupported device platform - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device)'
+        $testResult = "These conditional access policies block access for unknown or unsupported device platforms:`n`n"
 
-    $result = $false
-    foreach ($policy in $policies) {
-        if ( $policy.grantcontrols.builtincontrols -eq 'block' `
-                -and $policy.conditions.platforms.includePlatforms -eq "All"
-        ) {
-            $result = $true
-            $currentresult = $true
-            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
-        } else {
-            $currentresult = $false
+        $result = $false
+        foreach ($policy in $policies) {
+            if ( $policy.grantControls.buildInControls -eq 'block' `
+                    -and $policy.conditions.platforms.includePlatforms -eq 'All'
+            ) {
+                $result = $true
+                $CurrentResult = $true
+                $testResult += "  - [$($policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            } else {
+                $CurrentResult = $false
+            }
+            Write-Verbose "$($policy.displayName) - $CurrentResult"
         }
-        Write-Verbose "$($policy.displayName) - $currentresult"
-    }
 
-    if ($result -eq $false) {
-        $testResult = "There was no conditional access policy blocking access for unknown or unsupported device platforms."
-    }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+        if ($result -eq $false) {
+            $testResult = 'There was no conditional access policy blocking access for unknown or unsupported device platforms.'
+        }
+        Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
-    return $result
+        return $result
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
 }

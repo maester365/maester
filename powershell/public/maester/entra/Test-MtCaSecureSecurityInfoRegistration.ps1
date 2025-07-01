@@ -24,34 +24,40 @@ function Test-MtCaSecureSecurityInfoRegistration {
         return $null
     }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-    # Remove policies that require password change, as they are related to user risk and not MFA on signin
-    $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -notcontains 'passwordChange' }
-    $policiesResult = New-Object System.Collections.ArrayList
+    try {
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+        # Remove policies that require password change, as they are related to user risk and not MFA on signin
+        $policies = $policies | Where-Object { $_.grantControls.builtInControls -notcontains 'passwordChange' }
+        $policiesResult = New-Object System.Collections.ArrayList
 
-    $result = $false
-    foreach ($policy in $policies) {
-        if ( $policy.conditions.users.includeUsers -eq "All" `
-                -and $policy.conditions.clientAppTypes -eq "all" `
-                -and $policy.conditions.applications.includeUserActions -eq "urn:user:registersecurityinfo" `
-                -and $policy.conditions.users.excludeRoles -eq "62e90394-69f5-4237-9190-012177145e10" `
-                -and $policy.conditions.locations.excludeLocations -eq "AllTrusted" `
-        ) {
-            $result = $true
-            $currentresult = $true
-            $policiesResult.Add($policy) | Out-Null
-        } else {
-            $currentresult = $false
+        $result = $false
+        foreach ($policy in $policies) {
+            if (
+                $policy.conditions.users.includeUsers -eq "All" -and
+                $policy.conditions.clientAppTypes -eq "all" -and
+                $policy.conditions.applications.includeUserActions -eq "urn:user:registersecurityinfo" -and
+                $policy.conditions.users.excludeRoles -eq "62e90394-69f5-4237-9190-012177145e10" -and
+                $policy.conditions.locations.excludeLocations -eq "AllTrusted"
+            ) {
+                $result = $true
+                $CurrentResult = $true
+                $policiesResult.Add($policy) | Out-Null
+            } else {
+                $CurrentResult = $false
+            }
+            Write-Verbose "$($policy.displayName) - $CurrentResult"
         }
-        Write-Verbose "$($policy.displayName) - $currentresult"
-    }
 
-    if ( $result ) {
-        $testResult = "The following conditional access policies secure security info registration.`n`n%TestResult%"
-    } else {
-        $testResult = "No conditional access policy securing security info registration."
-    }
-    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
+        if ( $result ) {
+            $testResult = "The following conditional access policies secure security info registration.`n`n%TestResult%"
+        } else {
+            $testResult = "No conditional access policy securing security info registration."
+        }
+        Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
-    return $result
+        return $result
+    } catch {
+        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        return $false
+    }
 }

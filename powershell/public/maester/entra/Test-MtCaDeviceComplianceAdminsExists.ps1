@@ -44,9 +44,10 @@ function Test-MtCaDeviceComplianceAdminsExists {
     "e8611ab8-c189-46e8-94e1-60213ab1f814"
   )
 
-  $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+  try {
+    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
 
-  $testDescription = "
+    $testDescription = "
 Microsoft recommends requiring device compliance for administrators that are members of the following roles:
 
 * Global administrator
@@ -65,35 +66,38 @@ Microsoft recommends requiring device compliance for administrators that are mem
 * User administrator
 
 See [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)"
-  $testResult = "These conditional access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
+    $testResult = "These conditional access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
 
-  $result = $false
-  foreach ($policy in $policies) {
-    $PolicyIncludesAllRoles = $true
-    $AdministrativeRolesToCheck | ForEach-Object {
-      if ( ( $_ -notin $policy.conditions.users.includeRoles `
-            -and $policy.conditions.users.includeUsers -notcontains 'All' ) `
-          -or $_ -in $policy.conditions.users.excludeRoles `
+    $result = $false
+    foreach ($policy in $policies) {
+      $PolicyIncludesAllRoles = $true
+      $AdministrativeRolesToCheck | ForEach-Object {
+        if ( ( $_ -notin $policy.conditions.users.includeRoles -and $policy.conditions.users.includeUsers -notcontains 'All' ) -or
+          $_ -in $policy.conditions.users.excludeRoles
+        ) {
+          $PolicyIncludesAllRoles = $false
+        }
+      }
+
+      if ( 'domainJoinedDevice' -in $policy.grantControls.buildInControls -and
+        'compliantDevice' -in $policy.grantControls.buildInControls -and
+        $policy.grantControls.operator -eq "OR" -and $PolicyIncludesAllRoles -and
+        $policy.conditions.applications.includeApplications -eq "All"
       ) {
-        $PolicyIncludesAllRoles = $false
+        Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayName)"
+        $testResult += "  - [$($policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+        $result = $true
       }
     }
-    if ( 'domainJoinedDevice' -in $policy.grantcontrols.builtincontrols `
-        -and 'compliantDevice' -in $policy.grantcontrols.builtincontrols `
-        -and $policy.grantControls.operator -eq "OR" `
-        -and $PolicyIncludesAllRoles `
-        -and $policy.conditions.applications.includeApplications -eq "All" `
-    ) {
-      Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayname)"
-      $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
-      $result = $true
+
+    if ($result -eq $false) {
+      $testResult = "There was no conditional access policy requiring compliant or Microsoft Entra hybrid joined device for administrators."
     }
-  }
+    Add-MtTestResultDetail -Description $testDescription -Result $testResult
 
-  if ($result -eq $false) {
-    $testResult = "There was no conditional access policy requiring compliant or Microsoft Entra hybrid joined device for administrators."
+    return $result
+  } catch {
+    Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    return $null
   }
-  Add-MtTestResultDetail -Description $testDescription -Result $testResult
-
-  return $result
 }
