@@ -74,11 +74,11 @@
     Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
-            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P1 license"
+            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximum number of user that can utilize a P1 license"
         }
         It "MT.1023: All users utilizing a P2 license should be licensed. See https://maester.dev/docs/tests/MT.1023" -Tag "MT.1023" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P2"
-            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximium number of user that can utilize a P2 license"
+            $LicenseReport.TotalLicensesUtilized | Should -BeLessOrEqual $LicenseReport.EntitledLicenseCount -Because "this is the maximum number of user that can utilize a P2 license"
         }
     }
 }

@@ -25,34 +25,37 @@ function Test-MtCisGlobalAdminCount {
     }
 
     $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes -and "RoleManagement.ReadWrite.Directory" -notin $scopes
+    $permissionMissing = 'RoleEligibilitySchedule.ReadWrite.Directory' -notin $scopes -and 'RoleManagement.ReadWrite.Directory' -notin $scopes
     if ($permissionMissing) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Missing Scope RoleEligibilitySchedule.ReadWrite.Directory'
         return $null
     }
 
-    Write-Verbose "Getting role"
-    $role = Get-MtRole | Where-Object {
-        $_.id -eq "62e90394-69f5-4237-9190-012177145e10"
-    } # Global Administrator
+    try {
+        Write-Verbose 'Getting role'
+        $role = Get-MtRole | Where-Object {
+            $_.id -eq '62e90394-69f5-4237-9190-012177145e10'
+        } # Global Administrator
 
-    Write-Verbose "Getting role assignments"
-    $assignments = Get-MtRoleMember -roleId $role.id
+        Write-Verbose 'Getting role assignments'
+        $assignments = Get-MtRoleMember -RoleId $role.id
 
-    Write-Verbose "Getting list of user identities assigned the Global Administrator role"
-    $globalAdministrators = $assignments | Where-Object {`
-            $_.'@odata.type' -eq "#microsoft.graph.user"
+        Write-Verbose 'Getting list of user identities assigned the Global Administrator role'
+        $globalAdministrators = $assignments | Where-Object {
+            $_.'@odata.type' -eq '#microsoft.graph.user'
+        }
+
+        $testResult = ($globalAdministrators | Measure-Object).Count -ge 2 -and ($globalAdministrators | Measure-Object).Count -le 4
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant has two or more and four or fewer Global Administrators:`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = 'Your tenant does not have the appropriate number of Global Administrators.'
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $globalAdministrators
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    $testResult = ($globalAdministrators | Measure-Object).Count -ge 2 -and ($globalAdministrators | Measure-Object).Count -le 4
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has two or more and four or fewer Global Administrators:`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenant does not have the appropriate number of Global Administrators."
-    }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Users -GraphObjects $globalAdministrators
-
-    return $testResult
 }

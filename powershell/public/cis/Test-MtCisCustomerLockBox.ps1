@@ -51,10 +51,36 @@ function Test-MtCisCustomerLockBox {
             $resultMd += "| $($itemResult) |`n"
         }
     }
+    try {
+        Write-Verbose 'Requesting secure scores to get the customer lockbox setting'
+        $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
+        Write-Verbose 'Get domains where passwords are set to expire'
+        $result = $customerLockbox | Where-Object { $_.CustomerLockBoxEnabled -ne 'True' }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
+        $testResult = ($result | Measure-Object).Count -eq 0
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant has the customer lockbox enabled:`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "Your tenant does not have the customer lockbox enabled:`n`n%TestResult%"
+        }
 
-    return $testResult
+        $resultMd = "| Customer Lockbox |`n"
+        $resultMd += "| --- |`n"
+        foreach ($item in $customerLockbox) {
+            $itemResult = '❌ Fail'
+            if ($item.id -notin $result.id) {
+                $itemResult = '✅ Pass'
+            }
+            $resultMd += "| $($itemResult) |`n"
+        }
+
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
 }
