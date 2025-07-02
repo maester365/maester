@@ -38,7 +38,7 @@ In addition to caching, `Invoke-MtGraphRequest` has other key features that make
 
 Here are a few examples.
 
-#### Get selected list of users users with specific properties
+#### Get selected list of users with specific properties
 
 Use the `UniqueId` parameter to get specific users by their object ID and select only the properties you need.
 
