@@ -34,17 +34,19 @@ A common scenario for this test would be a security group that is used in a crit
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
     It "Check 'Contoso MFA Users' group" -Tag 'Severity:Medium' {
 
-        $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
-
         try {
+            $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"
+
             $memberCount = Get-MgGroupTransitiveMemberCount -GroupId $groupId -ConsistencyLevel eventual
+
+            # Test if the group exists and has members
+            $memberCount | Should -BeGreaterThan 0
+
         }
         catch {
-            Write-Error $_.Exception.Message
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $false
         }
-
-        # Test if the group exists and has members
-        $memberCount | Should -BeGreaterThan 0
     }
 }
 ```

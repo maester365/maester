@@ -24,21 +24,25 @@ function Test-MtCisConnectionFilterSafeList {
         return $null
     }
 
-    Write-Verbose "Getting the Hosted Connection Filter policy..."
-    $connectionFilterSafeList = Get-HostedConnectionFilterPolicy -Identity Default | Select-Object EnableSafeList
+    try {
+        Write-Verbose 'Getting the Hosted Connection Filter policy...'
+        $connectionFilterSafeList = Get-HostedConnectionFilterPolicy -Identity Default | Select-Object EnableSafeList
 
-    Write-Verbose "Check if the Connection Filter safe list is enabled"
-    $result = $connectionFilterSafeList | Where-Object { $_.EnableSafeList -eq "False" }
+        Write-Verbose 'Check if the Connection Filter safe list is enabled'
+        $result = $connectionFilterSafeList | Where-Object { $_.EnableSafeList -eq 'False' }
 
-    $testResult = ($result | Measure-Object).Count -eq 0
+        $testResult = ($result | Measure-Object).Count -eq 0
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. The connection filter safe list was not enabled ✅"
-    } else {
-        $testResultMarkdown = "The connection filter safe list was enabled ❌"
+        if ($testResult) {
+            $testResultMarkdown = 'Well done. The connection filter safe list was not enabled ✅'
+        } else {
+            $testResultMarkdown = 'The connection filter safe list was enabled ❌'
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

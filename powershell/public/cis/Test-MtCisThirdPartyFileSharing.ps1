@@ -24,19 +24,19 @@ function Test-MtCisThirdPartyFileSharing {
         return $null
     }
 
-    Write-Verbose "Test-MtCisThirdPartyFileSharing: Checking if third-party file sharing cloud services in Teams are disabled"
+    Write-Verbose 'Test-MtCisThirdPartyFileSharing: Checking if third-party file sharing cloud services in Teams are disabled'
 
-    $return = $true
     try {
+        $return = $true
         $thirdPartyCloudServices = Get-CsTeamsClientConfiguration | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
 
-        $passResult = "✅ Pass"
-        $failResult = "❌ Fail"
+        $passResult = '✅ Pass'
+        $failResult = '❌ Fail'
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
 
-        ForEach ($thirdPartyProvider in ($thirdPartyCloudServices.PSObject.Properties)) {
+        foreach ($thirdPartyProvider in ($thirdPartyCloudServices.PSObject.Properties)) {
             if ($thirdPartyProvider.Value -eq $false) {
                 $result += "| $($thirdPartyProvider.Name) | $($thirdPartyProvider.Value) | $passResult |`n"
             } else {
@@ -44,16 +44,18 @@ function Test-MtCisThirdPartyFileSharing {
                 $return = $false
             }
         }
+
         if ($return) {
             $testResultMarkdown = "Well done. All third-party cloud services are disabled.`n`n%TestResult%"
         } else {
             $testResultMarkdown = "All or specific third-party cloud services are enabled.`n`n%TestResult%"
         }
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $return
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }

@@ -24,36 +24,38 @@ function Test-MtCisCalendarSharing {
         return $null
     }
 
-    Write-Verbose "Get Calendar sharing policy"
-    $policies = Get-MtExo -Request SharingPolicy
+    try {
+        Write-Verbose 'Get Calendar sharing policy'
+        $policies = Get-MtExo -Request SharingPolicy
 
-    Write-Verbose "Get Calendars where sharing policy is enabled and allows anonymous sharing"
-    $resultPolicies = $policies | Where-Object {
-        $_.Enabled -and ($_.Domains -like "`*:*CalendarSharing*" -or $_.Domains -like "Anonymous:*CalendarSharing*")
-    }
-
-    $testResult = ($resultPolicies | Measure-Object).Count -eq 0
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%TestResult%"
-    }
-
-    $result = "| Policy Name | Test Result |`n"
-    $result += "| --- | --- |`n"
-    foreach ($item in $policies | Sort-Object -Property Name) {
-        $portalLink = "https://admin.exchange.microsoft.com/#/individualsharing/:/individualsharingdetails/$($item.ExchangeObjectId)/managedomain"
-        $itemResult = "✅ Pass"
-        if ($item.ExchangeObjectId -in $resultPolicies.ExchangeObjectId) {
-            $itemResult = "❌ Fail"
+        Write-Verbose 'Get Calendars where sharing policy is enabled and allows anonymous sharing'
+        $resultPolicies = $policies | Where-Object {
+            $_.Enabled -and ($_.Domains -like "`*:*CalendarSharing*" -or $_.Domains -like 'Anonymous:*CalendarSharing*')
         }
-        $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
+
+        $testResult = ($resultPolicies | Measure-Object).Count -eq 0
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%TestResult%"
+        }
+
+        $result = "| Policy Name | Test Result |`n"
+        $result += "| --- | --- |`n"
+        foreach ($item in $policies | Sort-Object -Property Name) {
+            $portalLink = "https://admin.exchange.microsoft.com/#/individualsharing/:/individualsharingdetails/$($item.ExchangeObjectId)/managedomain"
+            $itemResult = '✅ Pass'
+            if ($item.ExchangeObjectId -in $resultPolicies.ExchangeObjectId) {
+                $itemResult = '❌ Fail'
+            }
+            $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
+        }
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

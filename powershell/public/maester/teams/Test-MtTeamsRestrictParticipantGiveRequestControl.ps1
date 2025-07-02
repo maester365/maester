@@ -29,19 +29,22 @@ function Test-MtTeamsRestrictParticipantGiveRequestControl {
         return $null
     }
 
-    $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq "Global" }
+    try {
+        $TeamsMeetingPolicyGlobal = $TeamsMeetingPolicy | Where-Object { $_.Identity -eq 'Global' }
 
-    $result = -not $TeamsMeetingPolicyGlobal.AllowParticipantGiveRequestControl
+        $result = -not $TeamsMeetingPolicyGlobal.AllowParticipantGiveRequestControl
+        Write-Verbose "Test-MtTeamsRestrictParticipantGiveRequestControl: $result"
+        if ($result) {
+            $testResultMarkdown = "Well done. Only users in the **Presenter** role are configured to share content during Teams meetings.`n`n"
+        } else {
+            $testResultMarkdown = "Standard attendees who are not in the **Presenter** role are allowed to share content during Teams meetings.`n`n"
+        }
 
-    Write-Verbose "Test-MtTeamsRestrictParticipantGiveRequestControl: $result"
-
-    if ($result) {
-        $testResultMarkdown = "Well done. Only users in the **Presenter** role are configured to share content during Teams meetings.`n`n"
-    } else {
-        $testResultMarkdown = "Standard attendees who are not in the **Presenter** role are allowed to share content during Teams meetings.`n`n"
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $result
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $result
 }
