@@ -78,16 +78,20 @@ function Test-MtCisDkim {
 
             $dkimRecords += $dkimRecord
         }
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
+    if ('Failed' -in $dkimRecords.pass) {
+        $testResult = $false
+    } elseif ('Failed' -notin $dkimRecords.pass -and 'Passed' -notin $dkimRecords.pass) {
+        Add-MtTestResultDetail -SkippedBecause NotSupported
+        return $null
+    } else {
+        $testResult = $true
+    }
 
-        if ('Failed' -in $dkimRecords.pass) {
-            $testResult = $false
-        } elseif ('Failed' -notin $dkimRecords.pass -and 'Passed' -notin $dkimRecords.pass) {
-            Add-MtTestResultDetail -SkippedBecause NotSupported
-            return $null
-        } else {
-            $testResult = $true
-        }
-
+    try {
         $portalLink = 'https://security.microsoft.com/authentication?viewid=DKIM'
 
         if ($testResult) {

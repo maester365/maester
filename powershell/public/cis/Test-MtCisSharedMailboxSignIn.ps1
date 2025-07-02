@@ -38,7 +38,7 @@ function Test-MtCisSharedMailboxSignIn {
     }
 
     if (($sharedMailboxes | Measure-Object).Count -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no SharedMailbox in your Tenant.'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no shared mailboxes in your tenant.'
         return $null
     }
 
