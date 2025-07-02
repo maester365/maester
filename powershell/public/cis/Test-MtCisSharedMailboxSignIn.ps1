@@ -32,11 +32,17 @@ function Test-MtCisSharedMailboxSignIn {
     try {
         Write-Verbose 'Getting all shared mailboxes'
         $sharedMailboxes = Get-MtExo -Request EXOMailbox -ErrorAction Stop | Where-Object { $_.RecipientTypeDetails -eq 'SharedMailbox' }
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
 
-        if (($sharedMailboxes | Measure-Object).Count -eq 0) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no SharedMailbox in your Tenant.'
-            return $null
-        }
+    if (($sharedMailboxes | Measure-Object).Count -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no SharedMailbox in your Tenant.'
+        return $null
+    }
+
+    try {
 
         Write-Verbose 'For each mailbox get mailbox and AccountEnabled status'
         $mailboxDetails = @()
