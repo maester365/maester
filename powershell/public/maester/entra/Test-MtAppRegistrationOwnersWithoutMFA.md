@@ -1,4 +1,4 @@
-This test checks if all owners of app registrations have Multi-Factor Authentication (MFA) enabled. App registration owners without MFA pose a significant security risk as credential stuffing attacks can lead to privileged access and potential privilege escalation or data loss.
+This test checks if all owners of app registrations have Multi-Factor Authentication (MFA) registered. App registration owners without MFA pose a significant security risk as credential stuffing attacks can lead to privileged access and potential privilege escalation or data loss.
 
 ## Why This Matters
 
@@ -12,11 +12,11 @@ App registration owners have powerful permissions that attackers actively target
 ## Attack Scenario
 
 1. **Initial Compromise**: Attacker uses leaked credentials to access owner account (no MFA protection)
-2. **App Manipulation**: Attacker modifies app registration to add malicious redirect URIs or certificates
-3. **Broader Access**: Compromised app is used to access sensitive data across the organization
+2. **App Manipulation**: Attacker modifies app registration to add malicious redirect URIs, certificates or secrets
+3. **Broader Access**: Compromised app is used to access sensitive data across the organization or to escalate privileges
 
 #### Remediation action
-Enable MFA for all app registration owners listed. Consider using conditional access policies to enforce MFA for all application owners.
+Register MFA for all app registration owners listed. Use conditional access policies to enforce MFA for all application owners.
 
 <!--- Results --->
 %TestResult%

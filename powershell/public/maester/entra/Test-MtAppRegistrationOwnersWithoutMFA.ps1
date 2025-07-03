@@ -1,3 +1,16 @@
+<#
+.SYNOPSIS
+    Check if owners of app registrations have MFA enabled.
+.DESCRIPTION
+    This test checks all app registration owners to ensure they have multi-factor authentication (MFA) enabled.
+    App registrations without owners or with owners lacking MFA present security risks.
+.EXAMPLE
+    Test-MtAppRegistrationOwnersMFA
+    Returns true if all app registration owners have MFA enabled, otherwise returns false.
+.LINK
+    https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA
+#>
+
 function Test-MtAppRegistrationOwnerWithoutMFA {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks MFA for all app registration owners.')]
