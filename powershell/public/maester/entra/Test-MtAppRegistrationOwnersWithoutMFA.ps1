@@ -1,21 +1,8 @@
-<#
-.SYNOPSIS
-    Check if owners of app registrations have MFA enabled.
-.DESCRIPTION
-    This test checks all app registration owners to ensure they have multi-factor authentication (MFA) enabled.
-    App registrations without owners or with owners lacking MFA present security risks.
-.EXAMPLE
-    Test-MtAppRegistrationOwnersMFA
-    Returns true if all app registration owners have MFA enabled, otherwise returns false.
-.LINK
-    https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA
-#>
 function Test-MtAppRegistrationOwnerWithoutMFA {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks MFA for all app registration owners.')]
     [OutputType([bool])]
-    param(
-    )
+    param()
 
     if (-not (Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
@@ -23,155 +10,125 @@ function Test-MtAppRegistrationOwnerWithoutMFA {
     }
 
     try {
-        Write-Verbose "Step 1: Retrieving all app registrations..."
-        # First, get all applications
-        $allApps = Invoke-MtGraphRequest -RelativeUri 'applications?$select=id,displayName,appId' -ErrorAction Stop
-        Write-Verbose "Found $($allApps.Count) total app registrations."
+        Write-Verbose "Step 1: Retrieving app registrations with owners..."
 
-        Write-Verbose "Step 2: Filtering apps that have owners..."
-        $appsWithOwners = @()
-        
-        foreach ($app in $allApps) {
-            try {
-                # Check if the app has owners
-                $owners = Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/owners?`$select=id" -ErrorAction Stop
-                
-                if ($owners.id) {
-                    $appsWithOwners += $app
-                    Write-Verbose "App '$($app.displayName)' has $($owners.Count) owner(s)."
-                }
-                else {
-                    Write-Verbose "App '$($app.displayName)' has no owners - skipping."
-                }
-            }
-            catch {
-                Write-Verbose "Error checking owners for app '$($app.displayName)': $($_.Exception.Message) - skipping."
-                continue
-            }
-        }
-        
+        # Get all applications and filter on client side.
+        $allApps = Invoke-MtGraphRequest -RelativeUri 'applications?$expand=owners' -ErrorAction Stop
+        $appsWithOwners = $allApps | Where-Object { $_.owners.Count -gt 0 }
+
         Write-Verbose "Found $($appsWithOwners.Count) app registrations with owners."
-        
+
         if ($appsWithOwners.Count -eq 0) {
-            $testResultMarkdown = "No app registrations with owners found."
-            Add-MtTestResultDetail -Result $testResultMarkdown
+            Add-MtTestResultDetail -Result "No app registrations with owners found."
             return $true
         }
 
-        Write-Verbose "Step 3: Checking MFA for owners of apps with owners..."
-        $riskyOwners = @()
+        Write-Verbose "Step 2: Retrieving MFA status for owners..."
+
+        # Extract unique owner IDs for targeted MFA lookup
+        $uniqueOwnerIds = @()
+        foreach ($app in $appsWithOwners) {
+            foreach ($owner in $app.owners) {
+                if ($owner.id -and $uniqueOwnerIds -notcontains $owner.id) {
+                    $uniqueOwnerIds += $owner.id
+                }
+            }
+        }
+        Write-Verbose "Found $($uniqueOwnerIds.Count) unique owners to check."
+
+        # Get MFA status for all users via userRegistrationDetails API
+        $userRegistrationResponse = Invoke-MtGraphRequest -RelativeUri 'reports/authenticationMethods/userRegistrationDetails?$select=id,userPrincipalName,userDisplayName,isMfaRegistered' -ErrorAction Stop
+
+        # Filter to only relevant owners using hashtable for O(1) lookup
+        $ownerHashTable = @{}
+        $uniqueOwnerIds | ForEach-Object { $ownerHashTable[$_] = $true }
+
+        $userRegistrationResponse = $userRegistrationResponse | Where-Object {
+            $_.id -and $ownerHashTable.ContainsKey($_.id)
+        }
+
+        # Create lookup hashtable for MFA status from filtered data
+        $mfaStatusLookup = @{}
+        $validUserDetails = 0
+
+        foreach ($userDetail in $userRegistrationResponse) {
+            $mfaStatusLookup[$userDetail.id] = @{
+                isMfaRegistered = $userDetail.isMfaRegistered -eq $true
+                userDisplayName = $userDetail.userDisplayName
+                userPrincipalName = $userDetail.userPrincipalName
+            }
+            $validUserDetails++
+        }
+
+        Write-Verbose "Retrieved MFA status for $validUserDetails relevant owners."
+
+        # Process owners and identify those without MFA
+        $ownersWithoutMFa = @()
         $totalOwners = 0
         $ownersWithMFA = 0
         $skippedOwners = 0
 
         foreach ($app in $appsWithOwners) {
-            Write-Verbose "Processing app: $($app.displayName)"
-            
-            try {
-                # Get owners of the app registration
-                $owners = Invoke-MtGraphRequest -RelativeUri "applications/$($app.id)/owners" -ErrorAction Stop
-                
-                # Check MFA for each owner
-                foreach ($owner in $owners) {
-                    $totalOwners++
-                    Write-Verbose "Checking MFA for owner: $($owner.displayName)"
-                    
-                    try {
-                        # Get user's authentication methods
-                        $authMethods = Invoke-MtGraphRequest -RelativeUri "users/$($owner.id)/authentication/methods" -ErrorAction Stop
-                        Write-Verbose "Retrieved authentication methods for owner: $($owner.displayName)"
-                        
-                        # Check for MFA methods
-                        $hasMFA = $false
-                        $mfaMethods = @()
-                        
-                        #Check if user has multiple authentication methods
-                        if (-not $hasMFA) {
-                            $nonPasswordMethods = $authMethods.value | Where-Object { 
-                                $_.'@odata.type' -ne '#microsoft.graph.passwordAuthenticationMethod' -and
-                                $_.'@odata.type' -ne '#microsoft.graph.temporaryAccessPassAuthenticationMethod'
-                            }
-                            
-                            if ($nonPasswordMethods.Count -gt 0) {
-                                Write-Verbose "Fallback: Found $($nonPasswordMethods.Count) non-password authentication methods for $($owner.displayName)"
-                                $hasMFA = $true
-                                $mfaMethods += "Other authentication methods detected ($($nonPasswordMethods.Count) methods)"
-                            }
-                        }
-                        #
-                        if ($hasMFA) {
-                            $ownersWithMFA++
-                            Write-Verbose "Owner $($owner.displayName) has MFA enabled: $($mfaMethods -join ', ')"
-                        } else {
-                            Write-Verbose "Owner $($owner.displayName) does NOT have MFA enabled."
-                            $riskyOwners += [PSCustomObject]@{
-                                AppName = $app.displayName
-                                AppId = $app.appId
-                                OwnerName = $owner.displayName
-                                OwnerUPN = $owner.userPrincipalName
-                                MFAMethods = "None"
-                            }
+            foreach ($owner in $app.owners) {
+                $totalOwners++
+
+                if ($mfaStatusLookup.ContainsKey($owner.id)) {
+                    if ($mfaStatusLookup[$owner.id].isMfaRegistered) {
+                        $ownersWithMFA++
+                    } else {
+                        $ownersWithoutMFa += [PSCustomObject]@{
+                            AppName = $app.displayName
+                            AppId = $app.appId
+                            OwnerName = $mfaStatusLookup[$owner.id].userDisplayName
+                            OwnerUPN = $mfaStatusLookup[$owner.id].userPrincipalName
+                            OwnerID = $owner.id
+                            MFAMethods = "No MFA registered"
                         }
                     }
-                    catch {
-                        $skippedOwners++
-                        Write-Verbose "Error checking MFA for owner $($owner.displayName): $($_.Exception.Message) - skipping this owner."
-                        continue
-                    }
+                } else {
+                    $skippedOwners++
+                    Write-Verbose "Owner $($owner.displayName) not found in registration details - likely service principal or disabled user."
                 }
-            }
-            catch {
-                Write-Verbose "Error getting owners for app $($app.displayName): $($_.Exception.Message) - skipping MFA check."
-                continue
             }
         }
 
-        Write-Verbose "Summary - Total apps with owners: $($appsWithOwners.Count), Total owners checked: $totalOwners, Owners with MFA: $ownersWithMFA, Owners without MFA: $($riskyOwners.Count), Owners skipped: $skippedOwners"
+        Write-Verbose "Summary - Apps: $($appsWithOwners.Count), Total owners: $totalOwners, With MFA: $ownersWithMFA, Without MFA: $($ownersWithoutMFa.Count), Skipped: $skippedOwners"
 
-        # Determine overall result
-        $return = ($riskyOwners.Count -eq 0)
-        
+        # Generate results
+        $return = ($ownersWithoutMFa.Count -eq 0)
+
         if ($return) {
-            $testResultMarkdown = "Well done. All app registration owners have MFA enabled."
+            $testResultMarkdown = "Well done. All app registration owners have MFA registered."
             if ($totalOwners -gt 0) {
-                $testResultMarkdown += "`n`n**Summary:** $ownersWithMFA/$totalOwners owners have MFA enabled across $($appsWithOwners.Count) applications with assigned owners."
+                $testResultMarkdown += "`n`n**Summary:** $ownersWithMFA/$totalOwners owners have MFA registered across $($appsWithOwners.Count) applications."
                 if ($skippedOwners -gt 0) {
-                    $testResultMarkdown += "`n`n⚠ **Note:** $skippedOwners owners could not be checked due to errors."
+                    $testResultMarkdown += "`n`n⚠ **Note:** $skippedOwners owners could not be checked (service principals or disabled users)."
                 }
             }
         } else {
-            $testResultMarkdown = "Found $($riskyOwners.Count) app registration owner(s) without MFA enabled.`n`n"
-            
-            # Add summary statistics
-            $testResultMarkdown += "**Summary:**`n"
-            $testResultMarkdown += "- Total apps with owners: $($appsWithOwners.Count)`n"
-            $testResultMarkdown += "- Total owners checked: $totalOwners`n"
-            $testResultMarkdown += "- Owners with MFA: $ownersWithMFA`n"
-            $testResultMarkdown += "- Owners without MFA: $($riskyOwners.Count)`n"
+            $testResultMarkdown = "Found $($ownersWithoutMFa.Count) app registration owner(s) without MFA registered.`n`n"
+            $testResultMarkdown += "**Summary:**`n- Apps with owners: $($appsWithOwners.Count)`n- Total owners: $totalOwners`n- With MFA: $ownersWithMFA`n- Without MFA: $($ownersWithoutMFa.Count)"
+
             if ($skippedOwners -gt 0) {
-                $testResultMarkdown += "- Owners skipped (errors): $skippedOwners`n"
+                $testResultMarkdown += "`n- Skipped: $skippedOwners"
             }
-            $testResultMarkdown += "`n"
-            
-            # Create table for owners without MFA
-            $testResultMarkdown += "**App Registration Owners Without MFA:**`n`n"
-            $testResultMarkdown += "| Application Name | Application ID | Owner Name | Owner UPN | MFA Status |`n"
-            $testResultMarkdown += "| --- | --- | --- | --- | --- |`n"
-            
-            foreach ($owner in $riskyOwners) {
-                $appMdLink = "[$($owner.AppName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId)/isMSAApp~/false)"
-                $testResultMarkdown += "| $appMdLink | $($owner.AppId) | $($owner.OwnerName) | $($owner.OwnerUPN) | $($owner.MFAMethods) |`n"
-                Write-Verbose "Adding owner $($owner.OwnerName) without MFA for app $($owner.AppName) to results."
+
+            $testResultMarkdown += "`n`n**App Registration Owners Without MFA:**`n`n| Application | Owner | UPN | MFA Status |`n| --- | --- | --- | --- |`n"
+
+            foreach ($owner in $ownersWithoutMFa) {
+                $appLink = "[$($owner.AppName)](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId))"
+                $userLink = "[$($owner.OwnerUPN)](https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($owner.OwnerID))"
+                $testResultMarkdown += "| $appLink | $($owner.OwnerName) | $userLink | $($owner.MFAMethods) |`n"
             }
         }
-        
+
         Add-MtTestResultDetail -Result $testResultMarkdown
-        
+
     } catch {
-        $return = $false
         Write-Error $_.Exception.Message
-        Add-MtTestResultDetail -Result "Error occurred while checking app registration owners: $($_.Exception.Message)"
+        Add-MtTestResultDetail -Result "Error checking app registration owners: $($_.Exception.Message)"
+        return $false
     }
-    
+
     return $return
 }
