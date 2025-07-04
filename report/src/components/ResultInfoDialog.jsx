@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Card, Button, Dialog, DialogPanel, Title, Text, Flex } from "@tremor/react";
 import { ArrowTopRightOnSquareIcon, WindowIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Divider } from "@tremor/react";
@@ -9,98 +9,71 @@ import SeverityBadge from "./SeverityBadge";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-// Global dialog state manager
-const dialogState = {
-  currentOpenItemId: null,
-};
+// We've removed the global dialog state manager since we now use a single dialog instance
 
-export default function ResultInfoDialog(props) {
-  const itemId = props.Item.Id || props.Item.Name;
-  // Control dialog state based on either direct interaction or parent control
-  const [isOpen, setIsOpen] = React.useState(false);
+function ResultInfoDialog(props) {
+  const itemIndex = props.Item.Index;
+  // Control dialog state based on parent control only
+  const [isOpen, setIsOpen] = React.useState(props.isOpen);
 
-  const openInNewTab = (url) => {
+  const openInNewTab = useCallback((url) => {
     window.open(url, "_blank", "noreferrer");
-  };
+  }, []);
 
-  // Handle dialog open/close from parent via the activeDialog prop
+  // Only update local state when props.isOpen changes, not when isOpen changes
   useEffect(() => {
-    // If this is the active dialog that should be opened
-    if (props.activeDialog === itemId) {
-      setIsOpen(true);
-    }
-    // If another dialog is being opened, or no dialog should be active, close this one
-    else if (isOpen && props.activeDialog !== itemId) {
-      setIsOpen(false);
-    }
-  }, [props.activeDialog, itemId, isOpen]);
+    setIsOpen(props.isOpen);
+  }, [props.isOpen]);
+  // Memoize the keyboard handler to prevent recreating it on every render
+  const handleKeyboard = useCallback((event) => {
+    if (!isOpen) return;
 
-  // Update global dialog state when this dialog opens/closes
-  useEffect(() => {
-    if (isOpen) {
-      dialogState.currentOpenItemId = itemId;
-    } else if (dialogState.currentOpenItemId === itemId) {
-      dialogState.currentOpenItemId = null;
-    }
-  }, [isOpen, itemId]);
-
-  // Handle keyboard navigation events
-  useEffect(() => {
-    const handleKeyboard = (event) => {
-      // Only handle keyboard events if this dialog is currently open
-      if (!isOpen) return;
-
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        if (props.onNavigateNext) {
-          props.onNavigateNext(itemId);
-        }
-      } else if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        if (props.onNavigatePrevious) {
-          props.onNavigatePrevious(itemId);
-        }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      if (props.onNavigateNext) {
+        props.onNavigateNext(itemIndex);
       }
-    };
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      if (props.onNavigatePrevious) {
+        props.onNavigatePrevious(itemIndex);
+      }
+    }
+  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
 
+  // Add and remove the event listener
+  useEffect(() => {
     if (isOpen) {
       window.addEventListener('keydown', handleKeyboard);
+      return () => {
+        window.removeEventListener('keydown', handleKeyboard);
+      };
     }
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyboard);
-    };
-  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemId]);
-
-  // Handle opening the dialog
-  const handleOpenDialog = () => {
-    // Tell the parent table that this is the active dialog
+  }, [isOpen, handleKeyboard]);
+  // Since we're now controlled by the parent component, simplify these handlers
+  const handleOpenDialog = useCallback(() => {
     if (props.onDialogOpen) {
-      props.onDialogOpen(itemId);
+      props.onDialogOpen(itemIndex);
     }
-    setIsOpen(true);
-  };
+  }, [props.onDialogOpen, itemIndex]);
 
-  // Handle closing the dialog
-  const handleCloseDialog = () => {
+  const handleCloseDialog = useCallback(() => {
     if (props.onDialogClose) {
       props.onDialogClose();
     }
-    setIsOpen(false);
-  };
+  }, [props.onDialogClose]);
 
-  // Navigation handlers
-  const navigateToNextResult = () => {
+  const navigateToNextResult = useCallback(() => {
     if (props.onNavigateNext) {
-      props.onNavigateNext(itemId);
+      props.onNavigateNext();
     }
-  };
+  }, [props.onNavigateNext]);  // No need to pass itemIndex since parent already has access to it
 
-  const navigateToPreviousResult = () => {
+  const navigateToPreviousResult = useCallback(() => {
     if (props.onNavigatePrevious) {
-      props.onNavigatePrevious(itemId);
+      props.onNavigatePrevious();
     }
-  };
+  }, [props.onNavigatePrevious]);
 
   function getTestResult() {
     if (props.Item.ResultDetail) {
@@ -253,3 +226,5 @@ export default function ResultInfoDialog(props) {
     </>
   );
 }
+
+export default React.memo(ResultInfoDialog);
