@@ -1082,6 +1082,11 @@
       "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
     },
     {
+      "Id": "MT.1059",
+      "Severity": "Medium",
+      "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
