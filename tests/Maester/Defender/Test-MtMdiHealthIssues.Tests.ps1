@@ -1,6 +1,6 @@
 BeforeDiscovery {
     try {
-        $MdiAllHealthIssues = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable
+        $MdiAllHealthIssues = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
     } catch {
         Write-Verbose "Authentication needed. Please call Connect-MgGraph."
         return $null
@@ -15,46 +15,68 @@ BeforeDiscovery {
     }
 
     # Get unique health issues (duplicated entries will be created when status of an issue has been changed)
+    $textInfo = (Get-Culture).TextInfo
     $MdiAllHealthIssues | Group-Object -Property displayName, domainNamesString, sensorDNSNamesString | ForEach-Object {
         $UniqueHealthIssue = $_.Group | Sort-Object -Property createdDateTime -Descending | Select-Object -First 1
-
-        # Add the displayName to the health issue to avoid confusion of same health issue name
-        if ($UniqueHealthIssue.displayName -eq "Sensor stopped communicating") {
-            $UniqueHealthIssue.displayName = $UniqueHealthIssue.displayName + " - " + $UniqueHealthIssue.sensorDNSNames
-        }
+        $UniqueHealthIssue.severity = $textInfo.ToTitleCase($UniqueHealthIssue.severity) # We need title case to be compatible with Maester report
+        $UniqueHealthIssue.status = $textInfo.ToTitleCase($UniqueHealthIssue.status) # It just looks better...
         $MdiHealthIssues.Add($UniqueHealthIssue) | Out-Null
     }
+    # Group all latest issues based on displayName to group sensors based on particular issue
+    $MdiHealthIssuesGrouped = $MdiHealthIssues | Group-Object -Property displayName
 }
 
-Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthIssues {
-    It "MT.1059: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1059" -Tag "MT.1059", "Severity:Medium", $displayName {
-
-        $issueUrl = "https://security.microsoft.com/identities/health-issues"
-        $recommendationLinkMd = "`n`n➡️ Open [Health issue - $displayName]($issueUrl) in the Microsoft Defender portal."
-        $testTitle = "MT.1059.$($id): MDI Health Issues - $displayName"
-
-        if ( $status -match "dismissed" -or $status -match "suppressed" ) {
-            Add-MtTestResultDetail -TestTitle $testTitle -Description $description -SkippedBecause Custom -SkippedCustomReason "This health issue has been **suppressed** by an administrator.`n`nIf this issue is valid for your MDI instance, you can change it's state from **suppressed** to **Re-open**. $recommendationLinkMd"
-            return $null
+Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthIssuesGrouped {
+    # We need to ID each grouped issue based on it's common displayName, so to keep it consistent and clean, we use MD5
+    $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $utf8 = New-Object -TypeName System.Text.UTF8Encoding
+    $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($_.Name))).ToLower() -replace '-',''
+    It "MT.1059.$($hash): MDI Health Issues - $($_.Name). See https://maester.dev/docs/tests/MT.1059" -Tag 'MT.1059', "Severity:$($_.Group[0].severity)", $_.Name {
+        #region Add detailed test result
+        if ('Open' -in $_.Group.status) {
+            $result = $false
+            $resultMd = "$($_.Group.status.Where({$_ -eq 'Open'}).count) of $($_.Group.status.count) has issues."
+        } else {
+            $result = $true
+            $resultMd = 'Well done! All issues has been resolved.'
         }
 
-        #region Add detailed test description
-        $actionSteps = $recommendations | ForEach-Object {
-            "- " + $_
-        }
-        $actionSteps = $actionSteps -join "`n`n"
+        $resultMd += "`n`n| Device | Status | Created | Last Update |"
+        $resultMd += "`n| --- | --- | --- | --- |"
 
-        #
-        $affectedItems = $additionalInformation | ForEach-Object {
-            "- " + $_
+        forEach ($issue in $_.Group) {
+            if ($issue.status -eq 'Closed') {
+                $issueStatusMd = "✅ $($issue.status)"
+            } elseif ($issue.status -eq 'Open') {
+                $issueStatusMd = "❌ $($issue.status)"
+            } else {
+                $issueStatusMd = "🗄️ $($issue.status)"
+            }
+            $resultMd += "`n| $($issue.sensorDNSNames[0]) | $issueStatusMd | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
         }
-        $affectedItems = $affectedItems -join "`n`n"
 
-        $ResultMarkdown = $description + "`n`n" + $affectedItems + "`n`n#### Remediation actions:`n`n" + $actionSteps  + "`n`n#### Issue updated:`n`n" + $lastModifiedDateTime + "`n`n#### Issue created:`n`n" + $createdDateTime
+        $resultMd += "`n`n➡️ Open [Health issue - $($_.Name)](https://security.microsoft.com/identities/health-issues) in the Microsoft Defender portal."
         #endregion
 
-        Add-MtTestResultDetail -TestTitle $testTitle -Description $description -Result $ResultMarkdown
+        #region Add detailed test description
+        $recommendationSteps = foreach ($recommendationStep in $_.Group[0].recommendations) {
+            "$($_.Group[0].recommendations.IndexOf($recommendationStep) + 1). ${recommendationStep}"
+        }
+        $recommendationSteps = $recommendationSteps -join "`n`n"
 
-        $status | Should -Be "closed" -Because $displayName
+        $additionalInformation = $_.Group[0].additionalInformation | ForEach-Object {
+            "- ${_}"
+        }
+        $additionalInformation = $additionalInformation -join "`n`n"
+
+        $relatedLinksMd = "* [Microsoft Defender for Identity health issues](https://learn.microsoft.com/en-us/defender-for-identity/health-alerts)", "* [Health issues - Microsoft Defender](https://security.microsoft.com/identities/health-issues)"
+        $relatedLinksMd = $relatedLinksMd -join "`n"
+
+        $descriptionMd = $_.Name + "`n`n" + $additionalInformation + "`n`n#### Remediation actions:`n`n" + $recommendationSteps + "`n`n#### Related links:`n`n" + $relatedLinksMd
+        #endregion
+
+        Add-MtTestResultDetail -Description $descriptionMd -Result $resultMd -Severity $_.Group[0].severity
+
+        $result | Should -Be $true -Because $Name
     }
 }
