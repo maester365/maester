@@ -36,11 +36,9 @@ BeforeDiscovery {
         }
         $MdiHealthIssues.Add($UniqueHealthIssue) | Out-Null
     }
-
-    $MdiHealthActiveIssues = $MdiHealthIssues | Where-Object { $_.status -ne "closed" }
 }
 
-Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthActiveIssues {
+Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthIssues {
     It "MT.1059: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1059" -Tag "MT.1059", "Severity:Medium", $displayName {
 
         $issueUrl = "https://security.microsoft.com/identities/health-issues"
