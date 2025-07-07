@@ -41,7 +41,7 @@ BeforeDiscovery {
 }
 
 Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI" -ForEach $MdiHealthActiveIssues {
-    It "MT.1059: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1058" -Tag "MT.1058", "Severity:Medium", $displayName {
+    It "MT.1059: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1059" -Tag "MT.1059", "Severity:Medium", $displayName {
 
         $issueUrl = "https://security.microsoft.com/identities/health-issues"
         $recommendationLinkMd = "`n`n➡️ Open [Health issue - $displayName]($issueUrl) in the Microsoft Defender portal."
