@@ -41,7 +41,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
             $resultMd = 'Well done! All issues has been resolved.'
         }
 
-        $resultMd += "`n`n| Device | Status | Created | Last Update |"
+        $resultMd += "`n`n| Sensor | Status | Created | Last Update |"
         $resultMd += "`n| --- | --- | --- | --- |"
 
         forEach ($issue in $_.Group) {
