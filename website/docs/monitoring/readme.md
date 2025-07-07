@@ -8,6 +8,7 @@ Maester can be set up to continuously monitor your tenant's configuration using 
 
 In this section we provide guidance for some popular services.
 
+- <IIcon icon="devicon:terraform" height="18" /> [Maester Azure DevOps Terraform Module](./azure-devops-terraform)
 - <IIcon icon="vscode-icons:file-type-azurepipelines" height="18" /> [Azure DevOps Pipeline](./azure-devops)
 - <IIcon icon="mdi:github" height="18" /> [GitHub Actions](./github)
 - <IIcon icon="devicon:azure" height="18" /> [Azure Automation](./azure-automation)
