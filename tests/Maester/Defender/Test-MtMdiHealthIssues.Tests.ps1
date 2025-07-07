@@ -52,7 +52,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
             } else {
                 $issueStatusMd = "🗄️ $($issue.status)"
             }
-            $resultMd += "`n| $($issue.sensorDNSNames[0]) | $issueStatusMd | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
+            $resultMd += "`n| $($issue.sensorDNSNames[0]) | ${issueStatusMd} | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
         }
 
         $resultMd += "`n`n➡️ Open [Health issue - $($_.Name)](https://security.microsoft.com/identities/health-issues) in the Microsoft Defender portal."
@@ -64,7 +64,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
         }
         $recommendationSteps = $recommendationSteps -join "`n`n"
 
-        $additionalInformation = $_.Group[0].additionalInformation | ForEach-Object {
+        $additionalInformation = $_.Group.additionalInformation | ForEach-Object {
             "- ${_}"
         }
         $additionalInformation = $additionalInformation -join "`n`n"
@@ -77,6 +77,6 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
 
         Add-MtTestResultDetail -Description $descriptionMd -Result $resultMd -Severity $_.Group[0].severity
 
-        $result | Should -Be $true -Because $Name
+        $result | Should -Be $true -Because $_.Name
     }
 }
