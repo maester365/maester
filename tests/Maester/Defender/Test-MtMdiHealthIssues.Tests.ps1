@@ -28,7 +28,7 @@ BeforeDiscovery {
 
     # Get unique health issues (duplicated entries will be created when status of an issue has been changed)
     $MdiAllHealthIssues | Group-Object -Property displayName, domainNamesString, sensorDNSNamesString | ForEach-Object {
-        $UniqueHealthIssue = $_.Group | Sort-Object -Property createdDateTime | Select-Object -First 1
+        $UniqueHealthIssue = $_.Group | Sort-Object -Property createdDateTime -Descending | Select-Object -First 1
 
         # Add the displayName to the health issue to avoid confusion of same health issue name
         if ($UniqueHealthIssue.displayName -eq "Sensor stopped communicating") {
