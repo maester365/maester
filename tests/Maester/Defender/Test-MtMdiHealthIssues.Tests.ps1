@@ -9,11 +9,6 @@ BeforeDiscovery {
         return $null
     }
 
-    if ($MdiSecurityApiError -match "Tenant is not onboarded to Microsoft Defender for Identity") {
-        Add-MtTestResultDetail -TestName "$($checkid): MDI Health issues should be resolved" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity. The tenant is not onboarded to Microsoft Defender for Identity, so no health issues can be retrieved." -SkippedBecause 'Custom' -SkippedCustomReason 'Tenant is not onboarded to Microsoft Defender for Identity'
-        return $null
-    }
-
     $MdiHealthIssues = [System.Collections.Generic.List[Object]]::new()
 
     # Add domainNames and sensorDNSNames as string properties to identify unique health issues
