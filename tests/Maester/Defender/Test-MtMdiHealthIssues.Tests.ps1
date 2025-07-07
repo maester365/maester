@@ -30,7 +30,7 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
     # We need to ID each grouped issue based on it's common displayName, so to keep it consistent and clean, we use MD5
     $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
     $utf8 = New-Object -TypeName System.Text.UTF8Encoding
-    $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($_.Name))).ToLower() -replace '-',''
+    $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($_.Name))).ToLower() -replace '-', ''
     It "MT.1059.$($hash): MDI Health Issues - $($_.Name). See https://maester.dev/docs/tests/MT.1059" -Tag 'MT.1059', "Severity:$($_.Group[0].severity)", $_.Name {
         #region Add detailed test result
         if ('Open' -in $_.Group.status) {
@@ -40,21 +40,57 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
             $result = $true
             $resultMd = 'Well done! All issues has been resolved.'
         }
-
-        $resultMd += "`n`n| Sensor | Status | Created | Last Update |"
-        $resultMd += "`n| --- | --- | --- | --- |"
-
-        forEach ($issue in $_.Group) {
-            if ($issue.status -eq 'Closed') {
-                $issueStatusMd = "✅ $($issue.status)"
-            } elseif ($issue.status -eq 'Open') {
-                $issueStatusMd = "❌ $($issue.status)"
-            } else {
-                $issueStatusMd = "🗄️ $($issue.status)"
+        if ($_.Group.sensorDNSNames -is [System.Collections.IEnumerable]) {
+            $resultMd += "`n`n#### Sensor DNS names"
+            $resultMd += "`n`n| Sensor | Status | Created | Last Update |"
+            $resultMd += "`n| --- | --- | --- | --- |"
+            foreach ($issue in $_.Group) {
+                if ($issue.status -eq 'Closed') {
+                    $issueStatusMd = "✅ $($issue.status)"
+                } elseif ($issue.status -eq 'Open') {
+                    $issueStatusMd = "❌ $($issue.status)"
+                } else {
+                    $issueStatusMd = "🗄️ $($issue.status)"
+                }
+                foreach ($sensorDNSName in $issue.sensorDNSNames) {
+                    $resultMd += "`n| $($sensorDNSName) | ${issueStatusMd} | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
+                }
             }
-            $resultMd += "`n| $($issue.sensorDNSNames[0]) | ${issueStatusMd} | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
         }
-
+        if ($_.Group.domainNames -is [System.Collections.IEnumerable]) {
+            $resultMd += "`n`n#### Domain names"
+            $resultMd += "`n`n| Domain | Status | Created | Last Update |"
+            $resultMd += "`n| --- | --- | --- | --- |"
+            foreach ($issue in $_.Group) {
+                if ($issue.status -eq 'Closed') {
+                    $issueStatusMd = "✅ $($issue.status)"
+                } elseif ($issue.status -eq 'Open') {
+                    $issueStatusMd = "❌ $($issue.status)"
+                } else {
+                    $issueStatusMd = "🗄️ $($issue.status)"
+                }
+                foreach ($domainName in $issue.domainNames) {
+                    $resultMd += "`n| $($domainName) | ${issueStatusMd} | $($issue.createdDateTime) | $($issue.lastModifiedDateTime)"
+                }
+            }
+        }
+        if ($_.Group.additionalInformation.misconfiguredObjectTypes -is [System.Collections.IEnumerable]) {
+            $resultMd += "#### Objects"
+            $resultMd += "`n`n| Object | Status | Permissions | Last Validated |"
+            $resultMd += "`n| --- | --- | --- | --- |"
+            foreach ($issue in $_.Group) {
+                if ($issue.status -eq 'Closed') {
+                    $issueStatusMd = "✅"
+                } elseif ($issue.status -eq 'Open') {
+                    $issueStatusMd = "❌"
+                } else {
+                    $issueStatusMd = "🗄️"
+                }
+                foreach ($object in $issue.additionalInformation.misconfiguredObjectTypes) {
+                    $resultMd += "`n| $($object) | ${issueStatusMd} | $($issue.additionalInformation.missingPermissions -join ", ") | $($issue.additionalInformation.validatedOn)"
+                }
+            }
+        }
         $resultMd += "`n`n➡️ Open [Health issue - $($_.Name)](https://security.microsoft.com/identities/health-issues) in the Microsoft Defender portal."
         #endregion
 
@@ -64,15 +100,13 @@ Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Secu
         }
         $recommendationSteps = $recommendationSteps -join "`n`n"
 
-        $additionalInformation = $_.Group.additionalInformation | ForEach-Object {
-            "- ${_}"
-        }
-        $additionalInformation = $additionalInformation -join "`n`n"
-
         $relatedLinksMd = "* [Microsoft Defender for Identity health issues](https://learn.microsoft.com/en-us/defender-for-identity/health-alerts)", "* [Health issues - Microsoft Defender](https://security.microsoft.com/identities/health-issues)"
         $relatedLinksMd = $relatedLinksMd -join "`n"
 
-        $descriptionMd = $_.Name + "`n`n" + $additionalInformation + "`n`n#### Remediation actions:`n`n" + $recommendationSteps + "`n`n#### Related links:`n`n" + $relatedLinksMd
+        if ($_.Group.additionalInformation) {
+            $description = $_.Group[0].description
+        }
+        $descriptionMd = $_.Name + "`n`n" + $description + "`n`n" + $additionalInformation + "`n`n#### Remediation actions:`n`n" + $recommendationSteps + "`n`n#### Related links:`n`n" + $relatedLinksMd
         #endregion
 
         Add-MtTestResultDetail -Description $descriptionMd -Result $resultMd -Severity $_.Group[0].severity
