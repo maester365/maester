@@ -13,10 +13,6 @@ BeforeDiscovery {
         Add-MtTestResultDetail -TestName "$($checkid): MDI Health issues should be resolved" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity. The tenant is not onboarded to Microsoft Defender for Identity, so no health issues can be retrieved." -SkippedBecause 'Custom' -SkippedCustomReason 'Tenant is not onboarded to Microsoft Defender for Identity'
         return $null
     }
-    if (($MdiAllHealthIssues | Where-Object { $_.status -ne "closed" } | Measure-Object) -eq 0) {
-        Add-MtTestResultDetail -TestName "$($checkid): MDI Health issues should be resolved" -Severity "Medium" -Description "This test checks for health issues in Microsoft Defender for Identity" -SkippedBecause "Custom" -SkippedCustomReason "No health issues found"
-        return $null
-    }
 
     $MdiHealthIssues = [System.Collections.Generic.List[Object]]::new()
 
