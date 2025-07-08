@@ -1,10 +1,8 @@
-This test checks if the Direct Send feature in Exchange Online is configured to `Reject`.
+Direct Send SHOULD be configured to `Reject` in Exchange Online
 
-Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain to your organization's mailboxes using the tenant MX `xxx.mail.protection.outlook.com` (smarthost). Such traffic may include third-party services (applications, devices, or cloud providers) authorized to use your domain.
+Rationale: Attackers can exploit direct send to send spam or phishing emails without authentication. Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain to your organization's mailboxes using the tenant MX.
 
-Attackers can exploit direct send to send spam or phishing emails without authentication.
-
-## How to fix
+#### Remediation action:
 
 1. Connect to Exchange Online:
 ```powershell
@@ -22,15 +20,10 @@ Set-OrganizationConfig -RejectDirectSend $true
 ```
 The result should be `True`.
 
-4. Anyone using the 'Direct Send' function will receive the following error message:
-```
-550 5.7.68 TenantInboundAttribution; Direct Send not allowed for this organization from unauthorized sources
-```
+#### Related links
 
-## Learn more
+* [Introducing more control over Direct Send in Exchange Online](https://techcommunity.microsoft.com/blog/exchange/introducing-more-control-over-direct-send-in-exchange-online/4408790)
+* [Direct Send: Send mail directly from your device or application to Microsoft 365](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365#direct-send-send-mail-directly-from-your-device-or-application-to-microsoft-365-or-office-365)
 
-- [Direct Send: Send mail directly from your device or application to Microsoft 365 or Office 365](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365#direct-send-send-mail-directly-from-your-device-or-application-to-microsoft-365-or-office-365)
-
-## Known issues
-
-There is a forwarding scenario that could be affected by this feature. It is possible that someone in your organization sends a message to a 3rd party and they in turn forward it to another mailbox in your organization. If the 3rd party’s email provider does not support Sender Rewriting Scheme (SRS), the message will return with the original sender’s address. Prior to this feature being enabled, those messages will already be punished by SPF failing but could still end up in inboxes. Enabling the Reject Direct Send feature without a partner mail flow connector being set up will lead to these messages being rejected outright.
+<!--- Results --->
+%TestResult%
