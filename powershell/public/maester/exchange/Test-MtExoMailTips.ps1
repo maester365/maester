@@ -1,0 +1,47 @@
+<#
+.SYNOPSIS
+    Checks if MailTips are enabled for end users
+
+.DESCRIPTION
+    MailTips assist end users with identifying strange patterns to emails they send.
+    This helps protect against accidental information disclosure and phishing attempts.
+
+.EXAMPLE
+    Test-MtExoMailTips
+
+    Returns true if MailTips are enabled for end users.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtExoMailTips
+#>
+function Test-MtExoMailTips {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (!(Test-MtConnection ExchangeOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+        return $null
+    }
+
+    try {
+        Write-Verbose "Getting Organization Config..."
+        $organizationConfig = Get-MtExo -Request OrganizationConfig
+        $portalLink_SecureScore = "https://security.microsoft.com/securescore"
+
+        $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
+
+        if ($result -eq $true) {
+            $testResultMarkdown = "Well done. ``MailTipsExternalRecipientsTipsEnabled`` is ``$($result)```n`n"
+        } else {
+            $testResultMarkdown = "``MailTipsExternalRecipientsTipsEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+        }
+
+        $testDetailsMarkdown = "MailTips assist end users with identifying strange patterns to emails they send."
+        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+    }
+
+    return $result
+}
