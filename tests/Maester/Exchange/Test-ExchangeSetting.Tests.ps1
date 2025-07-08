@@ -17,7 +17,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
     }
 
     It "MT.1039: Ensure MailTips are enabled for end users" -Tag "MT.1039", "MailTipsExternalRecipientsTipsEnabled", "SecureScore" {
-        $result = Test-MtExoMailTips
+        $result = Test-MtExoMailTip
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "MailTipsExternalRecipientsTipsEnabled should be True"
@@ -25,7 +25,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
     }
 
     It "MT.1040: Ensure additional storage providers are restricted in Outlook on the web" -Tag "MT.1040", "AdditionalStorageProvidersAvailable", "SecureScore" {
-        $result = Test-MtExoAdditionalStorageProviders
+        $result = Test-MtExoAdditionalStorageProvider
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "AdditionalStorageProvidersAvailable should be False"
@@ -33,7 +33,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
     }
 
     It "MT.1041: Ensure users installing Outlook add-ins is not allowed" -Tag "MT.1041", "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps", "SecureScore" {
-        $result = Test-MtExoOutlookAddins
+        $result = Test-MtExoOutlookAddin
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Apps in 'Default Role Assignment Policy' should be False"

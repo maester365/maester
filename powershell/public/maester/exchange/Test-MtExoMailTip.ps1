@@ -7,14 +7,14 @@
     This helps protect against accidental information disclosure and phishing attempts.
 
 .EXAMPLE
-    Test-MtExoMailTips
+    Test-MtExoMailTip
 
     Returns true if MailTips are enabled for end users.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtExoMailTips
+    https://maester.dev/docs/commands/Test-MtExoMailTip
 #>
-function Test-MtExoMailTips {
+function Test-MtExoMailTip {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

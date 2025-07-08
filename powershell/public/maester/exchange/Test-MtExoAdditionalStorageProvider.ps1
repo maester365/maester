@@ -8,14 +8,14 @@
     those third-party services.
 
 .EXAMPLE
-    Test-MtExoAdditionalStorageProviders
+    Test-MtExoAdditionalStorageProvider
 
     Returns true if additional storage providers are restricted.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtExoAdditionalStorageProviders
+    https://maester.dev/docs/commands/Test-MtExoAdditionalStorageProvider
 #>
-function Test-MtExoAdditionalStorageProviders {
+function Test-MtExoAdditionalStorageProvider {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -8,14 +8,14 @@
     access within the client application. Attackers exploit vulnerable or custom add-ins to access user data.
 
 .EXAMPLE
-    Test-MtExoOutlookAddins
+    Test-MtExoOutlookAddin
 
     Returns true if users are restricted from installing Outlook add-ins.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtExoOutlookAddins
+    https://maester.dev/docs/commands/Test-MtExoOutlookAddin
 #>
-function Test-MtExoOutlookAddins {
+function Test-MtExoOutlookAddin {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
