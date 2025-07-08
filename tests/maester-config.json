@@ -1087,6 +1087,11 @@
       "Title": "Microsoft Defender for Identity health issues should be resolved"
     },
     {
+      "Id": "MT.1064",
+      "Severity": "High",
+      "Title": "Management group creation should be limited to users with explicit write access"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
