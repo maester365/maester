@@ -23,7 +23,6 @@ The result should be `True`.
 #### Related links
 
 * [MailTips in Exchange Online](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/mailtips/mailtips)
-* [Configure MailTips in Exchange Online](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/mailtips/configure-mailtips)
 * [Microsoft Secure Score - Enable MailTips](https://security.microsoft.com/securescore)
 
 <!--- Results --->

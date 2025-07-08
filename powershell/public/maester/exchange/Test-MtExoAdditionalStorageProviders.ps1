@@ -43,8 +43,7 @@ function Test-MtExoAdditionalStorageProviders {
             $testResultMarkdown = "``AdditionalStorageProvidersAvailable`` should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
         }
 
-        $testDetailsMarkdown = "This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services. Ensure AdditionalStorageProvidersAvailable is restricted."
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
