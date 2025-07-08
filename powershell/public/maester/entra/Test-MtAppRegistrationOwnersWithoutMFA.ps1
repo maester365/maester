@@ -1,4 +1,4 @@
-function Test-MtAppRegistrationOwnerWithoutMFA {
+function Test-MtAppRegistrationOwnersWithoutMFA {
     <#
     .SYNOPSIS
     Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
@@ -12,7 +12,7 @@ function Test-MtAppRegistrationOwnerWithoutMFA {
     [bool] - Returns $true if all owners have MFA, $false if any owners lack MFA, $null if skipped
 
     .EXAMPLE
-    Test-MtAppRegistrationOwnerWithoutMFA
+    Test-MtAppRegistrationOwnersWithoutMFA
     #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks MFA for all app registration owners.')]
