@@ -44,7 +44,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
 
         $result = Test-MtExoRejectDirectSend
 
-        if ($null -ne $result) {
+        if ($result -ne $true) {
             $result | Should -Be $true -Because "RejectDirectSend should be True."
         }
     }

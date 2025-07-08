@@ -11,7 +11,7 @@ Connect-ExchangeOnline
 
 2. Get the current role assignment policy:
 ```powershell
-Get-RoleAssignmentPolicy | Where-Object { $_.IsDefault -eq $true }
+Get-RoleAssignmentPolicy | Where-Object { $_.IsDefault }
 ```
 
 3. Check which app-related roles are assigned:

@@ -56,8 +56,7 @@ function Test-MtExoOutlookAddins {
             $testResultMarkdown = "Apps in 'Default Role Assignment Policy' should be ``False`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
         }
 
-        $testDetailsMarkdown = "Specify the administrators and users who can install and manage add-ins for Outlook in Exchange Online By default, users can install add-ins in their Microsoft Outlook Desktop client, allowing data access within the client application. Rationale: Attackers exploit vulnerable or custom add-ins to access user data. Disabling user installed add-ins in Microsoft Outlook reduces this threat surface."
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }

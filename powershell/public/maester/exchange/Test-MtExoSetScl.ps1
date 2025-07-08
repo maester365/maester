@@ -41,8 +41,7 @@ function Test-MtExoSetScl {
             $testResultMarkdown = "SetScl is used $(($ruleWithSCL).Count) times in [Rules]($portalLink_TransportRules)`n`n"
         }
 
-        $testDetailsMarkdown = "You should set Spam confidence level (SCL) in your Exchange Online mail transport rules with specific domains. Allow-listing domains in transport rules bypasses regular malware and phishing scanning, which can enable an attacker to launch attacks against your users from a safe haven domain. Note: In order to get a score for this security control, all the active transport rule that applies to specific domains must have a Spam Confidence Level (SCL) of 0 or higher."
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }

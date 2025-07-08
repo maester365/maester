@@ -31,14 +31,14 @@ function Test-MtExoMailTips {
 
         $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
 
-        if ($result -eq $true) {
+        if ($result) {
             $testResultMarkdown = "Well done. ``MailTipsExternalRecipientsTipsEnabled`` is ``$($result)```n`n"
         } else {
             $testResultMarkdown = "``MailTipsExternalRecipientsTipsEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
         }
 
         $testDetailsMarkdown = "MailTips assist end users with identifying strange patterns to emails they send."
-        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
     }
