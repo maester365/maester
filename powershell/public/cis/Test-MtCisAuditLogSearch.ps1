@@ -26,7 +26,7 @@ function Test-MtCisAuditLogSearch {
 
     try {
         Write-Verbose 'Get audit log search status'
-        $auditLogSearch = Get-AdminAuditLogConfig | Select-Object UnifiedAuditLogIngestionEnabled
+        $auditLogSearch = Get-AdminAuditLogConfig
 
         Write-Verbose 'Check audit log search is enabled'
         $result = $auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }
