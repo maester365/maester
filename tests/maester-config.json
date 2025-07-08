@@ -910,7 +910,6 @@
       "Severity": "Medium",
       "Title": "Entra Recommendation - Remove unused applications"
     },
-
     {
       "Id": "MT.1025",
       "Severity": "High",
@@ -1080,6 +1079,16 @@
       "Id": "MT.1058",
       "Severity": "Medium",
       "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
+    },
+    {
+      "Id": "MT.1059",
+      "Severity": "Medium",
+      "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
+      "Id": "MT.1062",
+      "Severity": "Medium",
+      "Title": "Ensure Direct Send is set to be rejected"
     },
     {
       "Id": "ORCA.100",

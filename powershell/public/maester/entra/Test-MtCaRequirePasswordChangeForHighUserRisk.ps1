@@ -19,38 +19,44 @@ function Test-MtCaRequirePasswordChangeForHighUserRisk {
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
+    if ( ( Get-MtLicenseInformation EntraID ) -ne 'P2' ) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         return $null
     }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-    # Only check policies that have password change as a grant control
-    $policies = $policies | Where-Object { $_.grantcontrols.builtincontrols -contains 'passwordChange' }
-    $policiesResult = New-Object System.Collections.ArrayList
+    try {
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+        # Only check policies that have password change as a grant control
+        $policies = $policies | Where-Object { $_.grantControls.builtInControls -contains 'passwordChange' }
+        $policiesResult = New-Object System.Collections.ArrayList
 
-    $result = $false
-    foreach ($policy in $policies) {
-        if ( $policy.grantcontrols.builtincontrols -contains 'passwordChange' `
-                -and $policy.conditions.users.includeUsers -eq "All" `
-                -and $policy.conditions.applications.includeApplications -eq "All" `
-                -and "high" -in $policy.conditions.userRiskLevels `
-        ) {
-            $result = $true
-            $currentresult = $true
-            $policiesResult.Add($policy) | Out-Null
-        } else {
-            $currentresult = $false
+        $result = $false
+        foreach ($policy in $policies) {
+            if (
+                $policy.grantControls.builtInControls -contains 'passwordChange' -and
+                $policy.conditions.users.includeUsers -eq 'All' -and
+                $policy.conditions.applications.includeApplications -eq 'All' -and
+                'high' -in $policy.conditions.userRiskLevels
+            ) {
+                $result = $true
+                $CurrentResult = $true
+                $policiesResult.Add($policy) | Out-Null
+            } else {
+                $CurrentResult = $false
+            }
+            Write-Verbose "$($policy.displayName) - $CurrentResult"
         }
-        Write-Verbose "$($policy.displayName) - $currentresult"
-    }
 
-    if ( $result ) {
-        $testResult = "The following conditional access policies require password change for risky users`n`n%TestResult%"
-    } else {
-        $testResult = "No conditional access policy requires a password change for risky users."
-    }
-    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
+        if ( $result ) {
+            $testResult = "The following conditional access policies require password change for risky users`n`n%TestResult%"
+        } else {
+            $testResult = 'No conditional access policy requires a password change for risky users.'
+        }
+        Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
 
-    return $result
+        return $result
+    } catch {
+        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        return $false
+    }
 }

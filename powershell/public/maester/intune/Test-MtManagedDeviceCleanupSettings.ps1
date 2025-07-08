@@ -19,25 +19,25 @@ function Test-MtManagedDeviceCleanupSettings {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param()
 
-    Write-Verbose "Testing device clean-up rule configuration"
-    if ((Get-MtLicenseInformation EntraID) -eq "Free") {
+    Write-Verbose 'Testing device clean-up rule configuration'
+    if ((Get-MtLicenseInformation EntraID) -eq 'Free') {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
         return $null
     }
 
-    $return = $true
     try {
-        $deviceCleanupSettings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/managedDeviceCleanupSettings" -ApiVersion beta
+        $deviceCleanupSettings = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/managedDeviceCleanupSettings' -ApiVersion beta
         if ((-not $deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) -or ($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays -eq 0)) {
-            $testResultMarkdown = "Your Intune device clean-up rule is not configured."
+            $testResultMarkdown = 'Your Intune device clean-up rule is not configured.'
             $return = $false
         } else {
             $testResultMarkdown = "Well done. Your Intune device clean-up rule is configured to retire inactive devices after $($deviceCleanupSettings.deviceInactivityBeforeRetirementInDays) days."
+            $return = $true
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $return
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }

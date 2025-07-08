@@ -20,44 +20,47 @@ function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+    if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
         return $null
     }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
+    try {
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
-    $testDescription = "
+        $testDescription = '
 Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
 conditional access policy that blocks legacy authentication.
 
-See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)"
-    $testResult = "These conditional access policies block legacy authentication for Exchange Active Sync:`n`n"
+See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)'
+        $testResult = "These conditional access policies block legacy authentication for Exchange Active Sync:`n`n"
 
 
-    $result = $false
-    foreach ($policy in $policies) {
-        if ( $policy.grantcontrols.builtincontrols -contains 'block' `
-                -and "exchangeActiveSync" -in $policy.conditions.clientAppTypes `
-                -and ( `
-                    $policy.conditions.applications.includeApplications -eq "00000002-0000-0ff1-ce00-000000000000" `
-                    -or $policy.conditions.applications.includeApplications -eq "All" `
-            ) `
-                -and $policy.conditions.users.includeUsers -eq "All" `
-        ) {
-            $result = $true
-            $currentresult = $true
-            $testResult += "  - [$($policy.displayname)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
-        } else {
-            $currentresult = $false
+        $result = $false
+        foreach ($policy in $policies) {
+            if ( $policy.grantControls.builtInControls -contains 'block' -and
+                'exchangeActiveSync' -in $policy.conditions.clientAppTypes -and (
+                    $policy.conditions.applications.includeApplications -eq '00000002-0000-0ff1-ce00-000000000000' -or
+                    $policy.conditions.applications.includeApplications -eq 'All'
+                ) -and $policy.conditions.users.includeUsers -eq 'All'
+            ) {
+                $result = $true
+                $currentResult = $true
+                $testResult += "  - [$($policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
+            } else {
+                $currentResult = $false
+            }
+            Write-Verbose "$($policy.displayName) - $currentResult"
         }
-        Write-Verbose "$($policy.displayName) - $currentresult"
-    }
 
-    if ($result -eq $false) {
-        $testResult = "There was no conditional access policy blocking legacy authentication for Exchange Active Sync."
-    }
-    Add-MtTestResultDetail -Description $testDescription -Result $testResult
+        if ($result -eq $false) {
+            $testResult = 'There was no conditional access policy blocking legacy authentication for Exchange Active Sync.'
+        }
 
-    return $result
+        Add-MtTestResultDetail -Description $testDescription -Result $testResult
+        return $result
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
 }

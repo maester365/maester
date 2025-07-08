@@ -14,16 +14,22 @@
   https://maester.dev/docs/commands/Test-MtCaReferencedGroupsExist
 #>
 
-Function Test-MtCaReferencedGroupsExist {
+function Test-MtCaReferencedGroupsExist {
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
 
-  Write-Verbose "Running Test-MtCaReferencedGroupsExist"
+  Write-Verbose 'Running Test-MtCaReferencedGroupsExist'
   # Execute the test only when PowerShell Core and parallel processing is supported
-  if ($PSVersionTable.PSEdition -eq 'Core') {
+  if ($PSVersionTable.PSEdition -ne 'Core') {
+    Write-Verbose 'PowerShell Core not available, skip the test'
+    # PowerShell Core not available, skip the test
+    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Requires PowerShell 7.x or above. This test uses features that are not available in Windows PowerShell (5.x).'
+    return $null
+  }
 
-    $testDescription = "Invalid or deleted security groups are referenced in Conditional Access policies."
+  try {
+    $testDescription = 'Invalid or deleted security groups are referenced in Conditional Access policies.'
     # Get all policies (the state of policy does not have to be enabled)
     $Policies = Get-MtConditionalAccessPolicy
 
@@ -36,20 +42,18 @@ Function Test-MtCaReferencedGroupsExist {
         $GraphErrorResult = $null
         $Group = $_
         Invoke-MtGraphRequest -RelativeUri "groups/$($Group)" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue | Out-Null
-      }
-      catch {
-        if ($GraphErrorResult.Message -match "404 Not Found") {
+      } catch {
+        if ($GraphErrorResult.Message -match '404 Not Found') {
           $GroupsWhichNotExist.Add($Group) | Out-Null
         }
       }
     }
 
     $result = ($GroupsWhichNotExist | Measure-Object).Count -eq 0
-
     if ( $result ) {
-      $ResultDescription = "Well done! All Conditional Access policies are targeting active groups."
+      $ResultDescription = 'Well done! All Conditional Access policies are targeting active groups.'
     } else {
-      $ResultDescription = "These Conditional Access policies are referencing deleted security groups."
+      $ResultDescription = 'These Conditional Access policies are referencing deleted security groups.'
       $ImpactedCaGroups = "`n`n#### Impacted Conditional Access policies`n`n | Conditional Access policy | Deleted security group | Condition | `n"
       $ImpactedCaGroups += "| --- | --- | --- |`n"
     }
@@ -60,11 +64,11 @@ Function Test-MtCaReferencedGroupsExist {
       $ImpactedPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.conditions.users.includeGroups -contains $InvalidGroupId -or $_.conditions.users.excludeGroups -contains $InvalidGroupId }
       foreach ($ImpactedPolicy in $ImpactedPolicies) {
         if ($ImpactedPolicy.conditions.users.includeGroups -contains $InvalidGroupId) {
-          $Condition = "include"
+          $Condition = 'include'
         } elseif ($ImpactedPolicy.conditions.users.excludeGroups -contains $InvalidGroupId) {
-          $Condition = "exclude"
+          $Condition = 'exclude'
         } else {
-          $Condition = "Unknown"
+          $Condition = 'Unknown'
         }
         $Policy = (Get-GraphObjectMarkdown -GraphObjects $ImpactedPolicy -GraphObjectType ConditionalAccess -AsPlainTextLink)
         $ImpactedCaGroups += "| $($Policy) | $($InvalidGroupId) | $($Condition) | `n"
@@ -76,10 +80,8 @@ Function Test-MtCaReferencedGroupsExist {
     Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
     return $result
 
-  } else {
-    Write-Verbose "PowerShell Core not available, skip the test"
-    # PowerShell Core not available, skip the test
-    Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Requires PowerShell 7.x or above. This test uses features that are not available in Windows PowerShell (5.x)."
+  } catch {
+    Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
     return $null
   }
 }

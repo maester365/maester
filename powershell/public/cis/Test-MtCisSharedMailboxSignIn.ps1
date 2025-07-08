@@ -29,52 +29,58 @@ function Test-MtCisSharedMailboxSignIn {
         return $null
     }
 
-    Write-Verbose "Getting all shared mailboxes"
-    $sharedMailboxes = Get-MtExo -Request EXOMailbox -ErrorAction Stop | Where-Object { $_.RecipientTypeDetails -eq "SharedMailbox" }
-
-    if (($sharedMailboxes | Measure-Object).Count -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "There are no SharedMailbox in your Tenant."
+    try {
+        Write-Verbose 'Getting all shared mailboxes'
+        $sharedMailboxes = Get-MtExo -Request EXOMailbox -ErrorAction Stop | Where-Object { $_.RecipientTypeDetails -eq 'SharedMailbox' }
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
 
-    Write-Verbose "For each mailbox get mailbox and AccountEnabled status"
-    $mailboxDetails = @()
-    foreach ($mbx in $sharedMailboxes) {
-        $mgUser = Get-MgUser -UserId $mbx.ExternalDirectoryObjectId -Property DisplayName, UserPrincipalName, AccountEnabled
-        $mailboxDetails += [pscustomobject]@{
-            DisplayName       = $mgUser.DisplayName
-            UserPrincipalName = $mgUser.UserPrincipalName
-            AccountEnabled    = $mgUser.AccountEnabled
+    if (($sharedMailboxes | Measure-Object).Count -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no shared mailboxes in your tenant.'
+        return $null
+    }
+
+    try {
+
+        Write-Verbose 'For each mailbox get mailbox and AccountEnabled status'
+        $mailboxDetails = @()
+        foreach ($mbx in $sharedMailboxes) {
+            $mgUser = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $mbx.ExternalDirectoryObjectId -Select id,displayName,userPrincipalName,accountEnabled
+            $mailboxDetails += [pscustomobject]@{
+                DisplayName       = $mgUser.DisplayName
+                UserPrincipalName = $mgUser.UserPrincipalName
+                AccountEnabled    = $mgUser.AccountEnabled
+            }
         }
-    }
 
-    Write-Verbose "Select shared mailboxes where sign-in is enabled"
-    $result = $mailboxDetails | Where-Object { $_.AccountEnabled -eq "True" }
-    $resultCount = ($result | Measure-Object).Count
+        Write-Verbose 'Select shared mailboxes where sign-in is enabled'
+        $result = $mailboxDetails | Where-Object { $_.AccountEnabled -eq 'True' }
+        $resultCount = ($result | Measure-Object).Count
 
-    $testResult = if ($resultCount -eq 0) { $true } else { $false }
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
-    }
-
-
-
-    $resultMd = "| Shared Mailbox | Sign-in Disabled |`n"
-    $resultMd += "| --- | --- |`n"
-    foreach ($item in $result | Sort-Object @sortSplat) {
-        $itemResult = "❌ Fail"
-        if ($item.id -notin $result.id) {
-            $itemResult = "✅ Pass"
+        $testResult = if ($resultCount -eq 0) { $true } else { $false }
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
         }
-        $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+
+        $resultMd = "| Shared Mailbox | Sign-in Disabled |`n"
+        $resultMd += "| --- | --- |`n"
+        foreach ($item in $result | Sort-Object @sortSplat) {
+            $itemResult = '❌ Fail'
+            if ($item.id -notin $result.id) {
+                $itemResult = '✅ Pass'
+            }
+            $resultMd += "| $($item.displayName) | $($itemResult) |`n"
+        }
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }
