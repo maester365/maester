@@ -24,34 +24,35 @@ function Test-MtCisZAP {
         return $null
     }
 
-    Write-Verbose "Get TeamsProtectionPolicy"
-    $teamsProtectionPolicy = Get-TeamsProtectionPolicy | Select-Object ZapEnabled
+    try {
+        Write-Verbose 'Get TeamsProtectionPolicy'
+        $teamsProtectionPolicy = Get-TeamsProtectionPolicy | Select-Object ZapEnabled
 
-    Write-Verbose "Add policy to result if ZAP is not enabled"
-    $result = $teamsProtectionPolicy | Where-Object { $_.ZapEnabled -ne "True" }
+        Write-Verbose 'Add policy to result if ZAP is not enabled'
+        $result = $teamsProtectionPolicy | Where-Object { $_.ZapEnabled -ne 'True' }
 
+        $testResult = ($result | Measure-Object).Count -eq 0
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+        }
 
-    $testResult = ($result | Measure-Object).Count -eq 0
+        $resultMd = "| Zero-hour auto purge (ZAP) |`n"
+        $resultMd += "| --- |`n"
+        if ($testResult) {
+            $itemResult = '✅ Enabled'
+        } else {
+            $itemResult = '❌ Not Enabled'
+        }
+        $resultMd += "| $($itemResult) |`n"
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    else {
-        $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
-    }
-
-    $resultMd = "| Zero-hour auto purge (ZAP) |`n"
-    $resultMd += "| --- |`n"
-    if ($testResult) {
-        $itemResult = "✅ Enabled"
-    } else {
-        $itemResult = "❌ Not Enabled"
-    }
-    $resultMd += "| $($itemResult) |`n"
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

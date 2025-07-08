@@ -116,8 +116,8 @@ function Test-ContosoUsersMissingManagers {
         # Loop through each user and ensure they have a manager assigned
         foreach ($user in $users) {
             if($user.jobTitle -eq "CEO" -or $user.displayName -eq "On-Premises Directory Synchronization Service Account" ) {
-            continue
-}
+                continue
+            }
 
             # Fetch the manager for the current user
             $manager = Get-MgUserManager -UserId $user.Id -ErrorAction SilentlyContinue
@@ -135,18 +135,26 @@ function Test-ContosoUsersMissingManagers {
         }
 
         Add-MtTestResultDetail -Result $TestResults -GraphObjects $usersWithoutManager -GraphObjectType Users
+        return $result
     } catch {
-        $result = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    return $result
 }
 ```
 
 :::note
 To use the markdown content from the file, **do not** include the `-Description` parameter when calling `Add-MtTestResultDetail`.
 :::
+
+##### Error handling
+
+Always include your main code withing a try catch block. In the catch block, use `Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_` to log the error and return `$null` to indicate that the test could not be run.
+
+:::note
+Do not call `Add-MtTestResultDetail` with a `-SkippedBecause` parameter within the try block. This will result in the test being reported as an error instead of skipped. To avoid this, close the try block before calling `Add-MtTestResultDetail` with the `-SkippedBecause` parameter and then start a new try block to continue the main test logic. This is the way Pester handles skipped tests and errors.
+:::
+
 
 ### Step 3: Create the markdown file
 

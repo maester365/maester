@@ -25,15 +25,15 @@ function Test-MtCisTeamsReportSecurityConcerns {
         return $null
     }
 
-    Write-Verbose "Test-MtCisTeamsReportSecurityConcerns: Checking if users can report security concerns in Teams to internal destination"
+    Write-Verbose 'Test-MtCisTeamsReportSecurityConcerns: Checking if users can report security concerns in Teams to internal destination'
 
-    $return = $true
     try {
+        $return = $true
         $MicrosoftTeamsCheck = Get-CsTeamsMessagingPolicy -Identity Global | Select-Object AllowSecurityEndUserReporting
         $MicrosoftReportPolicy = Get-ReportSubmissionPolicy | Select-Object ReportJunkToCustomizedAddress, ReportNotJunkToCustomizedAddress, ReportPhishToCustomizedAddress, ReportJunkAddresses, ReportNotJunkAddresses, ReportPhishAddresses, ReportChatMessageEnabled, ReportChatMessageToCustomizedAddressEnabled
 
-        $passResult = "✅ Pass"
-        $failResult = "❌ Fail"
+        $passResult = '✅ Pass'
+        $failResult = '❌ Fail'
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
@@ -99,11 +99,11 @@ function Test-MtCisTeamsReportSecurityConcerns {
             $testResultMarkdown = "All or specific report submission policies are missing proper configuration.`n`n%TestResult%"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $return
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }
