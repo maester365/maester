@@ -910,7 +910,6 @@
       "Severity": "Medium",
       "Title": "Entra Recommendation - Remove unused applications"
     },
-
     {
       "Id": "MT.1025",
       "Severity": "High",
@@ -1085,6 +1084,11 @@
       "Id": "MT.1059",
       "Severity": "Medium",
       "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
+      "Id": "MT.1062",
+      "Severity": "Medium",
+      "Title": "Ensure Direct Send is set to be rejected"
     },
     {
       "Id": "ORCA.100",
