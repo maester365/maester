@@ -1,19 +1,3 @@
-<#
-.SYNOPSIS
-    Checks if write permissions are required to create new management groups in Azure.
-
-.DESCRIPTION
-    Ensure that write permissions are required to create new management groups in Azure. By default, all Entra ID security principals can create new management groups, which can lead to governance and security risks.
-
-.EXAMPLE
-    Test-MtManagementGroupWriteRequirement
-
-    Returns true if write permissions are required for creating new management groups, otherwise returns false.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtManagementGroupWriteRequirement
-#>
-
 function Test-MtManagementGroupWriteRequirement {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -30,15 +14,22 @@ function Test-MtManagementGroupWriteRequirement {
             -ApiVersion "2020-05-01"
 
         $mgList = $mgResponse.value
-        $rootGroup = $mgList | Where-Object { $_.properties.displayName -eq "Tenant Root Group" }
+    }
+    catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
 
-        if (-not $rootGroup) {
-            Add-MtTestResultDetail -SkippedBecause "Tenant Root Group not found"
-            return $null
-        }
+    $rootGroup = $mgList | Where-Object { $_.properties.displayName -eq "Tenant Root Group" }
 
-        $rootMgId = $rootGroup.name
+    if (-not $rootGroup) {
+        Add-MtTestResultDetail -SkippedBecause "Tenant Root Group not found"
+        return $null
+    }
 
+    $rootMgId = $rootGroup.name
+
+    try {
         $settingResponse = Invoke-MtAzureRequest `
             -RelativeUri "/providers/Microsoft.Management/managementGroups/$rootMgId/settings/default" `
             -ApiVersion "2020-05-01"
