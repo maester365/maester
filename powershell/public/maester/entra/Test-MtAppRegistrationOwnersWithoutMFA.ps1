@@ -4,9 +4,8 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
     Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
 
     .DESCRIPTION
-    This function checks all Azure AD app registrations and verifies that their owners
-    have MFA properly configured. It's designed to be efficient in large environments
-    by minimizing API calls and using optimized data structures.
+    This function checks all Entra ID app registrations and verifies that their owners
+    have MFA registered.
 
     .OUTPUTS
     [bool] - Returns $true if all owners have MFA, $false if any owners lack MFA, $null if skipped
