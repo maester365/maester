@@ -1086,6 +1086,11 @@
       "Title": "Microsoft Defender for Identity health issues should be resolved"
     },
     {
+      "Id": "MT.1061",
+      "Severity": "Medium",
+      "Title": "Device registration MFA control conflicts with Conditional Access policies"
+    },
+    {
       "Id": "MT.1062",
       "Severity": "Medium",
       "Title": "Ensure Direct Send is set to be rejected"
