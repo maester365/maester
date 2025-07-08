@@ -224,6 +224,7 @@ module.exports = [
     'commands/Test-MtPrivPermanentDirectoryRole',
     'commands/Test-MtTeamsRestrictParticipantGiveRequestControl',
     'commands/Test-MtUserAccessAdmin',
+    'commands/Test-MtManagementGroupWriteRequirement',
     'commands/Test-ORCA100',
     'commands/Test-ORCA101',
     'commands/Test-ORCA102',
