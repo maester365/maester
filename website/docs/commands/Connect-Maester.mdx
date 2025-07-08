@@ -22,7 +22,8 @@ Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [
 
 ## DESCRIPTION
 
-Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
+Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess.
+It attempts to connect to all services by default: Microsoft Graph, Azure, Exchange Online, and Microsoft Teams.
 
 This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -38,15 +39,15 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 Connect-Maester
 ```
 
-Connects to Microsoft Graph using Connect-MgGraph with the required scopes.
+Connects to all Microsoft services that Maester is able to assess: Microsoft Graph, Azure, Exchange Online, Exchange Online Security & Compliance, and Microsoft Teams.
 
 ### EXAMPLE 2
 
 ```powershell
-Connect-Maester -Service All
+Connect-Maester -Service Graph,Teams
 ```
 
-Connects to Microsoft Graph, Azure, and Exchange Online.
+Connects to Microsoft Graph and Microsoft Teams.
 
 ### EXAMPLE 3
 
@@ -112,14 +113,6 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 ```
 
 Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
-
-### EXAMPLE 11
-
-```powershell
-Connect-Maester -Environment Germany
-```
-
-Connects to the Germany environment for Microsoft Graph.
 
 ## PARAMETERS
 
