@@ -46,6 +46,7 @@ function Test-MtExoAdditionalStorageProviders {
         Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 
     return !$result
