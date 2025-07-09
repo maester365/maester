@@ -8,7 +8,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV01" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "archive scanning helps detect malware hidden in compressed files"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "archive scanning helps detect malware hidden in compressed files"
+            }
         }
     }
 
@@ -19,7 +24,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV02" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "behavior monitoring is essential for detecting advanced threats"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "behavior monitoring is essential for detecting advanced threats"
+            }
         }
     }
 
@@ -30,7 +40,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV03" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "cloud protection provides real-time threat intelligence"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "cloud protection provides real-time threat intelligence"
+            }
         }
     }
 
@@ -41,7 +56,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV04" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "email scanning should be enabled to protect Exchange queues"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "email scanning should be enabled to protect Exchange queues"
+            }
         }
     }
 
@@ -52,7 +72,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV05" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "script scanning should be enabled to block malicious scripts"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "script scanning should be enabled to block malicious scripts"
+            }
         }
     }
 
@@ -63,7 +88,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV06" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "real-time monitoring provides essential protection against live threats"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "real-time monitoring provides essential protection against live threats"
+            }
         }
     }
 
@@ -74,7 +104,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV07" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "full scan of removable drives should be enabled to mitigate USB risks"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "full scan of removable drives should be enabled to mitigate USB risks"
+            }
         }
     }
 
@@ -85,7 +120,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV08" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "full scan of mapped drives should be disabled for performance optimization"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "full scan of mapped drives should be disabled for performance optimization"
+            }
         }
     }
 
@@ -96,7 +136,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV09" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "scanning network files should be enabled for comprehensive protection"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "scanning network files should be enabled for comprehensive protection"
+            }
         }
     }
 
@@ -108,7 +153,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV10" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "CPU load should be balanced between performance and security"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "CPU load should be balanced between performance and security"
+            }
         }
     }
 
@@ -120,7 +170,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV11" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "scans should be scheduled every day for comprehensive coverage"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "scans should be scheduled every day for comprehensive coverage"
+            }
         }
     }
 
@@ -131,7 +186,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV12" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "quick scan time configuration is not required"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "quick scan time configuration is not required"
+            }
         }
     }
 
@@ -143,7 +203,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV13" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "signatures should be checked before scan for zero-day protection"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "signatures should be checked before scan for zero-day protection"
+            }
         }
     }
 
@@ -154,7 +219,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV14" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "cloud block level should be High or higher for maximum protection"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "cloud block level should be High or higher for maximum protection"
+            }
         }
     }
 
@@ -165,7 +235,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV15" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "cloud extended timeout should be 30-50 seconds for optimal UX and detection"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "cloud extended timeout should be 30-50 seconds for optimal UX and detection"
+            }
         }
     }
 
@@ -176,7 +251,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV16" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "signature update interval should be 1-4 hours for current protection"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "signature update interval should be 1-4 hours for current protection"
+            }
         }
     }
 
@@ -188,7 +268,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV17" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "PUA protection should be enabled to block potentially unwanted applications"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "PUA protection should be enabled to block potentially unwanted applications"
+            }
         }
     }
 
@@ -199,7 +284,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV18" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "network protection should be enabled in block mode"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "network protection should be enabled in block mode"
+            }
         }
     }
 
@@ -210,7 +300,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV19" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "local admin merge should be disabled to prevent local exclusions"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "local admin merge should be disabled to prevent local exclusions"
+            }
         }
     }
 
@@ -238,7 +333,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV21" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "real-time scan should monitor both incoming and outgoing traffic"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "real-time scan should monitor both incoming and outgoing traffic"
+            }
         }
     }
 
@@ -250,7 +350,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV22" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "cleaned malware should be retained for 90 days for audit purposes"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "cleaned malware should be retained for 90 days for audit purposes"
+            }
         }
     }
 
@@ -261,7 +366,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV23" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "catch-up full scan should be disabled to avoid additional system load"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "catch-up full scan should be disabled to avoid additional system load"
+            }
         }
     }
 
@@ -272,7 +382,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV24" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "catch-up quick scan should be disabled"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "catch-up quick scan should be disabled"
+            }
         }
     }
 
@@ -300,7 +415,12 @@ Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE
         #>
         $result = Invoke-MtMdeUnifiedTest -TestId "MDE.AV26" -TestName $____Pester.CurrentTest.ExpandedName
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "sample submission should be configured to send safe samples automatically"
+            if ($result.IsSkipped) {
+                Add-MtTestResultDetail -Description $result.TestDetails -GraphObjectType 'Devices' -Severity $result.Severity
+                Set-ItResult -Skipped -Because $result.SkipReason
+            } else {
+                $result | Should -Be $true -Because "sample submission should be configured to send safe samples automatically"
+            }
         }
     }
 }

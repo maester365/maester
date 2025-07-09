@@ -3,7 +3,7 @@
     Helper functions for Microsoft Defender for Endpoint tests
 
 .DESCRIPTION
-    Contains functions for device management, policy retrieval, and the unified test engine 
+    Contains functions for device management, policy retrieval, and the unified test engine
     used by all MDE tests in the Maester framework.
 
 .NOTES
@@ -19,7 +19,7 @@
     Gets information about your organization's Defender-protected devices and their policies
 
 .DESCRIPTION
-    Retrieves device inventory, configuration policies, and compliance information 
+    Retrieves device inventory, configuration policies, and compliance information
     from Microsoft Graph API for use in MDE tests.
 
 .PARAMETER DisableCache
@@ -107,7 +107,7 @@ function Get-MtMdeConfiguration {
 
 .EXAMPLE
     Get-MtMdeDeviceCount
-    
+
     Returns the number of MDE-protected devices
 #>
 function Get-MtMdeDeviceCount {
@@ -274,7 +274,7 @@ function Test-MtMdePolicyHasAssignments {
     Gets Microsoft Defender Antivirus policies that are assigned to devices
 
 .DESCRIPTION
-    Retrieves configuration policies from Microsoft Graph, filters for 
+    Retrieves configuration policies from Microsoft Graph, filters for
     Defender Antivirus policies, and checks which ones are actually assigned.
 
 .OUTPUTS
@@ -370,7 +370,9 @@ function Get-MdePolicyConfiguration {
         }
     }
 }
+#endregion
 
+#region Policy Compliance Functions
 <#
 .SYNOPSIS
     Tests policy compliance for MDE settings
@@ -454,32 +456,6 @@ function Test-MdePolicyCompliance {
     }
 }
 
-<#
-.SYNOPSIS
-    Formats MDE test results into markdown report
-
-.DESCRIPTION
-    Generates comprehensive markdown report for MDE test results including
-    policy analysis, compliance status, and remediation guidance.
-
-.PARAMETER SettingConfig
-    Setting configuration object
-
-.PARAMETER ComplianceResults
-    Compliance analysis results
-
-.PARAMETER DeviceCount
-    Number of MDE devices
-
-.PARAMETER PolicyConfiguration
-    Policy configuration details
-
-.PARAMETER TestResult
-    Overall test result (pass/fail)
-
-.OUTPUTS
-    String containing formatted markdown report
-#>
 
 <#
 .SYNOPSIS
@@ -591,7 +567,9 @@ function Test-MdeSettingCompliance {
         }
     }
 }
+#endregion
 
+#region Configuration Setting Value parser
 <#
 .SYNOPSIS
     Extracts setting values from Graph API responses
@@ -670,7 +648,6 @@ function Get-MdeSettingValue {
         }
     }
 }
-
 #endregion
 
 
@@ -863,13 +840,16 @@ $( if (-not $testResult) {
             # Don't treat skip operations as errors
             return $null
         }
-        
+
         # Only treat actual errors as errors
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
 }
 
+#endregion
+
+#region Manual Verification Markdown Generation
 <#
 .SYNOPSIS
     Generates manual verification markdown for all test types
@@ -960,3 +940,4 @@ This test requires manual review and cannot be automated. Please perform the rev
 "@
 }
 
+#endregion
