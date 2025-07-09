@@ -1,0 +1,14 @@
+{
+  "ComplianceLogic": "AllPolicies",
+  "PolicyFiltering": "OnlyAssigned",
+  "DeviceFiltering": {
+    "OperatingSystems": ["Windows"],
+    "ManagementAgents": ["msSense", "mdm"],
+    "ComplianceStates": ["Compliant", "NonCompliant", "Unknown"]
+  },
+  "TestSpecific": {
+    "MDE.AV01": {
+      "ComplianceLogic": "AllPolicies"
+    }
+  }
+}

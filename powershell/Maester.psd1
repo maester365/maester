@@ -12,7 +12,7 @@
 RootModule = 'Maester.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1.0'
+ModuleVersion = '0.2.0'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Core', 'Desktop'
@@ -85,7 +85,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'ConvertFrom-MailAuthenticationRecordSpf',
     'Disconnect-Maester',
     'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
-    'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
+    'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtMdeConfig', 'Get-MtMdeConfiguration', 'Get-MtMdeDeviceCount',
     'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSession',
     'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
     'Install-MaesterTests',
@@ -134,7 +134,10 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtCisaSpoSharingAllowedDomain', 'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor',
     'Test-MtConditionalAccessWhatIf', 'Test-MtConnection', 'Test-MtDeviceComplianceSettings',
     'Test-MtEidscaControl', 'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions',
-    'Test-MtManagedDeviceCleanupSettings', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
+    'Test-MtManagedDeviceCleanupSettings',
+    'Invoke-MtMdeUnifiedTest', 'Get-MtMdeUnifiedConfiguration',
+    'Get-MtMdeConfig', 'Get-MtMdeConfiguration', 'Get-MtMdeDeviceCount', 'Test-MtMdePolicyHasAssignments',
+    'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
     'Test-MtTeamsRestrictParticipantGiveRequestControl', 'Test-MtUserAccessAdmin',
     'Test-ORCA100', 'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103', 'Test-ORCA104', 'Test-ORCA105',
     'Test-ORCA106', 'Test-ORCA107', 'Test-ORCA108', 'Test-ORCA108_1', 'Test-ORCA109', 'Test-ORCA110',
@@ -147,7 +150,8 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-ORCA227', 'Test-ORCA228', 'Test-ORCA229', 'Test-ORCA230', 'Test-ORCA231', 'Test-ORCA232',
     'Test-ORCA233', 'Test-ORCA233_1', 'Test-ORCA234', 'Test-ORCA235', 'Test-ORCA236', 'Test-ORCA237',
     'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243',
-    'Test-ORCA244', 'Update-MaesterTests'
+    'Test-ORCA244', 'Update-MaesterTests',
+    'Write-MtProgress', 'ConvertTo-MtMaesterResult', 'Get-MtUserInteractive', 'Reset-MtProgressView', 'Get-IsNewMaesterVersionAvailable'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
