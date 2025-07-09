@@ -1,4 +1,4 @@
-Describe "Microsoft Defender for Endpoint - Global Configuration" -Tag "Maester", "MDE", "Security", "All", "MDE-GlobalConfig", "ManualReview" {
+Describe "Microsoft Defender for Endpoint - Global Configuration" -Tag "Maester", "MDE", "Security", "All", "MDE-GlobalConfig", "Defender", "ManualReview" {
 
     # Global Configuration Tests (MDE.GC01 to MDE.GC16) - Using Unified Test Engine
     It "MDE.GC01: Preview Features should be enabled organization-wide. See https://maester.dev/docs/tests/MDE.GC01" -Tag "MDE.GC01", "ManualReview" {

@@ -1,4 +1,4 @@
-Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE", "Security", "All", "MDE-Antivirus", "Automated" {
+Describe "Microsoft Defender Antivirus - Policy Compliance" -Tag "Maester", "MDE", "Security", "All", "MDE-Antivirus", "Defender", "Automated" {
 
     # Scan Engines Tests (MDE.AV01 to MDE.AV09) - Using Unified Test Engine
     It "MDE.AV01: Archive Scanning should be allowed. See https://maester.dev/docs/tests/MDE.AV01" -Tag "MDE.AV01" {

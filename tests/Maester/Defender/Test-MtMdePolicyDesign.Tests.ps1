@@ -1,4 +1,4 @@
-Describe "Microsoft Defender for Endpoint - Policy Design Quality" -Tag "Maester", "MDE", "Security", "All", "MDE-PolicyDesign", "ManualReview" {
+Describe "Microsoft Defender for Endpoint - Policy Design Quality" -Tag "Maester", "MDE", "Security", "All", "MDE-PolicyDesign", "Defender", "ManualReview" {
 
     # Policy Design Quality Tests (MDE.PD01 to MDE.PD04) - Using Unified Test Engine
     It "MDE.PD01: Policy naming should follow consistent convention (ROLE-v#). See https://maester.dev/docs/tests/MDE.PD01" -Tag "MDE.PD01" {
