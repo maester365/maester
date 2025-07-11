@@ -88,7 +88,7 @@ Update your GitHub/Azure DevOps daily monitoring workflow to send the email aler
 $results = Invoke-Maester -Path tests/Maester/ {...} -PassThru
 
 # Send the email summary using the results
-Send-MtMail $results -Recipient john@contoso.com -UserId <guid>
+Send-MtMail $results -Recipient john@contoso.com -UserId <guid> or <UPN>
 ```
 
 ## Adding a link to detailed Maester results in the email
