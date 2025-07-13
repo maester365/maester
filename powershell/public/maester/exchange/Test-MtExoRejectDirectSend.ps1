@@ -40,7 +40,8 @@ function Test-MtExoRejectDirectSend {
         Add-MtTestResultDetail -Result $testResultMarkdown
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 
-    return $testResult
+    return $result
 }
