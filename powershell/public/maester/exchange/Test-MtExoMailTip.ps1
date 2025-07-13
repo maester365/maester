@@ -27,7 +27,7 @@ function Test-MtExoMailTip {
     try {
         Write-Verbose "Getting Organization Config..."
         $organizationConfig = Get-MtExo -Request OrganizationConfig
-        $portalLink_SecureScore = "https://security.microsoft.com/securescore"
+        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
         $result = $organizationConfig.MailTipsExternalRecipientsTipsEnabled
 

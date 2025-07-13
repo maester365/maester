@@ -30,7 +30,7 @@ function Test-MtExoOutlookAddin {
         $roleAssignmentPolicy = Get-MtExo -Request RoleAssignmentPolicy
         Write-Verbose "Found $($roleAssignmentPolicy.Count) Exchange Role Assignment Policy"
 
-        $portalLink_SecureScore = "https://security.microsoft.com/securescore"
+        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
         $roleAssignmentPolicyDefault = $roleAssignmentPolicy | Where-Object { $_.Identity -eq "Default Role Assignment Policy" }
         Write-Verbose "Filtered $($roleAssignmentPolicyDefault.Count) Default Web mailbox policy"

@@ -30,7 +30,7 @@ function Test-MtExoAdditionalStorageProvider {
         $owaMailboxPolicy = Get-MtExo -Request OwaMailboxPolicy
         Write-Verbose "Found $($owaMailboxPolicy.Count) Exchange Web mailbox policies"
 
-        $portalLink_SecureScore = "https://security.microsoft.com/securescore"
+        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
         $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.Identity -eq "OwaMailboxPolicy-Default" }
         Write-Verbose "Filtered $($owaMailboxPolicyDefault.Count) Default Web mailbox policy"
