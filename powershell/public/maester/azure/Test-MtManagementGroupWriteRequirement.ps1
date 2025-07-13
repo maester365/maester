@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+    Checks if write permissions are required to create new management groups
+
+.DESCRIPTION
+    This test ensures that only users with explicit write access can create new management groups.
+    This is important to prevent unauthorized creation of management groups which could lead to security risks.
+
+.EXAMPLE
+    Test-MtManagementGroupWriteRequirement
+
+    Returns true if write permissions are required for creating new management groups.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtManagementGroupWriteRequirement
+#>
 function Test-MtManagementGroupWriteRequirement {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -23,6 +39,7 @@ function Test-MtManagementGroupWriteRequirement {
     $rootGroup = $mgList | Where-Object { $_.properties.displayName -eq "Tenant Root Group" }
 
     if (-not $rootGroup) {
+        Write-Verbose "Tenant Root Group not found in management groups."
         Add-MtTestResultDetail -SkippedBecause "Tenant Root Group not found"
         return $null
     }
@@ -35,6 +52,7 @@ function Test-MtManagementGroupWriteRequirement {
             -ApiVersion "2020-05-01"
 
         $requireWritePermissions = $settingResponse.properties.requireAuthorizationForGroupCreation
+        Write-Verbose "Require write permissions for creating management groups: $requireWritePermissions"
 
         $testResult = $requireWritePermissions -eq $true
 
