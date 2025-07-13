@@ -38,7 +38,7 @@ function Test-ORCA101{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA101: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA101" -ErrorRecord $_ -AdditionalContext "Running ORCA101 test"
         throw
     } finally {
         if($obj.SkipInReport) {
