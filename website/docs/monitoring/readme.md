@@ -8,7 +8,13 @@ Maester can be set up to continuously monitor your tenant's configuration using 
 
 In this section we provide guidance for some popular services.
 
-- <IIcon icon="vscode-icons:file-type-azurepipelines" height="18" /> [Azure DevOps Pipeline](./azure-devops)
 - <IIcon icon="mdi:github" height="18" /> [GitHub Actions](./github)
+- <IIcon icon="vscode-icons:file-type-azurepipelines" height="18" /> [Azure DevOps Pipeline](./azure-devops)
+- <IIcon icon="devicon:terraform" height="18" /> [Azure DevOps Terraform Module](./azure-devops-terraform)
+- <IIcon icon="devicon:gitlab" height="18" /> [Gitlab](./gitlab)
+- <IIcon icon="devicon:bitbucket" height="18" /> [Gitlab](./bitbucket)
 - <IIcon icon="devicon:azure" height="18" /> [Azure Automation](./azure-automation)
+- <IIcon icon="devicon:azure" height="18" /> [Azure Automation with Bicep](./azure-automation-bicep)
+- <IIcon icon="devicon:azure" height="18" /> [Azure Web App with Bicep](./azure-web-app-bicep)
 - <IIcon icon="vscode-icons:file-type-docker2" height="18" /> [Azure Container App Job](./azure-container-app-job)
+- <IIcon icon="devicon:azure" height="18" /> [Azure Devops & Azure Web App](./azure-devops-web-app-bicep)
