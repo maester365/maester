@@ -14,9 +14,9 @@
 function Get-MtGroupMember {
   [CmdletBinding()]
   param(
+    # ID for the Entra group to return members for.
     [Parameter(Position = 0, mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    # ID for the Entra group to return members for.
     [guid]$GroupId,
     # Include indirect members through nested groups.
     [switch]$Recursive
