@@ -63,7 +63,8 @@ Exchange Online implements a [role-based access control model](https://learn.mic
   - [Set up Maester on GitHub](/docs/monitoring/github)
   - [Set up Maester on Azure DevOps](/docs/monitoring/azure-devops)
   - [Set up Maester on Azure Container App Jobs](/docs/monitoring/azure-container-app-job)
-  - [Set up Maester email alerts](/docs/monitoring/email)
-  - [Set up Maester Teams alerts](/docs/monitoring/teams)
-  - [Set up Maester Slack alerts](/docs/monitoring/slack)
+- Alerting with Maester
+  - [Set up Maester email alerts](/docs/alerts/email)
+  - [Set up Maester Teams alerts](/docs/alerts/teams)
+  - [Set up Maester Slack alerts](/docs/alerts/slack)
 - [Writing Custom Tests](/docs/writing-tests)
