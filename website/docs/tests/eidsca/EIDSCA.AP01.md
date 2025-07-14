@@ -13,7 +13,7 @@ Indicates whether administrators of the tenant can use the Self-Service Password
 | **Name** | allowedToUseSSPR |
 | **Control** | Default Authorization Settings |
 | **Description** | Manages authorization settings in Entra ID (Azure AD) |
-| **Severity** | Informational |
+| **Severity** | Info |
 
 ## How to fix
 
