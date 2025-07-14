@@ -127,14 +127,6 @@
             throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
         }
 
-        # Replacement strings for emoji characters and apostrophes that do not translate well to CSV files.
-        [hashtable]$ReplacementStrings = @{
-            'âŒ'       = ''
-            'âž¡ï¸'    = ''
-            'âœ…'       = ''
-            'youâ€™re'  = 'you are'
-            'arenâ€™nt' = 'are not'
-        } ; [void]$ReplacementStrings # Not Used Yet
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
         if ($PSCmdlet.ParameterSetName -eq 'FromInputObject') {
@@ -190,7 +182,7 @@
             }
 
             try {
-                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
+                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8BOM -NoTypeInformation
                 Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"

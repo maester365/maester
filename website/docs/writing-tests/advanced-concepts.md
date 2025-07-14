@@ -31,16 +31,16 @@ If your tests use Graph cmdlets like `Get-MgUser`, they will not benefit from th
 
 In addition to caching, `Invoke-MtGraphRequest` has other key features that make it very easy to write tests that query data.
 
-- Automatically handles pagination and get's all of the users by default (you don't need to specific -All)
+- Automatically handles pagination and gets all of the users by default (you don't need to specify -All)
 - Includes **ConsistencyLevel** by default to all the calls. This works for Maester's read-only use case and allows you to use any of the advanced query filter options without worrying about the consistency flag.
-- Provides automatic support for batching by passing in an array of Object IDs to the `-UniqueId` parameter.
-- Named parameters for `Select`, `Filter` and `QueryParameters` to make it easier to write complex queries.
+- Provides automatic support for batching by passing in an array of object IDs to the `-UniqueId` parameter.
+- Named parameters for `Select`, `Filter` and `QueryParameters` make it easier to write complex queries.
 
 Here are a few examples.
 
-#### Get selected list of users users with specific properties
+#### Get selected list of users with specific properties
 
-Use the `UniqueId` parameter to get specific users by their Object ID and select only the properties you need.
+Use the `UniqueId` parameter to get specific users by their object ID and select only the properties you need.
 
 The $usersIds array can have one or hundreds of object IDs. Invoke-MtGraphRequest will optimize the calls by batching and paging through the results.
 
@@ -116,8 +116,8 @@ function Test-ContosoUsersMissingManagers {
         # Loop through each user and ensure they have a manager assigned
         foreach ($user in $users) {
             if($user.jobTitle -eq "CEO" -or $user.displayName -eq "On-Premises Directory Synchronization Service Account" ) {
-            continue
-}
+                continue
+            }
 
             # Fetch the manager for the current user
             $manager = Get-MgUserManager -UserId $user.Id -ErrorAction SilentlyContinue
@@ -135,18 +135,26 @@ function Test-ContosoUsersMissingManagers {
         }
 
         Add-MtTestResultDetail -Result $TestResults -GraphObjects $usersWithoutManager -GraphObjectType Users
+        return $result
     } catch {
-        $result = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    return $result
 }
 ```
 
 :::note
 To use the markdown content from the file, **do not** include the `-Description` parameter when calling `Add-MtTestResultDetail`.
 :::
+
+##### Error handling
+
+Always include your main code within a try catch block. In the catch block, use `Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_` to log the error and return `$null` to indicate that the test could not be run.
+
+:::note
+Do not call `Add-MtTestResultDetail` with a `-SkippedBecause` parameter within the try block. This will result in the test being reported as an error instead of skipped. To avoid this, close the try block before calling `Add-MtTestResultDetail` with the `-SkippedBecause` parameter and then start a new try block to continue the main test logic. This is the way Pester handles skipped tests and errors.
+:::
+
 
 ### Step 3: Create the markdown file
 

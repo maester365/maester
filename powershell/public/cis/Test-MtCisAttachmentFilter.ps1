@@ -28,43 +28,47 @@ function Test-MtCisAttachmentFilter {
         return $null
     }
 
-    Write-Verbose "Getting Malware Filter Policy..."
-    $policies = Get-MtExo -Request MalwareFilterPolicy
+    try {
+        Write-Verbose "Getting Malware Filter Policy..."
+        $policies = Get-MtExo -Request MalwareFilterPolicy
 
-    # We grab the default policy
-    $policy = $policies | Where-Object { $_.IsDefault -eq $true }
+        # We grab the default policy
+        $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
-    Write-Verbose "Executing checks"
-    $fileFilter = $policy | Where-Object {
-        $_.EnableFileFilter -match "True"
+        Write-Verbose "Executing checks"
+        $fileFilter = $policy | Where-Object {
+            $_.EnableFileFilter -match "True"
+        }
+
+        $testResult = ($fileFilter | Measure-Object).Count -ge 1
+
+        $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
+
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenants default malware filter policy has the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+        }
+        else {
+            $testResultMarkdown = "Your tenants default malware filter policy does not have the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+        }
+
+        $resultMd = "| Policy | Result |`n"
+        $resultMd += "| --- | --- |`n"
+
+        if ($testResult) {
+            $Result = "✅ Pass"
+        }
+        else {
+            $Result = "❌ Fail"
+        }
+
+        $resultMd += "| EnableFileFilter | $Result |`n"
+
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    $testResult = ($fileFilter | Measure-Object).Count -ge 1
-
-    $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenants default malware filter policy has the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
-    }
-    else {
-        $testResultMarkdown = "Your tenants default malware filter policy does not have the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
-    }
-
-    $resultMd = "| Policy | Result |`n"
-    $resultMd += "| --- | --- |`n"
-
-    if ($testResult) {
-        $Result = "✅ Pass"
-    }
-    else {
-        $Result = "❌ Fail"
-    }
-
-    $resultMd += "| EnableFileFilter | $Result |`n"
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

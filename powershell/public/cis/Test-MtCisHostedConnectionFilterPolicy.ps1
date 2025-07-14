@@ -24,21 +24,24 @@ function Test-MtCisHostedConnectionFilterPolicy {
         return $null
     }
 
-    Write-Verbose "Getting the Hosted Connection Filter policy..."
-    $connectionFilterIPAllowList = Get-HostedConnectionFilterPolicy -Identity Default | Select-Object IPAllowList
+    try {
+        Write-Verbose 'Getting the Hosted Connection Filter policy...'
+        $connectionFilterIPAllowList = Get-HostedConnectionFilterPolicy -Identity Default | Select-Object IPAllowList
 
-    Write-Verbose "Check if the Connection Filter IP allow list is empty"
-    $result = $connectionFilterIPAllowList | Where-Object { $connectionFilterIPAllowList.Count -ne 0 }
+        Write-Verbose 'Check if the Connection Filter IP allow list is empty'
+        $result = $connectionFilterIPAllowList | Where-Object { $_.IPAllowList.Count -ne 0 }
 
-    $testResult = ($result | Measure-Object).Count -eq 0
+        $testResult = ($result | Measure-Object).Count -eq 0
+        if ($testResult) {
+            $testResultMarkdown = 'Well done. The connection filter IP allow list was empty ✅'
+        } else {
+            $testResultMarkdown = 'The connection filter IP allow list was not empty ❌'
+        }
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. The connection filter IP allow list was empty ✅"
-    } else {
-        $testResultMarkdown = "The connection filter IP allow list was not empty ❌"
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

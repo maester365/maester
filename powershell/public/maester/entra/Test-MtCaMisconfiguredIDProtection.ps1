@@ -15,50 +15,52 @@ Conditional Access policies access controls are enforced only if ALL conditions 
   https://maester.dev/docs/commands/Test-MtCaMisconfiguredIDProtection
 #>
 
-Function Test-MtCaMisconfiguredIDProtection {
+function Test-MtCaMisconfiguredIDProtection {
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
+    if ( ( Get-MtLicenseInformation EntraID ) -ne 'P2' ) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         return $null
     }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-    $policiesResult = New-Object System.Collections.ArrayList
+    try {
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+        $policiesResult = New-Object System.Collections.ArrayList
 
-    $result = $false
-    $hasRiskCAPolicy = $false # flag to check if there is any policy with risk controls, we skip the test if there is none
+        $result = $false
+        $hasRiskCAPolicy = $false # flag to check if there is any policy with risk controls, we skip the test if there is none
 
-    foreach ($policy in $policies) {
-        if ($policy.conditions.userRiskLevels -or $policy.conditions.signInRiskLevels) {
-            $hasRiskCAPolicy = $true
+        foreach ($policy in $policies) {
+            if ($policy.conditions.userRiskLevels -or $policy.conditions.signInRiskLevels) {
+                $hasRiskCAPolicy = $true
+            }
+            if ($policy.conditions.userRiskLevels -and $policy.conditions.signInRiskLevels) {
+                $result = $true
+                $CurrentResult = $true
+                $policiesResult.Add($policy) | Out-Null
+            } else {
+                $CurrentResult = $false
+            }
+            Write-Verbose "$($policy.displayName) - $CurrentResult"
         }
-        if ($policy.conditions.userRiskLevels -and $policy.conditions.signInRiskLevels) {
-            $result = $true
-            $currentresult = $true
-            $policiesResult.Add($policy) | Out-Null
+
+        if ( -not $hasRiskCAPolicy ) {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no Conditional Access policies with risk controls configured.'
+            return $null
         }
-        else {
-            $currentresult = $false
+
+        if ( $result ) {
+            $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
+        } else {
+            $testResult = 'Well done! No conditional access policies detected where sign-in risk and user risk are combined.'
         }
-        Write-Verbose "$($policy.displayName) - $currentresult"
-    }
 
-
-    if ( -not $hasRiskCAPolicy ) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "There are no Conditional Access policies with risk controls configured."
-        return $null
+        Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
+        return $result
+    } catch {
+        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        return $false
     }
-
-    if ( $result ) {
-        $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
-    }
-    else {
-        $testResult = "Well done! No conditional access policies detected where sign-in risk and user risk are combined."
-    }
-    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
-
-    return $result
 }

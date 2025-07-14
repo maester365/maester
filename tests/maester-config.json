@@ -910,7 +910,6 @@
       "Severity": "Medium",
       "Title": "Entra Recommendation - Remove unused applications"
     },
-
     {
       "Id": "MT.1025",
       "Severity": "High",
@@ -1080,6 +1079,26 @@
       "Id": "MT.1058",
       "Severity": "Medium",
       "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
+    },
+    {
+      "Id": "MT.1059",
+      "Severity": "Medium",
+      "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
+      "Id": "MT.1061",
+      "Severity": "Medium",
+      "Title": "Device registration MFA control conflicts with Conditional Access policies"
+    },
+    {
+      "Id": "MT.1062",
+      "Severity": "Medium",
+      "Title": "Ensure Direct Send is set to be rejected"
+    },
+    {
+      "Id": "MT.1064",
+      "Severity": "High",
+      "Title": "Management group creation should be limited to users with explicit write access"
     },
     {
       "Id": "ORCA.100",
