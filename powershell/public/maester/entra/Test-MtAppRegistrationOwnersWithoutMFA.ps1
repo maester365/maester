@@ -1,18 +1,21 @@
-function Test-MtAppRegistrationOwnersWithoutMFA {
-    <#
-    .SYNOPSIS
+<#
+.SYNOPSIS
     Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
 
-    .DESCRIPTION
-    This function checks all Entra ID app registrations and verifies that their owners
-    have MFA registered.
+.DESCRIPTION
+    This function checks all Entra ID app registrations and verifies that their owners have MFA registered.
 
-    .OUTPUTS
+.OUTPUTS
     [bool] - Returns $true if all owners have MFA, $false if any owners lack MFA, $null if skipped
 
-    .EXAMPLE
+.EXAMPLE
     Test-MtAppRegistrationOwnersWithoutMFA
-    #>
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA
+#>
+
+function Test-MtAppRegistrationOwnersWithoutMFA {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks MFA for all app registration owners.')]
     [OutputType([bool])]
@@ -78,8 +81,8 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
 
         foreach ($userDetail in $relevantUserRegistrations) {
             $mfaStatusLookup[$userDetail.id] = @{
-                isMfaRegistered = $userDetail.isMfaRegistered -eq $true
-                userDisplayName = $userDetail.userDisplayName
+                isMfaRegistered   = $userDetail.isMfaRegistered -eq $true
+                userDisplayName   = $userDetail.userDisplayName
                 userPrincipalName = $userDetail.userPrincipalName
             }
             $validUserDetails++
@@ -107,20 +110,20 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
                     } else {
                         # Owner found but doesn't have MFA registered
                         $ownersWithoutMFA.Add([PSCustomObject]@{
-                            AppName = $app.displayName
-                            AppId = $app.appId
-                            OwnerName = $mfaStatusLookup[$owner.id].userDisplayName
-                            OwnerUPN = $mfaStatusLookup[$owner.id].userPrincipalName
-                            OwnerID = $owner.id
-                            MFAMethods = "No MFA registered"
-                        })
+                                AppName    = $app.displayName
+                                AppId      = $app.appId
+                                OwnerName  = $mfaStatusLookup[$owner.id].userDisplayName
+                                OwnerUPN   = $mfaStatusLookup[$owner.id].userPrincipalName
+                                OwnerID    = $owner.id
+                                MFAMethods = "No MFA registered"
+                            })
                     }
                 } else {
                     # Owner not found in MFA data - likely service principal or disabled user
 
                     $ownerName = if ($owner.displayName) { $owner.displayName }
-                                elseif ($owner.userPrincipalName) { $owner.userPrincipalName }
-                                else { "Unknown" }
+                    elseif ($owner.userPrincipalName) { $owner.userPrincipalName }
+                    else { "Unknown" }
 
                     $ownerType = if ($owner.'@odata.type' -eq '#microsoft.graph.servicePrincipal') {
                         "Service Principal"
@@ -131,14 +134,14 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
                     }
 
                     $skippedOwners.Add([PSCustomObject]@{
-                        AppName = $app.displayName
-                        AppId = $app.appId
-                        OwnerName = $ownerName
-                        OwnerUPN = $owner.userPrincipalName
-                        OwnerID = $owner.id
-                        OwnerType = $ownerType
-                        Reason = "Could not retrieve MFA status ($ownerType)"
-                    })
+                            AppName   = $app.displayName
+                            AppId     = $app.appId
+                            OwnerName = $ownerName
+                            OwnerUPN  = $owner.userPrincipalName
+                            OwnerID   = $owner.id
+                            OwnerType = $ownerType
+                            Reason    = "Could not retrieve MFA status ($ownerType)"
+                        })
 
                     Write-Verbose "Owner $ownerName ($ownerType) not found in registration details - likely service principal or disabled user."
                 }
