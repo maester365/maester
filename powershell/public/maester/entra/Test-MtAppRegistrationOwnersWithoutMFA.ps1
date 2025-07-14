@@ -156,7 +156,7 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
             $testResultMarkdown = "**Well done!** All app registration owners have MFA registered."
 
             if ($totalOwners -gt 0) {
-                $testResultMarkdown += "`n`n**Summary:** $ownersWithMFA/$totalOwners owners have MFA registered across $($appsWithOwners.Count) applications."
+                $testResultMarkdown += "`n`n**Summary:** Found $($appsWithOwners.Count) applications. All valid owners are registered for MFA.`n`n"
 
                 # Include information about skipped owners
                 if ($skippedOwners.Count -gt 0) {
@@ -166,10 +166,10 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
                     $testResultMarkdown += "`n`n**Skipped Owners:**`n`n| Application | Owner | Type | Reason |`n| --- | --- | --- | --- |`n"
 
                     foreach ($skippedOwner in $skippedOwners) {
-                        $appLink = "[$($skippedOwner.AppName)](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
+                        $appLink = "[$($skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
 
                         $ownerDisplay = if ($skippedOwner.OwnerType -like "*User*") {
-                            "[$($skippedOwner.OwnerName)](https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
+                            "[$($skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
                         } else {
                             $skippedOwner.OwnerName
                         }
@@ -180,20 +180,15 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
             }
         } else {
             #  Owners without MFA - generate failure report
-            $testResultMarkdown = "**Action Required:** Found $($ownersWithoutMFA.Count) app registration owner(s) without MFA registered.`n`n"
-            $testResultMarkdown += "**Summary:**`n- Apps with owners: $($appsWithOwners.Count)`n- Total owners: $totalOwners`n- With MFA: $ownersWithMFA`n- Without MFA: $($ownersWithoutMFA.Count)"
-
-            if ($skippedOwners.Count -gt 0) {
-                $testResultMarkdown += "`n- Skipped: $($skippedOwners.Count)"
-            }
+            $testResultMarkdown = "**Action Required:** Found $($ownersWithoutMFA.Count) applications with owners who have not registered for Multi-Factor Authentication (MFA).`n`n"
 
             # Create table of owners who need to register MFA
             $testResultMarkdown += "`n`n**App Registration Owners Without MFA:**`n`n| Application | Owner | UPN | MFA Status |`n| --- | --- | --- | --- |`n"
 
             foreach ($owner in $ownersWithoutMFA) {
                 # Generate portal links for quick access to fix issues
-                $appLink = "[$($owner.AppName)](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId))"
-                $userLink = "[$($owner.OwnerUPN)](https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($owner.OwnerID))"
+                $appLink = "[$($owner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($owner.AppId))"
+                $userLink = "[$($owner.OwnerUPN)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($owner.OwnerID))"
                 $testResultMarkdown += "| $appLink | $($owner.OwnerName) | $userLink | $($owner.MFAMethods) |`n"
             }
 
@@ -202,11 +197,11 @@ function Test-MtAppRegistrationOwnersWithoutMFA {
                 $testResultMarkdown += "`n`n**Skipped Owners (Could Not Check MFA):**`n`n| Application | Owner | Type | Reason |`n| --- | --- | --- | --- |`n"
 
                 foreach ($skippedOwner in $skippedOwners) {
-                    $appLink = "[$($skippedOwner.AppName)](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
+                    $appLink = "[$($skippedOwner.AppName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($skippedOwner.AppId))"
 
                     # Create user links for actual users only
                     $ownerDisplay = if ($skippedOwner.OwnerType -like "*User*") {
-                        "[$($skippedOwner.OwnerName)](https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
+                        "[$($skippedOwner.OwnerName)]($($__MtSession.AdminPortalUrl.Azure)#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($skippedOwner.OwnerID))"
                     } else {
                         $skippedOwner.OwnerName
                     }
