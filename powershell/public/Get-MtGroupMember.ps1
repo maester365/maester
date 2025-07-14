@@ -42,12 +42,7 @@ function Get-MtGroupMember {
   Write-Verbose -Message "Getting group members for group: $($group.displayName) ($GroupId)"
 
   try {
-    $members = @()
-    $groupMembers = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/members" -ApiVersion v1.0
-
-    if ($groupMembers) {
-      $members += $groupMembers
-    }
+    $members = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/members" -ApiVersion v1.0
 
     if (-not $Recursive) {
       return $members
