@@ -1,36 +1,38 @@
 ---
 sidebar_class_name: hidden
-description: Checks state of SharePoint Online sharing
-id: Test-Test-MtCisaSpoSharing
-title: Test-Test-MtCisaSpoSharing
+description: Checks if direct send is configured to reject
+id: Test-MtExoRejectDirectSend
+title: Test-MtExoRejectDirectSend
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-Test-MtCisaSpoSharing.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtExoRejectDirectSend.ps1
 ---
 
 ## SYNOPSIS
 
-Checks state of SharePoint Online sharing
+Checks if direct send is configured to reject
 
 ## SYNTAX
 
 ```powershell
-Test-Test-MtCisaSpoSharing [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtExoRejectDirectSend [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
+Attackers can exploit direct send to send spam or phishing emails without authentication.
+Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain
+to your organization's mailboxes using the tenant MX
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-Test-MtCisaSpoSharing
+Test-MtExoRejectDirectSend
 ```
 
-Returns true if sharing is restricted
+Returns true if direct send is configured to reject
 
 ## PARAMETERS
 
@@ -64,4 +66,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-Test-MtCisaSpoSharing](https://maester.dev/docs/commands/Test-Test-MtCisaSpoSharing)
+[https://maester.dev/docs/commands/Test-MtExoRejectDirectSend](https://maester.dev/docs/commands/Test-MtExoRejectDirectSend)
