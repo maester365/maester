@@ -18,4 +18,4 @@ Rationale: Sharing information outside the organization via SharePoint increases
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/SharepointConfig.rego#L68)
 
 <!--- Results --->
-%TestResult%
+%testResult%

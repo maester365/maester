@@ -55,9 +55,9 @@ function Test-MtCisaExoAlert {
     $failResult = '❌ Fail'
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [alerts configured]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [alerts configured]($portalLink).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have all [alerts configured]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have all [alerts configured]($portalLink).`n`n%testResult%"
     }
 
     $result = "| Alert Name | Alert Result |`n"
@@ -70,7 +70,7 @@ function Test-MtCisaExoAlert {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+    $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

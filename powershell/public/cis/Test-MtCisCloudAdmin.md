@@ -22,4 +22,4 @@ appropriate role then click **Next**.
 * [CIS Microsoft 365 Foundations Benchmark v 4.0.0 - Page 20](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

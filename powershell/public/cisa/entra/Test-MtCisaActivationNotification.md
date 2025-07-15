@@ -30,4 +30,4 @@ Rationale: Closely monitor activation of high-risk roles for signs of compromise
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L1057)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -15,4 +15,4 @@ Configure a Conditional Access policy to block the Device Code authentication fl
 
 
 <!--- Results --->
-%TestResult%
+%testResult%

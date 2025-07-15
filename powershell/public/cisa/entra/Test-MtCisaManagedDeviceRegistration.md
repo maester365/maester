@@ -21,4 +21,4 @@ Create a conditional access policy requiring a user to be on a managed device wh
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L431)
 
 <!--- Results --->
-%TestResult%
+%testResult%

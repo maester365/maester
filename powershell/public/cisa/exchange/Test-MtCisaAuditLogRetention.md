@@ -13,4 +13,4 @@ To create one or more custom audit retention policies, if the default retention 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L928)
 
 <!--- Results --->
-%TestResult%
+%testResult%

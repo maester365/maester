@@ -21,4 +21,4 @@ If DMARC is configured, a response resembling `v=DMARC1; p=reject; pct=100; rua=
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L147)
 
 <!--- Results --->
-%TestResult%
+%testResult%

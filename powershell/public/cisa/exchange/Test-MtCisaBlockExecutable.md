@@ -20,4 +20,4 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L547)
 
 <!--- Results --->
-%TestResult%
+%testResult%

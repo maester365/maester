@@ -17,4 +17,4 @@ To enable auditing via the Microsoft Purview compliance portal:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L898)
 
 <!--- Results --->
-%TestResult%
+%testResult%

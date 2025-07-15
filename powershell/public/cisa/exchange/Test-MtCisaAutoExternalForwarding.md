@@ -20,4 +20,4 @@ To disable automatic forwarding to external domains:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L28)
 
 <!--- Results --->
-%TestResult%
+%testResult%

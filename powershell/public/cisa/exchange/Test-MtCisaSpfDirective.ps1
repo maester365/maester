@@ -79,9 +79,9 @@ function Test-MtCisaSpfDirective {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have at least 1 directives with specific mechanism targets, review authorized senders for accuracy.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have at least 1 directives with specific mechanism targets, review authorized senders for accuracy.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure authorized senders are specified.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure authorized senders are specified.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -119,7 +119,7 @@ function Test-MtCisaSpfDirective {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($itemList) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -44,4 +44,4 @@ To change app permission policies using the UI:
 * [CISA MS.TEAMS.5.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams53v1)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -32,9 +32,9 @@ function Test-MtCisaAutoExternalForwarding {
     $testResult = ($forwardingDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [automatic forwarding](https://admin.exchange.microsoft.com/#/remotedomains) disabled for all domains.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [automatic forwarding](https://admin.exchange.microsoft.com/#/remotedomains) disabled for all domains.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [automatic forwarding](https://admin.exchange.microsoft.com/#/remotedomains) disabled for all domains.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [automatic forwarding](https://admin.exchange.microsoft.com/#/remotedomains) disabled for all domains.`n`n%testResult%"
     }
 
     # Remote domain does not support deep link
@@ -50,7 +50,7 @@ function Test-MtCisaAutoExternalForwarding {
         }
         $result += "| [$($item.Name)]($portalLink) | $($item.DomainName) | $($itemState) | $($itemResult) |`n"
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

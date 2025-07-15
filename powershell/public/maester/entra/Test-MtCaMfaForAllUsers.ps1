@@ -52,7 +52,7 @@ function Test-MtCaMfaForAllUsers {
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for all users:`n`n%TestResult%"
+            $testResult = "The following conditional access policies require multi-factor authentication for all users:`n`n%testResult%"
         } else {
             $testResult = 'No conditional access policy requires multi-factor authentication for all users.'
         }

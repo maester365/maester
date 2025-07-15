@@ -14,4 +14,4 @@ Follow the guide below to configure Entra ID Protection to send a regularly moni
 - [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L122)
 
 <!--- Results --->
-%TestResult%
+%testResult%

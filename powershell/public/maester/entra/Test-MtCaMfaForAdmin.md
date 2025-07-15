@@ -20,4 +20,4 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

@@ -21,4 +21,4 @@ When counting the number of users assigned to the Global Administrator role, **c
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L761)
 
 <!--- Results --->
-%TestResult%
+%testResult%

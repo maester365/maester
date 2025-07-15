@@ -70,7 +70,7 @@ function Test-MtCisaAssignmentNotification {
     $testResult = ($misconfigured|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assisngments:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assisngments:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant has highly privileged roles without notifications."
     }

@@ -30,7 +30,7 @@ function Test-MtCisaSpoSharingAllowedDomain {
     $testResult = ($resultPolicy | Measure-Object).Count -gt 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing to specific domains.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing to specific domains.`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing to specific domains."
     }
@@ -40,7 +40,7 @@ function Test-MtCisaSpoSharingAllowedDomain {
         $result | Out-Null
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -21,4 +21,4 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [Microsoft Learn - Mailbox intelligence impersonation protection](https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-policies-about#mailbox-intelligence-impersonation-protection)
 
 <!--- Results --->
-%TestResult%
+%testResult%

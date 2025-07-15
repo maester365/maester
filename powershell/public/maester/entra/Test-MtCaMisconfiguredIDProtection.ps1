@@ -52,7 +52,7 @@ function Test-MtCaMisconfiguredIDProtection {
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
+            $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%testResult%"
         } else {
             $testResult = 'Well done! No conditional access policies detected where sign-in risk and user risk are combined.'
         }

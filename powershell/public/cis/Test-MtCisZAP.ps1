@@ -33,9 +33,9 @@ function Test-MtCisZAP {
 
         $testResult = ($result | Measure-Object).Count -eq 0
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant does not have Zero-hour auto purge (ZAP) enabled for Microsoft Teams:`n`n%testResult%"
         }
 
         $resultMd = "| Zero-hour auto purge (ZAP) |`n"
@@ -47,7 +47,7 @@ function Test-MtCisZAP {
         }
         $resultMd += "| $($itemResult) |`n"
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

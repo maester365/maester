@@ -45,10 +45,10 @@ function Test-MtCisAttachmentFilter {
         $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenants default malware filter policy has the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenants default malware filter policy has the common attachment file filter enabled ($portalLink).`n`n%testResult%"
         }
         else {
-            $testResultMarkdown = "Your tenants default malware filter policy does not have the common attachment file filter enabled ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Your tenants default malware filter policy does not have the common attachment file filter enabled ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Policy | Result |`n"
@@ -63,7 +63,7 @@ function Test-MtCisAttachmentFilter {
 
         $resultMd += "| EnableFileFilter | $Result |`n"
 
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

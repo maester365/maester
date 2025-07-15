@@ -43,9 +43,9 @@ function Test-MtCisaPasswordExpiration {
     $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%testResult%"
     }
 
     $pass = "✅ Pass"
@@ -79,7 +79,7 @@ function Test-MtCisaPasswordExpiration {
         $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultDetails
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $resultDetails
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

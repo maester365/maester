@@ -45,4 +45,4 @@ To create a mail flow rule to produce external sender warnings:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L405)
 
 <!--- Results --->
-%TestResult%
+%testResult%

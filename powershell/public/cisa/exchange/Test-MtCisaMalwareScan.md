@@ -21,4 +21,4 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [Microsoft Learn - Common attachments filter in anti-malware policies](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-protection-about#common-attachments-filter-in-anti-malware-policies)
 
 <!--- Results --->
-%TestResult%
+%testResult%

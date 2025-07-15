@@ -52,9 +52,9 @@ function Test-MtCisaMailboxIntelligence {
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies for the common file filter]($portalLink).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies enabled]($portalLink).`n`n%testResult%"
     }
 
     $result = "| Policy | Status |`n"
@@ -80,7 +80,7 @@ function Test-MtCisaMailboxIntelligence {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

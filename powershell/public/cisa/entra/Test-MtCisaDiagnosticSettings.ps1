@@ -98,7 +98,7 @@ function Test-MtCisaDiagnosticSettings {
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has [diagnostic settings]($link) configured for all logs."
     } else {
-        $testResultMarkdown = "Your tenant does not have [diagnostic settings]($link) configured for all logs:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [diagnostic settings]($link) configured for all logs:`n`n%testResult%"
     }
 
     $result = "| Log Name | Result |`n"
@@ -113,7 +113,7 @@ function Test-MtCisaDiagnosticSettings {
         }
         $result += "| $($item.Log) | $($itemResult) |`n"
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

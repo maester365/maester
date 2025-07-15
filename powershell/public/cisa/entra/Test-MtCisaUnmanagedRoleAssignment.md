@@ -19,4 +19,4 @@ Rationale: Provisioning users to privileged roles within a PAM system enables en
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L907)
 
 <!--- Results --->
-%TestResult%
+%testResult%

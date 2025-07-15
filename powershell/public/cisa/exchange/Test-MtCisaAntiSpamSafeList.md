@@ -20,4 +20,4 @@ To modify the connection filters, follow the instructions found in Use the Micro
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L710)
 
 <!--- Results --->
-%TestResult%
+%testResult%

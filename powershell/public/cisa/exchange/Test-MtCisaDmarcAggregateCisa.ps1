@@ -106,9 +106,9 @@ function Test-MtCisaDmarcAggregateCisa {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have DMARC aggregate reports sent to CISA.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have DMARC aggregate reports sent to CISA.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not have DMARC aggregate reports sent to CISA.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not have DMARC aggregate reports sent to CISA.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -132,7 +132,7 @@ function Test-MtCisaDmarcAggregateCisa {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($aggregates) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

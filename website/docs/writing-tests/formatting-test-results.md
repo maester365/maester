@@ -89,9 +89,9 @@ The `-GraphObjects` and `-GraphObjectType` parameters in `Add-MtTestResultDetail
 The test results can then display the names of the objects and also provide a deep link to the object in the Microsoft admin portal.
 
 :::note
-When using `-GraphObjects` the `-Result` string parameter needs to include `%TestResult%` at the position where the object names will be inserted.
+When using `-GraphObjects` the `-Result` string parameter needs to include `%testResult%` at the position where the object names will be inserted.
 
-The `%TestResult%` placeholder will be replaced with the names of the objects in the test results.
+The `%testResult%` placeholder will be replaced with the names of the objects in the test results.
 :::
 
 The current list of supported object types includes Users, Groups, Devices, ConditionalAccess, AuthenticationMethod, AuthorizationPolicy, ConsentPolicy, Domains, IdentityProtection and UserRole.
@@ -109,7 +109,7 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
 
             $testDescription = "Checks if the disabled policies have the reason for being disabled."
             if ($disabledWithoutReason.Count -gt 0) {
-                $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled.`n`n%TestResult%"
+                $result = "There are $($disabledWithoutReason.Count) disabled policies without a reason for being disabled.`n`n%testResult%"
                 Add-MtTestResultDetail -Description $testDescription -Result $result -GraphObjects $disabledWithoutReason -GraphObjectType ConditionalAccess
             } else {
                 Add-MtTestResultDetail -Description $testDescription -Result "Well done. All disabled policies have a reason for being disabled."

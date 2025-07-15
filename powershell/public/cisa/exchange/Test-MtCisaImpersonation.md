@@ -21,4 +21,4 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [Microsoft Learn - Impersonation settings in anti-phishing policies in Microsoft Defender for Office 365](https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-policies-about#impersonation-settings-in-anti-phishing-policies-in-microsoft-defender-for-office-365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

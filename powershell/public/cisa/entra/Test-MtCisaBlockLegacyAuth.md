@@ -14,4 +14,4 @@ Follow the guide below to create a conditional access policy that blocks legacy 
 - [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L47)
 
 <!--- Results --->
-%TestResult%
+%testResult%

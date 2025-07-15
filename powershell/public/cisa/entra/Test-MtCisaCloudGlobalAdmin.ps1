@@ -52,7 +52,7 @@ function Test-MtCisaCloudGlobalAdmin {
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators."
     } else {
-        $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators:`n`n%testResult%"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType UserRole -GraphObjects $result
 

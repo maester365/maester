@@ -22,7 +22,7 @@ function FunctionName {
     $testResult = $false
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for role activations:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for role activations:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have notifications on role activations."
     }

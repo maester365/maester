@@ -15,4 +15,4 @@ https://graph.microsoft.com/beta/settings
 
 
 <!--- Results --->
-%TestResult%
+%testResult%

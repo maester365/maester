@@ -44,9 +44,9 @@ function Test-MtCisaWeakFactor {
     $testResult = (($enabledWeakMethods|Measure-Object).Count -eq 0)
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. All weak authentication methods are disabled in your tenant.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. All weak authentication methods are disabled in your tenant.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "One or more weak methods are enabled in your tenant, or migration to Authentication Methods is incomplete.`n`n%TestResult%"
+        $testResultMarkdown = "One or more weak methods are enabled in your tenant, or migration to Authentication Methods is incomplete.`n`n%testResult%"
     }
 
     # Auth method does not support deep links.
@@ -61,7 +61,7 @@ function Test-MtCisaWeakFactor {
         }
         $result += "| [$($item.id)]($authMethodsLink) | $($item.state) | $($methodResult) |`n"
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

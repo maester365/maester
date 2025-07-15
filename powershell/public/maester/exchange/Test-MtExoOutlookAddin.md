@@ -39,4 +39,4 @@ The result should return no assignments.
 * [Microsoft Secure Score - Restrict user consent to applications](https://security.microsoft.com/securescore)
 
 <!--- Results --->
-%TestResult%
+%testResult%

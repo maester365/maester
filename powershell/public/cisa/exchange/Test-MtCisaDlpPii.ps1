@@ -56,9 +56,9 @@ function Test-MtCisaDlpPii {
     $portalLink = "https://purview.microsoft.com/datalossprevention/policies"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of All Full Names.`n`n%testResult%"
     }
 
     if ($rules) {
@@ -75,7 +75,7 @@ function Test-MtCisaDlpPii {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

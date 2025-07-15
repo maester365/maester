@@ -93,9 +93,9 @@ function Test-MtCisaDmarcRecordExist {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's second level domains have a DMARC record. Review report targets.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's second level domains have a DMARC record. Review report targets.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's second level domains do not have a DMARC record.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's second level domains do not have a DMARC record.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -136,7 +136,7 @@ function Test-MtCisaDmarcRecordExist {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | Forensic Reports: $($forensics) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

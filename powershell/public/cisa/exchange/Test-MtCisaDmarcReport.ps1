@@ -91,9 +91,9 @@ function Test-MtCisaDmarcReport {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have in domain report targets. Review report targets.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have in domain report targets. Review report targets.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's second level domains do not have in domain report targets.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's second level domains do not have in domain report targets.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -126,7 +126,7 @@ function Test-MtCisaDmarcReport {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | Forensic Reports: $($forensics) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

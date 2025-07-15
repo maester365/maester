@@ -69,9 +69,9 @@ function Test-MtCisaDlpBaselineRule {
     $portalLink = "https://purview.microsoft.com/datalossprevention/policies"
 
     if ($resultComposite) {
-        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled with the Sensitive Info Type of credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN).`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -91,7 +91,7 @@ function Test-MtCisaDlpBaselineRule {
         $result += "| $($itemResult) | $($item.ParentPolicyName) | $($item.Name) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

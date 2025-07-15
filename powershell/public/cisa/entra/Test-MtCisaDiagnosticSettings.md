@@ -16,4 +16,4 @@ Follow the configuration instructions unique to the products and integration pat
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L523)
 
 <!--- Results --->
-%TestResult%
+%testResult%

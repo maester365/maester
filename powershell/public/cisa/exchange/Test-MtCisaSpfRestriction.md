@@ -15,4 +15,4 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L58)
 
 <!--- Results --->
-%TestResult%
+%testResult%

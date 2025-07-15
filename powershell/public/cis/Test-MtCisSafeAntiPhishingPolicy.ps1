@@ -91,9 +91,9 @@ function Test-MtCisSafeAntiPhishingPolicy {
         $portalLink = 'https://security.microsoft.com/antiphishing'
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenants default anti-phishing policy matches CIS recommendations($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenants default anti-phishing policy matches CIS recommendations($portalLink).`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenants default anti-phishing policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Your tenants default anti-phishing policy does not match CIS recommendations ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Check Name | Result |`n"
@@ -106,7 +106,7 @@ function Test-MtCisSafeAntiPhishingPolicy {
             $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

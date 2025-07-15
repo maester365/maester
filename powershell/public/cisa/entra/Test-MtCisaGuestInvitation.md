@@ -16,4 +16,4 @@ Rationale: By only allowing an authorized group of individuals to invite externa
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L1157)
 
 <!--- Results --->
-%TestResult%
+%testResult%

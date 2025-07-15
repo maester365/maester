@@ -21,4 +21,4 @@ Rationale: Requiring approval for a user to activate Global Administrator, which
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L938)
 
 <!--- Results --->
-%TestResult%
+%testResult%

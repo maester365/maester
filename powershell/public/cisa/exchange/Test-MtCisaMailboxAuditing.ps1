@@ -28,14 +28,14 @@ function Test-MtCisaMailboxAuditing {
     $testResult = (-not $config.AuditDisabled)
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has mailbox auditing enabled.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has mailbox auditing enabled.`n`n%testResult%"
         $result = "✅ Pass"
     } else {
-        $testResultMarkdown = "Your tenant does not have mailbox auditing enabled.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have mailbox auditing enabled.`n`n%testResult%"
         $result = "❌ Fail"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -34,9 +34,9 @@ function Test-MtCisPasswordExpiry {
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant has 1 or more domains which expire passwords:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has 1 or more domains which expire passwords:`n`n%testResult%"
         }
 
         $resultMd = "| Display Name | Domain |`n"
@@ -49,7 +49,7 @@ function Test-MtCisPasswordExpiry {
             $resultMd += "| $($item.Id) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

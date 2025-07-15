@@ -70,7 +70,7 @@ function Test-MtCaEmergencyAccessExists {
             }
         }
 
-        $testResult += "These conditional access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%TestResult%"
+        $testResult += "These conditional access policies don't have the emergency access $EmergencyAccessUUIDType excluded:`n`n%testResult%"
         Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
         return $result
     } catch {

@@ -2,4 +2,4 @@ This test checks if the tenant has at least one conditional access policy requir
 
 See [Require MFA for all users - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa)
 <!--- Results --->
-%TestResult%
+%testResult%

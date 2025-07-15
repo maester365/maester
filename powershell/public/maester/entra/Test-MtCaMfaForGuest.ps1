@@ -61,7 +61,7 @@ function Test-MtCaMfaForGuest {
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for guest accounts:`n`n%TestResult%"
+            $testResult = "The following conditional access policies require multi-factor authentication for guest accounts:`n`n%testResult%"
         } else {
             $testResult = "No conditional access policy requires multi-factor authentication for guest accounts."
         }

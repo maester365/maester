@@ -17,4 +17,4 @@ Mailbox auditing can be managed from the [Exchange Online PowerShell module](htt
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L741)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -34,9 +34,9 @@ function Test-MtCisCustomerLockBox {
         # Set the result to true and pass if no tenants are found with the customer lockbox feature disabled.
         $testResult = ($result | Measure-Object).Count -eq 0
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has the customer lockbox enabled:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has the customer lockbox enabled:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant does not have the customer lockbox enabled:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant does not have the customer lockbox enabled:`n`n%testResult%"
         }
 
         # Prepare the markdown result table if the test fails (testResult is false).
@@ -52,7 +52,7 @@ function Test-MtCisCustomerLockBox {
             }
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

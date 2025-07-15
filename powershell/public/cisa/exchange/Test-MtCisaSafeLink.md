@@ -22,4 +22,4 @@ Rationale: Users may be directed to malicious websites via links in email. Block
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L813)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -36,7 +36,7 @@ function Test-MtCisaAntiSpamAllowList {
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant does not have any [Anti-spam IP allow lists]($portalLink)."
     } else {
-        $testResultMarkdown = "Your tenant has [Anti-spam IP allow lists]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has [Anti-spam IP allow lists]($portalLink).`n`n%testResult%"
         $resultPolicy | ForEach-Object {
             $result = "* $($_.Name)`n"
             $_.IPAllowList | ForEach-Object {`
@@ -45,7 +45,7 @@ function Test-MtCisaAntiSpamAllowList {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

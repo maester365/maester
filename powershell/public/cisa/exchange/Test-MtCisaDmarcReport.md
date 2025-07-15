@@ -17,4 +17,4 @@ See MS.EXO.4.1v1 Instructions for an overview of how to publish and check a DMAR
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L252)
 
 <!--- Results --->
-%TestResult%
+%testResult%

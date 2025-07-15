@@ -22,4 +22,4 @@ Rationale: URLs in emails may direct users to download and run malware. Scanning
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L828)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -18,4 +18,4 @@ To restrict sharing with all domains:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L335)
 
 <!--- Results --->
-%TestResult%
+%testResult%

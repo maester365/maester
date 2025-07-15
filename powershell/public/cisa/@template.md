@@ -12,4 +12,4 @@ Rationale: ...
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/...rego#)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -92,9 +92,9 @@ function Test-MtCisaActivationNotification {
     $resultPass = "✅ Pass"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for [role activations]($link).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for [role activations]($link).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have notifications on [role activations]($link).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have notifications on [role activations]($link).`n`n%testResult%"
     }
 
     $result = "| Role Name | Result |`n"
@@ -107,7 +107,7 @@ function Test-MtCisaActivationNotification {
         }
         $result += "| $($item.role) | $($itemResult) |`n"
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

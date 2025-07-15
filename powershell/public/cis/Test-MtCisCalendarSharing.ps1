@@ -35,9 +35,9 @@ function Test-MtCisCalendarSharing {
 
         $testResult = ($resultPolicies | Measure-Object).Count -eq 0
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled calendar sharing.`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant allows uncontrolled calendar sharing.`n`n%testResult%"
         }
 
         $result = "| Policy Name | Test Result |`n"
@@ -50,7 +50,7 @@ function Test-MtCisCalendarSharing {
             }
             $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
         }
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

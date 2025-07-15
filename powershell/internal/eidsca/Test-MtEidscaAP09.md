@@ -15,4 +15,4 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/UserSettings)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -34,9 +34,9 @@ function Test-MtCisAuditLogSearch {
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has audit log search enabled:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has audit log search enabled:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant does not have audit log search enabled:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant does not have audit log search enabled:`n`n%testResult%"
         }
 
         $resultMd = "| Audit Log Search |`n"
@@ -49,7 +49,7 @@ function Test-MtCisAuditLogSearch {
             $resultMd += "| $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

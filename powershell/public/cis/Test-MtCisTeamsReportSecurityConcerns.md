@@ -61,4 +61,4 @@ New-ReportSubmissionRule -Name DefaultReportSubmissionRule -ReportSubmissionPoli
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 420](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

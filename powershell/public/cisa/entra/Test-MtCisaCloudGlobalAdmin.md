@@ -15,4 +15,4 @@ Rationale: Many privileged administrative users do not need unfettered access to
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L833)
 
 <!--- Results --->
-%TestResult%
+%testResult%

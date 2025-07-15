@@ -32,4 +32,4 @@ The result should return no rules.
 * [Microsoft Secure Score - Set SCL to 0 or higher for domains](https://security.microsoft.com/securescore)
 
 <!--- Results --->
-%TestResult%
+%testResult%

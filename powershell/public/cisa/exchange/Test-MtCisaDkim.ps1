@@ -88,9 +88,9 @@ function Test-MtCisaDkim {
     $portalLink = "https://security.microsoft.com/authentication?viewid=DKIM"
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have DKIM configured and valid records exist.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have DKIM configured and valid records exist.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not have DKIM fully deployed. Review [EXO configuration]($portalLink) and DNS records.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not have DKIM fully deployed. Review [EXO configuration]($portalLink) and DNS records.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -107,7 +107,7 @@ function Test-MtCisaDkim {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

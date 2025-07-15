@@ -88,9 +88,9 @@ function Test-MtCisaDmarcRecordReject {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have a DMARC record with reject policy. Review report targets.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have a DMARC record with reject policy. Review report targets.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not have a DMARC record with reject policy.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not have a DMARC record with reject policy.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -106,7 +106,7 @@ function Test-MtCisaDmarcRecordReject {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($item.dmarcRecord.policy) | $($item.dmarcRecord.policySubdomain) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

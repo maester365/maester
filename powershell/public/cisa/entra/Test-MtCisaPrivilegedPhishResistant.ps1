@@ -42,7 +42,7 @@ function Test-MtCisaPrivilegedPhishResistant {
     $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has one or more policies that require phishing resistant MFA for highly privileged users:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has one or more policies that require phishing resistant MFA for highly privileged users:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have any conditional access policies that require phishing resistant MFA for highly privileged users."
     }

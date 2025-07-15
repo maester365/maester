@@ -50,7 +50,7 @@ function Test-MtCisaBlockLegacyAuth {
     $testResult = ($blockPolicies|Measure-Object).Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant lacks sufficient conditional access policies that block legacy authentication."
     }

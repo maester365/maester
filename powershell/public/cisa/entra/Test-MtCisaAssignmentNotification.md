@@ -25,4 +25,4 @@ Rationale: Closely monitor assignment of the highest privileged roles for signs 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L974)
 
 <!--- Results --->
-%TestResult%
+%testResult%

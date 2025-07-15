@@ -18,4 +18,4 @@ To enable the requirement for write permissions:
 * [Organize your resources with management groups](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview)
 
 <!--- Results --->  
-%TestResult%
+%testResult%

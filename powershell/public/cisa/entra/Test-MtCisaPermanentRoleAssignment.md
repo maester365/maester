@@ -23,4 +23,4 @@ Note: Exceptions to this policy are:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L856)
 
 <!--- Results --->
-%TestResult%
+%testResult%

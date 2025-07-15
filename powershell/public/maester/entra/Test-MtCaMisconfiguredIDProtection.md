@@ -7,4 +7,4 @@ This means if only one type of risk is present (eg Sign-in risk = High, User ris
 
 See [Sign-in risk-based multifactor authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk)
 <!--- Results --->
-%TestResult%
+%testResult%

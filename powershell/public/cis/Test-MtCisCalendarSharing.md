@@ -18,4 +18,4 @@ your organization who have Office 365 or Exchange**.
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 52](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

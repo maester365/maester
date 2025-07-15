@@ -41,4 +41,4 @@ Rationale: Users may inadvertently disclose sensitive information to unauthorize
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L439)
 
 <!--- Results --->
-%TestResult%
+%testResult%

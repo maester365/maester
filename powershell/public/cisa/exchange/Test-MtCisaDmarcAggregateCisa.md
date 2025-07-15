@@ -18,4 +18,4 @@ Rationale: Email spoofing attempts are not inherently visible to domain owners. 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L207)
 
 <!--- Results --->
-%TestResult%
+%testResult%

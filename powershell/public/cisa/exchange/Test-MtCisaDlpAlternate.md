@@ -11,4 +11,4 @@ Rationale: Any alternative DLP solution should be able to detect sensitive infor
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L453)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -17,4 +17,4 @@ Rationale: Limiting applications consent to only specific privileged users reduc
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L575)
 
 <!--- Results --->
-%TestResult%
+%testResult%

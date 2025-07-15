@@ -64,9 +64,9 @@ function Test-MtCisOutboundSpamFilterPolicy {
         $portalLink = 'https://security.microsoft.com/antispam'
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenants default Exchange Online Spam policy set to notify administrators ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenants default Exchange Online Spam policy set to notify administrators ($portalLink).`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenants default Exchange Online Spam policy is not set to notify administrators ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Your tenants default Exchange Online Spam policy is not set to notify administrators ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Check Name | Result |`n"
@@ -79,7 +79,7 @@ function Test-MtCisOutboundSpamFilterPolicy {
             $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

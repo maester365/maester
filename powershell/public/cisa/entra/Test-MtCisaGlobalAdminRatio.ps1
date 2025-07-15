@@ -65,13 +65,13 @@ function Test-MtCisaGlobalAdminRatio {
     $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has more granular [role assignments]($link) than global admin assignments.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has more granular [role assignments]($link) than global admin assignments.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%testResult%"
     }
     $result = "Current Ratio: $([System.Math]::Round($ratio,2)) = $($globalAdministrators.Count) / $($otherAssignments.Count)`n`n"
     $result += "Ratio >= 1 - $($ratio -ge 1)"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

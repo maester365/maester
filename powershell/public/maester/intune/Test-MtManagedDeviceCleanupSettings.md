@@ -20,4 +20,4 @@ To enable device clean-up rules:
 * [Microsoft Intune - Device clean-up rules](https://intune.microsoft.com/?ref=AdminCenter#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/deviceCleanUp)
 
 <!--- Results --->
-%TestResult%
+%testResult%

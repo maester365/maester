@@ -39,7 +39,7 @@ function Test-MtCisaAntiSpamSafeList {
         $testResultMarkdown = "[Safe List]($portalLink) is enabled in your tenant."
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

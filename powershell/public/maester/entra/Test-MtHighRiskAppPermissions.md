@@ -58,4 +58,4 @@ To check the applications permissions:
 * [Microsoft Learn - Graph permissions](https://learn.microsoft.com/en-us/graph/permissions-reference)
 
 <!--- Results --->
-%TestResult%
+%testResult%

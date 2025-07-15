@@ -131,7 +131,7 @@ function Test-ContosoUsersMissingManagers {
         if ($result) {
             $TestResults = "Well done! There were no users with out managers assigned."
         } else {
-            $TestResults += "No managers are assigned for the following users.`n%TestResult%"
+            $TestResults += "No managers are assigned for the following users.`n%testResult%"
         }
 
         Add-MtTestResultDetail -Result $TestResults -GraphObjects $usersWithoutManager -GraphObjectType Users
@@ -180,7 +180,7 @@ Contoso's company policy requires that all users have a manager assigned to them
 
 <!--- Results --->
 
-%TestResult%
+%testResult%
 
 ```
 

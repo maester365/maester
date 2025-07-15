@@ -69,9 +69,9 @@ function Test-MtCisSafeAttachmentsAtpPolicy {
         $portalLink = 'https://security.microsoft.com/safeattachmentv2'
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant does not have Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant does not have Safe Attachments for SharePoint, OneDrive, and Microsoft Teams enabled ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Check Name | Result |`n"
@@ -84,7 +84,7 @@ function Test-MtCisSafeAttachmentsAtpPolicy {
             $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

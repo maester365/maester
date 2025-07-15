@@ -19,4 +19,4 @@ To change the built-in device compliance policy:
 * [Compliance policy settings](https://learn.microsoft.com/de-de/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)
 
 <!--- Results --->
-%TestResult%
+%testResult%

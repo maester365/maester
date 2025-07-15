@@ -42,9 +42,9 @@ function Test-MtCisaDlp {
     $portalLink = "https://purview.microsoft.com/datalossprevention/policies"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [Purview Data Loss Prevention Policies]($portalLink) enabled.`n`n%testResult%"
     }
 
     if ($policies) {
@@ -61,7 +61,7 @@ function Test-MtCisaDlp {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

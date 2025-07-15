@@ -47,9 +47,9 @@ function Test-MtCisaSpamBypass {
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%testResult%"
     }
 
     $result = "| Policy | Status |`n"
@@ -75,7 +75,7 @@ function Test-MtCisaSpamBypass {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -21,4 +21,4 @@ Note: If the toggle slider in step 5 is grayed out, click on **Manage protection
 * [Microsoft Learn - True type matching in the common attachments filter](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-protection-about#true-type-matching-in-the-common-attachments-filter)
 
 <!--- Results --->
-%TestResult%
+%testResult%

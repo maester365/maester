@@ -42,7 +42,7 @@ function Test-MtCisaNotifyHighRisk {
     $testResult = ($notficationRecipients|Measure-Object).Count -ge 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has one or more recipients for notifications of risky user logins:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has one or more recipients for notifications of risky user logins:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have any recipients for notifications of risky user logins."
     }

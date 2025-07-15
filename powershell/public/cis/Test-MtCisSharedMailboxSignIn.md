@@ -19,4 +19,4 @@ Block sign-in to shared mailboxes in the UI:
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 39](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

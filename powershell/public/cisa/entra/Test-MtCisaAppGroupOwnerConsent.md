@@ -17,4 +17,4 @@ Rationale: In M365, group owners and team owners can consent to applications acc
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L665)
 
 <!--- Results --->
-%TestResult%
+%testResult%

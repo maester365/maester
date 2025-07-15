@@ -58,9 +58,9 @@ function Test-MtCisCloudAdmin {
         }
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has no hybrid Global Administrators:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has 1 or more hybrid Global Administrators:`n`n%testResult%"
         }
 
         $resultMd = "| Display Name | Cloud Only |`n"
@@ -72,7 +72,7 @@ function Test-MtCisCloudAdmin {
             }
             $resultMd += "| $($item.displayName) | $($itemResult) |`n"
         }
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

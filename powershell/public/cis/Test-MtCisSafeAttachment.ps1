@@ -73,9 +73,9 @@ function Test-MtCisSafeAttachment {
         $portalLink = 'https://security.microsoft.com/safeattachmentv2'
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenants default safe attachments policy matches CIS recommendations ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenants default safe attachments policy matches CIS recommendations ($portalLink).`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenants default safe attachments policy does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = "Your tenants default safe attachments policy does not match CIS recommendations ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Check Name | Result |`n"
@@ -88,7 +88,7 @@ function Test-MtCisSafeAttachment {
             $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

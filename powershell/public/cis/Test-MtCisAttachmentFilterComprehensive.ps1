@@ -80,9 +80,9 @@ function Test-MtCisAttachmentFilterComprehensive {
 
         $testResult = ($missingExtensionList | Measure-Object).Count -eq 0
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant covers all CIS recommended file attachment extensions:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant covers all CIS recommended file attachment extensions:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant does not cover all CIS recommended file attachment extensions:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant does not cover all CIS recommended file attachment extensions:`n`n%testResult%"
         }
 
         $resultMd = "| Extension Name | Result |`n"
@@ -92,7 +92,7 @@ function Test-MtCisAttachmentFilterComprehensive {
             $resultMd += "| $($item) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

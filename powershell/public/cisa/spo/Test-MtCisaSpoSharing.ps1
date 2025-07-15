@@ -29,14 +29,14 @@ function Test-MtCisaSpoSharing {
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing."
     } else {
-        $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing.`n`n%testResult%"
         $policy | ForEach-Object {
             $result = "* $($_.sharingCapability)`n"
             $result | Out-Null
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

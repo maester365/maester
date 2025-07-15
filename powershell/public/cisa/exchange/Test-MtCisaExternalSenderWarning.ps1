@@ -43,9 +43,9 @@ function Test-MtCisaExternalSenderWarning {
     }
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has an external sender warning.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has an external sender warning.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have an external sender warning.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have an external sender warning.`n`n%testResult%"
     }
 
     if ($rules) {
@@ -75,7 +75,7 @@ function Test-MtCisaExternalSenderWarning {
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

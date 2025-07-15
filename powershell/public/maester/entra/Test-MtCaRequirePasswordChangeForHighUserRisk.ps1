@@ -48,7 +48,7 @@ function Test-MtCaRequirePasswordChangeForHighUserRisk {
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require password change for risky users`n`n%TestResult%"
+            $testResult = "The following conditional access policies require password change for risky users`n`n%testResult%"
         } else {
             $testResult = 'No conditional access policy requires a password change for risky users.'
         }

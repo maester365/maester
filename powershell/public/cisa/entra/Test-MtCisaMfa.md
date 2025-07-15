@@ -16,4 +16,4 @@ If phishing-resistant MFA has not been enforced for all users yet, create a cond
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L214)
 
 <!--- Results --->
-%TestResult%
+%testResult%

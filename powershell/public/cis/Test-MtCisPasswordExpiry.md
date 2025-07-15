@@ -17,4 +17,4 @@ To set Office 365 passwords are set to never expire:
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 43](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
-%TestResult%
+%testResult%

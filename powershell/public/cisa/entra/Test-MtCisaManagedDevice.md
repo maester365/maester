@@ -21,4 +21,4 @@ Create a conditional access policy requiring a user's device to be either Micros
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L397)
 
 <!--- Results --->
-%TestResult%
+%testResult%

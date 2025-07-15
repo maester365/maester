@@ -110,9 +110,9 @@ function Test-MtCisSafeLink {
         $portalLink = 'https://security.microsoft.com/presetSecurityPolicies'
 
         if ($testResult) {
-            $testResultMarkdown = 'Well done. Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) matches CIS recommendations ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = 'Well done. Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) matches CIS recommendations ($portalLink).`n`n%testResult%"
         } else {
-            $testResultMarkdown = 'Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) does not match CIS recommendations ($portalLink).`n`n%TestResult%"
+            $testResultMarkdown = 'Safe link policy' + $priority0Policy.Name + " (Priority 0 policy) does not match CIS recommendations ($portalLink).`n`n%testResult%"
         }
 
         $resultMd = "| Check Name | Result |`n"
@@ -125,7 +125,7 @@ function Test-MtCisSafeLink {
             $resultMd += "| $($item.CheckName) | $($itemResult) |`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

@@ -15,4 +15,4 @@ To set up Microsoft Purview Audit (Premium), see [Set up Microsoft Purview Audit
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L913)
 
 <!--- Results --->
-%TestResult%
+%testResult%

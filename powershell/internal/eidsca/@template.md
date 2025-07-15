@@ -15,4 +15,4 @@ https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
 %PortalDeepLinkMarkdown%
 
 <!--- Results --->
-%TestResult%
+%testResult%

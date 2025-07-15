@@ -58,7 +58,7 @@ function Test-MtCisaPermanentRoleAssignment {
     $testResult = ($roleAssignments.principal|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no active assignments without expiration to privileged roles:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has no active assignments without expiration to privileged roles:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant has active assignments without expiration to privileged roles."
     }

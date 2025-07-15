@@ -18,4 +18,4 @@ This policy is based on the ratio below:
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L792)
 
 <!--- Results --->
-%TestResult%
+%testResult%

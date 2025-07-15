@@ -16,4 +16,4 @@ Follow the link below to restrict Microsoft 365 Group creation to approved users
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

@@ -46,4 +46,4 @@ Set-CsTenantFederationConfiguration -AllowTeamsConsumerInbound $false
 * [GIFShell Attack Lets Hackers Create Reverse Shell through Microsoft Teams GIFs](https://www.bitdefender.com/en-us/blog/hotforsecurity/gifshell-attack-lets-hackers-create-reverse-shell-through-microsoft-teams-gifs)
 
 <!--- Results --->
-%TestResult%
+%testResult%

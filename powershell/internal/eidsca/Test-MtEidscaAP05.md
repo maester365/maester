@@ -15,4 +15,4 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -14,4 +14,4 @@ Rationale: Of the three policy options (i.e., none, quarantine, and reject), rej
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L176)
 
 <!--- Results --->
-%TestResult%
+%testResult%

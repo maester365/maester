@@ -34,9 +34,9 @@ function Test-MtCis365PublicGroup {
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has no public 365 groups:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has no public 365 groups:`n`n%testResult%"
         } else {
-            $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) public 365 groups:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) public 365 groups:`n`n%testResult%"
         }
         # $itemCount is used to limit the number of returned results shown in the table
         $itemCount = 0
@@ -55,7 +55,7 @@ function Test-MtCis365PublicGroup {
             $resultMd += "Results limited to 50`n"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $resultMd
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult

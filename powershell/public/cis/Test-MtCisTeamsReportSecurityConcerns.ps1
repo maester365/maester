@@ -94,12 +94,12 @@ function Test-MtCisTeamsReportSecurityConcerns {
             $result += "| ReportChatMessageToCustomizedAddressEnabled | $($MicrosoftReportPolicy.ReportChatMessageToCustomizedAddressEnabled) | $passResult |`n"
         }
         if ($return) {
-            $testResultMarkdown = "Well done. All report submission policies are configured properly.`n`n%TestResult%"
+            $testResultMarkdown = "Well done. All report submission policies are configured properly.`n`n%testResult%"
         } else {
-            $testResultMarkdown = "All or specific report submission policies are missing proper configuration.`n`n%TestResult%"
+            $testResultMarkdown = "All or specific report submission policies are missing proper configuration.`n`n%testResult%"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $return
     } catch {

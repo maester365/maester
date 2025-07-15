@@ -19,4 +19,4 @@ Rationale: Configuring an admin consent workflow reduces the risk of the previou
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L613)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -459,7 +459,7 @@ function Test-MtHighRiskAppPermissions {
         if ($return) {
             $testResultMarkdown = "Well done. No application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover."
         } else {
-            $testResultMarkdown = "At least one application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover.`n`n%TestResult%"
+            $testResultMarkdown = "At least one application has graph permissions with a risk of having a $($attackPathStr) path to Global Admin and full tenant takeover.`n`n%testResult%"
 
             $result = "| ApplicationName | ApplicationId | PermissionName | PermissionType | AttackPath |`n"
             $result += "| --- | --- | --- | --- | --- |`n"
@@ -467,7 +467,7 @@ function Test-MtHighRiskAppPermissions {
                 $appMdLink = "[$($assignedCriticalPermission.ApplicationName)]($($assignedCriticalPermission.ApplicationUrl))"
                 $result += "| $($appMdLink) | $($assignedCriticalPermission.ApplicationId) | $($assignedCriticalPermission.PermissionName) | $($assignedCriticalPermission.PermissionType) | $($assignedCriticalPermission.AttackPath) |`n"
             }
-            $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+            $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

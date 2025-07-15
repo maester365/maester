@@ -77,12 +77,12 @@ function Test-MtCisThirdPartyAndCustomApps {
         }
 
         if ($return) {
-            $testResultMarkdown = "Well done. All or a majority of third-party and custom apps are blocked.`n`n%TestResult%"
+            $testResultMarkdown = "Well done. All or a majority of third-party and custom apps are blocked.`n`n%testResult%"
         } else {
-            $testResultMarkdown = "All or a majority of third-party or custom apps are allowed.`n`n%TestResult%"
+            $testResultMarkdown = "All or a majority of third-party or custom apps are allowed.`n`n%testResult%"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $return
     } catch {

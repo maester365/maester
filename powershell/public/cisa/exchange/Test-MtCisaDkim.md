@@ -13,4 +13,4 @@ To enable DKIM, follow the instructions listed on [Steps to Create, enable and d
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L107)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -46,11 +46,11 @@ function Test-MtCisThirdPartyFileSharing {
         }
 
         if ($return) {
-            $testResultMarkdown = "Well done. All third-party cloud services are disabled.`n`n%TestResult%"
+            $testResultMarkdown = "Well done. All third-party cloud services are disabled.`n`n%testResult%"
         } else {
-            $testResultMarkdown = "All or specific third-party cloud services are enabled.`n`n%TestResult%"
+            $testResultMarkdown = "All or specific third-party cloud services are enabled.`n`n%testResult%"
         }
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+        $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $return

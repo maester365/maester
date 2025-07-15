@@ -32,4 +32,4 @@ The result should be `False`.
 * [Microsoft Secure Score - Restrict third-party storage services](https://security.microsoft.com/securescore)
 
 <!--- Results --->
-%TestResult%
+%testResult%

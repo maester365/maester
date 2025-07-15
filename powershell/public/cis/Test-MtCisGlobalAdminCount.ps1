@@ -47,7 +47,7 @@ function Test-MtCisGlobalAdminCount {
 
         $testResult = ($globalAdministrators | Measure-Object).Count -ge 2 -and ($globalAdministrators | Measure-Object).Count -le 4
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has two or more and four or fewer Global Administrators:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant has two or more and four or fewer Global Administrators:`n`n%testResult%"
         } else {
             $testResultMarkdown = 'Your tenant does not have the appropriate number of Global Administrators.'
         }

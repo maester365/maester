@@ -20,4 +20,4 @@ Rationale: Suspicious or malicious events, if not resolved promptly, may have a 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L878)
 
 <!--- Results --->
-%TestResult%
+%testResult%

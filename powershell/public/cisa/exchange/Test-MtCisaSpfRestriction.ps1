@@ -67,9 +67,9 @@ function Test-MtCisaSpfRestriction {
     }
 
     if($testResult){
-        $testResultMarkdown = "Well done. Your tenant's domains have a restricted SPF, review authorized senders for accuracy.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's domains have a restricted SPF, review authorized senders for accuracy.`n`n%testResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure all domain's SPF records end in '-all'.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure all domain's SPF records end in '-all'.`n`n%testResult%"
     }
 
     $passResult = "✅ Pass"
@@ -104,7 +104,7 @@ function Test-MtCisaSpfRestriction {
         $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($itemAddressList) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -27,4 +27,4 @@ The result should be `True`.
 * [Microsoft Secure Score - Enable modern authentication](https://security.microsoft.com/securescore)
 
 <!--- Results --->
-%TestResult%
+%testResult%

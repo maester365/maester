@@ -19,4 +19,4 @@ Note: While CISA recommends blocking, the [Microsoft recommendation](https://lea
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L138)
 
 <!--- Results --->
-%TestResult%
+%testResult%

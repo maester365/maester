@@ -15,4 +15,4 @@ Rationale: Application access for the tenant presents a heightened security risk
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L542)
 
 <!--- Results --->
-%TestResult%
+%testResult%

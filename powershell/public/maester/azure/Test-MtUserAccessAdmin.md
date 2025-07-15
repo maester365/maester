@@ -26,4 +26,4 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 
 
 <!--- Results --->
-%TestResult%
+%testResult%

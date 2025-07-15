@@ -6,4 +6,4 @@ Open all app registrations below and remove the secrets.
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

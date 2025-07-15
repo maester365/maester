@@ -19,4 +19,4 @@ If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L254)
 
 <!--- Results --->
-%TestResult%
+%testResult%

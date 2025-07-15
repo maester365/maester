@@ -22,4 +22,4 @@ If SPF is configured, you will see a response resembling `v=spf1 include:spf.pro
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L75)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -31,9 +31,9 @@ function Test-MtCisaCrossTenantInboundDefault {
     }|Measure-Object).Count -eq 1
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant's default cross-tenant inbound access policy is set to block:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant's default cross-tenant inbound access policy is set to block:`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant's default cross-tenant inbound access policy is not set to block:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's default cross-tenant inbound access policy is not set to block:`n`n%testResult%"
     }
 
     $portalLink = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/InboundAccessSettings.ReactView/isDefault~/true/name//id/"
@@ -47,7 +47,7 @@ function Test-MtCisaCrossTenantInboundDefault {
         $applications = "[✅ Pass]($portalLink)"
     }
     $result += "| $usersAndGroups | $applications |`n"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

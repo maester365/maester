@@ -32,4 +32,4 @@ Rationale: Potentially malicious or service impacting events may go undetected w
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L863)
 
 <!--- Results --->
-%TestResult%
+%testResult%

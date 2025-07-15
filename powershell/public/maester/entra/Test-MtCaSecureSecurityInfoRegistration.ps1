@@ -49,7 +49,7 @@ function Test-MtCaSecureSecurityInfoRegistration {
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies secure security info registration.`n`n%TestResult%"
+            $testResult = "The following conditional access policies secure security info registration.`n`n%testResult%"
         } else {
             $testResult = "No conditional access policy securing security info registration."
         }

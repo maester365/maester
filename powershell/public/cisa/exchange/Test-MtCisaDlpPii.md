@@ -43,4 +43,4 @@ Rationale: Users may inadvertently share sensitive information with others who s
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L438)
 
 <!--- Results --->
-%TestResult%
+%testResult%

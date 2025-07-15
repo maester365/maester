@@ -43,9 +43,9 @@ function Test-MtCisaSpamFilter {
     $failResult = "❌ Fail"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant does not have [standard and strict preset security policies]($portalLink).`n`n%testResult%"
     }
 
     $result = "| Policy | Status |`n"
@@ -67,7 +67,7 @@ function Test-MtCisaSpamFilter {
         $result += "| $($item.Identity) | $($item.SpamAction) | $($item.HighConfidenceSpamAction) | $($item.BulkSpamAction) | $($item.PhishSpamAction) |`n"
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

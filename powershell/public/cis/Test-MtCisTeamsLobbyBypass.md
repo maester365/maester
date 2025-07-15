@@ -33,4 +33,4 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "EveryoneInCompanyE
 * [CISA MS.TEAMS.1.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams14v1)
 
 <!--- Results --->
-%TestResult%
+%testResult%

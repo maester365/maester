@@ -72,4 +72,4 @@ Test-ApplicationAccessPolicy -Identity user@contoso.com -AppId $AppID
 ```
 
 <!--- Results --->
-%TestResult%
+%testResult%

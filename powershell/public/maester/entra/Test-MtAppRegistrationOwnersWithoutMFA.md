@@ -19,4 +19,4 @@ App registration owners have powerful permissions that attackers actively target
 Register MFA for all app registration owners listed. Use conditional access policies to enforce MFA for all application owners.
 
 <!--- Results --->
-%TestResult%
+%testResult%

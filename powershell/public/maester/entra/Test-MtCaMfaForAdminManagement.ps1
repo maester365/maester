@@ -76,7 +76,7 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for azure management:`n`n%TestResult%"
+            $testResult = "The following conditional access policies require multi-factor authentication for azure management:`n`n%testResult%"
         } else {
             $testResult = 'No conditional access policy requires multi-factor authentication for azure management resources.'
         }

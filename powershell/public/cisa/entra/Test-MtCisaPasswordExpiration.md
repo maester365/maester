@@ -17,4 +17,4 @@ Configure password policies to set passwords to never expire.
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L723)
 
 <!--- Results --->
-%TestResult%
+%testResult%

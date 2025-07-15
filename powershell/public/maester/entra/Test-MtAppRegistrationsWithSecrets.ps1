@@ -33,7 +33,7 @@ function Test-MtAppRegistrationsWithSecrets {
         if ($return) {
             $testResultMarkdown = 'Well done. No app registrations using secrets.'
         } else {
-            $testResultMarkdown = "You have $($apps.Count) app registrations that still use secrets.`n`n%TestResult%"
+            $testResultMarkdown = "You have $($apps.Count) app registrations that still use secrets.`n`n%testResult%"
 
             Write-Verbose "Found $($apps.Count) app registrations using secrets."
             Write-Verbose 'Creating markdown table for app registrations using secrets.'
@@ -45,7 +45,7 @@ function Test-MtAppRegistrationsWithSecrets {
                 $result += "| $($appMdLink) | $($app.appId) |`n"
                 Write-Verbose "Adding app registration $($app.displayName) with id $($app.appId) to markdown table."
             }
-            $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
+            $testResultMarkdown = $testResultMarkdown -replace '%testResult%', $result
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

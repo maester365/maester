@@ -16,4 +16,4 @@ Otherwise, Conditional Access policies with this user action aren't properly enf
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

@@ -15,4 +15,4 @@ Rationale: Limiting the amount of object information available to guest users in
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L1100)
 
 <!--- Results --->
-%TestResult%
+%testResult%

@@ -22,4 +22,4 @@ Create a conditional access policy enforcing phishing-resistant MFA for highly p
 * [CISA ScubaGear Highly Privileged Roles](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#highly-privileged-roles)
 
 <!--- Results --->
-%TestResult%
+%testResult%

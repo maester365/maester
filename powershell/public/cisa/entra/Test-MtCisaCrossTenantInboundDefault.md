@@ -20,4 +20,4 @@ Rationale: Limiting which domains can be invited to create guest accounts in the
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L1190)
 
 <!--- Results --->
-%TestResult%
+%testResult%

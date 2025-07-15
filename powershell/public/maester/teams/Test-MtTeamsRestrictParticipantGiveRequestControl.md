@@ -20,4 +20,4 @@ To prevent standard attendees from sharing content during Teams meetings:
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

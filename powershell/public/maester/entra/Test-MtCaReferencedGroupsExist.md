@@ -12,4 +12,4 @@ To fix this issue:
 
 <!--- Results --->
 
-%TestResult%
+%testResult%

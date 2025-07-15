@@ -16,4 +16,4 @@ Rationale: SMTP AUTH is not used or needed by modern email clients. Therefore, d
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L306)
 
 <!--- Results --->
-%TestResult%
+%testResult%

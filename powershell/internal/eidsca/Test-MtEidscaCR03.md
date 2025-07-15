@@ -15,4 +15,4 @@ https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/AdminConsentSettings)
 
 <!--- Results --->
-%TestResult%
+%testResult%

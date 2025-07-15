@@ -51,9 +51,9 @@ function Test-MtCisaManagedDeviceRegistration {
     $testResult = ($policies|Measure-Object).Count -ge 1
 
     if ($testResult -and $SkipHybridJoinCheck) {
-        $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device for registration:`n`n%TestResult%"
+        $testResultMarkdown = "Well done, your security posture is more than CISA's recommended control. Your tenant has one or more policies that require a compliant device for registration:`n`n%testResult%"
     } elseif ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device for registration:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device for registration:`n`n%testResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have any conditional access policies that require managed devices for registration."
     }

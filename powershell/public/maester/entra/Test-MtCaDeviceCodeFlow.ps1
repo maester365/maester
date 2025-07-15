@@ -43,10 +43,10 @@ function Test-MtCaDeviceCodeFlow {
         }
 
         if ( $result ) {
-            $testResult = "Well done! The following conditional access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
+            $testResult = "Well done! The following conditional access policies sufficiently cover Device Code authentication flow:`n`n%testResult%"
         } elseif ( $policies ) {
             $policiesResult = $policies
-            $testResult = "None of the following conditional access policies sufficiently cover Device Code authentication flow:`n`n%TestResult%"
+            $testResult = "None of the following conditional access policies sufficiently cover Device Code authentication flow:`n`n%testResult%"
         } else {
             $testResult = 'No conditional access policy found that targets the Device Code authentication flow.'
         }

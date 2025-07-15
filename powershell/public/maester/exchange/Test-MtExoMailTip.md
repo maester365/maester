@@ -26,4 +26,4 @@ The result should be `True`.
 * [Microsoft Secure Score - Enable MailTips](https://security.microsoft.com/securescore)
 
 <!--- Results --->
-%TestResult%
+%testResult%

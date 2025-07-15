@@ -21,4 +21,4 @@ This policy is only applicable if the external sharing slider on the admin page 
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/SharepointConfig.rego#L130)
 
 <!--- Results --->
-%TestResult%
+%testResult%

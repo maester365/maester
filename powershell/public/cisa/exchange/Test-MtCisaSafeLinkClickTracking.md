@@ -22,4 +22,4 @@ Rationale: Users may click on malicious links in emails, leading to compromise o
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L843)
 
 <!--- Results --->
-%TestResult%
+%testResult%

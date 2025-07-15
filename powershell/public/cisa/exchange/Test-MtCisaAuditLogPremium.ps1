@@ -46,9 +46,9 @@ function Test-MtCisaAuditLogPremium {
     # $failResult = "❌ Fail"
 
     # if ($testResult) {
-    #     $testResultMarkdown = "Well done. Your tenant has [SearchQueryInitiated audit log enabled]($portalLink).`n`n%TestResult%"
+    #     $testResultMarkdown = "Well done. Your tenant has [SearchQueryInitiated audit log enabled]($portalLink).`n`n%testResult%"
     # } else {
-    #     $testResultMarkdown = "Your tenant does not have [SearchQueryInitiated audit log enabled]($portalLink).`n`n%TestResult%"
+    #     $testResultMarkdown = "Your tenant does not have [SearchQueryInitiated audit log enabled]($portalLink).`n`n%testResult%"
     # }
 
     # $result = "| Mailbox | SearchQueryInitiated |`n"
@@ -61,7 +61,7 @@ function Test-MtCisaAuditLogPremium {
     #     }
     # }
 
-    # $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    # $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     # Add-MtTestResultDetail -Result $testResultMarkdown
 

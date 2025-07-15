@@ -44,12 +44,12 @@ function Add-MtTestResultDetail {
         # Detailed information of the test result to provide additional context to the user.
         # This can be a summary of the items that caused the test to fail (e.g. list of user names, conditional access policies, etc.).
         # Markdown is supported.
-        # If the test result contains a placeholder %TestResult%, it will be replaced with the values from the $GraphResult
+        # If the test result contains a placeholder %testResult%, it will be replaced with the values from the $GraphResult
         [Parameter(Mandatory = $false)]
         [string] $Result,
 
         # Collection of Graph objects to display in the test results report.
-        # This will be inserted into the contents of Result parameter if the result contains a placeholder %TestResult%.
+        # This will be inserted into the contents of Result parameter if the result contains a placeholder %testResult%.
         [Object[]] $GraphObjects,
 
         # The type of graph object, this will be used to show the right deep-link to the test results report.
@@ -127,8 +127,8 @@ function Add-MtTestResultDetail {
                 if (![string]::IsNullOrEmpty($Result)) {
                     # If a result was provided in the parameter insert it into the markdown content
                     try {
-                        if ($mdResult -match "%TestResult%") {
-                            $mdResult = $mdResult -replace "%TestResult%", $Result
+                        if ($mdResult -match "%testResult%") {
+                            $mdResult = $mdResult -replace "%testResult%", $Result
                         } else {
                             $mdResult = $Result
                         }
@@ -150,7 +150,7 @@ function Add-MtTestResultDetail {
     if ($hasGraphResults) {
         try {
             $graphResultMarkdown = Get-GraphObjectMarkdown -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType
-            $Result = $Result -replace "%TestResult%", $graphResultMarkdown
+            $Result = $Result -replace "%testResult%", $graphResultMarkdown
         } catch {
             Write-Warning "Failed to generate graph object markdown: $($_.Exception.Message)"
             # Continue with original result without graph object markdown

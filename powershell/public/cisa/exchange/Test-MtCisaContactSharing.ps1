@@ -34,9 +34,9 @@ function Test-MtCisaContactSharing {
     $testResult = ($resultPolicies|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled contact sharing.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant does not allow uncontrolled contact sharing.`n`n%testResult%"
     } else {
-        $testResultMarkdown = "Your tenant allows uncontrolled contact sharing.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant allows uncontrolled contact sharing.`n`n%testResult%"
     }
 
     $result = "| Policy Name | Test Result |`n"
@@ -49,7 +49,7 @@ function Test-MtCisaContactSharing {
         }
         $result += "| [$($item.Name)]($portalLink) | $($itemResult) |`n"
     }
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace "%testResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

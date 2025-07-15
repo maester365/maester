@@ -61,7 +61,7 @@ function Test-MtCisaUnmanagedRoleAssignment {
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has no unmanaged active role assignments."
     } else {
-        $testResultMarkdown = "Your tenant has active assignments without a start date:`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has active assignments without a start date:`n`n%testResult%"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 
