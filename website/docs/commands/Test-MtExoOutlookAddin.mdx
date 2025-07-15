@@ -1,0 +1,70 @@
+---
+sidebar_class_name: hidden
+description: Checks if users installing Outlook add-ins is not allowed
+id: Test-MtExoOutlookAddin
+title: Test-MtExoOutlookAddin
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtExoOutlookAddin.ps1
+---
+
+## SYNOPSIS
+
+Checks if users installing Outlook add-ins is not allowed
+
+## SYNTAX
+
+```powershell
+Test-MtExoOutlookAddin [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This command checks if users are able to install add-ins for Outlook in Exchange Online.
+By default, users can install add-ins in their Microsoft Outlook Desktop client, allowing data
+access within the client application.
+Attackers exploit vulnerable or custom add-ins to access user data.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtExoOutlookAddin
+```
+
+Returns true if users are restricted from installing Outlook add-ins.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtExoOutlookAddin](https://maester.dev/docs/commands/Test-MtExoOutlookAddin)

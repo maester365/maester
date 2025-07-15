@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if any Entra ID security principals can create new management groups.
+description: Checks if write permissions are required to create new management groups
 id: Test-MtManagementGroupWriteRequirement
 title: Test-MtManagementGroupWriteRequirement
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if any Entra ID security principals can create new management groups.
+Checks if write permissions are required to create new management groups
 
 ## SYNTAX
 
@@ -20,7 +20,8 @@ Test-MtManagementGroupWriteRequirement [-ProgressAction <ActionPreference>] [<Co
 
 ## DESCRIPTION
 
-Ensure that write permissions are required to create new management groups
+This test ensures that only users with explicit write access can create new management groups.
+This is important to prevent unauthorized creation of management groups which could lead to security risks.
 
 ## EXAMPLES
 

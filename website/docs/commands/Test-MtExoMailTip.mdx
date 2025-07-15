@@ -1,37 +1,37 @@
 ---
 sidebar_class_name: hidden
-description: This function checks if all objects found in policy exclusions are found in policy inclusions.
-id: Test-MtCaGap
-title: Test-MtCaGap
+description: Checks if MailTips are enabled for end users
+id: Test-MtExoMailTip
+title: Test-MtExoMailTip
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaGap.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtExoMailTip.ps1
 ---
 
 ## SYNOPSIS
 
-This function checks if all objects found in policy exclusions are found in policy inclusions.
+Checks if MailTips are enabled for end users
 
 ## SYNTAX
 
 ```powershell
-Test-MtCaGap [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtExoMailTip [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically included
-in another conditional access policy.
-Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
-overlooked exclusions which do not have a fallback.
+MailTips assist end users with identifying strange patterns to emails they send.
+This helps protect against accidental information disclosure and phishing attempts.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCaGap
+Test-MtExoMailTip
 ```
+
+Returns true if MailTips are enabled for end users.
 
 ## PARAMETERS
 
@@ -65,4 +65,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCaGap](https://maester.dev/docs/commands/Test-MtCaGap)
+[https://maester.dev/docs/commands/Test-MtExoMailTip](https://maester.dev/docs/commands/Test-MtExoMailTip)
