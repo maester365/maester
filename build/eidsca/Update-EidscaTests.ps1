@@ -87,7 +87,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
-            valuetype  = 'string'
+            valuetype  = 'int'
         }
     } elseif ($RecommendedValue.StartsWith("<=")) {
         $compareOperator = [PSCustomObject]@{
