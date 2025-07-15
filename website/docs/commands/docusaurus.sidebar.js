@@ -13,6 +13,7 @@ module.exports = [
     'commands/Clear-MtDnsCache',
     'commands/Clear-MtExoCache',
     'commands/Clear-MtGraphCache',
+    'commands/Compare-MtJsonObject',
     'commands/Compare-MtTestResult',
     'commands/Connect-Maester',
     'commands/Convert-MtResultsToFlatObject',
