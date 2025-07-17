@@ -1103,7 +1103,7 @@
     {
       "Id": "MT.1066",
       "Severity": "Medium",
-      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
+      "Title": "Conditional Access policies should not include or exclude non-existent users, groups, or roles."
     },
     {
       "Id": "ORCA.100",
