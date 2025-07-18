@@ -106,7 +106,7 @@
       [string]$TenantId,
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used
-      [string]$GraphClientId
+      [string]$GraphApplicationId
    )
 
    $__MtSession.Connections = $Service
@@ -221,6 +221,9 @@
 
                if ($GraphApplicationId) {
                   $connectParams['ClientId'] = $GraphApplicationId
+                  if (-not $TenantId) {
+                     Write-Host "WARNING: `$TenantId not provided. Graph authentication will use /common multi-tenant endpoint." -ForegroundColor Yellow
+                  }
                }
                if ($TenantId) {
                   $connectParams['TenantId'] = $TenantId
@@ -228,7 +231,7 @@
 
                Connect-MgGraph @connectParams
 
-               # If TenantId wasn't provided, retrieve it from the current context
+               #ensure TenantId
                if (-not $TenantId) {
                   $TenantId = (Get-MgContext).TenantId
                }
