@@ -22,7 +22,7 @@ function Test-MtCaDeviceCodeFlow {
     param ()
 
     try {
-        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' -and $_.conditions.authenticationFlows.transferMethods -contains 'deviceCodeFlow' }
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' -and $_.conditions.authenticationFlows.transferMethods -match 'deviceCodeFlow' }
         $policiesResult = New-Object System.Collections.ArrayList
         $result = $false
 
