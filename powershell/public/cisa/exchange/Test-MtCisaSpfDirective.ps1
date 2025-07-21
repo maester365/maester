@@ -57,7 +57,8 @@ function Test-MtCisaSpfDirective {
                 $spfRecord.reason = "Redirect modifier"
             }
         }else{
-            $spfRecord.reason = "No mechanism targets"
+            #$spfRecord.reason = "No mechanism targets"
+            $spfRecord.reason = "Failure to obtain record"
         }
 
         #Hacky sort, doesn't handle IPv6
