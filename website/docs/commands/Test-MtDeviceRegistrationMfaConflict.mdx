@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: This function checks if MFA during device registration is being enforced in Entra ID settings and in conditional access policies.
+id: Test-MtDeviceRegistrationMfaConflict
+title: Test-MtDeviceRegistrationMfaConflict
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtDeviceRegistrationMfaConflict.ps1
+---
+
+## SYNOPSIS
+
+This function checks if MFA during device registration is being enforced in Entra ID settings and in conditional access policies.
+
+## SYNTAX
+
+```powershell
+Test-MtDeviceRegistrationMfaConflict [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
+When both are enabled, the conditional access policy with the "Register device" user action will not work as expected.
+More information
+can be found at: https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtDeviceRegistrationMfaConflict
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtDeviceRegistrationMfaConflict](https://maester.dev/docs/commands/Test-MtDeviceRegistrationMfaConflict)
