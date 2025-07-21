@@ -1,4 +1,4 @@
-function Test-MtAuthenticationMethodPolicyReferencesValidGroups {
+function Test-MtAuthenticationPolicyReferencedObjectsExist {
 <#
     .Synopsis
     Checks if authentication method policies reference valid groups that exist in the tenant.
@@ -16,10 +16,10 @@ function Test-MtAuthenticationMethodPolicyReferencesValidGroups {
     https://learn.microsoft.com/entra/identity/authentication/concept-authentication-methods
 
     .Example
-    Test-MtAuthenticationMethodPolicyReferencesValidGroups
+    Test-MtAuthenticationPolicyReferencedObjectsExist
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtAuthenticationMethodPolicyReferencesValidGroups
+    https://maester.dev/docs/commands/Test-MtAuthenticationPolicyReferencedObjectsExist
 #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -30,7 +30,7 @@ function Test-MtAuthenticationMethodPolicyReferencesValidGroups {
         return $null
     }
 
-    Write-Verbose 'Running Test-MtAuthenticationMethodPolicyReferencesValidGroups'
+    Write-Verbose 'Running Test-MtAuthenticationPolicyReferencedObjectsExist'
 
     try {
         # Get all authentication method configurations
