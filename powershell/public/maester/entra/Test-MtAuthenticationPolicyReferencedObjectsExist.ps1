@@ -1,4 +1,4 @@
-function Test-MtAuthenticationPolicyReferencedObjectsExist {
+﻿function Test-MtAuthenticationPolicyReferencedObjectsExist {
 <#
     .Synopsis
     Checks if authentication method policies reference valid groups that exist in the tenant.
