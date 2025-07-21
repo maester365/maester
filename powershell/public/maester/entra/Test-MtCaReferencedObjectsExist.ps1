@@ -11,7 +11,9 @@ function Test-MtCaReferencedObjectsExist {
     The test examines:
     - Include/exclude users in conditional access policies
     - Include/exclude groups in conditional access policies
-    - Include/exclude roles in conditional access policies (role definition IDs)  Learn more:
+    - Include/exclude roles in conditional access policies (role definition IDs)
+
+    Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-users-groups
 
     .Example

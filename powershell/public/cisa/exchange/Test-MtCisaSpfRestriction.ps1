@@ -37,18 +37,19 @@ function Test-MtCisaSpfRestriction {
         $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
         if($spfRecord.spfRecord.GetType().Name -eq "SPFRecord"){
-            if($spfRecord.spfRecord.terms[-1].directive -eq "-all"){
+            if ($spfRecord.spfRecord.terms[-1].directive -eq "-all"){
                 $spfRecord.pass = "Passed"
                 $spfRecord.reason = "Last directive is '-all'"
-            }elseif($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
+            } elseif ($spfRecord.spfRecord.terms[-1].modifier -eq "redirect"){
                 $spfRecord.pass = "Skipped"
                 $spfRecord.reason = "Redirect modifier"
             }
-        }elseif($spfRecord.spfRecord -like "*not available"){
+        } elseif ($spfRecord.spfRecord -like "*not available"){
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = $spfRecord.spfRecord
-        }else{
-            $spfRecord.reason = "Last directive is not '-all'"
+        } else {
+            #$spfRecord.reason = "Last directive is not '-all'"
+            $spfRecord.reason = "Failure to obtain record"
         }
 
         #Hacky sort, doesn't handle IPv6

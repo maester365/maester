@@ -1,50 +1,60 @@
 ---
 sidebar_class_name: hidden
-description: Checks if the user is blocked from using legacy authentication
-id: Test-MtCaWIFBlockLegacyAuthentication
-title: Test-MtCaWIFBlockLegacyAuthentication
+description: Get the deep link to the Microsoft Entra admin portal for a specific Graph object type.
+id: Get-MtLinkServicePrincipal
+title: Get-MtLinkServicePrincipal
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaWIFBlockLegacyAuthentication.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtLinkServicePrincipal.ps1
 ---
 
 ## SYNOPSIS
 
-Checks if the user is blocked from using legacy authentication
+Get the deep link to the Microsoft Entra admin portal for a specific Graph object type.
 
 ## SYNTAX
 
 ```powershell
-Test-MtCaWIFBlockLegacyAuthentication [-UserId] <String> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Get-MtLinkServicePrincipal [-ServicePrincipal] <Object> [[-Blade] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Checks if the user is blocked from using legacy authentication using the Conditional Access WhatIf Graph API endpoint.
+\{\{ Fill in the Description \}\}
 
 ## EXAMPLES
 
-### EXAMPLE 1
-
-```powershell
-Test-MtCaWIFBlockLegacyAuthentication -UserId "e7417ac7-0485-4014-9100-33163bd6211f"
-```
-
 ## PARAMETERS
 
-### -UserId
+### -ServicePrincipal
 
-The UserId to test the Conditional Access policies with
+\{\{ Fill ServicePrincipal Description \}\}
 
 ```yaml
-Type: String
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Blade
+
+The blade to use for the link, defaults to "Overview"
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: Overview
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -73,10 +83,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Boolean
+### System.String
 
 ## NOTES
 
 ## RELATED LINKS
-
-[https://maester.dev/docs/commands/Test-MtCaWIFBlockLegacyAuthentication](https://maester.dev/docs/commands/Test-MtCaWIFBlockLegacyAuthentication)
