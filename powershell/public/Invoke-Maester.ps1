@@ -183,7 +183,11 @@ function Invoke-Maester {
 
         # Do not show the Maester logo.
         [Parameter(HelpMessage = 'Do not show the logo when starting Maester.')]
-        [switch] $NoLogo
+        [switch] $NoLogo,
+
+        # Drift tests
+        [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
+        [string] $DriftRoot
     )
 
     function GetDefaultFileName() {
@@ -363,6 +367,21 @@ function Invoke-Maester {
         Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
         Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
         return
+    }
+
+    # If DriftRoot is specified, set the environment variable for drift tests
+    if ($DriftRoot) {
+        $DriftRoot = (Resolve-Path -Path $DriftRoot -ErrorAction SilentlyContinue).Path
+        if (-not (Test-Path -Path $DriftRoot)) {
+            Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist." -ForegroundColor Red
+
+        } else {
+            Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $DriftRoot
+            Write-Verbose "🧪 Drift root directory set to: $DriftRoot"
+        }
+    } else {
+        # Default drift root directory
+        # Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
     }
 
     $maesterResults = $null
