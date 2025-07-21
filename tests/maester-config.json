@@ -1106,6 +1106,11 @@
       "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
     },
     {
+      "Id": "MT.1067",
+      "Severity": "Medium",
+      "Title": "Authentication methods policies should not reference deleted groups."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
