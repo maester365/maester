@@ -31,17 +31,18 @@ BeforeAll {
 # This allows the user to "define" drift tests by creating folders in the "drift" directory.
 BeforeDiscovery {
 
-    # Ensure the Compare-MtJsonObject function is available
-    if (-not (Get-Command -Name Compare-MtJsonObject -ErrorAction SilentlyContinue)) {
-        Write-Warning "Compare-MtJsonObject function missing, not the right version of Maester?"
+    # Get root directory for drift tests
+    # This assumes the drift tests are located in a folder named "drift" at the root of the current location
+    # $driftRoot = Join-Path -Path $(Get-Location) -ChildPath "drift"
+    $driftRoot = $env:MEASTER_FOLDER_DRIFT
+    # Ensure the drift root directory exists
+    if ($null -eq $driftRoot -or -not (Test-Path -Path $driftRoot)) {
         return $null
     }
 
-    # Get root directory for drift tests
-    # This assumes the drift tests are located in a folder named "drift" at the root of the current location
-    $driftRoot = Join-Path -Path $(Get-Location) -ChildPath "drift"
-    # Ensure the drift root directory exists
-    if (-not (Test-Path -Path $driftRoot)) {
+    # Ensure the Compare-MtJsonObject function is available
+    if (-not (Get-Command -Name Compare-MtJsonObject -ErrorAction SilentlyContinue)) {
+        Write-Warning "Compare-MtJsonObject function missing, not the right version of Maester?"
         return $null
     }
 
