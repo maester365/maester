@@ -62,6 +62,11 @@
 
    Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
+.EXAMPLE
+Connect-Maester -TenantId "4e285730-281f-42a2-bdfd-e766394e85d0" -GraphClientId "f45ec3ad-32f0-4c06-8b69-47682afe0216"
+
+Connects to the tenant 4e285730-281f-42a2-bdfd-e766394e85d0 using app registration with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -105,8 +110,8 @@
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
 
-      # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used
-      [string]$GraphApplicationId
+      # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+      [string]$GraphClientId
    )
 
    $__MtSession.Connections = $Service
@@ -220,10 +225,7 @@
                }
 
                if ($GraphApplicationId) {
-                  $connectParams['ClientId'] = $GraphApplicationId
-                  if (-not $TenantId) {
-                     Write-Host "WARNING: `$TenantId not provided. Graph authentication will use /common multi-tenant endpoint." -ForegroundColor Yellow
-                  }
+                  $connectParams['ClientId'] = $GraphClientId
                }
                if ($TenantId) {
                   $connectParams['TenantId'] = $TenantId
