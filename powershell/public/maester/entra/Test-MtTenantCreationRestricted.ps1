@@ -1,3 +1,16 @@
+<#
+.SYNOPSIS
+    Tests if Entra ID tenant creation is restricted to admin users.
+.DESCRIPTION
+    This function checks if the Entra ID tenant creation is restricted to admin users by querying the authorization policy settings.
+.OUTPUTS
+    [bool] - Returns $true if tenant creation is restricted to admin users, otherwise returns $false.
+.EXAMPLE
+    Test-MtTenantCreationRestricted
+.LINK
+    https://maester.dev/docs/commands/Test-MtTenantCreationRestricted
+#>
+
 function Test-MtTenantCreationRestricted {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -21,7 +34,7 @@ function Test-MtTenantCreationRestricted {
         # Check if defaultUserRolePermissions exists and get the allowedToCreateTenants setting
         if ($null -ne $settings.defaultUserRolePermissions) {
             $allowedToCreateTenants = $settings.defaultUserRolePermissions.allowedToCreateTenants
-            
+
             # If allowedToCreateTenants is false, then tenant creation is restricted
             $tenantCreationRestricted = ($allowedToCreateTenants -eq $false)
         } else {
