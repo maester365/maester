@@ -46,6 +46,27 @@ New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName f
 </details>
 
 <details>
+  <summary>(Optional) Grant permissions to Teams</summary>
+### (Optional) Grant permissions to Teams
+
+The Teams Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
+
+> The Teams permissions are necessary to support tests that validate [Teams configurations](https://maester.dev/docs/installation#installing-azure-exchange-online-and-teams-modules).
+
+- Open Roles and administrators
+- Search and select **Teams Reader**
+- Select **Add assigment**
+- Select **No member selected**
+- Search for the name of previously created application
+- Select previously created application and select **Select** to confirm
+- Select **Next** to confirm
+- Ensure that **Active** and **Permanently assigned** are ticked
+- Enter **Justification**
+- Select **Assign** to confirm
+
+</details>
+
+<details>
   <summary>(Optional) Grant permissions to Azure</summary>
 ### (Optional) Grant permissions to Azure
 

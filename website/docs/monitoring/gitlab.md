@@ -77,9 +77,13 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
 - Select **CI/CD** > **Variables** > **CI/CD Variables**
 - Add the three secrets listed below by selecting **Add variable**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
+  - Visibility: Visible, Key: **AZURE_TENANT_NAME**, Value: The primary domain name of the Entra tenant
   - Visibility: Visible, Key: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
   - Visibility: Visible, Key: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
   - Visibility: Masked and hidden, Key: **AZURE_CLIENT_SECRET**, Value: The client secret you copied in the previous step
+  - Visibility: Visible, Key: **CONNECTION_EXCHANGE**, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
+  - Visibility: Visible, Key: **CONNECTION_IPP**, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
+  - Visibility: Visible, Key: **CONNECTION_TEAMS**, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
 - Save each secret by selecting **Add variable** at the bottom.
 
 ### Create .gitlab-ci.yml file (or use pipeline editor)
@@ -100,6 +104,10 @@ run_maester_tests_inline:
     TENANTID: $AZURE_TENANT_ID
     CLIENTID: $AZURE_CLIENT_ID
     CLIENTSECRET: $AZURE_CLIENT_SECRET
+    CONNECTION_EXCHANGE: $CONNECTION_EXCHANGE
+    CONNECTION_IPP: $CONNECTION_IPP
+    CONNECTION_TEAMS: $CONNECTION_TEAMS
+
   before_script:
     - mkdir test-results
     - mkdir public-tests
@@ -107,19 +115,14 @@ run_maester_tests_inline:
   script:
     - |
       pwsh -Command '
-        # Connect to Microsoft Graph
-        $clientSecret = ConvertTo-SecureString -AsPlainText $env:AZURE_CLIENT_SECRET -Force
-        [pscredential] $clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:AZURE_CLIENT_ID, $clientSecret)
-        Connect-MgGraph -TenantId $env:AZURE_TENANT_ID -ClientSecretCredential $clientSecretCredential -NoWelcome
-
         # Install Maester
         #Install-Module Maester -AllowPrerelease -Force
         Install-Module Maester -Force
 
         # Latest public tests
-        cd public-tests
+        Set-Location public-tests
         Install-MaesterTests
-        cd ..
+        Set-Location ..
 
         # Configure test results
         $PesterConfiguration = New-PesterConfiguration
@@ -127,26 +130,94 @@ run_maester_tests_inline:
         Write-Host "Pester verbosity level set to: $($PesterConfiguration.Output.Verbosity.Value)"
 
         $MaesterParameters = @{
-          Path                 = "public-tests"
-          PesterConfiguration  = $PesterConfiguration
-          OutputFolder         = "test-results"
-          OutputFolderFileName = "test-results"
-          PassThru             = $true
+            Path                 = "public-tests"
+            PesterConfiguration  = $PesterConfiguration
+            OutputFolder         = "test-results"
+            OutputFolderFileName = "test-results"
+            PassThru             = $true
         }
 
-        #$MaesterParameters.Add("DisableTelemetry", $true )
-        Write-Host "Pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+        $MaesterParameters.Add("DisableTelemetry", $false )
+        Write-Host "Disable pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+
+        $AdditionalConnections = @{
+            Exchange      = [System.Convert]::ToBoolean($env:CONNECTION_EXCHANGE)
+            IPP           = [System.Convert]::ToBoolean($env:CONNECTION_IPP)
+            Teams         = [System.Convert]::ToBoolean($env:CONNECTION_TEAMS)
+        }
+
+        Write-Host "Additional connections configuration:"
+        $AdditionalConnections.GetEnumerator() | ForEach-Object {
+            Write-Host "  $($_.Key): $($_.Value)"
+        }
+
+        # Connect to Microsoft Graph
+        $clientSecret = ConvertTo-SecureString -AsPlainText $env:AZURE_CLIENT_SECRET -Force
+        [pscredential] $clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:AZURE_CLIENT_ID, $clientSecret)
+        Connect-MgGraph -TenantId $env:AZURE_TENANT_ID -ClientSecretCredential $clientSecretCredential -NoWelcome
+
+        # Connect to Exchange Online and IPP
+        Write-Host "Disable pester telemetry set to: $($MaesterParameters.DisableTelemetry)"
+        if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.IPP -eq $true) {
+            # Can be reduced after release from version 3.8.2
+            if ($AdditionalConnections.Ipp -eq $false) {
+                Install-Module -Name ExchangeOnlineManagement -Force
+            } else {
+                Install-Module -Name ExchangeOnlineManagement -Force -AllowPrereleas #-AllowPrereleas because accesstoken Auth to IPP is only allowed in 3.8.1-Preview1 and newer
+            }
+
+            $tokenBody = @{
+                Grant_Type    = "client_credentials"
+                Scope         = "https://outlook.office365.com/.default"
+                Client_Id     = $env:AZURE_CLIENT_ID
+                Client_Secret = $env:AZURE_CLIENT_SECRET
+
+            }
+            $tokenResponse = Invoke-RestMethod -Uri https://login.microsoftonline.com/$env:AZURE_TENANT_ID/oauth2/v2.0/token -Method POST -Body $tokenBody
+
+            if ($AdditionalConnections.Exchange -eq $true) {
+                Connect-ExchangeOnline -AccessToken $tokenResponse.access_token -Organization $env:AZURE_TENANT_NAME
+            }
+
+            if ($AdditionalConnections.Ipp -eq $true) {
+                Connect-IPPSSession -AccessToken $tokenResponse.access_token -Organization $env:AZURE_TENANT_NAME
+            }
+
+        }
+
+        # Connect to Microsoft Teams
+        if ($AdditionalConnections.Teams -eq $true) {
+            Install-Module -Name MicrosoftTeams -Force
+
+            $graphtokenBody = @{
+            Grant_Type    = "client_credentials"
+            Scope         = "https://graph.microsoft.com/.default"
+            Client_Id     = $env:AZURE_CLIENT_ID
+            Client_Secret = $env:AZURE_CLIENT_SECRET
+            }
+            $graphToken = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$env:AZURE_TENANT_ID/oauth2/v2.0/token" -Method POST -Body $graphtokenBody | Select-Object -ExpandProperty Access_Token
+
+            $teamstokenBody = @{
+            Grant_Type    = "client_credentials"
+            Scope         = "48ac35b8-9aa8-4d74-927d-1f4a14a0b239/.default"
+            Client_Id     = $env:AZURE_CLIENT_ID
+            Client_Secret = $env:AZURE_CLIENT_SECRET
+            }
+            $teamsToken = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$env:AZURE_TENANT_ID/oauth2/v2.0/token" -Method POST -Body $teamstokenBody | Select-Object -ExpandProperty Access_Token
+
+            Connect-MicrosoftTeams -AccessTokens @("$graphToken", "$teamsToken")
+        }
 
         # Run Maester tests
         #$results = Invoke-Maester -Path public-tests -PesterConfiguration $PesterConfiguration -OutputFolder test-results -OutputFolderFileName "test-results" -PassThru
         $results = Invoke-Maester @MaesterParameters
 
         # View summary report
-        $results | fl Result, FailedCount, PassedCount, SkippedCount, TotalCount, TenantId, TenantName, CurrentVersion, LatestVersion
+        $results | Format-List Result, FailedCount, PassedCount, SkippedCount, TotalCount, TenantId, TenantName, CurrentVersion, LatestVersion
 
         # Flag status to GitLab
         if ($results.Result -ne "Passed") {
-          Write-Warning "Status = $($results.Result): see Maester Test Report for details."
+            Write-Warning "Status = $($results.Result): see Maester Test Report for details."
         }
       '
   after_script:
