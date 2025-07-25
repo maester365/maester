@@ -34,7 +34,7 @@ Maester includes optional [CISA](tests/cisa/) tests that require additional perm
 ```powershell
 Install-Module Az.Accounts -Scope CurrentUser
 Install-Module ExchangeOnlineManagement -Scope CurrentUser
-Install-Module -Name MicrosoftTeams -Scope CurrentUser
+Install-Module MicrosoftTeams -Scope CurrentUser
 ```
 
 > The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
