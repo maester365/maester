@@ -47,7 +47,7 @@ To be able to declare Microsoft Graph resources in a Bicep file, you need to ena
     },
     // specify an alias for the version of the v1.0 dynamic types package you want to use
     "extensions": {
-      "microsoftGraphV1_0": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:0.1.8-preview"
+      "microsoftGraphV1": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:1.0.0"
     }
 }
 ```
@@ -109,7 +109,7 @@ metadata description = 'Deploys Maester Automation Account with modules and runb
 metadata owner = 'Maester'
 targetScope = 'subscription'
 
-extension microsoftGraphV1_0
+extension microsoftGraphV1
 
 @description('Defing our input parameters')
 param __env__ string
@@ -267,7 +267,7 @@ The ```aa-advanced.bicep``` module file automates the configuration of the Maest
 
 
 ```bicep
-extension microsoftGraphV1_0
+extension microsoftGraphV1
 param __location__ string
 param __maesterAppRoles__ array
 param __maesterAutomationAccountModules__ array
@@ -362,7 +362,7 @@ param __location__ string
 param _appServiceName_ string
 param _appServicePlanName_ string
 param __ouMaesterAutomationMiId__ string
-extension microsoftGraphV1_0
+extension microsoftGraphV1
 
 @description('Role Assignments Deployment')
 resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
