@@ -45,7 +45,7 @@ To be able to declare Microsoft Graph resources in a Bicep file, you need to ena
     },
     // specify an alias for the version of the v1.0 dynamic types package you want to use
     "extensions": {
-      "microsoftGraphV1_0": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:1.0.0"
+      "microsoftGraphV1": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:1.0.0"
     }
 }
 ```
