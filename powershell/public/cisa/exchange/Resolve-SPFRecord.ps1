@@ -150,6 +150,8 @@ function Resolve-SPFRecord {
                             # Check for SPF records that include themselves, it will lead to an infinite loop => ** explosion **
                             if ( $Name -ne $IncludeTarget ) {
                                 Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name
+                            } else {
+                                return "Self-referencing SPF directive"
                             }
                         }
                         '^ip[46]:.*$' {
