@@ -50,6 +50,7 @@ module.exports = [
     'commands/Test-MtAppManagementPolicyEnabled',
     'commands/Test-MtAppRegistrationOwnersWithoutMFA',
     'commands/Test-MtAppRegistrationsWithSecrets',
+    'commands/Test-MtAuthenticationPolicyReferencedObjectsExist',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',
     'commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
