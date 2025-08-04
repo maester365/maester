@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Tests if Entra ID device join is restricted to selected users/groups or disabled.
 .DESCRIPTION
