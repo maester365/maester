@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Tests if Entra ID tenant creation is restricted to admin users.
 .DESCRIPTION
