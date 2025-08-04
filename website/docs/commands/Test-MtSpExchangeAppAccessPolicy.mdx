@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Check if service principals with Exchange permissions have application access policies configured.
+id: Test-MtSpExchangeAppAccessPolicy
+title: Test-MtSpExchangeAppAccessPolicy
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtSpExchangeAppAccessPolicy.ps1
+---
+
+## SYNOPSIS
+
+Check if service principals with Exchange permissions have application access policies configured.
+
+## SYNTAX
+
+```powershell
+Test-MtSpExchangeAppAccessPolicy [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Service principals with Exchange permissions can access all mailboxes by default.
+This test verifies that proper access policies are in place.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtSpExchangeAppAccessPolicy
+```
+
+Returns true if all service principals with Exchange permissions have access policies configured
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy](https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy)
