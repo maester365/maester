@@ -35,21 +35,24 @@ function Test-MtEntraDeviceJoinRestricted {
         if ($null -ne $settings.azureADJoin -and $null -ne $settings.azureADJoin.allowedToJoin) {
             $allowedToJoinType = $settings.azureADJoin.allowedToJoin.'@odata.type'
             Write-Verbose "Found azureADJoin.allowedToJoin @odata.type: '$allowedToJoinType'"
-            
+
             switch ($allowedToJoinType) {
                 '#microsoft.graph.enumeratedDeviceRegistrationMembership' {
                     $deviceJoinRestricted = $true
                     Write-Verbose 'Device join is restricted to selected users/groups'
-                    
+
+                    $deviceJoinValue = 'Selected users/groups can join devices.'
+                    $statusValue = '✅'
+
                     # Get details about allowed users and groups
                     $allowedUsers = if ($settings.azureADJoin.allowedToJoin.users) { $settings.azureADJoin.allowedToJoin.users } else { @() }
                     $allowedGroups = if ($settings.azureADJoin.allowedToJoin.groups) { $settings.azureADJoin.allowedToJoin.groups } else { @() }
-                    
+
                     Write-Verbose "Allowed users: $($allowedUsers.Count), Allowed groups: $($allowedGroups.Count)"
-                    
+
                     # Build table for allowed objects with display names
                     $allowedObjects = @()
-                    
+
                     # Add users to the list - get display names
                     foreach ($userId in $allowedUsers) {
                         try {
@@ -69,7 +72,7 @@ function Test-MtEntraDeviceJoinRestricted {
                             }
                         }
                     }
-                    
+
                     # Add groups to the list - get display names
                     foreach ($groupId in $allowedGroups) {
                         try {
@@ -89,16 +92,22 @@ function Test-MtEntraDeviceJoinRestricted {
                             }
                         }
                     }
-                    
+
                     $restrictionSummary = "Selected users/groups ($($allowedUsers.Count) users, $($allowedGroups.Count) groups)"
                 }
                 '#microsoft.graph.noDeviceRegistrationMembership' {
+                    $deviceJoinValue = 'None. No users can join devices.'
+                    $statusValue = '✅'
+
                     $deviceJoinRestricted = $true
                     $restrictionSummary = 'Completely disabled (no users can join)'
                     $allowedObjects = @()
                     Write-Verbose 'Device join is disabled (no users can join)'
                 }
                 '#microsoft.graph.allDeviceRegistrationMembership' {
+                    $deviceJoinValue = 'All users can join devices.'
+                    $statusValue = '❌'
+
                     $deviceJoinRestricted = $false
                     $restrictionSummary = 'Unrestricted (all users can join)'
                     $allowedObjects = @()
@@ -117,14 +126,20 @@ function Test-MtEntraDeviceJoinRestricted {
             Write-Warning 'Could not find azureADJoin configuration in device registration policy'
             # If we can't determine the setting, assume unrestricted (fail-safe)
             $deviceJoinRestricted = $false
+            $deviceJoinValue = 'All users can join devices.'
+            $statusValue = '❌'
             $restrictionSummary = 'Configuration not found'
             $allowedObjects = @()
         }
 
+        $statusMarkdown = "`n`n|Setting|Value|Status|`n|---|---|---|`n"
+        $statusMarkdown += "|[Users may join devices to Microsoft Entra](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview)|$deviceJoinValue|$statusValue|`n`n"
+
         # Build the test result markdown
         if ($deviceJoinRestricted) {
-            $testResultMarkdown = "Well done. Device join is restricted. Configuration: $restrictionSummary"
-            
+            $testResultMarkdown += "Well done. Device join is restricted.`n`nConfiguration: $restrictionSummary"
+
+            $testResultMarkdown += $statusMarkdown
             # Add table of allowed users/groups if any exist
             if ($allowedObjects.Count -gt 0) {
                 $testResultMarkdown += "`n`n**Allowed Users and Groups:**`n`n| Type | Name |`n| --- | --- |`n"
@@ -132,11 +147,13 @@ function Test-MtEntraDeviceJoinRestricted {
                     $testResultMarkdown += "| $($obj.Type) | $($obj.DisplayName) |`n"
                 }
             }
-            
+
             Add-MtTestResultDetail -Result $testResultMarkdown
         } else {
             $testResultMarkdown = "Device join is not restricted and all users may be able to join devices to Entra ID. Configuration: $restrictionSummary"
-            Add-MtTestResultDetail -Result $testResultMarkdown 
+
+            $testResultMarkdown += $statusMarkdown
+            Add-MtTestResultDetail -Result $testResultMarkdown
         }
 
         Write-Verbose "Test result: Device join restricted = $deviceJoinRestricted"
