@@ -42,12 +42,21 @@ function Test-MtTenantCreationRestricted {
         }
 
         if ($tenantCreationRestricted) {
+            $value = 'Yes'
+            $status = '✅'
             $testResultMarkdown = "Well done. Entra ID tenant creation is restricted to admin users."
-            Add-MtTestResultDetail -Result $testResultMarkdown
         } else {
+            $value = 'No'
+            $status = '❌'
             $testResultMarkdown = "Entra ID tenant creation is not restricted and non-admin users may be able to create tenants."
-            Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthorizationPolicy -GraphObjects $settings
         }
+
+        $testResultMarkdown += "`n`n"
+        $testResultMarkdown += "| Setting | Value | Status |`n"
+        $testResultMarkdown += "|---------|-------|-------|`n"
+        $testResultMarkdown += "| [Restrict non-admin users from creating tenants](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/) | $value | $status |`n"
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
 
         return $tenantCreationRestricted
 

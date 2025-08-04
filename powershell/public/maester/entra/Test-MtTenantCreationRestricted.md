@@ -10,7 +10,7 @@ This setting can be changed via user settings in the Microsoft Entra or Azure po
 
 Admin Portal:
 1. Go to https://entra.microsoft.com (sign in as Global Admin)
-2. Navigate to Users → User settings
+2. Navigate to Users → [User settings](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)
 3. Find "Restrict non-admin users from creating tenants" setting
 4. Change from "No" to "Yes"
 5. Click Save
