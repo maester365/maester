@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Tests if security group creation is restricted to admin users.
 .DESCRIPTION
