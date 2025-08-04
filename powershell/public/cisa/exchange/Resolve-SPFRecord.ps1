@@ -146,7 +146,13 @@ function Resolve-SPFRecord {
                         }
                         '^include:.*$' {
                             # Follow the include and resolve the include
-                            Resolve-SPFRecord -Name ( $SPFDirective -replace "^include:" ) -Server $Server -Referrer $Name
+                            $IncludeTarget = ( $SPFDirective -replace "^include:" )
+                            # Check for SPF records that include themselves, it will lead to an infinite loop => ** explosion **
+                            if ( $Name -ne $IncludeTarget ) {
+                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name
+                            } else {
+                                return "Self-referencing SPF directive"
+                            }
                         }
                         '^ip[46]:.*$' {
                             Write-Verbose "[IP]`tSPF entry: $SPFDirective"
