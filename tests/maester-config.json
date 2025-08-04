@@ -1108,7 +1108,27 @@
     {
       "Id": "MT.1066",
       "Severity": "Medium",
-      "Title": "Conditional Access policies should not include or exclude non-existent users, groups, or roles."
+      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
+    },
+    {
+      "Id": "MT.1067",
+      "Severity": "Medium",
+      "Title": "Authentication methods policies should not reference deleted groups."
+    },
+    {
+      "Id": "MT.1068",
+      "Severity": "Medium",
+      "Title": "Restrict non-admin users from creating tenants"
+    },
+    {
+      "Id": "MT.1069",
+      "Severity": "Low",
+      "Title": "Restrict non-admin users from creating security groups."
+    },
+    {
+      "Id": "MT.1070",
+      "Severity": "Medium",
+      "Title": "Restrict device join to selected users/groups or none."
     },
     {
       "Id": "ORCA.100",

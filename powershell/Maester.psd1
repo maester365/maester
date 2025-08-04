@@ -78,7 +78,7 @@ FormatsToProcess = @('Maester.Format.ps1xml')
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-MtTestResultDetail',
     'Clear-MtDnsCache', 'Clear-MtExoCache', 'Clear-MtGraphCache',
-    'Compare-MtTestResult',
+    'Compare-MtJsonObject', 'Compare-MtTestResult',
     'Connect-Maester',
     'Convert-MtResultsToFlatObject', 'ConvertFrom-MailAuthenticationRecordDkim',
     'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordMx',
@@ -92,6 +92,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtGraphRequest',
     'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
+    'Test-MtAuthenticationPolicyReferencedObjectsExist',
     'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
     'Test-MtCaBlockLegacyOtherAuthentication', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
     'Test-MtCaDeviceCodeFlow', 'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaDeviceComplianceExists',
@@ -155,6 +156,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243',
     'Test-ORCA244', 'Update-MaesterTests', 'Test-MtAppRegistrationOwnersWithoutMFA',
     'Test-MtManagementGroupWriteRequirement', 'Test-MtDeviceRegistrationMfaConflict', 'Test-MtVaultSoftDelete'
+    'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
