@@ -41,6 +41,7 @@ function Test-MtVaultSoftDelete {
         $subId = $sub.subscriptionId
 
         try {
+            Write-Verbose "Getting vaults from sub: $subId"
             $vaultsResponse = Invoke-MtAzureRequest `
                 -RelativeUri "/subscriptions/$subId/providers/Microsoft.RecoveryServices/vaults" `
                 -ApiVersion "2023-04-01"
