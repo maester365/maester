@@ -232,6 +232,7 @@ module.exports = [
     'commands/Test-MtHighRiskAppPermissions',
     'commands/Test-MtManagedDeviceCleanupSettings',
     'commands/Test-MtManagementGroupWriteRequirement',
+    'commands/Test-MtVaultSoftDelete',
     'commands/Test-MtPimAlertsExists',
     'commands/Test-MtPrivPermanentDirectoryRole',
     'commands/Test-MtSpExchangeAppAccessPolicy',

@@ -1101,6 +1101,11 @@
       "Title": "Management group creation should be limited to users with explicit write access"
     },
     {
+      "Id": "MT.1065",
+      "Severity": "High",
+      "Title": "Soft Delete should be enabled on all Recovery Services Vaults"
+    },
+    {
       "Id": "MT.1066",
       "Severity": "Medium",
       "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
