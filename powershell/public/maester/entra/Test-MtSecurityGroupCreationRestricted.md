@@ -1,8 +1,10 @@
-This test checks if tenant creation is restricted to admin users only.
+## Description
 
-"Yes" restricts the creation of Microsoft Entra ID tenants to the global administrator or tenant creator roles. "No" allows non-admin users to create Microsoft Entra ID tenants. Anyone who creates a tenant will become the global administrator for that tenant.
+Verifies that security group creation is restricted to admin users only in the Entra ID tenant.
 
-Tenant creation should be restricted to admin users who have undergone proper training and understand the responsibilities of tenant management, security governance, and compliance requirements.
+## Why This Matters
+
+Restricting security group creation to administrators ensures proper governance, maintains the principle of least privilege, and supports regulatory compliance requirements.
 
 #### Remediation action
 
@@ -12,10 +14,10 @@ Admin Portal:
 
 1. Go to [Entra Admin Center](https://entra.microsoft.com)
 2. Navigate to Users → [User settings](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)
-3. Set **Restrict non-admin users from creating tenants** to **Yes**
+3. Set **Users can create security groups** to **No**
 4. Click **Save**
 
-Use the following PowerShell commands to restrict tenant creation:
+Use the following PowerShell commands to restrict security group creation:
 
 ```powershell
 # Connect to Microsoft Graph with appropriate permissions
@@ -24,10 +26,10 @@ Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"
 # Get the current authorization policy
 $authPolicy = Get-MgPolicyAuthorizationPolicy
 
-# Update the policy to restrict tenant creation
+# Update the policy to restrict security group creation
 $params = @{
     defaultUserRolePermissions = @{
-        allowedToCreateTenants = $false
+        allowedToCreateSecurityGroups = $false
     }
 }
 

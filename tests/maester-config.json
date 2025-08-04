@@ -1116,6 +1116,16 @@
       "Title": "Restrict non-admin users from creating tenants"
     },
     {
+      "Id": "MT.1069",
+      "Severity": "Low",
+      "Title": "Restrict non-admin users from creating security groups."
+    },
+    {
+      "Id": "MT.1070",
+      "Severity": "Medium",
+      "Title": "Restrict device join to selected users/groups or none."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
