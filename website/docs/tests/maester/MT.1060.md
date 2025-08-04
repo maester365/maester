@@ -42,19 +42,19 @@ This will exclude the `someString` property from being validated in the drift te
 
 MT1060 actually contains of 4 tests
 
-### MT1060.{name}.1
+### MT1060.\{name\}.1
 
 This tests validates if the `baseline.json` file exists in the drift folder and is valid json.
 
-### MT1060.{name}.2
+### MT1060.\{name\}.2
 
 This tests validates if the `current.json` file exists in the drift folder and is valid json.
 
-### MT1060.{name}.3
+### MT1060.\{name\}.3
 
 This tests checks if there are no missing properties in the `current.json` file compared to the `baseline.json` file. If there are missing properties, it will report them as issues.
 
-### MT1060.{name}.4
+### MT1060.\{name\}.4
 
 This tests checks if there are properties that don't have the same value in the `current.json` file compared to the `baseline.json` file. If there are properties with different values, it will report them as issues.
 
