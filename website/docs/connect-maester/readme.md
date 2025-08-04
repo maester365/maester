@@ -123,6 +123,12 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 Connect-Maester -Environment Germany
 ```
 
-### Connect using a custom Graph Client ID
+### Connect using a custom application
 
-`Connect-Maester` also provides the option to connect to Graph using a custom client ID. For technical details on this, please see [Use delegated access with a custom application for Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell).
+You can use `Connect-Maester` to connect to Microsoft Graph using a custom application by specifying the `-GraphClientId` parameter. This is useful if you wish to use a custom application for Maester instead of using the default Graph PowerShell application.
+
+```powershell
+Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
+```
+
+To learn more about how to create a custom application for Microsoft Graph PowerShell see [Use delegated access with a custom application for Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell).

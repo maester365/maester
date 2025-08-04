@@ -63,9 +63,9 @@
    Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
 .EXAMPLE
-Connect-Maester -TenantId "4e285730-281f-42a2-bdfd-e766394e85d0" -GraphClientId "f45ec3ad-32f0-4c06-8b69-47682afe0216"
+   Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
 
-Connects to the tenant 4e285730-281f-42a2-bdfd-e766394e85d0 using app registration with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
+   Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
@@ -224,13 +224,15 @@ Connects to the tenant 4e285730-281f-42a2-bdfd-e766394e85d0 using app registrati
                   Environment   = $Environment
                }
 
-               if ($GraphApplicationId) {
+               if ($GraphClientId) {
                   $connectParams['ClientId'] = $GraphClientId
                }
                if ($TenantId) {
                   $connectParams['TenantId'] = $TenantId
                }
 
+               Write-Verbose "🦒 Connecting to Microsoft Graph with parameters:"
+               Write-Verbose ($connectParams | ConvertTo-Json -Depth 5)
                Connect-MgGraph @connectParams
 
                #ensure TenantId
