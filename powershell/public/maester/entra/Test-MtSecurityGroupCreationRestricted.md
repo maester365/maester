@@ -11,11 +11,11 @@ Restricting security group creation to administrators ensures proper governance,
 This setting can be changed via user settings in the Microsoft Entra or Azure portal or via Microsoft Graph API / Graph PowerShell Module.
 
 Admin Portal:
-1. Go to https://entra.microsoft.com (sign in as Global Admin)
-2. Navigate to Users → User settings
-3. Find "Users can create security groups " setting
-4. Change from "Yes" to "No"
-5. Click Save
+
+1. Go to [Entra Admin Center](https://entra.microsoft.com)
+2. Navigate to Users → [User settings](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)
+3. Set **Users can create security groups** to **No**
+4. Click **Save**
 
 Use the following PowerShell commands to restrict security group creation:
 

@@ -9,12 +9,11 @@ Tenant creation should be restricted to admin users who have undergone proper tr
 This setting can be changed via user settings in the Microsoft Entra or Azure portal or via Microsoft Graph API / Graph PowerShell Module.
 
 Admin Portal:
-1. Go to https://entra.microsoft.com (sign in as Global Admin)
-2. Navigate to Users → [User settings](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)
-3. Find "Restrict non-admin users from creating tenants" setting
-4. Change from "No" to "Yes"
-5. Click Save
 
+1. Go to [Entra Admin Center](https://entra.microsoft.com)
+2. Navigate to Users → [User settings](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)
+3. Set **Restrict non-admin users from creating tenants** to **Yes**
+4. Click **Save**
 
 Use the following PowerShell commands to restrict tenant creation:
 

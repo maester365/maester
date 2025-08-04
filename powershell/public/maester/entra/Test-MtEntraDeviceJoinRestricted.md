@@ -19,12 +19,13 @@ Restricting device join to selected users/groups ensures only authorized devices
 This setting can be changed via device settings in the Microsoft Entra or Azure portal or via Microsoft Graph API / Graph PowerShell Module.
 
 Admin Portal:
+
 1. Go to [Entra Admin Center](https://entra.microsoft.com)
 2. Navigate to Devices → [Device settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview)
-3. Find "Users may join devices to Microsoft Entra" setting
-4. Change from "All" to "Selected" or "None"
-5. If "Selected", configure the specific users/groups that can join devices
-6. Click Save
+3. Set **Users may join devices to Microsoft Entra** to **Selected** or **None**
+   - If **Selected**, configure the specific users/groups that can join devices
+   - If **None**, disable device join entirely
+4. Click **Save**
 
 Use the following PowerShell commands to restrict device join:
 

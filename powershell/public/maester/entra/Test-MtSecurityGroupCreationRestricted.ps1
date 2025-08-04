@@ -33,7 +33,7 @@ function Test-MtSecurityGroupCreationRestricted {
         # Check if defaultUserRolePermissions exists and get the allowedToCreateSecurityGroups setting
         if ($null -ne $settings.defaultUserRolePermissions) {
             $allowedToCreateSecurityGroups = $settings.defaultUserRolePermissions.allowedToCreateSecurityGroups
-            
+
             # If allowedToCreateSecurityGroups is false, then security group creation is restricted
             $securityGroupCreationRestricted = ($allowedToCreateSecurityGroups -eq $false)
         } else {
@@ -41,13 +41,19 @@ function Test-MtSecurityGroupCreationRestricted {
         }
 
         if ($securityGroupCreationRestricted) {
+            $value = 'No'
+            $status = '✅'
             $testResultMarkdown = "Well done. Security group creation is restricted to admin users."
-            Add-MtTestResultDetail -Result $testResultMarkdown
         } else {
+            $value = 'Yes'
+            $status = '❌'
             $testResultMarkdown = "Security group creation is not restricted and non-admin users may be able to create security groups."
-            Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType AuthorizationPolicy -GraphObjects $settings
         }
 
+        $testResultMarkdown += "`n`n|Setting|Value|Status|`n|---|---|---|`n"
+        $testResultMarkdown += "|[Users can create security groups](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/UserSettings/menuId/)|$value|$status|"
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
         return $securityGroupCreationRestricted
 
     } catch {
