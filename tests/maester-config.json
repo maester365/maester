@@ -1111,6 +1111,11 @@
       "Title": "Authentication methods policies should not reference deleted groups."
     },
     {
+      "Id": "MT.1068",
+      "Severity": "Medium",
+      "Title": "Restrict non-admin users from creating tenants"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
