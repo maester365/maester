@@ -1,7 +1,7 @@
 ---
-title: MT.1070 - No conditional access policy should require an approved client app.
+title: MT.1072 - No conditional access policy should require an approved client app.
 description: This test checks if there are any Conditional Access policies that require an approved client app.
-slug: /tests/MT.1070
+slug: /tests/MT.1072
 sidebar_class_name: hidden
 ---
 
