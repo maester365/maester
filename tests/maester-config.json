@@ -1131,6 +1131,11 @@
       "Title": "Restrict device join to selected users/groups or none."
     },
     {
+      "Id": "MT.1071",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
