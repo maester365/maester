@@ -1131,6 +1131,11 @@
       "Title": "Restrict device join to selected users/groups or none."
     },
     {
+      "Id": "MT.1072",
+      "Severity": "High",
+      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
