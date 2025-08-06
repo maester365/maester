@@ -15,6 +15,7 @@
 function Test-MtCaAzureDevOps {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]
     param ()
 
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
