@@ -221,7 +221,7 @@
                      Select-Object -ExpandProperty ModuleName |
                         Import-Module -Function 'Get-AdminAuditLogConfig' > $null
                } catch {
-                  $_.Exception.Message
+                  Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
                }
             }
          }
