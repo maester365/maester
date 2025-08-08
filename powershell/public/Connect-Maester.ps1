@@ -207,6 +207,23 @@
                   }
                }
             }
+
+            <# Fix for Get-AdminAuditLogConfig (#1045)
+               Connect-IPPSSession imports a temporary PSSession module that breaks Get-AdminAuditLogConfig. This script
+               block removes the broken function and re-imports the temporary PSSession module for EXO, which restores
+               the working Get-AdminAuditLogConfig function.
+            #>
+            if (Get-ConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected'}) {
+               try {
+                  # Remove the broken cmdlet and re-import the working EXO one.
+                  Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
+                  Get-ConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                     Select-Object -ExpandProperty ModuleName |
+                        Import-Module -Function 'Get-AdminAuditLogConfig' > $null
+               } catch {
+                  $_.Exception.Message
+               }
+            }
          }
       }
 
