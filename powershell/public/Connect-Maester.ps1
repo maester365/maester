@@ -213,11 +213,12 @@
                block removes the broken function and re-imports the temporary PSSession module for EXO, which restores
                the working Get-AdminAuditLogConfig function.
             #>
-            if (Get-ConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected'}) {
+            $ExchangeConnectionInformation = Get-ConnectionInformation
+            if ($ExchangeConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' }) {
                try {
                   # Remove the broken cmdlet and re-import the working EXO one.
                   Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
-                  Get-ConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                  $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
                      Select-Object -ExpandProperty ModuleName |
                         Import-Module -Function 'Get-AdminAuditLogConfig' > $null
                } catch {
