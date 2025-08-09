@@ -45,6 +45,13 @@ function Invoke-MtGraphRequest {
         [Parameter(Mandatory = $false)]
         [ValidateSet('v1.0', 'beta')]
         [string] $ApiVersion = 'v1.0',
+        # HTTP Method to use for the request.
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('GET', 'POST')]
+        [string] $Method = 'GET',
+        # Body for POST requests.
+        [Parameter(Mandatory = $false)]
+        [string] $Body,
         # Specifies consistency level.
         [Parameter(Mandatory = $false)]
         [string] $ConsistencyLevel = 'eventual',
@@ -101,7 +108,7 @@ function Invoke-MtGraphRequest {
         function Complete-Result ($results, $DisablePaging) {
             if (!$DisablePaging -and $results) {
                 while (Get-ObjectProperty $results '@odata.nextLink') {
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
                     Format-Result $results $DisablePaging
                 }
             }
@@ -144,14 +151,14 @@ function Invoke-MtGraphRequest {
                     ## Create batch request entry
                     $request = New-Object PSObject -Property @{
                         id      = $listRequests.Count #(New-Guid).ToString()
-                        method  = 'GET'
+                        method  = $($Method)
                         url     = $uriQueryEndpointFinal.Uri.AbsoluteUri -replace ('{0}{1}/' -f $GraphBaseUri.AbsoluteUri, $ApiVersion)
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
                 } else {
 
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
 
                     Format-Result $results $DisablePaging
                     Complete-Result $results $DisablePaging

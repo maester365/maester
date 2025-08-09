@@ -21,8 +21,8 @@ function Test-MtEidscaAG01 {
     [OutputType([bool])]
     param()
 
-    
-    $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
+
+    $result = (Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta) | Select-Object policyMigrationState
 
     [string]$tenantValue = $result.policyMigrationState
     $testResult = $tenantValue -in @('migrationComplete', '')
@@ -35,7 +35,7 @@ function Test-MtEidscaAG01 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is one of the following values **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Informational'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Info'
 
     return $tenantValue
 }
