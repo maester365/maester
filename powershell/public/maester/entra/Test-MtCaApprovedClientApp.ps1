@@ -21,6 +21,7 @@ function Test-MtCaApprovedClientApp {
     [OutputType([bool])]
     param ()
 
+    Write-Verbose "Checking for deprecated Approved Client App grant in Conditional Access policies..."
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     $policiesResult = New-Object System.Collections.ArrayList
     $result = $false
