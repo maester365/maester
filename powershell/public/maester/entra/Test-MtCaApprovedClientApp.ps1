@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
     Checks if the tenant has no conditional access policy that requires an approved client app.
 
@@ -41,3 +41,4 @@ function Test-MtCaApprovedClientApp {
     }
     return $result
 }
+
