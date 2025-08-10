@@ -156,7 +156,8 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243',
     'Test-ORCA244', 'Update-MaesterTests', 'Test-MtAppRegistrationOwnersWithoutMFA',
     'Test-MtManagementGroupWriteRequirement', 'Test-MtDeviceRegistrationMfaConflict', 'Test-MtVaultSoftDelete',
-    'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted'
+    'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
+    'Test-MtCaApprovedClientApp'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
