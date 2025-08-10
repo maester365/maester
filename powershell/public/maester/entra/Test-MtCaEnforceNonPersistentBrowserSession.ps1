@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
   Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
 
@@ -95,3 +95,4 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         return $null
     }
 }
+

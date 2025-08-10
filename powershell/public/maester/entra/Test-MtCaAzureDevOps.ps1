@@ -10,7 +10,7 @@
     Test-MtCaAzureDevOps
 
 .LINK
-    https://maester.dev/docs/commands/
+    https://maester.dev/docs/commands/Test-MtCaAzureDevOps
 #>
 function Test-MtCaAzureDevOps {
     [CmdletBinding()]
@@ -18,12 +18,15 @@ function Test-MtCaAzureDevOps {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]
     param ()
 
+    Write-Verbose "Checking for Conditional Access policies that explicitly include Azure DevOps..."
+
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     $policiesResult = New-Object System.Collections.ArrayList
     $result = $false
 
+    $azureDevOpsAppId = '499b84ac-1321-427f-aa17-267ca6975798'
     foreach ($policy in $policies) {
-        if ( "499b84ac-1321-427f-aa17-267ca6975798" -in ($policies.conditions.applications.includeApplications) ) {
+        if ( $azureDevOpsAppId -in ($policy.conditions.applications.includeApplications) ) {
             $result = $true
             $policiesResult.Add($policy) | Out-Null
         }
@@ -32,7 +35,7 @@ function Test-MtCaAzureDevOps {
         $testResult = "Well done! There are conditional access policies that explicitly include Azure DevOps.`n`n%TestResult%"
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
     } else {
-        $testResult = "There are no conditional access policies that explicitly include Azure DevOps.`n`n%TestResult%"
+        $testResult = "There are no conditional access policies that explicitly target Azure DevOps."
         Add-MtTestResultDetail -Result $testResult
     }
     return $result
