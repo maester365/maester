@@ -24,15 +24,17 @@ function Test-MtCaApprovedClientApp {
     Write-Verbose "Checking for deprecated Approved Client App grant in Conditional Access policies..."
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
     $policiesResult = New-Object System.Collections.ArrayList
-    $result = $false
 
     foreach ($policy in $policies) {
         if ( "approvedApplication" -in ($policy.grantControls.builtInControls) ) {
-            $result = $true
             $policiesResult.Add($policy) | Out-Null
         }
     }
-    if (($policiesResult | Measure-Object).Count -eq 0) {
+
+    # There should be no conditional access policies using the deprecated Approved Client App grant.
+    $result = ($policiesResult | Measure-Object).Count -eq 0
+
+    if ($result) {
         $testResult = "Well done! No conditional access use the deprecated Approved Client App grant."
         Add-MtTestResultDetail -Result $testResult
     } else {
