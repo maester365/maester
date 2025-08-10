@@ -110,10 +110,11 @@ $scriptAnalyzerFailures | Out-Host
 $hasBomRuleFailure = Test-ContainsFailureRule -RuleName 'PSUseBOMForUnicodeEncodedFile' -ScriptAnalyzerFailures $scriptAnalyzerFailures -TestResults $testresults
 
 if ($hasBomRuleFailure) {
-    Write-Host "run the following script with the affected file to fix the issue" -ForegroundColor Yellow
+    Write-Host "`n❌ To fix PSUseBOMForUnicodeEncodedFile → Run the following script with the affected file to fix the issue`n" -ForegroundColor Yellow
     @'
 $affectedFilePath = '/Users/merill/GitHub/maester/powershell/public/maester/entra/Test-MtTenantCreationRestricted.ps1'
 $content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
+
 '@ | Out-Host
 }
 
