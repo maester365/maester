@@ -45,9 +45,6 @@ function Test-MtCisaBlockHighRiskSignIn {
         $testResultMarkdown = "Your tenant does not have any conditional access policies that block high risk sign-ins.`n`n"
     }
 
-    $resultFail = "❌ Fail"
-    $resultPass = "✅ Pass"
-
     $checks = @{
         EnabledCount                            = ($result|Measure-Object).Count
         BlockCount                              = (($result|Where-Object {$_.grantControls.builtInControls -contains "block"})|Measure-Object).Count
