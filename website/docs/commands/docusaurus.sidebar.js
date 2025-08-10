@@ -53,6 +53,8 @@ module.exports = [
     'commands/Test-MtAuthenticationPolicyReferencedObjectsExist',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',
+    'commands/Test-MtCaApprovedClientApp',
+    'commands/Test-MtCaAzureDevOps',
     'commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
     'commands/Test-MtCaBlockLegacyOtherAuthentication',
     'commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
