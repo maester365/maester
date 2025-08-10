@@ -77,6 +77,9 @@
     It "MT.1066: Conditional Access policies should not reference non-existent users, groups, or roles. See https://maester.dev/docs/tests/MT.1066" -Tag "MT.1066", "Warning" {
         Test-MtCaReferencedObjectsExist | Should -Be $true -Because "all referenced users, groups, or roles should exist."
     }
+    It "MT.1072: Conditional access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072", "Warning" {
+        Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
+    }
     Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
