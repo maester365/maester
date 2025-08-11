@@ -133,7 +133,7 @@ Function Get-PolicyStateInt
 
                     # Need to use a different mechanism for detecting application if it's a preset or a custom policy
                     # custom requires a condition to apply
-                    # preset doesnt require a condition to apply, infact mark it as not applicable if there is a condition
+                    # preset doesn't require a condition to apply, in fact mark it as not applicable if there is a condition
 
                     if(!$Preset)
                     {
