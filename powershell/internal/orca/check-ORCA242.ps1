@@ -72,7 +72,7 @@ class ORCA242 : ORCACheck
             {
                 $FoundAlert = $Config["ProtectionAlert"] | Where-Object {$_.Name -eq $ImportantAlert}
 
-                # These alerts cannot be removed, so if it's $null, then the alert isnt deployed to this tenant, so we dont want
+                # These alerts cannot be removed, so if it's $null, then the alert isn't deployed to this tenant, so we don't want
                 # to flag them at all.
 
                 if($null -ne $FoundAlert)
