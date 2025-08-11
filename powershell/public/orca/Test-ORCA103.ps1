@@ -3,7 +3,7 @@
     Outbound spam filter policy settings configured.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA103
@@ -38,7 +38,7 @@ function Test-ORCA103{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA103: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA103" -ErrorRecord $_ -AdditionalContext "Running ORCA103 test"
         throw
     } finally {
         if($obj.SkipInReport) {
