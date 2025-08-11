@@ -1,0 +1,71 @@
+---
+sidebar_class_name: hidden
+description: Checks if the tenant has no conditional access policy that requires an approved client app.
+id: Test-MtCaApprovedClientApp
+title: Test-MtCaApprovedClientApp
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaApprovedClientApp.ps1
+---
+
+## SYNOPSIS
+
+Checks if the tenant has no conditional access policy that requires an approved client app.
+
+## SYNTAX
+
+```powershell
+Test-MtCaApprovedClientApp [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The approved client app grant is retiring in early March 2026.
+Organizations must transition all current Conditional Access policies that use only the require approved Client App grant control to Require Approved Client App or Application Protection Policy by March 2026.
+Additionally, for any new Conditional Access policy, only apply the Require application protection policy grant.
+After March 2026, Microsoft will stop enforcing require approved client app control, and it will be as if this grant isn't selected.
+Use the following steps before March 2026 to protect your organization's data.
+Learn more:
+https://learn.microsoft.com/en-us/entra/identity/conditional-access/migrate-approved-client-app
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCaApprovedClientApp
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCaApprovedClientApp](https://maester.dev/docs/commands/Test-MtCaApprovedClientApp)

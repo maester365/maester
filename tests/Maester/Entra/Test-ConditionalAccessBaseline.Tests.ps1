@@ -71,6 +71,20 @@
     It "MT.1052: At least one Conditional Access policy is targeting the Device Code authentication flow. See https://maester.dev/docs/tests/MT.1052" -Tag "MT.1052" {
         Test-MtCaDeviceCodeFlow | Should -Be $true -Because "there is no policy that targets the device code authentication flow."
     }
+    It "MT.1061: Device registration MFA control conflicts with Conditional Access policies. See https://maester.dev/docs/tests/MT.1061" -Tag "MT.1061" {
+        Test-MtDeviceRegistrationMfaConflict | Should -Be $true -Because "there is a conflict between Entra ID settings and Conditional Access policies regarding MFA during device registration."
+    }
+    It "MT.1066: Conditional Access policies should not reference non-existent users, groups, or roles. See https://maester.dev/docs/tests/MT.1066" -Tag "MT.1066", "Warning" {
+        Test-MtCaReferencedObjectsExist | Should -Be $true -Because "all referenced users, groups, or roles should exist."
+    }
+    It "MT.1071: At least one Conditional Access policy explicitly includes Azure DevOps. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071", "Warning" {
+        Test-MtCaAzureDevOps | Should -Be $true -Because "one or more policies target Azure DevOps app."
+    }
+
+    It "MT.1072: Conditional access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072", "Warning" {
+        Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
+    }
+
     Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"

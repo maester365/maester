@@ -62,6 +62,11 @@
 
    Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
+.EXAMPLE
+   Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
+
+   Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -103,7 +108,10 @@
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
-      [string]$TenantId
+      [string]$TenantId,
+
+      # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+      [string]$GraphClientId
    )
 
    $__MtSession.Connections = $Service
@@ -199,6 +207,24 @@
                   }
                }
             }
+
+            <# Fix for Get-AdminAuditLogConfig (#1045)
+               Connect-IPPSSession imports a temporary PSSession module that breaks Get-AdminAuditLogConfig. This script
+               block removes the broken function and re-imports the temporary PSSession module for EXO, which restores
+               the working Get-AdminAuditLogConfig function.
+            #>
+            $ExchangeConnectionInformation = Get-ConnectionInformation
+            if ($ExchangeConnectionInformation | Where-Object { $_.IsEopSession -eq $true -and $_.State -eq 'Connected' }) {
+               try {
+                  # Remove the broken cmdlet and re-import the working EXO one.
+                  Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
+                  $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
+                     Select-Object -ExpandProperty ModuleName |
+                        Import-Module -Function 'Get-AdminAuditLogConfig' > $null
+               } catch {
+                  Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
+               }
+            }
          }
       }
 
@@ -206,12 +232,32 @@
          if ($Service -contains 'Graph' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Graph'
             try {
+
+               $scopes = Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged
+
+               $connectParams = @{
+                  Scopes        = $scopes
+                  NoWelcome     = $true
+                  UseDeviceCode = $UseDeviceCode
+                  Environment   = $Environment
+               }
+
+               if ($GraphClientId) {
+                  $connectParams['ClientId'] = $GraphClientId
+               }
                if ($TenantId) {
-                  Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment -TenantId $TenantId
-               } else {
-                  Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail:$SendMail -SendTeamsMessage:$SendTeamsMessage -Privileged:$Privileged) -NoWelcome -UseDeviceCode:$UseDeviceCode -Environment $Environment
+                  $connectParams['TenantId'] = $TenantId
+               }
+
+               Write-Verbose "🦒 Connecting to Microsoft Graph with parameters:"
+               Write-Verbose ($connectParams | ConvertTo-Json -Depth 5)
+               Connect-MgGraph @connectParams
+
+               #ensure TenantId
+               if (-not $TenantId) {
                   $TenantId = (Get-MgContext).TenantId
                }
+
             } catch [Management.Automation.CommandNotFoundException] {
                Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
                Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow

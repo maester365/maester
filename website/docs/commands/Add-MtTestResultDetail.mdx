@@ -17,8 +17,8 @@ Add detailed information about a test so that it can be displayed in the test re
 ```powershell
 Add-MtTestResultDetail [[-Description] <String>] [[-Result] <String>] [[-GraphObjects] <Object[]>]
  [[-GraphObjectType] <String>] [[-TestName] <String>] [[-TestTitle] <String>] [[-SkippedBecause] <String>]
- [[-SkippedCustomReason] <String>] [[-Severity] <String>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-SkippedCustomReason] <String>] [[-SkippedError] <Object>] [[-Severity] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,8 +34,8 @@ A good example is the markdown for the Test-MtCaEmergencyAccessExists cmdlet:
     - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
     - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
 
-The markdown file can include a seperator `<!--- Results --->` to split the description and result sections.
-This allows for the overview and detailed information to be displayes separately in the Test results.
+The markdown file can include a separator `<!--- Results --->` to split the description and result sections.
+This allows for the overview and detailed information to be displayed separately in the Test results.
 
 ## EXAMPLES
 
@@ -113,7 +113,7 @@ Accept wildcard characters: False
 
 ### -GraphObjectType
 
-The type of graph object, this will be used to show the right deeplink to the test results report.
+The type of graph object, this will be used to show the right deep-link to the test results report.
 
 ```yaml
 Type: String
@@ -194,6 +194,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -SkippedError
+
+The error object that caused the test to be skipped.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Severity
 
 Severity level of the test result.
@@ -205,7 +221,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

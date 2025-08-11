@@ -87,7 +87,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
-            valuetype  = 'string'
+            valuetype  = 'int'
         }
     } elseif ($RecommendedValue.StartsWith("<=")) {
         $compareOperator = [PSCustomObject]@{
@@ -328,6 +328,11 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         # Replace string with int if DefaultValue is a number and expecting an int as configuration value
         if ($controlItem.DefaultValue -match "^[\d\.]+$") {
             $output = $output -replace 'string', 'int'
+        }
+
+        # Map severity to Maester values
+        if($controlItem.Severity -eq 'Informational') {
+            $controlItem.Severity = 'Info'
         }
 
         $output = $output -replace '%DocName%', $docName

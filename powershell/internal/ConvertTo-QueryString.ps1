@@ -18,10 +18,7 @@ function ConvertTo-QueryString {
     param (
         # Value to convert
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [object] $InputObjects,
-        # URL encode parameter names
-        [Parameter(Mandatory = $false)]
-        [switch] $EncodeParameterNames
+        [object] $InputObjects
     )
 
     process {
@@ -31,14 +28,14 @@ function ConvertTo-QueryString {
                 foreach ($Item in $InputObject.GetEnumerator()) {
                     if ($QueryString.Length -gt 0) { [void]$QueryString.Append('&') }
                     [string] $ParameterName = $Item.Key
-                    if ($EncodeParameterNames) { $ParameterName = [System.Net.WebUtility]::UrlEncode($ParameterName) }
+
                     [void]$QueryString.AppendFormat('{0}={1}', $ParameterName, [System.Net.WebUtility]::UrlEncode($Item.Value))
                 }
             } elseif ($InputObject -is [object] -and $InputObject -isnot [ValueType]) {
                 foreach ($Item in ($InputObject | Get-Member -MemberType Property, NoteProperty)) {
                     if ($QueryString.Length -gt 0) { [void]$QueryString.Append('&') }
                     [string] $ParameterName = $Item.Name
-                    if ($EncodeParameterNames) { $ParameterName = [System.Net.WebUtility]::UrlEncode($ParameterName) }
+
                     [void]$QueryString.AppendFormat('{0}={1}', $ParameterName, [System.Net.WebUtility]::UrlEncode($InputObject.($Item.Name)))
                 }
             } else {

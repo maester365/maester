@@ -910,7 +910,6 @@
       "Severity": "Medium",
       "Title": "Entra Recommendation - Remove unused applications"
     },
-
     {
       "Id": "MT.1025",
       "Severity": "High",
@@ -1085,6 +1084,61 @@
       "Id": "MT.1059",
       "Severity": "Medium",
       "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
+      "Id": "MT.1061",
+      "Severity": "Medium",
+      "Title": "Device registration MFA control conflicts with Conditional Access policies"
+    },
+    {
+      "Id": "MT.1062",
+      "Severity": "Medium",
+      "Title": "Ensure Direct Send is set to be rejected"
+    },
+    {
+      "Id": "MT.1064",
+      "Severity": "High",
+      "Title": "Management group creation should be limited to users with explicit write access"
+    },
+    {
+      "Id": "MT.1065",
+      "Severity": "High",
+      "Title": "Soft Delete should be enabled on all Recovery Services Vaults"
+    },
+    {
+      "Id": "MT.1066",
+      "Severity": "Medium",
+      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
+    },
+    {
+      "Id": "MT.1067",
+      "Severity": "Medium",
+      "Title": "Authentication methods policies should not reference deleted groups."
+    },
+    {
+      "Id": "MT.1068",
+      "Severity": "Medium",
+      "Title": "Restrict non-admin users from creating tenants"
+    },
+    {
+      "Id": "MT.1069",
+      "Severity": "Low",
+      "Title": "Restrict non-admin users from creating security groups."
+    },
+    {
+      "Id": "MT.1070",
+      "Severity": "Medium",
+      "Title": "Restrict device join to selected users/groups or none."
+    },
+    {
+      "Id": "MT.1071",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps."
+    },
+    {
+      "Id": "MT.1072",
+      "Severity": "High",
+      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
     },
     {
       "Id": "ORCA.100",

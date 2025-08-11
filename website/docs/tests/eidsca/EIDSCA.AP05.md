@@ -17,7 +17,7 @@ Indicates whether users can sign up for email based subscriptions.
 
 ## How to fix
 
-Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -AllowedToSignupEmailBasedSubscriptions:$false```
+Microsoft Graph PowerShell: ```Update-MgPolicyAuthorizationPolicy -AllowedToSignupEmailBasedSubscriptions $false```
 
 ### Details of configuration item
 | | |

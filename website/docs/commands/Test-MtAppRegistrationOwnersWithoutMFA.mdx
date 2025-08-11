@@ -1,0 +1,65 @@
+---
+sidebar_class_name: hidden
+description: Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
+id: Test-MtAppRegistrationOwnersWithoutMFA
+title: Test-MtAppRegistrationOwnersWithoutMFA
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAppRegistrationOwnersWithoutMFA.ps1
+---
+
+## SYNOPSIS
+
+Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
+
+## SYNTAX
+
+```powershell
+Test-MtAppRegistrationOwnersWithoutMFA [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks all Entra ID app registrations and verifies that their owners have MFA registered.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAppRegistrationOwnersWithoutMFA
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if all owners have MFA, $false if any owners lack MFA, $null if skipped
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA](https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA)
