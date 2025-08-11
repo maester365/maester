@@ -168,7 +168,7 @@ Function Get-PolicyStateInt
             }
         }
 
-        # Mark policy type has perset to true if preset applies, this is used to disable the default policy in the report.
+        # Mark policy type has preset to true if preset applies, this is used to disable the default policy in the report.
         if($Preset -eq $true -and $Applies -eq $True)
         {
             $TypeHasAppliedPresetPolicy = $True
