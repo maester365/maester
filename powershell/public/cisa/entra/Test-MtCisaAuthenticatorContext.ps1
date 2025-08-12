@@ -43,25 +43,42 @@ function Test-MtCisaAuthenticatorContext {
         $_.featureSettings.displayLocationInformationRequiredState.state -eq "enabled" -and `
         $_.featureSettings.displayLocationInformationRequiredState.includeTarget.id -contains "all_users" }
 
+    $authenticatorPolicy = $result | Where-Object {`
+        $_.id -eq "MicrosoftAuthenticator" }
+
     $testResult = (($policies|Measure-Object).Count -ge 1) -and $isMethodsMigrationComplete
 
     $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods/fromNav/Identity"
-
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately.`n`n%TestResult%"
-    } else {
-        $testResultMarkdown = "Your tenant does not have the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately or migration to Authentication Methods is not complete.`n`n%TestResult%"
-    }
-
     $resultFail = "❌ Fail"
     $resultPass = "✅ Pass"
-    if($isMethodsMigrationComplete){
-        $migrationResult = $resultPass
-    }else{
-        $migrationResult = $resultFail
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Your tenant has the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately.`n`n"
+    } else {
+        $testResultMarkdown = "Your tenant does not have the [Authentication Methods]($link) policy for Microsoft Authenticator set appropriately or migration to Authentication Methods is not complete.`n`n"
     }
-    $result = "[Authentication Methods]($link) Migration Complete: $migrationResult"
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+    $checks = @{
+        MigrationMethods = if($isMethodsMigrationComplete){$resultPass}else{$resultFail}
+        MethodEnabled    = if($authenticatorPolicy.state -eq "enabled"){$resultPass}else{$resultFail}
+        MethodTarget     = if($authenticatorPolicy.includeTargets.Id -contains "all_users"){$resultPass}else{$resultFail}
+        OtpDisabled      = if(-not $authenticatorPolicy.isSoftwareOathEnabled){$resultPass}else{$resultFail}
+        ContextEnabled   = if($authenticatorPolicy.featureSettings.displayAppInformationRequiredState.state -eq "enabled"){$resultPass}else{$resultFail}
+        ContextTarget    = if($authenticatorPolicy.featureSettings.displayAppInformationRequiredState.includeTarget.id -contains "all_users"){$resultPass}else{$resultFail}
+        LocationEnabled  = if($authenticatorPolicy.featureSettings.displayLocationInformationRequiredState.state -eq "enabled"){$resultPass}else{$resultFail}
+        LocationTarget   = if($authenticatorPolicy.featureSettings.displayLocationInformationRequiredState.includeTarget.id -contains "all_users"){$resultPass}else{$resultFail}
+    }
+
+    $testResultMarkdown += "| Setting | Result |`n"
+    $testResultMarkdown += "| --- | --- |`n"
+    $testResultMarkdown += "| [Authentication Methods]($link) Migration Complete | $($checks.MigrationMethods) |`n"
+    $testResultMarkdown += "| Microsoft Authenticator state | $($checks.MethodEnabled) |`n"
+    $testResultMarkdown += "| Included Targets | $($checks.MethodTarget) |`n"
+    $testResultMarkdown += "| Allow use of Microsoft Authenticator OTP | $($checks.OtpDisabled) |`n"
+    $testResultMarkdown += "| Show application name in push and passwordless notifications status | $($checks.ContextEnabled) | `n"
+    $testResultMarkdown += "| Show application name in push and passwordless notifications included target | $($checks.ContextTarget) | `n"
+    $testResultMarkdown += "| Show geographic location in push and passwordless notifications status | $($checks.LocationEnabled) | `n"
+    $testResultMarkdown += "| Show geographic location in push and passwordless notifications included target | $($checks.LocationTarget) | `n"
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 
