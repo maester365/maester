@@ -1,0 +1,138 @@
+{
+    "modules": [
+        {
+            "name": "Microsoft.Graph.Authentication",
+            "versions": [
+                {
+                    "version": "2.25.0",
+                    "status": "Stable",
+                    "recommendation": "Recommended",
+                    "description": "No known issues.",
+                    "scenarios": {
+                        "local": true,
+                        "githubAction": true,
+                        "gitLab": true,
+                        "azureAutomation": true,
+                        "azureDevOpsPipelines": true
+                    }
+                },
+                {
+                    "version": "2.26.0",
+                    "status": "Problematic",
+                    "recommendation": "Avoid",
+                    "description": "Known issues with authentication flows. Do not use.",
+                    "scenarios": {
+                        "local": false,
+                        "githubAction": false,
+                        "gitLab": false,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": false
+                    }
+                },
+                {
+                    "version": "2.26.1",
+                    "status": "Problematic",
+                    "recommendation": "Avoid",
+                    "description": "Known issues with token acquisition. Do not use.",
+                    "scenarios": {
+                        "local": false,
+                        "githubAction": false,
+                        "gitLab": false,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": false
+                    }
+                },
+                {
+                    "version": "2.27.0",
+                    "status": "Limited",
+                    "recommendation": "See Limitations",
+                    "description": "Works for most Maester scenarios. Known issues with other Microsoft.Graph submodules requires some organizations to block this version.",
+                    "scenarios": {
+                        "local": true,
+                        "githubAction": true,
+                        "gitLab": true,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": true
+                    },
+                    "knownIssues": [
+                        "Not yet supported on Azure Automation accounts",
+                        "Issues with other Microsoft.Graph submodules"
+                    ]
+                },
+                {
+                    "version": "2.28.0",
+                    "status": "Limited",
+                    "recommendation": "See Limitations",
+                    "description": "Works for most Maester scenarios. Known issues with other Microsoft.Graph submodules requires some organizations to block this version.",
+                    "scenarios": {
+                        "local": true,
+                        "githubAction": true,
+                        "gitLab": true,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": true
+                    },
+                    "knownIssues": [
+                        "Not yet supported on Azure Automation accounts",
+                        "Issues with other Microsoft.Graph submodules"
+                    ]
+                },
+                {
+                    "version": "2.29.0",
+                    "status": "Limited",
+                    "recommendation": "See Limitations",
+                    "description": "Works for most Maester scenarios. Known issues with other Microsoft.Graph submodules requires some organizations to block this version.",
+                    "scenarios": {
+                        "local": true,
+                        "githubAction": true,
+                        "gitLab": true,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": true
+                    },
+                    "knownIssues": [
+                        "Not yet supported on Azure Automation accounts",
+                        "Issues with other Microsoft.Graph submodules"
+                    ]
+                },
+                {
+                    "version": "2.29.1",
+                    "status": "Limited",
+                    "recommendation": "See Limitations",
+                    "description": "Works for most Maester scenarios. Known issues with other Microsoft.Graph submodules requires some organizations to block this version.",
+                    "scenarios": {
+                        "local": true,
+                        "githubAction": true,
+                        "gitLab": true,
+                        "azureAutomation": false,
+                        "azureDevOpsPipelines": true
+                    },
+                    "knownIssues": [
+                        "Not yet supported on Azure Automation accounts",
+                        "Issues with other Microsoft.Graph submodules"
+                    ]
+                }
+            ]
+        }
+    ],
+    "scenarios": {
+        "local": {
+            "name": "Local Development",
+            "description": "Running scripts locally on a development or management machine."
+        },
+        "githubAction": {
+            "name": "GitHub Actions",
+            "description": "Running in GitHub Actions workflow environment."
+        },
+        "gitLab": {
+            "name": "GitLab CI/CD",
+            "description": "Running in GitLab CI/CD pipeline environment."
+        },
+        "azureAutomation": {
+            "name": "Azure Automation",
+            "description": "Running in Azure Automation account environment."
+        },
+        "azureDevOpsPipelines": {
+            "name": "Azure DevOps Pipelines",
+            "description": "Running in Azure DevOps Pipelines environment."
+        }
+    }
+}
