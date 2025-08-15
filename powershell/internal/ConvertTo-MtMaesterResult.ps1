@@ -185,6 +185,7 @@ function ConvertTo-MtMaesterResult {
         FailedCount       = $PesterResults.FailedCount
         PassedCount       = $PesterResults.PassedCount
         SkippedCount      = $PesterResults.SkippedCount
+        NotRunCount       = $PesterResults.NotRunCount
         TotalCount        = $PesterResults.TotalCount
         ExecutedAt        = GetFormattedDate($PesterResults.ExecutedAt)
         TotalDuration     = $PesterResults.Duration.ToString($timeSpanFormat)
