@@ -55,7 +55,7 @@
 
         # Paths to exclude from discovery.
         [Parameter(Position = 1, HelpMessage = "One or more paths to exclude (e.g. test-results folders). Accepts wildcard patterns.")]
-        [Deprecated("The ExcludePath parameter is known to not work as intended. Filtering will occur post-discovery.")]
+        [System.Obsolete("The ExcludePath parameter is known to not work as intended. Filtering will occur post-discovery.")]
         [string[]] $ExcludePath = @(),
 
         # Tags to exclude from discovery.
@@ -64,7 +64,7 @@
 
         # Specify a desired output type. Defaults to an array of test inventory objects.
         [Parameter(HelpMessage = "Specify a desired output type. Defaults to an array of test inventory objects.")]
-        [ValidateSet('Array', 'Hashtable')]
+        [ValidateSet('Array', 'Hashtable','TagInventory')]
         [string] $OutputType = 'Array'
     )
 
@@ -80,7 +80,7 @@
         }
 
         # Resolve the full path of ExcludePath items and add robust variants (absolute, relative to $Path, and wildcard for directories)
-        $ResolvedExclude = @()
+        $ResolvedExcludePath = @()
         foreach ($ExcludePathItem in $ExcludePath) {
             # Convert relative paths to absolute based on the test path
             if (-not [System.IO.Path]::IsPathRooted($ExcludePathItem)) {
@@ -89,15 +89,17 @@
 
             # Normalize the path
             $ExcludePathItem = [System.IO.Path]::GetFullPath($ExcludePathItem)
-            $ProcessedExcludePaths += $ExcludePathItem
+            $ResolvedExcludePath += $ExcludePathItem
         }
 
-        Write-Verbose "Excluding Paths:`n`t`t$($ProcessedExcludePaths -join "`n`t`t")"
+        Write-Verbose "Excluding Paths:`n`t`t$($ResolvedExcludePath -join "`n`t`t")"
 
         # Note: Tests that require a Microsoft Graph connection in the BeforeAll block will fail.
         if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
             Write-Warning "No Microsoft Graph connection found. Some tests may require a connection to discover successfully."
         }
+
+        Write-Host "Checking $Path" -ForegroundColor Cyan
     }
 
     process {
@@ -121,25 +123,55 @@
             $Tests = $Tests | Where-Object { $ResolvedExclude -notcontains $_.ScriptBlock.File }
         }
 
+        $AllTags = [System.Collections.Generic.List[string]]::new()
+
+        $TestInventory = [System.Collections.Generic.List[PSCustomObject]]::new()
         # Build inventory objects.
-        $Inventory = foreach ($TestItem in $Tests) {
+        foreach ($TestItem in $Tests) {
+            # Reset values for each TestItem
+            $Tags = @()
+            $Describe = ''
+            [string[]]$CombinedTags = @()
+            # Get values for each TestItem
             $Describe = $TestItem.Block.Name
-            $Tags     = @($TestItem.Tag) | Where-Object { $_ } | Select-Object -Unique
-            $Combined = ($Describe + $Tags) | Where-Object { $_ } | ForEach-Object { $_.ToString() } | Sort-Object -Unique
-            [PSCustomObject]@{
+            [string[]] $Tags = $TestItem.Tag | Where-Object { $_ } | Select-Object -Unique
+            $CombinedTags += $Describe
+            $CombinedTags += $Tags
+
+            # Add the $Describe and $Tags to $AllTags
+            if ($Describe) {
+                $AllTags.Add($Describe)
+            }
+            if ($Tags.Count -gt 0) {
+                $AllTags.AddRange($Tags)
+            }
+
+            $TestInventory.Add([PSCustomObject]@{
                 TestName     = $TestItem.Name
                 FilePath     = $TestItem.ScriptBlock.File
                 DescribeName = $Describe
                 Tags         = $Tags
-                CombinedTags = $Combined
+                CombinedTags = $CombinedTags
+            })
+        }
+
+        $AllTags = $AllTags | Sort-Object -Unique
+
+        $TagInventory = [ordered]@{}
+        foreach ($Tag in $AllTags) {
+            $TagInventory[$Tag] = [PSCustomObject]@{
+                TagName = $Tag
+                Tests   = $TestInventory | Where-Object { $_.CombinedTags -contains $Tag }
             }
         }
 
+        return $TagInventory
+        <#
         # Return test inventory in the requested format.
         switch ($OutputType) {
             'Hashtable' {
                 $hash = [ordered]@{}
-                foreach ($Group in ($Inventory | Group-Object DescribeName)) {
+                foreach ($Group in ($TestInventory | Group-Object DescribeName)) {
                     $AllTags = $Group.Group.Tags | ForEach-Object { $_ } | Select-Object -Unique
                     $CombinedTags = ($Group.Name + $AllTags) | Where-Object { $_ } | Sort-Object -Unique
 
@@ -153,14 +185,18 @@
                 return $hash
             }
             'JSON' {
-                return $Inventory | ConvertTo-Json -Depth 5
+                return $TestInventory | ConvertTo-Json -Depth 5
             }
             'CSV' {
-                return $Inventory | Export-Csv -NoTypeInformation -Force | Out-String
+                return $TestInventory | Export-Csv -NoTypeInformation -Force | Out-String
+            }
+            'TagInventory' {
+                return $AllTags
             }
             Default {
-                return $Inventory | Sort-Object DescribeName, TestName
+                return $TestInventory | Sort-Object DescribeName, TestName
             }
         }
+        #>
     }
 }
