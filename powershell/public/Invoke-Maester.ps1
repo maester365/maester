@@ -451,7 +451,8 @@ function Invoke-Maester {
             # Show final summary
             Write-Host "`nTests Passed ✅: $($pesterResults.PassedCount), " -NoNewline -ForegroundColor Green
             Write-Host "Failed ❌: $($pesterResults.FailedCount), " -NoNewline -ForegroundColor Red
-            Write-Host "Skipped ⚫: $($pesterResults.SkippedCount)`n" -ForegroundColor DarkGray
+            Write-Host "Skipped ⚫: $($pesterResults.SkippedCount) " -NoNewline -ForegroundColor DarkGray
+            Write-Host "Not Run ⚫: $($pesterResults.NotRunCount)`n" -ForegroundColor DarkGray
         }
 
         if (-not $SkipVersionCheck -and 'Next' -ne $version) {

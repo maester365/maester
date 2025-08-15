@@ -101,6 +101,7 @@ function Get-MtMarkdownReport {
     $templateMarkdown = $templateMarkdown -replace '%TotalCount%', $MaesterResults.TotalCount
     $templateMarkdown = $templateMarkdown -replace '%PassedCount%', $MaesterResults.PassedCount
     $templateMarkdown = $templateMarkdown -replace '%FailedCount%', $MaesterResults.FailedCount
+    $templateMarkdown = $templateMarkdown -replace '%SkippedCount%', $MaesterResults.SkippedCount
     $templateMarkdown = $templateMarkdown -replace '%NotRunCount%', $MaesterResults.NotRunCount
 
     $templateMarkdown = $templateMarkdown -replace '%TestSummary%', $textSummary
