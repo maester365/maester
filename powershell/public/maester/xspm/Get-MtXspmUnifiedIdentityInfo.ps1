@@ -314,7 +314,7 @@ function Get-MtXspmUnifiedIdentityInfo {
         | extend RuleName = tostring(CriticalityData)
         | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
         | extend CrticialAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-        | summarize CrticialAssetDetails = make_set_if(CrticialAssetDetail, tostring(CrticialAssetDetail) !contains '''' ) by AccountObjectId = ObjectId
+        | summarize CrticialAssetDetails = make_set_if(CrticialAssetDetail, tostring(CrticialAssetDetail) !contains '') by AccountObjectId = ObjectId
         ) on AccountObjectId
         | project-reorder AccountObjectId, AccountDisplayName, Type, CriticalityLevel, CrticialAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions;
     };
@@ -326,12 +326,12 @@ function Get-MtXspmUnifiedIdentityInfo {
         "Query" = $Query;
     } | ConvertTo-Json
 
-        $XspmUnifiedIdentityInfo = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject ).results
+        $XspmUnifiedIdentityInfoResult = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject).results
 
-        if ( $XspmUnifiedIdentityInfo ) {
+        if ( $XspmUnifiedIdentityInfoResult ) {
             # Convert JSON strings to objects
             $propertiesToConvert = @('OwnedBy', 'ApiPermissions', 'AssignedEntraRoles', 'AuthenticatedBy', 'CrticialAssetDetails')
-            foreach ($item in $XspmUnifiedIdentityInfo) {
+            foreach ($item in $XspmUnifiedIdentityInfoResult) {
                 foreach ($prop in $propertiesToConvert) {
                     if ($null -ne $item.$prop) {
                         try {
@@ -344,7 +344,7 @@ function Get-MtXspmUnifiedIdentityInfo {
                     }
                 }
             }
-        return $XspmUnifiedIdentityInfo
+        return $XspmUnifiedIdentityInfoResult
         } else {
             Write-Error "Failed to run advanced hunting query to get application and workload identity details."
         }

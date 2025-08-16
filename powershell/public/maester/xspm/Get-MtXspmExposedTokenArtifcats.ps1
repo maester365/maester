@@ -14,7 +14,7 @@
     https://maester.dev/docs/commands/Get-MtXspmExposedTokenArtifcats
 #>
 
-function Get-MtXspmExposedTokenArtifcats {
+function Get-MtXspmExposedTokenArtifacts {
 
     $Query = "
         let PrimaryRefresh = ExposureGraphEdges
@@ -23,9 +23,14 @@ function Get-MtXspmExposedTokenArtifcats {
                 ExposureGraphNodes
                 | project NodeId, RawData = parse_json(NodeProperties)['rawData'], EntityIds
             ) on `$left.SourceNodeId == `$right.NodeId
+            | join kind = inner (
+                ExposureGraphNodes
+                | extend AccountObjectId = tostring(parse_json(NodeProperties)['rawData']['accountObjectId'])
+                | project AccountObjectId, NodeId
+            ) on `$left.TargetNodeId == `$right.NodeId
             | where parse_json(EdgeProperties)['rawData']['primaryRefreshToken']['primaryRefreshToken'] == 'true'
             | extend TokenType = tostring(parse_json(EdgeProperties)['rawData']['primaryRefreshToken']['type'])
-            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId, TargetNodeName, TokenType, DeviceRawData = RawData, EntityIds;
+            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId, TargetNodeName, TokenType, DeviceRawData = RawData, EntityIds, AccountObjectId;
         let SessionCookie = ExposureGraphEdges
             | where EdgeLabel == @'contains' and TargetNodeLabel == 'entra-userCookie'
             | join kind = inner (
@@ -40,25 +45,31 @@ function Get-MtXspmExposedTokenArtifcats {
                 ExposureGraphEdges
                 | where EdgeLabel == @'can authenticate as' and SourceNodeLabel == @'entra-userCookie'
             ) on `$left.TargetNodeId == `$right.SourceNodeId
+            | join kind = inner (
+                ExposureGraphNodes
+                | extend AccountObjectId = tostring(parse_json(NodeProperties)['rawData']['accountObjectId'])
+                | project NodeId, AccountObjectId
+            ) on `$left.TargetNodeId1 == `$right.NodeId
             | extend TargetNodeId
             | extend TokenType = 'UserCookie'
-            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId = TargetNodeId1, TargetNodeName = TargetNodeName1, TokenType, DeviceRawData = RawData, EntityIds;
+            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId = TargetNodeId1, TargetNodeName = TargetNodeName1, TokenType, DeviceRawData = RawData, EntityIds, AccountObjectId;
         let AzureCliToken = ExposureGraphNodes
             // RT and AT in Azure CLI e.g., privileged account not primary user but will be used on this device
             | where NodeLabel == 'user-azure-cli-secret'
             | extend AccountSid = tostring(parse_json(NodeProperties)['rawData']['userAzureCliSecretData']['userSid'])
             | join kind=inner ( ExposureGraphNodes
+                | extend AccountObjectId = tostring(parse_json(NodeProperties)['rawData']['accountObjectId'])
                 | extend AccountSid = tostring(parse_json(NodeProperties)['rawData']['aadSid'])
-                | project UserNodeId = NodeId, UserNodeName = NodeName, AccountSid
+                | project UserNodeId = NodeId, UserNodeName = NodeName, AccountSid, AccountObjectId
             ) on AccountSid
             | join kind=inner (
                 ExposureGraphEdges
                 ) on `$left.NodeId == `$right.TargetNodeId
             | extend TokenType = tostring(parse_json(NodeProperties)['rawData']['userAzureCliSecretData']['type'])
-            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId = UserNodeId, TargetNodeName = UserNodeName, TokenType, TokenNodeId = TargetNodeId, TokenNodeName = TargetNodeName, UserRawData = parse_json(NodeProperties)['rawData'];
+            | project EdgeId, SourceNodeId, SourceNodeName, SourceNodeLabel, EdgeLabel, TargetNodeId = UserNodeId, TargetNodeName = UserNodeName, TokenType, TokenNodeId = TargetNodeId, TokenNodeName = TargetNodeName, UserRawData = parse_json(NodeProperties)['rawData'], AccountObjectId;
         union PrimaryRefresh, SessionCookie, AzureCliToken
         // Enrichment to MDE insights
-        | summarize DeviceRawData = make_set(DeviceRawData), EntityIds = make_set(EntityIds), TokenArtifacts = make_list(TokenType) by SourceNodeId, SourceNodeName, TargetNodeId, TargetNodeName
+        | summarize DeviceRawData = make_set(DeviceRawData), EntityIds = make_set(EntityIds), TokenArtifacts = make_list(TokenType) by SourceNodeId, SourceNodeName, TargetNodeId, TargetNodeName, AccountObjectId
         | mv-apply EntityIds = parse_json(EntityIds) on (
             where EntityIds.type =~ 'DeviceInventoryId'
             | extend DeviceId = tostring(EntityIds.id)
@@ -78,19 +89,22 @@ function Get-MtXspmExposedTokenArtifcats {
                 MaxCvssScore = tostring(parse_json(DeviceRawData)['highRiskVulnerabilityInsights']['maxCvssScore']),
                 AllowedRDP = tostring(parse_json(DeviceRawData)['rdpStatus']['allowConnections']),
                 CredentialGuard = tostring(CredentialGuard),
-                TpmActivated = tostring(parse_json(DeviceRawData)['tpmData']['activated'])
+                TpmActivated = tostring(parse_json(DeviceRawData)['tpmData']['activated']),
+                SourceNodeId,
+                TargetNodeId,
+                AccountObjectId
         | join kind = leftouter ( AlertEvidence
             | where isnotempty(DeviceId)
             | summarize Alerts = make_set(Title), AlertCategories = make_set(Categories) by DeviceId
         ) on DeviceId
         | project-away DeviceId1
+        | sort by User, Device
     "
 
     $Body = @{
         "Query" = $Query;
     } | ConvertTo-Json
 
-        $XspmExposedTokenArtifacts = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject -Verbose).results
-
-        return $XspmUnifiedIdentityInfo
+        $XspmExposedTokenArtifacts = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject).results
+        return $XspmExposedTokenArtifacts
 }

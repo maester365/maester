@@ -12,8 +12,6 @@ BeforeDiscovery {
     Write-Verbose "IdentityInfo: $AdvancedIdentityAvailable"
     Write-Verbose "OAuthAppInfo: $OAuthAppInfoAvailable"
     Write-Verbose "UnifiedIdentityInfoExecutable is $UnifiedIdentityInfoExecutable (IdentityInfo is $AdvancedIdentityAvailable, $OAuthAppInfoAvailable)"
-
-
     function Get-XspmPrivilegedClassificationIcon {
         param (
             [Parameter(Mandatory = $true)]
@@ -35,11 +33,33 @@ BeforeDiscovery {
         #endregion
     }
 
+    function Get-XspmAuthenticationArtifact {
+        param (
+            [Parameter(Mandatory = $true)]
+            [object]$ArtifactType
+        )
+        #region Token Artifact type
+        if ($ArtifactType -eq 'PrimaryRefreshToken') {
+            $ArtifactType = "🪙"
+        } elseif ($ArtifactType -eq 'UserCookie') {
+            $ArtifactType = "🍪"
+        } elseif ($ArtifactType -eq 'UserAzureCliSecretData') {
+            $ArtifactType = "🔑"
+        } else {
+            $ArtifactType = "ℹ️"
+        }
+        return $ArtifactType
+        #endregion
+    }
 }
 
-Describe "Exposure Management - Privileged Assets" -Tag "Maester", "Privileged", "XSPM", "EntraOps" -Skip:( $EntraIDPlan -ne "P2" ) {
-    It "MT.1071: Workload identities with high-privileged API permissions should have no owners. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
+Describe "Exposure Management - Protection of classified assets identified by EntraOps and Critical Asset Management" -Tag "Full", "Maester", "Privileged", "XSPM", "EntraOps" -Skip:( $EntraIDPlan -ne "P2" ) {
+    It "MT.1071: App registrations with privileged API permissions should have no owners. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
 
+    if ( $UnifiedIdentityInfoExecutable -eq $false) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+            return $null
+    }
 
     try {
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
@@ -51,27 +71,50 @@ Describe "Exposure Management - Privileged Assets" -Tag "Maester", "Privileged",
     $SensitiveApiRolesOnAppsWithOwners = $HighPrivilegedAppsByApiPermissions | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
     if ($return) {
-        $testResultMarkdown = "Well done. No application and workload identity has a privileged API permission with an owner."
+        $testResultMarkdown = "Well done. No app registrations with privileged API permission has assigned to owner."
     } else {
-        $testResultMarkdown = "At least one application has owner with a risk of sensitive API permissions.`n`n%TestResult%"
-
-        $result = "| ApplicationName | Ownership | Sensitive App Role | API Provider |`n"
-        $result += "| --- | --- | --- | --- |`n"
+        $testResultMarkdown = "At least one app registration has assigned owner with privileged API permissions.`n`n%TestResult%"
+        $result = "| ApplicationName | Ownership | Tier Breach | Sensitive App Role | API Provider |`n"
+        $result += "| --- | --- | --- | --- |  --- |`n"
         foreach ($SensitiveApp in $SensitiveApiRolesOnAppsWithOwners) {
             $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High" } | Select-Object AppDisplayName, AppRoleDisplayName, Classification
             $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
             $SensitiveApp.OwnedBy | ForEach-Object {
-                $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
-                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($_.NodeName) - $($_.NodeLabel) | $($filteredApiPermissions.AppRoleDisplayName) | $($filteredApiPermissions.AppDisplayName) |`n"
+                $Owner = $_
+                $XspmIdentifiers = ($Owner.EntityIds | Where-Object {$_.type -eq "AadObjectId"}).id
+                if ($XspmIdentifiers -match 'objectid=([0-9a-fA-F\-]{36})') {
+                    $MatchedObjectId = $matches[1]
+                    $MatchedOwner = $UnifiedIdentityInfo | Where-Object {$_.AccountObjectId -eq $MatchedObjectId}
+                    $OwnerAdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $MatchedOwner.Classification
+                    if ($MatchedOwner.Type -eq "Workload") {
+                        $OwnerLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
+                    } else {
+                        $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
+                    }
+                    $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
+                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and $MatchedOwner.Classification -ne "$filteredApiPermissions.Classification"
+                } else {
+                    $Owner = $($_.NodeName) - $($_.NodeLabel)
+                    $TierBreach = "Unknown"
+                }
+                $AppRoleDisplayName = $filteredApiPermissions.AppRoleDisplayName -join "<br/>"
+                $AppDisplayName = $filteredApiPermissions.AppDisplayName -join "\"
+                $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($SensitiveApp.AppId)/isMSAApp~/false)"
+                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($AppRoleDisplayName) | $($AppDisplayName) |`n"
             }
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+    Add-MtTestResultDetail -Result $testResultMarkdown -Description "High privileged app registration will be identified by using data from OAuthAppInfo and the high privilege level by MDA App Governance but also Control Plane and Management Plane classification by the community project EntraOps. Ownership on app registrations will be identified by Microsoft Security Exposure Management" -Severity "High"
     $SensitiveApiRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because $benefits
     }
 
     It "MT.1072: Workload identities with high-privileged directory roles should have no owners. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {
+
+        if ( $UnifiedIdentityInfoExecutable -eq $false) {
+                Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+                return $null
+        }
 
         try {
             $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
@@ -87,27 +130,49 @@ Describe "Exposure Management - Privileged Assets" -Tag "Maester", "Privileged",
         } else {
             $testResultMarkdown = "At least one application has ownership with a risk of sensitive directory role.`n`n%TestResult%"
 
-            $result = "| ApplicationName | Ownership | Sensitive Directory Role | API Provider |`n"
-            $result += "| --- | --- | --- | --- |`n"
+            $result = "| ApplicationName | Ownership | Tier Breach | Sensitive Directory Role | API Provider |`n"
+            $result += "| --- | --- | --- | --- | --- |`n"
             foreach ($SensitiveApp in $SensitiveDirectoryRolesOnAppsWithOwners) {
                 $filteredApiPermissions = $SensitiveApp.AssignedEntraRoles | where-object {$_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
                 # XSPM supports only Directory scope for now
                 $filteredApiPermissions | Add-Member -MemberType NoteProperty -Name RoleScope -Value "Directory" -Force
                 $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
                 $SensitiveApp.OwnedBy | ForEach-Object {
+                    $Owner = $_
+                    $XspmIdentifiers = ($Owner.EntityIds | Where-Object {$_.type -eq "AadObjectId"}).id
+                    if ($XspmIdentifiers -match 'objectid=([0-9a-fA-F\-]{36})') {
+                        $MatchedObjectId = $matches[1]
+                        $MatchedOwner = $UnifiedIdentityInfo | Where-Object {$_.AccountObjectId -eq $MatchedObjectId}
+                        $OwnerAdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $MatchedOwner.Classification
+                        if ($MatchedOwner.Type -eq "Workload") {
+                            $OwnerLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
+                        } else {
+                            $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
+                        }
+                        $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
+                        $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and $MatchedOwner.Classification -ne "$filteredApiPermissions.Classification"
+                    } else {
+                        $Owner = $($_.NodeName) - $($_.NodeLabel)
+                        $TierBreach = "Unknown"
+                    }
+                    $filteredApiPermissions.RoleDefinitionName = $filteredApiPermissions.RoleDefinitionName -join '`'
+                    $filteredApiPermissions.RoleScope = $filteredApiPermissions.RoleScope -join '\\'
                     $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
-                    $result += "|  $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($SensitiveApp.AccountObjectId) | $($_.NodeName) - $($_.NodeLabel) | $($filteredApiPermissions.RoleDefinitionName) | $($filteredApiPermissions.RoleScope) |`n"
+                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($filteredApiPermissions.RoleDefinitionName) | $($filteredApiPermissions.RoleScope) |`n"
                 }
             }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        #endregion
-        # Actual test
+        Add-MtTestResultDetail -Result $testResultMarkdown -Description "Description Field" -Severity "High"
         $SensitiveApiRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because $benefits
     }
 
     It "MT.1073: Privileged API permissions on workload identities should not be unused. See https://maester.dev/docs/tests/MT.1073" -Tag "MT.1073" {
+
+        if ( $UnifiedIdentityInfoExecutable -eq $false) {
+                Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+                return $null
+        }
 
         try {
             $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
@@ -128,25 +193,68 @@ Describe "Exposure Management - Privileged Assets" -Tag "Maester", "Privileged",
             foreach ($SensitiveApp in $SensitiveAppsWithUnusedPermissions) {
                 $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object AppDisplayName, AppRoleDisplayName, Classification | sort-object Classification, AppDisplayName
                 if($filteredApiPermissions) {
-                    $SensitiveApp.OwnedBy | ForEach-Object {
-                    $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
-                        $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
-                        $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($SensitiveApp.AccountObjectId) | $($SensitiveApp.Classification) | $($filteredApiPermissions.AppRoleDisplayName) | $($filteredApiPermissions.AppDisplayName) |`n"
+                    foreach ($filteredApiPermission in $filteredApiPermissions) {
+                        if ($filteredApiPermission.Classification -eq "") { $filteredApiPermission.Classification = "Unknown" }
+                        $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
+                        $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $SensitiveApp.Classification
+                        $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.AppRoleDisplayName) | $($filteredApiPermission.AppDisplayName) |`n"
                     }
                 }
             }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
-        #endregion
-        # Actual test
         $SensitiveApiRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because $benefits
     }
 
+    It "MT.1074: Credentials, token or cookies from high-privileged users should not be exposed on vulnerable endpoints. See https://maester.dev/docs/tests/MT.1074" -Tag "MT.1074" {
 
-    It "MT.1078: Hybrid users should not be assigned to Entra ID role assignments. See https://maester.dev/docs/tests/MT.1078" -Tag "MT.1078" {
+        if ( $UnifiedIdentityInfoExecutable -eq $false) {
+                Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+                return $null
+        }
 
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+        try {
+            $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+            $ExposedTokenArtifacts = Get-MtXspmExposedTokenArtifacts
+        } catch {
+            Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        }
+
+        if ($return) {
+            $testResultMarkdown = "Well done. No authentication artifacts seems to be exposed on vulnerable endpoints."
+        } else {
+            $testResultMarkdown = "At least one authentication artifact seems to be exposed on a vulnerable endpoint.`n`n%TestResult%"
+
+            $result = "| AccountName | Device | Classification | Criticality Level | Artifacts | ExposureScore | RiskScore |`n"
+            $result += "| --- | --- | --- | --- | --- | --- | --- |`n"
+            $ExposedTokenArtifacts = $ExposedTokenArtifacts | Where-Object {$_.RiskScore -eq "High" -or $_.ExposureScore -eq "High"}
+            foreach ($ExposedTokenArtifact in $ExposedTokenArtifacts) {
+                $EnrichedUserDetails = $UnifiedIdentityInfo | Where-Object { $_.AccountObjectId -eq $ExposedTokenArtifact.AccountObjectId } | Select-Object Classification, AccountObjectId, CriticalityLevel, AccountDisplayName, TenantId
+                if ($EnrichedUserDetails.Classification -eq "ControlPlane" -or $EnrichedUserDetails.Classification -eq "ManagementPlane" -or $EnrichedUserDetails.CriticalityLevel -lt "1") {
+                    $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $EnrichedUserDetails.Classification
+                    $UserLink = "[$($EnrichedUserDetails.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnrichedUserDetails.AccountObjectId))"
+                    $DeviceLink = "[$($ExposedTokenArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedTokenArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
+                    $UserArtifacts = $ExposedTokenArtifact.TokenArtifacts | foreach-object { (Get-XspmAuthenticationArtifact -ArtifactType $_) + " " + $_ }
+                    $UserArtifacts = $UserArtifacts -join "`n"
+                    $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifacts) | $($ExposedTokenArtifact.ExposureScore) | $($ExposedTokenArtifact.RiskScore) |`n"
+                }
+            }
+            $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        }
+        Add-MtTestResultDetail -Result $testResultMarkdown
+
+        $ExposedTokenArtifacts.Count -eq "0" | Should -Be $True -Because $benefits
+    }
+
+    It "MT.1075: Hybrid users should not be assigned to Entra ID role assignments. See https://maester.dev/docs/tests/MT.1075" -Tag "MT.1075" {
+
+        try {
+            $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+        } catch {
+            Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        }
+
         $HighPrivilegedUsersByEntraRoles = $UnifiedIdentityInfo | Where-Object { $_.Type -eq "User" -and ($_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True) | Sort-Object Classification, AccountDisplayName}
         $HighPrivilegedHybridUsers = $HighPrivilegedUsersByEntraRoles | Where-Object { $_.SourceProviders -eq "AzureActiveDirectory"}
 
@@ -158,37 +266,19 @@ Describe "Exposure Management - Privileged Assets" -Tag "Maester", "Privileged",
             $result = "| AccountName | Classification | Sensitive Directory Role | ChangeSource |`n"
             $result += "| --- | --- | --- | --- |`n"
             foreach ($HighPrivilegedHybridUser in $HighPrivilegedHybridUsers) {
-                $filteredDirectoryRole = $HighPrivilegedHybridUser.AssignedEntraRoles | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True} | Select-Object RoleDefinitionName, Classification
+                $filteredDirectoryRoles = $HighPrivilegedHybridUser.AssignedEntraRoles | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True} | Select-Object RoleDefinitionName, Classification
+                $UserSensitiveDirectoryRoles = $filteredDirectoryRoles | foreach-object { (Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $_.Classification) + " " + $_.RoleDefinitionName }
+                $UserSensitiveDirectoryRolesResult = @()
+                $UserSensitiveDirectoryRolesResult += "$($UserSensitiveDirectoryRoles) `n"
+
                 $AdminTierLevelIcon = Get-XspmPrivilegedClassificationIcon -AdminTierLevelName $HighPrivilegedHybridUser.Classification
                 $HybridUserLink = "[$($HighPrivilegedHybridUser.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($HighPrivilegedHybridUser.AccountObjectId))"
-                $result += "| $($AdminTierLevelIcon) $($HybridUserLink) | $($HighPrivilegedHybridUser.Classification) | $($filteredDirectoryRole.RoleDefinitionName) - $($filteredDirectoryRole.Classification)) | $($HighPrivilegedHybridUser.SourceProvider) |`n"
+                $result += "| $($AdminTierLevelIcon) $($HybridUserLink) | $($HighPrivilegedHybridUser.Classification) | $($UserSensitiveDirectoryRolesResult) | $($HighPrivilegedHybridUser.SourceProvider) |`n"
             }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
 
-        $PrivilegedHybridUsers.Count -eq "0" | Should -Be $True -Because $benefits
+        $HighPrivilegedHybridUsers.Count -eq "0" | Should -Be $True -Because $benefits
     }
 }
-
-<#
-
-Describe "Exposure Management - No secrets on privileged workloads" -Tag "Maester", "Privileged", "XSPM", "EntraOps" {
-}
-
-
-Describe "Exposure Management - No exposed Entra ID user credentials on workloads" -Tag "Maester", "Privileged", "XSPM", "EntraOps" {
-}
-
-
-Describe "Exposure Management - No exposed credentials, token or cookies of privileged users on vulnerable endpoints" -Tag "Maester", "Privileged", "XSPM", "EntraOps" {
-    #Get-MtXspmExposedTokenArtifcats
-}
-
-
-    $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object {$_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
-    $HighPrivilegedApps = @($HighPrivilegedAppsByApiPermissions; $HighPrivilegedAppsByEntraRoles) | Sort-Object AccountObjectId -Unique
-
-#>
-
-
