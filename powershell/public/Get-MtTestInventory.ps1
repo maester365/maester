@@ -16,7 +16,7 @@
     Root path containing the test files. Defaults to the '..\tests' directory in the current location.
 
     .PARAMETER ExcludePath
-    [KNOWN ISSUE: Does not work.] One or more paths to exclude (e.g. 'test-results' directory). Accepts wildcard patterns and relative paths.
+    One or more paths to exclude (e.g. 'test-results' directory). Accepts wildcard patterns and relative paths.
 
     .PARAMETER ExcludeTag
     One or more tags to exclude from discovery.
@@ -59,7 +59,10 @@
         Show all tags used that do not match the specified tag patterns, along with their test objects.
 
     .OUTPUTS
-    An ordered dictionary of all unique tags their corresponding test objects.
+        [Ordered] (Default) - An ordered dictionary containing a list of tags and associated test inventory objects.
+        [String] - JSON string of test inventory (when OutputType is 'JSON').
+        [String] - CSV string of test inventory (when OutputType is 'CSV').
+        [String[]] - Array of unique tags (when OutputType is 'TagsOnly').
 
     .NOTES
     Requires Pester 5+.
@@ -72,16 +75,16 @@
     param(
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
         [Parameter(Position = 0, HelpMessage = 'Path to the test files to gather inventory from.')]
-        [ValidateScript({ Test-Path $_ -PathType Container })]
+        [ValidateScript({ Test-Path -Path $_ -PathType Container })]
         [string] $Path = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..' 'tests')).Path,
 
         # Paths to exclude from discovery.
         [Parameter(HelpMessage = 'One or more paths to exclude (e.g. test-results folders). Accepts wildcard patterns.')]
-        [string[]] $ExcludePath = @(),
+        [string[]] $ExcludePath,
 
         # Tags to exclude from discovery.
         [Parameter(HelpMessage = 'One or more tags to exclude from discovery.')]
-        [string[]] $ExcludeTag = @(),
+        [string[]] $ExcludeTag,
 
         # Specify a desired output type. Defaults to an array of test inventory objects.
         [Parameter(ParameterSetName = 'Output', HelpMessage = 'Specify a desired output type. Defaults to an array of test inventory objects.')]
@@ -94,15 +97,6 @@
     )
 
     begin {
-        # Update Pester if version 5 or newer is not yet installed.
-        if (-not ( (Get-Module -Name Pester -ListAvailable -ErrorAction SilentlyContinue).Version -gt [version]'5.0.0' ) ) {
-            try {
-                Update-Module -Name Pester -AcceptLicense -Force
-            } catch {
-                throw "Failed to update Pester module: $_"
-            }
-        }
-
         # Resolve the full path of ExcludePath items and add robust variants (absolute, relative to $PWD, and wildcard for directories).
         $ExcludePathResolved = @()
         foreach ($ExcludePathItem in $ExcludePath) {
@@ -142,17 +136,22 @@
         $PesterConfig = New-PesterConfiguration
         $PesterConfig.Run.SkipRun = $true          # Discover only
         $PesterConfig.Run.PassThru = $true          # Emit discovery object
-        $PesterConfig.Run.Path = $Path
-        $PesterConfig.Run.ExcludePath = $ExcludePathResolved
-        $PesterConfig.Filter.ExcludeTag = $ExcludeTag
+        $PesterConfig.Run.Path = @($Path)
+        if ($ExcludePathResolved) {
+            $PesterConfig.Run.ExcludePath = $ExcludePathResolved
+        }
+        if ($ExcludeTag) {
+            $PesterConfig.Filter.ExcludeTag = $ExcludeTag
+        }
         # Discover all Pester tests.
         $Result = Invoke-Pester -Configuration $PesterConfig
+        if ($null -eq $Result) {
+            Write-Warning "No tests found in path: $Path"
+            return
+        }
         $Tests = $Result.Tests
         Write-Verbose "Discovered $($Tests.Count) tests in $Path"
         #endregion PesterDiscovery
-
-        # Return an empty array if no tests were discovered.
-        if (-not $Tests) { return @() }
 
         #region FilterResults
         # This is required because Run.ExcludePath does not work with directories in Pester 5.
@@ -222,10 +221,10 @@
         # Return test inventory to the pipeline in the requested format.
         switch ($OutputType) {
             'JSON' {
-                $TestInventory | ConvertTo-Json -Depth 5 | Out-File -FilePath $ExportPath -Encoding UTF8
+                $TestInventory | ConvertTo-Json -Depth 5 | Out-File -FilePath $ExportPath -Encoding utf8
             }
             'CSV' {
-                $TestInventory | Export-Csv -NoTypeInformation -Path $ExportPath -Encoding UTF8
+                $TestInventory | Export-Csv -NoTypeInformation -Path $ExportPath -Encoding utf8
             }
             'TagsOnly' {
                 $AllTags
