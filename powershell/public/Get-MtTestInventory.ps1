@@ -59,10 +59,13 @@
         Show all tags used that do not match the specified tag patterns, along with their test objects.
 
     .OUTPUTS
-        An ordered dictionary of all unique tags their corresponding test objects.
+    An ordered dictionary of all unique tags their corresponding test objects.
 
     .NOTES
-        Requires Pester 5+.
+    Requires Pester 5+.
+
+    .LINK
+    https://maester.dev/docs/commands/Get-MtTestInventory
 #>
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
