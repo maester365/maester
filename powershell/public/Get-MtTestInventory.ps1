@@ -74,7 +74,7 @@
     [OutputType([PSCustomObject])]
     param(
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
-        [Parameter(Position = 0, HelpMessage = 'Path to the test files to gather inventory from.')]
+        [Parameter(HelpMessage = 'Path to the test files to gather inventory from.')]
         [ValidateScript({ Test-Path -Path $_ -PathType Container })]
         [string] $Path = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..' 'tests')).Path,
 
