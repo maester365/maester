@@ -1,34 +1,15 @@
-BeforeDiscovery {
-    $SkipRun = $false
-    try {
-        # Pester 5+ returns the effective configuration for the current invocation.
-        $SkipRun = (Get-PesterConfiguration).Run.SkipRun
-    } catch {
-        # Optional fallback: honor an environment variable.
-        $SkipRun = [bool]$env:MAESTER_PESTER_SKIPRUN
-    }
-
-    if ( $SkipRun ) {
-        Write-Verbose "Skipping test execution due to Pester configuration."
-
-        # Set safe defaults.
-        $EntraIDPlan = 'Free'
-        $RegularUsers = @()
-        $AdminUsers = @()
-        $EmergencyAccessUsers = @()
-    } else {
-        $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
-        $RegularUsers = Get-MtUser -Count 5 -UserType "Member"
-        $AdminUsers = Get-MtUser -Count 5 -UserType "Admin"
-        $EmergencyAccessUsers = Get-MtUser -Count 5 -UserType "EmergencyAccess"
-        # Remove emergency access users from regular users
-        $RegularUsers = $RegularUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
-        # Remove emergency access users from admin users
-        $AdminUsers = $AdminUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
-        Write-Verbose "EntraIDPlan: $EntraIDPlan"
-        Write-Verbose "RegularUsers: $($RegularUsers.id)"
-        Write-Verbose "AdminUsers: $($AdminUsers.id)"
-    }
+BeforeAll {
+    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
+    $RegularUsers = Get-MtUser -Count 5 -UserType "Member"
+    $AdminUsers = Get-MtUser -Count 5 -UserType "Admin"
+    $EmergencyAccessUsers = Get-MtUser -Count 5 -UserType "EmergencyAccess"
+    # Remove emergency access users from regular users
+    $RegularUsers = $RegularUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
+    # Remove emergency access users from admin users
+    $AdminUsers = $AdminUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
+    Write-Verbose "EntraIDPlan: $EntraIDPlan"
+    Write-Verbose "RegularUsers: $($RegularUsers.id)"
+    Write-Verbose "AdminUsers: $($AdminUsers.id)"
 }
 
 Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
