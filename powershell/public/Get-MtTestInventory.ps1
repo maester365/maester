@@ -159,26 +159,27 @@
             Write-Verbose "Excluding tests in paths:`n`t`t$($ExcludePathResolved -join "`n`t`t")"
             $Tests = $Tests | Where-Object {
             # Exclude tests whose file is in any excluded directory or matches any excluded file
-            $Tests = $Tests | Where-Object {
-                $testFile = [System.IO.Path]::GetFullPath($_.ScriptBlock.File)
-                $exclude = $false
-                foreach ($excludePath in $ExcludePathResolved) {
-                    $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
-                    if (Test-Path $fullExcludePath -PathType Container) {
-                        # Directory exclusion: check if test file is under this directory
-                        if ($testFile.StartsWith($fullExcludePath.TrimEnd('\') + '\')) {
-                            $exclude = $true
-                            break
-                        }
-                    } else {
-                        # File exclusion: check for exact match
-                        if ($testFile -eq $fullExcludePath) {
-                            $exclude = $true
-                            break
+                $Tests = $Tests | Where-Object {
+                    $testFile = [System.IO.Path]::GetFullPath($_.ScriptBlock.File)
+                    $exclude = $false
+                    foreach ($excludePath in $ExcludePathResolved) {
+                        $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
+                        if (Test-Path $fullExcludePath -PathType Container) {
+                            # Directory exclusion: check if test file is under this directory
+                            if ($testFile.StartsWith($fullExcludePath.TrimEnd('\') + '\')) {
+                                $exclude = $true
+                                break
+                            }
+                        } else {
+                            # File exclusion: check for exact match
+                            if ($testFile -eq $fullExcludePath) {
+                                $exclude = $true
+                                break
+                            }
                         }
                     }
+                    -not $exclude
                 }
-                -not $exclude
             }
         }
 
