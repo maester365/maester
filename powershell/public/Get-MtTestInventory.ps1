@@ -186,9 +186,7 @@
         if ($ExcludeTag) {
             Write-Verbose "Excluding tests with tags: $($ExcludeTag -join ', ')"
             $Tests = $Tests | Where-Object {
-                $_.Tag | Where-Object {
-                    $ExcludeTag -notcontains $_
-                }
+                -not ($_.Tag | Where-Object { $ExcludeTag -contains $_ })
             }
         }
         #endregion FilterResults
