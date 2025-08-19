@@ -70,7 +70,7 @@
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
         [Parameter(Position = 0, HelpMessage = 'Path to the test files to gather inventory from.')]
         [ValidateScript({ Test-Path $_ -PathType Container })]
-        [string] $Path = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..' 'tests')).Path,
+        [string] $Path = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..' 'tests')).Path,
 
         # Paths to exclude from discovery.
         [Parameter(HelpMessage = 'One or more paths to exclude (e.g. test-results folders). Accepts wildcard patterns.')]
@@ -112,11 +112,6 @@
             $ExcludePathResolved += $ExcludePathItem
         }
         Write-Verbose "Excluding Paths:`n`t`t$($ExcludePathResolved -join "`n`t`t")"
-
-        # Note: Tests that require a Microsoft Graph connection in the BeforeAll block will fail.
-        if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
-            Write-Warning 'No Microsoft Graph connection found. Some tests may require a connection to discover successfully.'
-        }
 
         if ($ExportPath) {
             # Check for a proper filename and extension based on the OutputType parameter.
