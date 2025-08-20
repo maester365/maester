@@ -200,12 +200,7 @@ run_maester_tests_inline:
 
         # Connect to Exchange Online and IPP
         if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.IPP -eq $true) {
-            # Can be reduced after release from version 3.8.2
-            if ($AdditionalConnections.IPP -eq $false) {
-                Install-Module -Name ExchangeOnlineManagement -Force
-            } else {
-                Install-Module -Name ExchangeOnlineManagement -Force -AllowPrerelease #-AllowPrereleas because accesstoken Auth to IPP is only allowed in 3.8.1-Preview1 and newer
-            }
+            Install-Module -Name ExchangeOnlineManagement -Force
 
             # Get Exchange Online token using Az authentication
             $exchangeToken = Get-AccessToken -Scope "https://outlook.office365.com/.default"
