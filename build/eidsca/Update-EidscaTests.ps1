@@ -485,7 +485,7 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedControls
 
 $output = @'
-BeforeDiscovery {
+BeforeAll {
 <DiscoveryFromJson>}
 
 '@

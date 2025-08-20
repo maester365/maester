@@ -1,5 +1,5 @@
-﻿BeforeDiscovery {
-  # Skip this PEster test if running on Windows PowerShell
+﻿BeforeAll {
+  # Skip this Pester test if running on Windows PowerShell
   $skip = $PSVersionTable.PSEdition -eq 'Desktop'
 }
 
@@ -204,4 +204,3 @@ Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
 
   }
 }
-

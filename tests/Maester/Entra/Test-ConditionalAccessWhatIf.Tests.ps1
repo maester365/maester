@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
     $RegularUsers = Get-MtUser -Count 5 -UserType "Member"
     $AdminUsers = Get-MtUser -Count 5 -UserType "Admin"
@@ -11,7 +11,6 @@ BeforeDiscovery {
     Write-Verbose "RegularUsers: $($RegularUsers.id)"
     Write-Verbose "AdminUsers: $($AdminUsers.id)"
 }
-
 
 Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
 
@@ -26,7 +25,7 @@ Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Sk
     Context "Maester/Entra" -ForEach @( $EmergencyAccessUsers ) {
         # Emergency access users
         It "MT.1034: Emergency access users should not be blocked (<userPrincipalName>)" -Tag "MT.1034" {
-            if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+            if ( ( Get-MtLicenseInformation -Product 'EntraID' ) -eq "Free" ) {
                 Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
             } else {
                 Test-MtConditionalAccessWhatIf -UserId $id -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync | Should -BeNullOrEmpty
