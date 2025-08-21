@@ -1141,7 +1141,7 @@
       "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
     },
     {
-      "Id": "MT.1073",
+      "Id": "MT.1075",
       "Severity": "Medium",
       "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
     },
