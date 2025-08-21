@@ -1141,6 +1141,11 @@
       "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
     },
     {
+      "Id": "MT.1074",
+      "Severity": "High",
+      "Title": "Mailbox should not use the .onmicrosoft.com domain as primary SMTP address."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
