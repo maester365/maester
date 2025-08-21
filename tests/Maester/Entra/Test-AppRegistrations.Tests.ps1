@@ -5,4 +5,7 @@ Describe "Maester/Entra" -Tag "Maester", "App", "Security", "Full", "Entra", "Gr
     It "MT.1058: Exchange application access policies must be configured. See https://maester.dev/docs/tests/MT.1058" -Tag "MT.1058" {
         Test-MtSpExchangeAppAccessPolicy | Should -Be $true -Because "all applications with Exchange permissions should have access policies configured"
     }
+    It "MT.1071: Require explicit assignment of Third Party Entra Apps. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
+        Test-MtServicePrincipalsForAllUsers | Should -Be $true -Because "Third Party Service Principals should require explicit assignment to users"
+    }
 }
