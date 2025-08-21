@@ -29,8 +29,6 @@ function Test-MtCaReferencedObjectsExist {
     Write-Verbose 'Running Test-MtCaReferencedObjectsExist'
 
     try {
-        $testDescription = 'Invalid or deleted users, groups, or roles are referenced in Conditional Access policies.'
-
         # Get all policies (the state of policy does not have to be enabled)
         $policies = Get-MtConditionalAccessPolicy
 
@@ -163,7 +161,7 @@ function Test-MtCaReferencedObjectsExist {
             $resultMarkdown = $resultDescription + $impactedCaObjects
         }
 
-        Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
+        Add-MtTestResultDetail -Result $resultMarkdown
         return $result
 
     } catch {
