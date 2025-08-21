@@ -41,9 +41,9 @@ function Test-MtMtServicePrincipalsForAllUsers {
             $result = "| ServicePrincipalName | ApplicationId |`n"
             $result += "| --- | --- |`n"
             foreach ($spn in $spns) {
-                $appMdLink = "[$($spn.displayName)](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId))"
-                $result += "| $($appMdLink) | $($app.appId) |`n"
-                Write-Verbose "Adding service princioal $($app.displayName) with id $($spn.appId) to markdown table."
+                $spnMdLink = "[$($spn.displayName)](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId))"
+                $result += "| $($spnMdLink) | $($spn.appId) |`n"
+                Write-Verbose "Adding service princioal $($spn.displayName) with id $($spn.appId) to markdown table."
             }
             $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
         }
