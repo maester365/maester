@@ -26,8 +26,12 @@ function Test-MtDirSyncSoftHardMatching {
     $return = $true
 
     Write-Verbose "Checking if on-premises directory synchronization soft- and hard-match is blocked..."
+    # requires delegated (no app) permissions: OnPremDirectorySynchronization.Read.All
+    if (((Get-MgContext).AuthType) -ne "Delegated") {
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires delegated permissions.'
+        return $null
+    }
 
-    # required permissions: Directory.Read.All or dedicated OnPremDirectorySynchronization.Read.All
     $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
     if ($organizationConfig.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'OnPremisesSynchronization is not configured'
