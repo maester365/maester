@@ -43,7 +43,7 @@ function Test-MtServicePrincipalsForAllUsers {
             foreach ($spn in $spns) {
                 $spnMdLink = "[$($spn.displayName)](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId))"
                 $result += "| $($spnMdLink) | $($spn.appId) |`n"
-                Write-Verbose "Adding service princioal $($spn.displayName) with id $($spn.appId) to markdown table."
+                Write-Verbose "Adding service principal $($spn.displayName) with id $($spn.appId) to markdown table."
             }
             $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
         }
