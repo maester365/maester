@@ -10,7 +10,7 @@ import MtDonutChart from "./components/MtDonutChart";
 import MtTestSummary from "./components/MtTestSummary";
 import MtBlocksArea from './components/MtBlocksArea';
 
-/*The sample data will be replaced by the New-MtReport when it runs the generation.*/
+/*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
   "Result": "Failed",
   "FailedCount": 2,
@@ -210,7 +210,7 @@ const testResults = {
 };
 
 /* Note: DO NOT place any code between the line 'const testResults = {' and 'function App'.
-    They will be stripped away new New-MtReport cmdlet generates the user's content */
+    They will be stripped away when Get-MtHtmlReport cmdlet generates the user's content */
 
 function App() {
 
