@@ -13,7 +13,7 @@
 .LINK
     https://maester.dev/docs/commands/Test-MtServicePrincipalsForAllUsers
 #>
-function Test-MtMtServicePrincipalsForAllUsers {
+function Test-MtServicePrincipalsForAllUsers {
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks credentials for all apps.')]
     [OutputType([bool])]
