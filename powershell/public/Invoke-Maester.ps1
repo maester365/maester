@@ -373,7 +373,7 @@ function Invoke-Maester {
     if ($DriftRoot) {
         $DriftRoot = (Resolve-Path -Path $DriftRoot -ErrorAction SilentlyContinue).Path
         if (-not (Test-Path -Path $DriftRoot)) {
-            Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist." -ForegroundColor Red
+            Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist."
 
         } else {
             Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $DriftRoot
