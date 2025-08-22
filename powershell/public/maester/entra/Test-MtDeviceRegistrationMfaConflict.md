@@ -4,7 +4,7 @@ When both are enabled, the conditional access policy with the "Register device" 
 
 #### Remediation action:
 
-When a Conditional Access policy is configured with the **Register or join devices user action** you must disable tenant-wide multifactor requirement for device registration.
+When a Conditional Access policy is configured with the **Register or join devices user action** you must disable tenant-wide multifactor requirement for device registration. Otherwise, Conditional Access policies with this user action are not properly enforced.
 
 1. Open **[Entra - Device Settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices)**.
 2. Set **Require Multifactor Authentication to register or join devices with Microsoft Entra** to **No**.
