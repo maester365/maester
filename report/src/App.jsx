@@ -13,14 +13,15 @@ import MtBlocksArea from './components/MtBlocksArea';
 /*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
   "Result": "Failed",
-  "FailedCount": 2,
-  "PassedCount": 0,
-  "SkippedCount": 0,
-  "TotalCount": 2,
   "ExecutedAt": "2025-05-12T18:33:09.425618+10:00",
   "TotalDuration": "00:00:00",
   "UserDuration": "00:00:00",
   "DiscoveryDuration": "00:00:00",
+  "FailedCount": 75,
+  "PassedCount": 73,
+  "SkippedCount": 143,
+  "NotRunCount": 9,
+  "TotalCount": 300,
   "FrameworkDuration": "00:00:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora Inc.",
@@ -221,7 +222,6 @@ function App() {
     return testResults.TenantName + " (" + testResults.TenantId + ")";
   }
 
-  const NotRunCount = testResults.TotalCount - (testResults.PassedCount + testResults.FailedCount);
   const DonutTotalCount = testResults.PassedCount + testResults.FailedCount; //Don't count skipped tests
   return (
 
@@ -241,7 +241,8 @@ function App() {
           TotalCount={testResults.TotalCount}
           PassedCount={testResults.PassedCount}
           FailedCount={testResults.FailedCount}
-          SkippedCount={NotRunCount}
+          SkippedCount={testResults.SkippedCount}
+          NotRunCount={testResults.NotRunCount}
           Result={testResults.Result} />
         <Grid numItemsSm={1} numItemsLg={2} className="gap-6 mb-12 h-50">
           <MtDonutChart

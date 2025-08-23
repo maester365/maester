@@ -18,7 +18,7 @@ export default function MtTestSummary(props) {
     }
 
     return (
-        <Grid numItemsSm={2} numItemsLg={4} className="gap-6 mb-6">
+        <Grid numItemsSm={2} numItemsLg={5} className="gap-6 mb-6">
             <Card>
                 <Flex alignItems="start">
                     <Text>Total tests</Text>
@@ -64,6 +64,17 @@ export default function MtTestSummary(props) {
                 </Flex>
                 <ProgressBar value={getPercentage(props.SkippedCount)} color="gray" className="mt-3" showAnimation={true} />
             </Card>
+	    <Card>
+                <Flex alignItems="start">
+                   <Text>Not Run</Text>
+                   <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
+                </Flex>
+                <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                    <Metric>{props.NotRunCount}</Metric>
+                </Flex>
+                <ProgressBar value={getPercentage(props.NotRunCount)} color="gray" className="mt-3" showAnimation={true} />
+            </Card>
+
         </Grid>
     );
 }
