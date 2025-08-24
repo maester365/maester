@@ -27,7 +27,19 @@ function Test-MtServicePrincipalsForAllUsers {
     }
 
     try {
-        $spns = Invoke-MtGraphRequest -RelativeUri 'serviceprincipals?$select=id,displayName,appId,appRoleAssignmentRequired,appOwnerOrganizationId' -ErrorAction Stop | Where-Object { $_.appOwnerOrganizationId -ne "f8cdef31-a31e-4b4a-93e4-5f571e91255a" -and !$_.appRoleAssignmentRequired} | Select-Object -Property id, displayName, appId
+
+        $filter = "not(appOwnerOrganizationId eq 72f988bf-86f1-41af-91ab-2d7cd011db47) and not(appOwnerOrganizationId eq f8cdef31-a31e-4b4a-93e4-5f571e91255a)"
+        $filter += " and appRoleAssignmentRequired ne true and accountEnabled eq true"
+        $filter += " and (servicePrincipalType eq 'Application' or servicePrincipalType eq 'Legacy')"
+
+        $params = @{
+            'RelativeUri'     = 'serviceprincipals'
+            'Select'          = 'id,displayName,appId,appRoleAssignmentRequired,appOwnerOrganizationId'
+            'Filter'          = $filter
+        }
+
+        $spns = Invoke-MtGraphRequest @params
+
         $return = $spns.Count -eq 0
 
         if ($return) {
@@ -38,7 +50,7 @@ function Test-MtServicePrincipalsForAllUsers {
             Write-Verbose "Found $($spns.Count) third party service principals that can be used by any user."
             Write-Verbose 'Creating markdown table for third party service principals that can be used by any user.'
 
-            $result = "| ServicePrincipalName | ApplicationId |`n"
+            $result = "| Application | Application Id |`n"
             $result += "| --- | --- |`n"
             foreach ($spn in $spns) {
                 $spnMdLink = "[$($spn.displayName)](https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId))"
