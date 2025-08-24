@@ -1140,6 +1140,11 @@
       "Severity": "High",
       "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
     },
+{
+      "Id": "MT.1073",
+      "Severity": "Medium",
+      "Title": "Soft- and hard-matching of synchronized objects should be blocked."
+    },
     {
       "Id": "ORCA.100",
       "Severity": "Medium",
