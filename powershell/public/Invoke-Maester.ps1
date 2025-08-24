@@ -5,7 +5,7 @@ This is the main Maester command that runs the tests and generates a report of t
 .DESCRIPTION
 Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
-For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
+For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
