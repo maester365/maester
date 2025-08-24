@@ -28,7 +28,7 @@ function Test-MtDirSyncSoftHardMatching {
     Write-Verbose "Checking if on-premises directory synchronization soft- and hard-match is blocked..."
     # requires delegated (no app) permissions: OnPremDirectorySynchronization.Read.All
     if (((Get-MgContext).AuthType) -ne "Delegated") {
-        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires delegated permissions.'
+        Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'
         return $null
     }
 
