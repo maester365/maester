@@ -92,7 +92,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtGraphRequest',
     'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
-    'Test-MtAuthenticationPolicyReferencedObjectsExist',
+    'Test-MtServicePrincipalsForAllUsers', 'Test-MtAuthenticationPolicyReferencedObjectsExist',
     'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
     'Test-MtCaBlockLegacyOtherAuthentication', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
     'Test-MtCaDeviceCodeFlow', 'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaDeviceComplianceExists',
@@ -157,7 +157,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-ORCA244', 'Update-MaesterTests', 'Test-MtAppRegistrationOwnersWithoutMFA',
     'Test-MtManagementGroupWriteRequirement', 'Test-MtDeviceRegistrationMfaConflict', 'Test-MtVaultSoftDelete',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
-    'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps'
+    'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtDirSyncSoftHardMatching'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
