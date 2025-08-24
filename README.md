@@ -79,7 +79,7 @@ Update-MaesterTests
 
 ## Use as GitHub action
 
-Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/run-maester) and can be used directly in any GitHub workflow. Because it is specially built for GitHub, it nicely integrates with all the features of GitHub Actions, like uploading artifacts and writing a summary to the workflow run.
+Maester is also published to the [GitHub marketplace](https://github.com/marketplace/actions/run-maester) and can be used directly in any GitHub workflow. Because it is built for GitHub, it integrates with the features of GitHub Actions, like uploading artifacts and writing a summary to the workflow run.
 
 For more details, please refer to the [docs](https://maester.dev/docs/monitoring/github/) or the [action repository](https://github.com/maester365/maester-action).
 
