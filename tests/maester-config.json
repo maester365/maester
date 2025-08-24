@@ -1146,6 +1146,11 @@
       "Title": "Soft- and hard-matching of synchronized objects should be blocked."
     },
     {
+      "Id": "MT.1075",
+      "Severity": "Medium",
+      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
