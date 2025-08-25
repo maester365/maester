@@ -28,7 +28,7 @@ function Test-MtExoModernAuth {
     try {
         Write-Verbose "Getting Organization Config..."
         $organizationConfig = Get-MtExo -Request OrganizationConfig
-        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)/securescore"
+        $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
         $result = $organizationConfig.OAuth2ClientProfileEnabled
 
