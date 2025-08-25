@@ -25,6 +25,7 @@ function Test-MtExoMoeraMailActivity {
     }
 
     try {
+        Write-Verbose "Checking current report obfuscation"
         $reportSettings = Invoke-MgGraphRequest -Method Get -Uri "v1.0/admin/reportSettings"
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -36,6 +37,7 @@ function Test-MtExoMoeraMailActivity {
         return $null
     } elseif ($reportSettings.displayConcealedNames) {
         try {
+            Write-Verbose "Disabling report obfuscation"
             Invoke-MgGraphRequest -Method PATCH -Uri "v1.0/admin/reportSettings" -Body (@{displayConcealedNames = $false}|ConvertTo-Json)
         } catch {
             Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -45,6 +47,7 @@ function Test-MtExoMoeraMailActivity {
 
     $file = "$env:TEMP\maester-EmailActivityUserDetail.csv"
     try {
+            Write-Verbose "Downloading report"
             Invoke-MgGraphRequest -Uri "v1.0/reports/getEmailActivityUserDetail(period='D7')" -OutputFilePath $file
         } catch {
             Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -70,14 +73,17 @@ function Test-MtExoMoeraMailActivity {
 
     if ($reportSettings.displayConcealedNames) {
         try {
+            Write-Verbose "Enabling report obfuscation"
             Invoke-MgGraphRequest -Method PATCH -Uri "v1.0/admin/reportSettings" -Body (@{displayConcealedNames = $true}|ConvertTo-Json)
         } catch {
             Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
             return $null
         }
     }
+    Write-Verbose "Removing temp report file"
     Remove-Item $file
 
+    Write-Verbose $testResultMarkdown|ConvertTo-Json -Compress
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return !$result
