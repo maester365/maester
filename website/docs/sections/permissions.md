@@ -7,6 +7,7 @@
 - **Policy.Read.ConditionalAccess**
 - **PrivilegedAccess.Read.AzureAD**
 - **Reports.Read.All**
+- **ReportSettings.Read.All**
 - **RoleEligibilitySchedule.Read.Directory**
 - **RoleManagement.Read.All**
 - **SecurityIdentitiesSensors.Read.All**
