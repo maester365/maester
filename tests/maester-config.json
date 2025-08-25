@@ -1147,8 +1147,8 @@
     },
     {
       "Id": "MT.1074",
-      "Severity": "High",
-      "Title": "Mailbox should not use the .onmicrosoft.com domain as primary SMTP address."
+      "Severity": "Medium",
+      "Title": "Mailboxes should not use the .onmicrosoft.com domain as primary SMTP address."
     },
     {
       "Id": "MT.1075",
