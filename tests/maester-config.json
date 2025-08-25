@@ -1151,6 +1151,11 @@
       "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
     },
     {
+      "Id": "MT.1076",
+      "Severity": "High",
+      "Title": "MOERA SHOULD NOT be used for sent mail."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
