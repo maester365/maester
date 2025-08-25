@@ -41,7 +41,7 @@ function Invoke-MtGraphRequestCache {
             $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
         }
 
-        if (!$isBatch -and $isMethodGet) {
+        if (!$DisableCache -and !$isBatch -and $isMethodGet) {
             # Update cache
             if ($isInCache) {
                 $__MtSession.GraphCache[$cacheKey] = $results

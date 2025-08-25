@@ -5,7 +5,7 @@ This is the main Maester command that runs the tests and generates a report of t
 .DESCRIPTION
 Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
-For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
+For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
@@ -373,7 +373,7 @@ function Invoke-Maester {
     if ($DriftRoot) {
         $DriftRoot = (Resolve-Path -Path $DriftRoot -ErrorAction SilentlyContinue).Path
         if (-not (Test-Path -Path $DriftRoot)) {
-            Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist." -ForegroundColor Red
+            Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist."
 
         } else {
             Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $DriftRoot
@@ -451,7 +451,8 @@ function Invoke-Maester {
             # Show final summary
             Write-Host "`nTests Passed ✅: $($pesterResults.PassedCount), " -NoNewline -ForegroundColor Green
             Write-Host "Failed ❌: $($pesterResults.FailedCount), " -NoNewline -ForegroundColor Red
-            Write-Host "Skipped ⚫: $($pesterResults.SkippedCount)`n" -ForegroundColor DarkGray
+            Write-Host "Skipped ⚫: $($pesterResults.SkippedCount) " -NoNewline -ForegroundColor DarkGray
+            Write-Host "Not Run ⚫: $($pesterResults.NotRunCount)`n" -ForegroundColor DarkGray
         }
 
         if (-not $SkipVersionCheck -and 'Next' -ne $version) {

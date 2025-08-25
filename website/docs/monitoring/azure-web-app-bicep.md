@@ -320,7 +320,7 @@ resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbo
 }
 
 @description('Schedule Deployment')
-resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11-01' = {
+resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2024-10-23' = {
   name: 'scheduleMaester'
   parent: automationAccount
   properties: {

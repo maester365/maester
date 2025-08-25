@@ -29,7 +29,6 @@ function Test-MtCaReferencedGroupsExist {
   }
 
   try {
-    $testDescription = 'Invalid or deleted security groups are referenced in Conditional Access policies.'
     # Get all policies (the state of policy does not have to be enabled)
     $Policies = Get-MtConditionalAccessPolicy
 
@@ -77,7 +76,7 @@ function Test-MtCaReferencedGroupsExist {
     $ImpactedCaGroups += "`n`nNote: Names are not available for deleted groups. If the group was deleted in the last 30 days it may be available under [Entra admin centre - Deleted groups](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupsManagementMenuBlade/~/DeletedGroups/menuId/DeletedGroups).`n`n"
 
     $resultMarkdown = $ResultDescription + $ImpactedCaGroups
-    Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
+    Add-MtTestResultDetail -Result $resultMarkdown
     return $result
 
   } catch {

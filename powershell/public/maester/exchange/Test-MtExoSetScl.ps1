@@ -45,8 +45,6 @@ function Test-MtExoSetScl {
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
-
-        return $null
     }
 
     return !$result

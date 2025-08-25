@@ -155,6 +155,18 @@ Always include your main code within a try catch block. In the catch block, use 
 Do not call `Add-MtTestResultDetail` with a `-SkippedBecause` parameter within the try block. This will result in the test being reported as an error instead of skipped. To avoid this, close the try block before calling `Add-MtTestResultDetail` with the `-SkippedBecause` parameter and then start a new try block to continue the main test logic. This is the way Pester handles skipped tests and errors.
 :::
 
+##### Tests that don't support application permissions
+
+Some tests may rely on Graph APIs that don't support application permissions. In these cases, you can use the `Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'` to indicate that the test was skipped due to this limitation.
+
+Use this code block to perform the check.
+
+```powershell
+if (((Get-MgContext).AuthType) -ne "Delegated") {
+    Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'
+    return $null
+}
+```
 
 ### Step 3: Create the markdown file
 

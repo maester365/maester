@@ -36,6 +36,6 @@ Update-MaesterTests
 
 :::note
 
-If you are not seeing the latests tests, try closing and reopening your PowerShell session after completing **Step 2** (`Update-Module`).
+If you are not seeing the latest tests, try closing and reopening your PowerShell session after completing **Step 2** (`Update-Module`).
 
 :::
