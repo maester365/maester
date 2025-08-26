@@ -66,7 +66,7 @@ export default function MtTestSummary(props) {
             </Card>
 	    <Card>
                 <Flex alignItems="start">
-                   <Text>Not Run</Text>
+                   <Text>Not run</Text>
                    <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
                 </Flex>
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
