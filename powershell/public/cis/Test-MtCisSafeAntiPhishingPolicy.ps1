@@ -35,7 +35,7 @@ function Test-MtCisSafeAntiPhishingPolicy {
         $policies = Get-MtExo -Request AntiPhishPolicy
 
         # We grab the default policy as that is what CIS checks
-        $policy = $policies | Where-Object { $_.Name -eq 'Office365 AntiPhish Default' }
+        $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
         $antiPhishingPolicyCheckList = @()
 
