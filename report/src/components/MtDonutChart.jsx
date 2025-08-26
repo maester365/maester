@@ -29,7 +29,7 @@ export default function MtDonutChart(props) {
                     ]}
                     category="count"
                     index="name"
-                    colors={["green", "rose", "gray"]}
+                    colors={["emerald", "rose", "gray"]}
                     label={props.Result}
                 />
                 <List className="w-1/3">

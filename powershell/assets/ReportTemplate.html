@@ -7096,12 +7096,22 @@ const seen = {};
 const __vitePreload = function preload(baseModule, deps, importerUrl) {
   let promise = Promise.resolve();
   if (deps && deps.length > 0) {
+    let allSettled2 = function(promises) {
+      return Promise.all(
+        promises.map(
+          (p2) => Promise.resolve(p2).then(
+            (value) => ({ status: "fulfilled", value }),
+            (reason) => ({ status: "rejected", reason })
+          )
+        )
+      );
+    };
     const links = document.getElementsByTagName("link");
     const cspNonceMeta = document.querySelector(
       "meta[property=csp-nonce]"
     );
     const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
-    promise = Promise.allSettled(
+    promise = allSettled2(
       deps.map((dep) => {
         dep = assetsURL(dep, importerUrl);
         if (dep in seen) return;
@@ -50209,7 +50219,7 @@ function MtDonutChart(props) {
           ],
           category: "count",
           index: "name",
-          colors: ["green", "rose", "gray"],
+          colors: ["emerald", "rose", "gray"],
           label: props.Result
         }
       ),
@@ -50241,7 +50251,7 @@ function MtTestSummary(props) {
   function getPercentage(count2) {
     return Math.round(count2 / props.TotalCount * 100);
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(c$3, { numItemsSm: 2, numItemsLg: 4, className: "gap-6 mb-6", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(c$3, { numItemsSm: 2, numItemsLg: 5, className: "gap-6 mb-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { alignItems: "start", children: /* @__PURE__ */ jsxRuntimeExports.jsx(m$h, { children: "Total tests" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { justifyContent: "start", alignItems: "baseline", className: "truncate space-x-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(s$3, { children: props.TotalCount }) }),
@@ -50279,6 +50289,14 @@ function MtTestSummary(props) {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { justifyContent: "start", alignItems: "baseline", className: "truncate space-x-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(s$3, { children: props.SkippedCount }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(i$1, { value: getPercentage(props.SkippedCount), color: "gray", className: "mt-3", showAnimation: true })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(c$5, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(a$9, { alignItems: "start", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(m$h, { children: "Not Run" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(g$8, { icon: ForwardRef$e, size: "md", color: "gray", className: "ml-2 w-4 h-4" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(a$9, { justifyContent: "start", alignItems: "baseline", className: "truncate space-x-3", children: /* @__PURE__ */ jsxRuntimeExports.jsx(s$3, { children: props.NotRunCount }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(i$1, { value: getPercentage(props.NotRunCount), color: "gray", className: "mt-3", showAnimation: true })
     ] })
   ] });
 }
@@ -50302,14 +50320,15 @@ function MtBlocksArea(props) {
 }
 const testResults = {
   "Result": "Failed",
-  "FailedCount": 2,
-  "PassedCount": 0,
-  "SkippedCount": 0,
-  "TotalCount": 2,
   "ExecutedAt": "2025-05-12T18:33:09.425618+10:00",
   "TotalDuration": "00:00:00",
   "UserDuration": "00:00:00",
   "DiscoveryDuration": "00:00:00",
+  "FailedCount": 75,
+  "PassedCount": 73,
+  "SkippedCount": 143,
+  "NotRunCount": 9,
+  "TotalCount": 300,
   "FrameworkDuration": "00:00:00",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora Inc.",
@@ -50508,7 +50527,6 @@ function App() {
     if (testResults.TenantName == "") return "Tenant ID: " + testResults.TenantId;
     return testResults.TenantName + " (" + testResults.TenantId + ")";
   }
-  const NotRunCount = testResults.TotalCount - (testResults.PassedCount + testResults.FailedCount);
   const DonutTotalCount = testResults.PassedCount + testResults.FailedCount;
   return /* @__PURE__ */ jsxRuntimeExports.jsx($, { attribute: "class", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-left", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex mb-6", children: [
@@ -50527,7 +50545,8 @@ function App() {
         TotalCount: testResults.TotalCount,
         PassedCount: testResults.PassedCount,
         FailedCount: testResults.FailedCount,
-        SkippedCount: NotRunCount,
+        SkippedCount: testResults.SkippedCount,
+        NotRunCount: testResults.NotRunCount,
         Result: testResults.Result
       }
     ),
@@ -64479,6 +64498,9 @@ video {
 .grid {
   display: grid;
 }
+.contents {
+  display: contents;
+}
 .hidden {
   display: none;
 }
@@ -64827,6 +64849,9 @@ video {
 .justify-evenly {
   justify-content: space-evenly;
 }
+.gap-1 {
+  gap: 0.25rem;
+}
 .gap-12 {
   gap: 3rem;
 }
@@ -64941,11 +64966,17 @@ video {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.text-clip {
+  text-overflow: clip;
+}
 .whitespace-normal {
   white-space: normal;
 }
 .whitespace-nowrap {
   white-space: nowrap;
+}
+.text-nowrap {
+  text-wrap: nowrap;
 }
 .break-words {
   overflow-wrap: break-word;
@@ -68736,6 +68767,9 @@ video {
 .pr-8 {
   padding-right: 2rem;
 }
+.pt-1 {
+  padding-top: 0.25rem;
+}
 .pt-2 {
   padding-top: 0.5rem;
 }
@@ -70954,9 +70988,7 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -83025,6 +83057,6 @@ code {
 }</style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
