@@ -16,7 +16,7 @@ BeforeDiscovery {
 }
 
 Describe "Exposure Management - Protection of classified assets identified by EntraOps and Critical Asset Management" -Tag "Full", "Maester", "Privileged", "XSPM", "EntraOps" -Skip:( $EntraIDPlan -ne "P2" ) {
-    It "MT.1071: App registrations with privileged API permissions should have no owners. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
+    It "MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077" -Tag "MT.1077" {
 
     try {
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
@@ -72,7 +72,7 @@ Describe "Exposure Management - Protection of classified assets identified by En
     $SensitiveApiRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because "avoid permanent ownership on high-privileged apps"
     }
 
-    It "MT.1072: Workload identities with high-privileged directory roles should have no owners. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {
+    It "MT.1078: App registrations with highly privileged directory roles should not have owners. See https://maester.dev/docs/tests/MT.1078" -Tag "MT.1078" {
 
         if ( $UnifiedIdentityInfoExecutable -eq $false) {
                 Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
@@ -146,7 +146,7 @@ Describe "Exposure Management - Protection of classified assets identified by En
         $SensitiveDirectoryRolesOnAppsWithOwners.Count -eq "0" | Should -Be $True -Because $ShouldBeReason
     }
 
-    It "MT.1073: Privileged API permissions on workload identities should not be unused. See https://maester.dev/docs/tests/MT.1073" -Tag "MT.1073" {
+    It "MT.1080: Privileged API permissions on workload identities should not remain unused. See https://maester.dev/docs/tests/MT.1080" -Tag "MT.1080" {
 
         if ( $UnifiedIdentityInfoExecutable -eq $false) {
                 Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
@@ -188,7 +188,7 @@ Describe "Exposure Management - Protection of classified assets identified by En
         $SensitiveAppsWithUnusedPermissions.Count -eq "0" | Should -Be $True -Because $ShouldBeReason
     }
 
-    It "MT.1074: Credentials, token or cookies from high-privileged users should not be exposed on vulnerable endpoints. See https://maester.dev/docs/tests/MT.1074" -Tag "MT.1074" {
+    It "MT.1081: Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints. See https://maester.dev/docs/tests/MT.1081" -Tag "MT.1081" {
 
         if ( $UnifiedIdentityInfoExecutable -eq $false) {
                 Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
@@ -237,7 +237,7 @@ Describe "Exposure Management - Protection of classified assets identified by En
         $ExposedTokenArtifacts.Count -eq "0" | Should -Be $True -Because $ShouldBeReason
     }
 
-    It "MT.1075: Hybrid users should not be assigned to Entra ID role assignments. See https://maester.dev/docs/tests/MT.1075" -Tag "MT.1075" {
+    It "MT.1082: Hybrid users should not be assigned Entra ID role assignments. See https://maester.dev/docs/tests/MT.1082" -Tag "MT.1082" {
 
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
