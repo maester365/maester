@@ -31,8 +31,8 @@ Describe "Exposure Management - Protection of classified assets identified by En
         $testResultMarkdown = "Well done. No app registrations with privileged API permission has assigned to owner."
     } else {
         $testResultMarkdown = "At least one app registration has assigned owner with privileged API permissions.`n`n%TestResult%"
-        $result = "| ApplicationName | Ownership | Tier Breach | Sensitive App Role | API Provider |`n"
-        $result += "| --- | --- | --- | --- |  --- |`n"
+        $result = "| ApplicationName | Ownership | Tier Breach | Sensitive App Role |`n"
+        $result += "| --- | --- | --- | ---  |`n"
         foreach ($SensitiveApp in $SensitiveApiRolesOnAppsWithOwners) {
             $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High" } | Select-Object AppDisplayName, AppRoleDisplayName, Classification
             $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
@@ -55,12 +55,15 @@ Describe "Exposure Management - Protection of classified assets identified by En
                     $TierBreach = "Unknown"
                 }
 
-                # Use <br/> for GitHub Flavored Markdown in-table line breaks
-                $AppRoleDisplayName = $filteredApiPermissions.AppRoleDisplayName -join "<br/>"
-                $AppDisplayName = $filteredApiPermissions.AppDisplayName -join "<br/>"
+                # Summary of App roles in one column (as workaround for missing support of simple linebreak in one call)
+                $AppRolesSummary = $filteredApiPermissions | Select-Object -Unique AppDisplayName | ForEach-Object {
+                    $AppDisplayName = $_.AppDisplayName
+                    $AppRoles = $filteredApiPermissions | Where-Object {$_.AppDisplayName -eq $AppDisplayName} | Select-Object AppRoleDisplayName
+                    "$AppDisplayName" + ": " + "$($AppRoles| ForEach-Object { '`' + $_.AppRoleDisplayName + '`' })"
+                }
 
                 $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($SensitiveApp.AppId)/isMSAApp~/false)"
-                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($AppRoleDisplayName) | $($AppDisplayName) |`n"
+                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($AppRolesSummary) |`n"
             }
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -92,8 +95,8 @@ Describe "Exposure Management - Protection of classified assets identified by En
         } else {
             $testResultMarkdown = "At least one application has ownership with a risk of sensitive directory role.`n`n%TestResult%"
 
-            $result = "| ApplicationName | Ownership | Tier Breach | Sensitive Directory Role | API Provider |`n"
-            $result += "| --- | --- | --- | --- | --- |`n"
+            $result = "| ApplicationName | Ownership | Tier Breach | Sensitive Directory Role |`n"
+            $result += "| --- | --- | --- | --- |`n"
             foreach ($SensitiveApp in $SensitiveDirectoryRolesOnAppsWithOwners) {
                 $filteredApiPermissions = $SensitiveApp.AssignedEntraRoles | where-object {$_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
                 # XSPM supports only Directory scope for now
@@ -123,13 +126,17 @@ Describe "Exposure Management - Protection of classified assets identified by En
                         $Severity = "High"
                         $ShouldBeReason = "ownership should not be used for high-privileged apps and also not delegated to lower privileged users"
                     }
-                    $filteredApiPermissions.RoleDefinitionName = "$($filteredApiPermissions.RoleDefinitionName)"
-                    # Use <br/> for GitHub Flavored Markdown in-table line breaks
-                    $RoleDefinitionName = $filteredApiPermissions.RoleDefinitionName -join "<br/>"
-                    $RoleScope = $filteredApiPermissions.RoleScope -join "<br/>"
+
+                    # Summary of App roles in one column (as workaround for missing support of simple linebreak in one call)
+                    $DirectoryRolesSummary = $filteredApiPermissions | Select-Object -Unique RoleScope | ForEach-Object {
+                        $RoleScope = $_.RoleScope
+                        $DirectoryRoles = $filteredApiPermissions | Where-Object {$_.RoleScope -eq $RoleScope} | Select-Object RoleDefinitionName
+                        "Scope $($RoleScope)" + ": " + "$($DirectoryRoles| ForEach-Object { '`' + $_.RoleDefinitionName + '`' })"
+                    }
+
 
                     $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
-                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($RoleDefinitionName) | $($RoleScope) |`n"
+                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($DirectoryRolesSummary) |`n"
                 }
             }
             $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -220,9 +227,6 @@ Describe "Exposure Management - Protection of classified assets identified by En
                     $DeviceLink = "[$($ExposedTokenArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedTokenArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
                     $UserArtifacts = $ExposedTokenArtifact.TokenArtifacts | ForEach-Object { (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $_) + " " + $_ } | Where-Object { $_ -and $_.Trim() -ne '' } | ForEach-Object { $_.Trim() }
 
-                    # Use <br/> for GitHub Flavored Markdown in-table line breaks
-                    $UserArtifacts = $UserArtifacts -join "<br/>"
-
                     $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifacts) | $($ExposedTokenArtifact.ExposureScore) | $($ExposedTokenArtifact.RiskScore) |`n"
                 }
             }
@@ -255,16 +259,13 @@ Describe "Exposure Management - Protection of classified assets identified by En
                 $UserSensitiveDirectoryRoles = $filteredDirectoryRoles | foreach-object { (Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $_.Classification) + " " + $_.RoleDefinitionName }
                 $UserSensitiveDirectoryRolesResult = @()
                 $UserSensitiveDirectoryRoles | ForEach-Object {
-                    $UserSensitiveDirectoryRolesResult += "$_, "
+                    $UserSensitiveDirectoryRolesResult += '`' + $_ + '`'
                 }
                 $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $HighPrivilegedHybridUser.Classification
                 if ($HighPrivilegedHybridUser.Classification -eq "ControlPlane") {
                     $Severity = "High"
                     $ShouldBeReason = "no hybrid users with sensitive directory roles should be present, especially Control Plane users."
                 }
-
-                # Use <br/> for GitHub Flavored Markdown in-table line breaks
-                $UserSensitiveDirectoryRolesResult = $UserSensitiveDirectoryRolesResult -join "<br/>"
 
                 $HybridUserLink = "[$($HighPrivilegedHybridUser.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($HighPrivilegedHybridUser.AccountObjectId))"
                 $result += "| $($AdminTierLevelIcon) $($HybridUserLink) | $($HighPrivilegedHybridUser.Classification) | $($UserSensitiveDirectoryRolesResult) | $($HighPrivilegedHybridUser.SourceProvider) |`n"
