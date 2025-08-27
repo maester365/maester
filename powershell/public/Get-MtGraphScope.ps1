@@ -63,8 +63,9 @@ function Get-MtGraphScope {
         'RoleEligibilitySchedule.Read.Directory'
         'RoleManagement.Read.All'
         'SecurityIdentitiesSensors.Read.All'
-        'SecurityIdentitiesHealth.Read.All'        
+        'SecurityIdentitiesHealth.Read.All'
         'SharePointTenantSettings.Read.All'
+        'ThreatHunting.Read.All'
         'UserAuthenticationMethod.Read.All'
     )
 
