@@ -576,7 +576,7 @@ $Tenant            = Get-AutomationVariable -Name 'tenant'
 #Retrieve the test options
 $enableTeamsTests     = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableTeamsTests'))
 $enableExchangeTests  = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableExchangeTests'))
-$enableComplianceTests= [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableComplianceTests'))
+$enableComplianceTests = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableComplianceTests'))
 
 #Setting up the connections
 Connect-MgGraph -Identity
