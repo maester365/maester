@@ -1,9 +1,11 @@
 BeforeDiscovery {
 
     $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+        -ErrorAction SilentlyContinue `
         -Body (@{"Query" = "IdentityInfo | getschema | where ColumnName == 'PrivilegedEntraPimRoles'"} | ConvertTo-Json) `
         -OutputType PSObject -Verbose).results.ColumnName -eq "PrivilegedEntraPimRoles")
     $OAuthAppInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+        -ErrorAction SilentlyContinue `
         -Body (@{"Query" = "OAuthAppInfo | getschema"} | ConvertTo-Json) `
         -OutputType PSObject -Verbose).results.ColumnName -contains "OAuthAppId")
     $UnifiedIdentityInfoExecutable = $AdvancedIdentityAvailable -and $OAuthAppInfoAvailable
@@ -18,16 +20,23 @@ BeforeDiscovery {
 Describe "Exposure Management - Protection of classified assets identified by EntraOps and Critical Asset Management" -Tag "Full", "Maester", "Privileged", "XSPM", "EntraOps" -Skip:( $EntraIDPlan -ne "P2" ) {
     It "MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077" -Tag "MT.1077" {
 
+    if ( $UnifiedIdentityInfoExecutable -eq $false) {
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+            return $null
+    }
+
     try {
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
     } catch {
-        Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
+
 
     $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
     $SensitiveApiRolesOnAppsWithOwners = $HighPrivilegedAppsByApiPermissions | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
-    if ($return) {
+    if ($return -or $SensitiveApiRolesOnAppsWithOwners.Count -eq 0) {
         $testResultMarkdown = "Well done. No app registrations with privileged API permission has assigned to owner."
     } else {
         $testResultMarkdown = "At least one app registration has assigned owner with privileged API permissions.`n`n%TestResult%"
@@ -82,7 +91,8 @@ Describe "Exposure Management - Protection of classified assets identified by En
         try {
             $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
         } catch {
-            Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
         }
 
         $Severity = "Medium"
@@ -90,7 +100,7 @@ Describe "Exposure Management - Protection of classified assets identified by En
         $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object {$_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
         $SensitiveDirectoryRolesOnAppsWithOwners = $HighPrivilegedAppsByEntraRoles | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
-        if ($return) {
+        if ($return -or $SensitiveDirectoryRolesOnAppsWithOwners.Count -eq 0) {
             $testResultMarkdown = "Well done. No application and workload identity has a privileged directory role with an owner."
         } else {
             $testResultMarkdown = "At least one application has ownership with a risk of sensitive directory role.`n`n%TestResult%"
@@ -156,15 +166,18 @@ Describe "Exposure Management - Protection of classified assets identified by En
         try {
             $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
         } catch {
-            Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
         }
+
+        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
         $Severity = "Medium"
         $ShouldBeReason = "unused sensitive API permissions should not be present"
         $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
         $SensitiveAppsWithUnusedPermissions = $HighPrivilegedAppsByApiPermissions | Where-Object { $_.ApiPermissions.InUse -eq $false }
 
-        if ($return) {
+        if ($return -or $SensitiveAppsWithUnusedPermissions.Count -eq 0) {
             $testResultMarkdown = "Well done. No application and workload identity has a privileged API permission which are unused"
         } else {
             $testResultMarkdown = "At least one application has unused sensitive API permissions.`n`n%TestResult%"
@@ -195,24 +208,20 @@ Describe "Exposure Management - Protection of classified assets identified by En
                 return $null
         }
 
-        try {
-            $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-            $ExposedTokenArtifacts = Get-MtXspmExposedTokenArtifacts
-        } catch {
-            Write-Verbose "Authentication needed. Please call Connect-MgGraph."
-        }
+        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+        $ExposedTokenArtifacts = Get-MtXspmExposedTokenArtifacts
 
         $Severity = "Medium"
         $ShouldBeReason = "no exposed authentication artifacts should be present on vulnerable endpoints"
+        $ExposedTokenArtifacts = $ExposedTokenArtifacts | Where-Object {$_.RiskScore -eq "High" -or $_.ExposureScore -eq "High"}
 
-        if ($return) {
+        if ($return -or $ExposedTokenArtifacts.Count -eq 0) {
             $testResultMarkdown = "Well done. No authentication artifacts seems to be exposed on vulnerable endpoints."
         } else {
             $testResultMarkdown = "At least one authentication artifact seems to be exposed on a vulnerable endpoint.`n`n%TestResult%"
 
             $result = "| AccountName | Device | Classification | Criticality Level | Artifacts | ExposureScore | RiskScore |`n"
             $result += "| --- | --- | --- | --- | --- | --- | --- |`n"
-            $ExposedTokenArtifacts = $ExposedTokenArtifacts | Where-Object {$_.RiskScore -eq "High" -or $_.ExposureScore -eq "High"}
             foreach ($ExposedTokenArtifact in $ExposedTokenArtifacts) {
                 $EnrichedUserDetails = $UnifiedIdentityInfo | Where-Object { $_.AccountObjectId -eq $ExposedTokenArtifact.AccountObjectId } | Select-Object Classification, AccountObjectId, CriticalityLevel, AccountDisplayName, TenantId
                 if ($EnrichedUserDetails.Classification -eq "ControlPlane" -or $EnrichedUserDetails.Classification -eq "ManagementPlane" -or $EnrichedUserDetails.CriticalityLevel -lt "1") {
@@ -239,15 +248,25 @@ Describe "Exposure Management - Protection of classified assets identified by En
 
     It "MT.1082: Hybrid users should not be assigned Entra ID role assignments. See https://maester.dev/docs/tests/MT.1082" -Tag "MT.1082" {
 
-        $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+        if ( $UnifiedIdentityInfoExecutable -eq $false) {
+                Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables.'
+                return $null
+        }
+
+        try {
+            $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
 
         $HighPrivilegedUsersByEntraRoles = $UnifiedIdentityInfo | Where-Object { $_.Type -eq "User" -and ($_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True) | Sort-Object Classification, AccountDisplayName}
-        $HighPrivilegedHybridUsers = $HighPrivilegedUsersByEntraRoles | Where-Object { $_.SourceProviders -eq "AzureActiveDirectory"}
+        $HighPrivilegedHybridUsers = $HighPrivilegedUsersByEntraRoles | Where-Object { $_.SourceProvider -eq "ActiveDirectory" -or $_.SourceProvider -eq "Hybrid"}
 
         $Severity = "Medium"
         $ShouldBeReason = "no hybrid users with sensitive directory roles should be present"
 
-        if ($return) {
+        if ($return -or $HighPrivilegedHybridUsers.Count -eq 0) {
             $testResultMarkdown = "Well done. No hybrid users with sensitive directory roles."
         } else {
             $testResultMarkdown = "At least one hybrid user with a risk of sensitive directory role membership.`n`n%TestResult%"

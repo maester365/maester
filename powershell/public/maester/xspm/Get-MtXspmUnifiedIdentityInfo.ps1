@@ -326,26 +326,50 @@ function Get-MtXspmUnifiedIdentityInfo {
         "Query" = $Query;
     } | ConvertTo-Json
 
-        $XspmUnifiedIdentityInfoResult = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject).results
+    $sleepDuration = 1
+    $retry = $false
+    $retryCount = 0
+    $maxRetries = 3
+    do {
+        try {
+            $retry = $false
+            $XspmUnifiedIdentityInfoResult = (Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST -Body $Body -OutputType PSObject -ErrorVariable QueryError).results
+        }
+        catch {
+            if ($_.Exception.Response.StatusCode.value__ -ne 429) {
+                $retry = $false
+                if ($QueryError[0].Message -match '{.*}$') {
+                    $ErrorDetailsJson = ($QueryError[0].Message -split '\r?\n\r?\n', 2)[-1].Trim()   # grab content after the first empty line
+                    $KqlQueryExecutionError = ($ErrorDetailsJson | ConvertFrom-Json).error.message
+                    throw $KqlQueryExecutionError
+                }
+                throw $_
+                return
+            } else {
+                $retry = $true
+                $retryCount++
+                Write-Verbose "API returned 429, retrying in $sleepDuration seconds (Attempt $retryCount of $maxRetries)"
+                Start-Sleep -Seconds $sleepDuration
+            }
+        }
+    } until (-not $retry -or $retryCount -ge $maxRetries)
 
-        if ( $XspmUnifiedIdentityInfoResult ) {
-            # Convert JSON strings to objects
-            $propertiesToConvert = @('OwnedBy', 'ApiPermissions', 'AssignedEntraRoles', 'AuthenticatedBy', 'CrticialAssetDetails')
-            foreach ($item in $XspmUnifiedIdentityInfoResult) {
-                foreach ($prop in $propertiesToConvert) {
-                    if ($null -ne $item.$prop) {
-                        try {
-                            $item.$prop = $item.$prop | ConvertFrom-Json -Depth 10
-                        }
-                        catch {
-                            Write-Verbose "Failed to convert property $($item.$prop) on $($prop) for item with ID '$($item.Id)': $_"
-                        }
-
+    if ( $XspmUnifiedIdentityInfoResult ) {
+        # Convert JSON strings to objects
+        $propertiesToConvert = @('OwnedBy', 'ApiPermissions', 'AssignedEntraRoles', 'AuthenticatedBy', 'CrticialAssetDetails')
+        foreach ($item in $XspmUnifiedIdentityInfoResult) {
+            foreach ($prop in $propertiesToConvert) {
+                if ($null -ne $item.$prop) {
+                    try {
+                        $item.$prop = $item.$prop | ConvertFrom-Json -Depth 10
                     }
+                    catch {
+                        Write-Verbose "Failed to convert property $($item.$prop) on $($prop) for item with ID '$($item.Id)': $_"
+                    }
+
                 }
             }
-        return $XspmUnifiedIdentityInfoResult
-        } else {
-            Write-Error "Failed to run advanced hunting query to get application and workload identity details."
         }
+    return $XspmUnifiedIdentityInfoResult
+    }
 }
