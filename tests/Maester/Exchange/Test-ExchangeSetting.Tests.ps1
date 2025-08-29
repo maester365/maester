@@ -58,6 +58,15 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
+    It "MT.1083: Ensure Delicensing Resiliency is enabled" -Tag "MT.1083", "DelicensingResiliency" {
+
+        $result = Test-MtExoDelicensingResiliency
+
+        if ($result -ne $true) {
+            $result | Should -Be $true -Because "Delicensing Resiliency should be enabled."
+        }
+    }
+
     # Ensure 'External sharing' of calendars is not available:
     # > CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available
     # > MS.EXO.6.2: Calendar details SHALL NOT be shared with all domains.
