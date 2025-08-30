@@ -1,6 +1,6 @@
 Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
 
-    It "MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1043", "SetScl", "TransportRule", "SecureScore" {
+    It "MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains" -Tag "MT.1043", "SetScl", "TransportRule", "SecureScore", "Full" {
         $result = Test-MtExoSetScl
 
         if ($null -ne $result) {
@@ -8,7 +8,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1044: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1044", "OAuth2ClientProfileEnabled", "SecureScore" {
+    It "MT.1044: Ensure modern authentication for Exchange Online is enabled" -Tag "MT.1044", "OAuth2ClientProfileEnabled", "SecureScore", "Full" {
         $result = Test-MtExoModernAuth
 
         if ($null -ne $result) {
@@ -16,7 +16,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1039: Ensure MailTips are enabled for end users" -Tag "MT.1039", "MailTipsExternalRecipientsTipsEnabled", "SecureScore" {
+    It "MT.1039: Ensure MailTips are enabled for end users" -Tag "MT.1039", "MailTipsExternalRecipientsTipsEnabled", "SecureScore", "Full" {
         $result = Test-MtExoMailTip
 
         if ($null -ne $result) {
@@ -24,7 +24,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1040: Ensure additional storage providers are restricted in Outlook on the web" -Tag "MT.1040", "AdditionalStorageProvidersAvailable", "SecureScore" {
+    It "MT.1040: Ensure additional storage providers are restricted in Outlook on the web" -Tag "MT.1040", "AdditionalStorageProvidersAvailable", "SecureScore", "Full" {
         $result = Test-MtExoAdditionalStorageProvider
 
         if ($null -ne $result) {
@@ -32,7 +32,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1041: Ensure users installing Outlook add-ins is not allowed" -Tag "MT.1041", "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps", "SecureScore" {
+    It "MT.1041: Ensure users installing Outlook add-ins is not allowed" -Tag "MT.1041", "MyCustomApps", "MyMarketplaceApps", "MyReadWriteMailboxApps", "SecureScore", "Full" {
         $result = Test-MtExoOutlookAddin
 
         if ($null -ne $result) {
@@ -40,7 +40,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1062: Ensure Direct Send is set to be rejected" -Tag "MT.1062", "RejectDirectSend" {
+    It "MT.1062: Ensure Direct Send is set to be rejected" -Tag "MT.1062", "RejectDirectSend", "Full" {
 
         $result = Test-MtExoRejectDirectSend
 
@@ -49,7 +49,7 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1076: MOERA SHOULD NOT be used for sent mail" -Tag "MT.1076", "MOERA" {
+    It "MT.1076: MOERA SHOULD NOT be used for sent mail" -Tag "MT.1076", "MOERA", "Full" {
 
         $result = Test-MtExoMoeraMailActivity
 
