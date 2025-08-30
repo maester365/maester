@@ -34,7 +34,7 @@ jobs:
           cp ./report/dist/index.html ./powershell/assets/ReportTemplate.html
 
       - name: Add artifact to PR 
-        run |
+        run: |
           git config --local user.name "action@build-html-report-template"
           git add ./powershell/assets/ReportTemplate.html
           git commit -m"Build by build-html-report-template.yaml"
