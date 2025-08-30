@@ -7096,12 +7096,22 @@ const seen = {};
 const __vitePreload = function preload(baseModule, deps, importerUrl) {
   let promise = Promise.resolve();
   if (deps && deps.length > 0) {
+    let allSettled2 = function(promises) {
+      return Promise.all(
+        promises.map(
+          (p2) => Promise.resolve(p2).then(
+            (value) => ({ status: "fulfilled", value }),
+            (reason) => ({ status: "rejected", reason })
+          )
+        )
+      );
+    };
     const links = document.getElementsByTagName("link");
     const cspNonceMeta = document.querySelector(
       "meta[property=csp-nonce]"
     );
     const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
-    promise = Promise.allSettled(
+    promise = allSettled2(
       deps.map((dep) => {
         dep = assetsURL(dep, importerUrl);
         if (dep in seen) return;
@@ -50302,205 +50312,22 @@ function MtBlocksArea(props) {
 }
 const testResults = {
   "Result": "Failed",
-  "FailedCount": 2,
+  "FailedCount": 0,
   "PassedCount": 0,
   "SkippedCount": 0,
-  "TotalCount": 2,
-  "ExecutedAt": "2025-05-12T18:33:09.425618+10:00",
+  "TotalCount": 0,
+  "ExecutedAt": "2025-01-01T18:00:00.000000+00:00",
   "TotalDuration": "00:00:00",
   "UserDuration": "00:00:00",
   "DiscoveryDuration": "00:00:00",
   "FrameworkDuration": "00:00:00",
-  "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
-  "TenantName": "Pora Inc.",
-  "Account": "merill@elapora.com",
+  "TenantId": "badc0de5-1234-1234-1234-123412341234",
+  "TenantName": "Example Tenant",
+  "Account": "account@example.com",
   "CurrentVersion": "0.1.0",
   "LatestVersion": "1.0.0",
-  "Tests": [
-    {
-      "Index": 1,
-      "Id": "MT.1053",
-      "Title": "Ensure intune device clean-up rule is configured",
-      "Name": "MT.1053: Ensure intune device clean-up rule is configured",
-      "HelpUrl": "",
-      "Severity": "Medium",
-      "Tag": [
-        "Maester",
-        "Intune",
-        "All",
-        "MT.1053"
-      ],
-      "Result": "Failed",
-      "ScriptBlock": '\n        $result = Test-MtManagedDeviceCleanupSettings\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because "automatic device clean-up rule is configured."\n        }\n    ',
-      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
-      "ErrorRecord": [
-        {
-          "Exception": {
-            "TargetSite": null,
-            "Message": "Expected $true, because automatic device clean-up rule is configured., but got $false.",
-            "Data": "System.Collections.ListDictionaryInternal",
-            "InnerException": null,
-            "HelpLink": null,
-            "Source": null,
-            "HResult": -2146233088,
-            "StackTrace": null
-          },
-          "TargetObject": {
-            "Message": "Expected $true, because automatic device clean-up rule is configured., but got $false.",
-            "File": "/Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
-            "Line": "5",
-            "LineText": '            $result | Should -Be $true -Because "automatic device clean-up rule is configured."',
-            "Terminating": true,
-            "ShouldResult": "Pester.ShouldResult"
-          },
-          "CategoryInfo": {
-            "Category": 8,
-            "Activity": "",
-            "Reason": "Exception",
-            "TargetName": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "TargetType": "Dictionary`2"
-          },
-          "FullyQualifiedErrorId": "PesterAssertionFailed",
-          "ErrorDetails": null,
-          "InvocationInfo": {
-            "MyCommand": null,
-            "BoundParameters": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "UnboundArguments": "",
-            "ScriptLineNumber": 8392,
-            "OffsetInLine": 13,
-            "HistoryId": 9,
-            "ScriptName": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1",
-            "Line": "            throw $errorRecord\r\n",
-            "Statement": "throw $errorRecord",
-            "PositionMessage": "At /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1:8392 char:13\n+             throw $errorRecord\n+             ~~~~~~~~~~~~~~~~~~",
-            "PSScriptRoot": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1",
-            "PSCommandPath": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1",
-            "InvocationName": "",
-            "PipelineLength": 0,
-            "PipelinePosition": 0,
-            "ExpectingInput": false,
-            "CommandOrigin": 1,
-            "DisplayScriptPosition": null
-          },
-          "ScriptStackTrace": "at Invoke-Assertion, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 8392\nat Should<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 8331\nat <ScriptBlock>, /Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1: line 5\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2157\nat Invoke-TestItem, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1199\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 835\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 893\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2160\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 940\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 893\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2160\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 940\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1688\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.ps1: line 3\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 3260\nat Invoke-InNewScriptScope, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 3267\nat Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1691\nat Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2512\nat Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 5110\nat Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 377\nat <ScriptBlock>, <No file>: line 1",
-          "PipelineIterationInfo": []
-        }
-      ],
-      "Block": "Maester/Intune",
-      "Duration": "00:00:00",
-      "ResultDetail": {
-        "TestTitle": "MT.1053: Ensure intune device clean-up rule is configured",
-        "SkippedReason": null,
-        "TestSkipped": "",
-        "Service": null,
-        "TestDescription": "Ensure device clean-up rule is configured\n\nThis test checks if the device clean-up rule is configured.\n\nSet your Intune device cleanup rules to delete Intune MDM enrolled devices that appear inactive, stale, or unresponsive. Intune applies cleanup rules immediately and continuously so that your device records remain current.\n\n#### Remediation action:\n\nTo enable device clean-up rules:\n1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).\n2. Click **Devices** scroll down to **Organize devices**.\n3. Select **Device clean-up rules**.\n4. Set **Delete devices based on last check-in date** to **Yes**\n5. Set **Delete devices that haven’t checked in for this many days** to **30 days or more** depending on your organizational needs.\n6. Click **Save**.\n\n#### Related links\n\n* [Microsoft 365 Admin Center](https://admin.microsoft.com)\n* [Microsoft Intune - Device clean-up rules](https://intune.microsoft.com/?ref=AdminCenter#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/deviceCleanUp)\n\n",
-        "Severity": "",
-        "TestResult": "\nYour Intune device clean-up rule is not configured."
-      }
-    },
-    {
-      "Index": 2,
-      "Id": "MT.1054",
-      "Title": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
-      "Name": "MT.1054: Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
-      "HelpUrl": "",
-      "Severity": "Medium",
-      "Tag": [
-        "Maester",
-        "Intune",
-        "All",
-        "MT.1054"
-      ],
-      "Result": "Failed",
-      "ScriptBlock": `
-        $result = Test-MtDeviceComplianceSettings
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because "built-in device compliance policy marks devices with no policy assigned as 'Not compliant'."
-        }
-    `,
-      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
-      "ErrorRecord": [
-        {
-          "Exception": {
-            "TargetSite": null,
-            "Message": "Expected $true, because built-in device compliance policy marks devices with no policy assigned as 'Not compliant'., but got $false.",
-            "Data": "System.Collections.ListDictionaryInternal",
-            "InnerException": null,
-            "HelpLink": null,
-            "Source": null,
-            "HResult": -2146233088,
-            "StackTrace": null
-          },
-          "TargetObject": {
-            "Message": "Expected $true, because built-in device compliance policy marks devices with no policy assigned as 'Not compliant'., but got $false.",
-            "File": "/Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1",
-            "Line": "12",
-            "LineText": `            $result | Should -Be $true -Because "built-in device compliance policy marks devices with no policy assigned as 'Not compliant'."`,
-            "Terminating": true,
-            "ShouldResult": "Pester.ShouldResult"
-          },
-          "CategoryInfo": {
-            "Category": 8,
-            "Activity": "",
-            "Reason": "Exception",
-            "TargetName": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "TargetType": "Dictionary`2"
-          },
-          "FullyQualifiedErrorId": "PesterAssertionFailed",
-          "ErrorDetails": null,
-          "InvocationInfo": {
-            "MyCommand": null,
-            "BoundParameters": "System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "UnboundArguments": "",
-            "ScriptLineNumber": 8392,
-            "OffsetInLine": 13,
-            "HistoryId": 9,
-            "ScriptName": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1",
-            "Line": "            throw $errorRecord\r\n",
-            "Statement": "throw $errorRecord",
-            "PositionMessage": "At /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1:8392 char:13\n+             throw $errorRecord\n+             ~~~~~~~~~~~~~~~~~~",
-            "PSScriptRoot": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1",
-            "PSCommandPath": "/Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1",
-            "InvocationName": "",
-            "PipelineLength": 0,
-            "PipelinePosition": 0,
-            "ExpectingInput": false,
-            "CommandOrigin": 1,
-            "DisplayScriptPosition": null
-          },
-          "ScriptStackTrace": "at Invoke-Assertion, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 8392\nat Should<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 8331\nat <ScriptBlock>, /Users/merill/GitHub/maester/tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1: line 12\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2157\nat Invoke-TestItem, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1199\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 835\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 893\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2160\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 940\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 893\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2024\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1985\nat Invoke-ScriptBlock, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2160\nat Invoke-Block, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 940\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1688\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.ps1: line 3\nat <ScriptBlock>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 3260\nat Invoke-InNewScriptScope, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 3267\nat Run-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 1691\nat Invoke-Test, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 2512\nat Invoke-Pester<End>, /Users/merill/.local/share/powershell/Modules/Pester/5.6.1/Pester.psm1: line 5110\nat Invoke-Maester, /Users/merill/GitHub/maester/powershell/public/Invoke-Maester.ps1: line 377\nat <ScriptBlock>, <No file>: line 1",
-          "PipelineIterationInfo": []
-        }
-      ],
-      "Block": "Maester/Intune",
-      "Duration": "00:00:00",
-      "ResultDetail": {
-        "TestTitle": "MT.1054: Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
-        "SkippedReason": null,
-        "TestSkipped": "",
-        "Service": null,
-        "TestDescription": "Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'.\n\nSet your Intune built-in Device Compliance Policy to mark devices with no compliance policy assigned as 'Not compliant'.\nThis ensures that new devices that do not have any policies assigned are not compliant per default.\n\n#### Remediation action:\n\nTo change the built-in device compliance policy:\n1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).\n2. Click **Devices** scroll down to **Manage devices**.\n3. Select **Compliance** and Select **Compliance settings**.\n4. Set **Mark devices with no compliance policy assigned as** to **Not compliant**\n5. Click **Save**.\n\n#### Related links\n\n* [Microsoft 365 Admin Center](https://admin.microsoft.com)\n* [Microsoft Intune - Compliance](https://intune.microsoft.com/?ref=AdminCenter#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)\n* [Compliance policy settings](https://learn.microsoft.com/de-de/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)\n\n",
-        "Severity": "",
-        "TestResult": "\nYour Intune built-in Device Compliance Policy **incorrectly** marks devices with no compliance policy assigned as 'Compliant'."
-      }
-    }
-  ],
-  "Blocks": [
-    {
-      "Name": "Maester/Intune",
-      "Result": "Failed",
-      "FailedCount": 2,
-      "PassedCount": 0,
-      "SkippedCount": 0,
-      "NotRunCount": 0,
-      "TotalCount": 2,
-      "Tag": [
-        "Maester",
-        "Intune",
-        "All"
-      ]
-    }
-  ]
+  "Tests": [],
+  "Blocks": []
 };
 function App() {
   const testDateLocal = utcToZonedTime(testResults.ExecutedAt, Intl.DateTimeFormat().resolvedOptions().timeZone).toLocaleString();
@@ -83025,6 +82852,6 @@ code {
 }</style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
