@@ -1,7 +1,16 @@
-- name: Pre-build image and run make ci-build in dev container
-  uses: devcontainers/ci@v0.3
-  with:
-    imageName: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
-    cacheFrom: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
-    push: always
-    runCmd: make ci-build
+# builds powershell/assets/ReportTemplate.html from report/src/App.jsx 
+name: build-html-report-template
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-build image and run make ci-build in dev container
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
+          cacheFrom: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
+          push: always
+          runCmd: make ci-build
