@@ -37,6 +37,11 @@ function Test-MtVaultSoftDelete {
         return $null
     }
 
+    if (!$subscriptions) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No subscriptions found" #"No Recovery Services Vault found"
+        return $null
+    }
+
     foreach ($sub in $subscriptions) {
         $subId = $sub.subscriptionId
 
@@ -82,10 +87,14 @@ function Test-MtVaultSoftDelete {
         }
     }
 
-    $testResult = $nonCompliantVaults.Count -eq 0
+    $testResult = $nonCompliantVaults.Count -eq 0 -and $null -ne $testResultMarkdown
 
     if ($testResult) {
         $testResultMarkdown = "All Recovery Services Vaults have soft delete enabled.`n`n$resultsMarkdown"
+    }
+    elseif ($null -eq $testResultMarkdown) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No Recovery Services Vault found"
+        return $null
     }
     else {
         $testResultMarkdown = "Some vaults do not have soft delete enabled:`n`n"
