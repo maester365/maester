@@ -1,0 +1,47 @@
+# builds powershell/assets/ReportTemplate.html from report/src/
+name: Build and Copy Report HTML Template
+
+on:
+  pull_request:
+    paths:
+      - 'report/src/**'
+    workflow_dispatch:
+
+jobs:
+  build-and-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd report
+          npm ci
+
+      - name: Build index.html
+        run: |
+          cd report
+          npm run build
+
+      - name: Copy index.html to powershell assets
+        run: |
+          cp ./report/dist/index.html ./powershell/assets/ReportTemplate.html
+
+      - name: Add artifact to PR 
+        run: |
+          git config --global user.email "workflow@build-html-report-template"
+          git config --global user.name "GitHub Workflow"
+          git add ./powershell/assets/ReportTemplate.html
+          git commit -m"Build by build-html-report-template.yaml"
+      - name: Push changes
+        run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
