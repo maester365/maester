@@ -1,19 +1,29 @@
-# builds powershell/assets/ReportTemplate.html from report/src/App.jsx 
-name: build-html-report-template
+# builds powershell/assets/ReportTemplate.html from report/src/
+name: Build and Copy Report Template
+
 on:
-  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'report/src/**'
 
 jobs:
-  build:
+  build-and-copy:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout 
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Pre-build image and run make ci-build in dev container
-        uses: devcontainers/ci@v0.3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          imageName: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
-          cacheFrom: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
-          push: always
-          runCmd: make ci-build
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Copy index.html to powershell assets
+        run: |
+          cp ./dist/index.html ../powershell/assets/ReportTemplate.html
