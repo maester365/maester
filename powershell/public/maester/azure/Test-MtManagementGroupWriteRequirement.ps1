@@ -29,7 +29,7 @@ function Test-MtManagementGroupWriteRequirement {
 
     # Find the root management group (matches tenant ID)
     $tenantId = (Get-MgContext).TenantId
-    $rootManagementGroup = $managementGroups | Where-Object { $_ -eq $tenantId }
+    $rootManagementGroup = $managementGroups | Where-Object { $_.name -eq $tenantId }
 
     if (!$rootManagementGroup) {
         Write-Verbose "Tenant Root Group not found in management groups."
