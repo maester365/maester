@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout 
+        uses: actions/checkout@v4
+
       - name: Pre-build image and run make ci-build in dev container
         uses: devcontainers/ci@v0.3
         with:
