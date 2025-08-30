@@ -27,4 +27,4 @@ jobs:
 
       - name: Copy index.html to powershell assets
         run: |
-          cp ./dist/index.html ../powershell/assets/ReportTemplate.html
+          cp ./report/dist/index.html ./powershell/assets/ReportTemplate.html
