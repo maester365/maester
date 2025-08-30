@@ -3,7 +3,7 @@
     High Confidence Spam action set to Quarantine message.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA140
@@ -38,7 +38,7 @@ function Test-ORCA140{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA140: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA140" -ErrorRecord $_ -AdditionalContext "Running ORCA140 test"
         throw
     } finally {
         if($obj.SkipInReport) {

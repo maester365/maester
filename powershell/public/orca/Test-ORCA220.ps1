@@ -3,7 +3,7 @@
     Advanced Phish filter Threshold level is adequate.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA220
@@ -38,7 +38,7 @@ function Test-ORCA220{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA220: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA220" -ErrorRecord $_ -AdditionalContext "Running ORCA220 test"
         throw
     } finally {
         if($obj.SkipInReport) {

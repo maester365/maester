@@ -322,7 +322,7 @@ resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/sche
 }
 
 @description('Runbook Schedule Association')
-resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2023-11-01' = {
+resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2024-10-23' = {
   name: guid(automationAccount.id, 'runbook', 'schedule')
   parent: automationAccount
   properties: {

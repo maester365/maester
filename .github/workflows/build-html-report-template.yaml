@@ -1,0 +1,7 @@
+- name: Pre-build image and run make ci-build in dev container
+  uses: devcontainers/ci@v0.3
+  with:
+    imageName: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
+    cacheFrom: mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye
+    push: always
+    runCmd: make ci-build
