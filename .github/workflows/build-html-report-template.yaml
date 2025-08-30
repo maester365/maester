@@ -23,9 +23,7 @@ jobs:
         run: |
           cd report
           npm ci
-
-      - name: Build project
-        run: npm run build
+          npm run build
 
       - name: Copy index.html to powershell assets
         run: |
