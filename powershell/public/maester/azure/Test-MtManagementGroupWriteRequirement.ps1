@@ -24,27 +24,13 @@ function Test-MtManagementGroupWriteRequirement {
         return $null
     }
 
-    try {
-        $mgResponse = Invoke-MtAzureRequest `
-            -RelativeUri "/providers/Microsoft.Management/managementGroups" `
-            -ApiVersion "2020-05-01"
+    $rootMgId = Get-AzureRootManagementGroup
 
-        $mgList = $mgResponse.value
-    }
-    catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
-    }
-
-    $rootGroup = $mgList | Where-Object { $_.properties.displayName -eq "Tenant Root Group" }
-
-    if (-not $rootGroup) {
+    if (!($rootMgId)) {
         Write-Verbose "Tenant Root Group not found in management groups."
-        Add-MtTestResultDetail -SkippedBecause "Tenant Root Group not found"
+        Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Tenant Root Group not found"
         return $null
     }
-
-    $rootMgId = $rootGroup.name
 
     try {
         $settingResponse = Invoke-MtAzureRequest `
