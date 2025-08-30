@@ -59,10 +59,9 @@ When making updates to the report you might want to bring in some fresh data to 
 - Replace the contents between `const testResults = {` and `};` in App.jsx with the copied content.
 - Your report should now show the updated data.
 
-
 ### Submitting a Pull-Request
 
-When submitting a PR on `/report/src` do not include the `/powershell/assets/ReportTemplate.html` file. It will be add by the workflow in 
-`.github/workflows/build-html-report-template.yaml`
+When submitting a PR for changes in `/report/src` do not include the `/powershell/assets/ReportTemplate.html` artifact. It will be added by the workflow in 
+`.github/workflows/build-html-report-template.yaml`.
 
  
