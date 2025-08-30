@@ -7,12 +7,12 @@
     and finding the one with the display name "Tenant Root Group".
 
 .EXAMPLE
-    Test-AzureRootManagementGroup
+    Get-AzureRootManagementGroup
 
     Returns the ID of the Tenant Root Management Group if found, otherwise returns $null.
 
 .LINK
-    https://maester.dev/docs/commands/Test-AzureRootManagementGroup
+    https://maester.dev/docs/commands/Get-AzureRootManagementGroup
 #>
 function Get-AzureRootManagementGroup {
     [CmdletBinding()]
