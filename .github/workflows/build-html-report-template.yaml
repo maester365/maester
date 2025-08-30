@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd src 
+          cd report
           npm ci
 
       - name: Build project
