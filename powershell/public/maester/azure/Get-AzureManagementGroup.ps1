@@ -19,11 +19,6 @@ function Get-AzureManagementGroup {
     [OutputType([string])]
     param()
 
-    if (!(Test-MtConnection Azure)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
-        return $null
-    }
-
     try {
         $ManagementGroups = Invoke-MtAzureRequest `
             -RelativeUri "/providers/Microsoft.Management/managementGroups" `
