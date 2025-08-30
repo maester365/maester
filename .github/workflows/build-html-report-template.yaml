@@ -35,7 +35,8 @@ jobs:
 
       - name: Add artifact to PR 
         run: |
-          git config --local user.name "action@build-html-report-template"
+          git config --global user.email "workflow@build-html-report-template"
+          git config --global user.name "GitHub Workflow"
           git add ./powershell/assets/ReportTemplate.html
           git commit -m"Build by build-html-report-template.yaml"
           git push
