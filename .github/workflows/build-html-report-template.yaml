@@ -1,5 +1,5 @@
 # builds powershell/assets/ReportTemplate.html from report/src/
-name: Build and Copy Report Template
+name: Build and Copy Report HTML Template
 
 on:
   pull_request:
@@ -20,7 +20,9 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd src 
+          npm ci
 
       - name: Build project
         run: npm run build
