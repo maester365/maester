@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - 'report/src/**'
+    workflow_dispatch:
 
 jobs:
   build-and-copy:
