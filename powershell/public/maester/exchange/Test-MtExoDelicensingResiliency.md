@@ -1,4 +1,8 @@
+
+> **Important:** This test is only available if your tenant has at least **5000 non-trial Exchange Online licenses**.
+
 Delicensing Resiliency SHOULD be enabled to maintain access to mailboxes when licenses are removed.
+
 
 #### Remediation action:
 
