@@ -1,5 +1,5 @@
 Describe "AzureConfig" -Tag "Privilege", "Azure" {
-    It "MT.1056: Ensure that no person has permanent access to all Azure subscriptions at the root scope" -Tag "MT.1056" {
+    It "MT.1056: Ensure that no person has permanent access to all Azure subscriptions at the root scope" -Tag "MT.1056", "Full" {
 
         $result = Test-MtUserAccessAdmin
 
