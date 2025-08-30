@@ -13,7 +13,7 @@ import MtBlocksArea from './components/MtBlocksArea';
 /*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
   "Result": "Failed",
-  "FailedCount": 0,
+  "FailedCount": 1,
   "PassedCount": 0,
   "SkippedCount": 0,
   "TotalCount": 0,
