@@ -24,24 +24,32 @@ function Test-MtManagementGroupWriteRequirement {
         return $null
     }
 
-    $rootMgId = Get-AzureRootManagementGroup
+    # Get all management groups in the tenant
+    $managementGroups = Get-AzureManagementGroup
 
-    if (!($rootMgId)) {
+    # Find the root management group (matches tenant ID)
+    $tenantId = (Get-MgContext).TenantId
+    $rootManagementGroup = $managementGroups | Where-Object { $_ -eq $tenantId }
+
+    if (!$rootManagementGroup) {
         Write-Verbose "Tenant Root Group not found in management groups."
         Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Tenant Root Group not found"
         return $null
     }
 
     try {
+        # Query the management group settings to check authorization requirements
         $settingResponse = Invoke-MtAzureRequest `
-            -RelativeUri "/providers/Microsoft.Management/managementGroups/$rootMgId/settings/default" `
+            -RelativeUri "/providers/Microsoft.Management/managementGroups/$rootManagementGroup/settings/default" `
             -ApiVersion "2020-05-01"
 
+        # Extract the setting that controls write permissions for group creation
         $requireWritePermissions = $settingResponse.properties.requireAuthorizationForGroupCreation
         Write-Verbose "Require write permissions for creating management groups: $requireWritePermissions"
 
         $testResult = $requireWritePermissions -eq $true
 
+        # Build result message based on the setting
         if ($testResult) {
             $testResultMarkdown = "Write permissions are required for creating new management groups."
         } else {

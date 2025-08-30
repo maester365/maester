@@ -1,10 +1,10 @@
-# Get Azure Tenant Root Management Group ID
+# Get Azure Management Groups
 
-This function retrieves the Azure Tenant Root Management Group ID by querying all management groups and finding the one with the display name "Tenant Root Group".
+This function retrieves all Azure Management Group names by querying the Azure Management API. Returns an array of management group names that are accessible to the current user.
 
 #### Usage
 
-This is a helper function used by other Maester tests that need to interact with Azure Management Groups at the tenant level.
+This is a helper function used by other Maester tests that need to interact with Azure Management Groups. It returns all management group names in the tenant.
 
 #### Prerequisites
 
