@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if all Recovery Services Vaults have Soft Delete enabled
 
