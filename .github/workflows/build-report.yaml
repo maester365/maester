@@ -1,0 +1,55 @@
+name: build-report
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "report/**"
+
+permissions:
+  contents: write
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: report/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd report
+          npm ci
+
+      - name: Build report
+        run: |
+          cd report
+          npm run build
+
+      - name: Copy report template to PowerShell assets
+        shell: pwsh
+        run: |
+          Copy-Item ./report/dist/index.html ./powershell/assets/ReportTemplate.html -Force
+
+      - name: Commit updated report template
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add powershell/assets/ReportTemplate.html
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-update report template from /report build"
+            git push
+          fi
