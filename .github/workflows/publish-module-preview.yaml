@@ -7,6 +7,7 @@ on:
     paths:
       - "powershell/**"
       - "!powershell/Maester.psd1"
+      - "report/**"
   workflow_dispatch:
 
 permissions:
@@ -18,7 +19,11 @@ permissions:
   statuses: write
 
 jobs:
+  build-report:
+    uses: ./.github/workflows/build-report.yaml
+
   create-preview-release:
+    needs: build-report
     runs-on: windows-latest
 
     steps:
