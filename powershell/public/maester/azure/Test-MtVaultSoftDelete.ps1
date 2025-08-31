@@ -78,10 +78,10 @@ function Test-MtVaultSoftDelete {
     $testResult = $nonCompliantVaults.Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "✅ All $($vaults.Count) Recovery Services Vaults have soft delete enabled.`n`n$resultsMarkdown"
+        $testResultMarkdown = "All $($vaults.Count) Recovery Services Vaults have soft delete enabled.`n`n$resultsMarkdown"
     }
     else {
-        $testResultMarkdown = "❌ Some vaults do not have soft delete enabled:`n`n"
+        $testResultMarkdown = "Some vaults do not have soft delete enabled:`n`n"
         $testResultMarkdown += ($nonCompliantVaults -join "`n")
         $testResultMarkdown += "`n`n**Compliant vaults:**`n$resultsMarkdown"
     }
