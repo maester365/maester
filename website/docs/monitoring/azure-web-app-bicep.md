@@ -91,7 +91,7 @@ param __maesterAutomationAccountModules__ = [
   {
     name: 'Microsoft.Graph.Authentication'
     uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
-    version: '2.29.1'
+    version: '2.30.0'
   }
   {
     name: 'Pester'
@@ -111,12 +111,12 @@ param __maesterAutomationAccountModules__ = [
   {
     name: 'ExchangeOnlineManagement'
     uri: 'https://www.powershellgallery.com/api/v2/package/ExchangeOnlineManagement'
-    version: '3.8.0'
+    version: '3.9.0'
   }
   {
     name: 'MicrosoftTeams'
     uri: 'https://www.powershellgallery.com/api/v2/package/MicrosoftTeams'
-    version: '7.2.0'
+    version: '7.3.1'
   }
 ]
 ```
