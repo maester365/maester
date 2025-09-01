@@ -84,12 +84,13 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordMx',
     'ConvertFrom-MailAuthenticationRecordSpf',
     'Disconnect-Maester',
-    'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
+    'Get-MtAzureManagementGroup', 'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
     'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
     'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSession',
     'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
     'Install-MaesterTests',
-    'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtGraphRequest',
+    'Invoke-Maester', 'Invoke-MtGraphRequest', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
+    "Invoke-MtGraphSecurityQuery",
     'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
     'Test-MtServicePrincipalsForAllUsers', 'Test-MtAuthenticationPolicyReferencedObjectsExist',
@@ -159,6 +160,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
     'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtDirSyncSoftHardMatching',
     'Test-MtExoMoeraMailActivity','Test-MtExoDelicensingResiliency'
+    'Test-MtLimitOnMicrosoftDomainUsage'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

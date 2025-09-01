@@ -13,4 +13,5 @@
 - **SecurityIdentitiesSensors.Read.All**
 - **SecurityIdentitiesHealth.Read.All**
 - **SharePointTenantSettings.Read.All**
+- **ThreatHunting.Read.All**
 - **UserAuthenticationMethod.Read.All**

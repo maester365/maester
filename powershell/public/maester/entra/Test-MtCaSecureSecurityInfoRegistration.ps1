@@ -36,8 +36,8 @@ function Test-MtCaSecureSecurityInfoRegistration {
                 $policy.conditions.users.includeUsers -eq "All" -and
                 $policy.conditions.clientAppTypes -eq "all" -and
                 $policy.conditions.applications.includeUserActions -eq "urn:user:registersecurityinfo" -and
-                $policy.conditions.users.excludeRoles -eq "62e90394-69f5-4237-9190-012177145e10" -and
-                $policy.conditions.locations.excludeLocations -eq "AllTrusted"
+                $policy.conditions.locations.includeLocations -eq "All" -and
+                $null -ne $policy.conditions.locations.excludeLocations
             ) {
                 $result = $true
                 $CurrentResult = $true

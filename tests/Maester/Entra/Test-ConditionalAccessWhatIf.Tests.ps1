@@ -13,7 +13,7 @@ BeforeDiscovery {
 }
 
 
-Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security", "All" -Skip:( $EntraIDPlan -eq "Free" ) {
+Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security" -Skip:( $EntraIDPlan -eq "Free" ) {
 
     Context "Maester/Entra" -ForEach @( $RegularUsers ) {
         # Regular users
