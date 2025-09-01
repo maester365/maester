@@ -230,6 +230,7 @@ module.exports = [
     'commands/Test-MtEidscaST09',
     'commands/Test-MtEntraDeviceJoinRestricted',
     'commands/Test-MtExoAdditionalStorageProvider',
+    'commands/Test-MtExoDelicensingResiliency',
     'commands/Test-MtExoMailTip',
     'commands/Test-MtExoModernAuth',
     'commands/Test-MtExoMoeraMailActivity',
