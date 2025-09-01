@@ -164,9 +164,7 @@
                     $exclude = $false
                     foreach ($excludePath in $ExcludePathResolved) {
                         $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
-                        if (Test-Path $fullExcludePath -PathType Container) {
-                            # Directory exclusion: check if test file is under this directory
-                            if ($testFile.StartsWith($fullExcludePath.TrimEnd('\') + '\')) {
+                            if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar)) {
                                 $exclude = $true
                                 break
                             }
