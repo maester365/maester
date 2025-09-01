@@ -32,7 +32,7 @@ function Test-MtCisConnectionFilterSafeList {
         $result = $connectionFilterSafeList.EnableSafeList
 
         # We need to Invert the $result that we don't need to change the Markdown. False in $result is good and True is bad
-        $testResult = !$result
+        $testResult = -not $result
 
         if ($testResult) {
             $testResultMarkdown = 'Well done. The connection filter safe list was not enabled ✅'
