@@ -1,6 +1,6 @@
-# Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+# Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.225", "EXO", "Security", "All" {
+Describe "ORCA" -Tag "ORCA", "ORCA.225", "EXO", "Security" {
     It "ORCA.225: Safe Documents is enabled for Office clients." {
         $result = Test-ORCA225
 

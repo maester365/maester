@@ -201,7 +201,7 @@ foreach($file in $testFiles){
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "$($testId)", "EXO", "Security", "All" {
+Describe "ORCA" -Tag "ORCA", "$($testId)", "Exchange", "Security" {
     It "$($testId): $($content.pass)" {
         `$result = Test-$($content.func)
 

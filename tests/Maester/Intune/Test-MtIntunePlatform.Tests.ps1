@@ -1,4 +1,4 @@
-Describe "Maester/Intune" -Tag "Maester", "Intune", "All" {
+Describe "Maester/Intune" -Tag "Maester", "Intune" {
     It "MT.1053: Ensure intune device clean-up rule is configured" -Tag "MT.1053" {
         $result = Test-MtManagedDeviceCleanupSettings
         if ($null -ne $result) {

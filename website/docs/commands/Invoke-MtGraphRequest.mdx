@@ -16,9 +16,9 @@ Enhanced version of Invoke-MgGraphRequest that supports paging, batching and cac
 
 ```powershell
 Invoke-MtGraphRequest [-RelativeUri] <String[]> [-UniqueId <String[]>] [-Select <String[]>] [-Filter <String>]
- [-QueryParameters <Hashtable>] [-ApiVersion <String>] [-ConsistencyLevel <String>] [-DisablePaging]
- [-DisableBatching] [-BatchSize <Int32>] [-GraphBaseUri <Uri>] [-DisableCache] [-OutputType <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-QueryParameters <Hashtable>] [-ApiVersion <String>] [-Method <String>] [-Body <String>]
+ [-ConsistencyLevel <String>] [-DisablePaging] [-DisableBatching] [-BatchSize <Int32>] [-GraphBaseUri <Uri>]
+ [-DisableCache] [-OutputType <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -141,6 +141,38 @@ Aliases:
 Required: False
 Position: Named
 Default value: V1.0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Method
+
+HTTP Method to use for the request.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: GET
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Body
+
+Body for POST requests.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

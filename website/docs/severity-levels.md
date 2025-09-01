@@ -6,7 +6,7 @@ title: Severity levels
 
 ## Severity Framework and Rating
 
-Maester uses Common Vulnerability Scoring System (CVSS) as a method of assessing security risk and prioritization for Maester test. CVSS is an industry standard vulnerability metric. You can learn more about CVSS at [FIRST.org](https://www.first.org/cvss/user-guide).
+Maester uses Common Vulnerability Scoring System (CVSS) as a method of assessing security risk and prioritization for Maester test. CVSS is an industry standard vulnerability metric. You can learn more about CVSS at [FIRST.org](https://www.first.org/cvss/user-guide).
 
 In addition to the Critical, High, Medium and Low severity levels, Maester also includes an **Info** severity level. This is used for tests that are not vulnerabilities, but rather provide information about the configuration of a system. No remediation is required for these tests, but they may be useful for understanding the configuration of a system.
 
@@ -30,32 +30,32 @@ For CVSS, Maester uses the following severity rating system:
 | 0.1 - 3.9  | Low |
 | 0  | Info |
 
-In some cases, the additional factors unrelated to CVSS score may be used to determine the severity level of a vulnerability. This approach is supported by the [CVSS specification](https://www.first.org/cvss/specification-document):
+In some cases, the additional factors unrelated to CVSS score may be used to determine the severity level of a vulnerability. This approach is supported by the [CVSS specification](https://www.first.org/cvss/specification-document):
 
 Consumers may use CVSS information as input to an organizational vulnerability management process that also considers factors that are not part of CVSS in order to rank the threats to their technology infrastructure and make informed remediation decisions. Such factors may include: number of customers on a product line, monetary losses due to a breach, life or property threatened, or public sentiment on highly publicized vulnerabilities. These are outside the scope of CVSS.
 
-Below are a few examples of vulnerabilities which may result in a given severity level. Please keep in mind that this rating does not take into account details of your installation and are to be used as a guide only.
+Below are a few examples of vulnerabilities which may result in a given severity level. Please keep in mind that this rating does not take into account details of your installation and are to be used as a guide only.
 
 #### Severity Level: Critical
 
-Vulnerable configurations that score in the critical range usually have most of the following characteristics:
+Vulnerable configurations that score in the critical range usually have most of the following characteristics:
 
--   Exploitation of the vulnerability likely results in unauthorized administrator level access of web applications, full access to application or user data, and/or root-level compromise of servers or infrastructure devices.
--   Exploitation is usually straightforward, in the sense that the attacker does not need any special authentication credentials or knowledge about individual victims, and does not need to persuade a target user, for example via social engineering, into performing any special functions.
+- Exploitation of the vulnerability likely results in unauthorized administrator level access of web applications, full access to application or user data, and/or root-level compromise of servers or infrastructure devices.
+- Exploitation is usually straightforward, in the sense that the attacker does not need any special authentication credentials or knowledge about individual victims, and does not need to persuade a target user, for example via social engineering, into performing any special functions.
 
 For critical vulnerabilities, is advised that you address the issue as soon as possible, unless you have other mitigating measures in place.
 
 #### Severity Level: High
 
-Configuration vulnerabilities that score in the high range usually have some of the following characteristics:
+Configuration vulnerabilities that score in the high range usually have some of the following characteristics:
 
 - The configuration vulnerability is difficult to exploit.
 - Exploitation could result in elevated privileges.
-- Exploitation could result in a significant data loss or downtime. 
+- Exploitation could result in a significant data loss or downtime.
 
 #### Severity Level: Medium
 
-Configuration vulnerabilities that score in the medium range usually have some of the following characteristics:
+Configuration vulnerabilities that score in the medium range usually have some of the following characteristics:
 
 - Vulnerabilities that require the attacker to manipulate individual victims via social engineering tactics.
 - Denial of service vulnerabilities that are difficult to set up.
@@ -65,7 +65,7 @@ Configuration vulnerabilities that score in the medium range usually have some�
 
 #### Severity Level: Low
 
-Vulnerabilities in the low range typically have very little impact on an organization's business. Exploitation of such vulnerabilities usually requires local or physical system access.
+Vulnerabilities in the low range typically have very little impact on an organization's business. Exploitation of such vulnerabilities usually requires local or physical system access.
 
 ### Remediation Timeline
 

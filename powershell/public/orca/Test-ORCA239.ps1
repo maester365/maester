@@ -3,7 +3,7 @@
     No exclusions for the built-in protection policies.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA239
@@ -38,7 +38,7 @@ function Test-ORCA239{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA239: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA239" -ErrorRecord $_ -AdditionalContext "Running ORCA239 test"
         throw
     } finally {
         if($obj.SkipInReport) {

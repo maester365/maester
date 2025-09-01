@@ -1131,6 +1131,41 @@
       "Title": "Restrict device join to selected users/groups or none."
     },
     {
+      "Id": "MT.1071",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps."
+    },
+    {
+      "Id": "MT.1072",
+      "Severity": "High",
+      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+    },
+{
+      "Id": "MT.1073",
+      "Severity": "Medium",
+      "Title": "Soft- and hard-matching of synchronized objects should be blocked."
+    },
+    {
+      "Id": "MT.1074",
+      "Severity": "Medium",
+      "Title": "Mailboxes should not use the .onmicrosoft.com domain as primary SMTP address."
+    },
+    {
+      "Id": "MT.1075",
+      "Severity": "Medium",
+      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
+    },
+    {
+      "Id": "MT.1076",
+      "Severity": "High",
+      "Title": "MOERA SHOULD NOT be used for sent mail."
+    },
+    {
+      "Id": "MT.1083",
+      "Severity": "Low",
+      "Title": "Ensure Delicensing Resiliency is enabled"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."

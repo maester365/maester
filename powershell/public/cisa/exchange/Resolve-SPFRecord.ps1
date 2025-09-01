@@ -122,8 +122,13 @@ function Resolve-SPFRecord {
             if ( $SPFDirectives -match "redirect" ) {
                 $RedirectRecord = $SPFDirectives -match "redirect" -replace "redirect="
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
-                # Follow the include and resolve the include
-                Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
+                # Follow the redirect and resolve the redirect
+                # Check for SPF records that redirect to themselves, it will lead to an infinite loop => ** explosion **
+                if ( $Name -ne $RedirectRecord ) {
+                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
+                } else {
+                    return "Self-referencing SPF directive"
+                }
             } else {
 
                 # Extract the qualifier

@@ -65,7 +65,7 @@ function Test-MtCisAttachmentFilterComprehensive {
             $policy = $policies | Where-Object { $_.Id -eq $policyId }
             if ($policy.EnableFileFilter -ne 'True') {
                 # If the policy isn't enabled, skip
-                break
+                continue
             }
 
             foreach ($extension in $L2Extensions) {

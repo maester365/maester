@@ -1,4 +1,7 @@
 {
+  "[powershell]": {
+    "files.encoding": "utf8bom"
+  },
   "editor.formatOnSave": false,
   "powershell.codeFormatting.autoCorrectAliases": true,
   "powershell.codeFormatting.avoidSemicolonsAsLineTerminators": true,
@@ -10,5 +13,6 @@
   "cSpell.words": [
     "Contoso",
     "Maester"
-  ]
+  ],
+  "files.encoding": "utf8"
 }

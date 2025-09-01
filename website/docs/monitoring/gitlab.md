@@ -91,12 +91,11 @@ If you’re unable to use more advanced options like certificates stored in Azur
 - Select **CI/CD** > **Variables** > **CI/CD Variables**
 - Add the three secrets listed below by selecting **Add variable**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
-  - Visibility: **Visible**, Key: `AZURE_TENANT_NAME`, Value: The primary domain name of the Entra tenant
   - Visibility: **Visible**, Key: `AZURE_TENANT_ID`, Value: The Directory (tenant) ID of the Entra tenant
   - Visibility: **Visible**, Key: `AZURE_CLIENT_ID`, Value: The Application (client) ID of the Entra application you created
 - Define which services should be connected using the other variables in order to run the corresponding tests.
   - Visibility: **Visible**, Key: `CONNECTION_EXCHANGE`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
-  - Visibility: **Visible**, Key: `CONNECTION_IPP`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
+  - Visibility: **Visible**, Key: `CONNECTION_PURVIEW`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
   - Visibility: **Visible**, Key: `CONNECTION_TEAMS`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
 - Save each secret by selecting **Add variable** at the bottom.
 
@@ -121,7 +120,7 @@ run_maester_tests_inline:
     TENANTID: $AZURE_TENANT_ID
     CLIENTID: $AZURE_CLIENT_ID
     CONNECTION_EXCHANGE: $CONNECTION_EXCHANGE
-    CONNECTION_IPP: $CONNECTION_IPP
+    CONNECTION_PURVIEW: $CONNECTION_PURVIEW
     CONNECTION_TEAMS: $CONNECTION_TEAMS
 
   before_script:
@@ -177,7 +176,7 @@ run_maester_tests_inline:
 
         $AdditionalConnections = @{
             Exchange      = [System.Convert]::ToBoolean($env:CONNECTION_EXCHANGE)
-            IPP           = [System.Convert]::ToBoolean($env:CONNECTION_IPP)
+            Purview       = [System.Convert]::ToBoolean($env:CONNECTION_PURVIEW)
             Teams         = [System.Convert]::ToBoolean($env:CONNECTION_TEAMS)
         }
 
@@ -198,26 +197,24 @@ run_maester_tests_inline:
         $graphToken = (Get-AzAccessToken -ResourceUrl "https://graph.microsoft.com").Token
         Connect-MgGraph -AccessToken $graphToken -NoWelcome
 
-        # Connect to Exchange Online and IPP
-        if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.IPP -eq $true) {
-            # Can be reduced after release from version 3.8.2
-            if ($AdditionalConnections.IPP -eq $false) {
-                Install-Module -Name ExchangeOnlineManagement -Force
-            } else {
-                Install-Module -Name ExchangeOnlineManagement -Force -AllowPrerelease #-AllowPrereleas because accesstoken Auth to IPP is only allowed in 3.8.1-Preview1 and newer
-            }
+        # Connect to Exchange Online and Purview
+        if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.Purview -eq $true) {
+            Install-Module -Name ExchangeOnlineManagement -Force
 
             # Get Exchange Online token using Az authentication
             $exchangeToken = Get-AccessToken -Scope "https://outlook.office365.com/.default"
 
             if ($AdditionalConnections.Exchange -eq $true) {
                 Write-Host "Connect Exchange"
-                Connect-ExchangeOnline -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_NAME
+                Connect-ExchangeOnline -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_ID -ShowBanner:$false
             }
 
-            if ($AdditionalConnections.IPP -eq $true) {
-                Write-Host "Connect IPP"
-                Connect-IPPSSession -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_NAME
+            if ($AdditionalConnections.Purview -eq $true) {
+              $domains = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/domains?`$select=id,isDefault"
+              $primaryDomain = $domains.value | Where-Object { $_.isDefault -eq $true } | Select-Object -ExpandProperty id
+
+              Write-Host "Connect Purview"
+              Connect-IPPSSession -AccessToken $exchangeToken -Organization $primaryDomain -ShowBanner:$false
             }
         }
 
@@ -281,13 +278,12 @@ run_maester_tests_inline:
 - Select **CI/CD** > **Variables** > **CI/CD Variables**
 - Add the three secrets listed below by selecting **Add variable**
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
-  - Visibility: **Visible**, Key: `AZURE_TENANT_NAME`, Value: The primary domain name of the Entra tenant
   - Visibility: **Visible**, Key: `AZURE_TENANT_ID`, Value: The Directory (tenant) ID of the Entra tenant
   - Visibility: **Visible**, Key: `AZURE_CLIENT_ID`, Value: The Application (client) ID of the Entra application you created
   - Visibility: **Masked and hidden**, Key: `AZURE_CLIENT_SECRET`, Value: The client secret you copied in the previous step
 - Define which services should be connected using the other variables in order to run the corresponding tests.
   - Visibility: **Visible**, Key: `CONNECTION_EXCHANGE`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
-  - Visibility: **Visible**, Key: `CONNECTION_IPP`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
+  - Visibility: **Visible**, Key: `CONNECTION_PURVIEW`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
   - Visibility: **Visible**, Key: `CONNECTION_TEAMS`, Value: "true" if you want to connect to the service and execute tests for this service too, "false" if not
 - Save each secret by selecting **Add variable** at the bottom.
 
@@ -299,7 +295,6 @@ More Text
 -->
 
 ```yaml
-
 stages:
   - test
 
@@ -311,7 +306,7 @@ run_maester_tests_inline:
     CLIENTID: $AZURE_CLIENT_ID
     CLIENTSECRET: $AZURE_CLIENT_SECRET
     CONNECTION_EXCHANGE: $CONNECTION_EXCHANGE
-    CONNECTION_IPP: $CONNECTION_IPP
+    CONNECTION_PURVIEW: $CONNECTION_PURVIEW
     CONNECTION_TEAMS: $CONNECTION_TEAMS
 
   before_script:
@@ -363,7 +358,7 @@ run_maester_tests_inline:
 
         $AdditionalConnections = @{
             Exchange      = [System.Convert]::ToBoolean($env:CONNECTION_EXCHANGE)
-            IPP           = [System.Convert]::ToBoolean($env:CONNECTION_IPP)
+            Purview       = [System.Convert]::ToBoolean($env:CONNECTION_PURVIEW)
             Teams         = [System.Convert]::ToBoolean($env:CONNECTION_TEAMS)
         }
 
@@ -378,26 +373,24 @@ run_maester_tests_inline:
         [pscredential] $clientSecretCredential = New-Object System.Management.Automation.PSCredential($env:AZURE_CLIENT_ID, $clientSecret)
         Connect-MgGraph -TenantId $env:AZURE_TENANT_ID -ClientSecretCredential $clientSecretCredential -NoWelcome
 
-        # Connect to Exchange Online and IPP
-        if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.IPP -eq $true) {
-            # Can be reduced after release from version 3.8.2
-            if ($AdditionalConnections.Ipp -eq $false) {
-                Install-Module -Name ExchangeOnlineManagement -Force
-            } else {
-                Install-Module -Name ExchangeOnlineManagement -Force -AllowPrerelease #-AllowPrerelease because accesstoken Auth to IPP is only allowed in 3.8.1-Preview1 and newer
-            }
+        # Connect to Exchange Online and Purview
+        if ($AdditionalConnections.Exchange -eq $true -or $AdditionalConnections.Purview -eq $true) {
+            Install-Module -Name ExchangeOnlineManagement -Force
 
             # Get Exchange Online token using
             $exchangeToken = Get-AccessToken -Scope "https://outlook.office365.com/.default"
 
             if ($AdditionalConnections.Exchange -eq $true) {
                 Write-Host "Connect Exchange"
-                Connect-ExchangeOnline -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_NAME
+                Connect-ExchangeOnline -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_ID -ShowBanner:$false
             }
 
-            if ($AdditionalConnections.Ipp -eq $true) {
-                Write-Host "Connect IPP"
-                Connect-IPPSSession -AccessToken $exchangeToken -Organization $env:AZURE_TENANT_NAME
+            if ($AdditionalConnections.Purview -eq $true) {
+              $domains = Invoke-MgGraphRequest -Uri "https://graph.microsoft.com/v1.0/domains?`$select=id,isDefault"
+              $primaryDomain = $domains.value | Where-Object { $_.isDefault -eq $true } | Select-Object -ExpandProperty id
+
+              Write-Host "Connect Purview"
+              Connect-IPPSSession -AccessToken $exchangeToken -Organization $primaryDomain -ShowBanner:$false
             }
 
         }

@@ -1,4 +1,4 @@
-﻿Describe "Maester/Entra" -Tag "Maester", "CA", "Security", "All" {
+﻿Describe "Maester/Entra" -Tag "Maester", "CA", "Security" {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }
@@ -59,10 +59,10 @@
     It "MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035" -Tag "MT.1035" {
         Test-MtCaGroupsRestricted | Should -Be $true -Because "there are one or more policies without protection of included or excluded groups"
     }
-    It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036", "Warning" {
+    It "MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036" -Tag "MT.1036" {
         Test-MtCaGap | Should -Be $true -Because "there are one or more objects excluded without a corresponding fallback in another policy."
     }
-    It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038", "Warning" {
+    It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038" {
         Test-MtCaReferencedGroupsExist | Should -Be $true -Because "there are one or more policies relying on deleted groups."
     }
     It "MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049" -Tag "MT.1049" {
@@ -74,9 +74,17 @@
     It "MT.1061: Device registration MFA control conflicts with Conditional Access policies. See https://maester.dev/docs/tests/MT.1061" -Tag "MT.1061" {
         Test-MtDeviceRegistrationMfaConflict | Should -Be $true -Because "there is a conflict between Entra ID settings and Conditional Access policies regarding MFA during device registration."
     }
-    It "MT.1066: Conditional Access policies should not reference non-existent users, groups, or roles. See https://maester.dev/docs/tests/MT.1066" -Tag "MT.1066", "Warning" {
+    It "MT.1066: Conditional Access policies should not reference non-existent users, groups, or roles. See https://maester.dev/docs/tests/MT.1066" -Tag "MT.1066" {
         Test-MtCaReferencedObjectsExist | Should -Be $true -Because "all referenced users, groups, or roles should exist."
     }
+    It "MT.1071: At least one Conditional Access policy explicitly includes Azure DevOps. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
+        Test-MtCaAzureDevOps | Should -Be $true -Because "one or more policies target Azure DevOps app."
+    }
+
+    It "MT.1072: Conditional access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {
+        Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
+    }
+
     Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
@@ -89,7 +97,7 @@
     }
 }
 
-Describe "Maester/Entra" -Tag "CA", "Security", "All" {
+Describe "Maester/Entra" -Tag "CA", "Security" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
         $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if ($EntraIDPlan -ne "Free") {

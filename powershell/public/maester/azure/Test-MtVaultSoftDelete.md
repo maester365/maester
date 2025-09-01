@@ -1,5 +1,3 @@
-# MT.1065: Ensure Soft Delete is enabled on all Recovery Services Vaults
-
 Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups.
 
 Ensure that all Recovery Services Vaults across all subscriptions have soft delete enabled.
@@ -18,5 +16,5 @@ Note: New vaults typically have soft delete enabled by default.
 
 * [Soft delete for Recovery Services vaults](https://learn.microsoft.com/en-us/azure/backup/backup-azure-security-feature-cloud)
 
-<!--- Results --->  
+<!--- Results --->
 %TestResult%

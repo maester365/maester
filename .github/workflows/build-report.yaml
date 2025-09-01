@@ -1,0 +1,96 @@
+name: build-report
+
+on:
+  workflow_call:
+    outputs:
+      report-updated:
+        description: "Whether the report template was updated"
+        value: ${{ jobs.build-report.outputs.report-updated }}
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "report/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+    outputs:
+      report-updated: ${{ steps.check-changes.outputs.changed }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: report/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd report
+          npm ci
+
+      - name: Build report
+        run: |
+          cd report
+          npm run build
+
+      - name: Copy report template to PowerShell assets
+        shell: pwsh
+        run: |
+          Copy-Item ./report/dist/index.html ./powershell/assets/ReportTemplate.html -Force
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet powershell/assets/ReportTemplate.html; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes to ReportTemplate.html"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "ReportTemplate.html has been updated"
+          fi
+
+      - name: Create PR for standalone runs
+        if: github.event_name != 'workflow_call' && steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Create a new branch for the PR
+          BRANCH_NAME="auto-update-report-template-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH_NAME"
+
+          # Add and commit changes
+          git add powershell/assets/ReportTemplate.html
+          git commit -m "Auto-update report template from /report build"
+
+          # Push the branch
+          git push origin "$BRANCH_NAME"
+
+          # Create a PR using GitHub CLI (gh is pre-installed on GitHub runners)
+          gh pr create \
+            --title "Auto-update report template" \
+            --body "This PR automatically updates the ReportTemplate.html file based on changes in the /report directory." \
+            --head "$BRANCH_NAME" \
+            --base main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload report template as artifact
+        if: steps.check-changes.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: updated-report-template
+          path: powershell/assets/ReportTemplate.html

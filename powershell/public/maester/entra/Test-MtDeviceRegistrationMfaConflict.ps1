@@ -51,7 +51,7 @@ function Test-MtDeviceRegistrationMfaConflict {
             # If MFA is required for device registration in Entra ID settings, we need to check if there are any policies that conflict with this
             if ($deviceRegPoliciesCount -gt 0) {
                 Write-Verbose "Found conditional access policies that require MFA for device registration: $($deviceRegPolicies.Count)"
-                $testResultMarkdown = "Device registration controls are enforced in both conditional access and [Entra - Device Settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices). Disable the tenant wide setting and enforce through conditional access.`n`n%TestResult%"
+                $testResultMarkdown = "Device registration controls are enforced in both conditional access and [Entra - Device Settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Devices). Disable the tenant wide setting and enforce through conditional access."
                 $return = $false
             } else {
                 Write-Verbose "No conditional access policies requiring MFA for device registration were found."
@@ -64,11 +64,11 @@ function Test-MtDeviceRegistrationMfaConflict {
             # If MFA is not required for device registration in Entra ID settings, we need to check if there are any policies that require controls on register device
             if ($deviceRegPoliciesCount -gt 0) {
                 Write-Verbose "Found conditional access policies that require controls on register device: $($deviceRegPolicies.Count)"
-                $testResultMarkdown = "Well done. Requiring controls for device registration is enforced with conditional access policies.`n`n%TestResult%"
+                $testResultMarkdown = "Well done. Requiring controls for device registration is enforced with conditional access policies."
                 $return = $true
             } else {
                 Write-Verbose "No controls were found for registering devices in conditional access policies."
-                $testResultMarkdown = "No conditional access policies nor device registration settings were found that conflict with each other. However it is recommended to enforce MFA for device registration. `n`n%TestResult%"
+                $testResultMarkdown = "No conditional access policies nor device registration settings were found that conflict with each other. However it is recommended to enforce MFA for device registration."
                 $return = $true
             }
         }

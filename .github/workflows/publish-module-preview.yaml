@@ -7,6 +7,7 @@ on:
     paths:
       - "powershell/**"
       - "!powershell/Maester.psd1"
+      - "report/**"
   workflow_dispatch:
 
 permissions:
@@ -18,11 +19,22 @@ permissions:
   statuses: write
 
 jobs:
+  build-report:
+    uses: ./.github/workflows/build-report.yaml
+
   create-preview-release:
+    needs: build-report
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download updated report template
+        if: needs.build-report.outputs.report-updated == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: updated-report-template
+          path: powershell/assets/
 
       - name: Package ./tests to PowerShell module
         id: package-tests

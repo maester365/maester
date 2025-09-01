@@ -3,7 +3,7 @@
     Phish action set to Quarantine message.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA142
@@ -38,7 +38,7 @@ function Test-ORCA142{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA142: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA142" -ErrorRecord $_ -AdditionalContext "Running ORCA142 test"
         throw
     } finally {
         if($obj.SkipInReport) {

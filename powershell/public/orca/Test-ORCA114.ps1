@@ -3,7 +3,7 @@
     No IP Allow Lists have been configured.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA114
@@ -38,7 +38,7 @@ function Test-ORCA114{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA114: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA114" -ErrorRecord $_ -AdditionalContext "Running ORCA114 test"
         throw
     } finally {
         if($obj.SkipInReport) {

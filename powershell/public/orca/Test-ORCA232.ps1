@@ -3,7 +3,7 @@
     Each domain has a malware filter policy applied to it, or the default policy is being used.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA232
@@ -38,7 +38,7 @@ function Test-ORCA232{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA232: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA232" -ErrorRecord $_ -AdditionalContext "Running ORCA232 test"
         throw
     } finally {
         if($obj.SkipInReport) {
