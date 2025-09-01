@@ -6,15 +6,18 @@
     This function retrieves all Azure Management Groups by querying the Azure Management API.
     Returns an array of management groups that are accessible to the current user.
 
+    * [Quickstart: Create a management group](https://learn.microsoft.com/en-us/azure/governance/management-groups/create-management-group-portal)
+    * [Azure Management Groups Overview](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
+
 .EXAMPLE
-    Get-AzureManagementGroup
+    Get-MtAzureManagementGroup
 
     Returns all management groups in the tenant.
 
 .LINK
-    https://maester.dev/docs/commands/Get-AzureManagementGroup
+    https://maester.dev/docs/commands/Get-MtAzureManagementGroup
 #>
-function Get-AzureManagementGroup {
+function Get-MtAzureManagementGroup {
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
     param()

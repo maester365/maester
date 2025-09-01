@@ -25,7 +25,7 @@ function Test-MtManagementGroupWriteRequirement {
     }
 
     # Get all management groups in the tenant and filter the tenant root management group by id
-    $rootManagementGroup = Get-AzureManagementGroup | Where-Object { $_.id -match "$($_.properties.tenantid)$" }
+    $rootManagementGroup = Get-MtAzureManagementGroup | Where-Object { $_.id -match "$($_.properties.tenantid)$" }
 
     if (!$rootManagementGroup) {
         Write-Verbose "Tenant Root Group not found in management groups."
