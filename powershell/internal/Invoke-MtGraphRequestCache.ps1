@@ -20,12 +20,19 @@ function Invoke-MtGraphRequestCache {
     )
 
     $results = $null
-    $isBatch = $uri.AbsoluteUri.EndsWith('$batch')
-    $isInCache = $__MtSession.GraphCache.ContainsKey($Uri.AbsoluteUri)
-    $cacheKey = $Uri.AbsoluteUri
-    $isMethodGet = $Method -eq 'GET'
+    if ($Method -eq 'GET') {
+        $cacheKey = $Uri.AbsoluteUri
+        $isMethodGet = $true
+    } elseif ($Method -eq 'POST' -and $Uri.AbsoluteUri.EndsWith('security/runHuntingQuery')) {
+        $cacheKey = $Uri.AbsoluteUri + "_" + ($Body -replace '\s', '')
+        $isXdrQuery = $true
+    }
 
-    if (!$DisableCache -and !$isBatch -and $isInCache -and $isMethodGet) {
+    $isBatch = $uri.AbsoluteUri.EndsWith('$batch')
+    $isInCache = $__MtSession.GraphCache.ContainsKey($cacheKey)
+
+
+    if (!$DisableCache -and !$isBatch -and $isInCache -and ($isMethodGet -or $isXdrQuery)) {
         # Don't read from cache for batch requests.
         Write-Verbose ("Using graph cache: $($cacheKey)")
         $results = $__MtSession.GraphCache[$cacheKey]
@@ -41,8 +48,14 @@ function Invoke-MtGraphRequestCache {
             $results = Invoke-MgGraphRequest -Method $Method -Uri $Uri -Headers $Headers -OutputType $OutputType -Body $Body
         }
 
-        if (!$DisableCache -and !$isBatch -and $isMethodGet) {
+        if (!$isBatch -and $isMethodGet) {
             # Update cache
+            if ($isInCache) {
+                $__MtSession.GraphCache[$cacheKey] = $results
+            } else {
+                $__MtSession.GraphCache.Add($cacheKey, $results)
+            }
+        } elseif ($isXdrQuery) {
             if ($isInCache) {
                 $__MtSession.GraphCache[$cacheKey] = $results
             } else {
