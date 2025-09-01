@@ -38,11 +38,6 @@ function Test-MtVaultSoftDelete {
         return $null
     }
 
-    if (!$vaults) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No Recovery Services Vaults found"
-        return $null
-    }
-
     Write-Verbose "Found $($vaults.Count) Recovery Services Vaults to check"
 
     foreach ($vault in $vaults) {
@@ -75,15 +70,21 @@ function Test-MtVaultSoftDelete {
         }
     }
 
-    $testResult = $nonCompliantVaults.Count -eq 0
-
-    if ($testResult) {
-        $testResultMarkdown = "All $($vaults.Count) Recovery Services Vaults have soft delete enabled.`n`n$resultsMarkdown"
+    if (!$vaults) {
+        $testResult = $true
+        $testResultMarkdown = "No Recovery Services Vaults found"
     }
     else {
-        $testResultMarkdown = "Some vaults do not have soft delete enabled:`n`n"
-        $testResultMarkdown += ($nonCompliantVaults -join "`n")
-        $testResultMarkdown += "`n`n**Compliant vaults:**`n$resultsMarkdown"
+        $testResult = $nonCompliantVaults.Count -eq 0
+
+        if ($testResult) {
+            $testResultMarkdown = "All $($vaults.Count) Recovery Services Vaults have soft delete enabled.`n`n$resultsMarkdown"
+        }
+        else {
+            $testResultMarkdown = "Some vaults do not have soft delete enabled:`n`n"
+            $testResultMarkdown += ($nonCompliantVaults -join "`n")
+            $testResultMarkdown += "`n`n**Compliant vaults:**`n$resultsMarkdown"
+        }
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
