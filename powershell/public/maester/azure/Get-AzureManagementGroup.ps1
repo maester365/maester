@@ -16,7 +16,7 @@
 #>
 function Get-AzureManagementGroup {
     [CmdletBinding()]
-    [OutputType([string])]
+    [OutputType([PSCustomObject[]])]
     param()
 
     try {
