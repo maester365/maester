@@ -67,18 +67,18 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Create a new branch for the PR
           BRANCH_NAME="auto-update-report-template-$(date +%Y%m%d-%H%M%S)"
           git checkout -b "$BRANCH_NAME"
-          
+
           # Add and commit changes
           git add powershell/assets/ReportTemplate.html
           git commit -m "Auto-update report template from /report build"
-          
+
           # Push the branch
           git push origin "$BRANCH_NAME"
-          
+
           # Create a PR using GitHub CLI (gh is pre-installed on GitHub runners)
           gh pr create \
             --title "Auto-update report template" \
