@@ -29,7 +29,7 @@ function Test-MtCisHostedConnectionFilterPolicy {
         $connectionFilterIPAllowList = Get-HostedConnectionFilterPolicy | Where-Object {$_.isDefault -eq $true} | Select-Object IPAllowList
 
         Write-Verbose 'Check if the Connection Filter IP allow list is empty'
-        $testResult = -not $connectionFilterIPAllowList.IPAllowList
+        $testResult = -not $connectionFilterIPAllowList.IPAllowList -or $connectionFilterIPAllowList.IPAllowList.Count -eq 0
 
         if ($testResult) {
             $testResultMarkdown = 'Well done. The connection filter IP allow list was empty ✅'
