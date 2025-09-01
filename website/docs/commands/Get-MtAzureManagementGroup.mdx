@@ -1,0 +1,71 @@
+---
+sidebar_class_name: hidden
+description: Returns all Azure Management Groups in the tenant
+id: Get-MtAzureManagementGroup
+title: Get-MtAzureManagementGroup
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtAzureManagementGroup.ps1
+---
+
+## SYNOPSIS
+
+Returns all Azure Management Groups in the tenant
+
+## SYNTAX
+
+```powershell
+Get-MtAzureManagementGroup [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function retrieves all Azure Management Groups by querying the Azure Management API.
+Returns an array of management groups that are accessible to the current user.
+
+* [Quickstart: Create a management group](https://learn.microsoft.com/en-us/azure/governance/management-groups/create-management-group-portal)
+* [Azure Management Groups Overview](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtAzureManagementGroup
+```
+
+Returns all management groups in the tenant.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Management.Automation.PSObject[]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtAzureManagementGroup](https://maester.dev/docs/commands/Get-MtAzureManagementGroup)

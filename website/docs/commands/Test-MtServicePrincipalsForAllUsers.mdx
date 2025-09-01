@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Check if any third party service principals are accessible to all users.
+description: This test checks if you have any third party service principals that are open to all users.
 id: Test-MtServicePrincipalsForAllUsers
 title: Test-MtServicePrincipalsForAllUsers
 hide_title: false
@@ -10,7 +10,8 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Check if any third party service principals are still assigned to all users.
+This test checks if you have any third party service principals that are open to all users.
+It is recommended to set 'Assignment required?' to Yes for all Third Party apps.
 
 ## SYNTAX
 
@@ -20,8 +21,9 @@ Test-MtServicePrincipalsForAllUsers [-ProgressAction <ActionPreference>] [<Commo
 
 ## DESCRIPTION
 
-It is recommended to set 'Assignment required?' to Yes for all Third Party apps.
-Provide users with explicit access through security groups. If desired, use the audit logs per app to determine who was using the application before locking them down.
+Open all app service principals below and set 'Assignment required?' to Yes.
+Assign users under 'Users and groups' to provide them with explicit access.
+If desired, use the audit logs per SPN to determine who was using the application before locking them down.
 
 ## EXAMPLES
 
@@ -31,7 +33,7 @@ Provide users with explicit access through security groups. If desired, use the 
 Test-MtServicePrincipalsForAllUsers
 ```
 
-Returns true if no third party service principals are are assigned to all users. Otherwise returns false.
+Returns true if no third party service principals are assigned to All Users, false if any are found.
 
 ## PARAMETERS
 
