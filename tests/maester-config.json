@@ -1161,6 +1161,11 @@
       "Title": "MOERA SHOULD NOT be used for sent mail."
     },
     {
+      "Id": "MT.1083",
+      "Severity": "Low",
+      "Title": "Ensure Delicensing Resiliency is enabled"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
