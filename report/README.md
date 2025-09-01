@@ -61,7 +61,6 @@ When making updates to the report you might want to bring in some fresh data to 
 
 ### Submitting a Pull-Request
 
-When submitting a PR for changes in `/report/src` do not include the `/powershell/assets/ReportTemplate.html` artifact. It will be added by the workflow in 
-`.github/workflows/build-html-report-template.yaml`.
+When submitting a PR for changes in `/report/src` you can skip updating the `/powershell/assets/ReportTemplate.html` artifact. The [report-build](https://github.com/maester365/maester/blob/main/.github/workflows/build-report.yaml) bot will build and create a PR to merge the ReportTemplate once your PR is approved and merged.
 
- 
+
