@@ -58,3 +58,9 @@ When making updates to the report you might want to bring in some fresh data to 
 - Open /report/src/App.jsx and search for `const testResults = {`.
 - Replace the contents between `const testResults = {` and `};` in App.jsx with the copied content.
 - Your report should now show the updated data.
+
+### Submitting a Pull-Request
+
+When submitting a PR for changes in `/report/src` you can skip updating the `/powershell/assets/ReportTemplate.html` artifact. The [report-build](https://github.com/maester365/maester/blob/main/.github/workflows/build-report.yaml) bot will build and create a PR to merge the ReportTemplate once your PR is approved and merged.
+
+
