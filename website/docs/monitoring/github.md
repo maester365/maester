@@ -109,7 +109,6 @@ jobs:
           include_public_tests: true
           include_private_tests: false
           include_exchange: false
-          include_purview: false
           include_teams: false
           # Set a specific version of the powershell module here or 'latest' or 'preview'
           # check out https://www.powershellgallery.com/packages/Maester/
