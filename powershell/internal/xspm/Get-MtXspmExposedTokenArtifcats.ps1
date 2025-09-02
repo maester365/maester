@@ -4,10 +4,10 @@
 .DESCRIPTION
     Executes KQL function over Exposure Management data to retrieve information about exposed token artifacts such as Primary Refresh Tokens, Session Cookies, and Azure CLI tokens. It enriches the data with device insights and alert evidence.
 .EXAMPLE
-    Get-MtXspmExposedTokenArtifcats
+    Get-MtXspmExposedTokenArtifacts
     Returns a detailed list of exposed token artifacts, including their types, associated devices, and any relevant alert evidence.
 .LINK
-    https://maester.dev/docs/commands/Get-MtXspmExposedTokenArtifcats
+    https://maester.dev/docs/commands/Get-MtXspmExposedTokenArtifacts
 #>
 
 function Get-MtXspmExposedTokenArtifacts {
