@@ -253,7 +253,7 @@ Describe "Exposure Management - Privileged assets, identified by EntraOps and Cr
                 Add-MtTestResultDetail -Result "No authentication artifacts of privileged users appear to be exposed on vulnerable endpoints. A total of $($userNotInScope.Count) other users (without Entra ID roles) have authentication artifacts on vulnerable devices."
             }
 
-        $ExposedUserAuthArtifacts.Count -eq "0" | Should -Be $True -Because $ShouldBeReason
+        $userInScope.Count -eq "0" | Should -Be $True -Because $ShouldBeReason
         }
     }
 
