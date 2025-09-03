@@ -209,7 +209,7 @@ Describe "Exposure Management - Privileged assets, identified by EntraOps and Cr
         }
 
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
-        $ExposedAuthArtifacts = Get-MtXspmExposedTokenArtifacts
+        $ExposedAuthArtifacts = Get-MtXspmExposedAuthenticationArtifact
 
         # Filter for privileged users only
         $ExposedAuthArtifactsFromRiskyDevice = $ExposedAuthArtifacts | Where-Object {$_.RiskScore -eq "High" -or $_.ExposureScore -eq "High"}
