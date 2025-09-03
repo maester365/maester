@@ -113,7 +113,8 @@ function Get-MtXspmUnifiedIdentityInfo {
             OAuthAppInfo
                 | where Timestamp >ago(30d)
                 | where tolower(AppName) contains tolower(ServicePrincipalName) and ServicePrincipalId contains tostring(ServicePrincipalObjectId)
-                | summarize arg_max(Timestamp, *) by ServicePrincipalId
+                | extend OAuthAppInfoAppDisplayName = AppName
+                | summarize arg_max(Timestamp, *) by ServicePrincipalId, OAuthAppInfoAppDisplayName
         ) on ServicePrincipalId
         // Lookup for Graph API Classification
         | lookup (
@@ -264,6 +265,8 @@ function Get-MtXspmUnifiedIdentityInfo {
         ) on XspmGraphOAuthAppNodeId
         | extend CriticalityLevel = toint(parse_json(XspmCriticalAssetDetails)['criticalityLevel'])
         | project-away XspmGraphNodeId, XspmGraphNodeId1, ServicePrincipalId1, ServicePrincipalId2, XspmGraphNodeId1, XspmGraphNodeId2, TargetNodeId, XspmGraphOAuthAppNodeId, XspmGraphOAuthAppNodeId1
+        | extend ServicePrincipalName = coalesce(ServicePrincipalName, OAuthAppInfoAppDisplayName)
+        | extend ServicePrincipalName = coalesce(ServicePrincipalName, ServicePrincipalId)
         | sort by ServicePrincipalName asc
         | project Timestamp, TimeGenerated, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy
         | extend Classification = case(
