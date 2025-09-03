@@ -17,7 +17,7 @@
 
 }
 
-Describe "Exposure Management - Privileged assets, identified by EntraOps and Critical Asset Management, should not be exposed due to weak security configurations." -Tag -Tag "Privileged", "Entra", "Full", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $EntraIDPlan -ne "P2" ) {
+Describe "Exposure Management - Privileged assets, identified by EntraOps and Critical Asset Management, should not be exposed due to weak security configurations." -Tag "Privileged", "Entra", "Full", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $EntraIDPlan -ne "P2" ) {
     It "MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077" -Tag "MT.1077" {
 
     if ( $UnifiedIdentityInfoExecutable -eq $false) {
@@ -238,7 +238,11 @@ Describe "Exposure Management - Privileged assets, identified by EntraOps and Cr
 
                     $UserLink = "[$($EnrichedUserDetails.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnrichedUserDetails.AccountObjectId))"
                     $DeviceLink = "[$($ExposedUserAuthArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedUserAuthArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
-                    $UserArtifacts = $ExposedUserAuthArtifact.TokenArtifacts | ForEach-Object { (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $_) + " " + $_ } | Where-Object { $_ -and $_.Trim() -ne '' } | ForEach-Object { $_.Trim() }
+                    $UserArtifacts = $ExposedUserAuthArtifact.TokenArtifacts | ForEach-Object {
+                            (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $_) + " " + $($_ -csplit '(?=[A-Z])' -ne '' -join ' ')
+                            }
+                            | Where-Object { $_ -and $_.Trim() -ne '' }
+                            | ForEach-Object { $_.Trim() }
 
                     $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifacts) | $($ExposedUserAuthArtifact.ExposureScore) | $($ExposedUserAuthArtifact.RiskScore) |`n"
                     $userInScope += $EnrichedUserDetails.AccountObjectId
