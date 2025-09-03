@@ -17,7 +17,7 @@
 
 }
 
-Describe "Exposure Management - Privileged assets, identified by EntraOps and Critical Asset Management, should not be exposed due to weak security configurations." -Tag "XSPM", "Privileged", "EntraOps" -Skip:( $EntraIDPlan -ne "P2" ) {
+Describe "Exposure Management - Privileged assets, identified by EntraOps and Critical Asset Management, should not be exposed due to weak security configurations." -Tag -Tag "Privileged", "Entra", "Full", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $EntraIDPlan -ne "P2" ) {
     It "MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077" -Tag "MT.1077" {
 
     if ( $UnifiedIdentityInfoExecutable -eq $false) {
