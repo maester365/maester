@@ -411,6 +411,7 @@ function Invoke-Maester {
             Write-Verbose "🧪 Drift root directory set to: $DriftRoot"
         }
     } else {
+
         # Set the default drift root directory.
         # Set-Item -Path Env:\MAESTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
     }
