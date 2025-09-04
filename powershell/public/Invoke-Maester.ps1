@@ -101,6 +101,12 @@ function Invoke-Maester {
         # Exclude the tests that match this tag(s).
         [string[]] $ExcludeTag,
 
+        # Include long running tests
+        [switch] $IncludeLongRunning,
+
+        # Include preview tests
+        [switch] $IncludePreview,
+
         # The path to the file to save the test results in html format. The filename should include an .html extension.
         [string] $OutputHtmlFile,
 
@@ -331,17 +337,29 @@ function Invoke-Maester {
         return
     }
 
-    # Only run CAWhatIf tests if explicitly requested
-    if ("CAWhatIf" -notin $Tag) {
-        $ExcludeTag += "CAWhatIf"
+    # Exclude LongRunning tests unless: $IncludeLongRunning is present, or LongRunning is in $Tag, or CAWhatIf is in $Tag.
+    if ( (-not $IncludeLongRunning.IsPresent) -and "LongRunning" -notin $Tag -and "CAWhatIf" -notin $Tag ) {
+        $ExcludeTag += "LongRunning"
     }
 
-    # If $Tag is not set, run all tests except the ones with the tag "Full"
+    # If $Tag is not set, run all tests except the ones with the "Preview" tag (unless -IncludePreview is passed).
     if (-not $Tag) {
-        $ExcludeTag += "Full"
-    } # Check if Full is included then add All to the include as default
-    elseif ("Full" -in $Tag) {
-        $Tag += "All"
+        if (-not $IncludePreview.IsPresent) {
+            $ExcludeTag += "Preview"
+        }
+    }
+
+    # Include tests tagged as "Preview" if "Full" is included in $Tag.
+    if ("Full" -in $Tag) {
+        $Tag += "Preview"
+    }
+
+    # Warn about deprecated tag usage.
+    $DeprecatedTags = @('All','Full')
+    #$UsedDeprecatedTags = $Tag | Where-Object { $DeprecatedTags -contains $_ }
+    $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
+    if ($UsedDeprecatedTags) {
+        Write-Warning "The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead: `n`nLongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.`nPreview    : Tests that are still being tested or are dependent on preview APIs. Replaces 'All'."
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
@@ -374,14 +392,13 @@ function Invoke-Maester {
         $DriftRoot = (Resolve-Path -Path $DriftRoot -ErrorAction SilentlyContinue).Path
         if (-not (Test-Path -Path $DriftRoot)) {
             Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist."
-
         } else {
-            Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $DriftRoot
+            Set-Item -Path Env:\MAESTER_FOLDER_DRIFT -Value $DriftRoot
             Write-Verbose "🧪 Drift root directory set to: $DriftRoot"
         }
     } else {
         # Default drift root directory
-        # Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
+        # Set-Item -Path Env:\MAESTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
     }
 
     $maesterResults = $null
