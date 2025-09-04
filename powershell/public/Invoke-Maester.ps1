@@ -376,12 +376,12 @@ function Invoke-Maester {
             Write-Warning "❌ The specified drift root directory '$DriftRoot' does not exist."
 
         } else {
-            Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $DriftRoot
+            Set-Item -Path Env:\MAESTER_FOLDER_DRIFT -Value $DriftRoot
             Write-Verbose "🧪 Drift root directory set to: $DriftRoot"
         }
     } else {
         # Default drift root directory
-        # Set-Item -Path Env:\MEASTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
+        # Set-Item -Path Env:\MAESTER_FOLDER_DRIFT -Value $(Join-Path -Path (Get-Location) -ChildPath "drift")
     }
 
     $maesterResults = $null
