@@ -370,7 +370,6 @@ function Invoke-Maester {
 
     # Warn about deprecated tag usage.
     $DeprecatedTags = @('All','Full')
-    #$UsedDeprecatedTags = $Tag | Where-Object { $DeprecatedTags -contains $_ }
     $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
     if ($UsedDeprecatedTags) {
         Write-Warning "The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead: `n`nLongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.`nPreview    : Tests that are still being tested or are dependent on preview APIs. Replaces 'All'."
