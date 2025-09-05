@@ -214,7 +214,12 @@
             [string[]]$CombinedTags = @()
             # Get values for each TestItem
             $Describe = $TestItem.Block.Name
-            [string[]] $Tags = $TestItem.Tag | Where-Object { $_ } | Select-Object -Unique
+
+            # Collect tags from both the individual test and its parent Describe block
+            [string[]] $TestTags = $TestItem.Tag | Where-Object { $_ } | Select-Object -Unique
+            [string[]] $DescribeTags = $TestItem.Block.Tag | Where-Object { $_ } | Select-Object -Unique
+            [string[]] $Tags = ($TestTags + $DescribeTags) | Select-Object -Unique
+
             $CombinedTags += $Describe
             $CombinedTags += $Tags
 
