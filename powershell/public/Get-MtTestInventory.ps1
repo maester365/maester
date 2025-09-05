@@ -167,16 +167,16 @@
                     $exclude = $false
                     foreach ($excludePath in $ExcludePathResolved) {
                         $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
-                            if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar)) {
+                        if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar)) {
+                            $exclude = $true
+                            break
+                        } else {
+                            # File exclusion: check for exact match
+                            if ($testFile -eq $fullExcludePath) {
                                 $exclude = $true
                                 break
-                            } else {
-                                # File exclusion: check for exact match
-                                if ($testFile -eq $fullExcludePath) {
-                                    $exclude = $true
-                                    break
-                                } # end if testfile
-                            } # end else
+                            } # end if testfile
+                        } # end else
                     } # end foreach excludepath
                     -not $exclude
                 } # end where
