@@ -1,4 +1,6 @@
-BeforeDiscovery {
+BeforeAll {
+    $checkid = "MT.1059"
+
     try {
         $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
     } catch {
@@ -26,7 +28,7 @@ BeforeDiscovery {
     $MdiHealthIssuesGrouped = $MdiHealthIssues | Group-Object -Property displayName
 }
 
-Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "MDI" -ForEach $MdiHealthIssuesGrouped {
+Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "MDI", "MT.1059" -ForEach $MdiHealthIssuesGrouped {
     # We need to ID each grouped issue based on it's common displayName, so to keep it consistent and clean, we use MD5
     $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
     $utf8 = New-Object -TypeName System.Text.UTF8Encoding

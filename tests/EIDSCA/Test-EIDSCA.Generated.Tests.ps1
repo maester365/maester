@@ -1,9 +1,9 @@
-BeforeDiscovery {
-$AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
-$SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
-$EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
-$EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
-$EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
+BeforeAll {
+    $AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
+    $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
+    $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
+    $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
+    $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
 Describe "EIDSCA" -Tag "EIDSCA", "Security", "EIDSCA.AP01" {
     It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" -TestCases @{ AuthorizationPolicyAvailable = $AuthorizationPolicyAvailable } {
