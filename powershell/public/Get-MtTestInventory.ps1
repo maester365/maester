@@ -244,7 +244,7 @@
         }
 
         # Ensure AllTags only contains unique and sorted objects.
-        $AllTags = $AllTags | Sort-Object -Unique
+        $AllTags = $AllTags | Sort-Object -Property { $_ } -Unique
 
         # Create the tag inventory as an ordered dictionary with the tag names as keys and tests as values.
         # This will allow for quick lookups of tests by any of their tags.
