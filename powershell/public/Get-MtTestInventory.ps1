@@ -93,7 +93,10 @@
 
         # Path for exported CSV or JSON file.
         [Parameter(ParameterSetName = 'Output', HelpMessage = 'Path for exported CSV or JSON file.')]
-        [string] $ExportPath = (Join-Path -Path $PWD -ChildPath 'TestInventory')
+        [string] $ExportPath = (Join-Path -Path $PWD -ChildPath 'TestInventory'),
+
+        [Parameter()]
+        [switch] $PassThru
     )
 
     begin {
@@ -239,9 +242,15 @@
         switch ($OutputType) {
             'JSON' {
                 $TestInventory | ConvertTo-Json -Depth 5 | Out-File -FilePath $ExportPath -Encoding utf8
+                if ($PassThru) {
+                    $TagTests
+                }
             }
             'CSV' {
                 $TestInventory | Export-Csv -NoTypeInformation -Path $ExportPath -Encoding utf8
+                if ($PassThru) {
+                    $TagTests
+                }
             }
             'TagsOnly' {
                 $AllTags
