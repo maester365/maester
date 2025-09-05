@@ -1166,6 +1166,11 @@
       "Title": "MOERA SHOULD NOT be used for sent mail."
     },
     {
+      "Id": "MT.1084",
+      "Severity": "High",
+      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
+    },
+    {
       "Id": "MT.1083",
       "Severity": "Low",
       "Title": "Ensure Delicensing Resiliency is enabled"

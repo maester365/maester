@@ -160,7 +160,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
     'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtDirSyncSoftHardMatching',
     'Test-MtExoMoeraMailActivity','Test-MtExoDelicensingResiliency',
-    'Test-MtLimitOnMicrosoftDomainUsage'
+    'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtDomainsWithSsso'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
