@@ -81,7 +81,7 @@
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
         [Parameter(HelpMessage = 'Path to the test files to gather inventory from.')]
         [ValidateScript({ Test-Path -Path $_ -PathType Container })]
-        [string] $Path = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..' 'tests')).Path,
+        [string] $Path = (Resolve-Path -LiteralPath (Join-Path -Path $PSScriptRoot '..\..' 'tests')).Path,
 
         # Paths to exclude from discovery.
         [Parameter(HelpMessage = 'One or more paths to exclude (e.g. test-results folders). Accepts wildcard patterns.')]
@@ -244,7 +244,7 @@
         }
 
         # Ensure AllTags only contains unique and sorted objects.
-        $AllTags = $AllTags | Sort-Object -Property { $_ } -Unique
+        $AllTags = $AllTags | Sort-Object -Property $_ -Unique
 
         # Create the tag inventory as an ordered dictionary with the tag names as keys and tests as values.
         # This will allow for quick lookups of tests by any of their tags.
