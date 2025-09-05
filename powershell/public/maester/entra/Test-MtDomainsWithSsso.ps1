@@ -11,6 +11,9 @@
 #>
 
 function Test-MtDomainsWithSsso {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param ()
 
     $Query = @"
         // Get all device info we can find
@@ -64,6 +67,9 @@ function Test-MtDomainsWithSsso {
         )
         | summarize JsonArray=make_list(Obj) by OnPremisesDomainName
 "@
+
+    Write-Verbose "Running KQL query to get domains with Seamless SSO usage"
+
     $DomainsWithSsso = Invoke-MtGraphSecurityQuery -Query $Query -Timespan "P14D"
     return $DomainsWithSsso
 }
