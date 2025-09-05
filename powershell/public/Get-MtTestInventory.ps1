@@ -180,8 +180,8 @@
                     } # end foreach excludepath
                     -not $exclude
                 } # end where
-            } # end if
-        # } # extraneous right brace?
+            } # where
+        } # end if
 
         # This is included as a fallback in case the Filter.ExcludeTag Pester configuration does not work.
         if ($ExcludeTag) {
