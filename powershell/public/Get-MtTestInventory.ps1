@@ -29,6 +29,12 @@
     - CSV: Returns the test inventory as a CSV string.
     - TagsOnly: Returns only the unique tags found in the test inventory.
 
+    .PARAMETER ExportPath
+    Path for exported CSV or JSON file. Defaults to 'TestInventory' in the current directory.
+
+    .PARAMETER PassThru
+    When specified, the test inventory object is returned to the pipeline along with exporting to file.
+
     .EXAMPLE
         $TestInventory = Get-MtTestInventory -Path .\ -ExcludePath .\test-results
 
@@ -71,7 +77,6 @@
     https://maester.dev/docs/commands/Get-MtTestInventory
 #>
     [CmdletBinding()]
-    [OutputType([PSCustomObject])]
     param(
         # Path to the test files to inventory. Defaults to the project's 'tests' directory at the root.
         [Parameter(HelpMessage = 'Path to the test files to gather inventory from.')]
@@ -95,6 +100,7 @@
         [Parameter(ParameterSetName = 'Output', HelpMessage = 'Path for exported CSV or JSON file.')]
         [string] $ExportPath = (Join-Path -Path $PWD -ChildPath 'TestInventory'),
 
+        # Support PassThru: return the test inventory object along with exporting to file.
         [Parameter()]
         [switch] $PassThru
     )
@@ -147,7 +153,13 @@
             $PesterConfig.Filter.ExcludeTag = $ExcludeTag
         }
         # Discover all Pester tests.
-        $Result = Invoke-Pester -Configuration $PesterConfig
+        try {
+            $Result = Invoke-Pester -Configuration $PesterConfig
+        } catch {
+            Write-Error "Failed to run Pester discovery: $($_.Exception.Message)"
+            return
+        }
+
         if ($null -eq $Result) {
             Write-Warning "No tests found in path: $Path"
             return
@@ -161,26 +173,23 @@
         if ($ExcludePathResolved) {
             Write-Verbose "Excluding tests in paths:`n`t`t$($ExcludePathResolved -join "`n`t`t")"
             $Tests = $Tests | Where-Object {
-            # Exclude tests whose file is in any excluded directory or matches any excluded file
-                $Tests = $Tests | Where-Object {
-                    $testFile = [System.IO.Path]::GetFullPath($_.ScriptBlock.File)
-                    $exclude = $false
-                    foreach ($excludePath in $ExcludePathResolved) {
-                        $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
-                        if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar)) {
-                            $exclude = $true
-                            break
-                        } else {
-                            # File exclusion: check for exact match
-                            if ($testFile -eq $fullExcludePath) {
-                                $exclude = $true
-                                break
-                            } # end if testfile
-                        } # end else
-                    } # end foreach excludepath
-                    -not $exclude
-                } # end where
-            } # where
+                # Exclude tests whose file is in any excluded directory or matches any excluded file
+                $testFile = [System.IO.Path]::GetFullPath($_.ScriptBlock.File)
+                $exclude = $false
+                foreach ($excludePath in $ExcludePathResolved) {
+                    $fullExcludePath = [System.IO.Path]::GetFullPath($excludePath)
+                    if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+                        $exclude = $true
+                        break
+                    }
+                    # File exclusion: check for exact match
+                    if ($testFile -eq $fullExcludePath) {
+                        $exclude = $true
+                        break
+                    } # end if TestFile
+                } # end foreach ExcludePath
+                -not $exclude
+            } # end Where
         } # end if
 
         # This is included as a fallback in case the Filter.ExcludeTag Pester configuration does not work.
@@ -214,7 +223,9 @@
                 $AllTags.Add($Describe)
             }
             if ($Tags.Count -gt 0) {
-                $AllTags.AddRange($Tags)
+                foreach ($tag in $Tags) {
+                    $AllTags.Add($tag)
+                }
             }
 
             # Add the test object to the test inventory list.
@@ -240,13 +251,23 @@
         # Return test inventory to the pipeline in the requested format.
         switch ($OutputType) {
             'JSON' {
-                $TestInventory | ConvertTo-Json -Depth 5 | Out-File -FilePath $ExportPath -Encoding utf8
+                try {
+                    $TestInventory | ConvertTo-Json -Depth 5 | Out-File -FilePath $ExportPath -Encoding utf8NoBOM
+                    Write-Verbose "Test inventory exported to: $ExportPath"
+                } catch {
+                    Write-Error "Failed to export JSON to '$ExportPath': $($_.Exception.Message)"
+                }
                 if ($PassThru) {
                     $TagTests
                 }
             }
             'CSV' {
-                $TestInventory | Export-Csv -NoTypeInformation -Path $ExportPath -Encoding utf8
+                try {
+                    $TestInventory | Export-Csv -NoTypeInformation -Path $ExportPath -Encoding utf8NoBOM
+                    Write-Verbose "Test inventory exported to: $ExportPath"
+                } catch {
+                    Write-Error "Failed to export CSV to '$ExportPath': $($_.Exception.Message)"
+                }
                 if ($PassThru) {
                     $TagTests
                 }
