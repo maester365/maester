@@ -170,19 +170,18 @@
                             if ($testFile.StartsWith($fullExcludePath.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar)) {
                                 $exclude = $true
                                 break
-                            }
-                        } else {
-                            # File exclusion: check for exact match
-                            if ($testFile -eq $fullExcludePath) {
-                                $exclude = $true
-                                break
-                            }
-                        }
-                    }
+                            } else {
+                                # File exclusion: check for exact match
+                                if ($testFile -eq $fullExcludePath) {
+                                    $exclude = $true
+                                    break
+                                } # end if testfile
+                            } # end else
+                    } # end foreach excludepath
                     -not $exclude
-                }
-            }
-        }
+                } # end where
+            } # end if
+        # } # extraneous right brace?
 
         # This is included as a fallback in case the Filter.ExcludeTag Pester configuration does not work.
         if ($ExcludeTag) {
