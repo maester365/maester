@@ -9,7 +9,7 @@
 		}
 	},
 	"forwardPorts": [3000, 5173],
-	"postCreateCommand": "cd ./website && npm i && cd ../report && npm i",
+	"postCreateCommand": "/bin/bash ./.devcontainer/postCreateCommand.sh",
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -27,5 +27,8 @@
 				"website/docs/contributing.md"
 			]
 		}
-	}
+	},
+	"runArgs": [
+    	"--network=host"
+	]
 }
