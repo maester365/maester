@@ -26,44 +26,49 @@ function Test-MtDirSyncSoftHardMatching {
     $return = $true
 
     Write-Verbose "Checking if on-premises directory synchronization soft- and hard-match is blocked..."
-    # requires delegated (no app) permissions: OnPremDirectorySynchronization.Read.All
-    if (((Get-MgContext).AuthType) -ne "Delegated") {
-        Add-MtTestResultDetail -SkippedBecause 'NotSupportedAppPermission'
+    try {
+        $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
-
-    $organizationConfig = Invoke-MtGraphRequest -RelativeUri "organization"
     if ($organizationConfig.onPremisesSyncEnabled -ne $true) {
         Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'OnPremisesSynchronization is not configured'
         return $null
     }
-    $onPremisesSynchronizationConfig = Invoke-MtGraphRequest -RelativeUri "directory/onPremisesSynchronization"
 
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
+    try {
+        $onPremisesSynchronizationConfig = Invoke-MtGraphRequest -RelativeUri "directory/onPremisesSynchronization"
 
-    $result = "| Policy | Value | Status |`n"
-    $result += "| --- | --- | --- |`n"
+        $passResult = "✅ Pass"
+        $failResult = "❌ Fail"
 
-    if ($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled -eq $false) {
-        $result += "| Block soft-match | $($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| Block soft-match | $($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled) | $passResult |`n"
+        $result = "| Policy | Value | Status |`n"
+        $result += "| --- | --- | --- |`n"
+
+        if ($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled -eq $false) {
+            $result += "| Block soft-match | $($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled) | $failResult |`n"
+            $return = $false
+        } else {
+            $result += "| Block soft-match | $($onPremisesSynchronizationConfig.features.blockSoftMatchEnabled) | $passResult |`n"
+        }
+        if ($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled -eq $false) {
+            $result += "| Block hard-match | $($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled) | $failResult |`n"
+            $return = $false
+        } else {
+            $result += "| Block hard-match | $($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled) | $passResult |`n"
+        }
+
+        if ($return) {
+            $testResult = "Well done. On-premises directory synchronization soft- and hard-match is blocked.`n`n$($result)"
+            Add-MtTestResultDetail -Result $testResult
+        } else {
+            $testResult = "On-premises directory synchronization soft-match and / or hard-match is allowed.`n`n$($result)"
+            Add-MtTestResultDetail -Result $testResult
+        }
+        return $return
+    } Catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    if ($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled -eq $false) {
-        $result += "| Block hard-match | $($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled) | $failResult |`n"
-        $return = $false
-    } else {
-        $result += "| Block hard-match | $($onPremisesSynchronizationConfig.features.blockCloudObjectTakeoverThroughHardMatchEnabled) | $passResult |`n"
-    }
-
-    if ($return) {
-        $testResult = "Well done. On-premises directory synchronization soft- and hard-match is blocked.`n`n$($result)"
-        Add-MtTestResultDetail -Result $testResult
-    } else {
-        $testResult = "On-premises directory synchronization soft-match and / or hard-match is allowed.`n`n$($result)"
-        Add-MtTestResultDetail -Result $testResult
-    }
-    return $return
 }
