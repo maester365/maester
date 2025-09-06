@@ -35,7 +35,7 @@ function Test-MtCaMfaForAllUsers {
         foreach ($policy in $policies) {
             if (
                 (
-                    $policy.grantControls.buildInControls -contains 'mfa' -or
+                    $policy.grantControls.builtInControls -contains 'mfa' -or
                     $policy.grantControls.authenticationStrength.requirementsSatisfied -contains 'mfa' -or
                     $policy.grantControls.customAuthenticationFactors -ne ''
                 ) -and
