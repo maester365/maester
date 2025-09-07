@@ -1,4 +1,4 @@
-﻿BeforeDiscovery {
+﻿BeforeAll {
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
 }
 

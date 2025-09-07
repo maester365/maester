@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
     $RegularUsers = Get-MtUser -Count 5 -UserType "Member"
     $AdminUsers = Get-MtUser -Count 5 -UserType "Admin"
@@ -12,12 +12,11 @@ BeforeDiscovery {
     Write-Verbose "AdminUsers: $($AdminUsers.id)"
 }
 
-
-Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security" -Skip:( $EntraIDPlan -eq "Free" ) {
+Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'Maester', 'Security' -Skip:( $EntraIDPlan -eq 'Free' ) {
 
     Context "Maester/Entra" -ForEach @( $RegularUsers ) {
         # Regular users
-        It "MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)" -Tag "MT.1033" {
+        It 'MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)' -Tag 'CA', 'CAWhatIf', 'Maester', 'MT.1033', 'Security' {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 
@@ -25,8 +24,8 @@ Describe "Maester/Entra" -Tag "Maester", "CA", "CAWhatIf", "Security" -Skip:( $E
 
     Context "Maester/Entra" -ForEach @( $EmergencyAccessUsers ) {
         # Emergency access users
-        It "MT.1034: Emergency access users should not be blocked (<userPrincipalName>)" -Tag "MT.1034" {
-            if ( ( Get-MtLicenseInformation EntraID ) -eq "Free" ) {
+        It "MT.1034: Emergency access users should not be blocked (<userPrincipalName>)" -Tag 'CA', 'CAWhatIf', 'Maester', 'MT.1034', 'Security' {
+            if ( ( Get-MtLicenseInformation -Product 'EntraID' ) -eq "Free" ) {
                 Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
             } else {
                 Test-MtConditionalAccessWhatIf -UserId $id -IncludeApplications "00000002-0000-0ff1-ce00-000000000000" -ClientAppType exchangeActiveSync | Should -BeNullOrEmpty
