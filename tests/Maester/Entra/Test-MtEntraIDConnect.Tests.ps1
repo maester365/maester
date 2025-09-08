@@ -4,10 +4,15 @@
         -ErrorAction SilentlyContinue `
         -Body (@{"Query" = "IdentityLogonEvents | getschema"} | ConvertTo-Json) `
         -OutputType PSObject -Verbose).results.ColumnName -contains "LogonType")
-    $UnifiedMdiInfoAvailable = $IdentityLogonEventsAvailable
+    $DeviceInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+        -ErrorAction SilentlyContinue `
+        -Body (@{"Query" = "DeviceInfo | getschema"} | ConvertTo-Json) `
+        -OutputType PSObject -Verbose).results.ColumnName -contains "DeviceId")
+    $UnifiedMdiInfoAvailable = $IdentityLogonEventsAvailable & $DeviceInfoAvailable
     $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
 
-    Write-Verbose "IdentityLogonEventsAvailable: $IdentityLogonEventsAvailable"
+    Write-Verbose "IdentityLogonEvents available: $IdentityLogonEventsAvailable"
+    Write-Verbose "DeviceInfo availble: $DeviceInfoAvailable"
     Write-Verbose "UnifiedMdiInfoAvailable is $UnifiedMdiInfoAvailable"
 
 }
