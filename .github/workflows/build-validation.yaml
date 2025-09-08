@@ -54,7 +54,7 @@ jobs:
         shell: powershell
         run: |
           # Reuse downloaded modules from pwsh
-          $env:PSModulePath += ";$HOME\Documents\PowerShell\Modules"
+          $env:PSModulePath = ($env:PSModulePath).TrimEnd(';')+";$HOME\Documents\PowerShell\Modules"
           # Remove old test results
           Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
           # Run Pester tests on Windows PowerShell
