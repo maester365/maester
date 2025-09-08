@@ -39,7 +39,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
 
         $result = $false
         foreach ($policy in $policies) {
-            if ( $policy.grantControls.buildInControls -contains 'block' `
+            if ( $policy.grantControls.builtInControls -contains 'block' `
                     -and "other" -in $policy.conditions.clientAppTypes `
                     -and $policy.conditions.applications.includeApplications -eq "All" `
                     -and $policy.conditions.users.includeUsers -eq "All" `
