@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     try {
 
         $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy
