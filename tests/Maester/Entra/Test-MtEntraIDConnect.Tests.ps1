@@ -21,7 +21,7 @@ Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Full", "Graph", "Secur
     It "MT.1084: Seamless Single SignOn should be disabled for all domains in EntraID Connect servers. See https://maester.dev/docs/tests/MT.1084" -Tag "MT.1084" {
 
     if ( $UnifiedMdiInfoAvailable -eq $false) {
-        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of Microsoft Defender for Identity to get data for Defender XDR Advanced Hunting tables.'
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of Microsoft Defender for Identity and Microsoft Defender for Endpoint to get data from Defender XDR Advanced Hunting tables (IdentityLogonEvents and DeviceInfo).'
         return $null
     }
 
