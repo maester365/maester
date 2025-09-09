@@ -20,13 +20,13 @@ The ComplianceForge team provides a nice definition:
 
 In the simplest of terms your organization has said, "We care about X". The control documents what you are doing to protect "X".
 
-Keeping in mind too, that your control usually is a reference to a general situation or outcome you are hoping to manage the risk of. Through that reference you will typically aim to have a mapping to a procedure. The procedure should specify what specific steps are taken to align with a control for a given system or process.
+Keeping in mind too, that your control usually is a reference to a general situation or outcome you are hoping to manage the risk of. Through that reference you will typically aim to have a mapping to a procedure. The procedure should specify what steps are taken to align with a control for a given system or process.
 
 Controls will also typically map to the upstream compliance requirements through policies, standards, or other documentation.
 
 A very simple example of how this fits together:
 
-* Policy - "Employees *must* protect organizational data"
+* Policy - "Employees *must* protect organization data"
 * Control - "Computers *should* not remain unlocked when not in use for longer than 5 minutes"
 * Procedure - "Configure the Windows lock screen timeout setting to 5 minutes of inactivity"
 
@@ -34,7 +34,7 @@ A very simple example of how this fits together:
 >
 > Above you can see keywords *should* and *must*, these have specific implications as to optional or mandatory respectively as well. See [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119) for more detail of one example of defining these terms.
 
-This example is a simple example, but the nuance and complexity becomes challenging to manage at scale, your organization may even have individuals detecated in a partial or full time capacity to managing this.
+This example is a simple example, but the nuance and complexity becomes challenging to manage at scale, your organization may even have individuals dedicated in a partial or full time capacity to managing this.
 
 For our example we can map our control against a well known control framework or benchmarck, the Center for Internet Security (CIS) Critical Security Controls (CSC) Version 8.1. For CIS CSC safeguard 4.3 they specify a 15 minute maximum inactivity period for general computing devices. There are many different control frameworks out there that reference similar control concepts, and some frameworks may even have contradicting controls.
 
