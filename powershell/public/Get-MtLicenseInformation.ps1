@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit', 'ExoLicenseCount')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit', 'ExoLicenseCount', 'DefenderXDR')]
         [string] $Product
     )
 
