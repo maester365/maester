@@ -9,7 +9,7 @@ import { WindowIcon } from "@heroicons/react/24/outline";
 const ResultInfoDialog = lazy(() => import("./ResultInfoDialog"));
 
 export default function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped']);
+  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped','Error']);
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
@@ -66,7 +66,7 @@ export default function TestResultsTable(props) {
         valueB = b.Severity ? severityOrder[b.Severity] : 0;
       } else if (sortColumn === "Status") {
         // Sort by status with a specific order: Failed, Passed, Skipped, NotRun
-        const statusOrder = { "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
+        const statusOrder = { "Error": 5, "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
         valueA = statusOrder[a.Result] || 0;
         valueB = statusOrder[b.Result] || 0;
       }
@@ -124,7 +124,7 @@ export default function TestResultsTable(props) {
 
   const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
-  const status = ['Passed', 'Failed', 'NotRun', 'Skipped'];
+  const status = ['Passed', 'Failed', 'NotRun', 'Skipped', 'Error'];
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
 
@@ -168,7 +168,7 @@ export default function TestResultsTable(props) {
         <MultiSelect
           onValueChange={setSelectedStatus}
           placeholder="Status"
-          defaultValue={['Passed', 'Failed', 'Skipped']}
+          defaultValue={['Passed', 'Failed', 'Skipped','Error']}
           className="w-1/3"
         >
           {status.map((item) => (
