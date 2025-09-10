@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
     $RegularUsers = Get-MtUser -Count 5 -UserType 'Member'
     $AdminUsers = Get-MtUser -Count 5 -UserType 'Admin'
