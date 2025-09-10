@@ -25,7 +25,7 @@ See the [Installation guide](/docs/installation#optional-modules-and-permissions
 | Test-MtCisaBlockHighRiskSignIn       | [MS.AAD.2.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad23v1) |
 | Test-MtCisaPhishResistant            | [MS.AAD.3.1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad31v1) |
 | Test-MtCisaMfa                       | [MS.AAD.3.2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad32v1) |
-| Test-MtCisaAuthenticatorContext      | [MS.AAD.3.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v1) |
+| Test-MtCisaAuthenticatorContext      | [MS.AAD.3.3](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v2) |
 | Test-MtCisaMethodsMigration          | [MS.AAD.3.4](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad34v1) |
 | Test-MtCisaWeakFactor                | [MS.AAD.3.5](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad35v1) |
 | Test-MtCisaPrivilegedPhishResistant  | [MS.AAD.3.6](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad36v1) |
