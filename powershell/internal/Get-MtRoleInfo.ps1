@@ -11,12 +11,19 @@ function Get-MtRoleInfo {
         [string] $RoleName
     )
 
-    #TODO: Auto generate on each build. Manual process for now is to run the following command and copy the output to the switch statement.
-    #Invoke-MtGraphRequest -RelativeUri "directoryRoleTemplates" | select id, displayName | Sort-Object displayName | %{ "`"$($($_.displayName) -replace ' ')`" { '$($_.id)'; break;}"}
+    # Try to get the role from the dynamic list first
+    try {
+        $roles = Get-MtRoleList
+        if ($roles.ContainsKey($RoleName)) {
+            Write-Verbose "Found role '$RoleName' in dynamic role list"
+            return $roles[$RoleName]
+        }
+    } catch {
+        Write-Verbose "Failed to get dynamic role list, falling back to static list: $($_.Exception.Message)"
+    }
 
-    # Also use the below to generate the ValidateSet for this parameter in Get-MtRoleMember whenever this is updated
-    #(Invoke-MtGraphRequest -RelativeUri "directoryRoleTemplates" | select id, displayName | Sort-Object displayName | %{ "'$($($_.displayName) -replace ' ')'"}) -join ", "
-
+    # Fallback to the static switch statement for backward compatibility
+    Write-Verbose "Using static role list for role '$RoleName'"
     switch ($RoleName) {
         'AIAdministrator' { 'd2562ede-74db-457e-a7b6-544e236ebb61'; break; }
         'ApplicationAdministrator' { '9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3'; break; }
@@ -136,6 +143,9 @@ function Get-MtRoleInfo {
         'WindowsUpdateDeploymentAdministrator' { '32696413-001a-46ae-978c-ce0f6b3620d2'; break; }
         'WorkplaceDeviceJoin' { 'c34f683f-4d5a-4403-affd-6615e00e3a7f'; break; }
         'YammerAdministrator' { '810a2642-a034-447f-a5e8-41beaa378541'; break; }
-        default { $null; break }
+        default { 
+            Write-Warning "Role '$RoleName' not found in static role list. This may indicate a new or changed role that requires an update to the module."
+            return $null
+        }
     }
 }

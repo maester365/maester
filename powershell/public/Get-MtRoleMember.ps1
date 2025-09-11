@@ -38,7 +38,6 @@ function Get-MtRoleMember {
   param(
     # The name of the role to get members for.
     [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
-    [ValidateSet('AIAdministrator', 'ApplicationAdministrator', 'ApplicationDeveloper', 'AttackPayloadAuthor', 'AttackSimulationAdministrator', 'AttributeAssignmentAdministrator', 'AttributeAssignmentReader', 'AttributeDefinitionAdministrator', 'AttributeDefinitionReader', 'AttributeLogAdministrator', 'AttributeLogReader', 'AttributeProvisioningAdministrator', 'AttributeProvisioningReader', 'AuthenticationAdministrator', 'AuthenticationExtensibilityAdministrator', 'AuthenticationPolicyAdministrator', 'AzureADJoinedDeviceLocalAdministrator', 'AzureDevOpsAdministrator', 'AzureInformationProtectionAdministrator', 'B2CIEFKeysetAdministrator', 'B2CIEFPolicyAdministrator', 'BillingAdministrator', 'CloudAppSecurityAdministrator', 'CloudApplicationAdministrator', 'CloudDeviceAdministrator', 'ComplianceAdministrator', 'ComplianceDataAdministrator', 'ConditionalAccessAdministrator', 'CustomerLockBoxAccessApprover', 'DesktopAnalyticsAdministrator', 'DeviceJoin', 'DeviceManagers', 'DeviceUsers', 'DirectoryReaders', 'DirectorySynchronizationAccounts', 'DirectoryWriters', 'DomainNameAdministrator', 'Dynamics365Administrator', 'Dynamics365BusinessCentralAdministrator', 'EdgeAdministrator', 'ExchangeAdministrator', 'ExchangeRecipientAdministrator', 'ExtendedDirectoryUserAdministrator', 'ExternalIDUserFlowAdministrator', 'ExternalIDUserFlowAttributeAdministrator', 'ExternalIdentityProviderAdministrator', 'FabricAdministrator', 'GlobalAdministrator', 'GlobalReader', 'GlobalSecureAccessAdministrator', 'GlobalSecureAccessLogReader', 'GroupsAdministrator', 'GuestInviter', 'GuestUser', 'HelpdeskAdministrator', 'HybridIdentityAdministrator', 'IdentityGovernanceAdministrator', 'InsightsAdministrator', 'InsightsAnalyst', 'InsightsBusinessLeader', 'IntuneAdministrator', 'IoTDeviceAdministrator', 'KaizalaAdministrator', 'KnowledgeAdministrator', 'KnowledgeManager', 'LicenseAdministrator', 'LifecycleWorkflowsAdministrator', 'MessageCenterPrivacyReader', 'MessageCenterReader', 'Microsoft365BackupAdministrator', 'Microsoft365MigrationAdministrator', 'MicrosoftHardwareWarrantyAdministrator', 'MicrosoftHardwareWarrantySpecialist', 'NetworkAdministrator', 'OfficeAppsAdministrator', 'OnPremisesDirectorySyncAccount', 'OrganizationalBrandingAdministrator', 'OrganizationalMessagesApprover', 'OrganizationalMessagesWriter', 'PartnerTier1Support', 'PartnerTier2Support', 'PasswordAdministrator', 'PeopleAdministrator', 'PermissionsManagementAdministrator', 'PowerPlatformAdministrator', 'PrinterAdministrator', 'PrinterTechnician', 'PrivilegedAuthenticationAdministrator', 'PrivilegedRoleAdministrator', 'ReportsReader', 'RestrictedGuestUser', 'SearchAdministrator', 'SearchEditor', 'SecurityAdministrator', 'SecurityOperator', 'SecurityReader', 'ServiceSupportAdministrator', 'SharePointAdministrator', 'SharePointEmbeddedAdministrator', 'SkypeforBusinessAdministrator', 'TeamsAdministrator', 'TeamsCommunicationsAdministrator', 'TeamsCommunicationsSupportEngineer', 'TeamsCommunicationsSupportSpecialist', 'TeamsDevicesAdministrator', 'TeamsTelephonyAdministrator', 'TenantCreator', 'UsageSummaryReportsReader', 'User', 'UserAdministrator', 'UserExperienceSuccessManager', 'VirtualVisitsAdministrator', 'VivaGoalsAdministrator', 'VivaPulseAdministrator', 'Windows365Administrator', 'WindowsUpdateDeploymentAdministrator', 'WorkplaceDeviceJoin', 'YammerAdministrator')]
     [string[]]$Role,
 
     # The ID of the role to get members for.
@@ -59,6 +58,28 @@ function Get-MtRoleMember {
   }
 
   if ($Role) {
+    # Validate role names dynamically
+    try {
+      $availableRoles = Get-MtRoleList
+      $invalidRoles = @()
+      
+      foreach ($roleName in $Role) {
+        if (-not $availableRoles.ContainsKey($roleName)) {
+          $invalidRoles += $roleName
+        }
+      }
+      
+      if ($invalidRoles.Count -gt 0) {
+        $availableRoleNames = ($availableRoles.Keys | Sort-Object) -join "', '"
+        $invalidRoleList = $invalidRoles -join "', '"
+        throw "Invalid role name(s): '$invalidRoleList'. Available roles are: '$availableRoleNames'. Note: Role names should not contain spaces."
+      }
+      
+    } catch {
+      # If dynamic validation fails, proceed with role lookup which will handle validation via Get-MtRoleInfo
+      Write-Verbose "Dynamic role validation failed, proceeding with role lookup: $($_.Exception.Message)"
+    }
+    
     $RoleId = $Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_) }
   }
 
