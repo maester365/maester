@@ -163,7 +163,7 @@
     {
       "Id": "CISA.MS.AAD.3.3",
       "Severity": "Medium",
-      "Title": "If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
+      "Title": "If Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
     },
     {
       "Id": "CISA.MS.AAD.3.4",

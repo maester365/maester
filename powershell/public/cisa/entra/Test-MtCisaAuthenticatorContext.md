@@ -1,10 +1,10 @@
-If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
+If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
 
-Rationale: This stopgap security policy helps protect the tenant when phishing-resistant MFA has not been enforced and Microsoft Authenticator is used. This policy helps improve the security of Microsoft Authenticator by showing user context information, which helps reduce MFA phishing compromises.
+Rationale: This policy helps protect the tenant when Microsoft Authenticator is used by showing user context information, which helps reduce MFA phishing compromises.
 
 #### Remediation action:
 
-If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator is in use, configure Authenticator to display context information to users when they log in.
+If Microsoft Authenticator is in use, configure Authenticator to display context information to users when they log in.
 
 1. In Entra ID, click Security > Authentication methods > **Microsoft Authenticator**.
 2. Click the **Configure tab**.
@@ -15,7 +15,7 @@ If phishing-resistant MFA has not been deployed yet and Microsoft Authenticator 
 
 #### Related links
 
-* [CISA Strong Authentication & Secure Registration - MS.AAD.3.3v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v1)
+* [CISA Strong Authentication & Secure Registration - MS.AAD.3.3v2](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v2)
 * [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L254)
 
 <!--- Results --->
