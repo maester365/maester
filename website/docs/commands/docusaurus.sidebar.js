@@ -36,6 +36,7 @@ module.exports = [
     'commands/Get-MtRole',
     'commands/Get-MtRoleMember',
     'commands/Get-MtSession',
+    'commands/Get-MtTestInventory',
     'commands/Get-MtUser',
     'commands/Get-MtUserAuthenticationMethod',
     'commands/Get-MtUserAuthenticationMethodInfoByType',
