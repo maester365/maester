@@ -122,8 +122,7 @@ function Send-MtMail {
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
-        if ($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
-        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Status)</td></tr>"
+        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Result)</td></tr>"
         $counter++
     }
     $table += "</table>"

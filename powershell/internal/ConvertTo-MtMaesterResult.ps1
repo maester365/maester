@@ -133,6 +133,13 @@ function ConvertTo-MtMaesterResult {
             $severity = $testSetting.Severity
         }
 
+	# Setting Result to Error, Overwriting the Skipped state
+        if($testResultDetail.TestSkipped -eq "Error" ) {
+           $result = "Error"
+        } else {
+            $result          = $test.Result
+        }
+
         $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
             Index           = $testIndex
@@ -142,7 +149,7 @@ function ConvertTo-MtMaesterResult {
             HelpUrl         = $helpUrl
             Severity       =  $severity
             Tag             = @($test.Block.Tag + $test.Tag | Select-Object -Unique)
-            Result          = $test.Result
+            Result          = $result
             ScriptBlock     = $test.ScriptBlock.ToString()
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
