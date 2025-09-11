@@ -4,6 +4,10 @@
 
  .Description
   The role can be either active or eligible, defaults to getting members that are both active and eligible.
+  
+  Role names are validated dynamically by querying the current role definitions from Microsoft Graph. 
+  This ensures that new or updated roles are automatically supported without requiring module updates.
+  If Microsoft Graph is not available, the function falls back to a built-in list of known roles.
 
  .Example
   Get-MtRoleMember -Role GlobalAdministrator
