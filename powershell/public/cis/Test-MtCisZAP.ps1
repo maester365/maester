@@ -19,8 +19,8 @@ function Test-MtCisZAP {
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+    if (!(Test-MtConnection Teams)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
 
