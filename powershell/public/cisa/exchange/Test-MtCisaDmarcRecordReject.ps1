@@ -66,7 +66,9 @@ function Test-MtCisaDmarcRecordReject {
             }
         }
     }
-    $expandedDomains = $expandedDomains | Sort-Object DomainName
+
+    # Sort and remove duplicate Domains
+    $expandedDomains = $expandedDomains |  Sort-Object DomainName, IsCoexistenceDomain -Unique
 
     $dmarcRecords = @()
     foreach($domain in $expandedDomains){
