@@ -1,8 +1,4 @@
-﻿BeforeAll {
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-}
-
-Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security" {
+﻿Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security" {
     It "MT.1025: No external user with permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1025" -Tag "MT.1025" {
         $Check = Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
         $Check | Should -Be $false -Because "External user shouldn't have high-privileged roles"
