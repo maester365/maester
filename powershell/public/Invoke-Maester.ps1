@@ -319,7 +319,13 @@ function Invoke-Maester {
     if ($SkipGraphConnect) {
         Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
     } else {
-        if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) { return }
+        if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) {
+            if ($NonInteractive.IsPresent -or $NoLogo.IsPresent) {
+                Write-Host " ⚠️ Non-interactive mode: running with missing permissions" -ForegroundColor Yellow
+            } else {
+                return
+            }
+         }
     }
 
     # Initialize MtSession after Graph connected.
@@ -329,7 +335,7 @@ function Invoke-Maester {
         # Check if TeamChannelWebhookUri is a valid URL.
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
         if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
-            Write-Output "Invalid Webhook URL: $TeamChannelWebhookUri"
+            Write-Output "⚠️ Invalid Webhook URL: $TeamChannelWebhookUri"
             return
         }
     }
