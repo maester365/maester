@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Validates the MgContext to ensure a valid connection to Microsoft Graph including the required permissions.
 #>
