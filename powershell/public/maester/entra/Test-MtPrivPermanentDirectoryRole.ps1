@@ -139,8 +139,8 @@ function Test-MtPrivPermanentDirectoryRole {
       return $result
     } catch {
       Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_"
-      Add-MtTestResultDetail -Description 'An error occurred while testing Permanent Directory Role Assignments' -Result $_.Exception.Message
-      return $false
+      Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+      return $null
     }
   } # end process block
 } # end function
