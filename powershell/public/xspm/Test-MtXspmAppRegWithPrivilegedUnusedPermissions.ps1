@@ -17,7 +17,6 @@
 
 function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for unused high privileged API permissions.')]
     [OutputType([bool])]
     param()
 

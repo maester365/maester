@@ -17,7 +17,6 @@
 
 function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks app registration owners with escalation path to highly privileged Entra ID Roles.')]
     [OutputType([bool])]
     param()
 

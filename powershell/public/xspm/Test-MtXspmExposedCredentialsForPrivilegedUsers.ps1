@@ -17,7 +17,6 @@
 
 function Test-MtXspmExposedCredentialsForPrivilegedUsers {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for exposed credentials of highly privileged users.')]
     [OutputType([bool])]
     param()
 

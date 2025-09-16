@@ -17,7 +17,6 @@
 
 function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks app registration owners with escalation path to privileged API permissions.')]
     [OutputType([bool])]
     param()
 

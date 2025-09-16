@@ -17,7 +17,6 @@
 
 function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
     [CmdletBinding()]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for hybrid users with assigned Entra ID roles.')]
     [OutputType([bool])]
     param()
 
