@@ -7,6 +7,14 @@ sidebar_class_name: hidden
 
 # App registrations with privileged API permissions should not have owners
 
+## Prerequisites
+Assignments to Microsoft Entra will be analyzed by using the `IdentityInfo` in Microsoft Defender XDR.
+As documented in [Microsoft Learn](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-identityinfo-table), the details of `PrivilegedEntraPimRoles` are only available for tenants with Microsoft Defender for Identity.
+Therefore, the checks are only available for tenants with onboarded MDI instance.
+
+In addition, the table `OAuthAppInfo` will be used to get details about applications including unused permissions and permission scope / criticiality. This table is populated by app governance records from Microsoft Defender for Cloud Apps.
+You need to turn on app governance to use this check. To turn on app governance, follow the steps in [Turn on app governance](https://learn.microsoft.com/en-us/defender-cloud-apps/app-governance-get-started).
+
 ## Description
 
 Ownership of app registrations with high-privileged or sensitive API permissions should not be assigned.

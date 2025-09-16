@@ -7,6 +7,14 @@ sidebar_class_name: hidden
 
 # Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints
 
+## Prerequisites
+Assignments to Microsoft Entra will be analyzed by using the `IdentityInfo` in Microsoft Defender XDR.
+As documented in [Microsoft Learn](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-identityinfo-table), the details of `PrivilegedEntraPimRoles` are only available for tenants with Microsoft Defender for Identity.
+Therefore, the checks are only available for tenants with onboarded MDI instance.
+
+In addition, the table `OAuthAppInfo` will be used to get details about applications including unused permissions and permission scope / criticiality. This table is populated by app governance records from Microsoft Defender for Cloud Apps.
+You need to turn on app governance to use this check. To turn on app governance, follow the steps in [Turn on app governance](https://learn.microsoft.com/en-us/defender-cloud-apps/app-governance-get-started).
+
 ## Description
 
 Exposure Management identifies credentials that are exposed on endpoints by using various signals and telemetry. For example, user cookies are identified by [Smart Analysis of Browser Artifacts](https://techcommunity.microsoft.com/blog/microsoft-security-blog/bridging-the-on-premises-to-cloud-security-gap-cloud-credentials-detection/4211794). The analysis runs periodically using Microsoft Defender for Endpoint. Currently, user cookies, primary refresh tokens, and Azure CLI secrets are supported. These identified secrets are available in the `ExposureGraphEdges` table of Microsoft Defender XDR. This check filters for exposed artifacts on endpoints with a high machine risk score or high [exposure score](https://learn.microsoft.com/en-us/defender-vulnerability-management/tvm-exposure-score) as determined by Defender for Endpoint.
