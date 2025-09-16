@@ -3,7 +3,7 @@
     Checks if the Authentication Methods policy for Microsoft Authenticator is set appropriately
 
 .DESCRIPTION
-    If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information
+    If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
 
 .EXAMPLE
     Test-MtCisaAuthenticatorContext
@@ -29,8 +29,6 @@ function Test-MtCisaAuthenticatorContext {
         return $null
     }
 
-    $isMethodsMigrationComplete = Test-MtCisaMethodsMigration
-
     $result = Get-MtAuthenticationMethodPolicyConfig
 
     $policies = $result | Where-Object {`
@@ -46,7 +44,7 @@ function Test-MtCisaAuthenticatorContext {
     $authenticatorPolicy = $result | Where-Object {`
         $_.id -eq "MicrosoftAuthenticator" }
 
-    $testResult = (($policies|Measure-Object).Count -ge 1) -and $isMethodsMigrationComplete
+    $testResult = (($policies|Measure-Object).Count -ge 1)
 
     $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods/fromNav/Identity"
     $resultFail = "❌ Fail"
@@ -59,7 +57,6 @@ function Test-MtCisaAuthenticatorContext {
     }
 
     $checks = @{
-        MigrationMethods = if($isMethodsMigrationComplete){$resultPass}else{$resultFail}
         MethodEnabled    = if($authenticatorPolicy.state -eq "enabled"){$resultPass}else{$resultFail}
         MethodTarget     = if($authenticatorPolicy.includeTargets.Id -contains "all_users"){$resultPass}else{$resultFail}
         OtpDisabled      = if(-not $authenticatorPolicy.isSoftwareOathEnabled){$resultPass}else{$resultFail}
@@ -71,10 +68,9 @@ function Test-MtCisaAuthenticatorContext {
 
     $testResultMarkdown += "| Setting | Result |`n"
     $testResultMarkdown += "| --- | --- |`n"
-    $testResultMarkdown += "| [Authentication Methods]($link) Migration Complete | $($checks.MigrationMethods) |`n"
     $testResultMarkdown += "| Microsoft Authenticator state | $($checks.MethodEnabled) |`n"
     $testResultMarkdown += "| Included Targets | $($checks.MethodTarget) |`n"
-    $testResultMarkdown += "| Allow use of Microsoft Authenticator OTP | $($checks.OtpDisabled) |`n"
+    $testResultMarkdown += "| Allow use of Microsoft Authenticator OTP set to *No* | $($checks.OtpDisabled) |`n"
     $testResultMarkdown += "| Show application name in push and passwordless notifications status | $($checks.ContextEnabled) | `n"
     $testResultMarkdown += "| Show application name in push and passwordless notifications included target | $($checks.ContextTarget) | `n"
     $testResultMarkdown += "| Show geographic location in push and passwordless notifications status | $($checks.LocationEnabled) | `n"
