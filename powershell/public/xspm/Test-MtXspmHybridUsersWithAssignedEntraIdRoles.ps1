@@ -28,6 +28,7 @@ function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
     }
 
     try {
+        Write-Verbose "Get details from UnifiedIdentityInfo ..."
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -46,6 +47,9 @@ function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
 
         $result = "| AccountName | Classification | Sensitive Directory Role | ChangeSource |`n"
         $result += "| --- | --- | --- | --- |`n"
+
+        Write-Verbose "Found $($HighPrivilegedHybridUsers.Count) hybrid users with directory roles in total."
+
         foreach ($HighPrivilegedHybridUser in $HighPrivilegedHybridUsers) {
             $filteredDirectoryRoles = $HighPrivilegedHybridUser.AssignedEntraRoles | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True} | Select-Object RoleDefinitionName, Classification
             $UserSensitiveDirectoryRoles = $filteredDirectoryRoles | foreach-object { (Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $_.Classification) + " " + $_.RoleDefinitionName }

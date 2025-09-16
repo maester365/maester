@@ -28,6 +28,7 @@ function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
     }
 
     try {
+        Write-Verbose "Get details from UnifiedIdentityInfo.."
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -40,6 +41,9 @@ function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
     if ($return -or [string]::IsNullOrEmpty($SensitiveApiRolesOnAppsWithOwners) ) {
         $testResultMarkdown = "Well done. No app registrations with privileged API permission has assigned to owner."
     } else {
+
+        Write-Verbose "Found $($SensitiveApiRolesOnAppsWithOwners.Count) app registrations with privileged API permission assigned to owner."
+
         $testResultMarkdown = "At least one app registration has assigned owner with privileged API permissions.`n`n%TestResult%"
         $result = "| ApplicationName | Ownership | Tier Breach | Sensitive App Role |`n"
         $result += "| --- | --- | --- | ---  |`n"

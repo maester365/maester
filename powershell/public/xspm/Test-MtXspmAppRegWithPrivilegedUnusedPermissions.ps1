@@ -28,13 +28,12 @@ function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
     }
 
     try {
+        Write-Verbose "Get details from UnifiedIdentityInfo ..."
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
-
-    $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
 
     $Severity = "Medium"
     $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
@@ -47,6 +46,9 @@ function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
 
         $result = "| ApplicationName | Enterprise Access Level | Sensitive App Role | API Provider |`n"
         $result += "| --- | --- | --- | --- | `n"
+
+        Write-Verbose "Found $($SensitiveAppsWithUnusedPermissions.Count) app registrations with unused sensitive API permissions."
+
         foreach ($SensitiveApp in $SensitiveAppsWithUnusedPermissions) {
             $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object AppDisplayName, AppRoleDisplayName, Classification | sort-object Classification, AppDisplayName
             if($filteredApiPermissions) {

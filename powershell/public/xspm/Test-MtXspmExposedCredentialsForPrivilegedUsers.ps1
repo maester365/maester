@@ -27,7 +27,10 @@ function Test-MtXspmExposedCredentialsForPrivilegedUsers {
             return $null
     }
 
+    Write-Verbose "Get details from UnifiedIdentityInfo ..."
     $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
+
+    Write-Verbose "Get exposed credentials from XSPM by using ExposedAuthenticationArtifact query..."
     $ExposedAuthArtifacts = Get-MtXspmExposedAuthenticationArtifact
 
     # Filter for privileged users only
@@ -39,6 +42,8 @@ function Test-MtXspmExposedCredentialsForPrivilegedUsers {
         $testResultMarkdown = "Well done. No authentication artifacts seems to be exposed on vulnerable endpoints."
     } else {
         $testResultMarkdown = "At least one authentication artifact seems to be exposed on a vulnerable endpoint.`n`n%TestResult%"
+
+        Write-Verbose "Found $($ExposedAuthArtifactsFromRiskyDevice.Count) exposed authentication artifacts from risky devices in total."
 
         $userInScope = @()
         $userNotInScope = @()

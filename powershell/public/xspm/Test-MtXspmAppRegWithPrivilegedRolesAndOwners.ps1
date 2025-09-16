@@ -28,6 +28,7 @@ function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
     }
 
     try {
+        Write-Verbose "Get details from UnifiedIdentityInfo ..."
         $UnifiedIdentityInfo = Get-MtXspmUnifiedIdentityInfo
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -45,6 +46,9 @@ function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
 
         $result = "| ApplicationName | Ownership | Tier Breach | Sensitive Directory Role |`n"
         $result += "| --- | --- | --- | --- |`n"
+
+        Write-Verbose "Found $($SensitiveDirectoryRolesOnAppsWithOwners.Count) app registrations with directory role assigned to owner."
+
         foreach ($SensitiveApp in $SensitiveDirectoryRolesOnAppsWithOwners) {
             $filteredApiPermissions = $SensitiveApp.AssignedEntraRoles | where-object {$_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
             # XSPM supports only Directory scope for now
