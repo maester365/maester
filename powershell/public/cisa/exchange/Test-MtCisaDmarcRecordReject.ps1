@@ -80,7 +80,7 @@ function Test-MtCisaDmarcRecordReject {
 
         if($domain.IsCoexistenceDomain){
             $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = "coexistence domain"
+            $dmarcRecord.reason = "Not applicable for coexistence domain"
         }elseif($checkType -and $dmarcRecord.dmarcRecord.policy -eq "reject"){
             $dmarcRecord.pass = "Passed"
         }elseif($checkType -and $dmarcRecord.dmarcRecord.policy -ne "reject"){
