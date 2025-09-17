@@ -17,6 +17,7 @@
 
 function Test-MtXspmExposedCredentialsForPrivilegedUsers {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple types of credentials and users.')]
     [OutputType([bool])]
     param()
 

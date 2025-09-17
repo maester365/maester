@@ -17,6 +17,7 @@
 
 function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple owners for each application object.')]
     [OutputType([bool])]
     param()
 

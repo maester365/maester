@@ -17,6 +17,7 @@
 
 function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users and roles.')]
     [OutputType([bool])]
     param()
 

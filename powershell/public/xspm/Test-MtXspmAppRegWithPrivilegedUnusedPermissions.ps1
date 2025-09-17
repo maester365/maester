@@ -17,6 +17,7 @@
 
 function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple permissions.')]
     [OutputType([bool])]
     param()
 

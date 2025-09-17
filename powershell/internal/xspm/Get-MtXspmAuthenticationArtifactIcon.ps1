@@ -13,14 +13,11 @@ function Get-MtXspmAuthenticationArtifactIcon {
         [object]$ArtifactType
     )
     #region Token Artifact type
-    if ($ArtifactType -eq 'PrimaryRefreshToken') {
-        $ArtifactType = "🪙"
-    } elseif ($ArtifactType -eq 'UserCookie') {
-        $ArtifactType = "🍪"
-    } elseif ($ArtifactType -eq 'UserAzureCliSecretData') {
-        $ArtifactType = "🔑"
-    } else {
-        $ArtifactType = "ℹ️"
+    switch ($ArtifactType) {
+        'PrimaryRefreshToken'    { "🪙" }
+        'UserCookie'             { "🍪" }
+        'UserAzureCliSecretData' { "🔑" }
+        Default                  { "ℹ️" }
     }
     return $ArtifactType
     #endregion

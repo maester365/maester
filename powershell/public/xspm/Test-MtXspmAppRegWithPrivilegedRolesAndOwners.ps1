@@ -17,6 +17,8 @@
 
 function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple owners for each application object.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting severity variable will set dynamic based on findings')]
     [OutputType([bool])]
     param()
 
@@ -34,7 +36,6 @@ function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
         return $null
     }
 
-    $Severity = "Medium"
     $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object {$_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
     $SensitiveDirectoryRolesOnAppsWithOwners = $HighPrivilegedAppsByEntraRoles | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
@@ -75,6 +76,8 @@ function Test-MtXspmAppRegWithPrivilegedRolesAndOwners {
                 # Increase severity to high if tier breach detected
                 if ($TierBreach -eq $true) {
                     $Severity = "High"
+                } else {
+                    $Severity = "Medium"
                 }
 
                 # Summary of App roles in one column (as workaround for missing support of simple linebreak in one call)
