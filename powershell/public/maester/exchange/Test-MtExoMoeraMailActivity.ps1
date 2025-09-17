@@ -44,8 +44,8 @@ function Test-MtExoMoeraMailActivity {
             return $null
         }
     }
+    $file = "$([System.IO.Path]::GetTempPath())maester-EmailActivityUserDetail.csv"
 
-    $file = "$env:TEMP\maester-EmailActivityUserDetail.csv"
     try {
             Write-Verbose "Downloading report"
             Invoke-MgGraphRequest -Uri "v1.0/reports/getEmailActivityUserDetail(period='D7')" -OutputFilePath $file
