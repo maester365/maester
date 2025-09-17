@@ -60,13 +60,10 @@ function Test-MtXspmExposedCredentialsForPrivilegedUsers {
 
                 $UserLink = "[$($EnrichedUserDetails.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnrichedUserDetails.AccountObjectId))"
                 $DeviceLink = "[$($ExposedUserAuthArtifact.Device)](https://security.microsoft.com/machines/v2/$($ExposedUserAuthArtifact.DeviceId)?tid=$($EnrichedUserDetails.TenantId))"
-                $UserArtifacts = $ExposedUserAuthArtifact.TokenArtifacts | ForEach-Object {
-                        (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $_) + " " + $($_ -csplit '(?=[A-Z])' -ne '' -join ' ')
-                        }
-                        | Where-Object { $_ -and $_.Trim() -ne '' }
-                        | ForEach-Object { $_.Trim() }
-
-                $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifacts) | $($ExposedUserAuthArtifact.ExposureScore) | $($ExposedUserAuthArtifact.RiskScore) |`n"
+                foreach ($ExposedTokenArtifact in $ExposedUserAuthArtifact.TokenArtifacts) {
+                    $UserArtifactItem = (Get-MtXspmAuthenticationArtifactIcon -ArtifactType $ExposedTokenArtifact) + " " + ((($ExposedTokenArtifact -csplit '(?=[A-Z])') -ne '') -join ' ') | Where-Object { $_ -and $_.Trim() -ne '' } | ForEach-Object { $_.Trim() }
+                    $result += "| $($AdminTierLevelIcon) $($UserLink)  | $($DeviceLink) | $($EnrichedUserDetails.Classification) | $($EnrichedUserDetails.CriticalityLevel) | $($UserArtifactItem) | $($ExposedUserAuthArtifact.ExposureScore) | $($ExposedUserAuthArtifact.RiskScore) |`n"
+                }
                 $userInScope += $EnrichedUserDetails.AccountObjectId
             } else {
                 $userNotInScope += $EnrichedUserDetails.AccountObjectId
