@@ -99,7 +99,7 @@
         if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.ExchangeOnline = (Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
+                $MtConnections.ExchangeOnline = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
                 $IsConnected = $null -ne ($MtConnections.ExchangeOnline)
             } catch {
                 Write-Debug "Exchange Online: $false"
@@ -113,7 +113,7 @@
         if (($Service -contains 'SecurityCompliance' -or $Service -contains 'EOP') -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.ExchangeOnlineProtection = (Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
+                $MtConnections.ExchangeOnlineProtection = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
                 $IsConnected = $null -ne ($MtConnections.ExchangeOnlineProtection)
             } catch {
                 # Re-test
