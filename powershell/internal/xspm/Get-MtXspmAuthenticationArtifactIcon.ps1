@@ -19,6 +19,5 @@ function Get-MtXspmAuthenticationArtifactIcon {
         'UserAzureCliSecretData' { "🔑" }
         Default                  { "ℹ️" }
     }
-    return $ArtifactType
     #endregion
 }
