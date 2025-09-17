@@ -44,7 +44,7 @@ function Test-MtExoMoeraMailActivity {
             return $null
         }
     }
-    $file = "$([System.IO.Path]::GetTempPath())\maester-EmailActivityUserDetail.csv"
+    $file = "$([System.IO.Path]::GetTempPath())maester-EmailActivityUserDetail.csv"
 
     try {
             Write-Verbose "Downloading report"
