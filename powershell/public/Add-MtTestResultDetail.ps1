@@ -103,6 +103,9 @@ function Add-MtTestResultDetail {
             if ($SkippedError) {
                 $SkippedReason += "`n`n" + '```' + "`n`n" + ($SkippedError | Out-String) + "`n`n" + '```' + "`n`n"
             }
+            if ([string]::IsNullOrEmpty($Result)) {
+                $Result = "Error. $SkippedReason"
+            }
         } else {
             $SkippedReason = Get-MtSkippedReason $SkippedBecause
         }
