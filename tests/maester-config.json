@@ -1166,6 +1166,31 @@
       "Title": "MOERA SHOULD NOT be used for sent mail."
     },
     {
+      "Id": "MT.1077",
+      "Severity": "Medium",
+      "Title": "App registrations with privileged API permissions should not have owners"
+    },
+    {
+      "Id": "MT.1078",
+      "Severity": "Medium",
+      "Title": "App registrations with highly privileged directory roles should not have owners"
+    },
+    {
+      "Id": "MT.1079",
+      "Severity": "Medium",
+      "Title": "Privileged API permissions on service principals should not remain unused"
+    },
+    {
+      "Id": "MT.1080",
+      "Severity": "Medium",
+      "Title": "Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints"
+    },
+    {
+      "Id": "MT.1081",
+      "Severity": "Medium",
+      "Title": "Hybrid users should not be assigned Entra ID role assignments"
+    },
+    {
       "Id": "MT.1083",
       "Severity": "Low",
       "Title": "Ensure Delicensing Resiliency is enabled"
