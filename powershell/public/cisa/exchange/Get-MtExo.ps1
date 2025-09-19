@@ -76,6 +76,7 @@ function Get-MtExo {
         "OwaMailboxPolicy"               = "Get-OwaMailboxPolicy"
         "RoleAssignmentPolicy"           = "Get-RoleAssignmentPolicy"
         "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
+        "ConnectionInformation"          = "Get-ConnectionInformation"
     }
 
 
