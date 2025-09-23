@@ -360,12 +360,14 @@ function Invoke-Maester {
     # Exclude LongRunning tests unless: $IncludeLongRunning is present, or LongRunning is in $Tag, or CAWhatIf is in $Tag.
     if ( (-not $IncludeLongRunning.IsPresent) -and "LongRunning" -notin $Tag -and "CAWhatIf" -notin $Tag ) {
         $ExcludeTag += "LongRunning"
+        Write-Verbose "Excluding LongRunning tests. Use -IncludeLongRunning to include them."
     }
 
     # If $Tag is not set and IncludePreview is not passed, run all tests except the ones with the "Preview" tag.
     if (-not $Tag) {
         if (-not $IncludePreview.IsPresent) {
             $ExcludeTag += "Preview"
+            Write-Verbose "Excluding Preview tests. Use -IncludePreview to include them."
         }
     }
 
