@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     try {
         $EntraRecommendations = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
         Write-Verbose "Found $($EntraRecommendations.Count) Entra recommendations"

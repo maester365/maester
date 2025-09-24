@@ -99,7 +99,7 @@ function Test-MtPrivPermanentDirectoryRole {
   "
         }
         UserMailbox {
-          $DirectAssignments | Where-Object { $_.principal.provisionedPlans.capabilityStatus -eq 'Enabled' -and $_.principal.provisionedPlans.service -contains 'exchange' }
+          $DirectAssignments | Where-Object { $_.principal.provisionedPlans | Where-Object { $_.capabilityStatus -eq 'Enabled' -and $_.service -contains "exchange" } }
           $testDescription = "
   Take attention on mail-enabled administrative accounts with $($FilteredAccessLevel) privileges.
   It's recommended to use mail forwarding to regular work account which allows to avoid direct mail access and phishing attacks on privileged user.
@@ -139,8 +139,8 @@ function Test-MtPrivPermanentDirectoryRole {
       return $result
     } catch {
       Write-Error "An error occurred while testing Permanent Directory Role Assignments: $_"
-      Add-MtTestResultDetail -Description 'An error occurred while testing Permanent Directory Role Assignments' -Result $_.Exception.Message
-      return $false
+      Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+      return $null
     }
   } # end process block
 } # end function

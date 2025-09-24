@@ -29,6 +29,8 @@ function Get-MtSkippedReason {
         "NotSupported" { "This test relies on capabilities not currently available (e.g., cmdlets that are not available on all platforms, Resolve-DnsName)"; break}
         "NotSupportedAppPermission" { "This test relies on Graph APIs that don't support application permissions. Re-run Maester with a user signed in to view the results for this test."; break}
         "LimitedPermissions" { "This test relies on privileged (i.e., ReadWrite) permissions."; break}
+        "NotLicensedDefenderXDR" { "This test is for tenants that are licensed for Microsoft Defender XDR. See [Microsoft Defender XDR prerequisites](https://learn.microsoft.com/en-us/defender-xdr/prerequisites#licensing-requirements)"; break}
+        "Error" { $SkippedBecause; break}
         default { $SkippedBecause; break}
     }
 }

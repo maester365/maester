@@ -80,7 +80,7 @@ Connect-Maester -UseDeviceCode
 
 ### Connect to Azure, Exchange Online and Teams
 
-`Connect-Maester` also provides options to connect to Azure, Exchange Online adn Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
+`Connect-Maester` also provides options to connect to Azure, Exchange Online and Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
 
 The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online, Security Compliance and Microsoft Teams.
 

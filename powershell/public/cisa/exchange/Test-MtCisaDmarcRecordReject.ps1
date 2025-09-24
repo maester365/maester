@@ -34,29 +34,54 @@ function Test-MtCisaDmarcRecordReject {
     #>
     $expandedDomains = @()
     foreach($domain in $acceptedDomains){
+        # If it's the coexistence domain (contoso.mail.onmicrosoft.com), skip the 2nd level check.
+        # If it's the initial domain (contoso.onmicrosoft.com), skip the 2nd level check. We cannot manage onmicrosoft.com.
+        if ($domain.IsCoexistenceDomain -or $domain.InitialDomain) {
+            $expandedDomains += [PSCustomObject]@{
+                DomainName = $domain.DomainName
+                IsCoexistenceDomain = $domain.IsCoexistenceDomain
+            }
+            continue
+        }
+
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
         $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
         $dmarcMatch = $domain.domainname -match $matchDomain
         if($dmarcMatch){
-            $expandedDomains += $Matches.second
+            $expandedDomains += [PSCustomObject]@{
+                DomainName = $Matches.second
+                IsCoexistenceDomain = $domain.IsCoexistenceDomain
+            }
             if($domain.domainname -ne $Matches.second){
-                $expandedDomains += $domain.domainname
+                $expandedDomains += [PSCustomObject]@{
+                    DomainName = $domain.domainname
+                    IsCoexistenceDomain = $domain.IsCoexistenceDomain
+                }
             }
         }else{
-            $expandedDomains += $domain.domainname
+            $expandedDomains += [PSCustomObject]@{
+                DomainName = $domain.domainname
+                IsCoexistenceDomain = $domain.IsCoexistenceDomain
+            }
         }
     }
 
+    # Sort and remove duplicate Domains
+    $expandedDomains = $expandedDomains |  Sort-Object DomainName, IsCoexistenceDomain -Unique
+
     $dmarcRecords = @()
     foreach($domain in $expandedDomains){
-        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain -Records DMARC
+        $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records DMARC
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
         $checkType = $dmarcRecord.dmarcRecord.GetType().Name -eq "DMARCRecord"
 
-        if($checkType -and $dmarcRecord.dmarcRecord.policy -eq "reject"){
+        if($domain.IsCoexistenceDomain){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = "Not applicable for coexistence domain"
+        }elseif($checkType -and $dmarcRecord.dmarcRecord.policy -eq "reject"){
             $dmarcRecord.pass = "Passed"
         }elseif($checkType -and $dmarcRecord.dmarcRecord.policy -ne "reject"){
             $dmarcRecord.reason = "Policy is not reject"
@@ -95,11 +120,13 @@ function Test-MtCisaDmarcRecordReject {
 
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
-    $result = "| Domain | Result | Reason | Policy | Subdomain Poliy |`n"
+    $skipResult = "🗄️ Skip"
+    $result = "| Domain | Result | Reason | Policy | Subdomain Policy |`n"
     $result += "| --- | --- | --- | --- | --- |`n"
     foreach ($item in $dmarcRecords) {
         switch($item.pass){
             "Passed" {$itemResult = $passResult}
+            "Skipped" {$itemResult = $skipResult}
             "Failed" {$itemResult = $failResult}
         }
 

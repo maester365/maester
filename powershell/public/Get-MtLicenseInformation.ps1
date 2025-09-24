@@ -19,7 +19,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit', 'ExoLicenseCount')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2','AdvAudit', 'ExoLicenseCount', 'DefenderXDR')]
         [string] $Product
     )
 
@@ -191,7 +191,27 @@ function Get-MtLicenseInformation {
                 return $totalLicenses
                 Break
             }
-
+            "DefenderXDR" {
+                Write-Verbose "Retrieving license SKU for Defender XDR"
+                $subscribedSkus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
+                $uniqueServicePlans = $subscribedSkus.servicePlans.servicePlanId | Sort-Object -Unique
+                $requiredServicePlans = @(
+                    # https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
+                    "871d91ec-ec1a-452b-a83f-bd76c7d770ef", # Microsoft Defender for Endpoint Plan 2
+                    "8e0c0a52-6a6c-4d40-8370-dd62790dcd70", # Microsoft Defender for Office 365 (Plan 2)
+                    "14ab5db5-e6c4-4b20-b4bc-13e36fd2227f", # Microsoft Defender for Identity
+                    "2e2ddb96-6af9-4b1d-a3f0-d6ecfd22edb2" # Microsoft Defender for Cloud Apps
+                )
+                $LicenseType = $null
+                foreach($servicePlans in $requiredServicePlans){
+                    if($servicePlans -in $uniqueServicePlans){
+                        $LicenseType = "DefenderXDR"
+                    }
+                }
+                Write-Information "The tenant is licensed for Defender XDR"
+                return $LicenseType
+                Break
+            }
             Default {}
         }
     }

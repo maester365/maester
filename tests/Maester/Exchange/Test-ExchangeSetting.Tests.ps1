@@ -49,12 +49,12 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
-    It "MT.1074: Ensure mailboxes do not use the .onmicrosoft.com domain as primary SMTP address" -Tag "MT.1074" {
+    It "MT.1074: Ensure no more then 100 outbound mails per day are send using the .onmicrosoft.com domain" -Tag "MT.1074" {
 
         $result = Test-MtLimitOnMicrosoftDomainUsage
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "no mailbox is using the .onmicrosoft.com domain as primary SMTP address."
+            $result | Should -Be $true -Because "no or less then 100 outbound mails are send per day using the .onmicrosoft.com domain."
         }
     }
 

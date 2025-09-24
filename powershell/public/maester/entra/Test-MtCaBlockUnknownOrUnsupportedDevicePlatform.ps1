@@ -35,7 +35,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
 
         $result = $false
         foreach ($policy in $policies) {
-            if ( $policy.grantControls.buildInControls -eq 'block' `
+            if ( $policy.grantControls.builtInControls -eq 'block' `
                     -and $policy.conditions.platforms.includePlatforms -eq 'All'
             ) {
                 $result = $true

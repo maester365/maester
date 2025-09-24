@@ -26,7 +26,10 @@ function Invoke-MtGraphRequestCache {
     } elseif ($Method -eq 'POST' -and $Uri.AbsoluteUri.EndsWith('security/runHuntingQuery')) {
         $cacheKey = $Uri.AbsoluteUri + "_" + ($Body -replace '\s', '')
         $isXdrQuery = $true
-    }
+    } else {
+        $cacheKey = $Uri.AbsoluteUri + "_" + ($Body -replace '\s', '')
+        $isMethodGet = $false
+   }
 
     $isBatch = $uri.AbsoluteUri.EndsWith('$batch')
     $isInCache = $__MtSession.GraphCache.ContainsKey($cacheKey)

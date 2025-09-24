@@ -84,6 +84,7 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordMx',
     'ConvertFrom-MailAuthenticationRecordSpf',
     'Disconnect-Maester',
+    'Get-MtTestInventory',
     'Get-MtAzureManagementGroup', 'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
     'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
     'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSession',
@@ -160,7 +161,12 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
     'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtDirSyncSoftHardMatching',
     'Test-MtExoMoeraMailActivity','Test-MtExoDelicensingResiliency',
-    'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtDomainsWithSsso'
+    'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtDomainsWithSsso',
+    'Test-MtXspmAppRegWithPrivilegedApiAndOwners',
+    'Test-MtXspmAppRegWithPrivilegedRolesAndOwners',
+    'Test-MtXspmAppRegWithPrivilegedUnusedPermissions',
+    'Test-MtXspmExposedCredentialsForPrivilegedUsers',
+    'Test-MtXspmHybridUsersWithAssignedEntraIdRoles'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
