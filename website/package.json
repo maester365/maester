@@ -25,7 +25,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.6",
     "@iconify/react": "^4.1.1",
-    "@mdx-js/react": "^3.0.0",
+    "@mdx-js/react": "^3.1.1",
     "clsx": "^1.2.1",
     "posthog-docusaurus": "^2.0.2",
     "prism-react-renderer": "^2.1.0",
