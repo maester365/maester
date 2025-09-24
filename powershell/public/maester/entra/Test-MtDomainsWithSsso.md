@@ -65,4 +65,4 @@ To verify that Seamless SSO has been successfully disabled in your environment, 
 - [HybridBrothers hunting query](https://github.com/HybridBrothers/Hunting-Queries-Detection-Rules/blob/main/Entra%20ID/HuntDomainsWithSeamlessSsoEnabled.md)
 - [Finding Seamless SSO usage](https://nathanmcnulty.com/blog/2025/08/finding-seamless-sso-usage/#)
 - [Why you should disable Seamless SSO in Microsoft Entra Connect](https://ourcloudnetwork.com/why-you-should-disable-seamless-sso-in-microsoft-entra-connect/)
-- [Advanced Active Directory to Entra IDlateral movement techniques](https://media.defcon.org/DEF%20CON%2033/DEF%20CON%2033%20presentations/Dirk-jan%20Mollema%20-%20Advanced%20Active%20Directory%20to%20Entra%20ID%20lateral%20movement%20techniques.pdf)
+- [Advanced Active Directory to Entra ID lateral movement techniques](https://media.defcon.org/DEF%20CON%2033/DEF%20CON%2033%20presentations/Dirk-jan%20Mollema%20-%20Advanced%20Active%20Directory%20to%20Entra%20ID%20lateral%20movement%20techniques.pdf)
