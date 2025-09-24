@@ -17,7 +17,7 @@
 
 }
 
-Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Full", "Graph", "Security" -Skip:( $EntraIDPlan -ne "P2" ) {
+Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Graph", "Security" -Skip:( $EntraIDPlan -ne "P2" ) {
     It "MT.1084: Seamless Single SignOn should be disabled for all domains in EntraID Connect servers. See https://maester.dev/docs/tests/MT.1084" -Tag "MT.1084" {
 
     if ( $UnifiedMdiInfoAvailable -eq $false) {
