@@ -39,7 +39,7 @@ Import-Module "C:\program files\Microsoft Azure Active Directory Connect\AzureAD
 2. Then use the following commands to list all forests in your environment which have had Seamless SSO enabled: (if you have a single forest, you can move on to the next step).
 
 ```powershell
-#Create an authentication contect object for Azure AD
+#Create an authentication context object for Azure AD
 New-AzureADSSOAuthenticationContext
 
 #Get the SSO status and domains from Entra ID
