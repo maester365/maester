@@ -33,7 +33,7 @@ To disable the feature from Microsoft Entra connect, follow these steps:
 
 Then to tidy up Active Directory you need to install and run the AzureADSSO PowerShell module, follow the steps below:
 
-1. On an Active Directory management server, open PowerShell an run the following commands to install the AzureADSSO PowerShell module:
+1. On an Active Directory management server, open PowerShell and run the following commands to install the AzureADSSO PowerShell module:
 
 ```powershell
 #Install the AzureAD Module
