@@ -40,7 +40,7 @@ function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
 
     $Severity = "Medium"
 
-    if ($return -or [string]::IsNullOrEmpty($SensitiveApiRolesOnAppsWithOwners)) {
+    if ($return -or [string]::IsNullOrEmpty($HighPrivilegedHybridUsers)) {
         $testResultMarkdown = "Well done. No hybrid users with sensitive directory roles."
     } else {
         $testResultMarkdown = "At least one hybrid user with a risk of sensitive directory role membership.`n`n%TestResult%"
