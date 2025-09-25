@@ -1196,6 +1196,11 @@
       "Title": "Ensure Delicensing Resiliency is enabled"
     },
     {
+      "Id": "MT.1084",
+      "Severity": "High",
+      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
