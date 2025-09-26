@@ -29,7 +29,7 @@ function Test-MtCaDeviceCodeFlow {
         foreach ($policy in $policies) {
             if ($policy.conditions.users.includeUsers -eq 'All' -and
                 $policy.conditions.clientAppTypes -eq 'all' -and (
-                    ($policy.grantControls.buildInControls -contains 'block' -and (-not $policy.conditions.locations -or $policy.conditions.locations.includeLocations -eq 'All')) -or
+                    ($policy.grantControls.builtInControls -contains 'block' -and (-not $policy.conditions.locations -or $policy.conditions.locations.includeLocations -eq 'All')) -or
                     ($policy.grantControls.builtInControls -contains 'compliantDevice' -or $policy.grantControls.builtInControls -contains 'domainJoinedDevice' )
                 )
             ) {
