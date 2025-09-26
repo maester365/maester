@@ -79,7 +79,6 @@ param __maesterAppRoles__ = [
   'SecurityIdentitiesHealth.Read.All'
   'SharePointTenantSettings.Read.All'
   'UserAuthenticationMethod.Read.All'
-  'RoleEligibilitySchedule.ReadWrite.Directory'
 ]
 
 param __maesterAutomationAccountModules__ = [
@@ -565,7 +564,7 @@ resource authsettings 'Microsoft.Web/sites/config@2024-11-01' = {
 }
 ```
 
-The PowerShell script has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the Managed Identity of the Automation Account, which has RBAC assignment on the Azure Web App.
+The PowerShell script has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the Managed Identity of the Automation Account, which has RBAC assignment on the Azure Web App. Save the file in the folder `pwsh` with the name `maester.ps1`
 ```PowerShell
 #Retrieve the default automation account variables
 $appName           = Get-AutomationVariable -Name 'appName'
