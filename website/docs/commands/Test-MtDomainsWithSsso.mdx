@@ -1,0 +1,67 @@
+---
+sidebar_class_name: hidden
+description: Check data from Defender for Identity to check domains with Seamless SSO usage.
+id: Test-MtDomainsWithSsso
+title: Test-MtDomainsWithSsso
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtDomainsWithSsso.ps1
+---
+
+## SYNOPSIS
+
+Check data from Defender for Identity to check domains with Seamless SSO usage.
+
+## SYNTAX
+
+```powershell
+Test-MtDomainsWithSsso [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Executes KQL function over IdentityLogonEvents data to retrieve information about domains with Seamless SSO usage.
+It enriches the data with device insights.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtDomainsWithSsso
+Returns a detailed list of domains with Seamless SSO usage, including associated devices and their properties.
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.String
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtDomainsWithSsso](https://maester.dev/docs/commands/Test-MtDomainsWithSsso)
