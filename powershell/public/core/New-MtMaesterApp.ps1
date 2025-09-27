@@ -47,24 +47,26 @@ function New-MtMaesterApp {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         # The display name for the application
-        [Parameter(Mandatory = $false)]
-        [string] $Name = "Maester DevOps Account",
+        [string] $Name,
 
         # Include Mail.Send permission scope
-        [Parameter(Mandatory = $false)]
         [switch] $SendMail,
 
         # Include ChannelMessage.Send permission scope
-        [Parameter(Mandatory = $false)]
         [switch] $SendTeamsMessage,
 
         # Include privileged permission scopes
-        [Parameter(Mandatory = $false)]
         [switch] $Privileged,
 
         # Additional custom permission scopes
-        [Parameter(Mandatory = $false)]
-        [string[]] $Scopes = @()
+        [string[]] $Scopes = @(),
+
+        # If specified adds federated credential for GitHub Actions
+        # Your GitHub organization name or GitHub username. E.g. jasonf
+        [string] $GitHubOrganization,
+
+        # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-tests
+        [string] $GitHubRepository
     )
 
     # We use the Azure module to create the app registration since it has pre-consented permissions to create apps
@@ -73,6 +75,21 @@ function New-MtMaesterApp {
     # This also avoids needing admin consent during Connect-MgGraph.
     if (-not (Test-MtAzContext)) {
         return
+    }
+
+    if ($GitHubOrganization -or $GitHubRepository) {
+        if (-not $GitHubOrganization -or -not $GitHubRepository) {
+            Write-Error "Both GitHubOrganization and GitHubRepository must be specified to add a federated credential."
+            return
+        }
+    }
+
+    if (-not $Name) {
+        if($GitHubOrganization -and $GitHubRepository) {
+            $Name = "Maester DevOps Account - $GitHubOrganization/$GitHubRepository"
+        } else {
+            $Name = "Maester DevOps Account"
+        }
     }
 
     $existingApps = Get-MtMaesterApp -WarningAction SilentlyContinue
@@ -133,16 +150,16 @@ function New-MtMaesterApp {
     Write-Host "Configuring permissions..." -ForegroundColor Yellow
     Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
 
-    Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
+    Set-MaesterAppPermissions -AppId $app.appId -Scopes $requiredScopes
 
     $result = Get-MtMaesterApp -Id $app.id
 
     Write-Host ""
     Write-Host "🎉 Maester application created successfully!" -ForegroundColor Green
-    Write-Host "Next steps:" -ForegroundColor Yellow
-    Write-Host "1. Create a client secret or certificate for authentication" -ForegroundColor White
-    Write-Host "2. Grant admin consent for the requested permissions" -ForegroundColor White
-    Write-Host "3. Use the Application ID in your DevOps pipeline configuration" -ForegroundColor White
 
-    return $result
+    if ($GitHubOrganization) {
+        Add-MtMaesterAppFederatedCredential -AppId $app.appId -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository
+    } else {
+        Write-Output $result
+    }
 }

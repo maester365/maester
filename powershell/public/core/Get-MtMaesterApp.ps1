@@ -6,7 +6,7 @@
     Retrieves all applications in Azure AD/Entra ID that have been tagged as Maester applications.
     This includes applications created by New-MtMaesterApp or manually tagged with 'maester'.
 
-.PARAMETER ApplicationId
+.PARAMETER AppId
     If specified, retrieves only the Maester application with the specified Application (Client) ID.
 
 .PARAMETER Name
@@ -18,7 +18,7 @@
     Retrieves all Maester applications in the tenant.
 
 .EXAMPLE
-    Get-MtMaesterApp -ApplicationId "12345678-1234-1234-1234-123456789012"
+    Get-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
 
     Retrieves the specific Maester application with the given Application ID.
 
@@ -33,18 +33,19 @@
 function Get-MtMaesterApp {
     [CmdletBinding()]
     param(
-        # Get the specified application by its object ID
-        [Parameter(Mandatory = $false)]
+        # The ID of the Maester app to update
+        [Parameter(Mandatory = $true, ParameterSetName = 'ById', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias('ObjectId')]
         [string] $Id,
 
-        # Filter by specific Application (Client) ID
-        [Parameter(Mandatory = $false)]
-        [Alias('AppId', 'ClientId')]
-        [string] $ApplicationId,
+        # The Application (Client) ID of the Maester app to update
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByApplicationId', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Alias('ClientId')]
+        [string] $AppId,
 
-        # Filter by application display name (contains)
-        [Parameter(Mandatory = $false)]
+        # Filter by application display name (starts with)
+        # The Application (Client) ID of the Maester app to update
+        [Parameter(Mandatory = $false, ParameterSetName = 'Default', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [string] $Name
     )
 
@@ -69,9 +70,9 @@ function Get-MtMaesterApp {
         # Build the filter
         $filters = @()
 
-        # Add ApplicationId filter if specified
-        if ($ApplicationId) {
-            $filters += "appId eq '$ApplicationId'"
+        # Add AppId filter if specified
+        if ($AppId) {
+            $filters += "appId eq '$AppId'"
         } else {
             # Filter by the maester tag
             $filters += "tags/any(t:t eq 'maester')"
@@ -90,8 +91,8 @@ function Get-MtMaesterApp {
         $apps = $result.value
 
         if ($apps.Count -eq 0) {
-            if ($ApplicationId) {
-                Write-Warning "No Maester application found with Application ID '$ApplicationId'."
+            if ($AppId) {
+                Write-Warning "No Maester application found with App ID '$AppId'."
             } elseif ($Name) {
                 Write-Warning "No Maester applications found with name containing '$Name'."
             } else {

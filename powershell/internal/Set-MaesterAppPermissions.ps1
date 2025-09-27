@@ -6,30 +6,30 @@
     This function configures the required Graph API permissions (app roles) for a Maester application
     in Azure AD/Entra ID. It handles both creating new permissions and updating existing ones.
 
-    .PARAMETER ApplicationId
+    .PARAMETER AppId
     The Application (Client) ID of the app to configure permissions for.
 
     .PARAMETER Scopes
     Array of Graph API permission scopes to configure for the application.
 
     .EXAMPLE
-    Set-MaesterAppPermissions -ApplicationId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
+    Set-MaesterAppPermissions -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
 #>
 function Set-MaesterAppPermissions {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [string] $ApplicationId,
+        [string] $AppId,
 
         [Parameter(Mandatory = $true)]
         [string[]] $Scopes
     )
 
-    Write-Verbose "Setting permissions for app: $ApplicationId"
+    Write-Verbose "Setting permissions for app: $AppId"
     Write-Verbose "Scopes: $($Scopes -join ', ')"
 
     # Get the service principal for the app
-    $appSPResponse = Invoke-MtAzureRequest -RelativeUri "servicePrincipals" -Filter "appId eq '$ApplicationId'" -Method GET -Graph
+    $appSPResponse = Invoke-MtAzureRequest -RelativeUri "servicePrincipals" -Filter "appId eq '$AppId'" -Method GET -Graph
     $appSPs = $appSPResponse.value
 
     if ($appSPs.Count -eq 0) {

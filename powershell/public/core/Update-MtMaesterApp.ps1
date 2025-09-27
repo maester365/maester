@@ -23,17 +23,17 @@
     Additional custom permission scopes to include beyond the default Maester scopes.
 
 .EXAMPLE
-    Update-MtMaesterApp -ApplicationId "12345678-1234-1234-1234-123456789012"
+    Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
 
     Updates the specified Maester app with the current default permissions.
 
 .EXAMPLE
-    Update-MtMaesterApp -ApplicationId "12345678-1234-1234-1234-123456789012" -SendMail -Privileged
+    Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -SendMail -Privileged
 
     Updates the specified Maester app with mail sending and privileged capabilities.
 
 .EXAMPLE
-    Update-MtMaesterApp -ApplicationId "12345678-1234-1234-1234-123456789012" -Scopes @("User.Read.All")
+    Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("User.Read.All")
 
     Updates the specified Maester app with additional custom scopes.
 
@@ -50,8 +50,8 @@ function Update-MtMaesterApp {
 
         # The Application (Client) ID of the Maester app to update
         [Parameter(Mandatory = $true, ParameterSetName = 'ByApplicationId', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-        [Alias('AppId', 'ClientId')]
-        [string] $ApplicationId,
+        [Alias('ClientId')]
+        [string] $AppId,
 
         # Include Mail.Send permission scope
         [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
@@ -89,14 +89,14 @@ function Update-MtMaesterApp {
                 Write-Error "Maester application with ID '$Id' not found. Use Get-MtMaesterApp to find existing Maester applications."
                 return
             }
-            $ApplicationId = $app.appId
+            $AppId = $app.appId
         } else {
             # Find the application by AppId
-            $appFilter = "appId eq '$ApplicationId'"
+            $appFilter = "appId eq '$AppId'"
             $result = Invoke-MtAzureRequest -RelativeUri 'applications' -Filter $appFilter -Method GET -Graph
             $apps = $result.value
             if ($apps.Count -eq 0) {
-                Write-Error "Application with ID '$ApplicationId' not found. Use Get-MtMaesterApp to find existing Maester applications."
+                Write-Error "Application with ID '$AppId' not found. Use Get-MtMaesterApp to find existing Maester applications."
                 return
             }
 
@@ -133,7 +133,7 @@ function Update-MtMaesterApp {
         Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
 
         # Set the permissions
-        Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
+        Set-MaesterAppPermissions -AppId $app.appId -Scopes $requiredScopes
 
         # Update the application tags and description
         $updateBody = @{
@@ -143,11 +143,7 @@ function Update-MtMaesterApp {
 
         Write-Host "Updating application metadata..." -ForegroundColor Yellow
         $updateResponse = Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph
-
-
-        # Get the service principal
-        $spFilter = "appId eq '$ApplicationId'"
-        $servicePrincipal = Invoke-MtAzureRequest -RelativeUri 'servicePrincipals' -Filter $spFilter -Method GET -Graph
+        Write-Host "✅ Application metadata updated successfully" -ForegroundColor Green
 
         # Output the result
         $result = Get-MaesterAppInfo -App $app
@@ -158,7 +154,7 @@ function Update-MtMaesterApp {
         return $result
 
     } catch {
-        Write-Error "Failed to update Maester application '$ApplicationId': $($_.Exception.Message)"
+        Write-Error "Failed to update Maester application: $($_.Exception.Message)"
         throw
     }
 }
