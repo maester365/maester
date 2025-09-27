@@ -43,136 +43,122 @@
 function Update-MtMaesterApp {
     [CmdletBinding(SupportsShouldProcess)]
     param(
+        # The ID of the Maester app to update
+        [Parameter(Mandatory = $true, ParameterSetName = 'ById', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Alias('ObjectId')]
+        [string] $Id,
+
         # The Application (Client) ID of the Maester app to update
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByApplicationId', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias('AppId', 'ClientId')]
         [string] $ApplicationId,
 
         # Include Mail.Send permission scope
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
+        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $SendMail,
 
         # Include ChannelMessage.Send permission scope
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
+        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $SendTeamsMessage,
 
         # Include privileged permission scopes
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
+        [ValidateSet('ById', 'ByApplicationId')]
         [switch] $Privileged,
 
         # Additional custom permission scopes
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ById')]
+        [Parameter(Mandatory = $false, ParameterSetName = 'ByApplicationId')]
         [string[]] $Scopes = @()
     )
 
-    begin {
-        if (-not (Test-MtConnection Graph)) {
-            throw "Please connect to Microsoft Graph first using Connect-MgGraph or Connect-Maester"
-        }
+    if (-not (Test-MtAzContext)) {
+        return
     }
 
-    process {
-        try {
-            Write-Host "Updating Maester application: $ApplicationId" -ForegroundColor Green
+    try {
 
+        if ($Id) {
+            $app = Get-MtMaesterApp -Id $Id -ErrorAction Stop
+            if (-not $app) {
+                Write-Error "Maester application with ID '$Id' not found. Use Get-MtMaesterApp to find existing Maester applications."
+                return
+            }
+            $ApplicationId = $app.appId
+        } else {
             # Find the application by AppId
             $appFilter = "appId eq '$ApplicationId'"
-            $appResponse = Invoke-AzRestMethod -Uri "https://graph.microsoft.com/v1.0/applications?`$filter=$appFilter" -Method GET
-
-            if ($appResponse.StatusCode -ne 200) {
-                throw "Failed to query applications. Status: $($appResponse.StatusCode)"
-            }
-
-            $apps = ($appResponse.Content | ConvertFrom-Json).value
-
+            $result = Invoke-MtAzureRequest -RelativeUri 'applications' -Filter $appFilter -Method GET -Graph
+            $apps = $result.value
             if ($apps.Count -eq 0) {
                 Write-Error "Application with ID '$ApplicationId' not found. Use Get-MtMaesterApp to find existing Maester applications."
                 return
             }
 
             $app = $apps[0]
-            Write-Host "✅ Found application: $($app.displayName)" -ForegroundColor Green
+        }
 
-            # Verify this is a Maester app
-            if ($app.tags -notcontains "maester") {
-                Write-Warning "Application '$($app.displayName)' does not have the 'maester' tag. This may not be a Maester application."
-                $confirmation = Read-Host "Do you want to continue? (y/N)"
-                if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-                    Write-Host "Update cancelled." -ForegroundColor Yellow
-                    return
-                }
-            }
+        Write-Host "✅ Found application: $($app.displayName)" -ForegroundColor Green
 
-            if ($PSCmdlet.ShouldProcess($app.displayName, "Update Maester application permissions")) {
-                # Get the required scopes
-                $scopeParams = @{}
-                if ($SendMail) { $scopeParams['SendMail'] = $true }
-                if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
-                if ($Privileged) { $scopeParams['Privileged'] = $true }
-
-                $requiredScopes = Get-MtGraphScope @scopeParams
-
-                # Add any additional custom scopes
-                if ($Scopes) {
-                    $requiredScopes += $Scopes
-                    $requiredScopes = $requiredScopes | Sort-Object -Unique
-                }
-
-                Write-Host "Updating permissions..." -ForegroundColor Yellow
-                Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
-
-                # Set the permissions
-                Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
-
-                # Update the logo (in case it has changed)
-                Write-Host "Updating Maester logo..." -ForegroundColor Yellow
-                Set-MaesterAppLogo -AppId $app.id
-
-                # Update the application tags and description
-                $updateBody = @{
-                    tags = @("maester")
-                    description = "Application created by Maester for running security assessments in DevOps pipelines"
-                } | ConvertTo-Json
-
-                Write-Host "Updating application metadata..." -ForegroundColor Yellow
-                $updateResponse = Invoke-AzRestMethod -Uri "https://graph.microsoft.com/v1.0/applications/$($app.id)" -Method POST -Payload $updateBody
-
-                if ($updateResponse.StatusCode -ne 204) {
-                    Write-Warning "Failed to update application metadata. Status: $($updateResponse.StatusCode)"
-                }
-
-                # Get the service principal
-                $spFilter = "appId eq '$ApplicationId'"
-                $spResponse = Invoke-AzRestMethod -Uri "https://graph.microsoft.com/v1.0/servicePrincipals?`$filter=$spFilter" -Method GET
-                $servicePrincipal = $null
-
-                if ($spResponse.StatusCode -eq 200) {
-                    $servicePrincipals = ($spResponse.Content | ConvertFrom-Json).value
-                    if ($servicePrincipals.Count -gt 0) {
-                        $servicePrincipal = $servicePrincipals[0]
-                    }
-                }
-
-                # Output the result
-                $result = [PSCustomObject]@{
-                    DisplayName = $app.displayName
-                    ApplicationId = $app.appId
-                    ObjectId = $app.id
-                    ServicePrincipalId = if ($servicePrincipal) { $servicePrincipal.id } else { $null }
-                    RequiredScopes = $requiredScopes
-                    Tags = $app.tags
-                }
-
-                Write-Host ""
-                Write-Host "🎉 Maester application updated successfully!" -ForegroundColor Green
-                Write-Host "Note: You may need to grant admin consent for any new permissions." -ForegroundColor Yellow
-
-                return $result
+        # Verify this is a Maester app
+        if ($app.tags -notcontains "maester") {
+            Write-Warning "Application '$($app.displayName)' does not have the 'maester' tag. Do you want to tag this as a Maester application?"
+            $confirmation = Read-Host "Do you want to continue? (y/N)"
+            if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
+                Write-Host "Update cancelled." -ForegroundColor Yellow
+                return
             }
         }
-        catch {
-            Write-Error "Failed to update Maester application '$ApplicationId': $($_.Exception.Message)"
-            throw
+
+        # Get the required scopes
+        $scopeParams = @{}
+        if ($SendMail) { $scopeParams['SendMail'] = $true }
+        if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
+        if ($Privileged) { $scopeParams['Privileged'] = $true }
+
+        $requiredScopes = Get-MtGraphScope @scopeParams
+
+        # Add any additional custom scopes
+        if ($Scopes) {
+            $requiredScopes += $Scopes
+            $requiredScopes = $requiredScopes | Sort-Object -Unique
         }
+
+        Write-Host "Updating permissions..." -ForegroundColor Yellow
+        Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
+
+        # Set the permissions
+        Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
+
+        # Update the application tags and description
+        $updateBody = @{
+            tags        = @("maester")
+            description = "Application created by Maester for running security assessments in DevOps pipelines"
+        } | ConvertTo-Json
+
+        Write-Host "Updating application metadata..." -ForegroundColor Yellow
+        $updateResponse = Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph
+
+
+        # Get the service principal
+        $spFilter = "appId eq '$ApplicationId'"
+        $servicePrincipal = Invoke-MtAzureRequest -RelativeUri 'servicePrincipals' -Filter $spFilter -Method GET -Graph
+
+        # Output the result
+        $result = Get-MaesterAppInfo -App $app
+
+        Write-Host ""
+        Write-Host "🎉 Maester application updated successfully!" -ForegroundColor Green
+
+        return $result
+
+    } catch {
+        Write-Error "Failed to update Maester application '$ApplicationId': $($_.Exception.Message)"
+        throw
     }
 }

@@ -7,6 +7,9 @@
     Maester tests in a DevOps pipeline. The application will be granted the necessary Graph API
     permissions based on the specified parameters and tagged for easy identification.
 
+    The user running this command must have a permissions to create applications and consent to Graph Permissions.
+    This requires a minimum of being a Privileged Role Administrator (and Cloud Application Administrator if needed) or Global Administrator.
+
 .PARAMETER Name
     The display name for the application. If not specified, defaults to 'Maester DevOps Account'.
 
@@ -64,101 +67,82 @@ function New-MtMaesterApp {
         [string[]] $Scopes = @()
     )
 
-    # if (-not (Test-MtConnection Graph)) {
-    #     throw "Please connect to Microsoft Graph first using Connect-MgGraph or Connect-Maester"
-    # }
+    # We use the Azure module to create the app registration since it has pre-consented permissions to create apps
+    # Maester is meant for read-only access, so we don't want users to consent to Application.ReadWrite.All or similar.
+    # Instead, we create the app using the Az module context and then assign only the minimum required permissions.
+    # This also avoids needing admin consent during Connect-MgGraph.
+    if (-not (Test-MtAzContext)) {
+        return
+    }
 
-    try {
-        Write-Host "Creating new Maester application: $Name" -ForegroundColor Green
+    $existingApps = Get-MtMaesterApp -WarningAction SilentlyContinue
+    $appCount = ($existingApps | Measure-Object).Count
+    if ($appCount -gt 0) {
+        Write-Warning "We found $appCount Maester application(s) in this tenant."
+        $existingApps
 
-        # Create the application
-        $appBody = @{
-            displayName = $Name
-            description = "Application created by Maester for running security assessments in DevOps pipelines"
-            tags = @("maester")
-            signInAudience = "AzureADMyOrg"
-            web = @{
-                redirectUris = @()
-            }
-        } | ConvertTo-Json -Depth 3
-
-        if ($PSCmdlet.ShouldProcess($Name, "Create Maester application")) {
-            Write-Verbose "Creating application with body: $appBody"
-            $response = Invoke-AzRestMethod -Uri "https://graph.microsoft.com/v1.0/applications" -Method POST -Payload $appBody
-
-            if ($response.StatusCode -ne 201) {
-                throw "Failed to create application. Status: $($response.StatusCode), Content: $($response.Content)"
-            }
-
-            $app = $response.Content | ConvertFrom-Json
-            Write-Host "✅ Application created successfully" -ForegroundColor Green
-            Write-Host "   Application ID: $($app.appId)" -ForegroundColor Cyan
-            Write-Host "   Object ID: $($app.id)" -ForegroundColor Cyan
-
-            # Get the required scopes
-            $scopeParams = @{}
-            if ($SendMail) { $scopeParams['SendMail'] = $true }
-            if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
-            if ($Privileged) { $scopeParams['Privileged'] = $true }
-
-            $requiredScopes = Get-MtGraphScope @scopeParams
-
-            # Add any additional custom scopes
-            if ($Scopes) {
-                $requiredScopes += $Scopes
-                $requiredScopes = $requiredScopes | Sort-Object -Unique
-            }
-
-            Write-Host "Configuring permissions..." -ForegroundColor Yellow
-            Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
-
-            # Create a service principal for the app
-            $spBody = @{
-                appId = $app.appId
-                tags = @("maester")
-            } | ConvertTo-Json
-
-            Write-Host "Creating service principal..." -ForegroundColor Yellow
-            $spResponse = Invoke-AzRestMethod -Uri "https://graph.microsoft.com/v1.0/servicePrincipals" -Method POST -Payload $spBody
-
-            if ($spResponse.StatusCode -eq 201) {
-                $servicePrincipal = $spResponse.Content | ConvertFrom-Json
-                Write-Host "✅ Service principal created successfully" -ForegroundColor Green
-                Write-Host "   Service Principal ID: $($servicePrincipal.id)" -ForegroundColor Cyan
-            } else {
-                Write-Warning "Failed to create service principal. You may need to create it manually."
-            }
-
-            # Set the permissions
-            Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
-
-            # Set the logo
-            Write-Host "Setting Maester logo..." -ForegroundColor Yellow
-            Set-MaesterAppLogo -AppId $app.id
-
-
-            # Output the result
-            $result = [PSCustomObject]@{
-                DisplayName = $app.displayName
-                ApplicationId = $app.appId
-                ObjectId = $app.id
-                ServicePrincipalId = if ($servicePrincipal) { $servicePrincipal.id } else { $null }
-                RequiredScopes = $requiredScopes
-                Tags = $app.tags
-            }
-
-            Write-Host ""
-            Write-Host "🎉 Maester application created successfully!" -ForegroundColor Green
-            Write-Host "Next steps:" -ForegroundColor Yellow
-            Write-Host "1. Create a client secret or certificate for authentication" -ForegroundColor White
-            Write-Host "2. Grant admin consent for the requested permissions" -ForegroundColor White
-            Write-Host "3. Use the Application ID in your DevOps pipeline configuration" -ForegroundColor White
-
-            return $result
+        $confirmation = Read-Host "Create a new Maester application anyway? (y/N)"
+        if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
+            Write-Host "Update cancelled." -ForegroundColor Yellow
+            return
         }
     }
-    catch {
-        Write-Error "Failed to create Maester application: $($_.Exception.Message)"
-        throw
+
+    Write-Host "Creating new Maester application: $Name" -ForegroundColor Green
+
+    # Create the application
+    $appBody = @{
+        displayName = $Name
+        description = "Application created by Maester for running security assessments in DevOps pipelines"
+        tags        = @('maester')
+    } | ConvertTo-Json -Depth 3
+
+    Write-Verbose "Creating application with body: $appBody"
+    $app = Invoke-MtAzureRequest -RelativeUri 'applications' -Method POST -Payload $appBody -Graph
+
+    Write-Host "✅ Application created successfully" -ForegroundColor Green
+    Write-Host "   Application ID: $($app.appId)" -ForegroundColor Cyan
+    Write-Host "   Object ID: $($app.id)" -ForegroundColor Cyan
+
+    # Get the required scopes
+    $scopeParams = @{}
+    if ($SendMail) { $scopeParams['SendMail'] = $true }
+    if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
+    if ($Privileged) { $scopeParams['Privileged'] = $true }
+
+    $requiredScopes = Get-MtGraphScope @scopeParams
+
+    # Add any additional custom scopes
+    if ($Scopes) {
+        $requiredScopes += $Scopes
+        $requiredScopes = $requiredScopes | Sort-Object -Unique
     }
+
+    # Create a service principal for the app
+    $spBody = @{
+        appId = $app.appId
+        tags  = @("maester")
+    } | ConvertTo-Json
+
+    Write-Host "Creating service principal..." -ForegroundColor Yellow
+    $servicePrincipal = Invoke-MtAzureRequest -RelativeUri "servicePrincipals" -Method POST -Payload $spBody -Graph
+    Write-Host "✅ Service principal created successfully" -ForegroundColor Green
+    Write-Host "   Service Principal ID: $($servicePrincipal.id)" -ForegroundColor Cyan
+
+    # Set the permissions
+    Write-Host "Configuring permissions..." -ForegroundColor Yellow
+    Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
+
+    Set-MaesterAppPermissions -ApplicationId $app.appId -Scopes $requiredScopes
+
+    $result = Get-MtMaesterApp -Id $app.id
+
+    Write-Host ""
+    Write-Host "🎉 Maester application created successfully!" -ForegroundColor Green
+    Write-Host "Next steps:" -ForegroundColor Yellow
+    Write-Host "1. Create a client secret or certificate for authentication" -ForegroundColor White
+    Write-Host "2. Grant admin consent for the requested permissions" -ForegroundColor White
+    Write-Host "3. Use the Application ID in your DevOps pipeline configuration" -ForegroundColor White
+
+    return $result
 }

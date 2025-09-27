@@ -25,7 +25,7 @@
 .EXAMPLE
     Get-MtMaesterApp -Name "DevOps"
 
-    Retrieves all Maester applications with "DevOps" in their display name.
+    Retrieves all Maester applications that start with "DevOps" in their display name.
 
 .LINK
     https://maester.dev/docs/commands/Get-MtMaesterApp
@@ -33,8 +33,13 @@
 function Get-MtMaesterApp {
     [CmdletBinding()]
     param(
+        # Get the specified application by its object ID
+        [Parameter(Mandatory = $false)]
+        [Alias('ObjectId')]
+        [string] $Id,
+
         # Filter by specific Application (Client) ID
-        [Parameter(Mandatory = $false, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $false)]
         [Alias('AppId', 'ClientId')]
         [string] $ApplicationId,
 
@@ -43,119 +48,63 @@ function Get-MtMaesterApp {
         [string] $Name
     )
 
-    begin {
-        if (-not (Test-MtConnection Graph)) {
-            throw "Please connect to Microsoft Graph first using Connect-MgGraph or Connect-Maester"
-        }
+    if (-not (Test-MtAzContext)) {
+        return
     }
 
-    process {
-        try {
-            Write-Verbose "Searching for Maester applications..."
+    Write-Verbose "Searching for Maester applications..."
 
-            # Build the filter
-            $filters = @()
+    $select = "id,appId,displayName,description,tags,createdDateTime,signInAudience"
 
-            # Always filter by the maester tag
+    if ($Id) {
+        # If Id is specified, get the application directly
+        Write-Verbose "Getting application with Object ID: $Id"
+        $app = Invoke-MtAzureRequest -RelativeUri "applications/$Id" -Method GET -Graph -Select $select
+        if ($null -eq $app.id) {
+            Write-Warning "No application found with ID '$Id'."
+            return
+        }
+        return Get-MaesterAppInfo -App $app
+    } else {
+        # Build the filter
+        $filters = @()
+
+        # Add ApplicationId filter if specified
+        if ($ApplicationId) {
+            $filters += "appId eq '$ApplicationId'"
+        } else {
+            # Filter by the maester tag
             $filters += "tags/any(t:t eq 'maester')"
+        }
 
-            # Add ApplicationId filter if specified
+        # Add Name filter if specified
+        if ($Name) {
+            $filters += "startswith(displayName, '$Name')"
+        }
+
+        $filter = $filters -join ' and '
+
+        Write-Verbose "Query URI: $path"
+        $result = Invoke-MtAzureRequest -RelativeUri "applications" -Method GET -Graph -Filter $filter -Select $select
+
+        $apps = $result.value
+
+        if ($apps.Count -eq 0) {
             if ($ApplicationId) {
-                $filters += "appId eq '$ApplicationId'"
+                Write-Warning "No Maester application found with Application ID '$ApplicationId'."
+            } elseif ($Name) {
+                Write-Warning "No Maester applications found with name containing '$Name'."
+            } else {
+                Write-Warning "No Maester applications found in this tenant."
+                Write-Host "Use New-MtMaesterApp to create a new Maester application." -ForegroundColor Yellow
             }
-
-            # Add Name filter if specified
-            if ($Name) {
-                $filters += "startswith(displayName, '$Name')"
-            }
-
-            $filter = $filters -join ' and '
-            $selectFields = @('id', 'appId', 'displayName', 'description', 'tags', 'createdDateTime', 'publisherDomain', 'signInAudience')
-
-            Write-Verbose "Query filter: $filter"
-            $apps = Invoke-MtGraphRequest -RelativeUri "applications" -Filter $filter -Select $selectFields -DisableCache
-
-            # Ensure we always have an array to work with
-            if (-not $apps) {
-                $apps = @()
-            } elseif ($apps -is [PSCustomObject]) {
-                $apps = @($apps)
-            }
-
-            if ($apps.Count -eq 0) {
-                if ($ApplicationId) {
-                    Write-Warning "No Maester application found with Application ID '$ApplicationId'."
-                } elseif ($Name) {
-                    Write-Warning "No Maester applications found with name containing '$Name'."
-                } else {
-                    Write-Warning "No Maester applications found in this tenant."
-                    Write-Host "Use New-MtMaesterApp to create a new Maester application." -ForegroundColor Yellow
-                }
-                return
-            }
-
-            # Get service principal information for each app
-            foreach ($app in $apps) {
-                Write-Verbose "Getting service principal for app: $($app.appId)"
-
-                try {
-                    $servicePrincipals = Invoke-MtGraphRequest -RelativeUri "servicePrincipals" -Filter "appId eq '$($app.appId)'" -Select @('id', 'servicePrincipalType') -DisableCache
-
-                    $servicePrincipal = $null
-                    if ($servicePrincipals) {
-                        if ($servicePrincipals -is [Array] -and $servicePrincipals.Count -gt 0) {
-                            $servicePrincipal = $servicePrincipals[0]
-                        } elseif ($servicePrincipals -is [PSCustomObject]) {
-                            $servicePrincipal = $servicePrincipals
-                        }
-                    }
-
-                    # Create the output object
-                    $appInfo = [PSCustomObject]@{
-                        DisplayName = $app.displayName
-                        ApplicationId = $app.appId
-                        ObjectId = $app.id
-                        ServicePrincipalId = if ($servicePrincipal) { $servicePrincipal.id } else { $null }
-                        Description = $app.description
-                        CreatedDateTime = $app.createdDateTime
-                        PublisherDomain = $app.publisherDomain
-                        SignInAudience = $app.signInAudience
-                        Tags = $app.tags
-                        HasServicePrincipal = $null -ne $servicePrincipal
-                    }
-
-                    # Add type information for formatting
-                    $appInfo.PSTypeNames.Insert(0, 'Maester.Application')
-
-                    Write-Output $appInfo
-                }
-                catch {
-                    Write-Warning "Failed to get service principal information for app '$($app.displayName)': $($_.Exception.Message)"
-
-                    # Still output the app information without service principal details
-                    $appInfo = [PSCustomObject]@{
-                        DisplayName = $app.displayName
-                        ApplicationId = $app.appId
-                        ObjectId = $app.id
-                        ServicePrincipalId = $null
-                        Description = $app.description
-                        CreatedDateTime = $app.createdDateTime
-                        PublisherDomain = $app.publisherDomain
-                        SignInAudience = $app.signInAudience
-                        Tags = $app.tags
-                        HasServicePrincipal = $false
-                    }
-
-                    $appInfo.PSTypeNames.Insert(0, 'Maester.Application')
-                    Write-Output $appInfo
-                }
-            }
-
-            Write-Verbose "Found $($apps.Count) Maester application(s)"
+            return
         }
-        catch {
-            Write-Error "Failed to retrieve Maester applications: $($_.Exception.Message)"
-            throw
+
+        # Get service principal information for each app
+        foreach ($app in $apps) {
+            Get-MaesterAppInfo -App $app
         }
+        Write-Verbose "Found $($apps.Count) Maester application(s)"
     }
 }
