@@ -7,6 +7,7 @@
 function Test-MtAzContext {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     param ()
 
     $validContext = $true

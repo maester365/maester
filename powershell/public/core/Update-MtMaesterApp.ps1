@@ -78,84 +78,85 @@ function Update-MtMaesterApp {
         [string[]] $Scopes = @()
     )
 
-    if (-not (Test-MtAzContext)) {
-        return
-    }
-
-    try {
-
-        if ($Id) {
-            $app = Get-MtMaesterApp -Id $Id -ErrorAction Stop
-            if (-not $app) {
-                Write-Error "Maester application with ID '$Id' not found. Use Get-MtMaesterApp to find existing Maester applications."
-                return
-            }
-            $AppId = $app.appId
-        } else {
-            # Find the application by AppId
-            $appFilter = "appId eq '$AppId'"
-            $result = Invoke-MtAzureRequest -RelativeUri 'applications' -Filter $appFilter -Method GET -Graph
-            $apps = $result.value
-            if ($apps.Count -eq 0) {
-                Write-Error "Application with ID '$AppId' not found. Use Get-MtMaesterApp to find existing Maester applications."
-                return
-            }
-
-            $app = $apps[0]
+    process {
+        if (-not (Test-MtAzContext)) {
+            return
         }
+        try {
 
-        Write-Host "✅ Found application: $($app.displayName)" -ForegroundColor Green
+            if ($Id) {
+                $app = Get-MtMaesterApp -Id $Id -ErrorAction Stop
+                if (-not $app) {
+                    Write-Error "Maester application with ID '$Id' not found. Use Get-MtMaesterApp to find existing Maester applications."
+                    return
+                }
+                $AppId = $app.appId
+            } else {
+                # Find the application by AppId
+                $appFilter = "appId eq '$AppId'"
+                $result = Invoke-MtAzureRequest -RelativeUri 'applications' -Filter $appFilter -Method GET -Graph
+                $apps = $result.value
+                if ($apps.Count -eq 0) {
+                    Write-Error "Application with ID '$AppId' not found. Use Get-MtMaesterApp to find existing Maester applications."
+                    return
+                }
 
-        # Verify this is a Maester app
-        if ($app.tags -notcontains "maester") {
-            Write-Warning "Application '$($app.displayName)' does not have the 'maester' tag. Do you want to tag this as a Maester application?"
-            $confirmation = Read-Host "Do you want to continue? (y/N)"
-            if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
-                Write-Host "Update cancelled." -ForegroundColor Yellow
-                return
+                $app = $apps[0]
             }
+
+            Write-Host "✅ Found application: $($app.displayName)" -ForegroundColor Green
+
+            # Verify this is a Maester app
+            if ($app.tags -notcontains "maester") {
+                Write-Warning "Application '$($app.displayName)' does not have the 'maester' tag. Do you want to tag this as a Maester application?"
+                $confirmation = Read-Host "Do you want to continue? (y/N)"
+                if ($confirmation -ne 'y' -and $confirmation -ne 'Y') {
+                    Write-Host "Update cancelled." -ForegroundColor Yellow
+                    return
+                }
+            }
+
+            # Get the required scopes
+            $scopeParams = @{}
+            if ($SendMail) { $scopeParams['SendMail'] = $true }
+            if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
+            if ($Privileged) { $scopeParams['Privileged'] = $true }
+
+            $requiredScopes = Get-MtGraphScope @scopeParams
+
+            # Add any additional custom scopes
+            if ($Scopes) {
+                $requiredScopes += $Scopes
+                $requiredScopes = $requiredScopes | Sort-Object -Unique
+            }
+
+            Write-Host "Updating permissions..." -ForegroundColor Yellow
+            Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
+
+            # Set the permissions
+            Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
+
+            # Update the application tags and description
+            $updateBody = @{
+                tags        = @("maester")
+                description = "Application created by Maester for running security assessments in DevOps pipelines"
+            } | ConvertTo-Json
+
+            Write-Host "Updating application metadata..." -ForegroundColor Yellow
+            Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph | Out-Null
+            Write-Host "✅ Application metadata updated successfully" -ForegroundColor Green
+
+            # Output the result
+            $result = Get-MaesterAppInfo -App $app
+
+            Write-Host ""
+            Write-Host "🎉 Maester application updated successfully!" -ForegroundColor Green
+
+            return $result
+
+        } catch {
+            Write-Error "Failed to update Maester application: $($_.Exception.Message)"
+            throw
         }
-
-        # Get the required scopes
-        $scopeParams = @{}
-        if ($SendMail) { $scopeParams['SendMail'] = $true }
-        if ($SendTeamsMessage) { $scopeParams['SendTeamsMessage'] = $true }
-        if ($Privileged) { $scopeParams['Privileged'] = $true }
-
-        $requiredScopes = Get-MtGraphScope @scopeParams
-
-        # Add any additional custom scopes
-        if ($Scopes) {
-            $requiredScopes += $Scopes
-            $requiredScopes = $requiredScopes | Sort-Object -Unique
-        }
-
-        Write-Host "Updating permissions..." -ForegroundColor Yellow
-        Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
-
-        # Set the permissions
-        Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
-
-        # Update the application tags and description
-        $updateBody = @{
-            tags        = @("maester")
-            description = "Application created by Maester for running security assessments in DevOps pipelines"
-        } | ConvertTo-Json
-
-        Write-Host "Updating application metadata..." -ForegroundColor Yellow
-        Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph | Out-Null
-        Write-Host "✅ Application metadata updated successfully" -ForegroundColor Green
-
-        # Output the result
-        $result = Get-MaesterAppInfo -App $app
-
-        Write-Host ""
-        Write-Host "🎉 Maester application updated successfully!" -ForegroundColor Green
-
-        return $result
-
-    } catch {
-        Write-Error "Failed to update Maester application: $($_.Exception.Message)"
-        throw
     }
 }
