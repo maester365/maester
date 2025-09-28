@@ -44,7 +44,8 @@
     https://maester.dev/docs/commands/New-MtMaesterApp
 #>
 function New-MtMaesterApp {
-    [CmdletBinding(SupportsShouldProcess)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [CmdletBinding()]
     param(
         # The display name for the application
         [string] $Name,

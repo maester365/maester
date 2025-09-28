@@ -31,6 +31,7 @@
     https://maester.dev/docs/commands/Get-MtMaesterApp
 #>
 function Get-MtMaesterApp {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [CmdletBinding()]
     param(
         # The ID of the Maester app to update

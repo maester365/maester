@@ -41,7 +41,8 @@
     https://maester.dev/docs/commands/Update-MtMaesterApp
 #>
 function Update-MtMaesterApp {
-    [CmdletBinding(SupportsShouldProcess)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [CmdletBinding()]
     param(
         # The ID of the Maester app to update
         [Parameter(Mandatory = $true, ParameterSetName = 'ById', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
