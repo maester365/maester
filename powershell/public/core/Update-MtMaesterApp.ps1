@@ -42,6 +42,7 @@
 #>
 function Update-MtMaesterApp {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param(
         # The ID of the Maester app to update

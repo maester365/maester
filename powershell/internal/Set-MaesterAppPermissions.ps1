@@ -17,6 +17,7 @@
 #>
 function Set-MaesterAppPermission {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
