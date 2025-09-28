@@ -151,7 +151,7 @@ function New-MtMaesterApp {
     Write-Host "Configuring permissions..." -ForegroundColor Yellow
     Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
 
-    Set-MaesterAppPermissions -AppId $app.appId -Scopes $requiredScopes
+    Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
 
     $result = Get-MtMaesterApp -Id $app.id
 

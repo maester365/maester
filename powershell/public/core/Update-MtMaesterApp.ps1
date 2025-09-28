@@ -134,7 +134,7 @@ function Update-MtMaesterApp {
         Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
 
         # Set the permissions
-        Set-MaesterAppPermissions -AppId $app.appId -Scopes $requiredScopes
+        Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
 
         # Update the application tags and description
         $updateBody = @{
@@ -143,7 +143,7 @@ function Update-MtMaesterApp {
         } | ConvertTo-Json
 
         Write-Host "Updating application metadata..." -ForegroundColor Yellow
-        $updateResponse = Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph
+        Invoke-MtAzureRequest -RelativeUri "applications/$($app.id)" -Method PATCH -Payload $updateBody -Graph | Out-Null
         Write-Host "✅ Application metadata updated successfully" -ForegroundColor Green
 
         # Output the result

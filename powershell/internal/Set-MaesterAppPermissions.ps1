@@ -13,9 +13,9 @@
     Array of Graph API permission scopes to configure for the application.
 
     .EXAMPLE
-    Set-MaesterAppPermissions -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
+    Set-MaesterAppPermission -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
 #>
-function Set-MaesterAppPermissions {
+function Set-MaesterAppPermission {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
