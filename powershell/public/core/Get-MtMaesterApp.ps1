@@ -35,18 +35,18 @@ function Get-MtMaesterApp {
     [CmdletBinding()]
     param(
         # The ID of the Maester app to update
-        [Parameter(Mandatory = $true, ParameterSetName = 'ById', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ById')]
         [Alias('ObjectId')]
         [string] $Id,
 
         # The Application (Client) ID of the Maester app to update
-        [Parameter(Mandatory = $true, ParameterSetName = 'ByApplicationId', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true, ParameterSetName = 'ByApplicationId')]
         [Alias('ClientId')]
         [string] $AppId,
 
         # Filter by application display name (starts with)
         # The Application (Client) ID of the Maester app to update
-        [Parameter(Mandatory = $false, ParameterSetName = 'Default', ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $false, ParameterSetName = 'Default')]
         [string] $Name
     )
 
