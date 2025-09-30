@@ -36,7 +36,7 @@ function Set-MaesterAppPermission {
         $appSPs = $appSPResponse.value
 
         if ($appSPs.Count -eq 0) {
-            throw "Service principal for application not found. Ensure the application has a service principal."
+            throw "Service principal for application not found. Try deleting the Maester app and recreating with New-MtMaesterApp."
         }
 
         # Get the Microsoft Graph service principal
@@ -65,7 +65,6 @@ function Set-MaesterAppPermission {
 
             if (-not $appRole) {
                 Write-Warning "Application permission '$scope' not found in Microsoft Graph. Skipping."
-                continue
             }
 
             # Check if permission already exists
@@ -73,7 +72,6 @@ function Set-MaesterAppPermission {
 
             if ($existingPermission) {
                 Write-Verbose "Permission '$scope' already exists"
-                continue
             }
 
             Write-Host "➕ Adding permission '$scope'..." -ForegroundColor Yellow

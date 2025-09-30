@@ -85,6 +85,7 @@ function Add-MtMaesterAppFederatedCredential {
 
         $app = Get-MtMaesterApp @params
         if (-not $app) {
+            Write-Error "Maester application not found with the specified identifier: $($params.Id ?? $params.AppId)."
             return
         }
 

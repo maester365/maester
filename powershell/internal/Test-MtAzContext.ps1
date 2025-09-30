@@ -10,9 +10,9 @@ function Test-MtAzContext {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     param ()
 
-    $validContext = $true
+    $validContext = (Test-MtConnection Azure)
 
-    if (-not (Test-MtConnection Azure)) {
+    if (-not $validContext) {
         Write-Host "`The cmdlet requires a connection to Azure. Please connect using using the following command." -ForegroundColor Red
         Write-Host "`Connect-Maester -Service Azure`n" -ForegroundColor Yellow
         $validContext = $false

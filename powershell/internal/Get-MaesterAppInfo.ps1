@@ -1,4 +1,8 @@
-﻿function Get-MaesterAppInfo {
+﻿<#
+.SYNOPSIS
+    Returns a formatted object with information about a Maester application created in Entra.
+#>
+function Get-MaesterAppInfo {
     param (
         [Parameter(Mandatory = $true)]
         [object] $App
