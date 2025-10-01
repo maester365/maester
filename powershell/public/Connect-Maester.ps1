@@ -123,10 +123,16 @@
          if ($Service -contains 'Azure' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Azure'
             try {
+               $azWarning = @()
                if ($TenantId) {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId
+                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning
                } else {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning
+               }
+               if ($azWarning.Count -gt 0) {
+                  foreach ($warning in $azWarning) {
+                     Write-Verbose $warning.Message
+                  }
                }
             } catch [Management.Automation.CommandNotFoundException] {
                Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
