@@ -1,4 +1,4 @@
-Describe "TestBlock1" {
+Describe "Error and Skip Scenarios" {
 	It "id.1.0: Error, SkippedBecause error" {
 		Add-MtTestResultDetail -SkippedBecause Error
 	}
@@ -43,19 +43,19 @@ Describe "TestBlock1" {
 	}
 }
 
-Describe "TestBlock2" {
+Describe "Tag Filtering Tests" {
 	It "id.20.0: NotRun, Tag not selected" -Tag 'Severity:High', 'testtag' {
 		# DELIBERATE: Missing parameter value to test parameter binding behavior
 		Add-MtTestResultDetail -SkippedBecause Error -SkippedError
 	}
 }
-Describe "TestBlock3" {
+Describe "Parameter Validation Tests" {
 	It "id.30.0: Error, Bad Parameter" -Tag 'Severity:High' {
-		# DELIBERATE: Typo in parameter value to test error handling
-		Add-MtTestResultDetail -SkippedBecause Erro
+		# DELIBERATE: Invalid parameter value to test error handling
+		Add-MtTestResultDetail -SkippedBecause "InvalidEnumValue"
 	}
 
-	It "id.31.0:Error, Setting Skipped Error false" -Tag 'Severity:Medium' {
+	It "id.31.0: Error, Setting Skipped Error false" -Tag 'Severity:Medium' {
 		Add-MtTestResultDetail -SkippedBecause Error -SkippedError "Testing error setting"
 		return $false
 	}

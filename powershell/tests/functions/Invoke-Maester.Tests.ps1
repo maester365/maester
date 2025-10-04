@@ -8,8 +8,8 @@
         if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
 
         $maesterParams = @{
-            Path = [System.IO.Path]::GetFullPath((Join-Path (Join-Path $PSScriptRoot "..") "smoketests"))
-            OutputFolder = [System.IO.Path]::GetFullPath((Join-Path (Join-Path $PSScriptRoot "..") "test-results"))
+            Path = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "smoketests"))
+            OutputFolder = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "test-results"))
             PassThru = $true
             SkipGraphConnect = $true
             NonInteractive = $true
