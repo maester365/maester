@@ -30,7 +30,7 @@ Describe "TestBlock1" {
 		Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason
 	}
 
-	It "id.7.0: Skipped, Setting SkippedBecause Custom with Reason"  {
+	It "id.7.0: Skipped, Setting SkippedBecause Custom with Reason" {
 		Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Custom Reason For Skipped"
 	}
 
