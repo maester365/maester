@@ -26,7 +26,8 @@ Describe "TestBlock1" {
 	}
 
 	It "id.6.0: Skipped, Setting SkippedBecause ParameterBindingException" {
-		Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 
+		# DELIBERATE: Missing parameter value to test parameter binding exception
+		Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason
 	}
 
 	It "id.7.0: Skipped, Setting SkippedBecause Custom with Reason"  {
@@ -44,11 +45,13 @@ Describe "TestBlock1" {
 
 Describe "TestBlock2" {
 	It "id.20.0: NotRun, Tag not selected" -Tag 'Severity:High','testtag' {
+		# DELIBERATE: Missing parameter value to test parameter binding behavior
 		Add-MtTestResultDetail -SkippedBecause Error -SkippedError
 	}
 }
 Describe "TestBlock3" {
 	It "id.30.0: Error, Bad Parameter" -Tag 'Severity:High' {
+		# DELIBERATE: Typo in parameter value to test error handling
 		Add-MtTestResultDetail -SkippedBecause Erro
 	}
 
