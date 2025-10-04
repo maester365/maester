@@ -1,34 +1,26 @@
-### Description
+# Description
+<!-- Please provide a detailed description of your enhancement or bug fix here. If this will resolve an issue, please tag the issue number as well. For example, "Fixes #1212." -->
 
-<!-- Please describe your pull request. Also included any issues this pr will be fixing. -->
 
-### Your checklist for this pull request
 
-🚨Please review the [guidelines for contributing](https://maester.dev/docs/contributing) to this repository.
 
-- [ ] Read the guidelines for contributions
+<!-- End Description -->
+## Contribution Checklist
 
-#### PRs related to all code
+Before submitting this PR, please confirm you have completed the following:
 
-- [ ] Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
-- [ ] After submitting, verify the tests are still passing on your PR in GitHub (the tests are run across all platforms).
+- [ ] 📖 Read the [guidelines for contributing](https://maester.dev/docs/contributing) to this repository.
+- [ ] 🧪 Ensure the build and unit tests pass by running `/powershell/tests/pester.ps1` on your local system.
 
-#### PRs related to Maester Tests
+<!--
 
-If you are contributing a test or making updates to a test please verify these.
+Please see additional instructions and a checklist for creating tests at <https://maester.dev/docs/contributing#checklist-for-writing-good-tests>.
 
-- [ ] Check that the unique ID you want to use is not already picked. See [Pick next Maester test sequence number](https://github.com/maester365/maester/issues/697)
-- [ ] Add Test with your .ps1 and .md-file (make sure .ps1 file is encoded with "UTF8 with BOM") `.\powershell\public\maester...`
-- [ ] Add your new test-function to a corresponding .test.ps1 file `\tests\Maester..*.test.ps1`
-- [ ] Add your new test-function to 'FunctionsToExport'-List `.\powershell\Maester.psd1`
-- [ ] Add test Id, Severity and Title to "maester-config.json" file `.\tests\maester-config.json`
-- [ ] Add website documentation for test with name of "testId.md" `.\website\docs\tests\maester`
-- [ ] If Invoke-Maester parameters are changed, update the GitHub action to use the new parameters.
+We really appreciate your contributions! We will try to review your pull request as soon as possible. If you have any queries or need any help, please visit the repository discussions or jump on Discord.
 
-### Review
+While you wait for a review, why not spread some Maester love on social media? Thank you! 💖
 
-We will try to review your pull request as soon as possible. If you have any queries or need any help please jump on [Discord](https://discord.maester.dev/). We really appreciate your contributions!
+-->
+&nbsp;
 
-<!-- While your wait for a review, why not try to spread some Maester love on social media? -->
-
-💖 Thank you!
+Join us at the Maester repository [discussions](https://github.com/maester365/maester/discussions) 💬 or [Entra Discord](https://discord.maester.dev/) 🧑‍💻 for more help and conversations!

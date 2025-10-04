@@ -91,7 +91,8 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
     'Install-MaesterTests',
     'Invoke-Maester', 'Invoke-MtGraphRequest', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
-    "Invoke-MtGraphSecurityQuery",
+    'Invoke-MtGraphSecurityQuery',
+    'Get-MtMaesterApp', 'New-MtMaesterApp', 'Update-MtMaesterApp', 'Add-MtMaesterAppFederatedCredential',
     'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
     'Test-MtServicePrincipalsForAllUsers', 'Test-MtAuthenticationPolicyReferencedObjectsExist',
@@ -161,7 +162,12 @@ FunctionsToExport = 'Add-MtTestResultDetail',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
     'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtDirSyncSoftHardMatching',
     'Test-MtExoMoeraMailActivity','Test-MtExoDelicensingResiliency',
-    'Test-MtLimitOnMicrosoftDomainUsage'
+    'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtDomainsWithSsso',
+    'Test-MtXspmAppRegWithPrivilegedApiAndOwners',
+    'Test-MtXspmAppRegWithPrivilegedRolesAndOwners',
+    'Test-MtXspmAppRegWithPrivilegedUnusedPermissions',
+    'Test-MtXspmExposedCredentialsForPrivilegedUsers',
+    'Test-MtXspmHybridUsersWithAssignedEntraIdRoles'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
