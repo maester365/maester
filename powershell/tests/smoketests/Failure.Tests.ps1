@@ -21,7 +21,7 @@ Describe "TestBlock1" {
 		Add-MtTestResultDetail -Result "All Good"
 	}
 
-	It "id.5.0: Skipped, Setting SkippedBecause NotConnectedAzure"  {
+	It "id.5.0: Skipped, Setting SkippedBecause NotConnectedAzure" {
 		Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
 	}
 
