@@ -54,7 +54,13 @@ function Test-MtCisDkim {
                 $selector = $dkimSigningConfig.SelectorBeforeRotateOnDate
             }
 
-            $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimSelector $Selector -Records DKIM
+            $isMicrosoftDomain = $domain.DomainName.EndsWith(".onmicrosoft.com")
+            $dkimDnsName = if ($isMicrosoftDomain) {
+                $dkimSigningConfig."$($selector)CNAME"
+            } else {
+                "$($Selector)._domainkey.$($domain.DomainName)"
+            }
+            $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimDnsName $dkimDnsName -Records DKIM
             $dkimRecord | Add-Member -MemberType NoteProperty -Name 'pass' -Value 'Failed'
             $dkimRecord | Add-Member -MemberType NoteProperty -Name 'reason' -Value ''
 

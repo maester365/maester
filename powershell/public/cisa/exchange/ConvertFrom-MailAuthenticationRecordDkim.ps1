@@ -42,8 +42,9 @@ function ConvertFrom-MailAuthenticationRecordDkim {
         # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress = "1.1.1.1",
 
-        # Selector-name for the DKIM record to retrieve.
-        [string]$DkimSelector = "selector1",
+        # DKIM DNS record Name to retrieve.
+        [Parameter(Mandatory)]
+        [string]$DkimDnsName,
 
         # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
@@ -87,11 +88,10 @@ function ConvertFrom-MailAuthenticationRecordDkim {
     }
 
     process {
-        $dkimPrefix = "$DkimSelector._domainkey."
         $matchRecord = "^v\s*=\s*(?'v'DKIM1)\s*;\s*"
 
         $dkimSplat = @{
-            Name         = "$dkimPrefix$DomainName"
+            Name         = $DkimDnsName
             Type         = "TXT"
             Server       = $DnsServerIpAddress
             NoHostsFile  = $NoHostsFile
