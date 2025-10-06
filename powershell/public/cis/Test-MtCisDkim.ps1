@@ -28,7 +28,7 @@ function Test-MtCisDkim {
     }
 
     try {
-        $signingConfig = Get-MtExo -Request DkimSigningConfig
+        $dkimSigningConfigs = Get-MtExo -Request DkimSigningConfig
         $acceptedDomains = Get-MtExo -Request AcceptedDomain
         <# DKIM record without key for parked domains
         $sendingDomains = $acceptedDomains | Where-Object {
@@ -38,20 +38,20 @@ function Test-MtCisDkim {
 
         $dkimRecords = @()
         foreach ($domain in $acceptedDomains) {
-            $config = $signingConfig | Where-Object {
+            $dkimSigningConfig = $dkimSigningConfigs | Where-Object {
                 $_.domain -eq $domain.domainname
             }
 
-            if ((Get-Date) -gt $config.RotateOnDate) {
-                if ($Selector -ne $config.SelectorAfterRotateOnDate) {
-                    Write-Verbose "Using DKIM $($config.SelectorAfterRotateOnDate) based on EXO config"
+            if ((Get-Date) -gt $dkimSigningConfig.RotateOnDate) {
+                if ($Selector -ne $dkimSigningConfig.SelectorAfterRotateOnDate) {
+                    Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorAfterRotateOnDate) based on EXO config"
                 }
-                $Selector = $config.SelectorAfterRotateOnDate
+                $Selector = $dkimSigningConfig.SelectorAfterRotateOnDate
             } else {
-                if ($Selector -ne $config.SelectorBeforeRotateOnDate) {
-                    Write-Verbose "Using DKIM $($config.SelectorBeforeRotateOnDate) based on EXO config"
+                if ($Selector -ne $dkimSigningConfig.SelectorBeforeRotateOnDate) {
+                    Write-Verbose "Using DKIM $($dkimSigningConfig.SelectorBeforeRotateOnDate) based on EXO config"
                 }
-                $selector = $config.SelectorBeforeRotateOnDate
+                $selector = $dkimSigningConfig.SelectorBeforeRotateOnDate
             }
 
             $dkimRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -DkimSelector $Selector -Records DKIM
@@ -59,7 +59,7 @@ function Test-MtCisDkim {
             $dkimRecord | Add-Member -MemberType NoteProperty -Name 'reason' -Value ''
 
             if ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
-                if ($config.enabled) {
+                if ($dkimSigningConfig.enabled) {
                     if (-not $dkimRecord.dkimRecord.validBase64) {
                         $dkimRecord.reason = 'Malformed public key'
                     } else {
