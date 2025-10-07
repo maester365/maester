@@ -23,10 +23,12 @@ The test examines:
 
 To fix this issue:
 
-- Open the impacted Conditional Access policy.
-- Remove the non-existent user, group, or role from the policy.
-- If the object is still needed, recreate it or replace it with a valid alternative.
-- Click Save to apply the changes.
+1. Naviagte to [Microsoft Entra admin center](https://entra.microsoft.com)
+2. Navigate to **Entra ID** > **Conditional Access** > **Policies**
+3. Open the impacted Conditional Access policy.
+4. Remove the non-existent user, group, or role from the policy.
+5. If the object is still needed, recreate it or replace it with a valid alternative.
+6. Click **Save** to apply the changes.
 
 ## Learn more
 
