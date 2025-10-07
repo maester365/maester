@@ -22,7 +22,7 @@ function Test-MtEidscaPR05 {
     param()
 
     if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason ''
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
