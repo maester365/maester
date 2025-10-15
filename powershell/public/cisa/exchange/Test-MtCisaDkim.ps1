@@ -62,16 +62,17 @@ function Test-MtCisaDkim {
             $dkimRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
             $dkimRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
 
-            if ($dkimRecord.dkimRecord.GetType().Name -eq "DKIMRecord") {
-                if ($dkimSigningConfig.enabled) {
-                    if (-not $dkimRecord.dkimRecord.validBase64) {
-                        $dkimRecord.reason = "Malformed public key"
-                    } else {
-                        $dkimRecord.pass = "Passed"
-                    }
+            if ($domain.SendingFromDomainDisabled) {
+                $dkimRecord.pass = 'Skipped'
+                $dkimRecord.reason = 'Parked domain'
+            } elseif (-not $dkimSigningConfig.enabled) {
+                $dkimRecord.pass = 'Failed'
+                $dkimRecord.reason = 'DKIM is disabled'
+            } elseif ($dkimRecord.dkimRecord.GetType().Name -eq 'DKIMRecord') {
+                if (-not $dkimRecord.dkimRecord.validBase64) {
+                    $dkimRecord.reason = 'Malformed public key'
                 } else {
-                    $dkimRecord.pass = "Skipped"
-                    $dkimRecord.reason = "Parked domain"
+                    $dkimRecord.pass = 'Passed'
                 }
             } elseif ($dkimRecord.dkimRecord -like "*not available") {
                 $dkimRecord.pass = "Skipped"
