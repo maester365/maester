@@ -31,7 +31,6 @@ function Get-MailAuthenticationRecord {
         [ipaddress]$DnsServerIpAddress,
 
         # DKIM DNS record Name to retrieve.
-        [Parameter(Mandatory)]
         [string]$DkimDnsName,
 
         [ValidateSet("All", "DKIM", "DMARC", "MX", "SPF")]
