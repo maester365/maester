@@ -14,13 +14,12 @@ This ensures that new devices that do not have any policies assigned are not com
 
 ## How to fix
 
-1. Navigate to Microsoft Intune admin center [https://intune.microsoft.com](https://intune.microsoft.com).
+1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Click **Devices** scroll down to **Manage devices**.
 3. Select **Compliance** and Select **Compliance settings**.
-4. Set **Mark devices with no compliance policy assigned as** to **Not compliant**
+4. Toggle **Mark devices with no compliance policy assigned as** to **Not compliant**.
 5. Click **Save**.
 
 ## Learn more
-* [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Intune - Compliance](https://intune.microsoft.com/?ref=AdminCenter#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/compliance)
-* [Compliance policy settings](https://learn.microsoft.com/de-de/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)
+* [Microsoft Learn - Compliance policy settings](https://learn.microsoft.com/de-de/mem/intune/protect/device-compliance-get-started#compliance-policy-settings)
