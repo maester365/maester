@@ -40,7 +40,7 @@ BeforeDiscovery {
     $MdiHealthActiveIssues = $MdiHealthIssues | Where-Object { $_.status -ne "closed" }
 }
 
-Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "All", "MDI", "Defender" -ForEach $MdiHealthActiveIssues {
+Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "MDI" -ForEach $MdiHealthActiveIssues {
     It "MT.1059: MDI Health Issues - <displayName>. See https://maester.dev/docs/tests/MT.1058" -Tag "MT.1058", "Severity:Medium", $displayName {
 
         $issueUrl = "https://security.microsoft.com/identities/health-issues"
