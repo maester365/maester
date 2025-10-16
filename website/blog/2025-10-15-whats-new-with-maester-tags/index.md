@@ -9,15 +9,15 @@ image: ./img/________________.png
 date: 2025-10-15
 ---
 
-Tags are used to identify groups of tests and either include them or exclude them when running Maester. Today we are pleased to announce changes to some tags that will make it easier to get your desired results. 🏷️
+Today we are pleased to announce some changes to tags that will make it easier to assess your environment with specific types of tests. 🏷️
 
 <!-- truncate -->
 
 ## A review of how tags are used
 
-When you run Maester with no tag-related parameters, it automatically includes all tests *except* tests that can take a very long time in large environments and tests that rely on features that are still in preview. You can also use parameters with `Invoke-Maester` to target tests with specific tags. For example:
+When you run Maester with no tag-related parameters, it automatically includes all tests *except* tests that rely on features that are still in preview and tests that can take a very long time in large environments.
 
-### Run default tests
+### Run all default tests
 
 ```powershell
 Invoke-Maester ./maester-tests
@@ -26,6 +26,8 @@ Invoke-Maester ./maester-tests
 Runs all the tests in the folder `./tests/Maester` (except for those tagged as LongRunning and Preview) and generates a report of the results in the default `./test-results` folder.
 
 ### Run specific tests with tags
+
+You can use parameters with `Invoke-Maester` to target tests with specific tags. For example:
 
 ```powershell
 Invoke-Maester -Tag 'CA', 'MFA'
@@ -59,7 +61,7 @@ These two new switch parameters have been introduced so we can begin the removal
 | All | Include tests still in preview. | `-IncludePreview` |
 | Full | Include tests that may take a long time in large environments. | `-IncludeLongRunning` |
 
-As you can imagine, the original naming lead to many people adding the `All` and `Full` tags to their test definitions to simply be included. Now, running Maester will *all* tests can be accomplished as follows:
+As you can imagine, the original naming lead to many people adding the `All` and `Full` tags to their test definitions to simply be included. Now, running Maester with every available test can be accomplished as follows:
 
 ```powershell
 Invoke-Maester -IncludeLongRunning -IncludePreview
