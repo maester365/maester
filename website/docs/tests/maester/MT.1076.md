@@ -17,17 +17,12 @@ For each listed user principal name, update primary SMTP address to use a [regis
 
 ### Entra Managed Mail Attributes
 
-1. Within the Entra Portal, navigate to [All users](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/AllUsers/menuId/)
-
-2. Select the user
-
-3. Select Edit properties
-
-4. Select Contact information
-
-5. Update the Email attribute
-
-6. Select Save
+1. Within the [Microsoft Entra admin center](https://entra.microsoft.com), navigate to [All users](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserManagementMenuBlade/~/AllUsers/menuId/).
+2. Select the user.
+3. Select **Edit properties**.
+4. Select **Contact information**.
+5. Update the **Email** attribute.
+6. Select **Save**.
 
 ### AD Managed Mail Attributes
 

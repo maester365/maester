@@ -47,11 +47,16 @@ function Test-MtExoMoeraMailActivity {
     $file = "$([System.IO.Path]::GetTempPath())maester-EmailActivityUserDetail.csv"
 
     try {
-            Write-Verbose "Downloading report"
-            Invoke-MgGraphRequest -Uri "v1.0/reports/getEmailActivityUserDetail(period='D7')" -OutputFilePath $file
-        } catch {
-            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        Write-Verbose "Downloading report"
+        $oProgressPreference = $ProgressPreference # save progressPreference
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-MgGraphRequest -Uri "v1.0/reports/getEmailActivityUserDetail(period='D7')" -OutputFilePath $file
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
+    } finally {
+        # Always restore progressPreference, even if exception occurs
+        $ProgressPreference = $oProgressPreference
     }
     $results = Import-Csv $file
     $filteredResults = $results|Where-Object {
