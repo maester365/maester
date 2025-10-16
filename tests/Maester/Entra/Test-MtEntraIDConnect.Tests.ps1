@@ -1,10 +1,14 @@
 ﻿BeforeDiscovery {
-    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
 
 }
 
-Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Graph", "Security" -Skip:( $EntraIDPlan -ne "P2" ) {
-    It "MT.1084: Seamless Single SignOn should be disabled for all domains in EntraID Connect servers. See https://maester.dev/docs/tests/MT.1084" -Tag "MT.1084" {
+Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Graph", "Security" {
+
+    BeforeAll {
+        $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
+    }
+
+    It "MT.1084: Seamless Single SignOn should be disabled for all domains in EntraID Connect servers. See https://maester.dev/docs/tests/MT.1084" -Tag "MT.1084" -Skip:( $EntraIDPlan -ne "P2" ) {
 
         if ( $UnifiedMdiInfoAvailable -eq $false) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of Microsoft Defender for Identity and Microsoft Defender for Endpoint to get data from Defender XDR Advanced Hunting tables (IdentityLogonEvents and DeviceInfo).'
