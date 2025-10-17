@@ -17,7 +17,7 @@ function ConvertTo-QueryString {
     [OutputType([string])]
     param (
         # Value to convert
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $false, Position = 0, ValueFromPipeline = $true)]
         [object] $InputObjects,
         # URL encode parameter names
         [Parameter(Mandatory = $false)]
@@ -25,6 +25,11 @@ function ConvertTo-QueryString {
     )
 
     process {
+        if ($null -eq $InputObjects) {
+            Write-Output ''
+            return
+        }
+        
         foreach ($InputObject in $InputObjects) {
             if ($null -eq $InputObject) {
                 Write-Output ''
