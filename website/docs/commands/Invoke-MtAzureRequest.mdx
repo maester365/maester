@@ -15,8 +15,9 @@ Invoke a REST API request to the Azure Management API.
 ## SYNTAX
 
 ```powershell
-Invoke-MtAzureRequest [-RelativeUri] <String[]> [[-Method] <String>] [[-ApiVersion] <Object>]
- [[-Filter] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Invoke-MtAzureRequest [-RelativeUri] <String> [[-Method] <String>] [[-ApiVersion] <Object>]
+ [[-Filter] <String>] [[-Select] <String>] [[-Payload] <String>] [-Graph] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,9 +40,9 @@ Invoke-MtAzureRequest -RelativeUri 'subscriptions'
 Graph endpoint such as "users".
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: Path
 
 Required: True
 Position: 1
@@ -86,7 +87,9 @@ Accept wildcard characters: False
 
 ### -Filter
 
-The filter to use.
+Filter parameters to include in the request.
+E.g.
+"displayName eq 'John'"
 
 ```yaml
 Type: String
@@ -96,6 +99,57 @@ Aliases:
 Required: False
 Position: 4
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Select
+
+Select parameters to include in the request.
+E.g.
+"id,displayName"
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Payload
+
+The body payload for POST/PATCH/PUT requests
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: Body
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Graph
+
+Use Microsoft Graph endpoint.
+Defaults to Azure Resource Manager, if enabled requests will go to Microsoft Graph
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

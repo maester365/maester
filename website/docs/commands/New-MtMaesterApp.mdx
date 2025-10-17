@@ -1,0 +1,207 @@
+---
+sidebar_class_name: hidden
+description: Creates a new Maester application in Entra ID with required permissions.
+id: New-MtMaesterApp
+title: New-MtMaesterApp
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/New-MtMaesterApp.ps1
+---
+
+## SYNOPSIS
+
+Creates a new Maester application in Entra ID with required permissions.
+
+## SYNTAX
+
+```powershell
+New-MtMaesterApp [[-Name] <String>] [-SendMail] [-SendTeamsMessage] [-Privileged] [[-Scopes] <String[]>]
+ [[-GitHubOrganization] <String>] [[-GitHubRepository] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Creates a new application registration in Entra ID specifically configured for running
+Maester tests in a DevOps pipeline.
+The application will be granted the necessary Graph API
+permissions based on the specified parameters and tagged for easy identification.
+
+The user running this command must have a permissions to create applications and consent to Graph Permissions.
+This requires a minimum of being a Privileged Role Administrator (and Cloud Application Administrator if needed) or Global Administrator.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+New-MtMaesterApp
+```
+
+Creates a new Maester app with default permissions and name 'Maester DevOps Account'.
+
+### EXAMPLE 2
+
+```powershell
+New-MtMaesterApp -Name "My Maester Pipeline App" -SendMail
+```
+
+Creates a new Maester app with mail sending capabilities.
+
+### EXAMPLE 3
+
+```powershell
+New-MtMaesterApp -Privileged -Scopes @("User.Read.All", "Group.Read.All")
+```
+
+Creates a new Maester app with privileged scopes and additional custom scopes.
+
+## PARAMETERS
+
+### -Name
+
+The display name for the application.
+If not specified, defaults to 'Maester DevOps Account'.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SendMail
+
+If specified, includes the Mail.Send permission scope.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SendTeamsMessage
+
+If specified, includes the ChannelMessage.Send permission scope.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Privileged
+
+If specified, includes privileged permission scopes for read-write operations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Scopes
+
+Additional custom permission scopes to include beyond the default Maester scopes.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: @()
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GitHubOrganization
+
+If specified adds federated credential for GitHub Actions
+Your GitHub organization name or GitHub username.
+E.g.
+jasonf
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GitHubRepository
+
+Your GitHub repository name where the GitHub Actions workflow is located.
+E.g.
+maester-tests
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/New-MtMaesterApp](https://maester.dev/docs/commands/New-MtMaesterApp)

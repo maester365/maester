@@ -1,0 +1,190 @@
+---
+sidebar_class_name: hidden
+description: Updates an existing Maester application with the latest required permissions.
+id: Update-MtMaesterApp
+title: Update-MtMaesterApp
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Update-MtMaesterApp.ps1
+---
+
+## SYNOPSIS
+
+Updates an existing Maester application with the latest required permissions.
+
+## SYNTAX
+
+### ById
+
+```powershell
+Update-MtMaesterApp -Id <String> [-SendMail] [-SendTeamsMessage] [-Privileged] [-Scopes <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### ByApplicationId
+
+```powershell
+Update-MtMaesterApp -AppId <String> [-SendMail] [-SendTeamsMessage] [-Privileged] [-Scopes <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Updates an existing Maester application in Azure AD/Entra ID with the current set of required
+Graph API permissions.
+This is useful when new permissions are added to Maester and existing
+applications need to be updated to include them.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
+```
+
+Updates the specified Maester app with the current default permissions.
+
+### EXAMPLE 2
+
+```powershell
+Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -SendMail -Privileged
+```
+
+Updates the specified Maester app with mail sending and privileged capabilities.
+
+### EXAMPLE 3
+
+```powershell
+Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("User.Read.All")
+```
+
+Updates the specified Maester app with additional custom scopes.
+
+## PARAMETERS
+
+### -Id
+
+The ID of the Maester app to update
+
+```yaml
+Type: String
+Parameter Sets: ById
+Aliases: ObjectId
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AppId
+
+The Application (Client) ID of the Maester app to update
+
+```yaml
+Type: String
+Parameter Sets: ByApplicationId
+Aliases: ClientId
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SendMail
+
+If specified, includes the Mail.Send permission scope.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SendTeamsMessage
+
+If specified, includes the ChannelMessage.Send permission scope.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Privileged
+
+If specified, includes privileged permission scopes for read-write operations.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Scopes
+
+Additional custom permission scopes to include beyond the default Maester scopes.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: @()
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Update-MtMaesterApp](https://maester.dev/docs/commands/Update-MtMaesterApp)
