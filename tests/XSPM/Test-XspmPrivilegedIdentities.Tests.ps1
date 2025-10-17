@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    try {    
+    try {
         $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
     catch {
         Write-Warning "Unable to get license information for Defender XDR."
