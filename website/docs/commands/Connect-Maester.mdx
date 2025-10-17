@@ -17,12 +17,14 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ```powershell
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
- [[-Service] <String[]>] [[-TenantId] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
+Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess.
+It attempts to connect to all services by default: Microsoft Graph, Azure, Exchange Online, and Microsoft Teams.
 
 This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -38,15 +40,15 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 Connect-Maester
 ```
 
-Connects to Microsoft Graph using Connect-MgGraph with the required scopes.
+Connects to all Microsoft services that Maester is able to assess: Microsoft Graph, Azure, Exchange Online, Exchange Online Security & Compliance, and Microsoft Teams.
 
 ### EXAMPLE 2
 
 ```powershell
-Connect-Maester -Service All
+Connect-Maester -Service Graph,Teams
 ```
 
-Connects to Microsoft Graph, Azure, and Exchange Online.
+Connects to Microsoft Graph and Microsoft Teams.
 
 ### EXAMPLE 3
 
@@ -116,10 +118,10 @@ Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 ### EXAMPLE 11
 
 ```powershell
-Connect-Maester -Environment Germany
+Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
 ```
 
-Connects to the Germany environment for Microsoft Graph.
+Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
 ## PARAMETERS
 
@@ -288,6 +290,24 @@ Aliases:
 
 Required: False
 Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GraphClientId
+
+The Client ID of the app to connect to for Graph.
+If not specified, the default Graph PowerShell CLI enterprise app will be used.
+Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

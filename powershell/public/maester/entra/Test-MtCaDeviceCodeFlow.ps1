@@ -22,14 +22,14 @@ function Test-MtCaDeviceCodeFlow {
     param ()
 
     try {
-        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' -and $_.conditions.authenticationFlows.transferMethods -contains 'deviceCodeFlow' }
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' -and $_.conditions.authenticationFlows.transferMethods -match 'deviceCodeFlow' }
         $policiesResult = New-Object System.Collections.ArrayList
         $result = $false
 
         foreach ($policy in $policies) {
             if ($policy.conditions.users.includeUsers -eq 'All' -and
                 $policy.conditions.clientAppTypes -eq 'all' -and (
-                    ($policy.grantControls.buildInControls -contains 'block' -and (-not $policy.conditions.locations -or $policy.conditions.locations.includeLocations -eq 'All')) -or
+                    ($policy.grantControls.builtInControls -contains 'block' -and (-not $policy.conditions.locations -or $policy.conditions.locations.includeLocations -eq 'All')) -or
                     ($policy.grantControls.builtInControls -contains 'compliantDevice' -or $policy.grantControls.builtInControls -contains 'domainJoinedDevice' )
                 )
             ) {

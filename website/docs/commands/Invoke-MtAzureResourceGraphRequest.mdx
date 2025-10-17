@@ -1,0 +1,107 @@
+---
+sidebar_class_name: hidden
+description: Invoke a query request to the Azure Resource Graph.
+id: Invoke-MtAzureResourceGraphRequest
+title: Invoke-MtAzureResourceGraphRequest
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtAzureResourceGraphRequest.ps1
+---
+
+## SYNOPSIS
+
+Invoke a query request to the Azure Resource Graph.
+
+## SYNTAX
+
+```powershell
+Invoke-MtAzureResourceGraphRequest [-Query] <String> [[-ApiVersion] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function allows you to query resources across Azure subscriptions using Azure Resource Graph.
+It provides a simplified interface for resource discovery and exploration.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Invoke-MtAzureResourceGraphRequest -Query "Resources | where type =~ 'Microsoft.Compute/virtualMachines'"
+```
+
+Lists all Azure virtual machines
+
+### EXAMPLE 2
+
+```powershell
+Invoke-MtAzureResourceGraphRequest -Query "ResourceContainers | where type=='microsoft.resources/subscriptions'"
+```
+
+Lists all Azure subscriptions
+
+## PARAMETERS
+
+### -Query
+
+The Resource Graph query to execute using KQL (Kusto Query Language)
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ApiVersion
+
+The API version to use for the Azure Resource Graph REST API
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: 2021-03-01
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Invoke-MtAzureResourceGraphRequest](https://maester.dev/docs/commands/Invoke-MtAzureResourceGraphRequest)

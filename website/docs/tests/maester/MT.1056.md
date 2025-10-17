@@ -17,12 +17,14 @@ Ensure that no User Access Administrator permissions at the Root Scope are appli
 ## How to fix
 
 To remove all Admins with Root Scope permissions, as a Global Admin:
-1. Navigate to Microsoft 365 admin center [https://portal.microsoft.com](https://portal.microsoft.com).
-2. Search for **Microsoft Entra ID** select **Microsoft Entra ID**.
-3. Expand the **Manage** menu, select **Properties**
+1. Navigate to [Microsoft Entra admin center](https://entra.microsoft.com).
+2. Navigate to **Entra ID** > **Overview**.
+3. Click on **Properties**.
 3. On the **Properties** page, go to the **Access management for Azure resources** section.
-4. In the information bar, click: **Manage elevated access users**.
-5. Select all User Access Administrators, and click **Remove**
+4. Eleveate your account by toggle the switch to **Yes** and refresh the page.
+5. In the yellow information bar, click: **Manage elevated access users**.
+6. Select all User Access Administrators, and click **Remove**.
+7. Remove elevated access your account by setting the toggle to **No**.
 
 To remove the admins through CLI:
 ```powershell

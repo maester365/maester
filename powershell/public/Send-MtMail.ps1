@@ -47,9 +47,10 @@ function Send-MtMail {
 
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
+        # Accepts either a GUID or UPN (User Principal Name) format.
         [ValidateScript({
-            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$') {
-                throw "Invalid UserId format. It should be a valid GUID."
+            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$' -and $_ -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
+                throw "Invalid UserId format. It should be a valid GUID or UPN (User Principal Name)."
             }
             return $true
         })]
@@ -121,8 +122,7 @@ function Send-MtMail {
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
-        if ($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
-        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Status)</td></tr>"
+        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Result)</td></tr>"
         $counter++
     }
     $table += "</table>"

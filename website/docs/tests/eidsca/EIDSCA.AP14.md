@@ -13,7 +13,7 @@ Prevents all non-admins from reading user information from the directory. This f
 | **Name** | allowedToReadOtherUsers |
 | **Control** | Default Authorization Settings |
 | **Description** | Manages authorization settings in Entra ID (Azure AD) |
-| **Severity** | Informational |
+| **Severity** | Info |
 
 ## How to fix
 

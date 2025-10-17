@@ -133,6 +133,23 @@ function ConvertTo-MtMaesterResult {
             $severity = $testSetting.Severity
         }
 
+        # Setting Result to Error, Overwriting the Skipped state
+        if ($testResultDetail.TestSkipped -eq "Error" ) {
+            $result = "Error"
+        } elseif ((
+                $test -and
+                $test.ErrorRecord -and
+                $test.ErrorRecord.Count -gt 0 -and
+                $test.ErrorRecord[0].CategoryInfo -and
+                $test.ErrorRecord[0].CategoryInfo.Reason) -and
+                (@("RuntimeException","ParameterBindingValidationException","HttpRequestException","TaskCanceledException") -Contains $test.ErrorRecord[0].CategoryInfo.Reason )) {
+            Write-Verbose "Setting result=Error $($name) because: $($test.ErrorRecord[0].CategoryInfo.Reason)"
+            $result = "Error"
+        }
+        else {
+            $result = $test.Result
+        }
+
         $timeSpanFormat = 'hh\:mm\:ss'
         $mtTestInfo = [PSCustomObject]@{
             Index           = $testIndex
@@ -140,9 +157,9 @@ function ConvertTo-MtMaesterResult {
             Title           = $testTitle
             Name            = $name
             HelpUrl         = $helpUrl
-            Severity       =  $severity
+            Severity        = $severity
             Tag             = @($test.Block.Tag + $test.Tag | Select-Object -Unique)
-            Result          = $test.Result
+            Result          = $result
             ScriptBlock     = $test.ScriptBlock.ToString()
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
@@ -152,6 +169,22 @@ function ConvertTo-MtMaesterResult {
         }
         $mtTests += $mtTestInfo
     }
+    # Count all Passed, Failed, Skipped, Error, NotRun and Total results
+    $Recount = [PSCustomObject]@{
+        FailedCount  = 0
+        PassedCount  = 0
+        SkippedCount = 0
+        NotRunCount  = 0
+        ErrorCount   = 0
+        TotalCount   = 0
+    }
+    $Recount.FailedCount = @($mtTests | Where-Object { $_.Result -eq 'Failed' }).Count
+    $Recount.PassedCount = @($mtTests | Where-Object { $_.Result -eq 'Passed' }).Count
+    $Recount.ErrorCount = @($mtTests | Where-Object { $_.Result -eq 'Error' }).Count
+    $Recount.SkippedCount = @($mtTests | Where-Object { $_.Result -eq 'Skipped' }).Count
+    $Recount.NotRunCount = @($mtTests | Where-Object { $_.Result -eq 'NotRun' }).Count
+    $Recount.TotalCount = $mtTests.Count
+    Write-Verbose "Recount: $($Recount | Out-String)"
 
     $mtBlocks = @()
     foreach ($container in $PesterResults.Containers) {
@@ -159,33 +192,34 @@ function ConvertTo-MtMaesterResult {
         foreach ($block in $container.Blocks) {
             $mtBlockInfo = $mtBlocks | Where-Object { $_.Name -eq $block.Name }
             if ($null -eq $mtBlockInfo) {
+                Write-Verbose "Recalculating block: $($block.Name)"
                 $mtBlockInfo = [PSCustomObject]@{
                     Name         = $block.Name
                     Result       = $block.Result
-                    FailedCount  = $block.FailedCount
-                    PassedCount  = $block.PassedCount
-                    SkippedCount = $block.SkippedCount
-                    NotRunCount  = $block.NotRunCount
-                    TotalCount   = $block.TotalCount
+                    FailedCount  = @($mtTests | Where-Object { $_.Result -eq 'Failed' -and $_.Block -eq $block.name }).Count
+                    PassedCount  = @($mtTests | Where-Object { $_.Result -eq 'Passed' -and $_.Block -eq $block.name }).Count
+                    ErrorCount   = @($mtTests | Where-Object { $_.Result -eq 'Error' -and $_.Block -eq $block.name }).Count
+                    SkippedCount = @($mtTests | Where-Object { $_.Result -eq 'Skipped' -and $_.Block -eq $block.name }).Count
+                    NotRunCount  = @($mtTests | Where-Object { $_.Result -eq 'NotRun' -and $_.Block -eq $block.name }).Count
+                    TotalCount   = @($mtTests | Where-Object { $_.Block -eq $block.name }).Count
                     Tag          = $block.Tag
                 }
                 $mtBlocks += $mtBlockInfo
-            } else {
-                $mtBlockInfo.FailedCount += $block.FailedCount
-                $mtBlockInfo.PassedCount += $block.PassedCount
-                $mtBlockInfo.SkippedCount += $block.SkippedCount
-                $mtBlockInfo.NotRunCount += $block.NotRunCount
-                $mtBlockInfo.TotalCount += $block.TotalCount
+            }
+            else {
+                # We already seen and counted all blocks
             }
         }
     }
 
     $mtTestResults = [PSCustomObject]@{
         Result            = $PesterResults.Result
-        FailedCount       = $PesterResults.FailedCount
-        PassedCount       = $PesterResults.PassedCount
-        SkippedCount      = $PesterResults.SkippedCount
-        TotalCount        = $PesterResults.TotalCount
+        FailedCount       = $Recount.FailedCount
+        PassedCount       = $Recount.PassedCount
+        ErrorCount        = $Recount.ErrorCount
+        SkippedCount      = $Recount.SkippedCount
+        NotRunCount       = $Recount.NotRunCount
+        TotalCount        = $Recount.TotalCount
         ExecutedAt        = GetFormattedDate($PesterResults.ExecutedAt)
         TotalDuration     = $PesterResults.Duration.ToString($timeSpanFormat)
         UserDuration      = $PesterResults.UserDuration.ToString($timeSpanFormat)

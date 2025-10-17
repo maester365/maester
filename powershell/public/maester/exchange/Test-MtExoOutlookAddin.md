@@ -21,9 +21,7 @@ Get-ManagementRoleAssignment -RoleAssignee "Default Role Assignment Policy" | Wh
 
 4. Remove the app installation permissions from the default policy:
 ```powershell
-Remove-ManagementRoleAssignment -Identity "Default Role Assignment Policy-My Custom Apps" -Confirm:$false
-Remove-ManagementRoleAssignment -Identity "Default Role Assignment Policy-My Marketplace Apps" -Confirm:$false
-Remove-ManagementRoleAssignment -Identity "Default Role Assignment Policy-My ReadWriteMailbox Apps" -Confirm:$false
+Get-ManagementRoleAssignment -RoleAssignee "Default Role Assignment Policy" | Where-Object { $_.Role -like "My*Apps" } | Remove-ManagementRoleAssignment -Confirm:$false
 ```
 
 5. Verify the changes:

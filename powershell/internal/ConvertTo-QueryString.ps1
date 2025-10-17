@@ -26,7 +26,6 @@ function ConvertTo-QueryString {
 
     process {
         foreach ($InputObject in $InputObjects) {
-            # Handle null input
             if ($null -eq $InputObject) {
                 Write-Output ''
                 continue
@@ -41,7 +40,7 @@ function ConvertTo-QueryString {
                     [string] $ParameterName = $Item.Key
                     if ($EncodeParameterNames) { $ParameterName = [System.Net.WebUtility]::UrlEncode($ParameterName) }
 
-                    # Handle null values
+                    ## Convert null values to empty string
                     $value = if ($null -eq $Item.Value) { '' } else { $Item.Value.ToString() }
                     [void]$QueryString.AppendFormat('{0}={1}', $ParameterName, [System.Net.WebUtility]::UrlEncode($value))
                 }
@@ -53,13 +52,13 @@ function ConvertTo-QueryString {
                     [string] $ParameterName = $Item.Name
                     if ($EncodeParameterNames) { $ParameterName = [System.Net.WebUtility]::UrlEncode($ParameterName) }
 
-                    # Handle null property values
+                    ## Convert null property values to empty string
                     $propertyValue = $InputObject.($Item.Name)
                     $value = if ($null -eq $propertyValue) { '' } else { $propertyValue.ToString() }
                     [void]$QueryString.AppendFormat('{0}={1}', $ParameterName, [System.Net.WebUtility]::UrlEncode($value))
                 }
             } else {
-                # Non-Terminating Error with more context
+                ## Non-terminating error
                 $Exception = New-Object ArgumentException -ArgumentList ('Cannot convert input of type {0} to query string. Supported types: Hashtable, OrderedDictionary, Dictionary, or objects with properties.' -f $InputObject.GetType())
                 Write-Error -Exception $Exception -Category ([System.Management.Automation.ErrorCategory]::ParserError) -CategoryActivity $MyInvocation.MyCommand -ErrorId 'ConvertQueryStringFailureTypeNotSupported' -TargetObject $InputObject
                 continue

@@ -13,7 +13,7 @@ The state of migration of the authentication methods policy from the legacy mult
 | **Name** | policyMigrationState |
 | **Control** | Authentication Method - General Settings |
 | **Description** | The tenant-wide policy that controls which authentication methods are allowed in the tenant, authentication method registration requirements, and self-service password reset settings. |
-| **Severity** | Informational |
+| **Severity** | Info |
 
 ## How to fix
 

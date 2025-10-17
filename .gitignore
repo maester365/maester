@@ -498,3 +498,7 @@ tests/Custom/*.ps1
 
 # ORCA Staging
 build/orca/orca/
+
+#Ignore Codacy's MCP server configuration and instruction files
+.github/instructions/codacy.instructions.md
+.codacy/**
