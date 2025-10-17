@@ -1,15 +1,19 @@
-BeforeAll {
-    $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
-    $RegularUsers = Get-MtUser -Count 5 -UserType 'Member'
-    $AdminUsers = Get-MtUser -Count 5 -UserType 'Admin'
-    $EmergencyAccessUsers = Get-MtUser -Count 5 -UserType 'EmergencyAccess'
-    # Remove emergency access users from regular users
-    $RegularUsers = $RegularUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
-    # Remove emergency access users from admin users
-    $AdminUsers = $AdminUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
-    Write-Verbose "EntraIDPlan: $EntraIDPlan"
-    Write-Verbose "RegularUsers: $($RegularUsers.id)"
-    Write-Verbose "AdminUsers: $($AdminUsers.id)"
+BeforeDiscovery {
+    try {
+        $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
+        $RegularUsers = Get-MtUser -Count 5 -UserType 'Member'
+        $AdminUsers = Get-MtUser -Count 5 -UserType 'Admin'
+        $EmergencyAccessUsers = Get-MtUser -Count 5 -UserType 'EmergencyAccess'
+        # Remove emergency access users from regular users
+        $RegularUsers = $RegularUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
+        # Remove emergency access users from admin users
+        $AdminUsers = $AdminUsers | Where-Object { $_.id -notin $EmergencyAccessUsers.id }
+        Write-Verbose "EntraIDPlan: $EntraIDPlan"
+        Write-Verbose "RegularUsers: $($RegularUsers.id)"
+        Write-Verbose "AdminUsers: $($AdminUsers.id)"
+    } catch {
+        $EntraIDPlan = "NotConnected"
+    }
 }
 
 

@@ -1,5 +1,9 @@
 ﻿BeforeDiscovery {
-    $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
+    try {
+        $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
+    } catch {
+        $DefenderPlan = "NotConnected"
+    }
 }
 
 Describe "Exposure Management" -Tag "Privileged", "Entra", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
