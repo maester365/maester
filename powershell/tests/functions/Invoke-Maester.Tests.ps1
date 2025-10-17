@@ -3,5 +3,53 @@
         if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
         { Invoke-Maester } | Should -Throw 'Not connected to Microsoft Graph.*'
     }
-}
 
+    It 'Validates smoke test results' {
+        if (Get-MgContext) { Disconnect-Graph } # Ensure we are disconnected
+
+        $maesterParams = @{
+            Path                 = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "smoketests"))
+            OutputFolder         = [System.IO.Path]::GetFullPath((Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath "test-results"))
+            PassThru             = $true
+            SkipGraphConnect     = $true
+            NonInteractive       = $true
+            OutputFolderFileName = "TestResults"
+            ExcludeTag           = "testtag"
+            NoLogo               = $true
+        }
+        $r = Invoke-Maester @maesterParams
+        # Dynamically calculate expected counts from smoke test files
+        $smokeTestFiles = Get-ChildItem -Path $maesterParams.Path -Filter *.ps1
+        $expectedTotalCount = 0
+        $expectedPassedCount = 0
+        $expectedFailedCount = 0
+        $expectedSkippedCount = 0
+        $expectedErrorCount = 0
+        $expectedNotRunCount = 0
+        foreach ($file in $smokeTestFiles) {
+            $content = Get-Content -Path $file.FullName
+            foreach ($line in $content) {
+                if ($line -match 'Smoke_Success') {
+                    $expectedPassedCount++; $expectedTotalCount++
+                } elseif ($line -match 'Smoke_Failed') {
+                    $expectedFailedCount++; $expectedTotalCount++
+                } elseif ($line -match 'Smoke_Error') {
+                    $expectedErrorCount++; $expectedTotalCount++
+                } elseif ($line -match 'Smoke_Skipped') {
+                    $expectedSkippedCount++; $expectedTotalCount++
+                } elseif ($line -match 'Smoke_NotRun') {
+                    $expectedNotRunCount++; $expectedTotalCount++
+                }
+            }
+        }
+
+        # Validate the test results structure
+        $r | Should -Not -BeNullOrEmpty -Because 'there should be a result'
+        $r.TotalCount | Should -BeExactly $expectedTotalCount -Because 'counting Total'
+        $r.FailedCount | Should -BeExactly $expectedFailedCount -Because 'counting Failed'
+        $r.ErrorCount | Should -BeExactly $expectedErrorCount -Because 'counting Error'
+        $r.PassedCount | Should -BeExactly $expectedPassedCount -Because 'counting Success'
+        $r.SkippedCount | Should -BeExactly $expectedSkippedCount -Because 'counting Skipped'
+        $r.NotRunCount | Should -BeExactly $expectedNotRunCount -Because 'counting Notrun'
+    }
+}
