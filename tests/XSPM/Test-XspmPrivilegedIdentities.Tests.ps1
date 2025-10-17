@@ -1,5 +1,9 @@
 ﻿BeforeDiscovery {
-    $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
+    try {    
+        $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
+    catch {
+        Write-Warning "Unable to get license information for Defender XDR."
+    }
 }
 
 Describe "Exposure Management" -Tag "Privileged", "Entra", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
