@@ -1,4 +1,7 @@
 {
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": []
+  },
   "TestSettings": [
     {
       "Id": "CIS.M365.1.1.1",
