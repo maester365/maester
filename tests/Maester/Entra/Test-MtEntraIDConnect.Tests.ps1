@@ -1,5 +1,9 @@
 ﻿BeforeDiscovery {
-    $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
+    try {
+        $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
+    } catch {
+        $EntraIDPlan = "NotConnected"
+    }
 }
 
 Describe "Maester/Entra" -Tag "EntraIdConnect", "Entra", "Graph", "Security" {
