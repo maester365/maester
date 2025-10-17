@@ -16,7 +16,7 @@ Obtains and converts the mail authentication records of a domain
 
 ```powershell
 Get-MailAuthenticationRecord [-DomainName] <String> [[-DnsServerIpAddress] <IPAddress>]
- [[-DkimSelector] <String>] [[-Records] <String[]>] [-QuickTimeout] [-NoHostsFile]
+ [[-DkimDnsName] <String>] [[-Records] <String[]>] [-QuickTimeout] [-NoHostsFile]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -74,9 +74,13 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DkimSelector
+### -DkimDnsName
 
-Selector-name for the DKIM record to retrieve.
+Active DNS name for the DKIM record to retrieve.
+
+Assuming selector1 is active:
+For Microsoft domain it's: (Get-DkimSigningConfig -Identity contoso.onmicrosoft.com).Selector1CNAME
+For custom domain it's: selector1._domainkey.contoso.com
 
 ```yaml
 Type: String
