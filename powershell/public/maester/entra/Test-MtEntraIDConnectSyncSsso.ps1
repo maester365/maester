@@ -1,20 +1,20 @@
 ﻿<#
 .SYNOPSIS
-    Ensure soft and hard matching for on-premises synchronization objects is blocked
+    Ensure Microsoft Entra seamless single sign-on is disabled for all domains.
 
 .DESCRIPTION
-    Soft and hard matching for on-premises synchronization objects is a feature that allows Entra ID to match users based on their userprincipalname, email address or other attributes.
-    This can lead to unintended consequences, such as mismatching user data.
+    Microsoft Entra seamless single sign-on (SSSO) provides users with easy access to cloud-based applications by automatically signing them in when they are on their corporate devices connected to the corporate network.
+    However, if not managed properly, it can introduce security risks, especially if devices are compromised or if there are misconfigurations.
 
 .EXAMPLE
-    Test-MtEntraIDConnectSyncSSO
+    Test-MtEntraIDConnectSyncSsso
 
-    Returns true if soft and hard matching is blocked / disabled
+    Returns true if Microsoft Entra seamless single sign-on is disabled
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtEntraIDConnectSyncSSO
+    https://maester.dev/docs/commands/Test-MtEntraIDConnectSyncSsso
 #>
-function Test-MtEntraIDConnectSyncSSO {
+function Test-MtEntraIDConnectSyncSsso {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
