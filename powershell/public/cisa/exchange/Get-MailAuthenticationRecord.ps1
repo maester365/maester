@@ -77,7 +77,7 @@ function Get-MailAuthenticationRecord {
             QuickTimeout       = $QuickTimeout
             NoHostsFile        = $NoHostsFile
         }
-        # Cannot splat $DnsServerIpAddress if it is $null as it will spread $null and prohibit use the default value '1.1.1.1'of get-dns functions
+        # Cannot splat $DnsServerIpAddress if it is $null as it will spread $null and prohibit use the default value '1.1.1.1' of get-dns functions
         if ($DnsServerIpAddress) {
             Add-Member -InputObject $splat -MemberType NoteProperty -Name DnsServerIpAddress -Value $DnsServerIpAddress
         }
