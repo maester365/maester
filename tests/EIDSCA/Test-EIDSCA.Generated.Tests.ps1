@@ -1,4 +1,4 @@
-BeforeAll {
+BeforeDiscovery {
     $AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
     $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
     $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
