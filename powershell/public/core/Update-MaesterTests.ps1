@@ -38,7 +38,7 @@ function Update-MaesterTests {
         [Parameter(Mandatory = $false)]
         [switch] $Force
     )
-    Write-Verbose 'Checking if newer version is availble.'
+    Write-Verbose 'Checking if newer version is available.'
     Get-IsNewMaesterVersionAvailable | Out-Null
 
     Write-Verbose "Updating Maester tests in '$Path'."
