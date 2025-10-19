@@ -5,8 +5,7 @@ slug: whats-new-with-maester-tags
 authors: [samerde]
 tags: [tags,maester-v2]
 hide_table_of_contents: false
-image: ./img/________________.png
-date: 2025-10-15
+date: 2025-10-20
 ---
 
 Today we are happy to announce that it is now easier to assess your M365 environment with specific types of tagged tests. Key Maester tags are now less ambiguous, and a new function makes it easy to see all of the tests associated with each tag! 🏷️
