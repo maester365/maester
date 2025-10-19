@@ -23,7 +23,7 @@ When you run Maester with no tag-related parameters, it automatically includes a
 Invoke-Maester -Path './maester-tests'
 ```
 
-Runs all default the tests in the folder `./maester-tests` (excludes long running and preview, as noted above) and generates a report of the results in the default `./test-results` location.
+Runs all the default tests in the folder `./maester-tests` (excludes long running and preview, as noted above) and generates a report of the results in the default `./test-results` location.
 
 ### 🏷️ Run Tests with Specific Tags
 
