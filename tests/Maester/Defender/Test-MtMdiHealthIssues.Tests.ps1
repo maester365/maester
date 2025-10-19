@@ -2,19 +2,36 @@ BeforeDiscovery {
     $checkid = "MT.1059"
 
     try {
-        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
+        Test-MtConnection -Service Graph -ErrorAction Stop
     } catch {
-        Write-Verbose "Authentication needed. Please call Connect-MgGraph."
-        return $null
+        Write-Verbose 'Authentication needed. Please call Connect-MgGraph.'
+    }
+
+    try {
+        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
+        # Add domainNames and sensorDNSNames as string properties to identify unique health issues
+        $MdiAllHealthIssues | ForEach-Object {
+            $_ | Add-Member -NotePropertyName 'domainNamesString' -NotePropertyValue ($_.domainNames -join ',') -Force
+            $_ | Add-Member -NotePropertyName 'sensorDNSNamesString' -NotePropertyValue ($_.sensorDNSNames -join ',') -Force
+        }
+    } catch {
+        $JsonPart = $MdiSecurityApiError -split '\r?\n\r?\n' | Select-Object -Last 1
+        # Convert to object and extract the message
+        $ErrorMessage = ($JsonPart | ConvertFrom-Json).error.message
+        Write-Verbose $ErrorMessage -Verbose
+        [hashtable]$MdiAllHealthIssues = @{
+            displayName = 'Unable to detect health issues'
+            severity = 'Informational'
+            status = 'Closed'
+            recommendations = @()
+            additionalInformation = @{}
+            domainNames = @()
+            sensorDNSNames = @()
+            createdDateTime = (Get-Date).ToString("o")
+        }
     }
 
     $MdiHealthIssues = [System.Collections.Generic.List[Object]]::new()
-
-    # Add domainNames and sensorDNSNames as string properties to identify unique health issues
-    $MdiAllHealthIssues | ForEach-Object {
-        $_ | Add-Member -NotePropertyName 'domainNamesString' -NotePropertyValue ($_.domainNames -join ',') -Force
-        $_ | Add-Member -NotePropertyName 'sensorDNSNamesString' -NotePropertyValue ($_.sensorDNSNames -join ',') -Force
-    }
 
     # Get unique health issues (duplicated entries will be created when status of an issue has been changed)
     $textInfo = (Get-Culture).TextInfo
@@ -24,6 +41,7 @@ BeforeDiscovery {
         $UniqueHealthIssue.status = $textInfo.ToTitleCase($UniqueHealthIssue.status) # It just looks better...
         $MdiHealthIssues.Add($UniqueHealthIssue) | Out-Null
     }
+
     # Group all latest issues based on displayName to group sensors based on particular issue
     $MdiHealthIssuesGrouped = $MdiHealthIssues | Group-Object -Property displayName
 }
