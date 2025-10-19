@@ -1,4 +1,4 @@
-BeforeAll {
+BeforeDiscovery {
     $checkid = "MT.1059"
 
     try {
