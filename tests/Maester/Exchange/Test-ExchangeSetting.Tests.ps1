@@ -49,6 +49,33 @@ Describe "Maester/Exchange" -Tag "Maester", "Exchange" {
         }
     }
 
+    It "MT.1074: Ensure no more then 100 outbound mails per day are send using the .onmicrosoft.com domain" -Tag "MT.1074" {
+
+        $result = Test-MtLimitOnMicrosoftDomainUsage
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "no or less then 100 outbound mails are send per day using the .onmicrosoft.com domain."
+        }
+    }
+
+    It "MT.1076: MOERA SHOULD NOT be used for sent mail" -Tag "MT.1076", "MOERA" {
+
+        $result = Test-MtExoMoeraMailActivity
+
+        if ($result -ne $true) {
+            $result | Should -Be $true -Because "MOERA is not in use."
+        }
+    }
+
+    It "MT.1083: Ensure Delicensing Resiliency is enabled" -Tag "MT.1083", "DelicensingResiliency" {
+
+        $result = Test-MtExoDelicensingResiliency
+
+        if ($result -ne $true) {
+            $result | Should -Be $true -Because "Delicensing Resiliency should be enabled."
+        }
+    }
+
     # Ensure 'External sharing' of calendars is not available:
     # > CIS 1.3.3 (L2) Ensure 'External sharing' of calendars is not available
     # > MS.EXO.6.2: Calendar details SHALL NOT be shared with all domains.

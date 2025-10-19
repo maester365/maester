@@ -1,4 +1,4 @@
-BeforeDiscovery {
+BeforeAll {
     try {
         $EntraRecommendations = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
         Write-Verbose "Found $($EntraRecommendations.Count) Entra recommendations"
@@ -7,7 +7,7 @@ BeforeDiscovery {
     }
 }
 
-Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "All", "Recommendation" -ForEach $EntraRecommendations {
+Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -ForEach $EntraRecommendations {
     It "MT.1024: Entra Recommendation - <displayName>. See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
 
         $EntraPremiumRecommendations = @(

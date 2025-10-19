@@ -37,7 +37,7 @@ See [Require a compliant device, Microsoft Entra hybrid joined device, or MFA - 
     $testResult = "These conditional access policies enforce the use of a compliant device :`n`n"
 
     foreach ($policy in $policies) {
-      if ($policy.grantControls.buildInControls -contains 'compliantDevice') {
+      if ($policy.grantControls.builtInControls -contains 'compliantDevice') {
         Write-Verbose -Message "Found a conditional access policy requiring device compliance: $($policy.displayName)"
         $result = $true
         $testResult += "  - [$($policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"

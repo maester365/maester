@@ -15,10 +15,10 @@ This is the main Maester command that runs the tests and generates a report of t
 ## SYNTAX
 
 ```powershell
-Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-OutputHtmlFile <String>]
- [-OutputMarkdownFile <String>] [-OutputJsonFile <String>] [-OutputFolder <String>]
- [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>] [-Verbosity <String>]
- [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
+Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-IncludeLongRunning]
+ [-IncludePreview] [-OutputHtmlFile <String>] [-OutputMarkdownFile <String>] [-OutputJsonFile <String>]
+ [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>]
+ [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
  [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
  [-DriftRoot <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
@@ -28,7 +28,7 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-O
 
 Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
-For more advanced configuration, you can directly use the Pester module and the Export-MtHtmlReport function.
+For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
 By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
@@ -40,7 +40,7 @@ By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory a
 Invoke-Maester
 ```
 
-Runs all the test files under the current folder and generates a report of the results in the ./test-results folder.
+Runs all the test files under the current folder (except for those tagged as LongRunning and Preview) and generates a report of the results in the ./test-results folder.
 
 ### EXAMPLE 2
 
@@ -48,23 +48,25 @@ Runs all the test files under the current folder and generates a report of the r
 Invoke-Maester ./maester-tests
 ```
 
-Runs all the tests in the folder ./tests/Maester and generates a report of the results in the default ./test-results folder.
+Runs all the tests in the folder ./tests/Maester (except for those tagged as LongRunning and Preview) and generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 3
 
 ```powershell
-Invoke-Maester -Tag 'CA'
+Invoke-Maester -Tag 'CA' -IncludeLongRunning
 ```
 
-Runs the tests with the tag "CA" and generates a report of the results in the default ./test-results folder.
+Runs the tests with the tag "CA" and includes long-running tests.
+Generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 4
 
 ```powershell
-Invoke-Maester -Tag 'CA', 'App'
+Invoke-Maester -Tag 'CA', 'App' -IncludePreview
 ```
 
-Runs the tests with the tags 'CA' and 'App' and generates a report of the results in the default ./test-results folder.
+Runs the tests with the tags 'CA' and 'App' and includes preview tests.
+Generates a report of the results in the default ./test-results folder.
 
 ### EXAMPLE 5
 
@@ -72,7 +74,7 @@ Runs the tests with the tags 'CA' and 'App' and generates a report of the result
 Invoke-Maester -OutputFolder './my-test-results'
 ```
 
-Runs all the tests and generates a report of the results in the ./my-test-results folder.
+Runs tests and generates a report of the results in the ./my-test-results folder.
 
 ### EXAMPLE 6
 
@@ -80,7 +82,7 @@ Runs all the tests and generates a report of the results in the ./my-test-result
 Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
 ```
 
-Runs all the tests and generates a report of the results in the specified file.
+Runs the tests and generates a report of the results in the specified file.
 
 ### EXAMPLE 7
 
@@ -88,7 +90,7 @@ Runs all the tests and generates a report of the results in the specified file.
 Invoke-Maester -Path ./tests/EIDSCA
 ```
 
-Runs all the tests in the EIDSCA folder.
+Runs tests in the EIDSCA folder.
 
 ### EXAMPLE 8
 
@@ -96,7 +98,7 @@ Runs all the tests in the EIDSCA folder.
 Invoke-Maester -MailRecipient john@contoso.com
 ```
 
-Runs all the tests and sends a report of the results to mail recipient.
+Runs the tests and sends a report of the results to an email recipient.
 
 ### EXAMPLE 9
 
@@ -104,7 +106,7 @@ Runs all the tests and sends a report of the results to mail recipient.
 Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
 ```
 
-Runs all the tests and posts a summary of the results to a Teams channel.
+Runs the tests and posts a summary of the results to a Teams channel.
 
 ### EXAMPLE 10
 
@@ -112,7 +114,7 @@ Runs all the tests and posts a summary of the results to a Teams channel.
 Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
 ```
 
-Runs all the tests and posts a summary of the results to a Teams channel.
+Runs the tests and posts a summary of the results to a Teams channel.
 
 ### EXAMPLE 11
 
@@ -120,7 +122,7 @@ Runs all the tests and posts a summary of the results to a Teams channel.
 Invoke-Maester -Verbosity Normal
 ```
 
-Shows results of tests as they are run including details on failed tests.
+Shows results of tests as they are run, including details on failed tests.
 
 ### EXAMPLE 12
 
@@ -133,14 +135,23 @@ $configuration.Filter.ExcludeTag = 'App'
 Invoke-Maester -PesterConfiguration $configuration
 ```
 
-Runs all the Pester tests in the EIDSCA folder.
+Runs Pester tests in the ./tests/Maester folder that include the 'CA' tag and exclude the 'App' tag.
+
+### EXAMPLE 13
+
+```powershell
+Connect-Maester -Service All
+Invoke-Maester -IncludeLongRunning -IncludePreview
+```
+
+Connect to all tested services and run all tests, including the long-running and preview tests.
 
 ## PARAMETERS
 
 ### -Path
 
 Specifies path to files containing tests.
-The value is a path\file name or name pattern.
+The value is a path\file name or a name pattern.
 Wildcards are permitted.
 
 ```yaml
@@ -183,6 +194,38 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeLongRunning
+
+Include tests that can take a long time to run in tenants with a large number of objects.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludePreview
+
+Include tests that are still being tested or are dependent on preview APIs.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -240,10 +283,9 @@ Accept wildcard characters: False
 
 ### -OutputFolder
 
-The folder to save the test results.
-If PassThru and no -Output* is set, defaults to ./test-results.
-If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json)
-with a timestamp and saved in the folder.
+The folder to save the test results in.
+If no -Output* is set, defaults to ./test-results.
+If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json) with a timestamp and saved in the folder.
 
 ```yaml
 Type: String
@@ -259,7 +301,7 @@ Accept wildcard characters: False
 
 ### -OutputFolderFileName
 
-The filename to use for all the files in the output folder.
+The filename prefix to use for all the files in the output folder.
 e.g.
 'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
 
@@ -277,7 +319,7 @@ Accept wildcard characters: False
 
 ### -PesterConfiguration
 
-[PesterConfiguration] object for Advanced Configuration
+An optional [PesterConfiguration] object for advanced configuration.
 Default is New-PesterConfiguration
 For help on each option see New-PesterConfiguration, or inspect the object it returns.
 See [Pester Configuration](https://pester.dev/docs/usage/Configuration) for more information.
@@ -298,12 +340,12 @@ Accept wildcard characters: False
 
 Set the Pester verbosity level.
 Default is 'None'.
-None: Shows only the final summary.
-Normal: Focus on successful containers and failed tests/blocks.
+None      : Shows only the final summary.
+Normal    : Focus on successful containers and failed tests/blocks.
 Shows basic discovery information and the summary of all tests.
-Detailed: Similar to Normal, but this level shows all blocks and tests, including successful.
+Detailed  : Similar to Normal, but this level shows all blocks and tests, including successful.
 Diagnostic: Very verbose, but useful when troubleshooting tests.
-This level behaves like Detailed, but also enables debug-messages.
+This level behaves like Detailed, but also enables debug messages.
 
 ```yaml
 Type: String
@@ -351,8 +393,7 @@ Accept wildcard characters: False
 
 ### -MailRecipient
 
-Optional.
-The email addresses of the recipients.
+Optional: The email addresses of the report recipients.
 e.g.
 john@contoso.com
 No email will be sent if this parameter is not provided.
@@ -371,7 +412,7 @@ Accept wildcard characters: False
 
 ### -MailTestResultsUri
 
-Uri to the detailed test results page.
+If sending the report to an email recipient, provide a Uri to the detailed test results page.
 
 ```yaml
 Type: String
@@ -405,8 +446,7 @@ Accept wildcard characters: False
 
 ### -TeamId
 
-Optional.
-The Teams team where the test results should be posted.
+Optional: The Teams team where the test results should be posted.
 To get the TeamId, right-click on the channel in Teams and select 'Get link to channel'.
 Use the value of groupId.
 e.g.
@@ -426,8 +466,7 @@ Accept wildcard characters: False
 
 ### -TeamChannelId
 
-Optional.
-The channel where the message should be posted.
+Optional: The channel where the results message should be posted.
 e.g.
 19%3A00000000000000000000000000000000%40thread.tacv2
 To get the TeamChannelId, right-click on the channel in Teams and select 'Get link to channel'.
@@ -449,13 +488,12 @@ Accept wildcard characters: False
 
 ### -TeamChannelWebhookUri
 
-Optional.
-The webhook Uri where the message should be posted.
+Optional: The webhook Uri where the results message should be posted.
 e.g.
 https://some-url/?value=123
 To get the Webhook Uri, right-click on the channel in Teams and select 'Workflow'.
 Create a workflow using the 'Post to a channel when a webhook request is received' template.
-Use the value after complete
+Use the value after 'complete.'
 
 ```yaml
 Type: String
@@ -472,7 +510,7 @@ Accept wildcard characters: False
 ### -SkipGraphConnect
 
 Skip the graph connection check.
-This is used for running tests that does not require a graph connection.
+This is used for running tests that does not require a Graph connection.
 
 ```yaml
 Type: SwitchParameter
@@ -570,7 +608,7 @@ Accept wildcard characters: False
 
 ### -DriftRoot
 
-Drift tests
+The root directory for configuration drift tracking.
 
 ```yaml
 Type: String

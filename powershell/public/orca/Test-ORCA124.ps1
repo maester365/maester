@@ -3,7 +3,7 @@
     Safe attachments unknown malware response set to block messages.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA124
@@ -38,7 +38,7 @@ function Test-ORCA124{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA124: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA124" -ErrorRecord $_ -AdditionalContext "Running ORCA124 test"
         throw
     } finally {
         if($obj.SkipInReport) {

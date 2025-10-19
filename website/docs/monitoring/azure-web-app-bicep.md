@@ -61,7 +61,11 @@ using 'main.bicep'
 param __env__ = 'prod'
 param __cust__ = 'ct'
 param __location__ = 'westeurope'
+param __defaultTenantName__ = 'contoso.onmicrosoft.com'
+
 param __maesterAppRoles__ = [
+  'DeviceManagementConfiguration.Read.All'
+  'DeviceManagementManagedDevices.Read.All'
   'Directory.Read.All'
   'DirectoryRecommendations.Read.All'
   'IdentityRiskEvent.Read.All'
@@ -74,6 +78,7 @@ param __maesterAppRoles__ = [
   'SecurityIdentitiesSensors.Read.All'
   'SecurityIdentitiesHealth.Read.All'
   'SharePointTenantSettings.Read.All'
+  'ThreatHunting.Read.All'
   'UserAuthenticationMethod.Read.All'
 ]
 
@@ -81,22 +86,37 @@ param __maesterAutomationAccountModules__ = [
   {
     name: 'Maester'
     uri: 'https://www.powershellgallery.com/api/v2/package/Maester'
+    version: '1.3.0'
   }
   {
     name: 'Microsoft.Graph.Authentication'
     uri: 'https://www.powershellgallery.com/api/v2/package/Microsoft.Graph.Authentication'
+    version: '2.30.0'
   }
   {
     name: 'Pester'
     uri: 'https://www.powershellgallery.com/api/v2/package/Pester'
+    version: '5.7.1'
   }
   {
     name: 'NuGet'
     uri: 'https://www.powershellgallery.com/api/v2/package/NuGet'
+    version: '1.3.3'
   }
   {
     name: 'PackageManagement'
     uri: 'https://www.powershellgallery.com/api/v2/package/PackageManagement'
+    version: '1.4.8.1'
+  }
+  {
+    name: 'ExchangeOnlineManagement'
+    uri: 'https://www.powershellgallery.com/api/v2/package/ExchangeOnlineManagement'
+    version: '3.9.0'
+  }
+  {
+    name: 'MicrosoftTeams'
+    uri: 'https://www.powershellgallery.com/api/v2/package/MicrosoftTeams'
+    version: '7.3.1'
   }
 ]
 ```
@@ -115,17 +135,59 @@ extension microsoftGraphV1
 param __env__ string
 param __cust__ string
 param __location__ string
+param __defaultTenantName__ string
 param __maesterAppRoles__ array
 param __maesterAutomationAccountModules__ array
 
 @description('Defining our variables')
-var _maesterResourceGroupName_ = 'rg-maester-${__env__}'
-var _maesterAutomationAccountName_ = 'aa-maester-${__env__}'
-var _maesterStorageAccountName_ = 'sa${__cust__}maester${__env__}'
+var _maesterAutomationVariables_ = [
+  {
+    name: 'appName'
+    value: format('"{0}"', _appServiceName_)
+    isEncrypted: false
+  }
+  {
+    name: 'resourceGroupName'
+    value: format('"{0}"', _maesterResourceGroupName_)
+    isEncrypted: false
+  }
+  {
+    name: 'tenantId'
+    value: format('"{0}"', tenant().tenantId)
+    isEncrypted: false
+  }
+  {
+    name: 'tenant'
+    value: format('"{0}"', __defaultTenantName__)
+    isEncrypted: false
+  }
+  {
+    name: 'enableTeamsTests'
+    value: 'false'
+    isEncrypted: false
+  }
+  {
+    name: 'enableExchangeTests'
+    value: 'false'
+    isEncrypted: false
+  }
+  {
+    name: 'enableComplianceTests'
+    value: 'false'
+    isEncrypted: false
+  }
+]
+
+var _shortLocation_ = substring(__location__, 0, 6)
+var _maesterResourceGroupName_ = 'rg-maester-${__env__}-${_shortLocation_}-001'
+var _maesterAutomationAccountName_ = 'aa-maester-${__env__}-${_shortLocation_}-001'
+var _suffix_ = substring(uniqueString(subscription().id), 0, 2)
+var _maesterStorageAccountName_ = 'sa${__cust__}${_suffix_}${__env__}001'
 var _maesterStorageBlobName_ = 'maester'
 var _maesterStorageBlobFileName_ = 'maester.ps1'
-var _appServiceName_ = 'app-maester-${__env__}'
-var _appServicePlanName_ = 'asp-maester-${__env__}'
+var _appServiceName_ = 'app-maester-${_suffix_}-${__env__}-${_shortLocation_}-001'
+var _appServicePlanName_ = 'asp-maester-${__env__}-${_shortLocation_}-001'
+
 @description('Resource Group Deployment')
 resource maesterResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: _maesterResourceGroupName_
@@ -137,7 +199,11 @@ module modAutomationAccount './modules/aa.bicep' = {
   name: 'module-automation-account-deployment'
   params: {
     __location__: __location__
+    _maesterAutomationVariables_: _maesterAutomationVariables_
+    _appServiceName_: _appServiceName_
+    _maesterResourceGroupName_: _maesterResourceGroupName_
     _maesterAutomationAccountName_: _maesterAutomationAccountName_
+    __maesterAutomationAccountModules__: __maesterAutomationAccountModules__
     _maesterStorageAccountName_: _maesterStorageAccountName_
     _maesterStorageBlobName_: _maesterStorageBlobName_
     _maesterStorageBlobFileName_: _maesterStorageBlobFileName_
@@ -153,7 +219,6 @@ module modAutomationAccountAdvanced './modules/aa-advanced.bicep' = {
     __ouMaesterScriptBlobUri__: modAutomationAccount.outputs.__ouMaesterScriptBlobUri__
     _maesterAutomationAccountName_: _maesterAutomationAccountName_
     __maesterAppRoles__:  __maesterAppRoles__
-    __maesterAutomationAccountModules__: __maesterAutomationAccountModules__
 
   }
   scope: maesterResourceGroup
@@ -176,13 +241,17 @@ The ```aa.bicep``` module-file, automates the deployment of the Maester Azure Au
 ```bicep
 
 param __location__ string
+param _maesterAutomationVariables_ array
+param _appServiceName_ string
+param _maesterResourceGroupName_ string
 param _maesterAutomationAccountName_ string
+param __maesterAutomationAccountModules__ array
 param _maesterStorageAccountName_ string
 param _maesterStorageBlobName_ string
 param _maesterStorageBlobFileName_ string
 
 @description('Automation Account Deployment')
-resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
   name: _maesterAutomationAccountName_
   location: __location__
   identity: {
@@ -195,7 +264,45 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' 
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+@description('Create Automation Variables')
+resource variables 'Microsoft.Automation/automationAccounts/variables@2023-11-01' = [for var in _maesterAutomationVariables_: {
+  parent: automationAccount
+  name: var.name
+  properties: {
+    value: var.value
+    isEncrypted: var.isEncrypted
+  }
+}]
+
+resource automationAccountRuntimeEnvironment 'Microsoft.Automation/automationAccounts/runtimeEnvironments@2024-10-23' = {
+  parent: automationAccount
+  name: 'PowerShell-7.4'
+  location: __location__
+  properties: {
+    runtime: {
+      language: 'PowerShell'
+      version: '7.4'
+    }
+    defaultPackages: {
+       az: '12.3.0'
+       'Azure CLI': '2.64.0' 
+    }
+  }
+}
+
+resource rtePackages 'Microsoft.Automation/automationAccounts/runtimeEnvironments/packages@2024-10-23' = [
+  for m in __maesterAutomationAccountModules__: {
+    name: m.name
+    parent: automationAccountRuntimeEnvironment
+    properties: {
+      contentLink: {
+        uri: m.uri
+        version: m.version
+      }
+    }
+  }
+]
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: _maesterStorageAccountName_
   location: __location__
   sku: {
@@ -213,13 +320,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 }
 
 @description('Create Blob Service')
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01' = {
   parent: storageAccount
   name: 'default'
 }
 
 @description('Create Blob Container')
-resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-01-01' = {
   parent: blobService
   name: _maesterStorageBlobName_
   properties: {
@@ -228,7 +335,7 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
 }
 
 @description('Upload .ps1 file to Blob Container using Deployment Script')
-resource uploadScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource uploadScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'deployscript-upload-blob-maester'
   location: __location__
   kind: 'AzureCLI'
@@ -250,7 +357,7 @@ resource uploadScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: loadTextContent('../pwsh/maester.ps1')
       }
     ]
-    // arguments: '-appName ${_appServiceName_} -rgName ${_maesterResourceGroupName}'
+    arguments: '-appName ${_appServiceName_} -rgName ${_maesterResourceGroupName_}'
     scriptContent: 'echo "$CONTENT" > ${_maesterStorageBlobFileName_} && az storage blob upload -f ${_maesterStorageBlobFileName_} -c ${_maesterStorageBlobName_} -n ${_maesterStorageBlobFileName_}'
   }
   dependsOn: [
@@ -270,15 +377,20 @@ The ```aa-advanced.bicep``` module file automates the configuration of the Maest
 extension microsoftGraphV1
 param __location__ string
 param __maesterAppRoles__ array
-param __maesterAutomationAccountModules__ array
+
 param __ouMaesterAutomationMiId__ string
 param __ouMaesterScriptBlobUri__ string
 param _maesterAutomationAccountName_ string
 param __currentUtcTime__ string = utcNow()
 
-@description('Role Assignment Deployment')
+@description('Microsoft Graph - Role Assignment Deployment')
 resource graphId 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
   appId: '00000003-0000-0000-c000-000000000000'
+}
+
+@description('Exchange - Role Assignment Deployment')
+resource exchangeOnlineId 'Microsoft.Graph/servicePrincipals@v1.0' existing =  {
+  appId: '00000002-0000-0ff1-ce00-000000000000'
 }
 
 resource managedIdentityRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' = [for appRole in __maesterAppRoles__: {
@@ -287,29 +399,25 @@ resource managedIdentityRoleAssignment 'Microsoft.Graph/appRoleAssignedTo@v1.0' 
     resourceId: graphId.id
 }]
 
+resource managedIdentityRoleAssignmentExchange 'Microsoft.Graph/appRoleAssignedTo@v1.0' =  {
+  appRoleId: (filter(exchangeOnlineId.appRoles, role => role.value == 'Exchange.ManageAsApp')[0]).id
+  principalId: __ouMaesterAutomationMiId__
+  resourceId: exchangeOnlineId.id
+}
+
 @description('Existing Automation Account')
-resource automationAccount 'Microsoft.Automation/automationAccounts@2023-11-01' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: _maesterAutomationAccountName_
 }
 
-@description('PowerShell Modules Deployment')
-resource automationAccountModules 'Microsoft.Automation/automationAccounts/powerShell72Modules@2023-11-01' = [ for module in __maesterAutomationAccountModules__: {
-  name: module.name
-  parent: automationAccount
-  properties: {
-    contentLink: {
-      uri: module.uri
-    }
-  }
-}]
-
 @description('Runbook Deployment')
-resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
+resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' = {
   name: 'runBookMaester'
   location: __location__
   parent: automationAccount
   properties: {
-    runbookType: 'PowerShell72'
+    runbookType: 'PowerShell'
+    runtimeEnvironment: 'PowerShell-7.4'
     logProgress: true
     logVerbose: true
     description: 'Runbook to execute Maester report'
@@ -320,7 +428,7 @@ resource automationAccountRunbook 'Microsoft.Automation/automationAccounts/runbo
 }
 
 @description('Schedule Deployment')
-resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2023-11-01' = {
+resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/schedules@2024-10-23' = {
   name: 'scheduleMaester'
   parent: automationAccount
   properties: {
@@ -340,8 +448,8 @@ resource automationAccountSchedule 'Microsoft.Automation/automationAccounts/sche
 }
 
 @description('Runbook Schedule Association')
-resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2023-11-01' = {
-  name: guid(automationAccount.id, 'runb', 'sched')
+resource maesterRunbookSchedule 'Microsoft.Automation/automationAccounts/jobSchedules@2024-10-23' = {
+  name: guid(automationAccount.id, automationAccountRunbook.name, automationAccount.name)
   parent: automationAccount
   properties: {
     parameters: {}
@@ -374,7 +482,7 @@ resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2024-11-01' = {
   name: _appServicePlanName_
   location: __location__
   sku: {
@@ -384,9 +492,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
 }
 
 resource graphMaesterApp 'Microsoft.Graph/applications@v1.0' = {
-  uniqueName: 'app-maester-prod'
+  uniqueName: 'idp-${_appServiceName_}'
   signInAudience: 'AzureADMyOrg'
-  displayName: 'app-maester-prod'
+  displayName: 'idp-${_appServiceName_}'
   web: {
     redirectUris: [
       'https://${_appServiceName_}.azurewebsites.net/.auth/login/aad/callback'
@@ -413,7 +521,7 @@ resource graphMaesterSp 'Microsoft.Graph/servicePrincipals@v1.0' = {
   appId: graphMaesterApp.appId
 }
 
-resource appService 'Microsoft.Web/sites@2024-04-01' = {
+resource appService 'Microsoft.Web/sites@2024-11-01' = {
   name: _appServiceName_
   location: __location__
   identity: {
@@ -432,7 +540,7 @@ resource appService 'Microsoft.Web/sites@2024-04-01' = {
   }
 }
 
-resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource authsettings 'Microsoft.Web/sites/config@2024-11-01' = {
  parent: appService
  name: 'authsettingsV2'
   properties: {
@@ -461,39 +569,55 @@ resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
 }
 ```
 
-The PowerShell script has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the Managed Identity of the Automation Account, which has RBAC assignment on the Azure Web App.
+The PowerShell script has been updated to generate an HTML report, which is then zipped. This package is uploaded to the Azure Web App and published using the Managed Identity of the Automation Account, which has RBAC assignment on the Azure Web App. Save the file in the folder `pwsh` with the name `maester.ps1`
 ```PowerShell
-$appName = "app-maester-prod"
-$resourceGroupName = "rg-maester-prod"
+#Retrieve the default automation account variables
+$appName           = Get-AutomationVariable -Name 'appName'
+$resourceGroupName = Get-AutomationVariable -Name 'resourceGroupName'
+$TenantId          = Get-AutomationVariable -Name 'tenantId'
+$Tenant            = Get-AutomationVariable -Name 'tenant'
 
-#Connect to Microsoft Graph with Mi
+#Retrieve the test options
+$enableTeamsTests     = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableTeamsTests'))
+$enableExchangeTests  = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableExchangeTests'))
+$enableComplianceTests = [System.Convert]::ToBoolean((Get-AutomationVariable -Name 'enableComplianceTests'))
+
+#Setting up the connections
 Connect-MgGraph -Identity
-
-#create output folder
-$date = (Get-Date).ToString("yyyyMMdd-HHmm")
-$FileName = "MaesterReport" + $date + ".zip"
-
-$TempOutputFolder = $env:TEMP + $date
-if (!(Test-Path $TempOutputFolder -PathType Container)) {
-    New-Item -ItemType Directory -Force -Path $TempOutputFolder
-}
-
-#Run Maester report
-cd $env:TEMP
-md maester-tests
-cd maester-tests
-Install-MaesterTests .\tests
-
-#Invoke Maester for HTML page
-Invoke-Maester -OutputHtmlFile "$TempOutputFolder\index.html"
-
-# Create the zip file
-Compress-Archive -Path "$TempOutputFolder\*" -DestinationPath $FileName
-
-# Connect Az Account using MI
 Connect-AzAccount -Identity
 
-#Publish to Azure Web App <3
+if ($enableExchangeTests) {
+    Connect-ExchangeOnline -ManagedIdentity -Organization $Tenant -ShowBanner:$false
+}
+
+if ($enableComplianceTests) {
+    $scToken = Get-AzAccessToken -ResourceUrl "https://ps.compliance.protection.outlook.com/"
+    Connect-IPPSSession -AccessToken $scToken.Token -Organization $Tenant
+}
+
+if ($enableTeamsTests) {
+    Connect-MicrosoftTeams -Identity
+}
+
+#Output folder and Maester
+$date = (Get-Date).ToString("yyyyMMdd-HHmm")
+$FileName = "MaesterReport$($date).zip"
+$TempOutputFolder = Join-Path $env:TEMP $date
+if (!(Test-Path $TempOutputFolder -PathType Container)) {
+    New-Item -ItemType Directory -Force -Path $TempOutputFolder | Out-Null
+}
+
+Set-Location $env:TEMP
+if (!(Test-Path ".\maester-tests")) { New-Item -ItemType Directory -Path ".\maester-tests" | Out-Null }
+Set-Location ".\maester-tests"
+
+Install-MaesterTests .\tests
+Invoke-Maester -OutputHtmlFile (Join-Path $TempOutputFolder "index.html")
+
+Compress-Archive -Path (Join-Path $TempOutputFolder "*") -DestinationPath $FileName -Force
+
+#Deploy to Azure Web App
+Connect-AzAccount -Identity
 Publish-AzWebApp -ResourceGroupName $resourceGroupName -Name $appName -ArchivePath $FileName -Force
 ```
 
@@ -538,9 +662,51 @@ Get-AzContext
 #Change DenySettingsMode and ActionOnUnmanage based on your needs..
 New-AzSubscriptionDeploymentStack -Name Maester -Location WestEurope -DenySettingsMode None -ActionOnUnmanage DetachAll -TemplateFile .\main.bicep -TemplateParameterFile .\main.bicepparam
 ```
+## Exchange Online and Security and Compliance access
+To grant the system-assigned managed identity of the Azure Automation Account access to Exchange Online and Security & Compliance, run the PowerShell script below since this cannot be done through the portal. Update the organization variable to match your environment before running the script. This step only needs to be performed once and ensures the managed identity has the least privilege required to check your Exchange, Security and Compliance settings by assigning the View-Only Recipients role.
+
+```PowerShell
+# Managed Identity displayName
+$managedIdentityDisplayName = 'aa-maester-prod-westeu-001'
+
+# Exchange Online
+$roleName = 'View-Only Recipients'
+$organization = 'tenantName.onmicrosoft.com'
+
+Connect-AzAccount -DeviceCode
+$entraSp = Get-AzADServicePrincipal -Filter "displayName eq '$managedIdentityDisplayName'"
+if(-not $entraSp){ throw "No servicePrincipal found with displayName $managedIdentityDisplayName" }
+
+#===============================
+# Exchange Online
+#===============================
+Connect-ExchangeOnline -Organization $organization
+
+# Creates the Service Principal object in Exchange Online
+New-ServicePrincipal -AppId $entraSp.AppId -ObjectId $entraSp.Id -DisplayName $entraSp.DisplayName
+
+# Assigns the 'View-Only Configuration' role to the Managed Identity
+New-ManagementRoleAssignment -Role $roleName -App $entraSp.DisplayName
+
+#===============================
+# Purview Security and Compliance
+#===============================
+
+Connect-IPPSSession -Organization $organization
+
+# Creates the Service Principal object in Exchange Online
+New-ServicePrincipal -AppId $entraSp.AppId -ObjectId $entraSp.Id -DisplayName $entraSp.DisplayName
+
+# Assigns the 'View-Only Configuration' role to the Managed Identity
+New-ManagementRoleAssignment -Role $roleName -App $entraSp.DisplayName
+```
+
+## Microsoft Teams access
+
+To grant the system-assigned managed identity of the Azure Automation Account access to Microsoft Teams, assign the identity to the Teams Administrator role.
 
 ## Viewing the Azure Resources
-We can see the resources located in the resource group called ```rg-maester-prod```.
+We can see the resources located in the resource group called ```rg-maester-prod-westeu-001```.
 
 ![Screenshot of the Maester Azure resources](assets/azurewebapp-bicep-resources.png)
 
@@ -557,4 +723,4 @@ The schedule of the Automation Account which will trigger on Monday, Wednesday, 
 
 ## Contributors
 
-- Original author: [Brian Veldman](https://www.linkedin.com/in/brian-veldman/) | Technology Enthusiast
+- Original author: [Brian Veldman](https://www.linkedin.com/in/brian-veldman/) | Microsoft MVP

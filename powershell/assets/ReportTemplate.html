@@ -7096,12 +7096,22 @@ const seen = {};
 const __vitePreload = function preload(baseModule, deps, importerUrl) {
   let promise = Promise.resolve();
   if (deps && deps.length > 0) {
+    let allSettled2 = function(promises) {
+      return Promise.all(
+        promises.map(
+          (p2) => Promise.resolve(p2).then(
+            (value) => ({ status: "fulfilled", value }),
+            (reason) => ({ status: "rejected", reason })
+          )
+        )
+      );
+    };
     const links = document.getElementsByTagName("link");
     const cspNonceMeta = document.querySelector(
       "meta[property=csp-nonce]"
     );
     const cspNonce = (cspNonceMeta == null ? void 0 : cspNonceMeta.nonce) || (cspNonceMeta == null ? void 0 : cspNonceMeta.getAttribute("nonce"));
-    promise = Promise.allSettled(
+    promise = allSettled2(
       deps.map((dep) => {
         dep = assetsURL(dep, importerUrl);
         if (dep in seen) return;
@@ -49358,7 +49368,7 @@ function WindowIcon({
 const ForwardRef = /* @__PURE__ */ reactExports.forwardRef(WindowIcon);
 const ResultInfoDialog$3 = reactExports.lazy(() => __vitePreload(() => Promise.resolve().then(() => ResultInfoDialog$2), true ? void 0 : void 0, import.meta.url));
 function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = reactExports.useState(["Passed", "Failed", "Skipped"]);
+  const [selectedStatus, setSelectedStatus] = reactExports.useState(["Passed", "Failed", "Skipped", "Error"]);
   const [selectedBlock, setSelectedBlock] = reactExports.useState([]);
   const [selectedTag, setSelectedTag] = reactExports.useState([]);
   const [selectedSeverity, setSelectedSeverity] = reactExports.useState([]);
@@ -49397,7 +49407,7 @@ function TestResultsTable(props) {
         valueA = a5.Severity ? severityOrder[a5.Severity] : 0;
         valueB = b3.Severity ? severityOrder[b3.Severity] : 0;
       } else if (sortColumn === "Status") {
-        const statusOrder = { "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
+        const statusOrder = { "Error": 5, "Failed": 4, "Passed": 3, "Skipped": 2, "NotRun": 1 };
         valueA = statusOrder[a5.Result] || 0;
         valueB = statusOrder[b3.Result] || 0;
       }
@@ -49443,7 +49453,7 @@ function TestResultsTable(props) {
     }
   };
   [...new Set(testResults2.Tests.map((item) => item.Block).filter(Boolean))];
-  const status = ["Passed", "Failed", "NotRun", "Skipped"];
+  const status = ["Passed", "Failed", "NotRun", "Skipped", "Error"];
   const severities = ["Critical", "High", "Medium", "Low", "Info", "None"];
   const uniqueTags = [...new Set(testResults2.Tests.flatMap((t3) => t3.Tag || []))];
   const SortableHeader = ({ column, label, className }) => {
@@ -49480,7 +49490,7 @@ function TestResultsTable(props) {
         {
           onValueChange: setSelectedStatus,
           placeholder: "Status",
-          defaultValue: ["Passed", "Failed", "Skipped"],
+          defaultValue: ["Passed", "Failed", "Skipped", "Error"],
           className: "w-1/3",
           children: status.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(d$5, { value: item, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusLabel, { Result: item }) }, item))
         }
@@ -50327,7 +50337,6 @@ const testResults = {
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1053"
       ],
       "Result": "Failed",
@@ -50408,7 +50417,6 @@ const testResults = {
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1054"
       ],
       "Result": "Failed",
@@ -50496,8 +50504,7 @@ const testResults = {
       "TotalCount": 2,
       "Tag": [
         "Maester",
-        "Intune",
-        "All"
+        "Intune"
       ]
     }
   ]
@@ -83025,6 +83032,6 @@ code {
 }</style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>

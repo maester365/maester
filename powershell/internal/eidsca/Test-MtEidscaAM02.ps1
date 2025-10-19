@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP is set to 'true'
+    Checks if Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP is set to 'false'
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'true'
+     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'false'
 
 .EXAMPLE
     Test-MtEidscaAM02
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'true'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').isSoftwareOathEnabled -eq 'false'
 #>
 
 function Test-MtEidscaAM02 {
@@ -28,15 +28,15 @@ function Test-MtEidscaAM02 {
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
     [string]$tenantValue = $result.isSoftwareOathEnabled
-    $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $testResult = $tenantValue -eq 'false'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
-        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
     } elseif ($tenantValueNotSet) {
-        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 

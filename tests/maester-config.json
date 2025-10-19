@@ -163,7 +163,7 @@
     {
       "Id": "CISA.MS.AAD.3.3",
       "Severity": "Medium",
-      "Title": "If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
+      "Title": "If Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
     },
     {
       "Id": "CISA.MS.AAD.3.4",
@@ -1096,6 +1096,11 @@
       "Title": "Ensure Direct Send is set to be rejected"
     },
     {
+      "Id": "MT.1063",
+      "Severity": "High",
+      "Title": "All app registration owners should have MFA registered"
+    },
+    {
       "Id": "MT.1064",
       "Severity": "High",
       "Title": "Management group creation should be limited to users with explicit write access"
@@ -1139,6 +1144,61 @@
       "Id": "MT.1072",
       "Severity": "High",
       "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+    },
+{
+      "Id": "MT.1073",
+      "Severity": "Medium",
+      "Title": "Soft- and hard-matching of synchronized objects should be blocked."
+    },
+    {
+      "Id": "MT.1074",
+      "Severity": "Medium",
+      "Title": "Mailboxes should not send outbound mails using the .onmicrosoft.com domain."
+    },
+    {
+      "Id": "MT.1075",
+      "Severity": "Medium",
+      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
+    },
+    {
+      "Id": "MT.1076",
+      "Severity": "High",
+      "Title": "MOERA SHOULD NOT be used for sent mail."
+    },
+    {
+      "Id": "MT.1077",
+      "Severity": "Medium",
+      "Title": "App registrations with privileged API permissions should not have owners"
+    },
+    {
+      "Id": "MT.1078",
+      "Severity": "Medium",
+      "Title": "App registrations with highly privileged directory roles should not have owners"
+    },
+    {
+      "Id": "MT.1079",
+      "Severity": "Medium",
+      "Title": "Privileged API permissions on service principals should not remain unused"
+    },
+    {
+      "Id": "MT.1080",
+      "Severity": "Medium",
+      "Title": "Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints"
+    },
+    {
+      "Id": "MT.1081",
+      "Severity": "Medium",
+      "Title": "Hybrid users should not be assigned Entra ID role assignments"
+    },
+    {
+      "Id": "MT.1083",
+      "Severity": "Low",
+      "Title": "Ensure Delicensing Resiliency is enabled"
+    },
+    {
+      "Id": "MT.1084",
+      "Severity": "High",
+      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
     },
     {
       "Id": "ORCA.100",

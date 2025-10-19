@@ -7,9 +7,12 @@
 - **Policy.Read.ConditionalAccess**
 - **PrivilegedAccess.Read.AzureAD**
 - **Reports.Read.All**
+- **ReportSettings.Read.All**
 - **RoleEligibilitySchedule.Read.Directory**
 - **RoleManagement.Read.All**
 - **SecurityIdentitiesSensors.Read.All**
 - **SecurityIdentitiesHealth.Read.All**
 - **SharePointTenantSettings.Read.All**
+- **ThreatHunting.Read.All**
 - **UserAuthenticationMethod.Read.All**
+- **OnPremDirectorySynchronization.Read.All**

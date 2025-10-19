@@ -450,7 +450,7 @@ foreach ($control in $aadsc) {
         $docName = $controlItem.CheckId
 
 $testTemplate = @'
-Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
+Describe "EIDSCA" -Tag "EIDSCA", "Security", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
@@ -485,7 +485,7 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedControls
 
 $output = @'
-BeforeDiscovery {
+BeforeAll {
 <DiscoveryFromJson>}
 
 '@

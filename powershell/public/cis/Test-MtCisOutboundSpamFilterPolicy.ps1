@@ -32,7 +32,7 @@ function Test-MtCisOutboundSpamFilterPolicy {
         $policies = Get-MtExo -Request HostedOutboundSpamFilterPolicy
 
         # We grab the default policy as that is what CIS checks
-        $policy = $policies | Where-Object { $_.Name -eq 'Default' }
+        $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
         $OutboundSpamFilterPolicyCheckList = @()
 

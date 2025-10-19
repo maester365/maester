@@ -123,10 +123,16 @@
          if ($Service -contains 'Azure' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Azure'
             try {
+               $azWarning = @()
                if ($TenantId) {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId
+                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning
                } else {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment
+                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning
+               }
+               if ($azWarning.Count -gt 0) {
+                  foreach ($warning in $azWarning) {
+                     Write-Verbose $warning.Message
+                  }
                }
             } catch [Management.Automation.CommandNotFoundException] {
                Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
@@ -197,7 +203,8 @@
                         Write-Host "`nInstall-Module ExchangeOnlineManagement -Scope CurrentUser`n" -ForegroundColor Yellow
                      }
                   } catch {
-                     $ExoUPN = Get-ConnectionInformation | Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
+                     # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                     $ExoUPN = Get-MtExo -Request ConnectionInformation | Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
                      if ($ExoUPN) {
                         Write-Host "`nAttempting to connect to the Security & Compliance PowerShell using UPN '$ExoUPN' derived from the ExchangeOnline connection." -ForegroundColor Yellow
                         Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false

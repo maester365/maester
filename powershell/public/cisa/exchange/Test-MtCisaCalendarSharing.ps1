@@ -27,7 +27,7 @@ function Test-MtCisaCalendarSharing {
 
     $resultPolicies = $policies | Where-Object {`
         $_.Enabled -and `
-        ($_.Domains -like "`*:*CalendarSharing*" -or `
+        ($_.Domains -like "``*:*CalendarSharing*" -or `
          $_.Domains -like "Anonymous:*CalendarSharing*")
     }
 

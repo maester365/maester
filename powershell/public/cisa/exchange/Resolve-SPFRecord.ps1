@@ -122,8 +122,13 @@ function Resolve-SPFRecord {
             if ( $SPFDirectives -match "redirect" ) {
                 $RedirectRecord = $SPFDirectives -match "redirect" -replace "redirect="
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
-                # Follow the include and resolve the include
-                Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
+                # Follow the redirect and resolve the redirect
+                # Check for SPF records that redirect to themselves, it will lead to an infinite loop => ** explosion **
+                if ( $Name -ne $RedirectRecord ) {
+                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
+                } else {
+                    return "Self-referencing SPF directive"
+                }
             } else {
 
                 # Extract the qualifier
@@ -239,7 +244,7 @@ function Resolve-SPFRecord {
                     }
                 }
 
-                $DNSQuerySum = $ReturnValues | Select-Object -Unique SPFSourceDomain | Measure-Object | Select-Object -ExpandProperty Count
+                $DNSQuerySum = $ReturnValues.Referrer + $ReturnValues.SPFSourceDomain | Select-Object -Unique | Where-Object {$_ -ne $Name} | Measure-Object | Select-Object -ExpandProperty Count
                 if ( $DNSQuerySum -gt 6) {
                     Write-Verbose "Watch your includes!`nThe maximum number of DNS queries is 10 and you have already $DNSQuerySum.`nCheck https://tools.ietf.org/html/rfc7208#section-4.6.4"
                 }

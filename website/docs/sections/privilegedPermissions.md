@@ -1,2 +1,4 @@
 - **RoleEligibilitySchedule.ReadWrite.Directory**
   - Required for eligible role assignments ([Reference](https://github.com/maester365/maester/issues/195#issuecomment-2170879665))
+- **ReportSettings.ReadWrite.All**
+  - Required to disable report obfuscation
