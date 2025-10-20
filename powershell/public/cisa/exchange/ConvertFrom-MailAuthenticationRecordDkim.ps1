@@ -99,7 +99,7 @@ function ConvertFrom-MailAuthenticationRecordDkim {
             ErrorAction  = "Stop"
         }
         try {
-            Write-Verbose "Finding information for $DomainName"
+            Write-Verbose "Finding DKIM information for $DkimDnsName"
 
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                 $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
