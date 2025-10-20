@@ -65,7 +65,7 @@ function ConvertTo-QueryString {
             } else {
                 ## Non-terminating error
                 $Exception = New-Object ArgumentException -ArgumentList ('Cannot convert input of type {0} to query string. Supported types: Hashtable, OrderedDictionary, Dictionary, or objects with properties.' -f $InputObject.GetType())
-                Write-Error -Exception $Exception -Category ([System.Management.Automation.ErrorCategory]::ParserError) -CategoryActivity $MyInvocation.MyCommand -ErrorId 'ConvertQueryStringFailureTypeNotSupported' -TargetObject $InputObject
+                Write-Error -Exception $Exception -Category ([System.Management.Automation.ErrorCategory]::ParserError) -CategoryActivity $MyInvocation.MyCommand.Name -ErrorId 'ConvertQueryStringFailureTypeNotSupported' -TargetObject $InputObject
                 continue
             }
 
