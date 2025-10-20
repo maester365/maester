@@ -1,5 +1,5 @@
 # Smoke test for basic failure scenarios
-# It is used to validate that the maester framework and reporting works as expected#
+# It is used to validate that the maester framework and reporting works as expected
 # The tests here are deliberately designed to cover various Errors, arise from different exceptions.
 #
 # The string in TestNames Smoke_{Error, Skipped,Failed, Success, NotRun}
