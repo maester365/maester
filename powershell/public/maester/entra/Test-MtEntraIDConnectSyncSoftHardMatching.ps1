@@ -7,14 +7,14 @@
     This can lead to unintended consequences, such as mismatching user data.
 
 .EXAMPLE
-    Test-MtDirSyncSoftHardMatching
+    Test-MtEntraIDConnectSyncSoftHardMatching
 
     Returns true if soft and hard matching is blocked / disabled
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtDirSyncSoftHardMatching
+    https://maester.dev/docs/commands/Test-MtEntraIDConnectSyncSoftHardMatching
 #>
-function Test-MtDirSyncSoftHardMatching {
+function Test-MtEntraIDConnectSyncSoftHardMatching {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
