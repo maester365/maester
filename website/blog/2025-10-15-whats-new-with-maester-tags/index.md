@@ -48,8 +48,8 @@ As noted above, Maester's default execution excludes long-running tests and test
 
 | Original Tag | Original Intent | New Parameter |
 | --- | --- | --- |
-| All | Run "all" tests, including those still in preview. | `-IncludePreview` |
-| Full | Run "full" tests, including those that may take a long time in large environments. | `-IncludeLongRunning` |
+| All | "All" tests, including those still in preview. | **IncludePreview** |
+| Full | "Full" tests, including those that may take a long time in large environments. | **IncludeLongRunning** |
 
 As you can imagine, the original naming lead to many people adding the `All` and `Full` tags to their test scripts with the goal of being generally included. Now, running Maester with every available test can be accomplished as shown below. Note that you can still combine these parameters with other options:
 
@@ -71,8 +71,13 @@ Runs all tests in the path `./maester-tests` including long running tests and ex
 
 ### Details
 
-- **IncludeLongRunning** - These tests that may take a long time in tenants that have a large number of user, group, or application objects. In the future, we hope to add the ability to set a dynamic threshold after checking the number of each object type in the tenant before testing. Then, for example, a tenants with less than a hypothetical threshold of 2000 users would run these tests by default, but tenants with more than 2000 users (as an example) would require the **IncludeLongRunning** switch to include these tests. Tenants with a very large number of users, groups, or applications can take hours to assess or even timeout completely due to the extra processing time required to get the objects and then report on them. Available memory on the system running Maester can also become a limiting factor in these scenarios.
-- **IncludePreview** - Include tests that rely on functionality that is still in preview status. These might be tests that are based on new techniques that are still being validated by the Maester team or tests that are using a beta API.
+#### IncludeLongRunning
+
+These tests that may take a long time in tenants that have a large number of user, group, or application objects. In the future, we hope to add the ability to set a dynamic threshold after checking the number of each object type in the tenant before testing. Then, for example, a tenants with less than a hypothetical threshold of 2000 users would run these tests by default, but tenants with more than 2000 users (as an example) would require the **IncludeLongRunning** switch to include these tests. Tenants with a very large number of users, groups, or applications can take hours to assess or even timeout completely due to the extra processing time required to get the objects and then report on them. Available memory on the system running Maester can also become a limiting factor in these scenarios.
+
+#### IncludePreview
+
+Include tests that rely on functionality that is still in preview status. These might be tests that are based on new techniques that are still being validated by the Maester team or tests that are using a beta API.
 
 :::info
 
@@ -82,12 +87,6 @@ We can use these two options along with (inclusive of) any other combination of 
 
 ### How Will This Affect Me?
 
-:::warning
-
-Potential Breaking Changes for Automated Maester Jobs
-
-:::
-
 We have done our best to deprecate the `All` and `Full` tags gracefully. They have been removed from all tests, but the `Invoke-Maester` function has also been updated to handle their use. However, this code may be removed in the future to keep Maester streamlined and easy to maintain. We currently support use of the tags and/or switches with the following logic:
 
 - The `-IncludeLongRunning` switch is automatically enabled when the **Full** tag is included in the **Tag** parameter.
@@ -95,14 +94,11 @@ We have done our best to deprecate the `All` and `Full` tags gracefully. They ha
 
 In addition, if these deprecated tags are used, you will now see a warning in the output:
 
-![WARNING: The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead:
-
-LongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.
-Preview: Tests that are still being tested or are dependent on preview APIs. Replaces 'All'.](img/Invoke_Maester_deprecated_tag_warning.png)
+![WARNING: The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead...](img/Invoke_Maester_deprecated_tag_warning.png)
 
 :::warning
 
-**If you have implemented Maester through a scheduled task, workflow, or pipeline; please be sure to review your implementation to replace any use of the `All` and `Full` tags with their new switch replacements.**
+If you have implemented Maester through a scheduled task, workflow, or pipeline; please be sure to replace any use of the `All` and `Full` tags with their new switch parameter replacements.
 
 :::
 
@@ -121,13 +117,13 @@ $TestInventory = Get-MtTestInventory -Path ~/Maester-Tests -PassThru
 $TestInventory['CIS']
 ```
 
-Try those two commands to see the output, and then explore the tests associated with other tags such as 'XSPM.' You can also see the full list of discovered tags by running `$TestInventory.Keys` after the above command.
+Try those two commands to see the output, and then explore the tests associated with other tags such as '**XSPM**.' You can also see the full list of discovered tags by running `$TestInventory.Keys` after the above command.
 
 ### Conclusion
 
-For more information, please refer to the Maester documentation or join us on [Discord](https://discord.gg/CQs76Wa9)!
+For more information, please refer to the Maester documentation for `Invoke-Maester` and `Get-MtTestInventory`.
 
 - [Invoke-Maester](https://maester.dev/docs/commands/Invoke-Maester)
 - [Get-MtTestInventory](https://maester.dev/docs/commands/Get-MtTestInventory)
 
-As always, Maester is a community project that thrives on your input! We gladly welcome any [feedback](https://github.com/maester365/maester/discussions) or [suggestions for improvements](https://github.com/maester365/maester/issues). Thank you!
+As always, Maester is a community project that thrives on your input! We gladly welcome any [feedback](https://github.com/maester365/maester/discussions) or [suggestions for improvements](https://github.com/maester365/maester/issues). You can also join our community on [Discord](https://discord.gg/CQs76Wa9). Thank you!
