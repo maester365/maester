@@ -1,4 +1,4 @@
-# Smoke test for basic failure senarios
+# Smoke test for basic failure scenarios
 # It is used to validate that the maester framework and reporting works as expected#
 # The tests here are deliberately designed to cover various Errors, arise from different exceptions.
 #
