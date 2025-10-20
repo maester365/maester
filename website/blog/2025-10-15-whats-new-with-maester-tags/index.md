@@ -81,7 +81,7 @@ Include tests that rely on functionality that is still in preview status. These 
 
 :::info
 
-We can use these two options along with (inclusive of) any other combination of tags or excluded tags. However, tag exclusions will always override inclusions.
+We can use these two options with any other combination of tags or excluded tags. However, tag exclusions will always override inclusions.
 
 :::
 
