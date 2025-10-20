@@ -30,7 +30,7 @@ function ConvertTo-QueryString {
             return
         }
         
-        foreach ($InputObject in $InputObjects) {
+        foreach ($InputObject in @($InputObjects)) {
             if ($null -eq $InputObject) {
                 Write-Output ''
                 continue
