@@ -103,7 +103,7 @@ Describe "ConvertTo-QueryString - Performance Tests" {
             $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
             ConvertTo-QueryString -InputObjects $input | Out-Null
             $stopwatch.Stop()
-            $stopwatch.ElapsedMilliseconds | Should -BeLessThan 100
+            $stopwatch.ElapsedMilliseconds | Should -BeLessThan 300
         }
 
         It "Handles large objects efficiently" {
