@@ -38,7 +38,7 @@ function ConvertTo-QueryString {
 
             $QueryString = New-Object System.Text.StringBuilder
 
-            if ($InputObject -is [hashtable] -or $InputObject -is [System.Collections.Specialized.OrderedDictionary] -or $InputObject.GetType().FullName.StartsWith('System.Collections.Generic.Dictionary')) {
+            if ($InputObject -is [hashtable] -or $InputObject -is [System.Collections.Specialized.OrderedDictionary] -or ($null -ne $InputObject.GetType().GetInterface('System.Collections.Generic.IDictionary`2'))) {
                 foreach ($Item in $InputObject.GetEnumerator()) {
                     if ($QueryString.Length -gt 0) { [void]$QueryString.Append('&') }
 
