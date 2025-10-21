@@ -73,7 +73,7 @@ Runs all tests in the path `./maester-tests` including long running tests and ex
 
 #### IncludeLongRunning
 
-These tests that may take a long time in tenants that have a large number of user, group, or application objects. In the future, we hope to add the ability to set a dynamic threshold after checking the number of each object type in the tenant before testing. Then, for example, a tenants with less than a hypothetical threshold of 2000 users would run these tests by default, but tenants with more than 2000 users (as an example) would require the **IncludeLongRunning** switch to include these tests. Tenants with a very large number of users, groups, or applications can take hours to assess or even timeout completely due to the extra processing time required to get the objects and then report on them. Available memory on the system running Maester can also become a limiting factor in these scenarios.
+These tests may take a long time in tenants that have a large number of user, group, or application objects. In the future, we hope to add the ability to set a dynamic threshold after checking the number of each object type in the tenant before testing. Then, for example, a tenants with less than a hypothetical threshold of 2000 users would run these tests by default, but tenants with more than 2000 users (as an example) would require the **IncludeLongRunning** switch to include these tests. Tenants with a very large number of users, groups, or applications can take hours to assess or even timeout completely due to the extra processing time required to get the objects and then report on them. Available memory on the system running Maester can also become a limiting factor in these scenarios.
 
 #### IncludePreview
 
