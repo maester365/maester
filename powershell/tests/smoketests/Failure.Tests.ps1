@@ -52,7 +52,7 @@ Describe "Error and Skip Scenarios" {
 
 Describe "Tag Filtering Tests" {
 	It "id.20.0: Smoke_NotRun, Tag not selected" -Tag 'Severity:High', 'testtag' {
-		# DELIBERATE: Missing parameter value to test parameter binding behavior
+		# DELIBERATE: Missing parameter value for -SkippedError to intentionally trigger a ParameterBindingException. This is expected behavior for this test.
 		Add-MtTestResultDetail -SkippedBecause Error -SkippedError
 	}
 }
