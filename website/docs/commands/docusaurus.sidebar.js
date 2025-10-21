@@ -29,6 +29,7 @@ module.exports = [
     'commands/Get-MtAzureManagementGroup',
     'commands/Get-MtConditionalAccessPolicy',
     'commands/Get-MtExo',
+    'commands/Get-MtExoThreatPolicyMalware',
     'commands/Get-MtGraphScope',
     'commands/Get-MtGroupMember',
     'commands/Get-MtHtmlReport',
