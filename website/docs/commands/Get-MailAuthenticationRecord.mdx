@@ -76,11 +76,7 @@ Accept wildcard characters: False
 
 ### -DkimDnsName
 
-Active DNS name for the DKIM record to retrieve.
-
-Assuming selector1 is active:
-For Microsoft domain it's: (Get-DkimSigningConfig -Identity contoso.onmicrosoft.com).Selector1CNAME
-For custom domain it's: selector1._domainkey.contoso.com
+DKIM DNS record Name to retrieve.
 
 ```yaml
 Type: String
@@ -89,7 +85,7 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: Selector1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
