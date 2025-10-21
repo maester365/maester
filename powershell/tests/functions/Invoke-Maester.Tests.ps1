@@ -29,15 +29,15 @@
         foreach ($file in $smokeTestFiles) {
             $content = Get-Content -Path $file.FullName
             foreach ($line in $content) {
-                if ($line -match 'It\s+[\'"][^\'"]*Smoke_Success') {
+                if ($line -match 'It.*Smoke_Success') {
                     $expectedPassedCount++; $expectedTotalCount++
-                } elseif ($line -match 'It\s+[\'"][^\'"]*Smoke_Failed') {
+                } elseif ($line -match 'It.*Smoke_Failed') {
                     $expectedFailedCount++; $expectedTotalCount++
-                } elseif ($line -match 'It\s+[\'"][^\'"]*Smoke_Error') {
+                } elseif ($line -match 'It.*Smoke_Error') {
                     $expectedErrorCount++; $expectedTotalCount++
-                } elseif ($line -match 'It\s+[\'"][^\'"]*Smoke_Skipped') {
+                } elseif ($line -match 'It.*Smoke_Skipped') {
                     $expectedSkippedCount++; $expectedTotalCount++
-                } elseif ($line -match 'It\s+[\'"][^\'"]*Smoke_NotRun') {
+                } elseif ($line -match 'It.*Smoke_NotRun') {
                     $expectedNotRunCount++; $expectedTotalCount++
                 }
             }
