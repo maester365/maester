@@ -59,16 +59,15 @@ The same applies to the `-SendTeamsMessage` in `Connect-Maester`.
 
 #### Privileged scope
 
-Maester is designed to require read-only access to a tenant to run tests. Unfortunately, the Graph API command to query global admin roles in Microsoft Entra Privileged Identity Management requires the **RoleEligibilitySchedule.ReadWrite.Directory** command. For these tests to run accurately you will need to explicitly opt into using this additional privilege by connecting with
+Maester is designed to require read-only access to a tenant to run tests.
+
+However, certain tests like  [Test-MtExoMoeraMailActivity](/docs/commands/Test-MtExoMoeraMailActivity) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
+
+Connecting with privileged scopes is optional. To connect with privileged scopes, use the `-Privileged` switch:
 
 ```powershell
 Connect-Maester -Privileged
 ```
-
-For technical details on this requirement see
-
-* [Graph API - List roleEligibilityScheduleRequests](https://learn.microsoft.com/en-us/graph/api/rbacapplication-list-roleeligibilityschedulerequests?view=graph-rest-1.0&tabs=http#permissions)
-* [Maester Issue #195](https://github.com/maester365/maester/issues/195#issuecomment-2170879665)
 
 #### Device code
 

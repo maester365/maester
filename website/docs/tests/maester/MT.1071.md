@@ -22,11 +22,11 @@ To ensure continued protection of Azure DevOps sign-ins, administrators should:
 
 Update policies to include Azure DevOps:
 1. Review existing Conditional Access policies - Identify any policies that target the Windows Azure Service Management API.
-2. Go to the Entra admin center.
-3. Navigate to Entra ID > Conditional Access > Policies.
+2. Go to the [Microsoft Entra admin center](https://entra.microsoft.com).
+3. Navigate to **Entra ID** > **Conditional Access** > **Policies**.
 4. Select the relevant policy.
-5. Under Target resources, choose Select resources and add Azure DevOps (App ID: 499b84ac-1321-427f-aa17-267ca6975798).
-    - If Azure DevOps is missing from available resources:
+5. Under **Target resources**, choose **Select resources** and add **Azure DevOps** (App ID: 499b84ac-1321-427f-aa17-267ca6975798).
+    - If Azure DevOps is missing from available resource create a service principal with the below Graph commands:
 ```
 Connect-MgGraph -Scopes "Directory.ReadWrite.All", "Application.ReadWrite.All"
 $params = @{

@@ -283,6 +283,10 @@ resource automationAccountRuntimeEnvironment 'Microsoft.Automation/automationAcc
       language: 'PowerShell'
       version: '7.4'
     }
+    defaultPackages: {
+       az: '12.3.0'
+       'Azure CLI': '2.64.0' 
+    }
   }
 }
 
