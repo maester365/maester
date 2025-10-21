@@ -62,10 +62,10 @@ function Get-MtRoleMember {
 			[string]$RoleAssignmentType)
 
 		if ($Filter) {
-			$Filter = "roleDefinitionId eq '$directoryRoleId' and $Filter"
+			$Filter = "roleDefinitionId eq '$RoleId' and $Filter"
 		}
 		else {
-			$Filter = "roleDefinitionId eq '$directoryRoleId'"
+			$Filter = "roleDefinitionId eq '$RoleId'"
 		}
 
 		$params = @{
@@ -81,7 +81,7 @@ function Get-MtRoleMember {
 
 		$assignments = @()
 		if ($dirAssignments.id.Count -eq 0) {
-			Write-PSFMessage "No role assignments found" -Level Debug
+			Write-Verbose "No role assignments found"
 			return $assignments
 		}
 		$assignments += @($dirAssignments.principal)
