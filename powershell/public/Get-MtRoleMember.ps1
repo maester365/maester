@@ -99,6 +99,7 @@ function Get-MtRoleMember {
 		return $assignments
 	}
 
+  Write-Verbose "Getting members for RoleId: $RoleId, Role: $Role, MemberStatus: $MemberStatus"
   if (-not $MemberStatus -or $MemberStatus -eq 'EligibleAndActive') {
     $Eligible = $Active = $true
   } elseif ($MemberStatus -eq 'Eligible') {
