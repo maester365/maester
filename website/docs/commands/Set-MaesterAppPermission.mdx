@@ -1,74 +1,66 @@
 ---
 sidebar_class_name: hidden
-description: Get the URL for the specific Microsoft admin portal based on the environment.
-id: Get-MtAdminPortalUrl
-title: Get-MtAdminPortalUrl
+description: Internal helper function to set Graph API permissions for a Maester application.
+id: Set-MaesterAppPermission
+title: Set-MaesterAppPermission
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtAdminPortalUrl.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Set-MaesterAppPermission.ps1
 ---
 
 ## SYNOPSIS
 
-Get the URL for the specific Microsoft admin portal based on the environment.
+Internal helper function to set Graph API permissions for a Maester application.
 
 ## SYNTAX
 
 ```powershell
-Get-MtAdminPortalUrl [[-Environment] <String>] [[-Portal] <String>] [-ProgressAction <ActionPreference>]
+Set-MaesterAppPermission [-AppId] <String> [-Scopes] <String[]> [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-This function returns the URL for the specific Microsoft admin portal based on the environment.
+This function configures the required Graph API permissions (app roles) for a Maester application
+in Azure AD/Entra ID.
+It handles both creating new permissions and updating existing ones.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Get-MtAdminPortalUrl -Environment 'USGov' -Portal 'Azure'
-Returns the URL for the Azure portal in the Global environment.
-```
-
-### EXAMPLE 2
-
-```powershell
-Get-MtAdminPortalUrl
-Returns the URLs for all portals in the default Global environment.
+Set-MaesterAppPermission -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
 ```
 
 ## PARAMETERS
 
-### -Environment
+### -AppId
 
-The environment to use.
-If not specified, will use Global as default.
+The Application (Client) ID of the app to configure permissions for.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 1
-Default value: Global
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Portal
+### -Scopes
 
-The portal to use.
-If not specified, returns all the portals.
+Array of Graph API permission scopes to configure for the application.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -102,5 +94,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
-
-[https://maester.dev/docs/commands/Get-MtAdminPortalUrl](https://maester.dev/docs/commands/Get-MtAdminPortalUrl)
