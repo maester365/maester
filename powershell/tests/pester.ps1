@@ -135,7 +135,7 @@ if ($TestFunctions)
         $result = Invoke-Pester -Configuration $config
 
         $totalRun += $result.TotalCount
-        $totalFailed += $result.FailedCount
+        $totalFailed += $result.FailedCount + $result.FailedContainersCount
         foreach ($test in $result.Tests) {
             if ($test.Result -notin 'Passed','Skipped') {
                 $failedTest = [pscustomobject]@{
