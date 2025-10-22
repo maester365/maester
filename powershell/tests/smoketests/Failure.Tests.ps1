@@ -33,7 +33,8 @@ Describe "Error and Skip Scenarios" {
 	}
 
 	It "id.6.0: Smoke_Error, Setting SkippedBecause ParameterBindingException" {
-		# DELIBERATE: Missing parameter value to test parameter binding exception
+		# DELIBERATE: Missing parameter value to test parameter binding exception.
+		# EXPECTED: This will cause a ParameterBindingException, which is intentional for testing error handling.
 		Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason
 	}
 
