@@ -52,10 +52,10 @@ Describe "Error and Skip Scenarios" {
 
 Describe "Tag Filtering Tests" {
 	It "id.20.0: Smoke_NotRun, Tag not selected" -Tag 'Severity:High', 'testtag' {
-		# DELIBERATE: Missing parameter value for -SkippedError to intentionally trigger a ParameterBindingException. This is expected behavior for this test.
-		Add-MtTestResultDetail -SkippedBecause Error -SkippedError
+		Add-MtTestResultDetail -SkippedBecause Error -SkippedError "Never reached. We exclude tag, so count as NotRun"
 	}
 }
+
 Describe "Parameter Validation Tests" {
 	It "id.30.0: Smoke_Error, Bad Parameter" -Tag 'Severity:High' {
 		# DELIBERATE: Invalid parameter value to test error handling
