@@ -83,7 +83,7 @@ function ConvertTo-MtMaesterResult {
     #$account = $mgContext.Account ?? "Account (not connected to Graph)"
     $account = GetAccount
 
-    $currentVersion = ((Get-Module -Name Maester).Version | Select-Object -Last 1).ToString()
+    $currentVersion = Get-MtModuleVersion
     $latestVersion = GetMaesterLatestVersion
 
     $mtTests = @()
