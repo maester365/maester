@@ -84,6 +84,12 @@ if ($TestGeneral)
 
         $totalRun += $result.TotalCount
         $totalFailed += $result.FailedCount
+        # Also count containers (Describe/Context blocks) that failed
+        if ($result.FailedContainersCount -gt 0) {
+            Write-Host "WARNING: $($result.FailedContainersCount) test containers failed (syntax errors or discovery failures)" -ForegroundColor Red
+            $totalFailed += $result.FailedContainersCount
+        }
+
         foreach ($test in $result.Tests) {
             if ($test.Result -ne 'Passed') {
                 $failedTest = [pscustomobject]@{
