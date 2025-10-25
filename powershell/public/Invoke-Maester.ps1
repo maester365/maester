@@ -364,11 +364,9 @@ function Invoke-Maester {
     }
 
     # If $Tag is not set and IncludePreview is not passed, run all tests except the ones with the "Preview" tag.
-    if (-not $Tag) {
-        if (-not $IncludePreview.IsPresent) {
-            $ExcludeTag += 'Preview'
-            Write-Verbose 'Excluding Preview tests. Use -IncludePreview to include them.'
-        }
+    if (-not $Tag -and -not $IncludePreview.IsPresent) {
+        $ExcludeTag += 'Preview'
+        Write-Verbose 'Excluding Preview tests. Use -IncludePreview to include them.'
     }
 
     # Include tests tagged as "LongRunning" if "Full" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
