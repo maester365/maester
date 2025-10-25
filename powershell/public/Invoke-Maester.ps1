@@ -371,7 +371,7 @@ function Invoke-Maester {
 
     # Include tests tagged as "LongRunning" if "Full" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
     if ('Full' -in $Tag) {
-        Write-Verbose "Including long-running tests. Please use -IncludeLongRunning instead of the deprecated 'Full' tag."
+        Write-Verbose 'Including long-running tests. Please use -IncludeLongRunning instead of the deprecated ''Full'' tag.'
         $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'LongRunning' }
     }
 
