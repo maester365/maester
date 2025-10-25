@@ -131,7 +131,8 @@ function Get-MtUser {
                 # Handling Emergency Access Groups
                 Write-Verbose "Emergency access group: $EmergencyAccessGroups"
                 foreach ( $EmergencyAccessGroup in $EmergencyAccessGroups ) {
-                    $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable
+                    # Disable paging to avoid timeout of large groups which are excluded. Fix for https://github.com/maester365/maester/issues/1227
+                    $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable -DisablePaging
                     if ( $TmpUsers.ContainsKey('userType') ) {
                         Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
                         $TmpUsers | ForEach-Object {
