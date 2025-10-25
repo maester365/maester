@@ -421,7 +421,7 @@ Describe 'ConvertTo-QueryString' {
     Context 'Enhanced error handling' {
         It 'Should provide informative error for unsupported types' {
             $input = "string"
-            { ConvertTo-QueryString -InputObjects $input -ErrorAction Stop } | Should -Throw
+            { ConvertTo-QueryString -InputObjects $input -ErrorAction Stop } | Should -Throw -ExceptionType ([System.ArgumentException])
         }
 
         It 'Should include supported types information in error message' {
