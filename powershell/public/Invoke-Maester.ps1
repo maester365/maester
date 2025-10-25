@@ -493,7 +493,7 @@ function Invoke-Maester {
             Write-Host "Skipped ⚫: $($maesterResults.SkippedCount), " -NoNewline -ForegroundColor DarkGray
             Write-Host "Error ⚠️: $($maesterResults.ErrorCount), " -NoNewline -ForegroundColor DarkGray
             Write-Host "Not Run ⚫: $($maesterResults.NotRunCount), " -NoNewline -ForegroundColor DarkGray
-            Write-Host "Total ⭐: $($maesterResults.TotalCount)`n" 
+            Write-Host "Total ⭐: $($maesterResults.TotalCount)`n"
         }
 
         if (-not $SkipVersionCheck -and 'Next' -ne $version) {
