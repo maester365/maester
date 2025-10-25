@@ -341,8 +341,8 @@ Describe 'ConvertTo-QueryString' {
             }
             $result = ConvertTo-QueryString $hashtable
             # Arrays get converted to their string representation
-            $result | Should -Match 'arrayValue=System\.Object\[\]'
-            $result | Should -Match 'singleArray=System\.Object\[\]'
+            $result | Should -Match 'arrayValue=System\.Object%5B%5D'
+            $result | Should -Match 'singleArray=System\.Object%5B%5D'
         }
 
         It 'Should handle DateTime values' {
@@ -429,9 +429,9 @@ Describe 'ConvertTo-QueryString' {
             try {
                 ConvertTo-QueryString -InputObjects $input -ErrorAction Stop
             } catch {
-                $_.Exception.Message | Should -Contain "Supported types"
-                $_.Exception.Message | Should -Contain "Hashtable"
-                $_.Exception.Message | Should -Contain "OrderedDictionary"
+                $_.Exception.Message | Should -Match "Supported types"
+                $_.Exception.Message | Should -Match "Hashtable"
+                $_.Exception.Message | Should -Match "OrderedDictionary"
             }
         }
 
@@ -440,7 +440,7 @@ Describe 'ConvertTo-QueryString' {
             try {
                 ConvertTo-QueryString -InputObjects $input -ErrorAction Stop
             } catch {
-                $_.Exception.Message | Should -Contain "System.DateTime"
+                $_.Exception.Message | Should -Match "System.DateTime"
             }
         }
 
@@ -473,12 +473,12 @@ Describe 'ConvertTo-QueryString' {
                 '$count' = $true
             }
             $result = ConvertTo-QueryString $queryParams
-            $result | Should -Contain '$select=id%2CdisplayName%2Cmail'
-            $result | Should -Contain '$filter=userType%20eq%20%27Member%27'
-            $result | Should -Contain '$top=100'
-            $result | Should -Contain '$skip='
-            $result | Should -Contain '$orderby=displayName'
-            $result | Should -Contain '$count=True'
+            $result | Should -Match '\$select=id%2CdisplayName%2Cmail'
+            $result | Should -Match '\$filter=userType\+eq\+%27Member%27'
+            $result | Should -Match '\$top=100'
+            $result | Should -Match '\$skip='
+            $result | Should -Match '\$orderby=displayName'
+            $result | Should -Match '\$count=True'
         }
 
         It 'Should handle empty query parameters hashtable' {
@@ -495,10 +495,10 @@ Describe 'ConvertTo-QueryString' {
                 '$skip' = $null
             }
             $result = ConvertTo-QueryString $queryParams
-            $result | Should -Contain '$select=id%2CdisplayName'
-            $result | Should -Contain '$filter='
-            $result | Should -Contain '$top=50'
-            $result | Should -Contain '$skip='
+            $result | Should -Match '\$select=id%2CdisplayName'
+            $result | Should -Match '\$filter='
+            $result | Should -Match '\$top=50'
+            $result | Should -Match '\$skip='
         }
 
         It 'Should handle complex filter scenarios with null values' {
@@ -509,10 +509,10 @@ Describe 'ConvertTo-QueryString' {
                 '$count' = $null
             }
             $result = ConvertTo-QueryString $queryParams
-            $result | Should -Contain '$filter=displayName%20eq%20%27John%20Doe%27'
-            $result | Should -Contain '$select='
-            $result | Should -Contain '$expand=manager'
-            $result | Should -Contain '$count='
+            $result | Should -Match '\$filter=displayName\+eq\+%27John\+Doe%27'
+            $result | Should -Match '\$select='
+            $result | Should -Match '\$expand=manager'
+            $result | Should -Match '\$count='
         }
     }
 
@@ -520,15 +520,15 @@ Describe 'ConvertTo-QueryString' {
         It 'Should encode parameter names when EncodeParameterNames is specified' {
             $input = @{ 'test param' = 'value'; 'another&param' = 'test' }
             $result = ConvertTo-QueryString -InputObjects $input -EncodeParameterNames
-            $result | Should -Contain 'test+param=value'
-            $result | Should -Contain 'another%26param=test'
+            $result | Should -Match 'test\+param=value'
+            $result | Should -Match 'another%26param=test'
         }
 
         It 'Should handle null values with encoded parameter names' {
             $input = @{ 'test param' = $null; 'another&param' = 'value' }
             $result = ConvertTo-QueryString -InputObjects $input -EncodeParameterNames
-            $result | Should -Contain 'test+param='
-            $result | Should -Contain 'another%26param=value'
+            $result | Should -Match 'test\+param='
+            $result | Should -Match 'another%26param=value'
         }
     }
 
@@ -536,32 +536,32 @@ Describe 'ConvertTo-QueryString' {
         It 'Should convert integers to string properly' {
             $input = @{ Number = 42; NullNumber = $null }
             $result = ConvertTo-QueryString $input
-            $result | Should -Contain 'Number=42'
-            $result | Should -Contain 'NullNumber='
+            $result | Should -Match 'Number=42'
+            $result | Should -Match 'NullNumber='
         }
 
         It 'Should convert booleans to string properly' {
             $input = @{ TrueValue = $true; FalseValue = $false; NullBool = $null }
             $result = ConvertTo-QueryString $input
-            $result | Should -Contain 'TrueValue=True'
-            $result | Should -Contain 'FalseValue=False'
-            $result | Should -Contain 'NullBool='
+            $result | Should -Match 'TrueValue=True'
+            $result | Should -Match 'FalseValue=False'
+            $result | Should -Match 'NullBool='
         }
 
         It 'Should convert GUIDs to string properly' {
             $guid = [guid]::NewGuid()
             $input = @{ GuidValue = $guid; NullGuid = $null }
             $result = ConvertTo-QueryString $input
-            $result | Should -Contain "GuidValue=$($guid.ToString())"
-            $result | Should -Contain 'NullGuid='
+            $result | Should -Match "GuidValue=$($guid.ToString())"
+            $result | Should -Match 'NullGuid='
         }
 
         It 'Should convert DateTime to string properly' {
             $date = [System.DateTime]::Now
             $input = @{ DateValue = $date; NullDate = $null }
             $result = ConvertTo-QueryString $input
-            $result | Should -Contain "DateValue=$($date.ToString())"
-            $result | Should -Contain 'NullDate='
+            $result | Should -Match 'DateValue='
+            $result | Should -Match 'NullDate='
         }
     }
 }
