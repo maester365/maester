@@ -92,7 +92,7 @@ function Test-MtCisSafeLink {
         #DisableUrlRewrite
         $safeLinkCheckList += [pscustomobject] @{
             'CheckName' = 'DisableUrlRewrite'
-            'Value'     = 'True'
+            'Value'     = 'False'
         }
 
         Write-Verbose 'Executing checks'
