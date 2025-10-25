@@ -3,7 +3,7 @@ title: What's New with Maester Tags
 description: An announcement about new and improved tags that replace current ones, and a new function to get an inventory of tests per tag.
 slug: whats-new-with-maester-tags
 authors: [samerde]
-tags: [tags,maester-v2]
+tags: [tags]
 hide_table_of_contents: false
 date: 2025-10-20
 ---
