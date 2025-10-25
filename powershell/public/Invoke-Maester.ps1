@@ -377,7 +377,7 @@ function Invoke-Maester {
 
     # Include tests tagged as "Preview" if "All" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
     if ('All' -in $Tag) {
-        Write-Verbose "Including preview tests. Please use -IncludePreview instead of the deprecated 'All' tag."
+        Write-Verbose 'Including preview tests. Please use -IncludePreview instead of the deprecated ''All'' tag.'
         $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'Preview' }
     }
 
