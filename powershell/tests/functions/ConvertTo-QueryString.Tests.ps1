@@ -29,7 +29,8 @@ Describe 'ConvertTo-QueryString' {
             $hashtable = @{ index = 10; price = 99.99 }
             $result = ConvertTo-QueryString $hashtable
             $result | Should -Match 'index=10'
-            $result | Should -Match 'price=99%2C99'
+            # Decimal separator can be . or , depending on locale
+            $result | Should -Match 'price=99(\.|%2C)99'
         }
 
         It 'Should handle boolean values' {
