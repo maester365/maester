@@ -1,19 +1,25 @@
 ﻿BeforeDiscovery {
     $moduleName = 'Maester'
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'moduleRoot')]
     $moduleRoot = "$PSScriptRoot/../.."
     # Get all the functions in the /public folder
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'exportedFunctions')]
     $exportedFunctions = Get-Command -Module $moduleName -CommandType Function
 
     # Eventually this should include all functions in the /public folder
     # For now, just the ones that we have tested and added
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'functionsWithTests')]
     $functionsWithTests = @('Invoke-Maester')
 }
 
-Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunctions = $exportedFunctions; moduleRoot = $moduleRoot } {
+Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunctions = $exportedFunctions; moduleRoot = $moduleRoot; functionsWithTests = $functionsWithTests } {
     Context '<_.CommandType> <_.Name>' -ForEach $exportedFunctions {
         BeforeAll {
+            # PSScriptAnalyzer doesn't understand this is used in tests below
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'function')]
             $function = $_
             # Need to update this if we start building the module as a single psm1 file (for improved performance)
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'functionPath')]
             $functionPath = $_.ScriptBlock.File
         }
 
@@ -49,8 +55,8 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
         }
 
         # Intentionally using skip so the output will remind us of the missing test files :)
-        It 'Matching test file file should exist' -Skip:$($_ -notin $functionsWithTests) {
-            "$moduleRoot/tests/functions/$($_).Tests.ps1" | Should -Exist
+        It 'Matching test file file should exist' -Skip:($function.Name -notin $functionsWithTests) {
+            "$moduleRoot/tests/functions/$($function.Name).Tests.ps1" | Should -Exist
         }
     }
 }

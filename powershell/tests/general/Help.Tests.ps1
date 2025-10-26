@@ -1,13 +1,17 @@
 ﻿# Based on https://github.com/pester/Pester/blob/main/tst/Help.Tests.ps1
 BeforeDiscovery {
 	$moduleName = 'Maester'
+	# PSScriptAnalyzer doesn't understand Pester's scoping model for ForEach data
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'exportedCommands')]
 	$exportedCommands = Get-Command -Module $moduleName -CommandType Cmdlet, Function
 }
 
 Describe 'Testing module help' -Tag 'Help','Acceptance' -ForEach @{ exportedCommands = $exportedCommands; moduleName = $moduleName } {
 	Context '<_.CommandType> <_.Name>' -ForEach $exportedCommands {
 		BeforeAll {
+			[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'command')]
 			$command = $_
+			[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'help')]
 			$help = $_ | Get-Help
 		}
 
