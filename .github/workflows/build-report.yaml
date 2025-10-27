@@ -90,7 +90,7 @@ jobs:
 
       - name: Upload report template as artifact
         if: steps.check-changes.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: updated-report-template
           path: powershell/assets/ReportTemplate.html
