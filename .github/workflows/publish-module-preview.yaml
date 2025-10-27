@@ -47,7 +47,7 @@ jobs:
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
       - name: Azure CLI login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           tenant-id: ${{ vars.TENTANT_ID }}
           client-id: ${{ vars.CLIENT_ID }}
