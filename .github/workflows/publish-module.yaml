@@ -55,22 +55,6 @@ jobs:
           echo "::add-mask::$kv_token"
           echo "CODE_SIGN_AKV_ACCESS_TOKEN=$kv_token" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Install AzureSignTool
-        run: dotnet tool install --no-cache --global AzureSignTool
-
-      - name: Sign PowerShell module
-        id: module-signing
-        shell: pwsh
-        run: |
-          Get-ChildItem ${{ github.workspace }}/powershell -Recurse -Force -Filter *.ps* | Select-Object -ExpandProperty FullName | Out-File -FilePath ./signfiles.txt
-          azuresigntool.exe sign --verbose `
-            --azure-key-vault-url "${{ secrets.CODE_SIGN_KEYVAULT }}" `
-            --azure-key-vault-accesstoken ${{ env.CODE_SIGN_AKV_ACCESS_TOKEN }} `
-            --azure-key-vault-certificate "${{ vars.CODE_SIGN_CERTIFICATENAME }}" `
-            --timestamp-rfc3161 "http://timestamp.digicert.com" `
-            --input-file-list ./signfiles.txt
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
-
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
