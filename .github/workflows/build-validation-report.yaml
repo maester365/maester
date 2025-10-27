@@ -1,7 +1,7 @@
 name: build-validation-report
 on:
   workflow_run:
-    workflows: ['build-validation']                     # runs after build-validation workflow
+    workflows: ["build-validation"] # runs after build-validation workflow
     types:
       - completed
 permissions:
@@ -12,10 +12,10 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-    - uses: dorny/test-reporter@v1
-      with:
-        artifact: test-results-Windows
-        name: Maester Test Results
-        path: '*.xml'
-        reporter: java-junit
-        fail-on-error: true
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: test-results-Windows
+          name: Maester Test Results
+          path: "*.xml"
+          reporter: java-junit
+          fail-on-error: true
