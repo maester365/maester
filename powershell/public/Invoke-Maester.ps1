@@ -102,7 +102,7 @@ Connect to all tested services and run all tests, including the long-running and
 function Invoke-Maester {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Incorrectly flags ExportCsv and ExportExcel as unused')]
-    [Alias("Invoke-MtMaester")]
+    [Alias('Invoke-MtMaester')]
     [CmdletBinding()]
     param (
         # Specifies path to files containing tests. The value is a path\file name or a name pattern. Wildcards are permitted.
@@ -210,25 +210,25 @@ function Invoke-Maester {
     )
 
     function GetDefaultFileName() {
-        $timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
+        $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
         return "TestResults-$timestamp.html"
     }
 
     function ValidateAndSetOutputFiles($out) {
         $result = $null
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            if ($out.OutputHtmlFile.EndsWith(".html") -eq $false) {
-                $result = "The OutputHtmlFile parameter must have an .html extension."
+            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
+                $result = 'The OutputHtmlFile parameter must have an .html extension.'
             }
         }
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            if ($out.OutputMarkdownFile.EndsWith(".md") -eq $false) {
-                $result = "The OutputMarkdownFile parameter must have an .md extension."
+            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
             }
         }
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            if ($out.OutputJsonFile.EndsWith(".json") -eq $false) {
-                $result = "The OutputJsonFile parameter must have a .json extension."
+            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
+                $result = 'The OutputJsonFile parameter must have a .json extension.'
             }
         }
 
@@ -237,7 +237,7 @@ function Invoke-Maester {
 
         if ([string]::IsNullOrEmpty($out.OutputFolder) -and !$someOutputFileHasValue) {
             # No outputs specified. Set default folder.
-            $out.OutputFolder = "./test-results"
+            $out.OutputFolder = './test-results'
         }
 
         if (![string]::IsNullOrEmpty($out.OutputFolder)) {
@@ -246,7 +246,7 @@ function Invoke-Maester {
 
             if ([string]::IsNullOrEmpty($out.OutputFolderFileName)) {
                 # Generate a default filename.
-                $timestamp = Get-Date -Format "yyyy-MM-dd-HHmmss"
+                $timestamp = Get-Date -Format 'yyyy-MM-dd-HHmmss'
                 $out.OutputFolderFileName = "TestResults-$timestamp"
             }
 
@@ -254,10 +254,10 @@ function Invoke-Maester {
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
 
-            if($ExportCsv.IsPresent) {
+            if ($ExportCsv.IsPresent) {
                 $out.OutputCsvFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).csv"
             }
-            if($ExportExcel.IsPresent) {
+            if ($ExportExcel.IsPresent) {
                 $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
             }
         }
@@ -273,9 +273,9 @@ function Invoke-Maester {
         $PesterConfiguration.Output.Verbosity = $Verbosity
         if ($Path) { $PesterConfiguration.Run.Path = $Path }
         else {
-            if (Test-Path -Path "./powershell/tests/pester.ps1") {
+            if (Test-Path -Path './powershell/tests/pester.ps1') {
                 # Internal dev, exclude Maester's core tests
-                $PesterConfiguration.Run.Path = "./tests"
+                $PesterConfiguration.Run.Path = './tests'
             }
         }
         if ($Tag) { $PesterConfiguration.Filter.Tag = $Tag }
@@ -317,15 +317,15 @@ function Invoke-Maester {
     $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
 
     if ($SkipGraphConnect) {
-        Write-Host "🔥 Skipping graph connection check" -ForegroundColor Yellow
+        Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
     } else {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) {
             if ($NonInteractive.IsPresent -or $NoLogo.IsPresent) {
-                Write-Host " ⚠️ Non-interactive mode: running with missing permissions" -ForegroundColor Yellow
+                Write-Host ' ⚠️ Non-interactive mode: running with missing permissions' -ForegroundColor Yellow
             } else {
                 return
             }
-         }
+        }
     }
 
     # Initialize MtSession after Graph connected.
@@ -358,29 +358,34 @@ function Invoke-Maester {
     }
 
     # Exclude LongRunning tests unless: $IncludeLongRunning is present, or LongRunning is in $Tag, or CAWhatIf is in $Tag.
-    if ( (-not $IncludeLongRunning.IsPresent) -and "LongRunning" -notin $Tag -and "CAWhatIf" -notin $Tag ) {
-        $ExcludeTag += "LongRunning"
-        Write-Verbose "Excluding LongRunning tests. Use -IncludeLongRunning to include them."
+    if ( (-not $IncludeLongRunning.IsPresent) -and 'LongRunning' -notin $Tag -and 'Full' -notin $Tag -and 'CAWhatIf' -notin $Tag ) {
+        $ExcludeTag += 'LongRunning'
+        Write-Verbose 'Excluding LongRunning tests. Use -IncludeLongRunning to include them.'
     }
 
     # If $Tag is not set and IncludePreview is not passed, run all tests except the ones with the "Preview" tag.
-    if (-not $Tag) {
-        if (-not $IncludePreview.IsPresent) {
-            $ExcludeTag += "Preview"
-            Write-Verbose "Excluding Preview tests. Use -IncludePreview to include them."
-        }
+    if (-not $Tag -and -not $IncludePreview.IsPresent) {
+        $ExcludeTag += 'Preview'
+        Write-Verbose 'Excluding Preview tests. Use -IncludePreview to include them.'
     }
 
-    # Include tests tagged as "Preview" if "Full" is included in $Tag. Included for backward compatibility with deprecated tags.
-    if ("Full" -in $Tag) {
-        $Tag += "Preview"
+    # Include tests tagged as "LongRunning" if "Full" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
+    if ('Full' -in $Tag) {
+        Write-Verbose 'Including long-running tests. Please use -IncludeLongRunning instead of the deprecated ''Full'' tag.'
+        $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'LongRunning' }
+    }
+
+    # Include tests tagged as "Preview" if "All" is included in the Tag parameter. Included for backward compatibility with deprecated tags.
+    if ('All' -in $Tag) {
+        Write-Verbose 'Including preview tests. Please use -IncludePreview instead of the deprecated ''All'' tag.'
+        $ExcludeTag = $ExcludeTag | Where-Object { $_ -ne 'Preview' }
     }
 
     # Warn about deprecated tag usage.
-    $DeprecatedTags = @('All','Full')
+    $DeprecatedTags = @('All', 'Full')
     $UsedDeprecatedTags = $DeprecatedTags | Where-Object { $Tag -contains $_ -or $ExcludeTag -contains $_ }
     if ($UsedDeprecatedTags) {
-        Write-Warning "The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead: `n`nLongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.`nPreview    : Tests that are still being tested or are dependent on preview APIs. Replaces 'All'."
+        Write-Warning "The 'All' and 'Full' tags are being deprecated and will be removed in a future release. Please use the following tags instead: `n`nLongRunning: Tests that can take a long time to run when the tenant has a large number of objects. Replaces 'Full'.`nPreview: Tests that are still being tested or are dependent on preview APIs. Replaces 'All'."
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
@@ -389,22 +394,22 @@ function Invoke-Maester {
 
     if ( Test-Path -Path $Path -PathType Leaf ) {
         Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
-        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
-        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
         return
     }
 
     if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
         Write-Host "The path '$Path' does not exist." -ForegroundColor Red
-        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
-        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
         return
     }
 
     if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
         Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
-        Write-Host "💫 Update-MaesterTests" -NoNewline -ForegroundColor Green
-        Write-Host " → Get the latest tests built by the Maester team and community." -ForegroundColor Yellow
+        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
         return
     }
 
@@ -426,17 +431,17 @@ function Invoke-Maester {
     $maesterResults = $null
 
     Set-MtProgressView
-    Write-MtProgress -Activity "Starting Maester" -Status "Reading Maester config..." -Force
+    Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
     Write-Verbose "Reading Maester config from: $Path"
     $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path
 
-    Write-MtProgress -Activity "Starting Maester" -Status "Discovering tests to run..." -Force
+    Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
 
     if ($pesterResults) {
 
-        Write-MtProgress -Activity "Processing test results" -Status "$($pesterResults.TotalCount) test(s)" -Force
+        Write-MtProgress -Activity 'Processing test results' -Status "$($pesterResults.TotalCount) test(s)" -Force
         $maesterResults = ConvertTo-MtMaesterResult $PesterResults
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
@@ -444,23 +449,23 @@ function Invoke-Maester {
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            Write-MtProgress -Activity "Creating markdown report"
+            Write-MtProgress -Activity 'Creating markdown report'
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
-            Write-MtProgress -Activity "Creating CSV"
+            Write-MtProgress -Activity 'Creating CSV'
             Convert-MtResultsToFlatObject -InputObject $maesterResults -CsvFilePath $out.OutputCsvFile
         }
 
         if (![string]::IsNullOrEmpty($out.OutputExcelFile)) {
-            Write-MtProgress -Activity "Creating Excel workbook"
+            Write-MtProgress -Activity 'Creating Excel workbook'
             Convert-MtResultsToFlatObject -InputObject $maesterResults -ExcelFilePath $out.OutputExcelFile
         }
 
         if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            Write-MtProgress -Activity "Creating html report"
+            Write-MtProgress -Activity 'Creating html report'
             $output = Get-MtHtmlReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
             Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
@@ -472,17 +477,17 @@ function Invoke-Maester {
         }
 
         if ($MailRecipient) {
-            Write-MtProgress -Activity "Sending mail"
+            Write-MtProgress -Activity 'Sending mail'
             Send-MtMail -MaesterResults $maesterResults -Recipient $MailRecipient -TestResultsUri $MailTestResultsUri -UserId $MailUserId
         }
 
         if ($TeamId -and $TeamChannelId) {
-            Write-MtProgress -Activity "Sending Teams message"
+            Write-MtProgress -Activity 'Sending Teams message'
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamId $TeamId -TeamChannelId $TeamChannelId -TestResultsUri $MailTestResultsUri
         }
 
         if ($TeamChannelWebhookUri) {
-            Write-MtProgress -Activity "Sending Teams message"
+            Write-MtProgress -Activity 'Sending Teams message'
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
         }
 
@@ -493,7 +498,7 @@ function Invoke-Maester {
             Write-Host "Skipped ⚫: $($maesterResults.SkippedCount), " -NoNewline -ForegroundColor DarkGray
             Write-Host "Error ⚠️: $($maesterResults.ErrorCount), " -NoNewline -ForegroundColor DarkGray
             Write-Host "Not Run ⚫: $($maesterResults.NotRunCount), " -NoNewline -ForegroundColor DarkGray
-            Write-Host "Total ⭐: $($maesterResults.TotalCount)`n" 
+            Write-Host "Total ⭐: $($maesterResults.TotalCount)`n"
         }
 
         if (-not $SkipVersionCheck -and 'Next' -ne $version) {
@@ -501,7 +506,7 @@ function Invoke-Maester {
             Get-IsNewMaesterVersionAvailable | Out-Null
         }
 
-        Write-MtProgress -Activity "🔥 Completed tests" -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar.
+        Write-MtProgress -Activity '🔥 Completed tests' -Status "Total $($pesterResults.TotalCount) " -Completed -Force # Clear progress bar.
     }
     Reset-MtProgressView
     if ($PassThru) {
