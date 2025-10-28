@@ -31,16 +31,16 @@ function Test-MtCisaSafeLinkClickTracking {
 
     $policies = Get-MtExo -Request SafeLinksPolicy
 
-    $resultPolicies = $policies | Where-Object {
-        $_.TrackClicks
+    $resultPolicies = $policies | Where-Object { `
+            $_.TrackClicks
     }
 
-    $standard = $policies | Where-Object {
-        $_.RecommendedPolicyType -eq 'Standard'
+    $standard = $policies | Where-Object { `
+            $_.RecommendedPolicyType -eq 'Standard'
     }
 
-    $strict = $policies | Where-Object {
-        $_.RecommendedPolicyType -eq 'Strict'
+    $strict = $policies | Where-Object { `
+            $_.RecommendedPolicyType -eq 'Strict'
     }
 
     $testResult = $standard -and $strict -and (($resultPolicies | Measure-Object).Count -ge 1)
