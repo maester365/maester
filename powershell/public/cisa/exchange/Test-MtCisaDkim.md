@@ -10,7 +10,7 @@ To enable DKIM, follow the instructions listed on [Steps to Create, enable and d
 #### Option 2: Disallow mail to be sent from domain
 If the domain is not used for sending mail, we recommend disabling the ability to send from this domain. This will skip the domain for this particular test.
 
-1. Sign in to the [**Exchange Admin Center – Accepted Domains**](https://admin.exchange.microsoft.com/#/accepteddomains).
+1. Sign in to the [**Exchange Admin Center - Accepted Domains**](https://admin.exchange.microsoft.com/#/accepteddomains).
 2. Select the domain to disable sending from.
 3. Uncheck **Allow mail to be sent from this domain**.
 
