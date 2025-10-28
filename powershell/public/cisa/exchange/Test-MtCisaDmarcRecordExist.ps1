@@ -66,6 +66,9 @@ function Test-MtCisaDmarcRecordExist {
         }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
+        }elseif($domainName -eq 'onmicrosoft.com'){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = 'Not applicable'
         }else{
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }
