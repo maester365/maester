@@ -73,7 +73,7 @@ function Test-MtCisaAssignmentNotification {
     $resultPass = "✅ Pass"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assisngments:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assignments:`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant has highly privileged roles without notifications.`n`n"
         $testResultMarkdown += "| Role | Eligible Notification | Active Notification |`n"
