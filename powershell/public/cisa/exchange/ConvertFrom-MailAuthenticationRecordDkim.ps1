@@ -40,7 +40,7 @@ function ConvertFrom-MailAuthenticationRecordDkim {
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ipaddress]$DnsServerIpAddress = "1.1.1.1",
+        [ipaddress]$DnsServerIpAddress,
 
         # DKIM DNS record Name to retrieve.
         [Parameter(Mandatory)]
