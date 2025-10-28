@@ -336,16 +336,20 @@ function Get-MtXspmUnifiedIdentityInfo {
         }
     } else {
         Write-Verbose "Checking prerequisites for Test-MtXspmAppRegWithPrivilegedApiAndOwners"
-        $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
-                    -ErrorAction SilentlyContinue `
-                    -Body (@{"Query" = "IdentityInfo | getschema | where ColumnName == 'PrivilegedEntraPimRoles'" } | ConvertTo-Json) `
-                    -OutputType PSObject).results.ColumnName -eq "PrivilegedEntraPimRoles")
-        $OAuthAppInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
-                    -ErrorAction SilentlyContinue `
-                    -Body (@{"Query" = "OAuthAppInfo | getschema" } | ConvertTo-Json) `
-                    -OutputType PSObject).results.ColumnName -contains "OAuthAppId")
-        $UnifiedIdentityInfoExecutable = $AdvancedIdentityAvailable -and $OAuthAppInfoAvailable
-        Write-Verbose "UnifiedIdentityInfoExecutable is $UnifiedIdentityInfoExecutable (IdentityInfo is $AdvancedIdentityAvailable, $OAuthAppInfoAvailable)"
-        return $UnifiedIdentityInfoExecutable
+        try {
+            $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+                        -ErrorAction Stop `
+                        -Body (@{"Query" = "IdentityInfo | getschema | where ColumnName == 'PrivilegedEntraPimRoles'" } | ConvertTo-Json) `
+                        -OutputType PSObject).results.ColumnName -eq "PrivilegedEntraPimRoles")
+            $OAuthAppInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+                        -ErrorAction Stop `
+                        -Body (@{"Query" = "OAuthAppInfo | getschema" } | ConvertTo-Json) `
+                        -OutputType PSObject).results.ColumnName -contains "OAuthAppId")
+            $UnifiedIdentityInfoExecutable = $AdvancedIdentityAvailable -and $OAuthAppInfoAvailable
+            Write-Verbose "UnifiedIdentityInfoExecutable is $UnifiedIdentityInfoExecutable (IdentityInfo is $AdvancedIdentityAvailable, $OAuthAppInfoAvailable)"
+            return $UnifiedIdentityInfoExecutable
+        } catch {
+            return $false
+        }
     }
 }
