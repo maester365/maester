@@ -31,15 +31,15 @@ function Test-MtCisaSafeLink {
 
     $policies = Get-MtExo -Request SafeLinksPolicy
 
-    $resultPolicies = $policies | Where-Object { `
+    $resultPolicies = $policies | Where-Object {
         $_.EnableSafeLinksForEmail
     }
 
-    $standard = $policies | Where-Object { `
+    $standard = $policies | Where-Object {
         $_.RecommendedPolicyType -eq 'Standard'
     }
 
-    $strict = $policies | Where-Object { `
+    $strict = $policies | Where-Object {
         $_.RecommendedPolicyType -eq 'Strict'
     }
 
