@@ -335,7 +335,7 @@ function Get-MtXspmUnifiedIdentityInfo {
             return $XspmUnifiedIdentityInfoResult
         }
     } else {
-        Write-Verbose "Checking prerequisites for Test-MtXspmAppRegWithPrivilegedApiAndOwners"
+        Write-Verbose "Checking prerequisites for Exposure Management"
         try {
             $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
                         -ErrorAction Stop `
