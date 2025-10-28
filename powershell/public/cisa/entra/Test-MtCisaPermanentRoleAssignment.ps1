@@ -62,6 +62,19 @@ function Test-MtCisaPermanentRoleAssignment {
     } else {
         $testResultMarkdown = "Your tenant has active assignments without expiration to privileged roles.`n`n%TestResult%"
     }
+
+    if (-not $testResult) {
+        $result = "| Role | Principal Type | Display Name | Status |`n"
+        $result += "| --- | --- | --- | --- |`n"
+        foreach($roleAssignment in ($roleAssignments | Where-Object {$_.principal})){
+            foreach($principal in $roleAssignment.principal){
+                $result += "| $($roleAssignment.role) | $($principal.'@odata.type'.Split('.')[-1]) | $($principal.displayName ) | ❌ No Expiration |`n"
+            }
+        }
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
