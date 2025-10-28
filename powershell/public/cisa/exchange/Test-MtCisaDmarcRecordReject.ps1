@@ -71,7 +71,7 @@ function Test-MtCisaDmarcRecordReject {
     $expandedDomains = $expandedDomains |  Sort-Object DomainName, IsCoexistenceDomain -Unique
 
     $dmarcRecords = @()
-    foreach($domain in $expandedDomains){
+    foreach($domain in ($expandedDomains | Sort-Object -Unique)){
         $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records DMARC
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
