@@ -67,7 +67,7 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
             Add-MtTestResultDetail -Result $testResult
         }
         return $return
-    } Catch {
+    } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
