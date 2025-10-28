@@ -54,10 +54,14 @@ function Test-MtCaEmergencyAccessExists {
 
             # Get displayName of the emergency access account or group
             if ($CheckId) {
-                if ($EmergencyAccessUUIDType -eq 'user') {
-                    $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
-                } else {
-                    $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+                try {
+                    if ($EmergencyAccessUUIDType -eq 'user') {
+                        $DisplayName = Invoke-MtGraphRequest -RelativeUri "users/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+                    } else {
+                        $DisplayName = Invoke-MtGraphRequest -RelativeUri "groups/$CheckId" -Select displayName | Select-Object -ExpandProperty displayName
+                    }
+                } catch {
+                    Throw "Unable to resolve display name ${EmergencyAccessUUIDType} with GUID: ${CheckId}`n`nThis could indicate that the automatically detected emergency access ${EmergencyAccessUUIDType} does not exist."
                 }
 
                 Write-Verbose "Emergency access account or group: $CheckId"
