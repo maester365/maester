@@ -321,10 +321,10 @@ function Get-MtXspmUnifiedIdentityInfo {
             | extend CriticalityLevel = tostring(parse_json(NodeProperties)['rawData']['criticalityLevel']['criticalityLevel'])
             | extend RuleName = tostring(CriticalityData)
             | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
-            | extend CrticialAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-            | summarize CrticialAssetDetails = make_set_if(CrticialAssetDetail, tostring(CrticialAssetDetail) !contains '') by AccountObjectId = ObjectId
+            | extend CriticalAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
+            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, tostring(CriticalAssetDetail) !contains '') by AccountObjectId = ObjectId
             ) on AccountObjectId
-            | project-reorder AccountObjectId, AccountDisplayName, Type, CriticalityLevel, CrticialAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions;
+            | project-reorder AccountObjectId, AccountDisplayName, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions;
         };
         // Lookback feature is limited to user identities only
         UnifiedIdentityInfoXdr(ObjectName='',ObjectId='',LookbackTimestamp=datetime(now))
@@ -335,17 +335,21 @@ function Get-MtXspmUnifiedIdentityInfo {
             return $XspmUnifiedIdentityInfoResult
         }
     } else {
-        Write-Verbose "Checking prerequisites for Test-MtXspmAppRegWithPrivilegedApiAndOwners"
-        $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
-                    -ErrorAction SilentlyContinue `
-                    -Body (@{"Query" = "IdentityInfo | getschema | where ColumnName == 'PrivilegedEntraPimRoles'" } | ConvertTo-Json) `
-                    -OutputType PSObject).results.ColumnName -eq "PrivilegedEntraPimRoles")
-        $OAuthAppInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
-                    -ErrorAction SilentlyContinue `
-                    -Body (@{"Query" = "OAuthAppInfo | getschema" } | ConvertTo-Json) `
-                    -OutputType PSObject).results.ColumnName -contains "OAuthAppId")
-        $UnifiedIdentityInfoExecutable = $AdvancedIdentityAvailable -and $OAuthAppInfoAvailable
-        Write-Verbose "UnifiedIdentityInfoExecutable is $UnifiedIdentityInfoExecutable (IdentityInfo is $AdvancedIdentityAvailable, $OAuthAppInfoAvailable)"
-        return $UnifiedIdentityInfoExecutable
+        Write-Verbose "Checking prerequisites for Exposure Management"
+        try {
+            $AdvancedIdentityAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+                        -ErrorAction Stop `
+                        -Body (@{"Query" = "IdentityInfo | getschema | where ColumnName == 'PrivilegedEntraPimRoles'" } | ConvertTo-Json) `
+                        -OutputType PSObject).results.ColumnName -eq "PrivilegedEntraPimRoles")
+            $OAuthAppInfoAvailable = ((Invoke-MtGraphRequest -ApiVersion "beta" -RelativeUri "security/runHuntingQuery" -Method POST `
+                        -ErrorAction Stop `
+                        -Body (@{"Query" = "OAuthAppInfo | getschema" } | ConvertTo-Json) `
+                        -OutputType PSObject).results.ColumnName -contains "OAuthAppId")
+            $UnifiedIdentityInfoExecutable = $AdvancedIdentityAvailable -and $OAuthAppInfoAvailable
+            Write-Verbose "UnifiedIdentityInfoExecutable is $UnifiedIdentityInfoExecutable (IdentityInfo is $AdvancedIdentityAvailable, $OAuthAppInfoAvailable)"
+            return $UnifiedIdentityInfoExecutable
+        } catch {
+            return $false
+        }
     }
 }
