@@ -35,7 +35,7 @@ function Test-MtCisaDmarcRecordExist {
 
     $seen = @{}
     $dmarcRecords = @()
-    foreach($domain in $acceptedDomains){
+    foreach($domain in ($acceptedDomains | Get-Unique -AsString)){
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
         $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
