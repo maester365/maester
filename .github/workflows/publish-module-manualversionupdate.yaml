@@ -32,30 +32,17 @@ jobs:
         shell: pwsh
         run: ./.github/workflows/get-version.ps1
 
-      - name: Azure CLI login
-        uses: azure/login@v1
-        with:
-          tenant-id: ${{ vars.TENTANT_ID }}
-          client-id: ${{ vars.CLIENT_ID }}
-          allow-no-subscriptions: true
-
-      - name: Azure CLI get token
-        run: |
-          $kv_token=$(az account get-access-token --scope https://vault.azure.net/.default --query accessToken --output tsv)
-          echo "::add-mask::$kv_token"
-          echo "CODE_SIGN_AKV_ACCESS_TOKEN=$kv_token" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
         run: |
-          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          Publish-Module -Path ${{ github.workspace }}/powershell -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
         shell: pwsh
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
+          Compress-Archive -Path ${{ github.workspace }}/powershell/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
         uses: ncipollo/release-action@v1
