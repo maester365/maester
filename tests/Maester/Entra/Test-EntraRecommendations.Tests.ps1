@@ -42,22 +42,24 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         $actionSteps = $actionSteps -join "`n`n"
         $descriptionMd = "$($_.benefits)`n`n#### Remediation action:`n`n${actionSteps}`n`n**Impact:** $($_.remediationImpact)`n`n#### Related links:`n`n* [$($_.displayName) - Microsoft Entra admin center]($recommendationUrl)"
         #endregion
+        $textInfo = (Get-Culture).TextInfo
+        $priority = $textInfo.ToTitleCase($_.priority)
 
         $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
         if ( $EntraIDPlan -ne "P2" ) {
             $EntraPremiumRecommendations | ForEach-Object {
                 if ( $id -match "$($_)$" ) {
-                    Add-MtTestResultDetail -Description $descriptionMd -Severity $_.priority -SkippedBecause NotLicensedEntraIDP2
+                    Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause NotLicensedEntraIDP2
                     return $null
                 }
             }
         }
 
         if ( $status -match "dismissed" ) {
-            Add-MtTestResultDetail -Description $descriptionMd -Severity $_.priority -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
+            Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
             return $null
         }
-        Add-MtTestResultDetail -Description $descriptionMd -Severity $_.priority -Result $resultMd
+        Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result $resultMd
 
         # Actual test
         $status | Should -Be "completedBySystem" -Because $benefits
