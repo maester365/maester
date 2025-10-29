@@ -46,7 +46,6 @@ function Test-MtEntraIDConnectSsso {
             ErrorAction = "SilentlyContinue"
             Body        = (@{"Query" = "IdentityLogonEvents | getschema" } | ConvertTo-Json)
             OutputType  = "PSObject"
-            Verbose     = $true
         }
         $IdentityLogonEventsAvailable = ((Invoke-MtGraphRequest @params).results.ColumnName -contains "LogonType")
         # Check for availability of DeviceInfo table
@@ -57,7 +56,6 @@ function Test-MtEntraIDConnectSsso {
             ErrorAction = "SilentlyContinue"
             Body        = (@{"Query" = "DeviceInfo | getschema" } | ConvertTo-Json)
             OutputType  = "PSObject"
-            Verbose     = $true
         }
         $DeviceInfoAvailable = ((Invoke-MtGraphRequest @params).results.ColumnName -contains "DeviceId")
         $UnifiedMdiInfoAvailable = $IdentityLogonEventsAvailable -and $DeviceInfoAvailable
