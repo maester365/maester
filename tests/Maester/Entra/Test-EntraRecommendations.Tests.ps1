@@ -30,14 +30,14 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         if ( $EntraIDPlan -ne "P2" ) {
             $EntraPremiumRecommendations | ForEach-Object {
                 if ( $id -match "$($_)$" ) {
-                    Add-MtTestResultDetail -Description $recommendationDescription -SkippedBecause NotLicensedEntraIDP2
+                    Add-MtTestResultDetail -Description $recommendationDescription -Severity $_.priority -SkippedBecause NotLicensedEntraIDP2
                     return $null
                 }
             }
         }
 
         if ( $status -match "dismissed" ) {
-            Add-MtTestResultDetail -Description $benefits -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
+            Add-MtTestResultDetail -Description $benefits -Severity $_.priority -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
             return $null
         }
 
@@ -56,7 +56,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         }
 
         $ResultMarkdown = $insights + $impactedResourcesList + $recommendationLinkMd
-        Add-MtTestResultDetail -Description $recommendationDescription -Result $ResultMarkdown
+        Add-MtTestResultDetail -Description $recommendationDescription -Result $ResultMarkdown -Severity $_.priority
         #endregion
         # Actual test
         $status | Should -Be "completedBySystem" -Because $benefits
