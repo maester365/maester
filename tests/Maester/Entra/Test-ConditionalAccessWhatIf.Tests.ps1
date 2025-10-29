@@ -21,7 +21,7 @@ Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester', 'Secur
 
     Context 'Maester/Entra' -ForEach @( $RegularUsers ) {
         # Regular users
-        It 'MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)' -Tag 'MT.1033' {
+        It "MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))" -Tag 'MT.1033' {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 
