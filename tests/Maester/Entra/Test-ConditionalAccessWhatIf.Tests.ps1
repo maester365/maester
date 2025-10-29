@@ -29,7 +29,7 @@ Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester', 'Secur
 
     Context 'Maester/Entra' -ForEach @( $EmergencyAccessUsers ) {
         # Emergency access users
-        It 'MT.1034: Emergency access users should not be blocked (<userPrincipalName>)' -Tag 'MT.1034' {
+        It "MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName))" -Tag 'MT.1034' {
             if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
                 Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
             } else {
