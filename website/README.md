@@ -7,7 +7,7 @@ This folder contains the source code for the Maester.dev website.
 ### Installation
 
 ```
-$ npm install
+$ npm ci
 ```
 
 ### Local Development
