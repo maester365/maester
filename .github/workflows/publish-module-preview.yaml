@@ -24,7 +24,7 @@ jobs:
 
   create-preview-release:
     needs: build-report
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
@@ -57,7 +57,7 @@ jobs:
         id: publish-to-gallery
         shell: pwsh
         run: |
-          Publish-Module -Path ${{ github.workspace }}/powershell -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          Publish-Module -Path ${{ github.workspace }}/powershell/ -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
