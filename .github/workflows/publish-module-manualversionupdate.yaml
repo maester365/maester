@@ -44,7 +44,7 @@ jobs:
         id: module-creation
         shell: pwsh
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/powershell/* -DestinationPath ${{ github.workspace }}/maester.zip
+          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
         uses: ncipollo/release-action@v1
