@@ -526,7 +526,6 @@ function Invoke-Maester {
     }
     Reset-MtProgressView
     if ($PassThru) {
-        $maesterResults | Add-Member -MemberType NoteProperty -Name 'Output' -Value $out -ErrorAction SilentlyContinue
         return $maesterResults
     } else {
         return $out
