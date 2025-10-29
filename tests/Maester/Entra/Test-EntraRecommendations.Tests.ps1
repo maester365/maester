@@ -40,7 +40,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
             ($_.text.replace("<br>","`n`n").replace("<br/>","`n`n") -replace "<a.+?href=[`"']([^`"']+)[`"'].+?>([^<]+)<\/a>", '[$2]($1)') + $actionLink
         }
         $actionSteps = $actionSteps -join "`n`n"
-        $descriptionMd = "$($_.benefits)`n`n#### Remediation action:`n`n${actionSteps}`n`n**Impact:** $($_.remediationImpact)"
+        $descriptionMd = "$($_.benefits)`n`n#### Remediation action:`n`n${actionSteps}`n`n**Impact:** $($_.remediationImpact)`n`n#### Related links:`n`n* [$($_.displayName) - Microsoft Entra admin center]($recommendationUrl)"
         #endregion
 
         $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
