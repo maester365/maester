@@ -21,7 +21,7 @@ Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester', 'Secur
 
     Context 'Maester/Entra' -ForEach @( $RegularUsers ) {
         # Regular users
-        It 'MT.1033: User should be blocked from using legacy authentication (<userPrincipalName>)' -Tag 'MT.1033' {
+        It "MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))" -Tag 'MT.1033' {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 
@@ -29,7 +29,7 @@ Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester', 'Secur
 
     Context 'Maester/Entra' -ForEach @( $EmergencyAccessUsers ) {
         # Emergency access users
-        It 'MT.1034: Emergency access users should not be blocked (<userPrincipalName>)' -Tag 'MT.1034' {
+        It "MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName))" -Tag 'MT.1034' {
             if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
                 Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
             } else {
