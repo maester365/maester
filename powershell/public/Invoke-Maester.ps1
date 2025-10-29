@@ -327,13 +327,7 @@ function Invoke-Maester {
             Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
         }
     } else {
-        if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) {
-            if ($NonInteractive.IsPresent -or $NoLogo.IsPresent) {
-                Write-Warning -Message '⚠️ Non-interactive mode: Running with missing permissions'
-            } else {
-                return
-            }
-        }
+        Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage | Out-Null
     }
 
     # Initialize MtSession after Graph connected.
