@@ -63,7 +63,7 @@ function Test-MtSpExchangeAppAccessPolicy {
             $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop
         } catch {
             if ($_.Exception.Message -like "*couldn't be found*") {
-                Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies was found.'
+                Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies were found.'
                 $appAccessPolicies = $null
             } else {
                 throw
