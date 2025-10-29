@@ -527,5 +527,7 @@ function Invoke-Maester {
     Reset-MtProgressView
     if ($PassThru) {
         return $maesterResults
+    } else {
+        return $out
     }
 }
