@@ -21,6 +21,9 @@ Do not show the Maester logo.
 .PARAMETER NonInteractive
 This will suppress the logo when Maester starts and prevent the test results from being opened in the default browser.
 
+.PARAMETER Silent
+This will suppress all pretty messages.
+
 .EXAMPLE
 Invoke-Maester
 
@@ -154,6 +157,9 @@ function Invoke-Maester {
         # Run the tests in non-interactive mode. This will prevent the test results from being opened in the default browser.
         [switch] $NonInteractive,
 
+        # This will suppress all pretty messages.
+        [switch] $Silent,
+
         # Passes the output of the Maester tests to the console.
         [switch] $PassThru,
 
@@ -286,7 +292,7 @@ function Invoke-Maester {
 
     $version = Get-MtModuleVersion
 
-    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
+    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent -or $Silent.IsPresent) {
         Write-Verbose "Running Maester v$Version"
     } else {
         # ASCII Art using style "ANSI Shadow"
@@ -317,11 +323,13 @@ function Invoke-Maester {
     $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
 
     if ($SkipGraphConnect) {
-        Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
+        If (-not $Silent.IsPresent) {
+            Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
+        }
     } else {
         if (!(Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage)) {
             if ($NonInteractive.IsPresent -or $NoLogo.IsPresent) {
-                Write-Host ' ⚠️ Non-interactive mode: running with missing permissions' -ForegroundColor Yellow
+                Write-Warning -Message '⚠️ Non-interactive mode: Running with missing permissions'
             } else {
                 return
             }
@@ -335,7 +343,7 @@ function Invoke-Maester {
         # Check if TeamChannelWebhookUri is a valid URL.
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
         if (-not ($TeamChannelWebhookUri -match $urlPattern)) {
-            Write-Output "⚠️ Invalid Webhook URL: $TeamChannelWebhookUri"
+            Write-Error -Message "⚠️  Invalid Webhook URL: $TeamChannelWebhookUri"
             return
         }
     }
@@ -393,23 +401,35 @@ function Invoke-Maester {
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
     if ( Test-Path -Path $Path -PathType Leaf ) {
-        Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
-        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        if ($Silent.IsPresent) {
+            Write-Error -Message "The path '$Path' is a file. Please provide a folder path."
+        } else {
+            Write-Host "The path '$Path' is a file. Please provide a folder path." -ForegroundColor Red
+            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        }
         return
     }
 
     if ( -not ( Test-Path -Path $Path -PathType Container ) ) {
-        Write-Host "The path '$Path' does not exist." -ForegroundColor Red
-        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        if ($Silent.IsPresent) {
+            Write-Error -Message "The path '$Path' does not exist."
+        } else {
+            Write-Host "The path '$Path' does not exist." -ForegroundColor Red
+            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        }
         return
     }
 
     if ( -not ( Get-ChildItem -Path "$Path\*.Tests.ps1" -Recurse ) ) {
-        Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
-        Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
-        Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        if ($Silent.IsPresent) {
+            Write-Error -Message "No test files found in the path '$Path'."
+        } else {
+            Write-Host "No test files found in the path '$Path'." -ForegroundColor Red
+            Write-Host '💫 Update-MaesterTests' -NoNewline -ForegroundColor Green
+            Write-Host ' → Get the latest tests built by the Maester team and community.' -ForegroundColor Yellow
+        }
         return
     }
 
@@ -468,7 +488,9 @@ function Invoke-Maester {
             Write-MtProgress -Activity 'Creating html report'
             $output = Get-MtHtmlReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
-            Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
+            if (-not $Silent.IsPresent) {
+                Write-Host "🔥 Maester test report generated at $($out.OutputHtmlFile)" -ForegroundColor Green
+            }
 
             if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
                 # Open test results in the default browser.
@@ -491,7 +513,7 @@ function Invoke-Maester {
             Send-MtTeamsMessage -MaesterResults $maesterResults -TeamChannelWebhookUri $TeamChannelWebhookUri -TestResultsUri $MailTestResultsUri
         }
 
-        if ($Verbosity -eq 'None') {
+        if ($Verbosity -eq 'None' -and -not $Silent.IsPresent) {
             # Show final summary.
             Write-Host "`nTests Passed ✅: $($maesterResults.PassedCount), " -NoNewline -ForegroundColor Green
             Write-Host "Failed ❌: $($maesterResults.FailedCount), " -NoNewline -ForegroundColor Red
@@ -501,8 +523,8 @@ function Invoke-Maester {
             Write-Host "Total ⭐: $($maesterResults.TotalCount)`n"
         }
 
-        if (-not $SkipVersionCheck -and 'Next' -ne $version) {
-            # Don't check version if running in dev.
+        if (-not $SkipVersionCheck -and 'Next' -ne $version -and -not $Silent.IsPresent) {
+            # Don't check version if skipped specified or running in dev or silent.
             Get-IsNewMaesterVersionAvailable | Out-Null
         }
 
