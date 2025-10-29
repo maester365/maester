@@ -37,7 +37,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
             if ($_.actionUrl.url) {
                 $actionLink = " [$($_.actionUrl.displayName)]($($_.actionUrl.url.replace('" \l "','#')))."
             }
-            ($_.text.replace("<br>","`n`n").replace("<br/>","`n`n") -replace "<a.+?href=[`"']([^`"']+)[`"'].+?>([^<]+)<\/a>", '[$2]($1)') + $actionLink
+            ($_.text.replace("<br>","`n").replace("<br/>","`n").split("`n").trim() -replace "<a.+?href=[`"']([^`"']+)[`"'].+?>([^<]+)<\/a>", '[$2]($1)') + $actionLink
         }
         $actionSteps = $actionSteps -join "`n`n"
         $descriptionMd = "$($_.benefits)`n`n#### Remediation action:`n`n${actionSteps}`n`n**Impact:** $($_.remediationImpact)`n`n#### Related links:`n`n* [$($_.displayName) - Microsoft Entra admin center]($recommendationUrl)"
