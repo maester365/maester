@@ -146,7 +146,7 @@
 
             # Truncate the ResultDetail.TestResult data if it is longer than 30000 characters.
             if ($_.ResultDetail.TestResult.Length -gt 30000) {
-                Write-Verbose -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters."
+                Write-Warning -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters."
                 $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
             } else {
                 $TestResultDetail = $_.ResultDetail.TestResult
