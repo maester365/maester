@@ -74,6 +74,8 @@ function Test-MtCisaDkim {
                 } else {
                     $dkimRecord.pass = 'Passed'
                 }
+            } elseif ($domain.DomainName -like '*.onmicrosoft.com') {
+                $dkimRecord.reason = "Recommendation: Disable sending from domain"
             } elseif ($dkimRecord.dkimRecord -like "*not available") {
                 $dkimRecord.pass = "Skipped"
                 $dkimRecord.reason = $dkimRecord.dkimRecord

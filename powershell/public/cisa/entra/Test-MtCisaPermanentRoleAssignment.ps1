@@ -58,10 +58,23 @@ function Test-MtCisaPermanentRoleAssignment {
     $testResult = ($roleAssignments.principal|Measure-Object).Count -eq 0
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no active assignments without expiration to privileged roles:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has no active assignments without expiration to privileged roles."
     } else {
-        $testResultMarkdown = "Your tenant has active assignments without expiration to privileged roles."
+        $testResultMarkdown = "Your tenant has active assignments without expiration to privileged roles.`n`n%TestResult%"
     }
+
+    if (-not $testResult) {
+        $result = "| Role | Principal Type | Display Name | Status |`n"
+        $result += "| --- | --- | --- | --- |`n"
+        foreach($roleAssignment in ($roleAssignments | Where-Object {$_.principal})){
+            foreach($principal in $roleAssignment.principal){
+                $result += "| $($roleAssignment.role) | $($principal.'@odata.type'.Split('.')[-1]) | $($principal.displayName ) | ❌ No Expiration |`n"
+            }
+        }
+    }
+
+    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
     Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult

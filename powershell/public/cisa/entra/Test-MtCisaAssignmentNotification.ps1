@@ -69,10 +69,18 @@ function Test-MtCisaAssignmentNotification {
 
     $testResult = ($misconfigured|Measure-Object).Count -eq 0
 
+    $resultFail = "❌ Fail"
+    $resultPass = "✅ Pass"
+
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assisngments:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has notifications for any highly privileged role assignments:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant has highly privileged roles without notifications."
+        $testResultMarkdown = "Your tenant has highly privileged roles without notifications.`n`n"
+        $testResultMarkdown += "| Role | Eligible Notification | Active Notification |`n"
+        $testResultMarkdown += "| --- | --- | --- |`n"
+        $misconfigured | ForEach-Object {
+            $testResultMarkdown += "| $($_.role) | $(if ($_.eligibleNotify) {$resultPass} else {$resultFail}) | $(if ($_.activeNotify) {$resultPass} else {$resultFail}) |`n"
+        }
     }
     Add-MtTestResultDetail -Result $testResultMarkdown
 

@@ -8,7 +8,7 @@ Note: Exceptions to this policy are:
 
 #### Remediation action:
 
-1. In **Entra admin center** select **Show more** and **Roles & adminis** and then **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.
+1. In **Entra admin center** select **Show more** and **Roles & Admins** and then **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.
 
     Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.
 
