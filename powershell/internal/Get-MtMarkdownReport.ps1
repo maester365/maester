@@ -57,7 +57,7 @@ function Get-MtMarkdownReport {
                 # Test author has provided details
                 $details += "#### Overview`n`n$($test.ResultDetail.TestDescription)`n`n"
                 $details += "#### Test Results`n`n$($test.ResultDetail.TestResult)`n`n"
-            } else {
+            } elseif (![string]::IsNullOrEmpty($test.ScriptBlock)) {
                 # Test author has not provided details, use default code in script
                 # make sure we do not execute the code in the script block!
                 $cleanedScriptBlock = $test.ScriptBlock.ToString() -replace '%\w+%', '' -replace '\$_', '€_' # or show me how I can make it not execute the $_ thing
