@@ -32,7 +32,7 @@ function Test-MtContext {
         $missingScopes = $requiredScopes | Where-Object { $currentScopes -notcontains $_ -and $currentScopes -notcontains ($_ -replace '.Read.', '.ReadWrite.') }
 
         if ($missingScopes) {
-            $message = "⚠️ These Graph permissions are missing in the current connection => ($($missingScopes))."
+            $message = "⚠️  These Graph permissions are missing in the current connection => ($($missingScopes))."
 
             if ($context.AuthType -eq 'Delegated') {
                 $message += " Please use 'Connect-Maester'. For more information, use 'Get-Help Connect-Maester'."
@@ -53,7 +53,7 @@ function Test-MtContext {
             throw $message
         }
         else {
-            Write-Warning "⚠️ continuing with missing permissions, expect failures."
+            Write-Warning "⚠️  Continuing with missing permissions; expect failures."
             Write-Warning $message
         }
     }
