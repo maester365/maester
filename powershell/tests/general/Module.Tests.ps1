@@ -1,5 +1,7 @@
 ﻿BeforeAll {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'module')]
     $module = 'Maester'
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'moduleRoot')]
     $moduleRoot = "$PSScriptRoot/../.."
 }
 
