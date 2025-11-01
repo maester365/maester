@@ -8,7 +8,7 @@ hide_table_of_contents: false
 date: 2025-11-01
 ---
 
-When we started with maester we were in the luxurious position to use a code signing certificate for all published version. This, sadly, ends today.
+When we started with maester we were in the luxurious position to use a code signing certificate for all published versions. This, sadly, ends today.
 
 <!-- truncate -->
 
