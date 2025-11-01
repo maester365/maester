@@ -25,7 +25,7 @@ The current code signing certificate, that Fabian offered at the beginning, stil
 
 In the end code signing a PowerShell module adds some value, but the cost outweighs the need and we decided to stop now.
 
-Starting from version **1.4.0** and any pre-release starting **1.3.101** will no longer have the module signed.
+Starting from version **1.4.0** and any pre-release starting from **1.3.101**, the module will no longer be signed.
 
 ### Why should I care?
 
