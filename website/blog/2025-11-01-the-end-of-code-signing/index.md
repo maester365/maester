@@ -21,7 +21,7 @@ This concept is great in theory, but has a few downsides
 * With the recent changes to code signing certificates they have to reside inside a HSM, adding operational cost
 * As an open source project you might sign code that is not yours
 
-The current code signing certificate, that Fabian offered at the beginning, still has a few months until it's no longer valid, but at the end of this period it won't be extended anymore. Therefore we had to make the decision if we want to sign maester going forward. There are even a few projects out there that offer code signing to open source tools for free. But there is a lot of requirements regarding external code sources, that made this road unfeasible for us.
+The current code signing certificate, that Fabian offered at the beginning, still has a few months until it's no longer valid, but at the end of this period it won't be extended anymore. Therefore we had to make the decision if we want to sign maester going forward. There are even a few projects out there that offer code signing to open source tools for free. But there are a lot of requirements regarding external code sources, that made this road unfeasible for us.
 
 In the end code signing a PowerShell module adds some value, but the cost outweighs the need and we decided to stop now.
 
