@@ -2,7 +2,7 @@
 title: The end of code signing
 description: An announcement that the Maester module code will no longer be signed.
 slug: the-end-of-code-signing
-authors: [f-bader]
+authors: [fabian]
 tags: [code-signing]
 hide_table_of_contents: false
 date: 2025-11-01
