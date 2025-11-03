@@ -6,7 +6,7 @@ Therefore, you should regularly [review critical assets](https://learn.microsoft
 ### How to fix
 On the [Critical asset management page](https://security.microsoft.com/securitysettings/defender/critical_asset_management), review the asset classification named in the Maester test results. Review the pending approvals and verify the correct classification of the listed assets.
 
-More details are available in the Microsoft Learn article: “[Add assets to predefined classifications](https://learn.microsoft.com/en-us/security-exposure-management/classify-critical-assets#add-assets-to-predefined-classifications)”.
+More details are available in the Microsoft Learn article: "[Add assets to predefined classifications](https://learn.microsoft.com/en-us/security-exposure-management/classify-critical-assets#add-assets-to-predefined-classifications)".
 
 <!--- Results --->
 %TestResult%
