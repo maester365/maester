@@ -32,7 +32,7 @@ Starting from version **1.4.0** and any pre-release starting from **1.3.101**, t
 
 If you use Maester in a CI/CD pipeline with managed workers, nothing will noticeably change. The workers don't persist the module information after running, it and the next run will go through the module installation like always.
 
-But if you have  aester installed on your own machine, PowerShell will throw the following error, calling out that the new version is no longer signed.
+But if you have Maester installed on your own machine, PowerShell will throw the following error, calling out that the new version is no longer signed.
 
 ```powershell
 Update-Module Maester -AllowPrerelease
