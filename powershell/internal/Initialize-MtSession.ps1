@@ -14,5 +14,10 @@ function Initialize-MtSession {
 
     $environment = (Get-MgContext).Environment
 
+    # Default to Global if environment is null or empty
+    if ([string]::IsNullOrEmpty($environment)) {
+        $environment = 'Global'
+    }
+
     $__MtSession.AdminPortalUrl = Get-MtAdminPortalUrl -Environment $environment
 }
