@@ -55,7 +55,7 @@ Describe 'Common function tests' -Tags 'Acceptance' -ForEach @{ exportedFunction
         }
 
         # Intentionally using skip so the output will remind us of the missing test files :)
-        It 'Matching test file file should exist' -Skip:($function.Name -notin $functionsWithTests) {
+        It 'Matching test file should exist' -Skip:($function.Name -notin $functionsWithTests) {
             "$moduleRoot/tests/functions/$($function.Name).Tests.ps1" | Should -Exist
         }
     }
