@@ -5,6 +5,7 @@ BeforeDiscovery {
         $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
     } catch {
         Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
 
