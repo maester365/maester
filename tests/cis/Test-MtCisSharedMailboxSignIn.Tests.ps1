@@ -1,5 +1,5 @@
 Describe "CIS" -Tag "CIS.M365.1.2.2", "L1", "CIS E3 Level 1", "CIS E3", "CIS", "Security", "CIS M365 v5.0.0" {
-    It "CIS.M365.1.2.2: (L1) Ensure sign-in to shared mailboxes is blocked" {
+    It "CIS.M365.1.2.2: Ensure sign-in to shared mailboxes is blocked" {
 
         $result = Test-MtCisSharedMailboxSignIn
 
