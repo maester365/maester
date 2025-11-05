@@ -87,7 +87,7 @@ if ($TestGeneral) {
             Write-Information "WARNING: $($file.Name) test container failed (syntax errors or discovery failures)" -InformationAction Continue
             $totalFailed += $result.FailedContainersCount
             if ($file.Name -eq 'PSScriptAnalyzer.Tests.ps1') {
-                # We should ensure that PScriptAnalyzer is installed and working
+                # We should ensure that PSScriptAnalyzer is installed and working
                 if (-not (Get-Module -Name PSScriptAnalyzer -ListAvailable)) {
                     Write-Information "PSScriptAnalyzer module is not installed. Please install it from the PowerShell Gallery." -InformationAction Continue
                 }
