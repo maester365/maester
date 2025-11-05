@@ -17,7 +17,7 @@
             ExcludeTag           = "testtag"
             NoLogo               = $true
         }
-        $r = Invoke-Maester @maesterParams
+        $Result = Invoke-Maester @maesterParams
         # Dynamically calculate expected counts from smoke test files
         $smokeTestFiles = Get-ChildItem -Path $maesterParams.Path -Filter *.ps1
         $expectedTotalCount = 0
@@ -44,12 +44,12 @@
         }
 
         # Validate the test results structure
-        $r | Should -Not -BeNullOrEmpty -Because 'there should be a result'
-        $r.TotalCount | Should -BeExactly $expectedTotalCount -Because 'counting Total'
-        $r.FailedCount | Should -BeExactly $expectedFailedCount -Because 'counting Failed'
-        $r.ErrorCount | Should -BeExactly $expectedErrorCount -Because 'counting Error'
-        $r.PassedCount | Should -BeExactly $expectedPassedCount -Because 'counting Success'
-        $r.SkippedCount | Should -BeExactly $expectedSkippedCount -Because 'counting Skipped'
-        $r.NotRunCount | Should -BeExactly $expectedNotRunCount -Because 'counting Notrun'
+        $Result | Should -Not -BeNullOrEmpty -Because 'there should be a result'
+        $Result.TotalCount | Should -BeExactly $expectedTotalCount -Because 'counting Total'
+        $Result.FailedCount | Should -BeExactly $expectedFailedCount -Because 'counting Failed'
+        $Result.ErrorCount | Should -BeExactly $expectedErrorCount -Because 'counting Error'
+        $Result.PassedCount | Should -BeExactly $expectedPassedCount -Because 'counting Success'
+        $Result.SkippedCount | Should -BeExactly $expectedSkippedCount -Because 'counting Skipped'
+        $Result.NotRunCount | Should -BeExactly $expectedNotRunCount -Because 'counting Notrun'
     }
 }
