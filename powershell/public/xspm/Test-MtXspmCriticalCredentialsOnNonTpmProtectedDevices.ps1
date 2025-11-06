@@ -9,10 +9,10 @@
     [bool] - Returns $true if no devices are found, $false if any are found, $null if skipped or prerequisites not met.
 
 .EXAMPLE
-    Test-Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
+    Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
 
 .LINK
-    https://maester.dev/docs/commands/Test-Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
+    https://maester.dev/docs/commands/Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
 #>
 
 function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
