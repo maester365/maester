@@ -11,4 +11,9 @@ Describe "Exposure Management" -Tag "Entra", "Graph", "Security", "XSPM" -Skip:(
     It "MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085" -Tag "MT.1085" {
         Test-MtXspmPendingApprovalCriticalAssetManagement | Should -Be $true -Because "no pending approvals for Critical Asset Management should be present, as pending approvals may lead into limited visibility in Defender XDR and potential security risks if critical assets are not properly identified."
     }
+
+    # Devices should not share both critical and non-critical user credentials.
+    It "MT.XXX1: Devices should not share both critical and non-critical user credentials. See https://maester.dev/docs/tests/MT.XXX1" -Tag "MT.XXX1" {
+        Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts | Should -Be $true -Because "Devices should not share both critical and non-critical user credentials, as this may lead to potential security risks and compromise of critical assets via a non-critical account."
+    }
 }
