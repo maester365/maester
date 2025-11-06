@@ -16,4 +16,9 @@ Describe "Exposure Management" -Tag "Entra", "Graph", "Security", "XSPM" -Skip:(
     It "MT.XXX1: Devices should not share both critical and non-critical user credentials. See https://maester.dev/docs/tests/MT.XXX1" -Tag "MT.XXX1" {
         Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts | Should -Be $true -Because "Devices should not share both critical and non-critical user credentials, as this may lead to potential security risks and compromise of critical assets via a non-critical account."
     }
+
+    # Devices should not be public exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's.
+    It "MT.XXX2: Devices should not be public exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. See https://maester.dev/docs/tests/MT.XXX2" -Tag "MT.XXX2" {
+        Test-MtXspmPublicRemotelyExploitableHighExposureDevices | Should -Be $true -Because "Devices should not be public exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. Such devices are at high risk of being compromised by attackers, potentially leading to data breaches and other security incidents."
+    }
 }
