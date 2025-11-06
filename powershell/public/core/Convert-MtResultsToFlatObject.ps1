@@ -34,17 +34,17 @@
     Return the flattened object to the pipeline.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object that is then returned to the pipeline.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to an Excel file (C:\path\to\results.xlsx). Requires the ImportExcel module.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to C:\path\to\results.csv.
 

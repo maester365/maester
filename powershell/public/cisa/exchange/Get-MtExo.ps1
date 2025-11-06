@@ -13,11 +13,6 @@
 
     Returns accepted domains for a tenant
 
-.EXAMPLE
-    Get-MtAcceptedDomain
-
-    Returns accepted domains for a tenant
-
 .LINK
     https://maester.dev/docs/commands/Get-MtExo
 #>
