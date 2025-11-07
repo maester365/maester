@@ -89,7 +89,7 @@ function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
     if ($return -or [string]::IsNullOrEmpty($Devices)) {
         $testResultMarkdown = "Well done. All devices with critical credentials stored are protected by TPM."
     } else {
-        $testResultMarkdown = "At least one device was found with critical credentials not protected by a TPM`n`n%TestResult%"
+        $testResultMarkdown = "At least one device was found with critical credentials not protected by a TPM.`n`n%TestResult%"
 
         Write-Verbose "Found $($Devices.Count) devices with critical credentials not protected by a TPM."
 
