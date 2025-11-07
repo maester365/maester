@@ -1206,6 +1206,21 @@
       "Title": "Pending approvals for Critical Asset Management should not be present"
     },
     {
+      "Id": "MT.1086",
+      "Severity": "Low",
+      "Title": "Devices should not share both critical and non-critical user credentials."
+    },
+    {
+      "Id": "MT.1087",
+      "Severity": "High",
+      "Title": "Devices should not be public exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
+    },
+    {
+      "Id": "MT.1088",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by TPM."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
