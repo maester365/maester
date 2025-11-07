@@ -18,10 +18,10 @@ function Test-MtCisaExoAlert {
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection ExchangeOnline)){
+    if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
+    } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
     } elseif ("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {

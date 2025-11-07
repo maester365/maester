@@ -27,7 +27,7 @@ function ConvertFrom-MailAuthenticationRecordMx {
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ipaddress]$DnsServerIpAddress = "1.1.1.1",
+        [ipaddress]$DnsServerIpAddress,
 
         # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
