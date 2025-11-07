@@ -15,8 +15,8 @@
     $NoError
 )
 
-Write-Information "Starting Tests" -InformationAction Continue
-Write-Information "Importing Module" -InformationAction Continue
+Write-Host "Starting Tests"
+Write-Host "Importing Module"
 
 Remove-Module Maester -ErrorAction Ignore
 Import-Module "$PSScriptRoot\..\Maester.psd1"
@@ -66,9 +66,11 @@ function Test-ContainsFailureRule {
 }
 
 #region Run General Tests
-if ($TestGeneral) {
+if ($TestGeneral)
+{
     Write-PSFMessage -Level Important -Message "Modules imported, proceeding with general tests"
-    foreach ($file in (Get-ChildItem "$PSScriptRoot\general" -Filter '*.Tests.ps1' -File)) {
+    foreach ($file in (Get-ChildItem "$PSScriptRoot\general" -Filter '*.Tests.ps1' -File))
+    {
         if ($file.Name -notlike $Include) { continue }
         if ($file.Name -like $Exclude) { continue }
 
@@ -82,18 +84,6 @@ if ($TestGeneral) {
 
         $totalRun += $result.TotalCount
         $totalFailed += $result.FailedCount
-        # Also count containers (Describe/Context blocks) that failed
-        if ($result.FailedContainersCount -gt 0) {
-            Write-Information "WARNING: $($file.Name) test container failed (syntax errors or discovery failures)" -InformationAction Continue
-            $totalFailed += $result.FailedContainersCount
-            if ($file.Name -eq 'PSScriptAnalyzer.Tests.ps1') {
-                # We should ensure that PSScriptAnalyzer is installed and working
-                if (-not (Get-Module -Name PSScriptAnalyzer -ListAvailable)) {
-                    Write-Information "PSScriptAnalyzer module is not installed. Please install it from the PowerShell Gallery." -InformationAction Continue
-                }
-            }
-        }
-
         foreach ($test in $result.Tests) {
             if ($test.Result -ne 'Passed') {
                 $failedTest = [pscustomobject]@{
@@ -120,7 +110,7 @@ $scriptAnalyzerFailures | Out-Host
 $hasBomRuleFailure = Test-ContainsFailureRule -RuleName 'PSUseBOMForUnicodeEncodedFile' -ScriptAnalyzerFailures $scriptAnalyzerFailures -TestResults $testresults
 
 if ($hasBomRuleFailure) {
-    Write-Information "`n❌ To fix PSUseBOMForUnicodeEncodedFile → Run the following script with the affected file to fix the issue`n" -InformationAction Continue
+    Write-Host "`n❌ To fix PSUseBOMForUnicodeEncodedFile → Run the following script with the affected file to fix the issue`n" -ForegroundColor Yellow
     @'
 $affectedFilePath = '/Users/merill/GitHub/maester/powershell/public/maester/entra/Test-MtTenantCreationRestricted.ps1'
 $content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
@@ -129,13 +119,15 @@ $content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFile
 }
 
 #region Test Commands
-if ($TestFunctions) {
+if ($TestFunctions)
+{
     Write-PSFMessage -Level Important -Message "Proceeding with individual tests"
-    foreach ($file in (Get-ChildItem "$PSScriptRoot\functions" -Recurse -File -Filter '*.Tests.ps1')) {
+    foreach ($file in (Get-ChildItem "$PSScriptRoot\functions" -Recurse -File -Filter '*.Tests.ps1'))
+    {
         if ($file.Name -notlike $Include) { continue }
         if ($file.Name -like $Exclude) { continue }
 
-        Write-PSFMessage -Level Significant -Message "  Executing <c='em'>$($file.Name)</c>"
+        Write-PSFMessage -Level Significant -Message "  Executing $($file.Name)"
         $config.TestResult.OutputPath = Join-Path "$PSScriptRoot\..\..\TestResults" "TEST-$($file.BaseName).xml"
         $config.Run.Path = $file.FullName
         $config.Run.PassThru = $true
@@ -145,7 +137,7 @@ if ($TestFunctions) {
         $totalRun += $result.TotalCount
         $totalFailed += $result.FailedCount + $result.FailedContainersCount
         foreach ($test in $result.Tests) {
-            if ($test.Result -notin 'Passed', 'Skipped') {
+            if ($test.Result -notin 'Passed','Skipped') {
                 $failedTest = [pscustomobject]@{
                     Block   = $test.Block.ExpandedName
                     Name    = "It $($test.ExpandedName)"
@@ -167,6 +159,7 @@ $testresults | Sort-Object Block, Name, Result, Message | Format-List
 if ($totalFailed -eq 0) { Write-PSFMessage -Level Critical -Message "All <c='em'>$totalRun</c> tests executed without a single failure!" }
 else { Write-PSFMessage -Level Critical -Message "<c='em'>$totalFailed tests</c> out of <c='sub'>$totalRun</c> tests failed!" }
 
-if ($totalFailed -gt 0) {
+if ($totalFailed -gt 0)
+{
     throw "$totalFailed / $totalRun tests failed!"
 }
