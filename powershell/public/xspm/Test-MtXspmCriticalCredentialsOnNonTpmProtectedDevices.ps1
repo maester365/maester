@@ -35,6 +35,7 @@ function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
             TpmActivated = tostring(parse_json(NodeProperties)["rawData"]["tpmData"]["activated"]),
             DeviceName = tostring(parse_json(NodeProperties)["rawData"]["deviceName"]),
             DeviceId = tostring(EntityIds.id)
+        | extend DeviceName = iff(isempty(DeviceName), NodeName, DeviceName)
         // Search for distinct devices
         | distinct NodeId, DeviceName, OnboardingStatus, TpmSupported, TpmEnabled, TpmActivated
         // Get device with no TPM enabled
