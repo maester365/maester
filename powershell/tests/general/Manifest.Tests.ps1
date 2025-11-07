@@ -1,14 +1,12 @@
 BeforeDiscovery {
     $moduleRoot = "$PSScriptRoot/../.."
     # Using Import-PowerShellDataFile over Test-ModuleManifest as it's easier to navigate
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'manifest')]
     $manifest = Import-PowerShellDataFile -Path (Join-Path -Path $moduleRoot -ChildPath 'Maester.psd1')
 }
 
 Describe 'Validating the module manifest' -ForEach @{ moduleRoot = $moduleRoot; manifest = $manifest } {
     Context 'Basic resources validation' {
         BeforeAll {
-            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'files')]
             $files = Get-ChildItem -Path "$moduleRoot/public" -Recurse -File -Filter '*.ps1'
         }
 
