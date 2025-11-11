@@ -21,4 +21,9 @@ Describe "Exposure Management" -Tag "Entra", "Graph", "Security", "XSPM", "LongR
     It "MT.1088: Devices with critical credentials should be protected by TPM. See https://maester.dev/docs/tests/MT.1088" -Tag "MT.1088" {
         Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices | Should -Be $true -Because "Devices with critical credentials should be protected by TPM. Without TPM protection, these devices are vulnerable to various attacks that could compromise sensitive credentials, leading to potential security breaches."
     }
+
+    # Devices with critical credentials should be protected by Credential Guard.
+    It "MT.1089: Devices with critical credentials should be protected by Credential Guard. See https://maester.dev/docs/tests/MT.1089" -Tag "MT.1089" {
+        Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices | Should -Be $true -Because "Devices with critical credentials should be protected by Credential Guard. Without Credential Guard protection, these devices are vulnerable to various attacks that could compromise sensitive credentials, leading to potential security breaches."
+    }
 }

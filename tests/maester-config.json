@@ -1221,6 +1221,11 @@
       "Title": "Devices with critical credentials should be protected by TPM."
     },
     {
+      "Id": "MT.1089",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by Credential Guard."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
