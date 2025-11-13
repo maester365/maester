@@ -2,6 +2,8 @@
     try {
         $DefenderPlan = Get-MtLicenseInformation -Product "DefenderXDR"
     } catch {
+        Write-Verbose "You do not have the required licenses to run Defender XSPM tests."
+        Add-MtTestResultDetail -SkippedBecause NotLicensedDefenderXDR
         $DefenderPlan = "NotConnected"
     }
 }
