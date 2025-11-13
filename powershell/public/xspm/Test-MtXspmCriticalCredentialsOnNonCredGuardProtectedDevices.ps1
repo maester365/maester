@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Test to find devices that have critical credentials stored on devices that are not protected by Credential Guard.
+    Find devices with critical credentials stored on devices not protected by Credential Guard.
 
 .DESCRIPTION
-    Test to find devices that have critical credentials stored on devices that are not protected by Credential Guard.
+    Find devices with critical credentials stored on devices not protected by Credential Guard.
 
 .OUTPUTS
     [bool] - Returns $true if no devices are found, $false if any are found, $null if skipped or prerequisites not met.
