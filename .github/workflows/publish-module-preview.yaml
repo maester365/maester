@@ -24,14 +24,14 @@ jobs:
 
   create-preview-release:
     needs: build-report
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: updated-report-template
           path: powershell/assets/
@@ -46,37 +46,26 @@ jobs:
         shell: pwsh
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
-      - name: Azure CLI login
-        uses: azure/login@v1
-        with:
-          tenant-id: ${{ vars.TENTANT_ID }}
-          client-id: ${{ vars.CLIENT_ID }}
-          allow-no-subscriptions: true
-
-      - name: Azure CLI get token
-        run: |
-          $kv_token=$(az account get-access-token --scope https://vault.azure.net/.default --query accessToken --output tsv)
-          echo "::add-mask::$kv_token"
-          echo "CODE_SIGN_AKV_ACCESS_TOKEN=$kv_token" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
       - name: Archive PowerShell build
         uses: actions/upload-artifact@v5
         with:
           name: maester-module
           path: |
-            ${{ github.workspace }}/build/maester
+            ${{ github.workspace }}/powershell
+
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
         shell: pwsh
         run: |
-          dir ${{ github.workspace }}/build/maester
-          Publish-Module -Path ${{ github.workspace }}/build/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+          # Copy to maester folder to avoid issues when publishing
+          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
+          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Build PowerShell module for GitHub
         id: module-creation
         shell: pwsh
         run: |
-          Compress-Archive -Path ${{ github.workspace }}/build/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
+          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
         uses: ncipollo/release-action@v1

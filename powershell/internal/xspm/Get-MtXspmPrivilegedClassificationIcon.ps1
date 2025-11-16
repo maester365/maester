@@ -2,7 +2,7 @@
 .SYNOPSIS
     Get the icon representation for a specific privileged classification level.
 .EXAMPLE
-    PS C:\> Get-XspmPrivilegedClassificationIcon -AdminTierLevelName 'ControlPlane'
+    PS C:\> Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName 'ControlPlane'
     Returns the icon for the Control Plane classification.
 .INPUTS
     System.String

@@ -1201,6 +1201,11 @@
       "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
     },
     {
+      "Id": "MT.1085",
+      "Severity": "Medium",
+      "Title": "Pending approvals for Critical Asset Management should not be present"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."

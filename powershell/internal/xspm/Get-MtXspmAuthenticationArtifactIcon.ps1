@@ -2,7 +2,7 @@
 .SYNOPSIS
     Get the icon representation for a specific authentication artifact type.
 .EXAMPLE
-    PS C:\> Get-XspmAuthenticationArtifactIcon -ArtifactType 'PrimaryRefreshToken'
+    PS C:\> Get-MtXspmAuthenticationArtifactIcon -ArtifactType 'PrimaryRefreshToken'
     Returns the icon for the Primary Refresh Token artifact.
 .INPUTS
     System.String
