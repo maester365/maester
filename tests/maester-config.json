@@ -1213,7 +1213,7 @@
     {
       "Id": "MT.1087",
       "Severity": "High",
-      "Title": "Devices should not be public exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
+      "Title": "Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
     },
     {
       "Id": "MT.1088",
