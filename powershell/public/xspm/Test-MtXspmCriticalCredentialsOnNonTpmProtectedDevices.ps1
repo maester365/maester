@@ -68,7 +68,7 @@ function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
         TargetCriticalityLevel = TargetNode.NodeProperties.rawData.criticalityLevel.criticalityLevel,
         TargetRuleNames = TargetNode.NodeProperties.rawData.criticalityLevel.ruleNames
     | distinct SourceNodeId, SourceNodeName, TargetNodeId, TargetNodeName, tostring(TargetCriticalityLevel), tostring(TargetRuleNames)
-    // Only return devices that does not have a TPM fully enabled
+    // Only return devices that do not have a TPM fully enabled
     | join kind=inner no_tpm_devices on `$left.SourceNodeId == `$right.NodeId
     // Make JSON of tpm data
     | extend TpmState = tostring(bag_pack(
