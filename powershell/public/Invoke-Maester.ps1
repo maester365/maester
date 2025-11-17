@@ -456,7 +456,7 @@ function Invoke-Maester {
     if ($pesterResults) {
 
         Write-MtProgress -Activity 'Processing test results' -Status "$($pesterResults.TotalCount) test(s)" -Force
-        $maesterResults = ConvertTo-MtMaesterResult $PesterResults
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
@@ -527,7 +527,5 @@ function Invoke-Maester {
     Reset-MtProgressView
     if ($PassThru) {
         return $maesterResults
-    } else {
-        return $out
     }
 }

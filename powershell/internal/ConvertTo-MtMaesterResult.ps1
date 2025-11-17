@@ -8,7 +8,11 @@ function ConvertTo-MtMaesterResult {
     param(
         # The Pester test results returned from Invoke-Pester -PassThru
         [Parameter(Mandatory = $true)]
-        [psobject] $PesterResults
+        [psobject] $PesterResults,
+
+        # Optional output files information
+        [Parameter(Mandatory = $false)]
+        [psobject] $OutputFiles
     )
 
     function GetTenantName() {
@@ -232,6 +236,11 @@ function ConvertTo-MtMaesterResult {
         LatestVersion     = $latestVersion
         Tests             = $mtTests
         Blocks            = $mtBlocks
+    }
+
+    # Add output files information if provided
+    if ($OutputFiles) {
+        $mtTestResults | Add-Member -MemberType NoteProperty -Name 'OutputFiles' -Value $OutputFiles
     }
 
     return $mtTestResults
