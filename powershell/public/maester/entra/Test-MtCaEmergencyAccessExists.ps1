@@ -125,10 +125,35 @@ function Test-MtCaEmergencyAccessExists {
                 }
             }
             Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
-            $policiesWithoutEmergency = $policies | Where-Object {
-                ($_.conditions.users.excludeUsers | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ }).Count -eq 0 -and
-                ($_.conditions.users.excludeGroups | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ }).Count -eq 0
+            $EmergencyAccessAccountsUserCount = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' } | Measure-Object | Select-Object -ExpandProperty Count
+            $EmergencyAccessAccountsGroupCount = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' } | Measure-Object | Select-Object -ExpandProperty Count
+            if ( $EmergencyAccessAccountsUserCount -gt 0 ) {
+                Write-Verbose "Resolved emergency access user accounts: $EmergencyAccessAccountsUserCount"
+                $policiesWithoutEmergencyUsers = $policies | ForEach-Object {
+                    $CurrentPolicy = $_
+                    $ExcludedKnownUsers = $CurrentPolicy.conditions.users.excludeUsers | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ } | Measure-Object | Select-Object -ExpandProperty Count
+                    if ( $ExcludedKnownUsers -eq $EmergencyAccessAccountsUserCount ) {
+                        $CurrentPolicy
+                    }
+                }
+            } else {
+                $policiesWithoutEmergencyUsers = @()
             }
+
+            if ( $EmergencyAccessAccountsGroupCount -gt 0 ) {
+                Write-Verbose "Resolved emergency access groups: $EmergencyAccessAccountsGroupCount"
+                $policiesWithoutEmergencyGroups = $policies | ForEach-Object {
+                    $CurrentPolicy = $_
+                    $ExcludedKnownGroups = $CurrentPolicy.conditions.users.excludeGroups | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ } | Measure-Object | Select-Object -ExpandProperty Count
+                    if ( $ExcludedKnownGroups -eq $EmergencyAccessAccountsGroupCount ) {
+                        $CurrentPolicy
+                    }
+                }
+            } else {
+                $policiesWithoutEmergencyGroups = @()
+            }
+
+            $policiesWithoutEmergency = $policiesWithoutEmergencyUsers + $policiesWithoutEmergencyGroups
             if ($policiesWithoutEmergency.Count -eq 0) {
                 $result = $true
                 $testResult = "All conditional access policies exclude the configured emergency access accounts or groups:`n`n"
