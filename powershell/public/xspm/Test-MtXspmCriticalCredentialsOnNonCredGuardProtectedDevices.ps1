@@ -59,7 +59,7 @@ let no_credguard_devices = (
         TargetCriticalityLevel = TargetNode.NodeProperties.rawData.criticalityLevel.criticalityLevel,
         TargetRuleNames = TargetNode.NodeProperties.rawData.criticalityLevel.ruleNames
     | distinct SourceNodeId, SourceNodeName, TargetNodeId, TargetNodeName, tostring(TargetCriticalityLevel), tostring(TargetRuleNames)
-    // Only return devices that does not have a TPM fully enabled
+    // Only return devices that do not have Credential Guard fully enabled
     | join kind=inner no_credguard_devices on `$left.SourceNodeId == `$right.NodeId
     // Make list of users per device
     | summarize UserList = make_list(TargetNodeName) by DeviceName
