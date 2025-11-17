@@ -317,7 +317,7 @@ function Invoke-Maester {
     $isWebUri = -not ([String]::IsNullOrEmpty($TeamChannelWebhookUri))
 
     if ($SkipGraphConnect) {
-        If (-not $NonInteractive.IsPresent) {
+        if (-not $NonInteractive.IsPresent) {
             Write-Host '🔥 Skipping graph connection check' -ForegroundColor Yellow
         }
     } else {
