@@ -951,12 +951,52 @@
       "Title": "Limited number of Global Admins are assigned."
     },
     {
-      "Id": "MT.1033",
+      "Id": "MT.1033.0",
       "Severity": "High",
       "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
     },
     {
-      "Id": "MT.1034",
+      "Id": "MT.1033.1",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.2",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.3",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.4",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.0",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.1",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.2",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.3",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.4",
       "Severity": "High",
       "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
     },
