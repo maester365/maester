@@ -55,7 +55,8 @@ function Test-MtCisaDiagnosticSettings {
 
     $settings = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettings?api-version=2017-04-01-preview"
     if ($settings.StatusCode -ne '200') {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not authorized for: /providers/microsoft.aadiam/diagnosticSettings'
+        Write-Verbose "Could not retrieve diagnostic settings. Status code: $($settings.StatusCode) Message: $($settings.Content)"
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
         return $null
     }
     $settings = ($settings.Content|ConvertFrom-Json).value
