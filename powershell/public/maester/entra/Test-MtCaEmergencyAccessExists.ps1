@@ -79,46 +79,52 @@ function Test-MtCaEmergencyAccessExists {
             return $result
 
         } else {
-            # Translate any UPNs to object IDs and get display names for UUIDs
+            # Resolve emergency access accounts/groups to object IDs and get display names
             $ResolvedEmergencyAccessAccounts = @()
             foreach ($account in $EmergencyAccessAccounts) {
-                if ($account -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') {
-                    # It's already an object ID
-                    # Get the display name to show in the test result
-                    $DisplayName = Invoke-MtGraphRequest -RelativeUri "directoryObjects/$account" -Select displayName | Select-Object -ExpandProperty displayName
-                    if ($DisplayName) {
-                        Write-Verbose "Emergency access account or group: $DisplayName ($account)"
-                    } else {
-                        Write-Verbose "Emergency access account or group: $account"
-                    }
-                    $ResolvedEmergencyAccessAccounts += @{ObjectId = $account; displayName = $DisplayName }
-                } elseif ($account -match '^[^@]+@[^@]+\.[^@]+$') {
-                    # It's a UPN, resolve it to an object ID
+                # Use either Id or UserPrincipalName to identify the account / group and UserPrincipalName as fallback
+                $identifier = if ($account.Id) { $account.Id } else { $account.UserPrincipalName }
+                # Determine the type (user or group) while defaulting to 'user'
+                $type = if ($account.Type) { $account.Type.ToLower() } else { 'user' }
+
+                if ($identifier -match '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$') {
+                    # It's an object ID
                     try {
-                        $user = Invoke-MtGraphRequest -RelativeUri "users/$account" -Select id, displayName -ErrorAction Stop
-                        if ($user) {
-                            $ResolvedEmergencyAccessAccounts += @{ObjectId = $user.id; displayName = $user.displayName }
+                        $endpoint = if ($type -eq 'group') { "groups/$identifier" } else { "users/$identifier" }
+                        $object = Invoke-MtGraphRequest -RelativeUri $endpoint -Select id, displayName -ErrorAction Stop
+                        if ($object) {
+                            Write-Verbose "Emergency access $type`: $($object.displayName) ($identifier)"
+                            $ResolvedEmergencyAccessAccounts += @{ObjectId = $object.id; displayName = $object.displayName; type = $type }
                         } else {
-                            Write-Warning "Could not resolve emergency access account UPN: $account"
+                            Write-Warning "Could not resolve emergency access $type ID: $identifier"
                         }
                     } catch {
-                        Write-Warning "Could not resolve emergency access account UPN: $account. Error: $_"
+                        Write-Warning "Could not resolve emergency access $type ID: $identifier. Error: $_"
+                    }
+                } elseif ($identifier -match '^[^@]+@[^@]+\.[^@]+$') {
+                    # It's a UPN - could be user or group
+                    try {
+                        $endpoint = if ($type -eq 'group') { "groups" } else { "users/$identifier" }
+                        if ($type -eq 'group') {
+                            # For groups, we need to filter by mail or mailNickname
+                            $object = Invoke-MtGraphRequest -RelativeUri $endpoint -Filter "mail eq '$identifier' or mailNickname eq '$identifier'" -ErrorAction Stop | Select-Object -First 1
+                        } else {
+                            $object = Invoke-MtGraphRequest -RelativeUri $endpoint -Select id, displayName -ErrorAction Stop
+                        }
+                        if ($object) {
+                            Write-Verbose "Emergency access $type`: $($object.displayName) ($($object.id))"
+                            $ResolvedEmergencyAccessAccounts += @{ObjectId = $object.id; displayName = $object.displayName; type = $type }
+                        } else {
+                            Write-Warning "Could not resolve emergency access $type`: $identifier"
+                        }
+                    } catch {
+                        Write-Warning "Could not resolve emergency access $type`: $identifier. Error: $_"
                     }
                 } else {
-                    # Assume it's a display name, try to resolve it to an object ID
-                    try {
-                        $group = Invoke-MtGraphRequest -RelativeUri "groups" -Filter "displayName eq '$account'" -ErrorAction Stop
-                        if ($group) {
-                            $ResolvedEmergencyAccessAccounts += @{ObjectId = $group.id; displayName = $group.displayName }
-                        } else {
-                            Write-Warning "Could not resolve emergency access group display name: $account"
-                        }
-                    } catch {
-                        Write-Warning "Could not resolve emergency access group display name: $account. Error: $_"
-                    }
+                    Write-Warning "Invalid identifier format for emergency access account: $identifier"
                 }
             }
-            Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts -join ', ')"
+            Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
             $policiesWithoutEmergency = $policies | Where-Object {
                 ($_.conditions.users.excludeUsers | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ }).Count -eq 0 -and
                 ($_.conditions.users.excludeGroups | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ }).Count -eq 0
@@ -127,19 +133,21 @@ function Test-MtCaEmergencyAccessExists {
                 $result = $true
                 $testResult = "All conditional access policies exclude the configured emergency access accounts or groups:`n`n"
                 $ResolvedEmergencyAccessAccounts | ForEach-Object {
+                    $typeLabel = if ($_.type -eq 'group') { 'Group' } else { 'User' }
                     if ($_.displayName) {
-                        $testResult += "* $($_.displayName) ($($_.ObjectId))`n"
+                        $testResult += "* $typeLabel`: $($_.displayName) ($($_.ObjectId))`n"
                     } else {
-                        $testResult += "* $($_.ObjectId)`n"
+                        $testResult += "* $typeLabel`: $($_.ObjectId)`n"
                     }
                 }
             } else {
                 $testResult = "Configured emergency access accounts or groups:`n`n"
                 $ResolvedEmergencyAccessAccounts | ForEach-Object {
+                    $typeLabel = if ($_.type -eq 'group') { 'Group' } else { 'User' }
                     if ($_.displayName) {
-                        $testResult += "* $($_.displayName) ($($_.ObjectId))`n"
+                        $testResult += "* $typeLabel`: $($_.displayName) ($($_.ObjectId))`n"
                     } else {
-                        $testResult += "* $($_.ObjectId)`n"
+                        $testResult += "* $typeLabel`: $($_.ObjectId)`n"
                     }
                 }
                 $testResult += "`n`nThese conditional access policies don't have the configured emergency access accounts or groups excluded:`n`n%TestResult%"
