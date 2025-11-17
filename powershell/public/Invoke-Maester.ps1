@@ -286,7 +286,7 @@ function Invoke-Maester {
 
     $version = Get-MtModuleVersion
 
-    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent) {
+    if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
         Write-Verbose "Running Maester v$Version"
     } else {
         # ASCII Art using style "ANSI Shadow"
