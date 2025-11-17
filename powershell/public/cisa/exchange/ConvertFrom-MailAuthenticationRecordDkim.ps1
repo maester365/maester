@@ -40,10 +40,11 @@ function ConvertFrom-MailAuthenticationRecordDkim {
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ipaddress]$DnsServerIpAddress = "1.1.1.1",
+        [ipaddress]$DnsServerIpAddress,
 
-        # Selector-name for the DKIM record to retrieve.
-        [string]$DkimSelector = "selector1",
+        # DKIM DNS record Name to retrieve.
+        [Parameter(Mandatory)]
+        [string]$DkimDnsName,
 
         # Use a shorter timeout value for the DNS lookup.
         [switch]$QuickTimeout,
@@ -87,11 +88,10 @@ function ConvertFrom-MailAuthenticationRecordDkim {
     }
 
     process {
-        $dkimPrefix = "$DkimSelector._domainkey."
         $matchRecord = "^v\s*=\s*(?'v'DKIM1)\s*;\s*"
 
         $dkimSplat = @{
-            Name         = "$dkimPrefix$DomainName"
+            Name         = $DkimDnsName
             Type         = "TXT"
             Server       = $DnsServerIpAddress
             NoHostsFile  = $NoHostsFile
@@ -99,10 +99,15 @@ function ConvertFrom-MailAuthenticationRecordDkim {
             ErrorAction  = "Stop"
         }
         try {
+            Write-Verbose "Domain: $DomainName. Finding DKIM information for $DkimDnsName"
+
             if ( $isWindows -or $PSVersionTable.PSEdition -eq "Desktop" ) {
                 $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
                             Where-Object { $_.Type -eq "TXT" } | `
                             Where-Object { $_.Strings -match $matchRecord }).Strings)
+                If (-not $dkimRecord) {
+                    return "Failure to obtain record"
+                }
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {

@@ -6,7 +6,7 @@
     The DMARC message rejection option SHALL be p=reject.
 
 .EXAMPLE
-    Test-MtCisaDmarcRecordExist
+    Test-MtCisaDmarcRecordReject
 
     Returns true if DMARC record with reject policy exists for every domain
 
@@ -71,7 +71,7 @@ function Test-MtCisaDmarcRecordReject {
     $expandedDomains = $expandedDomains |  Sort-Object DomainName, IsCoexistenceDomain -Unique
 
     $dmarcRecords = @()
-    foreach($domain in $expandedDomains){
+    foreach($domain in ($expandedDomains | Sort-Object -Unique)){
         $dmarcRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records DMARC
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
         $dmarcRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
@@ -90,6 +90,9 @@ function Test-MtCisaDmarcRecordReject {
         }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
+        }elseif($domain -eq 'onmicrosoft.com' -or $domain -like '*.mail.onmicrosoft.com'){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = 'Not applicable'
         }else{
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }

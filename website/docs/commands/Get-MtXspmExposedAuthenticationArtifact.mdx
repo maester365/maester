@@ -1,0 +1,45 @@
+---
+sidebar_class_name: hidden
+description: Check data from Exposure Management for exposed token artifacts.
+id: Get-MtXspmExposedAuthenticationArtifact
+title: Get-MtXspmExposedAuthenticationArtifact
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtXspmExposedAuthenticationArtifact.ps1
+---
+
+## SYNOPSIS
+
+Check data from Exposure Management for exposed token artifacts.
+
+## SYNTAX
+
+```powershell
+Get-MtXspmExposedAuthenticationArtifact
+```
+
+## DESCRIPTION
+
+Executes KQL function over Exposure Management data to retrieve information about exposed token artifacts such as Primary Refresh Tokens, Session Cookies, and Azure CLI tokens.
+It enriches the data with device insights and alert evidence.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtXspmExposedAuthenticationArtifact
+Returns a detailed list of exposed token artifacts, including their types, associated devices, and any relevant alert evidence.
+```
+
+## PARAMETERS
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtXspmExposedAuthenticationArtifact](https://maester.dev/docs/commands/Get-MtXspmExposedAuthenticationArtifact)

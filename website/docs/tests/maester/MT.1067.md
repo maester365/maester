@@ -19,12 +19,12 @@ The test examines includeTargets for all authentication method configurations an
 
 To fix this issue:
 
-- Go to the [Microsoft Entra admin center](https://entra.microsoft.com)
-- Navigate to **Protection** > **Authentication methods**
-- Select the impacted authentication method
-- In the **Include** section, remove the invalid group references
-- If needed, add valid replacement groups
-- Save the changes
+- Go to the [Microsoft Entra admin center](https://entra.microsoft.com).
+- Navigate to **Entra ID** > **Authentication methods**.
+- Select the impacted authentication method.
+- In the **Include** section, remove the invalid group references.
+- If needed, add valid replacement groups.
+- Save the changes.
 
 ## Learn more
 

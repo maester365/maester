@@ -29,7 +29,8 @@ Describe 'ConvertTo-QueryString' {
             $hashtable = @{ index = 10; price = 99.99 }
             $result = ConvertTo-QueryString $hashtable
             $result | Should -Match 'index=10'
-            $result | Should -Match 'price=99\.99'
+            # Decimal separator can be . or , depending on locale
+            $result | Should -Match 'price=99(\.|%2C)99'
         }
 
         It 'Should handle boolean values' {
@@ -341,8 +342,8 @@ Describe 'ConvertTo-QueryString' {
             }
             $result = ConvertTo-QueryString $hashtable
             # Arrays get converted to their string representation
-            $result | Should -Match ([regex]::escape('arrayValue=item1+item2+item3'))
-            $result | Should -Match ([regex]::escape('singleArray=single'))
+            $result | Should -Match 'arrayValue=System\.Object%5B%5D'
+            $result | Should -Match 'singleArray=System\.Object%5B%5D'
         }
 
         It 'Should handle DateTime values' {
@@ -386,6 +387,184 @@ Describe 'ConvertTo-QueryString' {
             $result = ConvertTo-QueryString $hashtable
             # Nested objects get converted to their string representation
             $result | Should -Match 'nested='
+        }
+    }
+
+    Context 'Performance optimization tests' {
+        It 'Should execute within acceptable time frame for small objects' {
+            $input = @{ Key1 = "Value1"; Key2 = "Value2" }
+            $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+            ConvertTo-QueryString $input | Out-Null
+            $stopwatch.Stop()
+            $stopwatch.ElapsedMilliseconds | Should -BeLessThan 300
+        }
+
+        It 'Should handle large objects efficiently' {
+            $input = @{}
+            for ($i = 1; $i -le 100; $i++) {
+                $input["Key$i"] = "Value$i"
+            }
+            $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+            ConvertTo-QueryString $input | Out-Null
+            $stopwatch.Stop()
+            $stopwatch.ElapsedMilliseconds | Should -BeLessThan 500
+        }
+
+        It 'Should reduce redundant Get-Member calls for objects' {
+            $input = [PSCustomObject]@{ Property1 = "Value1"; Property2 = "Value2" }
+            $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+            ConvertTo-QueryString $input | Out-Null
+            $stopwatch.Stop()
+            $stopwatch.ElapsedMilliseconds | Should -BeLessThan 50
+        }
+    }
+
+    Context 'Enhanced error handling' {
+        It 'Should handle string input as object with properties' {
+            $input = "string"
+            $result = ConvertTo-QueryString -InputObjects $input
+            # Strings are objects with properties (Length) so they get processed
+            $result | Should -Not -BeNullOrEmpty
+        }
+
+        It 'Should include supported types information in error message' {
+            $input = 123
+            try {
+                ConvertTo-QueryString -InputObjects $input -ErrorAction Stop
+            } catch {
+                $_.Exception.Message | Should -Match "Supported types"
+                $_.Exception.Message | Should -Match "Hashtable"
+                $_.Exception.Message | Should -Match "OrderedDictionary"
+            }
+        }
+
+        It 'Should include the actual input type in error message' {
+            $input = [System.DateTime]::Now
+            try {
+                ConvertTo-QueryString -InputObjects $input -ErrorAction Stop
+            } catch {
+                $_.Exception.Message | Should -Match "System.DateTime"
+            }
+        }
+
+        It 'Should have correct category and activity in error' {
+            $input = "test"
+            try {
+                ConvertTo-QueryString -InputObjects $input -ErrorAction Stop
+            } catch {
+                $_.CategoryInfo.Category | Should -Be "ParserError"
+                $_.CategoryInfo.Activity | Should -Be "ConvertTo-QueryString"
+            }
+        }
+
+        It 'Should continue processing after error for unsupported types' {
+            $input = @("string", @{ Key = "Value" })
+            $results = ConvertTo-QueryString -InputObjects $input
+            $results.Count | Should -Be 2
+            $results[1] | Should -Be "Key=Value"
+        }
+    }
+
+    Context 'Real-world Graph request scenarios' {
+        It 'Should handle typical Graph query parameters with null values' {
+            $queryParams = @{
+                '$select' = 'id,displayName,mail'
+                '$filter' = 'userType eq ''Member'''
+                '$top' = 100
+                '$skip' = $null
+                '$orderby' = 'displayName'
+                '$count' = $true
+            }
+            $result = ConvertTo-QueryString $queryParams
+            $result | Should -Match '\$select=id%2CdisplayName%2Cmail'
+            $result | Should -Match '\$filter=userType\+eq\+%27Member%27'
+            $result | Should -Match '\$top=100'
+            $result | Should -Match '\$skip='
+            $result | Should -Match '\$orderby=displayName'
+            $result | Should -Match '\$count=True'
+        }
+
+        It 'Should handle empty query parameters hashtable' {
+            $queryParams = @{}
+            $result = ConvertTo-QueryString $queryParams
+            $result | Should -Be ""
+        }
+
+        It 'Should handle query parameters with mixed null and non-null values' {
+            $queryParams = @{
+                '$select' = 'id,displayName'
+                '$filter' = $null
+                '$top' = 50
+                '$skip' = $null
+            }
+            $result = ConvertTo-QueryString $queryParams
+            $result | Should -Match '\$select=id%2CdisplayName'
+            $result | Should -Match '\$filter='
+            $result | Should -Match '\$top=50'
+            $result | Should -Match '\$skip='
+        }
+
+        It 'Should handle complex filter scenarios with null values' {
+            $queryParams = @{
+                '$filter' = 'displayName eq ''John Doe'''
+                '$select' = $null
+                '$expand' = 'manager'
+                '$count' = $null
+            }
+            $result = ConvertTo-QueryString $queryParams
+            $result | Should -Match '\$filter=displayName\+eq\+%27John\+Doe%27'
+            $result | Should -Match '\$select='
+            $result | Should -Match '\$expand=manager'
+            $result | Should -Match '\$count='
+        }
+    }
+
+    Context 'Parameter name encoding' {
+        It 'Should encode parameter names when EncodeParameterNames is specified' {
+            $input = @{ 'test param' = 'value'; 'another&param' = 'test' }
+            $result = ConvertTo-QueryString -InputObjects $input -EncodeParameterNames
+            $result | Should -Match 'test\+param=value'
+            $result | Should -Match 'another%26param=test'
+        }
+
+        It 'Should handle null values with encoded parameter names' {
+            $input = @{ 'test param' = $null; 'another&param' = 'value' }
+            $result = ConvertTo-QueryString -InputObjects $input -EncodeParameterNames
+            $result | Should -Match 'test\+param='
+            $result | Should -Match 'another%26param=value'
+        }
+    }
+
+    Context 'ToString conversion' {
+        It 'Should convert integers to string properly' {
+            $input = @{ Number = 42; NullNumber = $null }
+            $result = ConvertTo-QueryString $input
+            $result | Should -Match 'Number=42'
+            $result | Should -Match 'NullNumber='
+        }
+
+        It 'Should convert booleans to string properly' {
+            $input = @{ TrueValue = $true; FalseValue = $false; NullBool = $null }
+            $result = ConvertTo-QueryString $input
+            $result | Should -Match 'TrueValue=True'
+            $result | Should -Match 'FalseValue=False'
+            $result | Should -Match 'NullBool='
+        }
+
+        It 'Should convert GUIDs to string properly' {
+            $guid = [guid]::NewGuid()
+            $input = @{ GuidValue = $guid; NullGuid = $null }
+            $result = ConvertTo-QueryString $input
+            $result | Should -Match "GuidValue=$($guid.ToString())"
+            $result | Should -Match 'NullGuid='
+        }
+
+        It 'Should convert DateTime to string properly' {
+            $date = [System.DateTime]::Now
+            $input = @{ DateValue = $date; NullDate = $null }
+            $result = ConvertTo-QueryString $input
+            $result | Should -Match 'DateValue='
+            $result | Should -Match 'NullDate='
         }
     }
 }

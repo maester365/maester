@@ -5,6 +5,8 @@
  .Description
   The role can be either active or eligible, defaults to getting members that are both active and eligible.
 
+  If the assigned member is a group, all members of that group will be returned.
+
  .Example
   Get-MtRoleMember -Role GlobalAdministrator
 
@@ -50,6 +52,54 @@ function Get-MtRoleMember {
     [string]$MemberStatus
   )
 
+  function Get-UsersInRole {
+		[CmdletBinding()]
+		param(
+			[string]$Uri,
+			[string]$RoleId,
+			[string]$Filter,
+			[ValidateSet('Eligible', 'Active')]
+			[string]$RoleAssignmentType)
+
+		if ($Filter) {
+			$Filter = "roleDefinitionId eq '$RoleId' and $Filter"
+		}
+		else {
+			$Filter = "roleDefinitionId eq '$RoleId'"
+		}
+
+		$params = @{
+			ApiVersion      = "v1.0"
+			RelativeUri     = $Uri
+			Filter          = $Filter
+			QueryParameters = @{
+				expand = "principal"
+			}
+		}
+
+		$dirAssignments = Invoke-MtGraphRequest @params -DisableCache
+
+		$assignments = @()
+		if ($dirAssignments.id.Count -eq 0) {
+			Write-Verbose "No role assignments found"
+			return $assignments
+		}
+		$assignments += @($dirAssignments.principal)
+
+		$groups = $assignments | Where-Object { $_.'@odata.type' -eq "#microsoft.graph.group" }
+		$groups | ForEach-Object {
+			#5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
+			$assignments += Get-MtGroupMember -groupId $_.id
+		}
+
+		# Append the type of assignment
+		$assignments | ForEach-Object {
+			$_ | Add-Member -MemberType NoteProperty -Name "AssignmentType" -Value $RoleAssignmentType -Force
+		}
+		return $assignments
+	}
+
+  Write-Verbose "Getting members for RoleId: $RoleId, Role: $Role, MemberStatus: $MemberStatus"
   if (-not $MemberStatus -or $MemberStatus -eq 'EligibleAndActive') {
     $Eligible = $Active = $true
   } elseif ($MemberStatus -eq 'Eligible') {
@@ -62,60 +112,28 @@ function Get-MtRoleMember {
     $RoleId = $Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_) }
   }
 
-  $scopes = (Get-MgContext).Scopes
-
   $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
   $pim = $EntraIDPlan -eq 'P2' -or $EntraIDPlan -eq 'Governance'
 
-  foreach ($directoryRoleId in $RoleId) {
-    $assignments = @()
-    $groups = @()
-    $types = @()
-    if ($Active) {
-      $types += @{active = 'roleManagement/directory/roleAssignments' }
-    }
-    if ($Eligible -and ('RoleEligibilitySchedule.ReadWrite.Directory' -in $scopes -or 'RoleManagement.ReadWrite.Directory' -in $scopes)) {
-      $types += @{eligible = 'roleManagement/directory/roleEligibilityScheduleRequests' }
-    } elseif ($Eligible) {
-      Write-Warning "Skipping eligible roles as required Graph permission 'RoleEligibilitySchedule.ReadWrite.Directory' was not present."
-    }
+	foreach ($directoryRoleId in $RoleId) {
+		$assignments = @()
+		if ($Active) {
+			if ($pim) {
+				$uri = 'roleManagement/directory/roleAssignmentScheduleInstances'
+				# assignmentType eq 'Assigned' filters out eligible users that have temporarily activated the role
+				$assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active -Filter "assignmentType eq 'Assigned'"
+			}
+			else {
+				#Free or P1 tenant (PIM APIs cannot be called on non-P2 tenants)
+				$uri = 'roleManagement/directory/roleAssignments'
+				$assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
+			}
+		}
+		if ($Eligible) {
+			$uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
+			$assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
+		}
 
-    foreach ($type in $types) {
-      if (-not $pim -and $type.Keys -eq 'eligible') {
-        Write-Verbose 'Tenant not licensed for Entra ID PIM eligible assignments'
-        continue
-      }
-
-      $dirAssignmentsSplat = @{
-        ApiVersion      = 'v1.0'
-        RelativeUri     = "$($type.Values)"
-        Filter          = "roleDefinitionId eq '$directoryRoleId'"
-        QueryParameters = @{
-          expand = 'principal'
-        }
-      }
-
-      if ($dirAssignmentsSplat.RelativeUri -eq 'roleManagement/directory/roleEligibilityScheduleRequests') {
-        # Exclude Revoked and other non-eligible states
-        # See full list of states at https://learn.microsoft.com/en-us/graph/api/resources/request?view=graph-rest-1.0#properties
-        $dirAssignmentsSplat.Filter += " and NOT(status eq 'Canceled' or status eq 'Denied' or status eq 'Failed' or status eq 'Revoked')"
-      }
-
-      $dirAssignments = Invoke-MtGraphRequest @dirAssignmentsSplat
-
-      if ($dirAssignments.id.Count -eq 0) {
-        Write-Verbose 'No role assignments found'
-        continue
-      }
-      $assignments += $dirAssignments.principal
-
-      $groups = $assignments | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.group' }
-      $groups | ForEach-Object {`
-          #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-          $assignments += Get-MtGroupMember -GroupId $_.id
-      }
-    }
-
-    $assignments | Sort-Object id -Unique
-  }
+		$assignments | Sort-Object id -Unique
+	}
 }

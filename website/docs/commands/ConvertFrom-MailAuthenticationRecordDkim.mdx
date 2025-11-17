@@ -16,7 +16,7 @@ Returns structured RFC compliant object from DKIM record
 
 ```powershell
 ConvertFrom-MailAuthenticationRecordDkim [-DomainName] <String> [[-DnsServerIpAddress] <IPAddress>]
- [[-DkimSelector] <String>] [-QuickTimeout] [-NoHostsFile] [-ProgressAction <ActionPreference>]
+ [-DkimDnsName] <String> [-QuickTimeout] [-NoHostsFile] [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
@@ -85,18 +85,18 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DkimSelector
+### -DkimDnsName
 
-Selector-name for the DKIM record to retrieve.
+DKIM DNS record Name to retrieve.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 3
-Default value: Selector1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

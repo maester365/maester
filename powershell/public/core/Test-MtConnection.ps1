@@ -68,7 +68,12 @@
                 $IsConnected = $null -ne ($MtConnections.Azure)
                 # Validate that the credentials are still valid
                 if ($IsConnected) {
-                    Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' | Out-Null
+                    $azError = @()
+                    Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' -ErrorAction SilentlyContinue -ErrorVariable azError | Out-Null
+                    if ($azError.Count -gt 0) {
+                        $IsConnected = $false
+                        $MtConnections.Azure = $null
+                    }
                 }
             } catch {
                 $IsConnected = $false
