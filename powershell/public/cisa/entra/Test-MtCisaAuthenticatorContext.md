@@ -6,9 +6,9 @@ Rationale: This policy helps protect the tenant when Microsoft Authenticator is 
 
 If Microsoft Authenticator is in use, configure Authenticator to display context information to users when they log in.
 
-1. In Entra ID, click Security > Authentication methods > **Microsoft Authenticator**.
+1. In Entra ID, click Security > [Authentication Methods](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods/fromNav/Identity) > **Microsoft Authenticator**.
 2. Click the **Configure tab**.
-3. For Allow use of Microsoft Authenticator OTP select **No**.
+3. For **Allow use of Microsoft Authenticator OTP** select **No**.
 4. Under Show application name in push and passwordless notifications select Status > **Enabled** and Target > Include > **All users**.
 5. Under Show geographic location in push and passwordless notifications select Status > **Enabled** and Target > Include > **All users**.
 6. Select **Save**.
