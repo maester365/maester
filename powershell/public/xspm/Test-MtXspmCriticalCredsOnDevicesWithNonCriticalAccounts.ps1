@@ -71,7 +71,7 @@ function Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts {
 
     $Severity = "Low"
 
-    if ($return -or [string]::IsNullOrEmpty($Devices)) {
+    if ([string]::IsNullOrEmpty($Devices)) {
         $testResultMarkdown = "Well done. No devices with shared critical and non-critical user credentials are found."
     } else {
         $testResultMarkdown = "At least one device with shared critical and non-critical user credentials were found.`n`n%TestResult%"
