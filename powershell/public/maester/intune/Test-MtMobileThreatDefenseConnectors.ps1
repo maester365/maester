@@ -23,11 +23,6 @@ function Test-MtMobileThreatDefenseConnectors {
         return $null
     }
 
-    if (-not (Test-MtConnection Azure)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzure
-        return $null
-    }
-
     try {
         $mobileThreatDefenseConnectors = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/mobileThreatDefenseConnectors' -ApiVersion beta)
 

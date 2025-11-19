@@ -17,7 +17,7 @@ function Test-MtAndroidEnterpriseConnection {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Testing Apple Volume Purchase Program Token for Intune...'
+    Write-Verbose 'Test-MtAndroidEnterpriseConnection'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -33,13 +33,13 @@ function Test-MtAndroidEnterpriseConnection {
         $testResultMarkdown += "| --- | --- | --- |`n"
         $testResultMarkdown += "| $($androidEnterpriseSettings.ownerUserPrincipalName) | $($androidEnterpriseSettings.bindStatus) | $($androidEnterpriseSettings.lastAppSyncDateTime) |`n"
 
-        $testDescription = '```' + "`n"
-        $testDescription += $androidEnterpriseSettings | Select-Object -ExcludeProperty '@odata.context', 'companyCodes' | ConvertTo-Json
-        $testDescription += "`n"
-        $testDescription += '```'
+        $testResultMarkdown += '```' + "`n"
+        $testResultMarkdown += $androidEnterpriseSettings | Select-Object -ExcludeProperty '@odata.context', 'companyCodes' | ConvertTo-Json
+        $testResultMarkdown += "`n"
+        $testResultMarkdown += '```'
 
-        Add-MtTestResultDetail -Result $testResultMarkdown -Description $testDescription
-        return $androidEnterpriseSettings.bindStatus -eq 'boundAndValidated' -and $androidEnterpriseSettings.lastAppSyncStatus -eq 'success' -and  $lastSyncDiffDays -eq 0
+        Add-MtTestResultDetail -Result $testResultMarkdown #-Description $testDescription
+        return $androidEnterpriseSettings.bindStatus -eq 'boundAndValidated' -and $androidEnterpriseSettings.lastAppSyncStatus -eq 'success' -and  $lastSyncDiffDays -le 1
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

@@ -17,7 +17,7 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Testing Apple Automated Device Enrollment Token for Intune...'
+    Write-Verbose 'Test-MtAppleAutomatedDeviceEnrollmentToken'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -38,12 +38,12 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
             Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -eq 0)
         }
 
-        $testDescription = '```' + "`n"
-        $testDescription += $automatedDeviceEnrollmentTokens | ConvertTo-Json
-        $testDescription += "`n"
-        $testDescription += '```'
+        $testResultMarkdown += '```' + "`n"
+        $testResultMarkdown += $automatedDeviceEnrollmentTokens | ConvertTo-Json
+        $testResultMarkdown += "`n"
+        $testResultMarkdown += '```'
 
-        Add-MtTestResultDetail -Result $testResultMarkdown -Description $testDescription
+        Add-MtTestResultDetail -Result $testResultMarkdown
         return $healthStatus -notcontains $false
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_

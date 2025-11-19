@@ -17,7 +17,7 @@ function Test-MtApplePushNotificationCertificate {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Testing Apple Push Notification Certificate for Intune...'
+    Write-Verbose 'Test-MtApplePushNotificationCertificate'
      if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -28,8 +28,6 @@ function Test-MtApplePushNotificationCertificate {
         $pushNotificationCertificate = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/applePushNotificationCertificate' -ApiVersion beta)
         $expiresInDays = [System.Math]::Ceiling(([datetime]$pushNotificationCertificate.expirationDateTime - (Get-Date)).TotalDays)
 
-        $testDescription = ""
-
         $testResult = if ($expiresInDays -gt $expirationThresholdDays) {
             Write-Output "Apple Push Notification Certificate is valid for $($expiresInDays) more days.`n"
         } elseif ($expiresInDays -lt 0) {
@@ -38,12 +36,12 @@ function Test-MtApplePushNotificationCertificate {
             Write-Output  "Apple Push Notification Certificate is expiring soon on $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days left).`n"
         }
 
-        $testDescription += '```' + "`n"
-        $testDescription += $pushNotificationCertificate | Select-Object -ExcludeProperty '@odata.context' | ConvertTo-Json
-        $testDescription += "`n"
-        $testDescription += '```'
+        $testResult += '```' + "`n"
+        $testResult += $pushNotificationCertificate | Select-Object -ExcludeProperty '@odata.context' | ConvertTo-Json
+        $testResult += "`n"
+        $testResult += '```'
 
-        Add-MtTestResultDetail -Description $testDescription -Result $testResult
+        Add-MtTestResultDetail -Result $testResult
         return $expiresInDays -gt $expirationThresholdDays
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_

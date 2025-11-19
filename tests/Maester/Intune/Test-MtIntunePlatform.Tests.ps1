@@ -54,4 +54,11 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
             $result | Should -Be $true -Because "Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups."
         }
     }
+
+    It "MT.1105: Ensure MDM Authority is set to Intune" -Tag "MT.1105" {
+        $result = Test-MtMdmAuthority
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "MDM Authority is set to Intune."
+        }
+    }
 }
