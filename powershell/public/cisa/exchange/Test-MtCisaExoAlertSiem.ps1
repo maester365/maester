@@ -18,17 +18,17 @@ function Test-MtCisaExoAlertSiem {
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection ExchangeOnline)){
+    if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
+    } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    }elseif("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
+    } elseif("P1" -notin (Get-MtLicenseInformation -Product MdoV2)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
-    }else{
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not available for API validation."
+    } else {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not available for API validation.'
         return $null
     }
 }

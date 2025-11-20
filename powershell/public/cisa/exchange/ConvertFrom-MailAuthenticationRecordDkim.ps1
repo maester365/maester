@@ -40,7 +40,7 @@ function ConvertFrom-MailAuthenticationRecordDkim {
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ipaddress]$DnsServerIpAddress = "1.1.1.1",
+        [ipaddress]$DnsServerIpAddress,
 
         # DKIM DNS record Name to retrieve.
         [Parameter(Mandatory)]
@@ -105,6 +105,9 @@ function ConvertFrom-MailAuthenticationRecordDkim {
                 $dkimRecord = [DKIMRecord]::new((Resolve-DnsName @dkimSplat | `
                             Where-Object { $_.Type -eq "TXT" } | `
                             Where-Object { $_.Strings -match $matchRecord }).Strings)
+                If (-not $dkimRecord) {
+                    return "Failure to obtain record"
+                }
             } else {
                 $cmdletCheck = Get-Command "Resolve-Dns" -ErrorAction SilentlyContinue
                 if ($cmdletCheck) {
