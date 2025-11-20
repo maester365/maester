@@ -1,13 +1,13 @@
 ﻿<#
 .SYNOPSIS
-    Check the Intune Diagnostic Settings for Audit Logs.
+    Check whether a Windows Feature Update Policy in Intune is using unsupported builds.
 .DESCRIPTION
-    Enumarate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    This command checks the Windows Feature Update Policies configured in Microsoft Intune to identify any policies that are using Windows builds that are no longer supported by Microsoft.
 
 .EXAMPLE
     Test-MtFeatureUpdatePolicy
 
-    Returns true if any Intune diagnostic settings include Audit Logs and are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    Returns true if no Feature Update Policies are using unsupported builds, false if any policies are found using unsupported builds.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtFeatureUpdatePolicy
@@ -23,8 +23,8 @@ function Test-MtFeatureUpdatePolicy {
         return $null
     }
 
-
     try {
+        Write-Verbose 'Retrieving Windows Feature Update Profiles status...'
         $featureUpdateProfiles = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/windowsFeatureUpdateProfiles' -ApiVersion beta)
         $unsupportedBuilds = @($featureUpdateProfiles | Where-Object {
                 [datetime]$_.endOfSupportDate -lt (Get-Date)

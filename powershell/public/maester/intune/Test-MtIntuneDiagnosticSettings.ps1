@@ -15,9 +15,9 @@
 function Test-MtIntuneDiagnosticSettings {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple diagnostic settings can exist.')]
     param()
 
-    Write-Verbose 'Testing Apple Volume Purchase Program Token for Intune...'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -29,6 +29,7 @@ function Test-MtIntuneDiagnosticSettings {
     }
 
     try {
+        Write-Verbose 'Retrieving Intune Diagnostic Settings status...'
         $diagnosticSettingsRequest = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.intune/diagnosticSettings?api-version=2017-04-01-preview"
         $diagnosticSettings = $diagnosticSettingsRequest | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty value
 

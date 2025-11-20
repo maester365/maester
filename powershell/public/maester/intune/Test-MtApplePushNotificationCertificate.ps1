@@ -17,13 +17,13 @@ function Test-MtApplePushNotificationCertificate {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Test-MtApplePushNotificationCertificate'
      if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
+        Write-Verbose 'Retrieving Apple Push Notification Certificate status...'
         $expirationThresholdDays = 30
         $pushNotificationCertificate = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/applePushNotificationCertificate' -ApiVersion beta)
         $expiresInDays = [System.Math]::Ceiling(([datetime]$pushNotificationCertificate.expirationDateTime - (Get-Date)).TotalDays)

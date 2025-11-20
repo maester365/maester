@@ -17,13 +17,14 @@ function Test-MtAndroidEnterpriseConnection {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Test-MtAndroidEnterpriseConnection'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
+        Write-Verbose 'Retrieving Android Enterprise connection status...'
+
         $androidEnterpriseSettings = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/androidManagedStoreAccountEnterpriseSettings' -ApiVersion beta
 
         $lastSyncDiffDays= [System.Math]::Floor(((Get-Date)- [datetime]$androidEnterpriseSettings.lastAppSyncDateTime).TotalDays)

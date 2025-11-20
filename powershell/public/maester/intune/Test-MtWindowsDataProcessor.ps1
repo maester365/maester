@@ -1,23 +1,22 @@
 ﻿<#
 .SYNOPSIS
-    Check the Intune Diagnostic Settings for Audit Logs.
+    Check the Intune Windows Data Processor settings.
 .DESCRIPTION
-    Enumarate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    This command checks the Windows Data Processor settings in Microsoft Intune to determine if features requiring Windows diagnostic data are enabled and if the Windows license verification is complete.
 
 .EXAMPLE
-    Test-MtMobileThreatDefenseConnectors
+    Test-MtWindowsDataProcessor
 
-    Returns true if any Intune diagnostic settings include Audit Logs and are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    Returns true if features requiring Windows diagnostic data are enabled and the Windows license verification is complete.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtMobileThreatDefenseConnectors
+    https://maester.dev/docs/commands/Test-MtWindowsDataProcessor
 #>
 function Test-MtWindowsDataProcessor{
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Testing Apple Volume Purchase Program Token for Intune...'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -25,6 +24,7 @@ function Test-MtWindowsDataProcessor{
 
 
     try {
+        Write-Verbose 'Retrieving Windows Data Processor status...'
         $dataProcessor = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/dataProcessorServiceForWindowsFeaturesOnboarding' -ApiVersion beta)
 
         $testResultMarkdown = "Windows data processor status:`n"

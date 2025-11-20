@@ -26,6 +26,7 @@ function Test-MtOperationApprovalPolicies {
     }
 
     try {
+        Write-Verbose 'Retrieving Intune Multi Admin Approval Policies status...'
         $approvalPolicies = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta)
         if ($approvalPolicies.Count -lt 1) {
             $testResultMarkdown = 'No Intune Multi Admin Approval Policy is configured.'

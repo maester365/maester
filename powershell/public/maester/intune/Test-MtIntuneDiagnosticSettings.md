@@ -2,7 +2,7 @@ This test checks for the existence of Intune Diagnostic settings collecting Intu
 
 
 
-### Remediation action
+#### Remediation action
 
 * Check the following Microsogt learn article to [Send Intune log data to Azure Storage, Event Hubs, or Log Analytics](https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor).
 

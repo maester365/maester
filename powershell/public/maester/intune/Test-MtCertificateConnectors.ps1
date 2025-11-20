@@ -18,12 +18,12 @@ function Test-MtCertificateConnectors {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param()
 
-    Write-Verbose 'Testing certificate connectors'
      if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
     try {
+        Write-Verbose 'Retrieving Intune Certificate Connectors status...'
         $certificateConnectors = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/ndesConnectors' -ApiVersion beta)
 
         # https://learn.microsoft.com/en-us/intune/intune-service/protect/certificate-connector-overview#lifecycle

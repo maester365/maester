@@ -1,13 +1,13 @@
 ﻿<#
 .SYNOPSIS
-    Check the Intune Diagnostic Settings for Audit Logs.
+    Check the Intune Mobile Threat Defense Connectors.
 .DESCRIPTION
-    Enumarate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    This command checks the Mobile Threat Defense Connectors configured in Microsoft Intune to determine their status and connectivity.
 
 .EXAMPLE
     Test-MtMobileThreatDefenseConnectors
 
-    Returns true if any Intune diagnostic settings include Audit Logs and are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    Returns true if all Mobile Threat Defense Connectors are enabled and have recent heartbeats, false otherwise.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtMobileThreatDefenseConnectors
@@ -15,15 +15,16 @@
 function Test-MtMobileThreatDefenseConnectors {
     [CmdletBinding()]
     [OutputType([bool])]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple MTD connectors can exist.')]
     param()
 
-    Write-Verbose 'Testing Apple Volume Purchase Program Token for Intune...'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
+        Write-Verbose 'Retrieving Mobile Threat Defense Connectors status...'
         $mobileThreatDefenseConnectors = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/mobileThreatDefenseConnectors' -ApiVersion beta)
 
         $testResultMarkdown = "Mobile Threat Defense Connector Status:`n"

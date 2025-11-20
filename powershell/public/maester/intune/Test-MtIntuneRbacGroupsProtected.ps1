@@ -29,6 +29,7 @@ function Test-MtIntuneRbacGroupsProtected {
   }
 
   try {
+    Write-Verbose 'Retrieving Intune RBAC role definitions and assignments...'
     # Help Desk Operator: 9e0cc482-82df-4ab2-a24c-0c23a3f52e1e
     $roleDefinitions = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/roleDefinitions' -ApiVersion beta
 

@@ -17,13 +17,13 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Test-MtAppleAutomatedDeviceEnrollmentToken'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
+        Write-Verbose 'Retrieving Apple Automated Device Enrollment token status...'
         $expirationThresholdDays = 30
         $automatedDeviceEnrollmentTokens = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/depOnboardingSettings' -ApiVersion beta)
 

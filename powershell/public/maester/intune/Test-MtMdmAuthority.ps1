@@ -1,16 +1,16 @@
 ﻿<#
 .SYNOPSIS
-    Check the Intune Diagnostic Settings for Audit Logs.
+    Check the MDM Authority for Intune.
 .DESCRIPTION
-    Enumarate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    This command checks the Mobile Device Management (MDM) Authority setting in Microsoft Intune to determine if Intune is the configured MDM authority.
 
 .EXAMPLE
-    Test-MtMobileThreatDefenseConnectors
+    Test-MtMdmAuthority
 
-    Returns true if any Intune diagnostic settings include Audit Logs and are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    Returns true if Intune is set as the MDM authority, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtMobileThreatDefenseConnectors
+    https://maester.dev/docs/commands/Test-MtMdmAuthority
 #>
 function Test-MtMdmAuthority {
     [CmdletBinding()]
@@ -24,6 +24,7 @@ function Test-MtMdmAuthority {
     }
 
     try {
+        Write-Verbose 'Retrieving MDM Authority status...'
         $org = Invoke-MtGraphRequest -RelativeUri 'organization' -ApiVersion beta
         $detailedOrgInfo = Invoke-MtGraphRequest -RelativeUri "organization/$($org.id)?`$select=mobiledevicemanagementauthority" -ApiVersion beta
         Add-MtTestResultDetail -Result ('MDM Authority is set to: {0}' -f $detailedOrgInfo.mobileDeviceManagementAuthority)

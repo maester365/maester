@@ -17,13 +17,13 @@ function Test-MtAppleVolumePurchaseProgramToken {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Test-MtAppleVolumePurchaseProgramToken'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
+        Write-Verbose 'Retrieving Apple Volume Purchase Program token status...'
         $expirationThresholdDays = 30
         $vppTokens = @(Invoke-MtGraphRequest -RelativeUri 'deviceAppManagement/vppTokens' -ApiVersion beta)
 
