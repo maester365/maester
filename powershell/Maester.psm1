@@ -25,8 +25,8 @@ $__MtSession = @{
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 
 # Import private and public scripts and expose the public ones
-$privateScripts = @(Get-ChildItem -Path "powershell\internal" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
-$publicScripts = @(Get-ChildItem -Path "powershell\public" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
+$privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
+$publicScripts = @(Get-ChildItem -Path "$PSScriptRoot\public" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
 
 $importErrors = @()
 foreach ($script in ($privateScripts + $publicScripts)) {
@@ -51,7 +51,7 @@ if ($importErrors.Count -gt 0) {
 
 # Safely import module manifest
 try {
-	$ModuleInfo = Import-PowerShellDataFile -Path "powershell/Maester.psd1" -ErrorAction Stop
+	$ModuleInfo = Import-PowerShellDataFile -Path "$PsScriptRoot/Maester.psd1" -ErrorAction Stop
 } catch {
 	Write-Warning "Failed to load module manifest: $($_.Exception.Message)"
 	$ModuleInfo = $null
