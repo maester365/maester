@@ -1185,7 +1185,7 @@
       "Severity": "High",
       "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
     },
-{
+    {
       "Id": "MT.1073",
       "Severity": "Medium",
       "Title": "Soft- and hard-matching of synchronized objects should be blocked."
@@ -1245,7 +1245,7 @@
       "Severity": "Medium",
       "Title": "Pending approvals for Critical Asset Management should not be present"
     },
-  {
+    {
       "Id": "MT.1090",
       "Severity": "Medium",
       "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
