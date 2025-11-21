@@ -18,7 +18,7 @@ function Test-MtCertificateConnectors {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
     param()
 
-     if (-not (Get-MtLicenseInformation -Product Intune)) {
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
@@ -29,7 +29,7 @@ function Test-MtCertificateConnectors {
         # https://learn.microsoft.com/en-us/intune/intune-service/protect/certificate-connector-overview#lifecycle
         $minimumVersion = [System.Version]'6.2406.0.1001'
 
-        $healthStatus = foreach($connector in $certificateConnectors) {
+        $healthStatus = foreach ($connector in $certificateConnectors) {
             # Connector Health checks
             $isActive = $connector.state -eq 'active'
             $isSupportedVersion = [System.Version]$connector.connectorVersion -ge $minimumVersion
@@ -38,12 +38,12 @@ function Test-MtCertificateConnectors {
             Write-Output $($isActive -and $isSupportedVersion -and $hasRecentlyConnected)
         }
 
-         $testResultMarkdown = "Intune Certificate Connector Health Status:`n"
-            $testResultMarkdown += "| Name | State | LastConnectionDateTime | Version |`n"
-            $testResultMarkdown += "| --- | --- | --- | --- |`n"
-            foreach ($connector in $certificateConnectors) {
-                $testResultMarkdown += "| $($connector.displayName) | $($connector.state) | $($connector.lastConnectionDateTime) | $($connector.connectorVersion) |`n"
-            }
+        $testResultMarkdown = "Intune Certificate Connector Health Status:`n"
+        $testResultMarkdown += "| Name | State | LastConnectionDateTime | Version |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- |`n"
+        foreach ($connector in $certificateConnectors) {
+            $testResultMarkdown += "| $($connector.displayName) | $($connector.state) | $($connector.lastConnectionDateTime) | $($connector.connectorVersion) |`n"
+        }
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $healthStatus -notcontains $false

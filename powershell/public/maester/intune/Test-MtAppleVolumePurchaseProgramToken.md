@@ -1,4 +1,4 @@
-Check the validity of the Apple Volume Purchase Program (VPP) token for Intune. The Apple Volume Purchase Program (VPP) token is required to synchronize Apple store apps with Microsoft Intune. This command test checks if the VPP token is valid and not expired.
+Check the validity of the Apple Volume Purchase Program (VPP) token for Intune. The Apple Volume Purchase Program (VPP) token is required to synchronize Apple store apps with Microsoft Intune. This test checks if the VPP token is valid and not expired.
 
 #### Remediation action
 

@@ -17,7 +17,7 @@ function Test-MtApplePushNotificationCertificate {
     [OutputType([bool])]
     param()
 
-     if (-not (Get-MtLicenseInformation -Product Intune)) {
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
@@ -33,7 +33,7 @@ function Test-MtApplePushNotificationCertificate {
         } elseif ($expiresInDays -lt 0) {
             Write-Output "Apple Push Notification Certificate is expired since $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days ago).`n"
         } else {
-            Write-Output  "Apple Push Notification Certificate is expiring soon on $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days left).`n"
+            Write-Output "Apple Push Notification Certificate is expiring soon on $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days left).`n"
         }
 
         $testResult += '```' + "`n"

@@ -37,20 +37,20 @@ function Test-MtIntuneRbacGroupsProtected {
       $roleAssignments = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/roleDefinitions/$($definition.id)/roleAssignments" -ApiVersion beta)
       foreach ($assignment in $roleAssignments.value) {
         $assignmentDetails = Invoke-MtGraphRequest -RelativeUri "deviceManagement/roleAssignments/$($assignment.id)" -ApiVersion beta
-        foreach ($member in $assignmentDetails.members) {
+        foreach ($memberId in $assignmentDetails.members) {
 
           try {
-            $groupInfo = Invoke-MtGraphRequest -RelativeUri "groups/$member" -Select 'displayName, isManagementRestricted, isAssignableToRole, id' -ApiVersion beta
+            $groupInfo = Invoke-MtGraphRequest -RelativeUri "groups/$memberId" -Select 'displayName, isManagementRestricted, isAssignableToRole, id' -ApiVersion beta
 
             [PSCustomObject]@{
               RoleDefinitionName     = $definition.displayName
-              GroupId                = $member
+              GroupId                = $memberId
               GroupDisplayName       = $groupInfo.displayName
               IsManagementRestricted = [bool]$groupInfo.isManagementRestricted
               IsAssignableToRole     = [bool]$groupInfo.isAssignableToRole
             }
           } catch {
-            Write-Verbose "Group $group not found"
+            Write-Verbose "Group with id: $memberId not found"
           }
         }
       }
