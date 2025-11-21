@@ -38,12 +38,12 @@ function Test-MtMobileThreatDefenseConnectors {
             if ($connector.id -eq 'fc780465-2017-40d4-a0c5-307022471b92' ) {
                 Write-Verbose 'This is the Microsoft Defender for Endpoint Connector.'
                 $testResultMarkdown += "| Microsoft Defender for Endpoint | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
-            }else{
+            } else {
                 $testResultMarkdown += "| $($connector.id) | $($connector.lastHeartbeatDateTime) | $($connector.partnerState) |`n"
             }
 
             $isConnected = $connector.partnerState -eq 'enabled'
-            $syncIsRecent = [System.Math]::Floor(((Get-Date) - [datetime]$connector.lastHeartbeatDateTime).TotalDays) -eq 0
+            $syncIsRecent = [System.Math]::Floor(((Get-Date) - [datetime]$connector.lastHeartbeatDateTime).TotalDays) -le 1
             Write-Output ($isConnected -and $syncIsRecent)
         }
 

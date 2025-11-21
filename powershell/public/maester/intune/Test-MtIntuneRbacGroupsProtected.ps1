@@ -33,7 +33,7 @@ function Test-MtIntuneRbacGroupsProtected {
     # Help Desk Operator: 9e0cc482-82df-4ab2-a24c-0c23a3f52e1e
     $roleDefinitions = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/roleDefinitions' -ApiVersion beta
 
-    $roleAssignments = foreach ($definition in $roleDefinitions) {
+    $roleAssignmentsExpanded = foreach ($definition in $roleDefinitions) {
       $roleAssignments = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/roleDefinitions/$($definition.id)/roleAssignments" -ApiVersion beta)
       foreach ($assignment in $roleAssignments.value) {
         $assignmentDetails = Invoke-MtGraphRequest -RelativeUri "deviceManagement/roleAssignments/$($assignment.id)" -ApiVersion beta
@@ -56,7 +56,7 @@ function Test-MtIntuneRbacGroupsProtected {
       }
     }
 
-    $unprotectedGroups = @($roleAssignments | Where-Object { -not ($_.isManagementRestricted -or $_.isAssignableToRole) } | Select-Object -Unique)
+    $unprotectedGroups = @($roleAssignmentsExpanded | Where-Object { -not ($_.isManagementRestricted -or $_.isAssignableToRole) } | Select-Object -Unique)
 
     $ResultDescription = ''
     if ($unprotectedGroups.Count -eq 0) {

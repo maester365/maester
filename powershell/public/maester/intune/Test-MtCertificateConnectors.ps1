@@ -33,7 +33,7 @@ function Test-MtCertificateConnectors {
             # Connector Health checks
             $isActive = $connector.state -eq 'active'
             $isSupportedVersion = [System.Version]$connector.connectorVersion -ge $minimumVersion
-            $hasRecentlyConnected = ((Get-Date) - [DateTime]$connector.lastConnectionDateTime).Hours -le 1
+            $hasRecentlyConnected = ((Get-Date) - [DateTime]$connector.lastConnectionDateTime).TotalHours -le 1
 
             Write-Output $($isActive -and $isSupportedVersion -and $hasRecentlyConnected)
         }

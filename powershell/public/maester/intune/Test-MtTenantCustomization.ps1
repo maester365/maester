@@ -25,20 +25,19 @@ function Test-MtTenantCustomization {
     try {
         Write-Verbose 'Retrieving Intune Branding Profiles status...'
         $brandingProfiles = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/intuneBrandingProfiles' -ApiVersion beta)
-        $defaultProfile = $brandingProfiles | Where-Object {$_.isDefaultProfile}
+        $defaultProfile = $brandingProfiles | Where-Object { $_.isDefaultProfile }
 
         # displayName is reflected as 'Organization name' in the portal
-        $defaultProfileIsCustomized = -not ([string]::IsNullOrEmpty($defaultProfile.displayName) -or [string]::IsNullOrEmpty($defaultProfile.privacyUrl))
+        $defaultProfileIsCustomized = -not ([string]::IsNullOrEmpty($defaultProfile.displayName) -and [string]::IsNullOrEmpty($defaultProfile.privacyUrl))
 
         $testResultMarkdown = ""
-        if ($defaultProfileIsCustomized){
-            $testResultMarkdown = "The Default Branding Profile is customized or custom branding profile exist."
+        if ($defaultProfileIsCustomized) {
+            $testResultMarkdown = "The Default Branding Profile is customized or at least one custom branding profile exists."
 
             if (-not [string]::IsNullOrEmpty($defaultProfile.displayName)) {
                 $testResultMarkdown += "`n- Organization Name is set to '$($defaultProfile.displayName)'."
             }
-        }
-        else {
+        } else {
             $testResultMarkdown = "The Default Branding Profile is not customized."
         }
 
