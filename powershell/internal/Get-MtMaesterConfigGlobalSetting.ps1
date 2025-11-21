@@ -11,7 +11,7 @@
 
 function Get-MtMaesterConfigGlobalSetting {
     [CmdletBinding()]
-    [OutputType([hashtable])]
+    [OutputType([object])]
     param(
         # The setting name of the configuration for which to retrieve the settings.
         [Parameter(Mandatory = $true, Position = 0)]
