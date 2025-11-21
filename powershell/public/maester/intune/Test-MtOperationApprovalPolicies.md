@@ -1,4 +1,4 @@
-Ensure at least on Intune Multi Admin Approval Policy is configured. Microsoft Intune Multi Admin Approval helps to limit the impact of compromised administrators by requiring approval for sensitive activities.
+Ensure at least one Intune Multi Admin Approval Policy is configured. Microsoft Intune Multi Admin Approval helps to limit the impact of compromised administrators by requiring approval for sensitive activities.
 
 #### Remediation action:
 

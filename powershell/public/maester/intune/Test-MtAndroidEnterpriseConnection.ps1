@@ -27,7 +27,7 @@ function Test-MtAndroidEnterpriseConnection {
 
         $androidEnterpriseSettings = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/androidManagedStoreAccountEnterpriseSettings' -ApiVersion beta
 
-        $lastSyncDiffDays= [System.Math]::Floor(((Get-Date)- [datetime]$androidEnterpriseSettings.lastAppSyncDateTime).TotalDays)
+        $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$androidEnterpriseSettings.lastAppSyncDateTime).TotalDays)
 
         $testResultMarkdown = "Android Enterprise Account Status:`n"
         $testResultMarkdown += "| Name | BindStatus | LastAppSyncDateTime |`n"
@@ -40,7 +40,7 @@ function Test-MtAndroidEnterpriseConnection {
         $testResultMarkdown += '```'
 
         Add-MtTestResultDetail -Result $testResultMarkdown #-Description $testDescription
-        return $androidEnterpriseSettings.bindStatus -eq 'boundAndValidated' -and $androidEnterpriseSettings.lastAppSyncStatus -eq 'success' -and  $lastSyncDiffDays -le 1
+        return $androidEnterpriseSettings.bindStatus -eq 'boundAndValidated' -and $androidEnterpriseSettings.lastAppSyncStatus -eq 'success' -and $lastSyncDiffDays -le 1
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

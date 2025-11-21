@@ -17,7 +17,7 @@ function Test-MtFeatureUpdatePolicy {
     [OutputType([bool])]
     param()
 
-    Write-Verbose 'Testing Apple Volume Purchase Program Token for Intune...'
+    Write-Verbose 'Testing Windows Feature Update Policies for unsupported builds...'
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null

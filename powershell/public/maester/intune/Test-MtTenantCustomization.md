@@ -1,4 +1,4 @@
-Test whether the Intune built-in tenant customization setttings are configured.
+Test whether the Intune built-in tenant customization settings are configured.
 
 #### Remediation action
 

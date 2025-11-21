@@ -2,7 +2,7 @@
 .SYNOPSIS
     Check the Intune Diagnostic Settings for Audit Logs.
 .DESCRIPTION
-    Enumarate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
+    Enumerate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
 
 .EXAMPLE
     Test-MtIntuneDiagnosticSettings

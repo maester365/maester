@@ -7,7 +7,7 @@
 
 .EXAMPLE
     Test-MtCertificateConnectors
-    Returns true if at all Intune Certificate Connectors are healthy and running supported versions, false if any connector is unhealthy.
+    Returns true if all Intune Certificate Connectors are healthy and running supported versions, false if any connector is unhealthy.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtCertificateConnectors
