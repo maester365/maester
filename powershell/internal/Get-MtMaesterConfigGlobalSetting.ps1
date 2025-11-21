@@ -2,8 +2,8 @@
 .SYNOPSIS
     Gets the global settings from the Maester config.
 .DESCRIPTION
-    This function retrieves the global settings from the Maester config.
-    It returns the settings as a hashtable, which can be used to customize the behavior of the tests.
+    This function retrieves the value of the specified global setting from the Maester config.
+    It returns the value of the specified global setting, which may be of any type depending on the configuration.
 .EXAMPLE
     $globalSettings = Get-MtMaesterConfigGlobalSetting -SettingName 'EmergencyAccessAccounts'
     # This will return the global settings for the setting with name 'EmergencyAccessAccounts'.
