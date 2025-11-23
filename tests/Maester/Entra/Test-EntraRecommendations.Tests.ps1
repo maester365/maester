@@ -19,7 +19,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         $recommendationUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/$($_.id)"
         $recommendationLinkMd = "`n`n➡️ Open [Recommendation - $($_.displayName)]($recommendationUrl) in the Entra admin portal.`n`n*Note: If the recommendation is not applicable for your tenant, it can be marked as **Dismissed** for Maester to skip it in the future.*"
         if ($status -ne 'completedBySystem' -and $_.impactedResources) {
-            $impactedResourcesList = "`n`n#### Impacted resources`n`n | Status | Name | First detected | `n"
+            $impactedResourcesList = "`n`n#### Impacted resources`n`n| Status | Name | First detected |`n"
             $impactedResourcesList += "| --- | --- | --- |`n"
             foreach ($resource in $_.impactedResources) {
                 if ($resource.status -eq 'completedBySystem') {
