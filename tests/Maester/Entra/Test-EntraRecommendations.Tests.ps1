@@ -62,6 +62,6 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result $resultMd
 
         # Actual test
-        $_.status | Should -Be "completedBySystem" -Because $benefits
+        $_.status | Should -Be "completedBySystem" -Because $_.benefits
     }
 }
