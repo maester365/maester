@@ -8,16 +8,21 @@ BeforeDiscovery {
 }
 
 Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -ForEach $EntraRecommendations {
-    It "MT.1024.$($_.id -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
+
+    # Define the test name and Id for each Entra recommendation.
+    $RecommendationId = $_.id
+    It "MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
 
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",
             "userRiskPolicy",
             "signinRiskPolicy"
         )
+
         #region Build test result markdown
-        $recommendationUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/$($_.id)"
+        $recommendationUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/$($RecommendationId)"
         $recommendationLinkMd = "`n`n➡️ Open [Recommendation - $($_.displayName)]($recommendationUrl) in the Entra admin portal.`n`n*Note: If the recommendation is not applicable for your tenant, it can be marked as **Dismissed** for Maester to skip it in the future.*"
+        $impactedResourcesList = ""
         if ($_.status -ne 'completedBySystem' -and $_.impactedResources) {
             $impactedResourcesList = "`n`n#### Impacted resources`n`n| Status | Name | First detected |`n"
             $impactedResourcesList += "| --- | --- | --- |`n"
@@ -29,11 +34,13 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
                 }
                 $impactedResourcesList += "| $($resourceResult) | [$($resource.displayName)]($($resource.portalUrl)) | $($resource.addedDateTime) |`n"
             }
-        }
+        } #end if status -ne 'completedBySystem' and impactedResources
         $resultMd = $_.insights + $impactedResourcesList + $recommendationLinkMd
-        #endregion
+        #endregion Build test result markdown
+
         #region Build test description markdown
         $actionSteps = $_.actionSteps | Sort-Object -Property 'stepNumber' | ForEach-Object {
+            $actionLink = ""
             if ($_.actionUrl.url) {
                 $actionLink = " [$($_.actionUrl.displayName)]($($_.actionUrl.url.replace('" \l "','#')))."
             }
@@ -41,14 +48,15 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         }
         $actionSteps = $actionSteps -join "`n`n"
         $descriptionMd = "$($_.benefits)`n`n#### Remediation action:`n`n${actionSteps}`n`n**Impact:** $($_.remediationImpact)`n`n#### Related links:`n`n* [$($_.displayName) - Microsoft Entra admin center]($recommendationUrl)"
-        #endregion
+        #endregion Build test description markdown
+
         $textInfo = (Get-Culture).TextInfo
         $priority = $textInfo.ToTitleCase($_.priority)
 
         $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
         if ( $EntraIDPlan -ne "P2" ) {
             $EntraPremiumRecommendations | ForEach-Object {
-                if ( $_.id -match "$($_)$" ) {
+                if ( $RecommendationId -match "$($_)$" ) {
                     Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause NotLicensedEntraIDP2
                     return $null
                 }
