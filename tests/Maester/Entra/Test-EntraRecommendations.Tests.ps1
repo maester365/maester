@@ -27,7 +27,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
                 } else {
                     $resourceResult = "❌ Fail"
                 }
-                $impactedResourcesList += "| $($resourceResult) | [$($resource.displayName)]($($resource.portalUrl)) | $($resource.addedDateTime) | `n"
+                $impactedResourcesList += "| $($resourceResult) | [$($resource.displayName)]($($resource.portalUrl)) | $($resource.addedDateTime) |`n"
             }
         }
         $resultMd = $_.insights + $impactedResourcesList + $recommendationLinkMd
