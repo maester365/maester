@@ -18,7 +18,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         #region Build test result markdown
         $recommendationUrl = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/$($_.id)"
         $recommendationLinkMd = "`n`n➡️ Open [Recommendation - $($_.displayName)]($recommendationUrl) in the Entra admin portal.`n`n*Note: If the recommendation is not applicable for your tenant, it can be marked as **Dismissed** for Maester to skip it in the future.*"
-        if ($status -ne 'completedBySystem' -and $_.impactedResources) {
+        if ($_.status -ne 'completedBySystem' -and $_.impactedResources) {
             $impactedResourcesList = "`n`n#### Impacted resources`n`n| Status | Name | First detected |`n"
             $impactedResourcesList += "| --- | --- | --- |`n"
             foreach ($resource in $_.impactedResources) {
@@ -48,20 +48,20 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         $EntraIDPlan = Get-MtLicenseInformation -Product "EntraID"
         if ( $EntraIDPlan -ne "P2" ) {
             $EntraPremiumRecommendations | ForEach-Object {
-                if ( $id -match "$($_)$" ) {
+                if ( $_.id -match "$($_)$" ) {
                     Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause NotLicensedEntraIDP2
                     return $null
                 }
             }
         }
 
-        if ( $status -match "dismissed" ) {
+        if ( $_.status -match "dismissed" ) {
             Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -SkippedBecause Custom -SkippedCustomReason "This recommendation has been **Dismissed** by an administrator.`n`nIf this test is valid for your tenant you can change its state from **Dismissed** to **Active**. $recommendationLinkMd"
             return $null
         }
         Add-MtTestResultDetail -Description $descriptionMd -Severity $priority -Result $resultMd
 
         # Actual test
-        $status | Should -Be "completedBySystem" -Because $benefits
+        $_.status | Should -Be "completedBySystem" -Because $benefits
     }
 }
