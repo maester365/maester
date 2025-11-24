@@ -30,6 +30,7 @@ function Get-MtSkippedReason {
         "NotSupportedAppPermission" { "This test relies on Graph APIs that don't support application permissions. Re-run Maester with a user signed in to view the results for this test."; break}
         "LimitedPermissions" { "This test relies on privileged (i.e., ReadWrite) permissions."; break}
         "NotLicensedDefenderXDR" { "This test is for tenants that are licensed for Microsoft Defender XDR. See [Microsoft Defender XDR prerequisites](https://learn.microsoft.com/en-us/defender-xdr/prerequisites#licensing-requirements)"; break}
+        "NotLicensedIntune" { "This test is for tenants that are licensed for Microsoft Intune. See [Intune licensing](https://learn.microsoft.com/intune/intune-service/fundamentals/licenses)"; break}
         "NotAuthorized" { "This test was skipped because the user is not authorized to perform the required operation."; break}
         "Error" { $SkippedBecause; break}
         default { $SkippedBecause; break}

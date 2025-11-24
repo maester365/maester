@@ -20,8 +20,8 @@ function Test-MtDeviceComplianceSettings {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple settings.')]
     param()
 
-    if ((Get-MtLicenseInformation EntraID) -eq 'Free') {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 

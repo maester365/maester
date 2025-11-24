@@ -20,8 +20,8 @@ function Test-MtManagedDeviceCleanupSettings {
     param()
 
     Write-Verbose 'Testing device clean-up rule configuration'
-    if ((Get-MtLicenseInformation EntraID) -eq 'Free') {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
