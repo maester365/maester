@@ -11,7 +11,7 @@ The Maester team will add new tests over time. To get the latest updates, use th
 Open a command prompt and navigate to the folder where you have your Maester tests.
 
 ```powershell
-cd maester-tests\tests
+cd maester-tests
 ```
 
 ## Step 2: Update the Maester module
