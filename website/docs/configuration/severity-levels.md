@@ -114,7 +114,7 @@ The available severity levels are:
 To find the ID of a test you want to customize:
 
 1. Run `Invoke-Maester` and look at the test output
-2. Check the [Tests Overview](/docs/tests/overview) documentation
+2. Check the [Tests Overview](/docs/tests/) documentation
 3. Look at the test file source code in the Maester repository
 
 ### Defining Severity Levels for Custom Tests
