@@ -42,7 +42,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
         $actionSteps = $_.actionSteps | Sort-Object -Property 'stepNumber' | ForEach-Object {
             $actionLink = ""
             if ($_.actionUrl.url) {
-                $actionLink = " [$($_.actionUrl.displayName)]($($_.actionUrl.url.replace('" \l "','#')))."
+                $actionLink = " [$($_.actionUrl.displayName)]($($_.actionUrl.url.replace('\l','#')))."
             }
             ($_.text.replace("<br>","`n").replace("<br/>","`n").split("`n").trim() -replace "<a.+?href=[`"']([^`"']+)[`"'].+?>([^<]+)<\/a>", '[$2]($1)') + $actionLink
         }
