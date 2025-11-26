@@ -87,6 +87,17 @@ function Get-MtMaesterConfig {
         Write-Verbose "Custom config file found at $customConfigPath. Merging with main config."
         $customConfig = Get-Content -Path $customConfigPath -Raw | ConvertFrom-Json
 
+        # Go through each GlobalSetting in custom and override the main config if it exists, otherwise append
+        foreach ($property in $customConfig.GlobalSettings.PSObject.Properties) {
+            if ($maesterConfig.GlobalSettings.PSObject.Properties.Name -contains $property.Name) {
+                Write-Verbose "Updating GlobalSetting `"$($property.Name)`" from custom config."
+                $maesterConfig.GlobalSettings.$($property.Name) = $property.Value
+            } else {
+                Write-Verbose "Adding GlobalSetting `"$($property.Name)`" from custom config."
+                Add-Member -InputObject $maesterConfig.GlobalSettings -MemberType NoteProperty -Name $property.Name -Value $property.Value
+            }
+        }
+
         # Go through each TestSetting in custom and override the main config if it exists
         foreach ($customSetting in $customConfig.TestSettings) {
             $mainTestSetting = $maesterConfig.TestSettingsHash[$customSetting.Id]
