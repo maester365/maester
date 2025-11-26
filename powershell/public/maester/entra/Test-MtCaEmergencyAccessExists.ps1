@@ -125,35 +125,34 @@ function Test-MtCaEmergencyAccessExists {
                 }
             }
             Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
-            $EmergencyAccessAccountsUserCount = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' } | Measure-Object | Select-Object -ExpandProperty Count
-            $EmergencyAccessAccountsGroupCount = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' } | Measure-Object | Select-Object -ExpandProperty Count
-            if ( $EmergencyAccessAccountsUserCount -gt 0 ) {
-                Write-Verbose "Resolved emergency access user accounts: $EmergencyAccessAccountsUserCount"
-                $policiesWithoutEmergencyUsers = $policies | ForEach-Object {
-                    $CurrentPolicy = $_
-                    $ExcludedKnownUsers = $CurrentPolicy.conditions.users.excludeUsers | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ } | Measure-Object | Select-Object -ExpandProperty Count
-                    if ( $ExcludedKnownUsers -eq $EmergencyAccessAccountsUserCount ) {
-                        $CurrentPolicy
+            $ResolvedEmergencyAccessUsers = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' }
+            $ResolvedEmergencyAccessGroups = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' }
+            $EmergencyAccessAccountsUserCount = @($ResolvedEmergencyAccessUsers).Count
+            $EmergencyAccessAccountsGroupCount = @($ResolvedEmergencyAccessGroups).Count
+
+            # Find policies that are missing ANY of the configured emergency access accounts or groups
+            $policiesWithoutEmergency = $policies | Where-Object {
+                $CurrentPolicy = $_
+                $missingEmergency = $false
+
+                # Check if all configured emergency users are excluded
+                if ($EmergencyAccessAccountsUserCount -gt 0) {
+                    $ExcludedKnownUsers = @($CurrentPolicy.conditions.users.excludeUsers | Where-Object { $_ -in $ResolvedEmergencyAccessUsers.ObjectId }).Count
+                    if ($ExcludedKnownUsers -lt $EmergencyAccessAccountsUserCount) {
+                        $missingEmergency = $true
                     }
                 }
-            } else {
-                $policiesWithoutEmergencyUsers = @()
-            }
 
-            if ( $EmergencyAccessAccountsGroupCount -gt 0 ) {
-                Write-Verbose "Resolved emergency access groups: $EmergencyAccessAccountsGroupCount"
-                $policiesWithoutEmergencyGroups = $policies | ForEach-Object {
-                    $CurrentPolicy = $_
-                    $ExcludedKnownGroups = $CurrentPolicy.conditions.users.excludeGroups | Where-Object { $ResolvedEmergencyAccessAccounts.ObjectId -contains $_ } | Measure-Object | Select-Object -ExpandProperty Count
-                    if ( $ExcludedKnownGroups -eq $EmergencyAccessAccountsGroupCount ) {
-                        $CurrentPolicy
+                # Check if all configured emergency groups are excluded
+                if ($EmergencyAccessAccountsGroupCount -gt 0) {
+                    $ExcludedKnownGroups = @($CurrentPolicy.conditions.users.excludeGroups | Where-Object { $_ -in $ResolvedEmergencyAccessGroups.ObjectId }).Count
+                    if ($ExcludedKnownGroups -lt $EmergencyAccessAccountsGroupCount) {
+                        $missingEmergency = $true
                     }
                 }
-            } else {
-                $policiesWithoutEmergencyGroups = @()
-            }
 
-            $policiesWithoutEmergency = $policiesWithoutEmergencyUsers + $policiesWithoutEmergencyGroups
+                $missingEmergency
+            }
             if ($policiesWithoutEmergency.Count -eq 0) {
                 $result = $true
                 $testResult = "All conditional access policies exclude the configured emergency access accounts or groups:`n`n"
@@ -175,7 +174,7 @@ function Test-MtCaEmergencyAccessExists {
                         $testResult += "* $typeLabel`: $($_.ObjectId)`n"
                     }
                 }
-                $testResult += "`n`nThese conditional access policies don't have the configured emergency access accounts or groups excluded:`n`n%TestResult%"
+                $testResult += "`n`nThese conditional access policies don't have the configured emergency access accounts and groups excluded:`n`n%TestResult%"
                 Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess -Result $testResult
                 return $result
             }
