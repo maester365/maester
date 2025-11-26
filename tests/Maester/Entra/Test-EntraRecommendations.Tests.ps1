@@ -11,7 +11,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -
 
     # Define the test name and Id for each Entra recommendation.
     $RecommendationId = $_.id
-    It "MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $recommendationType {
+    It "MT.1024.$($RecommendationId -replace '^[^_]+_', ''): $($_.displayName). See https://maester.dev/docs/tests/MT.1024" -Tag "MT.1024", $_.recommendationType {
 
         $EntraPremiumRecommendations = @(
             "insiderRiskPolicy",
