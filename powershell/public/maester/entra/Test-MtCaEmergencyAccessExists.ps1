@@ -164,6 +164,8 @@ function Test-MtCaEmergencyAccessExists {
                         $testResult += "* $typeLabel`: $($_.ObjectId)`n"
                     }
                 }
+                Add-MtTestResultDetail -Result $testResult
+                return $result
             } else {
                 $testResult = "Configured emergency access accounts or groups:`n`n"
                 $ResolvedEmergencyAccessAccounts | ForEach-Object {
