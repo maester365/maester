@@ -13,14 +13,15 @@ export default function MtSeverityChart(props) {
         High: { Passed: 0, Failed: 0 },
         Medium: { Passed: 0, Failed: 0 },
         Low: { Passed: 0, Failed: 0 },
-        Informational: { Passed: 0, Failed: 0 },
+        Info: { Passed: 0, Failed: 0 },
     };
 
     tests.forEach(test => {
-        const severity = test.Severity;
+        let severity = test.Severity;
         const result = test.Result;
 
         if (!severity || severity === "Unknown") return;
+        if (severity === "Informational") severity = "Info";
 
         if (result === "Passed" || result === "Failed") {
             if (!severityCounts[severity]) {
@@ -34,12 +35,17 @@ export default function MtSeverityChart(props) {
         name: severity,
         Passed: severityCounts[severity].Passed,
         Failed: severityCounts[severity].Failed
-    })).filter(item => item.Passed > 0 || item.Failed > 0);
+    }));
 
     // Sort by severity level
-    const severityOrder = ["Critical", "High", "Medium", "Low", "Informational"];
+    const severityOrder = ["Critical", "High", "Medium", "Low", "Info"];
     data.sort((a, b) => {
-        return severityOrder.indexOf(a.name) - severityOrder.indexOf(b.name);
+        const aIndex = severityOrder.indexOf(a.name);
+        const bIndex = severityOrder.indexOf(b.name);
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
     });
 
     const categories = [];
@@ -52,6 +58,8 @@ export default function MtSeverityChart(props) {
         categories.push("Failed");
         colors.push("rose");
     }
+
+    const maxValue = Math.max(...data.map(item => item.Passed + item.Failed));
 
     return (
         <Card>
@@ -74,6 +82,7 @@ export default function MtSeverityChart(props) {
                 stack={true}
                 showAnimation={true}
                 showLegend={false}
+                maxValue={maxValue}
             />
         </Card>
     );
