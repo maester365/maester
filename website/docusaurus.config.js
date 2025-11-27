@@ -64,6 +64,20 @@ const config = {
         docs: {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
+          versions: {
+            current: {
+              label: 'Preview',
+              banner: 'unreleased',
+              badge: true,
+            },
+            '1.3.0': {
+              label: '1.3.0',
+            },
+            // Example of unmaintained / deprecated versions.
+            //'1.2.0': {
+            //  banner: 'unmaintained',
+            //}
+          },
         },
         blog: {
           blogSidebarTitle: 'All posts',
