@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply bg-white dark:bg-[#09090b] text-slate-900 dark:text-zinc-50;
+  }
+}
+
 code {
     white-space : pre-wrap !important;
   }

@@ -228,10 +228,10 @@ export default function TestResultsTable(props) {
             const hasNext = index < filteredSortedData.length - 1;
 
             return (<TableRow key={item.Index}>
-              <TableCell className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap max-w-[12rem]">
+              <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
                 <button
                   onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate w-full"
+                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-zinc-700 dark:hover:text-zinc-100 truncate w-full"
                 >
                   <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
                 </button>
@@ -239,7 +239,7 @@ export default function TestResultsTable(props) {
               <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
                 <button
                   onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm bg-transparent hover:text-blue-600 transition-colors"
+                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                 </button>
