@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import TestResultsTable from './components/TestResultsTable';
 import { Flex, Divider, Grid, Text, Badge, BadgeDelta, Button } from "@tremor/react";
 import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
-import { PrinterIcon } from "@heroicons/react/24/outline";
+import { PrinterIcon, CodeBracketIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
 import logo from './assets/maester.png';
@@ -12,6 +12,7 @@ import MtSeverityChart from "./components/MtSeverityChart";
 import MtTestSummary from "./components/MtTestSummary";
 import MtBlocksArea from './components/MtBlocksArea';
 import PrintableView from './components/PrintableView';
+import MarkdownView from './components/MarkdownView';
 
 /*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
@@ -214,11 +215,16 @@ const testResults = {
 
 function App() {
   const [isPrintView, setIsPrintView] = useState(false);
+  const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'print') {
       setIsPrintView(true);
+    }
+    if (params.get('view') === 'markdown') {
+      setIsMarkdownView(true);
     }
   }, []);
 
@@ -226,6 +232,14 @@ function App() {
     return (
       <ThemeProvider attribute="class">
         <PrintableView testResults={testResults} />
+      </ThemeProvider>
+    );
+  }
+
+  if (isMarkdownView) {
+    return (
+      <ThemeProvider attribute="class">
+        <MarkdownView testResults={testResults} />
       </ThemeProvider>
     );
   }
@@ -247,15 +261,47 @@ function App() {
             <img src={logo} className="h-10 w-10 mr-1" alt="Maester logo" />
             <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
           </div>
-          <Button
-            icon={PrinterIcon}
-            variant="secondary"
-            color="gray"
-            onClick={() => window.open(window.location.href.split('?')[0] + '?view=print', '_blank')}
-            tooltip="Printable View"
-          >
-            Print
-          </Button>
+          <div className="relative">
+            <Button
+              variant="secondary"
+              color="gray"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center gap-1 px-2"
+            >
+              <PrinterIcon className="h-5 w-5" />
+              <ChevronDownIcon className="h-4 w-4" />
+            </Button>
+
+            {isMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}></div>
+                <div className="absolute right-0 mt-2 w-48 origin-top-right bg-tremor-background dark:bg-dark-tremor-background border border-tremor-border dark:border-dark-tremor-border rounded-tremor-default shadow-tremor-dropdown dark:shadow-dark-tremor-dropdown z-20 overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="p-1">
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=print', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <PrinterIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Print View
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=markdown', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <CodeBracketIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Markdown View
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
         <Flex>
           <Badge className="bg-orange-500 bg-opacity-10 text-orange-600 dark:bg-opacity-60" icon={BuildingOfficeIcon}>{getTenantName()}</Badge>
