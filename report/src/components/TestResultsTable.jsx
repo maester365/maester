@@ -228,12 +228,12 @@ export default function TestResultsTable(props) {
             const hasNext = index < filteredSortedData.length - 1;
 
             return (<TableRow key={item.Index}>
-              <TableCell className="font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              <TableCell className="text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap max-w-[12rem]">
                 <button
                   onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate"
+                  className="text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate w-full"
                 >
-                  <span className="truncate whitespace-normal tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
+                  <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
                 </button>
               </TableCell>
               <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
