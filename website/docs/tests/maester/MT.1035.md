@@ -17,6 +17,6 @@ Modify group membership outside of Conditional Access Administrator or other pri
 Assign security groups to Restricted Management Administrative Unit (RMAU).
 
 ## Learn more
-  - [Microsoft Learn | Restricted management administrative units in Microsoft Entra ID (Preview)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)
+  - [Microsoft Learn | Restricted management administrative units in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)
   - [janbakker.tech | Prevent Conditional Access bypass with Restricted Management Administrative Units in Entra ID](https://janbakker.tech/prevent-conditional-access-bypass-with-restricted-management-administrative-units-in-entra-id/)
   - [Cloud-Architekt.net | Protection of privileged users and groups by Azure AD Restricted Management Administrative Units](https://www.cloud-architekt.net/restricted-management-administrative-unit/)
