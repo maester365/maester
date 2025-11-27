@@ -231,7 +231,7 @@ export default function TestResultsTable(props) {
               <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
                 <button
                   onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-zinc-700 dark:hover:text-zinc-100 truncate w-full"
+                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full"
                 >
                   <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
                 </button>
