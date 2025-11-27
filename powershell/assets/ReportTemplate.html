@@ -49527,12 +49527,12 @@ function TestResultsTable(props) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(i$3, { children: filteredSortedData.map((item, index2) => {
         index2 < filteredSortedData.length - 1;
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(m$5, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "font-mono text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "text-xs text-gray-600 dark:text-gray-400 whitespace-nowrap max-w-[12rem]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               onClick: () => setSelectedItem(item),
-              className: "text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate",
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate whitespace-normal tremor-Button-text text-tremor-default", children: item.Id || item.Name })
+              className: "text-left tremor-Button-root font-medium outline-none text-sm text-gray-500 bg-transparent hover:text-gray-700 truncate w-full",
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "truncate tremor-Button-text text-tremor-default", children: item.Id || item.Name })
             }
           ) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(m$7, { className: "whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -64639,6 +64639,9 @@ video {
 .max-w-\[100px\] {
   max-width: 100px;
 }
+.max-w-\[12rem\] {
+  max-width: 12rem;
+}
 .max-w-fit {
   max-width: -moz-fit-content;
   max-width: fit-content;
@@ -68760,9 +68763,6 @@ video {
 }
 .align-middle {
   vertical-align: middle;
-}
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 .\!text-tremor-label {
   font-size: 0.75rem !important;
