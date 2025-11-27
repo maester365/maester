@@ -1,0 +1,34 @@
+---
+title: %CheckId% - %ControlName% - %DisplayName%
+slug: /tests/%CheckId%
+sidebar_class_name: hidden
+---
+
+# %ControlName% - %DisplayName%
+
+%ControlItemDescription%
+
+| | |
+|-|-|
+| **Name** | %Name% |
+| **Control** | %ControlName% |
+| **Description** | %Description% |
+| **Severity** | %Severity% |
+
+## How to fix
+
+%howtofix%
+
+### Details of configuration item
+| | |
+|-|-|
+| **Recommendation** | %Recommendation% |
+| **Configuration** | %RelativeUri% |
+| **Setting** | `%CurrentValue%` |
+| **Recommended Value** | %RecommendedValueMarkdown% |
+| **Default Value** | %DefaultValue% |
+| **Graph API Docs** | %GraphDocsUrl% |
+| **Graph Explorer** | %GraphExplorerUrl% |
+%PortalDeepLink%
+
+%MitreDiagram%

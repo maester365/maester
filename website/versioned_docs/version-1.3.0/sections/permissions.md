@@ -1,0 +1,13 @@
+- **DeviceManagementConfiguration.Read.All**
+- **DeviceManagementManagedDevices.Read.All**
+- **Directory.Read.All**
+- **DirectoryRecommendations.Read.All**
+- **IdentityRiskEvent.Read.All**
+- **Policy.Read.All**
+- **Policy.Read.ConditionalAccess**
+- **PrivilegedAccess.Read.AzureAD**
+- **Reports.Read.All**
+- **RoleEligibilitySchedule.Read.Directory**
+- **RoleManagement.Read.All**
+- **SharePointTenantSettings.Read.All**
+- **UserAuthenticationMethod.Read.All**
