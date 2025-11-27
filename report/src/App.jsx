@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import TestResultsTable from './components/TestResultsTable';
 import { Flex, Divider, Grid, Text, Badge, BadgeDelta, Button } from "@tremor/react";
 import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
-import { PrinterIcon, CodeBracketIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { PrinterIcon, CodeBracketIcon, ShareIcon } from "@heroicons/react/24/outline";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
 import logo from './assets/maester.png';
@@ -262,17 +262,14 @@ function App() {
             <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
           </div>
           <div className="relative">
-            <Button
-              variant="secondary"
+            <Button 
+              variant="secondary" 
               color="gray"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center gap-1 px-2"
+              className="flex items-center px-2"
             >
-              <PrinterIcon className="h-5 w-5" />
-              <ChevronDownIcon className="h-4 w-4" />
-            </Button>
-
-            {isMenuOpen && (
+              <ShareIcon className="h-5 w-5" />
+            </Button>            {isMenuOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}></div>
                 <div className="absolute right-0 mt-2 w-48 origin-top-right bg-tremor-background dark:bg-dark-tremor-background border border-tremor-border dark:border-dark-tremor-border rounded-tremor-default shadow-tremor-dropdown dark:shadow-dark-tremor-dropdown z-20 overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
