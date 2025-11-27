@@ -59,7 +59,7 @@ export default function MtSeverityChart(props) {
         colors.push("rose");
     }
 
-    const maxValue = Math.max(...data.map(item => item.Passed + item.Failed));
+    const maxValue = Math.max(...data.map(item => Math.max(item.Passed, item.Failed)));
 
     return (
         <Card>
@@ -79,7 +79,7 @@ export default function MtSeverityChart(props) {
                 categories={categories}
                 colors={colors}
                 yAxisWidth={48}
-                stack={true}
+                stack={false}
                 showAnimation={true}
                 showLegend={false}
                 maxValue={maxValue}
