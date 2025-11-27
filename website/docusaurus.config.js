@@ -96,6 +96,11 @@ const config = {
         },
         items: [
           {
+            type: 'docsVersionDropdown',
+            position: 'left',
+            dropdownActiveClassDisabled: true, // Recommended for clear separation.
+          },
+          {
             type: "docSidebar",
             sidebarId: "siteSidebar",
             position: "left",
