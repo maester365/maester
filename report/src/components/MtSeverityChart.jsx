@@ -1,9 +1,11 @@
 "use client";
-import React from "react";
-import { Card, Title, BarChart } from "@tremor/react";
+import React, { useState } from "react";
+import { Card, Title, BarChart, Switch, Flex, Text } from "@tremor/react";
 
 export default function MtSeverityChart(props) {
     const tests = props.Tests || [];
+    const [showPassed, setShowPassed] = useState(true);
+    const [showFailed, setShowFailed] = useState(true);
 
     // Initialize counts
     const severityCounts = {
@@ -40,15 +42,34 @@ export default function MtSeverityChart(props) {
         return severityOrder.indexOf(a.name) - severityOrder.indexOf(b.name);
     });
 
+    const categories = [];
+    const colors = [];
+    if (showPassed) {
+        categories.push("Passed");
+        colors.push("emerald");
+    }
+    if (showFailed) {
+        categories.push("Failed");
+        colors.push("rose");
+    }
+
     return (
         <Card>
-            <Title>By severity</Title>
+            <Flex alignItems="center" justifyContent="between">
+                <Title className="whitespace-nowrap">By severity</Title>
+                {!props.hideControls && (
+                    <Flex justifyContent="end" className="space-x-4">
+                        <Switch checked={showPassed} onChange={setShowPassed} color="emerald" />
+                        <Switch checked={showFailed} onChange={setShowFailed} color="rose" />
+                    </Flex>
+                )}
+            </Flex>
             <BarChart
                 className="mt-4 h-40"
                 data={data}
                 index="name"
-                categories={["Passed", "Failed"]}
-                colors={["emerald", "rose"]}
+                categories={categories}
+                colors={colors}
                 yAxisWidth={48}
                 stack={true}
                 showAnimation={true}

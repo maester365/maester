@@ -3,6 +3,7 @@ import { Flex, Divider, Grid, Text, Badge } from "@tremor/react";
 import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
 import logo from '../assets/maester.png';
 import MtDonutChart from "./MtDonutChart";
+import MtSeverityChart from "./MtSeverityChart";
 import MtTestSummary from "./MtTestSummary";
 import MtBlocksArea from './MtBlocksArea';
 import TestResultsTable from './TestResultsTable';
@@ -38,12 +39,13 @@ export default function PrintableView({ testResults }) {
         NotRunCount={testResults.NotRunCount}
         ErrorCount={testResults.ErrorCount}
         Result={testResults.Result} />
-      <Grid numItemsSm={1} numItemsLg={2} className="gap-6 mb-12 h-50">
+      <Grid numItemsSm={1} numItemsLg={3} className="gap-6 mb-12 h-50">
         <MtDonutChart
           TotalCount={DonutTotalCount}
           PassedCount={testResults.PassedCount}
           FailedCount={testResults.FailedCount}
           Result={testResults.Result} />
+        <MtSeverityChart Tests={testResults.Tests} hideControls={true} />
         <MtBlocksArea Blocks={testResults.Blocks} />
       </Grid>
 

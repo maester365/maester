@@ -8,6 +8,7 @@ import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
 import logo from './assets/maester.png';
 import MtDonutChart from "./components/MtDonutChart";
+import MtSeverityChart from "./components/MtSeverityChart";
 import MtTestSummary from "./components/MtTestSummary";
 import MtBlocksArea from './components/MtBlocksArea';
 import PrintableView from './components/PrintableView';
@@ -18,8 +19,6 @@ const testResults = {
   "FailedCount": 2,
   "PassedCount": 0,
   "SkippedCount": 0,
-  "ErrorCount": 0,
-  "NotRunCount": 0,
   "TotalCount": 2,
   "ExecutedAt": "2025-05-12T18:33:09.425618+10:00",
   "TotalDuration": "00:00:00",
@@ -272,12 +271,13 @@ function App() {
           NotRunCount={testResults.NotRunCount}
           ErrorCount={testResults.ErrorCount}
           Result={testResults.Result} />
-        <Grid numItemsSm={1} numItemsLg={2} className="gap-6 mb-12 h-50">
+        <Grid numItemsSm={1} numItemsLg={3} className="gap-6 mb-12 h-50">
           <MtDonutChart
             TotalCount={DonutTotalCount}
             PassedCount={testResults.PassedCount}
             FailedCount={testResults.FailedCount}
             Result={testResults.Result} />
+          <MtSeverityChart Tests={testResults.Tests} />
           <MtBlocksArea Blocks={testResults.Blocks} />
 
         </Grid>
