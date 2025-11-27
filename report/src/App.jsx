@@ -18,6 +18,8 @@ const testResults = {
   "FailedCount": 2,
   "PassedCount": 0,
   "SkippedCount": 0,
+  "ErrorCount": 0,
+  "NotRunCount": 0,
   "TotalCount": 2,
   "ExecutedAt": "2025-05-12T18:33:09.425618+10:00",
   "TotalDuration": "00:00:00",
@@ -229,7 +231,7 @@ function App() {
     );
   }
 
-  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'long' });
+  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
   function getTenantName() {
     if (testResults.TenantName == "") return "Tenant ID: " + testResults.TenantId;

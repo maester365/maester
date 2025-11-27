@@ -9,7 +9,7 @@ import TestResultsTable from './TestResultsTable';
 import ResultInfo from './ResultInfo';
 
 export default function PrintableView({ testResults }) {
-  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'long' });
+  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
   function getTenantName() {
     if (testResults.TenantName == "") return "Tenant ID: " + testResults.TenantId;

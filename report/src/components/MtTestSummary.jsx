@@ -11,15 +11,28 @@ export default function MtTestSummary(props) {
     const pctNotRun = getPercentage(props.NotRunCount);
     const pctError = getPercentage(props.ErrorCount);
 
-    const testSummary = [pctPassed, pctFailed, pctSkipped, pctNotRun, pctError];
+    const testSummary = [
+        props.PassedCount || 0,
+        props.FailedCount || 0,
+        props.SkippedCount || 0,
+        props.NotRunCount || 0,
+        props.ErrorCount || 0
+    ];
     const testSummaryColors = ["emerald", "rose", "yellow", "gray", "orange"];
 
     function getPercentage(count) {
-        return Math.round((count / props.TotalCount) * 100);
+        const total = props.TotalCount || 0;
+        if (total === 0) return 0;
+        return Math.round(((count || 0) / total) * 100);
     }
 
+    let visibleCards = 3;
+    if (props.SkippedCount > 0) visibleCards++;
+    if (props.NotRunCount > 0) visibleCards++;
+    if (props.ErrorCount > 0) visibleCards++;
+
     return (
-        <Grid numItemsSm={2} numItemsLg={6} className="gap-6 mb-6">
+        <Grid numItemsSm={2} numItemsLg={visibleCards} className="gap-6 mb-6">
             <Card>
                 <Flex alignItems="start">
                     <Text>Total tests</Text>
@@ -67,16 +80,18 @@ export default function MtTestSummary(props) {
                     <ProgressBar value={pctSkipped} color="yellow" className="mt-3" showAnimation={true} />
                 </Card>
             )}
-            <Card>
-                <Flex alignItems="start">
-                    <Text>Not tested</Text>
-                    <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
-                </Flex>
-                <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                    <Metric>{props.NotRunCount}</Metric>
-                </Flex>
-                <ProgressBar value={pctNotRun} color="gray" className="mt-3" showAnimation={true} />
-            </Card>
+            {props.NotRunCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Not tested</Text>
+                        <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.NotRunCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctNotRun} color="gray" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
             {props.ErrorCount > 0 && (
                 <Card>
                     <Flex alignItems="start">
