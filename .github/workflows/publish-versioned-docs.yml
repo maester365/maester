@@ -1,0 +1,55 @@
+# This workflow creates a new version of the Docusaurus documentation when a new GitHub Release is published.
+name: Publish Versioned Docs
+
+on:
+  # This workflow triggers whenever a new release is published in GitHub
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: docs-versioning-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  version_docs:
+    # This job only runs if a release was successfully published
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6
+        # Important: Fetch all history, as the versioning command often needs it.
+        with:
+          fetch-depth: 0
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      # Get the tag name (e.g., 'v1.2.3') from the GitHub Release event
+      - name: Extract Version Tag
+        id: tag_version
+        run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
+        # The 'sed' command removes a leading 'v' if your tag is like 'v1.2.3'
+
+      - name: 💾 Create Docusaurus Document Version
+        run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
+
+      - name: 🚀 Push Version Changes to GitHub
+        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 #v5
+        with:
+          commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
+          # Use the GITHUB_TOKEN to commit the new files (versioned_docs/ and versions.json)
+          commit_user_email: 41898282+github-actions[at]users.noreply.github.com
+          commit_user_name: github-actions[bot]
