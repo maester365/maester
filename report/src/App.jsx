@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import TestResultsTable from './components/TestResultsTable';
 import { Flex, Divider, Grid, Text, Badge, BadgeDelta, Button } from "@tremor/react";
 import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
-import { PrinterIcon, CodeBracketIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { PrinterIcon, CodeBracketIcon, ShareIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
 import logo from './assets/maester.png';
@@ -13,6 +13,7 @@ import MtTestSummary from "./components/MtTestSummary";
 import MtBlocksArea from './components/MtBlocksArea';
 import PrintableView from './components/PrintableView';
 import MarkdownView from './components/MarkdownView';
+import ExcelView from './components/ExcelView';
 
 /*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
@@ -216,6 +217,7 @@ const testResults = {
 function App() {
   const [isPrintView, setIsPrintView] = useState(false);
   const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [isExcelView, setIsExcelView] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -225,6 +227,9 @@ function App() {
     }
     if (params.get('view') === 'markdown') {
       setIsMarkdownView(true);
+    }
+    if (params.get('view') === 'excel') {
+      setIsExcelView(true);
     }
   }, []);
 
@@ -240,6 +245,14 @@ function App() {
     return (
       <ThemeProvider attribute="class">
         <MarkdownView testResults={testResults} />
+      </ThemeProvider>
+    );
+  }
+
+  if (isExcelView) {
+    return (
+      <ThemeProvider attribute="class">
+        <ExcelView testResults={testResults} />
       </ThemeProvider>
     );
   }
@@ -262,8 +275,8 @@ function App() {
             <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
           </div>
           <div className="relative">
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               color="gray"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center px-2"
@@ -282,7 +295,7 @@ function App() {
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
                     >
                       <PrinterIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
-                      Print View
+                      Print
                     </button>
                     <button
                       onClick={() => {
@@ -292,7 +305,17 @@ function App() {
                       className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
                     >
                       <CodeBracketIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
-                      Markdown View
+                      Markdown
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=excel', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <TableCellsIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Excel
                     </button>
                   </div>
                 </div>

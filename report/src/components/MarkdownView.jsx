@@ -64,7 +64,7 @@ export default function MarkdownView({ testResults }) {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Markdown View</h1>
+        <h1 className="text-3xl font-bold">Markdown</h1>
         <Button icon={ClipboardDocumentIcon} onClick={copyToClipboard}>
           Copy Markdown
         </Button>
