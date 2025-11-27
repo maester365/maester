@@ -124,7 +124,7 @@ export default function TestResultsTable(props) {
 
   const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
-  const status = ['Passed', 'Failed', 'NotRun', 'Skipped', 'Error'];
+  const status = ['Passed', 'Failed', 'Skipped', 'NotRun', 'Error'];
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
 
