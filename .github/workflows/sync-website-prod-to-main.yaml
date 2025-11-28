@@ -1,0 +1,66 @@
+# This workflow creates a PR to merge website-prod changes back to main
+# when a PR is merged into the website-prod branch.
+# This ensures that urgent documentation fixes made to production are not lost.
+
+name: sync-website-prod-to-main
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - website-prod
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-sync-pr:
+    # Only run if the PR was merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Create PR to merge website-prod into main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Fetch all branches
+          git fetch origin main
+          git fetch origin website-prod
+
+          # Check if there are differences between website-prod and main
+          if git diff --quiet origin/main origin/website-prod; then
+            echo "No differences between website-prod and main. Skipping PR creation."
+            exit 0
+          fi
+
+          # Check if a PR already exists
+          EXISTING_PR=$(gh pr list --base main --head website-prod --state open --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists to merge website-prod into main."
+            exit 0
+          fi
+
+          # Create a new PR
+          gh pr create \
+            --base main \
+            --head website-prod \
+            --title "Sync website-prod changes to main" \
+            --body "This PR was automatically created to sync changes from \`website-prod\` back to \`main\`.
+
+          **Triggered by:** PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}
+
+          Please review and merge to ensure the main branch stays in sync with production website changes.
+
+          ---
+          *This PR was created automatically by the sync-website-prod-to-main workflow.*"
