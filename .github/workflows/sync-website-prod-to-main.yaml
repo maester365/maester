@@ -1,6 +1,6 @@
 # This workflow creates a PR to merge website-prod changes back to main
 # when a PR is merged into the website-prod branch.
-# This ensures that urgent documentation fixes made to production are not lost.
+# This ensures that urgent documentation fixes made to production are not lost
 
 name: sync-website-prod-to-main
 
