@@ -1,5 +1,5 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.17.2", "CISA.MS.EXO.17.2", "CISA", "Security", "All" {
-    It "CISA.MS.EXO.17.2: Microsoft Purview Audit (Premium) logging SHALL be enabled." {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.17.2", "CISA.MS.EXO.17.2", "CISA", "Security" {
+    It "CISA.MS.EXO.17.2: Microsoft Purview Audit (Premium) logging SHALL be enabled." -Tag "Deprecated" {
 
         $result = Test-MtCisaAuditLogPremium
 

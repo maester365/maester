@@ -18,13 +18,13 @@ function Test-MtCisaSafeLinkClickTracking {
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection ExchangeOnline)){
+    if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null
-    }elseif(!(Test-MtConnection SecurityCompliance)){
+    } elseif (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
-    }elseif("P1" -notin (Get-MtLicenseInformation -Product MdoV2)){
+    } elseif ('P1' -notin (Get-MtLicenseInformation -Product MdoV2)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdoP1
         return $null
     }
@@ -32,22 +32,22 @@ function Test-MtCisaSafeLinkClickTracking {
     $policies = Get-MtExo -Request SafeLinksPolicy
 
     $resultPolicies = $policies | Where-Object { `
-        $_.TrackClicks
+            $_.TrackClicks
     }
 
     $standard = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Standard"
+            $_.RecommendedPolicyType -eq 'Standard'
     }
 
     $strict = $policies | Where-Object { `
-        $_.RecommendedPolicyType -eq "Strict"
+            $_.RecommendedPolicyType -eq 'Strict'
     }
 
-    $testResult = $standard -and $strict -and (($resultPolicies|Measure-Object).Count -ge 1)
+    $testResult = $standard -and $strict -and (($resultPolicies | Measure-Object).Count -ge 1)
 
-    $portalLink = "https://security.microsoft.com/presetSecurityPolicies"
-    $passResult = "✅ Pass"
-    $failResult = "❌ Fail"
+    $portalLink = 'https://security.microsoft.com/presetSecurityPolicies'
+    $passResult = '✅ Pass'
+    $failResult = '❌ Fail'
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has [standard and strict preset security policies]($portalLink).`n`n%TestResult%"
@@ -70,15 +70,15 @@ function Test-MtCisaSafeLinkClickTracking {
 
     $result += "| Policy Name | Policy Result |`n"
     $result += "| --- | --- |`n"
-    foreach($item in $policies | Sort-Object -Property Identity){
-        if($item.Guid -in $resultPolicies.Guid){
+    foreach ($item in $policies | Sort-Object -Property Identity) {
+        if ($item.Guid -in $resultPolicies.Guid) {
             $result += "| $($item.Identity) | $passResult |`n"
-        }else{
+        } else {
             $result += "| $($item.Identity) | $failResult |`n"
         }
     }
 
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
 

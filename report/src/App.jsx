@@ -1,16 +1,21 @@
 import './App.css'
+import { useState, useEffect } from 'react';
 import TestResultsTable from './components/TestResultsTable';
-import { Flex, Divider, Grid, Text, Badge, BadgeDelta } from "@tremor/react";
+import { Flex, Divider, Grid, Text, Badge, BadgeDelta, Button } from "@tremor/react";
 import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
-import { utcToZonedTime } from 'date-fns-tz'
+import { PrinterIcon, CodeBracketIcon, ShareIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
 import logo from './assets/maester.png';
 import MtDonutChart from "./components/MtDonutChart";
+import MtSeverityChart from "./components/MtSeverityChart";
 import MtTestSummary from "./components/MtTestSummary";
 import MtBlocksArea from './components/MtBlocksArea';
+import PrintableView from './components/PrintableView';
+import MarkdownView from './components/MarkdownView';
+import ExcelView from './components/ExcelView';
 
-/*The sample data will be replaced by the New-MtReport when it runs the generation.*/
+/*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
   "Result": "Failed",
   "FailedCount": 2,
@@ -38,7 +43,6 @@ const testResults = {
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1053"
       ],
       "Result": "Failed",
@@ -119,7 +123,6 @@ const testResults = {
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1054"
       ],
       "Result": "Failed",
@@ -202,34 +205,123 @@ const testResults = {
       "TotalCount": 2,
       "Tag": [
         "Maester",
-        "Intune",
-        "All"
+        "Intune"
       ]
     }
   ]
 };
 
 /* Note: DO NOT place any code between the line 'const testResults = {' and 'function App'.
-    They will be stripped away new New-MtReport cmdlet generates the user's content */
+    They will be stripped away when Get-MtHtmlReport cmdlet generates the user's content */
 
 function App() {
+  const [isPrintView, setIsPrintView] = useState(false);
+  const [isMarkdownView, setIsMarkdownView] = useState(false);
+  const [isExcelView, setIsExcelView] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const testDateLocal = utcToZonedTime(testResults.ExecutedAt, Intl.DateTimeFormat().resolvedOptions().timeZone).toLocaleString();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'print') {
+      setIsPrintView(true);
+    }
+    if (params.get('view') === 'markdown') {
+      setIsMarkdownView(true);
+    }
+    if (params.get('view') === 'excel') {
+      setIsExcelView(true);
+    }
+  }, []);
+
+  if (isPrintView) {
+    return (
+      <ThemeProvider attribute="class">
+        <PrintableView testResults={testResults} />
+      </ThemeProvider>
+    );
+  }
+
+  if (isMarkdownView) {
+    return (
+      <ThemeProvider attribute="class">
+        <MarkdownView testResults={testResults} />
+      </ThemeProvider>
+    );
+  }
+
+  if (isExcelView) {
+    return (
+      <ThemeProvider attribute="class">
+        <ExcelView testResults={testResults} />
+      </ThemeProvider>
+    );
+  }
+
+  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
   function getTenantName() {
     if (testResults.TenantName == "") return "Tenant ID: " + testResults.TenantId;
     return testResults.TenantName + " (" + testResults.TenantId + ")";
   }
 
-  const NotRunCount = testResults.TotalCount - (testResults.PassedCount + testResults.FailedCount);
   const DonutTotalCount = testResults.PassedCount + testResults.FailedCount; //Don't count skipped tests
   return (
 
     <ThemeProvider attribute="class" >
       <div className="text-left">
-        <div className="flex mb-6">
-          <img src={logo} className="h-10 w-10 mr-1" alt="Maester logo" />
-          <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
+        <div className="flex mb-6 justify-between items-end">
+          <div className="flex">
+            <img src={logo} className="h-10 w-10 mr-1" alt="Maester logo" />
+            <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
+          </div>
+          <div className="relative">
+            <Button
+              variant="secondary"
+              color="gray"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="flex items-center px-2"
+            >
+              <ShareIcon className="h-5 w-5" />
+            </Button>            {isMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}></div>
+                <div className="absolute right-0 mt-2 w-48 origin-top-right bg-tremor-background dark:bg-dark-tremor-background border border-tremor-border dark:border-dark-tremor-border rounded-tremor-default shadow-tremor-dropdown dark:shadow-dark-tremor-dropdown z-20 overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="p-1">
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=print', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <PrinterIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Print
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=markdown', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <CodeBracketIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Markdown
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(window.location.href.split('?')[0] + '?view=excel', '_blank');
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
+                    >
+                      <TableCellsIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
+                      Excel
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
         <Flex>
           <Badge className="bg-orange-500 bg-opacity-10 text-orange-600 dark:bg-opacity-60" icon={BuildingOfficeIcon}>{getTenantName()}</Badge>
@@ -241,14 +333,17 @@ function App() {
           TotalCount={testResults.TotalCount}
           PassedCount={testResults.PassedCount}
           FailedCount={testResults.FailedCount}
-          SkippedCount={NotRunCount}
+          SkippedCount={testResults.SkippedCount}
+          NotRunCount={testResults.NotRunCount}
+          ErrorCount={testResults.ErrorCount}
           Result={testResults.Result} />
-        <Grid numItemsSm={1} numItemsLg={2} className="gap-6 mb-12 h-50">
+        <Grid numItemsSm={1} numItemsLg={3} className="gap-6 mb-12 h-50">
           <MtDonutChart
             TotalCount={DonutTotalCount}
             PassedCount={testResults.PassedCount}
             FailedCount={testResults.FailedCount}
             Result={testResults.Result} />
+          <MtSeverityChart Tests={testResults.Tests} />
           <MtBlocksArea Blocks={testResults.Blocks} />
 
         </Grid>

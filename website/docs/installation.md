@@ -29,11 +29,12 @@ To learn more about the `Invoke-Maester` cmdlet including how to filter tests, a
 
 Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
 
-### Installing Azure and Exchange Online modules
+### Installing Azure, Exchange Online and Teams modules
 
 ```powershell
 Install-Module Az.Accounts -Scope CurrentUser
 Install-Module ExchangeOnlineManagement -Scope CurrentUser
+Install-Module MicrosoftTeams -Scope CurrentUser
 ```
 
 > The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
@@ -63,7 +64,8 @@ Exchange Online implements a [role-based access control model](https://learn.mic
   - [Set up Maester on GitHub](/docs/monitoring/github)
   - [Set up Maester on Azure DevOps](/docs/monitoring/azure-devops)
   - [Set up Maester on Azure Container App Jobs](/docs/monitoring/azure-container-app-job)
-  - [Set up Maester email alerts](/docs/monitoring/email)
-  - [Set up Maester Teams alerts](/docs/monitoring/teams)
-  - [Set up Maester Slack alerts](/docs/monitoring/slack)
+- Alerting with Maester
+  - [Set up Maester email alerts](/docs/alerts/email)
+  - [Set up Maester Teams alerts](/docs/alerts/teams)
+  - [Set up Maester Slack alerts](/docs/alerts/slack)
 - [Writing Custom Tests](/docs/writing-tests)

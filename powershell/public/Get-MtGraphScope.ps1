@@ -60,16 +60,19 @@ function Get-MtGraphScope {
         'Policy.Read.ConditionalAccess'
         'PrivilegedAccess.Read.AzureAD'
         'Reports.Read.All'
-        'RoleEligibilitySchedule.Read.Directory'
+        'ReportSettings.Read.All'
         'RoleManagement.Read.All'
+        'SecurityIdentitiesSensors.Read.All'
+        'SecurityIdentitiesHealth.Read.All'
         'SharePointTenantSettings.Read.All'
+        'ThreatHunting.Read.All'
         'UserAuthenticationMethod.Read.All'
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
     # /maester/website/docs/sections/privilegedPermissions.md
     $privilegedScopes = @(
-        'RoleEligibilitySchedule.ReadWrite.Directory' #Ref https://github.com/maester365/maester/issues/195#issuecomment-2170879665
+        'ReportSettings.ReadWrite.All'
     )
 
     if ($Privileged) {

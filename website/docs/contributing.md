@@ -52,15 +52,34 @@ We have the following [test](https://github.com/maester365/maester/tree/main/tes
 
 When contributing tests, please ensure the following:
 
-- [x] The test is not already covered by an existing test
-- [x] The test has a unique tag so it can be run independently (e.g. `Invoke-Maester -Tag MS.AAD.5.1`). See [#️⃣ Pick next Maester test sequence number](https://github.com/maester365/maester/issues/697) on how to reserve a unique tag for your new test.
-- [x] The Pester file `Test-Mt<Name of test>.Tests.ps1` is easy to understand.
+#### Before writing the test
+
+- [x] Check if your new idea is not already covered by an existing test (you can also jump on the [Maester Discord](https://discord.entra.news) to discuss)
+- [x] Reserve a unique id for your test (e.g. `Invoke-Maester -Tag MS.AAD.5.1`). See [#️⃣ Pick next Maester test sequence number](https://github.com/maester365/maester/issues/697) on how to reserve a unique id for your new test.
+- [x] Decide if the test should go into an existing .Tests.ps1
+
+#### Writing the test
+- [x] Decide in which folder the test should live. See **Test folder convention** above.
+- [x] Decide if you are going to add the test to an existing .Tests.ps1 file or create a new one. E.g. If it's CA related you can add to the existing CA tests file. Don't stress over this, it's easy to move it around at any time.
+- [x] Follow the guide at [Writing custom tests - Advanced Guide](/docs/writing-tests/advanced-concepts) to write your test.
+- [x] The code inside the cmdlet is wrapped inside a try..catch (see advanced guide above).
+- [x] Add the `FunctionsToExport` cmdlet to the .psd1 file
 - [x] The related cmdlet for the test has a .md file to explain the test in detail and provides all the context required for the user to resolve the issue, including deep links to the admin portal page to resolve the issue. This will be shown to the user when they view the test report. The file should include:
   - [x] Link to the admin portal blade where the setting can be configured
   - [x] If there are multiple objects (e.g. list of CA policies, Users, etc) then use the `GraphObjects` and `GraphObjectType` parameters in [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1). These include deep links to the admin portal. If the object type you wish is not available you can add it to [Get-GraphObjectMarkdown.ps1](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1). Feel free to ask on Discord if you need help with this.
   - [x] If the test is about a specific setting the message should link to the page where the setting can be configured. The .md file should also include steps to configure the setting as well as a link to the admin portal. For a good example of a well written error page see [Test-MtCisaWeakFactor.ps1](https://github.com/maester365/maester/blob/main/powershell/public/cisa/entra/Test-MtCisaWeakFactor.ps1). Another good example is [Test-MtCisaAppUserConsent.ps1](https://github.com/maester365/maester/blob/main/powershell/public/cisa/entra/Test-MtCisaAppUserConsent.ps1) and the related [Test-MtCisaAppAdminConsent.md](https://github.com/maester365/maester/blob/main/powershell/public/cisa/entra/Test-MtCisaAppAdminConsent.md).
 
 When in doubt always check the existing tests for the conventions used, feel free to discuss on [Discord](https://discord.entra.news) or [GitHub Issues](https://github.com/maester365/maester/issues).
+
+#### Before creating the Pull Request
+
+##### Test your code
+
+- We run a bunch of pester tests on your code when a PR is raised and will block merge until the issues are addressed.
+- Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
+- Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
+- The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
+- If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has supression tags at the beginning of the function).
 
 ### Updating EIDSCA tests and documentation
 
@@ -76,17 +95,36 @@ The illustration below shows the workflow for integrating EIDSCA tests and docum
 
 When generating the EIDSCA commands and tests, manual verification should be performed to ensure the EIDSCA tests are being run correctly and the results are accurate.
 
-## Running documentation locally
+## Common Pester test failures and how to fix
+
+### PSUseBOMForUnicodeEncodedFile
+
+The quick fix for this is to run this script. Make sure you give the right path to the affected file.
+
+```powershell
+$affectedFilePath = '/Users/merill/GitHub/maester/powershell/public/maester/entra/Test-MtTenantCreationRestricted.ps1'
+$content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
+```
+
+## Contributing to Maester docs and blog posts
+
+Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
+
+For more complex changes, you can fork the repository and submit a pull request.
+
+The docs/commands folder is auto-generated based on the comments in the PowerShell cmdlets. If you want to update the documentation for a command, you will need to update the comment-based help in the .ps1 file for the command.
+
+### Running documentation locally
 
 The [Maester.dev](https://maester.dev) website is built using [Docusaurus](https://docusaurus.io/).
 
 Follow this guide if you want to run the documentation locally and view changes in real-time.
 
-### Pre-requisites
+#### Pre-requisites
 
 [Node.js](https://nodejs.org/en/download/) version 18.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
-### Installation
+#### Installation
 
 When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
 
@@ -94,7 +132,7 @@ When running the documentation for the first time, you will need to install the 
 npm install
 ```
 
-### Starting the site
+#### Starting the site
 
 While in the ./website folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
 
@@ -102,7 +140,7 @@ While in the ./website folder run the following command to start the site locall
 npm start
 ```
 
-### Editing content
+#### Editing content
 
 You will now be able to edit add and edit markdown files in the ./website/docs folder and see the changes in real-time in your browser.
 
@@ -131,3 +169,4 @@ Once that is reviewed and merged, it will trigger a new PR to bring the changes 
 This process ensures that the production site is always in sync with the released version of the Maester module and any interim changes to the production site are intentional and reviewed.
 
 The `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
+

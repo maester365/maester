@@ -7,8 +7,8 @@ Rationale: Suspicious or malicious events, if not resolved promptly, may have a 
 1. Sign in to **Microsoft 365 Defender**.
 2. Select [**Settings**](https://security.microsoft.com/securitysettings).
 3. Select either:
-    a. [**Microsoft Sentinel**](https://security.microsoft.com/sentinel/settings).
-    b. **Defender XDR**, and under **General**, select [**Streaming API**](https://security.microsoft.com/securitysettings/defender/raw_data_export).
+    - [**Microsoft Sentinel**](https://security.microsoft.com/sentinel/settings).
+    - **Defender XDR**, and under **General**, select [**Streaming API**](https://security.microsoft.com/securitysettings/defender/raw_data_export).
 4. Ensure a SIEM integration is configured for your organization.
 
 #### Related links

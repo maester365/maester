@@ -12,6 +12,11 @@
           <ListEntry>
             <ListItems>
               <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.Azure
+                  </ScriptBlock>
+                </ItemSelectionCondition>
                 <Label>Azure</Label>
                 <ScriptBlock>
                   if ($_.Azure) {
@@ -26,6 +31,11 @@
                 </ScriptBlock>
               </ListItem>
               <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.Graph
+                  </ScriptBlock>
+                </ItemSelectionCondition>
                 <Label>Microsoft Graph</Label>
                 <ScriptBlock>
                   if ($_.Graph) {
@@ -40,6 +50,11 @@
                 </ScriptBlock>
               </ListItem>
               <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.ExchangeOnline
+                  </ScriptBlock>
+                </ItemSelectionCondition>
                 <Label>Exchange Online</Label>
                 <ScriptBlock>
                   if ($_.ExchangeOnline) {
@@ -53,6 +68,11 @@
                 </ScriptBlock>
               </ListItem>
               <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.ExchangeOnlineProtection
+                  </ScriptBlock>
+                </ItemSelectionCondition>
                 <Label>Exchange Online Protection</Label>
                 <ScriptBlock>
                   if ($_.ExchangeOnlineProtection) {
@@ -66,6 +86,11 @@
                 </ScriptBlock>
               </ListItem>
               <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.Teams
+                  </ScriptBlock>
+                </ItemSelectionCondition>
                 <Label>Microsoft Teams</Label>
                 <ScriptBlock>
                   if ($_.Teams) {

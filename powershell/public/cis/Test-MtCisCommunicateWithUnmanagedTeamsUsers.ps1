@@ -25,21 +25,20 @@ function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
         return $null
     }
 
-    Write-Verbose "Test-MtCisCommunicateWithUnmanagedTeamsUsers: Checking if communication with unmanaged Teams users is disabled"
+    Write-Verbose 'Test-MtCisCommunicateWithUnmanagedTeamsUsers: Checking if communication with unmanaged Teams users is disabled'
 
-    $return = $true
     try {
         $AllowTeamsConsumer = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumer
         $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
         if (($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $false) -or ($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $true)) {
-            Add-MtTestResultDetail -Result "Well done. Communication with unmanaged Teams users is disabled."
+            Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
+            return $true
         } else {
-            Add-MtTestResultDetail -Result "Communication with unmanaged Teams users is enabled."
-            $return = $false
+            Add-MtTestResultDetail -Result 'Communication with unmanaged Teams users is enabled.'
+            return $false
         }
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }

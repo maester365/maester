@@ -13,11 +13,6 @@
 
     Returns accepted domains for a tenant
 
-.EXAMPLE
-    Get-MtAcceptedDomain
-
-    Returns accepted domains for a tenant
-
 .LINK
     https://maester.dev/docs/commands/Get-MtExo
 #>
@@ -73,6 +68,10 @@ function Get-MtExo {
         "QuarantinePolicy"               = "Get-QuarantinePolicy"
         "HostedOutboundSpamFilterRule"   = "Get-HostedOutboundSpamFilterRule"
         "HostedContentFilterRule"        = "Get-HostedContentFilterRule"
+        "OwaMailboxPolicy"               = "Get-OwaMailboxPolicy"
+        "RoleAssignmentPolicy"           = "Get-RoleAssignmentPolicy"
+        "ManagementRoleAssignment"       = "Get-ManagementRoleAssignment"
+        "ConnectionInformation"          = "Get-ConnectionInformation"
     }
 
 

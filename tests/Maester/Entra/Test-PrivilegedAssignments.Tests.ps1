@@ -1,8 +1,4 @@
-﻿BeforeDiscovery {
-    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-}
-
-Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security", "All" {
+﻿Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security" {
     It "MT.1025: No external user with permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1025" -Tag "MT.1025" {
         $Check = Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
         $Check | Should -Be $false -Because "External user shouldn't have high-privileged roles"
@@ -21,13 +17,13 @@ Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security", "All" {
     }
 }
 
-Describe "Maester/Entra" -Tag "Privileged", "Security", "All", 'PIM' {
+Describe "Maester/Entra" -Tag "Privileged", "Security", "PIM" {
     It "MT.1029: Stale accounts are not assigned to privileged roles. See https://maester.dev/docs/tests/MT.1029" -Tag "MT.1029" {
         if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         } else {
             $Check = Test-MtPimAlertsExists -AlertId "StaleSignInAlert"
-            $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
+            $check.isActive -eq $false -or $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
         }
     }
     It "MT.1030: Eligible role assignments on Control Plane are in use by administrators. See https://maester.dev/docs/tests/MT.1030" -Tag "MT.1030" {
@@ -35,7 +31,7 @@ Describe "Maester/Entra" -Tag "Privileged", "Security", "All", 'PIM' {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         } else {
             $Check = Test-MtPimAlertsExists -AlertId "RedundantAssignmentAlert" -FilteredAccessLevel "ControlPlane"
-            $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
+            $check.isActive -eq $false -or $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
         }
     }
     It "MT.1031: Privileged role on Control Plane are managed by PIM only. See https://maester.dev/docs/tests/MT.1031" -Tag "MT.1031" {
@@ -43,7 +39,7 @@ Describe "Maester/Entra" -Tag "Privileged", "Security", "All", 'PIM' {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         } else {
             $Check = Test-MtPimAlertsExists -AlertId "RolesAssignedOutsidePimAlert" -FilteredAccessLevel "ControlPlane"
-            $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
+            $check.isActive -eq $false -or $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
         }
     }
     It "MT.1032: Limited number of Global Admins are assigned. See https://maester.dev/docs/tests/MT.1032" -Tag "MT.1032" {
@@ -51,7 +47,7 @@ Describe "Maester/Entra" -Tag "Privileged", "Security", "All", 'PIM' {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         } else {
             $Check = Test-MtPimAlertsExists -AlertId "TooManyGlobalAdminsAssignedToTenantAlert"
-            $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
+            $check.isActive -eq $false -or $check.numberOfAffectedItems -eq "0" | Should -Be $true -Because $check.securityImpact
         }
     }
 }

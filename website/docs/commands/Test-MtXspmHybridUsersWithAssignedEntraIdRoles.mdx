@@ -1,0 +1,65 @@
+---
+sidebar_class_name: hidden
+description: Tests if hybrid users have been assigned eligible or permanent to Entra ID roles.
+id: Test-MtXspmHybridUsersWithAssignedEntraIdRoles
+title: Test-MtXspmHybridUsersWithAssignedEntraIdRoles
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtXspmHybridUsersWithAssignedEntraIdRoles.ps1
+---
+
+## SYNOPSIS
+
+Tests if hybrid users have been assigned eligible or permanent to Entra ID roles.
+
+## SYNTAX
+
+```powershell
+Test-MtXspmHybridUsersWithAssignedEntraIdRoles [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks if any hybrid users (synchronized from on-premises Active Directory) have been assigned eligible or permanent Entra ID roles, which can lead to privilege escalation by compromising the on-premises AD.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtXspmHybridUsersWithAssignedEntraIdRoles
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no hybrid users with assigned Entra ID roles are found, $false if any are found, $null if skipped or prerequisites not met.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtXspmHybridUsersWithAssignedEntraIdRoles](https://maester.dev/docs/commands/Test-MtXspmHybridUsersWithAssignedEntraIdRoles)

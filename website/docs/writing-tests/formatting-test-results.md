@@ -25,7 +25,7 @@ Describe "ContosoEntraConfig" -Tag "CA", "Contoso" {
           $policies = Get-MgIdentityConditionalAccessPolicy -All
           $disabledWithoutReason = $policies | Where-Object { $_.State -eq "Disabled" -and $_.DisplayName -notlike "*Disabled:*" }
        } catch {
-           Write-Error $_.Exception.Message
+           Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
        }
        $disabledWithoutReason | Should -Be 0
     }
@@ -68,11 +68,12 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
             } else {
                 Add-MtTestResultDetail -Description $testDescription -Result "Well done. All disabled policies have a reason for being disabled."
             }
-        } catch {
-            Write-Error $_.Exception.Message
-        }
 
-        $disabledWithoutReason | Should -Be 0
+            $disabledWithoutReason | Should -Be 0
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
     }
 }
 ```
@@ -113,11 +114,11 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
             } else {
                 Add-MtTestResultDetail -Description $testDescription -Result "Well done. All disabled policies have a reason for being disabled."
             }
+            $disabledWithoutReason | Should -Be 0
         } catch {
-            Write-Error $_.Exception.Message
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
         }
-
-        $disabledWithoutReason | Should -Be 0
     }
 }
 ```
@@ -168,6 +169,10 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
         }
 
         $disabledWithoutReason | Should -Be 0
+        } catch {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
     }
 }
 ```

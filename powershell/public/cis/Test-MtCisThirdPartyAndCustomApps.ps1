@@ -25,48 +25,51 @@ function Test-MtCisThirdPartyAndCustomApps {
         return $null
     }
 
-    Write-Verbose "Test-MtCisThirdPartyAndCustomApps: Checking if all or a majority of third-party and custom apps are blocked"
+    Write-Verbose 'Test-MtCisThirdPartyAndCustomApps: Checking if all or a majority of third-party and custom apps are blocked'
 
-    $return = $true
     try {
+        $return = $true
         $appPermPolicy = Get-CsTeamsAppPermissionPolicy -Identity Global
 
-        $passResult = "✅ Pass"
-        $failResult = "❌ Fail"
+        $passResult = '✅ Pass'
+        $failResult = '❌ Fail'
 
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
 
-        if (($appPermPolicy.DefaultCatalogAppsType -eq "BlockedAppList") -and (-not $appPermPolicy.DefaultCatalogApps)) { # Microsoft apps
+        if (($appPermPolicy.DefaultCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.DefaultCatalogApps)) {
+            # Microsoft apps
             $result += "| Microsoft apps | Allow all apps | $passResult |`n"
-        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq "AllowedAppList") -and ($appPermPolicy.DefaultCatalogApps)) {
+        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.DefaultCatalogApps)) {
             $result += "| Microsoft apps | Allow specific apps and block all others | $passResult |`n"
             $return = $false
-        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq "BlockedAppList") -and ($appPermPolicy.DefaultCatalogApps)) {
+        } elseif (($appPermPolicy.DefaultCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.DefaultCatalogApps)) {
             $result += "| Microsoft apps | Block specific apps and allow all others | $failResult |`n"
         } else {
             $result += "| Microsoft apps | Block all apps | $failResult |`n"
             $return = $false
         }
 
-        if (($appPermPolicy.GlobalCatalogAppsType -eq "BlockedAppList") -and (-not $appPermPolicy.GlobalCatalogApps)) { # Third-party apps
+        if (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.GlobalCatalogApps)) {
+            # Third-party apps
             $result += "| Third-party apps | Allow all apps | $failResult |`n"
             $return = $false
-        } elseif (($appPermPolicy.GlobalCatalogAppsType -eq "AllowedAppList") -and ($appPermPolicy.GlobalCatalogApps)) {
+        } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
             $result += "| Third-party apps | Allow specific apps and block all others | $passResult |`n"
-        } elseif (($appPermPolicy.GlobalCatalogAppsType -eq "BlockedAppList") -and ($appPermPolicy.GlobalCatalogApps)) {
+        } elseif (($appPermPolicy.GlobalCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.GlobalCatalogApps)) {
             $result += "| Third-party apps | Block specific apps and allow all others | $failResult |`n"
             $return = $false
         } else {
             $result += "| Third-party apps | Block all apps | $passResult |`n"
         }
 
-        if (($appPermPolicy.PrivateCatalogAppsType -eq "BlockedAppList") -and (-not $appPermPolicy.PrivateCatalogApps)) { # Custom apps
+        if (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.PrivateCatalogApps)) {
+            # Custom apps
             $result += "| Custom apps | Allow all apps | $failResult |`n"
             $return = $false
-        } elseif (($appPermPolicy.PrivateCatalogAppsType -eq "AllowedAppList") -and ($appPermPolicy.PrivateCatalogApps)) {
+        } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'AllowedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
             $result += "| Custom apps | Allow specific apps and block all others | $passResult |`n"
-        } elseif (($appPermPolicy.PrivateCatalogAppsType -eq "BlockedAppList") -and ($appPermPolicy.PrivateCatalogApps)) {
+        } elseif (($appPermPolicy.PrivateCatalogAppsType -eq 'BlockedAppList') -and ($appPermPolicy.PrivateCatalogApps)) {
             $result += "| Custom apps | Block specific apps and allow all others | $failResult |`n"
             $return = $false
         } else {
@@ -79,11 +82,11 @@ function Test-MtCisThirdPartyAndCustomApps {
             $testResultMarkdown = "All or a majority of third-party or custom apps are allowed.`n`n%TestResult%"
         }
 
-        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $return
     } catch {
-        $return = $false
-        Write-Error $_.Exception.Message
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    return $return
 }

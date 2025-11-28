@@ -10,7 +10,7 @@ To export test results to a CSV file, use the `Convert-MtResultsToFlatObject` co
 
 ```powershell
 $results = Invoke-Maester -PassThru
-Convert-MtResultsToFlatObject -Results $results -CsvFilePath "C:\path\to\results.csv"
+Convert-MtResultsToFlatObject -InputObject $results -CsvFilePath "C:\path\to\results.csv"
 ```
 
 ## Exporting results to Excel
@@ -27,7 +27,7 @@ The following example exports test results to an Excel file:
 
 ```powershell
 $results = Invoke-Maester -PassThru
-Convert-MtResultsToFlatObject -Results $results -ExcelFilePath "C:\path\to\results.xlsx"
+Convert-MtResultsToFlatObject -InputObject $results -ExcelFilePath "C:\path\to\results.xlsx"
 ```
 
 ## Flattening results
@@ -36,6 +36,6 @@ To export just the test results without the test suite hierarchy, use the `-Pass
 
 ```powershell
 $results = Invoke-Maester -PassThru
-Convert-MtResultsToFlatObject -Results $results -PassThru
+Convert-MtResultsToFlatObject -InputObject $results -PassThru
 ```
 

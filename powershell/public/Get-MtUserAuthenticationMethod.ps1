@@ -42,7 +42,7 @@ function Get-MtUserAuthenticationMethod {
     Write-Verbose "Querying graph for user authentication methods for $UserId"
     $userAuthMethods = Invoke-MtGraphRequest -RelativeUri "users/$UserId/authentication/methods"
 
-    Write-Verbose "Appending auth method displayname and isMfa properties to each auth method."
+    Write-Verbose "Appending auth method displayName and isMfa properties to each auth method."
     $IsMfa = $false
     foreach ($method in $userAuthMethods) {
       AddAuthMethodInfo $method

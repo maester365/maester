@@ -45,6 +45,13 @@ function Invoke-MtGraphRequest {
         [Parameter(Mandatory = $false)]
         [ValidateSet('v1.0', 'beta')]
         [string] $ApiVersion = 'v1.0',
+        # HTTP Method to use for the request.
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('GET', 'POST')]
+        [string] $Method = 'GET',
+        # Body for POST requests.
+        [Parameter(Mandatory = $false)]
+        [string] $Body,
         # Specifies consistency level.
         [Parameter(Mandatory = $false)]
         [string] $ConsistencyLevel = 'eventual',
@@ -99,12 +106,21 @@ function Invoke-MtGraphRequest {
         }
 
         function Complete-Result ($results, $DisablePaging) {
-            if (!$DisablePaging -and $results) {
-                while (Get-ObjectProperty $results '@odata.nextLink') {
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
-                    Format-Result $results $DisablePaging
+            if (!$DisablePaging -and $results -and (Get-ObjectProperty $results '@odata.nextLink')) {
+                # The "skipToken" are in rare cases not unique, so when it is processed, we can end up in a caching loop. By updating the cache with the original uri with the final result, we workaround this issue and have a faster cache.
+                $resultList = New-Object -TypeName System.Collections.ArrayList
+                $resultList.AddRange(@($results.value))
+                do {
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $results.'@odata.nextLink' -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache # Do not use cache as "skipTokens" is not always unique in large datasets and we may end with a loop
+                    $resultList.AddRange(@($results.value))
+                } while (Get-ObjectProperty $results '@odata.nextLink')
+                $results.value = $resultList
+                # Update the original request cache with the consolidated results
+                if (!$DisableCache) {
+                    $__MtSession.GraphCache[$uriQueryEndpointFinal.Uri.AbsoluteUri] = $results
                 }
             }
+            Format-Result $results $DisablePaging
         }
     }
 
@@ -144,16 +160,13 @@ function Invoke-MtGraphRequest {
                     ## Create batch request entry
                     $request = New-Object PSObject -Property @{
                         id      = $listRequests.Count #(New-Guid).ToString()
-                        method  = 'GET'
+                        method  = $($Method)
                         url     = $uriQueryEndpointFinal.Uri.AbsoluteUri -replace ('{0}{1}/' -f $GraphBaseUri.AbsoluteUri, $ApiVersion)
                         headers = @{ ConsistencyLevel = $ConsistencyLevel }
                     }
                     $listRequests.Add($request)
                 } else {
-
-                    $results = Invoke-MtGraphRequestCache -Method GET -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache
-
-                    Format-Result $results $DisablePaging
+                    $results = Invoke-MtGraphRequestCache -Method $($Method) -Uri $uriQueryEndpointFinal.Uri.AbsoluteUri -Headers @{ ConsistencyLevel = $ConsistencyLevel } -OutputType $OutputType -DisableCache:$DisableCache -Body $Body
                     Complete-Result $results $DisablePaging
                 }
             }
@@ -172,7 +185,6 @@ function Invoke-MtGraphRequest {
                 $resultsBatch = $resultsBatch.responses | Sort-Object -Property id
 
                 foreach ($results in ($resultsBatch.body)) {
-                    Format-Result $results $DisablePaging
                     Complete-Result $results $DisablePaging
                 }
             }

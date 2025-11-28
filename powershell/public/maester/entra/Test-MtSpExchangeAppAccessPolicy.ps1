@@ -18,7 +18,7 @@ function Test-MtSpExchangeAppAccessPolicy {
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Running Test-MtSpExchangeAppAccessPolicy"
+    Write-Verbose 'Running Test-MtSpExchangeAppAccessPolicy'
 
     if (-not (Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
@@ -29,17 +29,17 @@ function Test-MtSpExchangeAppAccessPolicy {
         # Note: If you make any changes to this list, please keep it in sync
         # with the markdown file Test-MtSpExchangeAppAccessPolicy.md
         $exchangePermissions = @(
-            "Mail.Read", "Mail.ReadBasic", "Mail.ReadBasic.All", "Mail.ReadWrite", "Mail.Send",
-            "MailboxSettings.Read", "MailboxSettings.ReadWrite",
-            "Calendars.Read", "Calendars.ReadWrite",
-            "Contacts.Read", "Contacts.ReadWrite"
+            'Mail.Read', 'Mail.ReadBasic', 'Mail.ReadBasic.All', 'Mail.ReadWrite', 'Mail.Send',
+            'MailboxSettings.Read', 'MailboxSettings.ReadWrite',
+            'Calendars.Read', 'Calendars.ReadWrite',
+            'Contacts.Read', 'Contacts.ReadWrite'
         )
 
         # Get service principals with Exchange permissions
-        $msGraph = Invoke-MtGraphRequest -RelativeUri "servicePrincipals" -Filter "appId eq '00000003-0000-0000-c000-000000000000'"
+        $msGraph = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter "appId eq '00000003-0000-0000-c000-000000000000'"
         $availablePermissions = $msGraph.AppRoles | Select-Object Id, Value
 
-        $servicePrincipals = Invoke-MtGraphRequest -RelativeUri "servicePrincipals"
+        $servicePrincipals = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals'
         $principalsWithExchangePerms = $servicePrincipals | ForEach-Object {
             $sp = $_
             $appRoles = Invoke-MtGraphRequest -RelativeUri "servicePrincipals/$($sp.Id)/appRoleAssignments"
@@ -53,13 +53,22 @@ function Test-MtSpExchangeAppAccessPolicy {
                     Id          = $sp.Id
                     DisplayName = $sp.DisplayName
                     AppId       = $sp.AppId
-                    Permissions = $permissions -join ", "
+                    Permissions = $permissions -join ', '
                 }
             }
         }
 
         # Get application access policies
-        $appAccessPolicies = Get-ApplicationAccessPolicy
+        try {
+            $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop
+        } catch {
+            if ($_.Exception.Message -like "*couldn't be found*") {
+                Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies were found.'
+                $appAccessPolicies = $null
+            } else {
+                throw
+            }
+        }
 
         # Prepare result table showing all apps with Exchange permissions
         $detailMarkdown = "### Applications with Exchange Permissions`n`n"
@@ -69,7 +78,7 @@ function Test-MtSpExchangeAppAccessPolicy {
         $missingPolicies = @()
         foreach ($sp in $principalsWithExchangePerms) {
             $hasPolicy = $appAccessPolicies.AppId -contains $sp.AppId
-            $policyStatus = if ($hasPolicy) { "✅ Yes" } else { "❌ No" }
+            $policyStatus = if ($hasPolicy) { '✅ Yes' } else { '❌ No' }
             $filteredPermissions = $sp.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
             $portalLink = Get-MtLinkServicePrincipal -ServicePrincipal $sp -Blade Permissions
             $detailMarkdown += "| $portalLink | $($filteredPermissions -join ', ') | $policyStatus |`n"
@@ -83,16 +92,16 @@ function Test-MtSpExchangeAppAccessPolicy {
         $result = $invalidCount -eq 0
 
         if ($result) {
-            $testResultMarkdown = "Well done. We did not find any applications with tenant-wide Exchange permissions to all mailboxes."
+            $testResultMarkdown = 'Well done. We did not find any applications with tenant-wide Exchange permissions to all mailboxes.'
         } else {
             $testResultMarkdown = "Found **$invalidCount** applications with tenant-wide access to all Exchange mailboxes."
         }
         $testResultMarkdown += "`n`n" + $detailMarkdown
 
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $result
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    return $result
 }

@@ -71,50 +71,50 @@ function Test-MtConditionalAccessWhatIf {
         # Must be a valid application ID (GUID)
         # Application ID can be looked up from from the sign in logs.
         # The id of the Office 365 application is '67ad5377-2d78-4ac2-a867-6300cda00e85'
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "ApplicationBasedCA", Mandatory)]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ApplicationBasedCA', Mandatory)]
         [ValidateScript({ $_ -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' })]
         [string[]]$IncludeApplications,
 
         # The user action that should be tested.
         # Values can be registerOrJoinDevices or registerSecurityInformation
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = "UserActionBasedCA")]
-        [ValidateSet("registerOrJoinDevices", "registerSecurityInformation")]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'UserActionBasedCA')]
+        [ValidateSet('registerOrJoinDevices', 'registerSecurityInformation')]
         [string[]]$UserAction,
 
         # Device platform to be used for the test.
         # Values can be all, Android, iOS, windows, windowsPhone, macOS, linux
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("all", "Android", "iOS", "windows", "windowsPhone", "macOS", "linux")]
+        [ValidateSet('all', 'Android', 'iOS', 'windows', 'windowsPhone', 'macOS', 'linux')]
         [string]$DevicePlatform,
 
         # The client app used by the user.
         # Values can be browser, mobileAppsAndDesktopClients, exchangeActiveSync, easSupported, other
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("browser", "mobileAppsAndDesktopClients", "exchangeActiveSync", "easSupported", "other")]
+        [ValidateSet('browser', 'mobileAppsAndDesktopClients', 'exchangeActiveSync', 'easSupported', 'other')]
         [string]$ClientAppType,
 
         # Sign-in risk level for the test.
         # Values can be None, Low, Medium, High
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("None", "Low", "Medium", "High")]
+        [ValidateSet('None', 'Low', 'Medium', 'High')]
         [string]$SignInRiskLevel,
 
         # User risk level for the test.
         # Values can be None, Low, Medium, High
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("None", "Low", "Medium", "High")]
+        [ValidateSet('None', 'Low', 'Medium', 'High')]
         [string]$UserRiskLevel,
 
         # Insider risk level for the test.
         # Values can be Minor, Moderate, Elevated
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("Minor", "Moderate", "Elevated")]
+        [ValidateSet('Minor', 'Moderate', 'Elevated')]
         [string]$InsiderRiskLevel,
 
         # Service Principal risk level for the test.
         # Values can be None, Low, Medium, High
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("None", "Low", "Medium", "High")]
+        [ValidateSet('None', 'Low', 'Medium', 'High')]
         [string]$ServicePrincipalRiskLevel,
 
         # Device info to be used for the test.
@@ -156,7 +156,7 @@ function Test-MtConditionalAccessWhatIf {
 
         # Country to be used for the test. The two-letter country code.
         [Parameter(ValueFromPipelineByPropertyName = $true)]
-        [ValidateSet("AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW")]
+        [ValidateSet('AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW')]
         [string]$Country,
 
         # IP address to be used for the test.
@@ -170,33 +170,33 @@ function Test-MtConditionalAccessWhatIf {
     )
 
     process {
-        if ($PSCmdlet.ParameterSetName -eq "UserActionBasedCA") {
+        if ($PSCmdlet.ParameterSetName -eq 'UserActionBasedCA') {
             if ($UserAction.Length -eq 1) {
                 $UserActionValue = $UserAction[0] # Array not supported by userAction when there is only one item.
             } else {
                 $UserActionValue = $UserAction
             }
             $CAContext = @{
-                "@odata.type" = "#microsoft.graph.userActionContext"
-                "userAction"  = $UserActionValue
+                '@odata.type' = '#microsoft.graph.userActionContext'
+                'userAction'  = $UserActionValue
             }
         } else {
             $CAContext = @{
-                "@odata.type"         = "#microsoft.graph.applicationContext"
-                "includeApplications" = @(
+                '@odata.type'         = '#microsoft.graph.applicationContext'
+                'includeApplications' = @(
                     $IncludeApplications
                 )
             }
         }
 
         $ConditionalAccessWhatIfBodyParameter = @{
-            "AppliedPoliciesOnly" = -not $AllResults
-            "signInIdentity"    = @{
-                "@odata.type" = "#microsoft.graph.userSignIn"
-                "userId"      = $UserId
+            'AppliedPoliciesOnly' = -not $AllResults
+            'signInIdentity'      = @{
+                '@odata.type' = '#microsoft.graph.userSignIn'
+                'userId'      = $UserId
             }
-            "signInContext"          = $CAContext
-            "signInConditions" = @{}
+            'signInContext'       = $CAContext
+            'signInConditions'    = @{}
         }
 
         if ($UserRiskLevel) { $ConditionalAccessWhatIfBodyParameter.signInConditions.userRiskLevel = $UserRiskLevel }
@@ -212,7 +212,7 @@ function Test-MtConditionalAccessWhatIf {
         Write-Verbose ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress )
 
         try {
-            $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri "https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate" -OutputType PSObject -Body ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
+            $ConditionalAccessWhatIfResult = Invoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/beta/identity/conditionalAccess/evaluate' -OutputType PSObject -Body ( $ConditionalAccessWhatIfBodyParameter | ConvertTo-Json -Depth 99 -Compress ) | Select-Object -ExpandProperty value
             # Filter out policies that do not apply
             if (!$AllResults) {
                 $ConditionalAccessWhatIfResult = $ConditionalAccessWhatIfResult | Where-Object { $_.policyApplies -eq $true }

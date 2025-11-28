@@ -59,16 +59,15 @@ The same applies to the `-SendTeamsMessage` in `Connect-Maester`.
 
 #### Privileged scope
 
-Maester is designed to require read-only access to a tenant to run tests. Unfortunately, the Graph API command to query global admin roles in Microsoft Entra Privileged Identity Management requires the **RoleEligibilitySchedule.ReadWrite.Directory** command. For these tests to run accurately you will need to explicitly opt into using this additional privilege by connecting with
+Maester is designed to require read-only access to a tenant to run tests.
+
+However, certain tests like  [Test-MtExoMoeraMailActivity](/docs/commands/Test-MtExoMoeraMailActivity) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
+
+Connecting with privileged scopes is optional. To connect with privileged scopes, use the `-Privileged` switch:
 
 ```powershell
 Connect-Maester -Privileged
 ```
-
-For technical details on this requirement see
-
-* [Graph API - List roleEligibilityScheduleRequests](https://learn.microsoft.com/en-us/graph/api/rbacapplication-list-roleeligibilityschedulerequests?view=graph-rest-1.0&tabs=http#permissions)
-* [Maester Issue #195](https://github.com/maester365/maester/issues/195#issuecomment-2170879665)
 
 #### Device code
 
@@ -80,7 +79,7 @@ Connect-Maester -UseDeviceCode
 
 ### Connect to Azure, Exchange Online and Teams
 
-`Connect-Maester` also provides options to connect to Azure, Exchange Online adn Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
+`Connect-Maester` also provides options to connect to Azure, Exchange Online and Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
 
 The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online, Security Compliance and Microsoft Teams.
 
@@ -122,3 +121,13 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 ```powershell
 Connect-Maester -Environment Germany
 ```
+
+### Connect using a custom application
+
+You can use `Connect-Maester` to connect to Microsoft Graph using a custom application by specifying the `-GraphClientId` parameter. This is useful if you wish to use a custom application for Maester instead of using the default Graph PowerShell application.
+
+```powershell
+Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
+```
+
+To learn more about how to create a custom application for Microsoft Graph PowerShell see [Use delegated access with a custom application for Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell).

@@ -3,7 +3,7 @@
     Mailbox intelligence based impersonation protection action set to move message to junk mail folder.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA116
@@ -38,7 +38,7 @@ function Test-ORCA116{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA116: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA116" -ErrorRecord $_ -AdditionalContext "Running ORCA116 test"
         throw
     } finally {
         if($obj.SkipInReport) {

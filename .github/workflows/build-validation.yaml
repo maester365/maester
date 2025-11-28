@@ -24,12 +24,12 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           # This requires all patterns to match so exclusion works
-          predicate-quantifier: 'every'
+          predicate-quantifier: "every"
           filters: |
             pwshmodule:
               - 'powershell/**'
@@ -54,14 +54,14 @@ jobs:
         shell: powershell
         run: |
           # Reuse downloaded modules from pwsh
-          $env:PSModulePath += ";$HOME\Documents\PowerShell\Modules"
+          $env:PSModulePath = ($env:PSModulePath).TrimEnd(';')+";$HOME\Documents\PowerShell\Modules"
           # Remove old test results
           Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - uses: actions/upload-artifact@v4  # upload test results
-        if: success() || failure()        # run this step even if previous step failed
+      - uses: actions/upload-artifact@v5 # upload test results
+        if: success() || failure() # run this step even if previous step failed
         with:
           name: test-results-${{ runner.os }}
           path: TestResults/*.xml
