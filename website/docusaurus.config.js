@@ -24,7 +24,7 @@ const config = {
   projectName: "maester", // Usually your repo name.
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  // onBrokenMarkdownLinks: "warn", // Deprecated and moved to markdown.hooks.onBrokenMarkdownLinks
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -36,6 +36,9 @@ const config = {
 
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
   },
   themes: [
     "@docusaurus/theme-mermaid",
@@ -61,6 +64,20 @@ const config = {
         docs: {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
+          versions: {
+            current: {
+              label: 'Preview',
+              banner: 'unreleased',
+              badge: true,
+            },
+            '1.3.0': {
+              label: '1.3.0',
+            },
+            // Example of unmaintained / deprecated versions.
+            //'1.2.0': {
+            //  banner: 'unmaintained',
+            //}
+          },
         },
         blog: {
           blogSidebarTitle: 'All posts',
@@ -92,6 +109,11 @@ const config = {
           src: "img/logo.svg",
         },
         items: [
+          {
+            type: 'docsVersionDropdown',
+            position: 'left',
+            dropdownActiveClassDisabled: true, // Recommended for clear separation.
+          },
           {
             type: "docSidebar",
             sidebarId: "siteSidebar",
