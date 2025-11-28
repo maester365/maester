@@ -36,15 +36,6 @@ Follow the guide below to set up Maester for development on your local machine, 
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
-
-## Contributing to Maester docs
-
-Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
-
-For more complex changes, you can fork the repository and submit a pull request.
-
-The docs/commands folder is auto-generated based on the comments in the PowerShell cmdlets. If you want to update the documentation for a command, you will need to update the comment-based help in the .ps1 file for the command.
-
 ## Contributing new tests and updating existing tests
 
 ### Test folder convention
@@ -119,3 +110,24 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://maester.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
 
+### Site versioning - Blog posts and urgent doc changes
+
+There are two versions of the Maester website:
+
+- [Production](https://maester.dev) - This is the live version of the site that is updated whenever a new version of the Maester module is released.
+- [Preview](https://preview.maester.dev) - This is the version of the site that is updated with every commit to the main branch. This allows you to see changes before they are published to production.
+
+| Environment | URL                          | Branch       |  Update Trigger                    |
+|-------------|------------------------------|--------------| -----------------------------------|
+| Production  | https://maester.dev          | website-prod | New Maester module release         |
+| Preview     | https://preview.maester.dev  | main         | Every commit to the main branch    |
+
+When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
+
+If a blog post or doc change is not dependant on a new release, create a PR to the `website-prod` branch directly.
+
+Once that is reviewed and merged, it will trigger a new PR to bring the changes into the `main` branch.
+
+This process ensures that the production site is always in sync with the released version of the Maester module and any interim changes to the production site are intentional and reviewed.
+
+The `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
