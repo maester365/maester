@@ -148,7 +148,7 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://maester.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
 
-### Site versioning - Blog posts and urgent doc changes
+### Site versioning
 
 There are two versions of the Maester website:
 
@@ -162,11 +162,12 @@ There are two versions of the Maester website:
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
 
-If a blog post or doc change is not dependant on a new release, create a PR to the `website-prod` branch directly.
+#### Urgent changes to blog posts and documentation
 
-Once that is reviewed and merged, it will trigger a new PR to bring the changes into the `main` branch.
+If a blog post or doc change is urgent and cannot wait till the next release, create a PR against the `website-prod` branch directly.
 
-This process ensures that the production site is always in sync with the released version of the Maester module and any interim changes to the production site are intentional and reviewed.
+Once that is reviewed and merged, you will need to create another PR to bring the changes into the `main` branch.
 
-The `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
+This is because the `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
 
+This process ensures any interim changes to the production site are intentional.
