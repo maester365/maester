@@ -5,6 +5,7 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import { themes as prismThemes } from "prism-react-renderer";
+import { previewVersion } from "./version-config.js";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -64,14 +65,18 @@ const config = {
         docs: {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
+          lastVersion: '1.3.0',
           versions: {
             current: {
-              label: 'Preview',
+              label: `${previewVersion} (preview)`,
               banner: 'unreleased',
               badge: true,
             },
             '1.3.0': {
               label: '1.3.0',
+              path: '/',
+              banner: 'none',
+              badge: true,
             },
             // Example of unmaintained / deprecated versions.
             //'1.2.0': {

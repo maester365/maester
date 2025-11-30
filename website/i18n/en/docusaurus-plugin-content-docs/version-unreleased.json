@@ -1,6 +1,6 @@
 {
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "Next (Preview)",
+    "message": "Preview",
     "description": "The label used to tell the user they are viewing unreleased documentation."
   },
   "theme.docs.versions.unreleasedVersionBannerText": {
