@@ -360,14 +360,14 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
               >
-                <item.icon className="h-4 w-4" />
+                {item.icon && <item.icon className="h-4 w-4" />}
                 <span className="flex-1">{item.label}</span>
                 <ArrowUpRight className="h-3 w-3 text-gray-400 dark:text-gray-500" />
               </a>
             ) : (
               <Link
                 key={item.label}
-                to={item.href}
+                to={item.href!}
                 onClick={() => setIsOpen(false)}
                 className={cx(
                   "flex items-center gap-3 px-3 py-2 text-sm",
@@ -376,7 +376,7 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
                     : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                {item.icon && <item.icon className="h-4 w-4" />}
                 <span>{item.label}</span>
               </Link>
             )
