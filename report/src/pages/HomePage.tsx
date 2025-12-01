@@ -32,13 +32,11 @@ export default function HomePage() {
       <MtTestSummary {...testResults} />
 
       {/* Charts Grid */}
-      <Grid numItemsMd={2} numItemsLg={2} className="gap-6 mb-6">
+      <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mb-6">
         <MtDonutChart {...testResults} />
         <MtSeverityChart Tests={testResults.Tests} />
+        <MtBlocksArea Blocks={testResults.Blocks} />
       </Grid>
-
-      {/* Test Areas */}
-      <MtBlocksArea Blocks={testResults.Blocks} />
 
       {/* Test Results Table */}
       <div className="mt-6">
