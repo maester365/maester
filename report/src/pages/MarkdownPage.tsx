@@ -76,7 +76,7 @@ export default function MarkdownPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Markdown
         </h1>
         <Button variant="primary" onClick={copyToClipboard}>
@@ -94,14 +94,14 @@ export default function MarkdownPage() {
           <TabPanel>
             <div className="mt-4">
               <textarea
-                className="h-[80vh] w-full rounded-md border border-gray-200 bg-white p-4 font-mono text-sm text-gray-900"
+                className="h-[80vh] w-full rounded-md border border-gray-200 bg-white p-4 font-mono text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
               />
             </div>
           </TabPanel>
           <TabPanel>
-            <div className="prose mt-4 max-w-none rounded-md border border-gray-200 bg-white p-4">
+            <div className="prose mt-4 max-w-none rounded-md border border-gray-200 bg-white p-4 dark:prose-invert dark:border-gray-700 dark:bg-gray-900">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {markdown}
               </ReactMarkdown>

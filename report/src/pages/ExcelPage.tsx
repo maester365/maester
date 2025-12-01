@@ -43,7 +43,7 @@ export default function ExcelPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Excel
         </h1>
         <Button variant="primary" onClick={copyToClipboard}>
@@ -52,28 +52,28 @@ export default function ExcelPage() {
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-md border border-gray-200">
-        <table className="min-w-full border-collapse text-left text-sm text-gray-600">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700">
+      <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-gray-700">
+        <table className="min-w-full border-collapse text-left text-sm text-gray-600 dark:text-gray-300">
+          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-800 dark:text-gray-300">
             <tr>
-              <th className="border-b border-gray-200 p-2">ID</th>
-              <th className="border-b border-gray-200 p-2">Title</th>
-              <th className="border-b border-gray-200 p-2">Severity</th>
-              <th className="border-b border-gray-200 p-2">Status</th>
-              <th className="border-b border-gray-200 p-2">Category</th>
-              <th className="border-b border-gray-200 p-2">Description</th>
-              <th className="border-b border-gray-200 p-2">Result</th>
-              <th className="border-b border-gray-200 p-2">Tags</th>
-              <th className="border-b border-gray-200 p-2">Notes</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">ID</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Title</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Severity</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Status</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Category</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Description</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Result</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Tags</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Notes</th>
             </tr>
           </thead>
           <tbody>
             {testResults.Tests.map((test, index) => (
               <tr
                 key={index}
-                className="border-b border-gray-200 bg-white hover:bg-gray-50"
+                className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
               >
-                <td className="max-w-40 truncate p-2 font-medium text-gray-900">
+                <td className="max-w-40 truncate p-2 font-medium text-gray-900 dark:text-white">
                   {test.Id}
                 </td>
                 <td className="p-2">{test.Title}</td>

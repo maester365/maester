@@ -50,7 +50,7 @@ export default function PrintPage() {
   return (
     <div>
       <div className="no-print mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Print Report
         </h1>
         <Button variant="primary" onClick={handlePrint} disabled={isPrinting}>
@@ -62,24 +62,24 @@ export default function PrintPage() {
       <div className="print-content">
         {/* Report Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
             Maester Test Results
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Tenant: {testResults.TenantName} ({testResults.TenantId})
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Generated: {new Date(testResults.ExecutedAt).toLocaleString()}
           </p>
         </div>
 
         {/* Summary */}
         <div className="mb-8 grid grid-cols-4 gap-4">
-          <div className="rounded-md border border-gray-200 bg-white p-4">
-            <div className="text-2xl font-semibold text-gray-900">
+          <div className="rounded-md border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+            <div className="text-2xl font-semibold text-gray-900 dark:text-white">
               {testResults.TotalCount}
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               Total Tests
             </div>
           </div>
@@ -108,23 +108,23 @@ export default function PrintPage() {
         </div>
 
         {/* Test Results Table */}
-        <div className="overflow-x-auto rounded-md border border-gray-200">
-          <table className="min-w-full border-collapse text-left text-xs">
-            <thead className="bg-gray-50 text-gray-700">
+        <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-gray-700">
+          <table className="min-w-full border-collapse text-left text-xs dark:text-gray-300">
+            <thead className="bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
               <tr>
-                <th className="border-b border-gray-200 p-2">
+                <th className="border-b border-gray-200 p-2 dark:border-gray-700">
                   ID
                 </th>
-                <th className="border-b border-gray-200 p-2">
+                <th className="border-b border-gray-200 p-2 dark:border-gray-700">
                   Title
                 </th>
-                <th className="border-b border-gray-200 p-2">
+                <th className="border-b border-gray-200 p-2 dark:border-gray-700">
                   Status
                 </th>
-                <th className="border-b border-gray-200 p-2">
+                <th className="border-b border-gray-200 p-2 dark:border-gray-700">
                   Severity
                 </th>
-                <th className="border-b border-gray-200 p-2">
+                <th className="border-b border-gray-200 p-2 dark:border-gray-700">
                   Description
                 </th>
               </tr>
@@ -135,19 +135,19 @@ export default function PrintPage() {
                   key={index}
                   className={`${
                     test.Result === "Passed"
-                      ? "bg-emerald-50"
+                      ? "bg-emerald-50 dark:bg-emerald-950"
                       : test.Result === "Failed"
-                        ? "bg-red-50"
-                        : "bg-white"
+                        ? "bg-red-50 dark:bg-red-950"
+                        : "bg-white dark:bg-gray-900"
                   }`}
                 >
-                  <td className="border-b border-gray-200 p-2 font-mono text-xs">
+                  <td className="border-b border-gray-200 p-2 font-mono text-xs dark:border-gray-700 dark:text-gray-300">
                     {test.Id}
                   </td>
-                  <td className="border-b border-gray-200 p-2">
+                  <td className="border-b border-gray-200 p-2 dark:border-gray-700 dark:text-gray-300">
                     {test.Title}
                   </td>
-                  <td className="border-b border-gray-200 p-2">
+                  <td className="border-b border-gray-200 p-2 dark:border-gray-700">
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                         test.Result === "Passed"
@@ -160,10 +160,10 @@ export default function PrintPage() {
                       {test.Result}
                     </span>
                   </td>
-                  <td className="border-b border-gray-200 p-2">
+                  <td className="border-b border-gray-200 p-2 dark:border-gray-700 dark:text-gray-300">
                     {test.Severity}
                   </td>
-                  <td className="border-b border-gray-200 p-2">
+                  <td className="border-b border-gray-200 p-2 dark:border-gray-700 dark:text-gray-300">
                     {test.ResultDetail?.TestDescription}
                   </td>
                 </tr>
