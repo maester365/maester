@@ -2,53 +2,20 @@
 
 import { testResults } from "@/lib/testResults"
 import { Divider } from "@/components/Divider"
-import { RiCalendarLine, RiBuilding2Line } from "@remixicon/react"
 import MtTestSummary from "@/components/MtTestSummary"
 import MtDonutChart from "@/components/MtDonutChart"
 import MtSeverityChart from "@/components/MtSeverityChart"
 import MtBlocksArea from "@/components/MtBlocksArea"
 import TestResultsTable from "@/components/TestResultsTable"
-import { Grid, Text, Badge } from "@tremor/react"
+import { Grid, Text } from "@tremor/react"
 
 export default function HomePage() {
-  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
-    undefined,
-    { dateStyle: "medium", timeStyle: "short" }
-  )
-
-  function getTenantName() {
-    if (testResults.TenantName === "")
-      return "Tenant ID: " + testResults.TenantId
-    return testResults.TenantName + " (" + testResults.TenantId + ")"
-  }
-
   const DonutTotalCount = testResults.PassedCount + testResults.FailedCount
 
   return (
     <div className="text-left">
-      <h1 className="mb-2 text-3xl font-semibold tracking-tighter text-gray-900 dark:text-white">
-        Test Results
-      </h1>
-
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Badge
-          className="bg-orange-50 text-orange-600"
-          icon={RiBuilding2Line}
-        >
-          {getTenantName()}
-        </Badge>
-        <Badge
-          className="bg-orange-50 text-orange-600"
-          icon={RiCalendarLine}
-        >
-          {testDateLocal}
-        </Badge>
-      </div>
-
-      <Divider />
-
       <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-        Test summary
+        Overview
       </h2>
 
       <MtTestSummary
