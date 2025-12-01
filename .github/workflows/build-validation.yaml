@@ -9,6 +9,7 @@ on:
     branches: ["main"]
     paths:
       - 'powershell/**'
+      - '.github/workflows/build-validation.yaml'
 
 permissions:
   contents: read
