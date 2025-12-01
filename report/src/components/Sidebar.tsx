@@ -254,13 +254,16 @@ export function Sidebar({ testResults }: SidebarProps) {
         <Link
           to="/settings"
           className={cx(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
+            "flex items-center gap-3 rounded-md text-sm font-medium tracking-tight transition-all duration-100",
+            isCollapsed ? "justify-center px-0 py-2" : "px-3 py-2",
             pathname === "/settings"
               ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
               : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
           )}
         >
-          {getTenantDisplay()}
+          <div className="shrink-0">
+            {getTenantDisplay()}
+          </div>
           {!isCollapsed && (
             <div className="flex flex-col overflow-hidden">
               <span className="truncate font-medium tracking-tight">Settings</span>
