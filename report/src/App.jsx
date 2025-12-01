@@ -1,19 +1,12 @@
 import './App.css'
 import { useState, useEffect } from 'react';
-import TestResultsTable from './components/TestResultsTable';
-import { Flex, Divider, Grid, Text, Badge, BadgeDelta, Button } from "@tremor/react";
-import { CalendarIcon, BuildingOfficeIcon } from "@heroicons/react/24/solid";
-import { PrinterIcon, CodeBracketIcon, ShareIcon, TableCellsIcon } from "@heroicons/react/24/outline";
-import ThemeSwitch from "./components/ThemeSwitch";
 import { ThemeProvider } from 'next-themes'
-import logo from './assets/maester.png';
-import MtDonutChart from "./components/MtDonutChart";
-import MtSeverityChart from "./components/MtSeverityChart";
-import MtTestSummary from "./components/MtTestSummary";
-import MtBlocksArea from './components/MtBlocksArea';
+import Layout from './components/Layout';
+import HomeView from './components/HomeView';
 import PrintableView from './components/PrintableView';
 import MarkdownView from './components/MarkdownView';
 import ExcelView from './components/ExcelView';
+import SettingsView from './components/SettingsView';
 
 /*The sample data will be replaced by the Get-MtHtmlReport when it runs the generation.*/
 const testResults = {
@@ -215,25 +208,33 @@ const testResults = {
     They will be stripped away when Get-MtHtmlReport cmdlet generates the user's content */
 
 function App() {
-  const [isPrintView, setIsPrintView] = useState(false);
-  const [isMarkdownView, setIsMarkdownView] = useState(false);
-  const [isExcelView, setIsExcelView] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentView, setCurrentView] = useState('home');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('view') === 'print') {
-      setIsPrintView(true);
-    }
-    if (params.get('view') === 'markdown') {
-      setIsMarkdownView(true);
-    }
-    if (params.get('view') === 'excel') {
-      setIsExcelView(true);
+    const view = params.get('view');
+    if (view === 'print') {
+      setCurrentView('print');
+    } else if (view === 'markdown') {
+      setCurrentView('markdown');
+    } else if (view === 'excel') {
+      setCurrentView('excel');
+    } else if (view === 'settings') {
+      setCurrentView('settings');
     }
   }, []);
 
-  if (isPrintView) {
+  const handleNavigate = (view) => {
+    setCurrentView(view);
+    // Update URL without reload
+    const newUrl = view === 'home' 
+      ? window.location.pathname 
+      : `${window.location.pathname}?view=${view}`;
+    window.history.pushState({}, '', newUrl);
+  };
+
+  // Standalone views (open in new tab without sidebar)
+  if (currentView === 'print') {
     return (
       <ThemeProvider attribute="class">
         <PrintableView testResults={testResults} />
@@ -241,130 +242,32 @@ function App() {
     );
   }
 
-  if (isMarkdownView) {
-    return (
-      <ThemeProvider attribute="class">
-        <MarkdownView testResults={testResults} />
-      </ThemeProvider>
-    );
-  }
+  // Main layout with sidebar
+  const renderContent = () => {
+    switch (currentView) {
+      case 'markdown':
+        return <MarkdownView testResults={testResults} />;
+      case 'excel':
+        return <ExcelView testResults={testResults} />;
+      case 'settings':
+        return <SettingsView testResults={testResults} />;
+      case 'home':
+      default:
+        return <HomeView testResults={testResults} />;
+    }
+  };
 
-  if (isExcelView) {
-    return (
-      <ThemeProvider attribute="class">
-        <ExcelView testResults={testResults} />
-      </ThemeProvider>
-    );
-  }
-
-  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-
-  function getTenantName() {
-    if (testResults.TenantName == "") return "Tenant ID: " + testResults.TenantId;
-    return testResults.TenantName + " (" + testResults.TenantId + ")";
-  }
-
-  const DonutTotalCount = testResults.PassedCount + testResults.FailedCount; //Don't count skipped tests
   return (
-
-    <ThemeProvider attribute="class" >
-      <div className="text-left">
-        <div className="flex mb-6 justify-between items-end">
-          <div className="flex">
-            <img src={logo} className="h-10 w-10 mr-1" alt="Maester logo" />
-            <h1 className="text-3xl font-bold self-end">Maester Test Results</h1>
-          </div>
-          <div className="relative">
-            <Button
-              variant="secondary"
-              color="gray"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center px-2"
-            >
-              <ShareIcon className="h-5 w-5" />
-            </Button>            {isMenuOpen && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}></div>
-                <div className="absolute right-0 mt-2 w-48 origin-top-right bg-tremor-background dark:bg-dark-tremor-background border border-tremor-border dark:border-dark-tremor-border rounded-tremor-default shadow-tremor-dropdown dark:shadow-dark-tremor-dropdown z-20 overflow-hidden ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <div className="p-1">
-                    <button
-                      onClick={() => {
-                        window.open(window.location.href.split('?')[0] + '?view=print', '_blank');
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
-                    >
-                      <PrinterIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
-                      Print
-                    </button>
-                    <button
-                      onClick={() => {
-                        window.open(window.location.href.split('?')[0] + '?view=markdown', '_blank');
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
-                    >
-                      <CodeBracketIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
-                      Markdown
-                    </button>
-                    <button
-                      onClick={() => {
-                        window.open(window.location.href.split('?')[0] + '?view=excel', '_blank');
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex items-center w-full text-left px-3 py-2 text-sm text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis rounded-tremor-small hover:bg-tremor-background-subtle dark:hover:bg-dark-tremor-background-subtle transition-colors duration-150"
-                    >
-                      <TableCellsIcon className="h-4 w-4 mr-2 text-tremor-content-subtle dark:text-dark-tremor-content-subtle" />
-                      Excel
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        <Flex>
-          <Badge className="bg-orange-500 bg-opacity-10 text-orange-600 dark:bg-opacity-60" icon={BuildingOfficeIcon}>{getTenantName()}</Badge>
-          <Badge className="bg-orange-500 bg-opacity-10 text-orange-600 dark:bg-opacity-60" icon={CalendarIcon}>{testDateLocal}</Badge>
-        </Flex>
-        <Divider />
-        <h2 className="text-2xl font-bold mb-6">Test summary</h2>
-        <MtTestSummary
-          TotalCount={testResults.TotalCount}
-          PassedCount={testResults.PassedCount}
-          FailedCount={testResults.FailedCount}
-          SkippedCount={testResults.SkippedCount}
-          NotRunCount={testResults.NotRunCount}
-          ErrorCount={testResults.ErrorCount}
-          Result={testResults.Result} />
-        <Grid numItemsSm={1} numItemsLg={3} className="gap-6 mb-12 h-50">
-          <MtDonutChart
-            TotalCount={DonutTotalCount}
-            PassedCount={testResults.PassedCount}
-            FailedCount={testResults.FailedCount}
-            Result={testResults.Result} />
-          <MtSeverityChart Tests={testResults.Tests} />
-          <MtBlocksArea Blocks={testResults.Blocks} />
-
-        </Grid>
-
-        <Divider />
-        <h2 className="text-2xl font-bold mb-6">Test details</h2>
-        <div className="grid grid-cols-2 gap-12">
-
-        </div>
-
-        <TestResultsTable TestResults={testResults} />
-        <Divider />
-        <Grid numItemsSm={2} numItemsLg={2} className="gap-6 mb-6">
-          <Text><a href="https://maester.dev" target="_blank" rel="noreferrer">Maester {testResults.CurrentVersion}</a></Text>
-          <div className="place-self-end">
-            <ThemeSwitch />
-          </div>
-        </Grid>
-      </div>
+    <ThemeProvider attribute="class">
+      <Layout
+        currentView={currentView}
+        onNavigate={handleNavigate}
+        testResults={testResults}
+      >
+        {renderContent()}
+      </Layout>
     </ThemeProvider>
-  )
+  );
 }
 
 export default App

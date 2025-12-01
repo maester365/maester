@@ -3,11 +3,43 @@
 @tailwind utilities;
 
 @layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: theme('colors.gray.200');
+  }
+
   body {
-    @apply bg-white dark:bg-[#09090b] text-slate-900 dark:text-zinc-50;
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-50;
+    @apply antialiased;
   }
 }
 
 code {
-    white-space : pre-wrap !important;
-  }
+  white-space: pre-wrap !important;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply outline outline-offset-2 outline-0 focus-visible:outline-2 outline-orange-500;
+}
