@@ -1,8 +1,12 @@
+import { useState } from "react"
 import { Button } from "@/components/Button"
-import { RiClipboardLine } from "@remixicon/react"
+import { Dialog, DialogPanel } from "@tremor/react"
+import { RiClipboardLine, RiCheckLine } from "@remixicon/react"
 import { testResults } from "@/lib/testResults"
 
 export default function ExcelPage() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
   const copyToClipboard = () => {
     const headers = [
       "ID",
@@ -38,10 +42,41 @@ export default function ExcelPage() {
 
     const tsv = [headers.join("\t"), ...rows].join("\n")
     navigator.clipboard.writeText(tsv)
+    setIsDialogOpen(true)
   }
 
   return (
     <div>
+      {/* Copy Success Dialog */}
+      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} static={true}>
+        <DialogPanel className="max-w-md">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+              <RiCheckLine className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+              Copied to Clipboard!
+            </h3>
+            <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+              The test results have been copied to your clipboard.
+            </p>
+            <div className="mb-6 rounded-lg bg-gray-50 p-4 text-left dark:bg-gray-800">
+              <p className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                To paste into Excel:
+              </p>
+              <ol className="list-decimal space-y-1 pl-4 text-sm text-gray-600 dark:text-gray-400">
+                <li>Open Microsoft Excel</li>
+                <li>Select the cell where you want to paste (e.g., A1)</li>
+                <li>Press <kbd className="rounded bg-gray-200 px-1.5 py-0.5 font-mono text-xs dark:bg-gray-700">Ctrl+V</kbd> (Windows) or <kbd className="rounded bg-gray-200 px-1.5 py-0.5 font-mono text-xs dark:bg-gray-700">⌘+V</kbd> (Mac)</li>
+              </ol>
+            </div>
+            <Button variant="primary" onClick={() => setIsDialogOpen(false)}>
+              Done
+            </Button>
+          </div>
+        </DialogPanel>
+      </Dialog>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Excel

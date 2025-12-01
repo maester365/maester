@@ -2,8 +2,8 @@ import { useState } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Button } from "@/components/Button"
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
-import { RiClipboardLine, RiEyeLine, RiCodeLine } from "@remixicon/react"
+import { Dialog, DialogPanel, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
+import { RiClipboardLine, RiEyeLine, RiCodeLine, RiCheckLine } from "@remixicon/react"
 import { testResults } from "@/lib/testResults"
 
 function generateMarkdown(results: typeof testResults) {
@@ -68,13 +68,35 @@ function generateMarkdown(results: typeof testResults) {
 
 export default function MarkdownPage() {
   const [markdown, setMarkdown] = useState(generateMarkdown(testResults))
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(markdown)
+    setIsDialogOpen(true)
   }
 
   return (
     <div className="mx-auto max-w-5xl">
+      {/* Copy Success Dialog */}
+      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} static={true}>
+        <DialogPanel className="max-w-md">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+              <RiCheckLine className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+              Copied to Clipboard!
+            </h3>
+            <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+              The markdown format of the test results has been copied to your clipboard. You can now paste it into any markdown editor or document.
+            </p>
+            <Button variant="primary" onClick={() => setIsDialogOpen(false)}>
+              Done
+            </Button>
+          </div>
+        </DialogPanel>
+      </Dialog>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Markdown

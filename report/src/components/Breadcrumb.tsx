@@ -18,17 +18,11 @@ function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
     return breadcrumbs
   }
 
-  let currentPath = ""
-  segments.forEach((segment, index) => {
-    currentPath += `/${segment}`
-    const label = segment.charAt(0).toUpperCase() + segment.slice(1)
-
-    if (index === segments.length - 1) {
-      breadcrumbs.push({ label })
-    } else {
-      breadcrumbs.push({ label, href: currentPath })
-    }
-  })
+  // Skip intermediate segments like "view" that don't have their own page
+  // Only show the final segment (the actual page)
+  const lastSegment = segments[segments.length - 1]
+  const label = lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1)
+  breadcrumbs.push({ label })
 
   return breadcrumbs
 }
