@@ -27,7 +27,7 @@ export default function HomeView({ testResults }) {
     <div className="text-left">
       <div className="flex mb-6 justify-between items-end">
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold">Test Results</h1>
+          <h1 className="text-3xl font-bold dark:text-white">Test Results</h1>
         </div>
         <ThemeSwitch />
       </div>
@@ -46,7 +46,7 @@ export default function HomeView({ testResults }) {
         </Badge>
       </Flex>
       <Divider />
-      <h2 className="text-2xl font-bold mb-6">Test summary</h2>
+      <h2 className="text-2xl font-bold mb-6 dark:text-white">Test summary</h2>
       <MtTestSummary
         TotalCount={testResults.TotalCount}
         PassedCount={testResults.PassedCount}
@@ -68,7 +68,7 @@ export default function HomeView({ testResults }) {
       </Grid>
 
       <Divider />
-      <h2 className="text-2xl font-bold mb-6">Test details</h2>
+      <h2 className="text-2xl font-bold mb-6 dark:text-white">Test details</h2>
       <div className="grid grid-cols-2 gap-12"></div>
 
       <TestResultsTable TestResults={testResults} />

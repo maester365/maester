@@ -48,10 +48,10 @@ function NavItem({
     <Link
       href={href}
       className={cx(
-        "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-100",
+        "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
         isActive
-          ? "bg-orange-50 text-orange-600"
-          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
       )}
     >
       <Icon className={cx("size-[18px] shrink-0", isCollapsed && "mx-auto")} />
@@ -84,10 +84,10 @@ function NavGroup({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cx(
-          "group relative flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-100",
+          "group relative flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
           isActive
-            ? "bg-orange-50 text-orange-600"
-            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
         )}
       >
         <div className="flex items-center gap-3">
@@ -96,9 +96,9 @@ function NavGroup({
         </div>
         {!isCollapsed && (
           isOpen ? (
-            <RiArrowUpSLine className="h-4 w-4 text-gray-400" />
+            <RiArrowUpSLine className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           ) : (
-            <RiArrowDownSLine className="h-4 w-4 text-gray-400" />
+            <RiArrowDownSLine className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           )
         )}
       </button>
@@ -112,7 +112,7 @@ function NavGroup({
                 y1="0"
                 x2="0.5"
                 y2="100%"
-                className="stroke-gray-300"
+                className="stroke-gray-300 dark:stroke-gray-600"
                 strokeWidth="1"
                 strokeDasharray="3 3"
               />
@@ -137,10 +137,10 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
     <Link
       href={href}
       className={cx(
-        "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-100",
+        "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm tracking-tight transition-all duration-100",
         isActive
-          ? "bg-orange-50 text-orange-600 font-medium"
-          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+          ? "bg-orange-50 text-orange-600 font-medium dark:bg-orange-950 dark:text-orange-400"
+          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
       )}
     >
       {/* Horizontal connecting line - dashed */}
@@ -151,7 +151,7 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
             y1="0.5"
             x2="100%"
             y2="0.5"
-            className="stroke-gray-300"
+            className="stroke-gray-300 dark:stroke-gray-600"
             strokeWidth="1"
             strokeDasharray="3 3"
           />
@@ -210,13 +210,13 @@ export function Sidebar({ testResults }: SidebarProps) {
   return (
     <div
       className={cx(
-        "relative flex h-full flex-col border-r border-gray-200 bg-white transition-all duration-300",
+        "relative flex h-full flex-col border-r border-gray-200 bg-white transition-all duration-300 dark:border-gray-800 dark:bg-black",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo Header */}
       <div className={cx(
-        "flex h-16 items-center gap-3 border-b border-gray-200",
+        "flex h-16 items-center gap-3 border-b border-gray-200 dark:border-gray-800",
         isCollapsed ? "justify-center px-2" : "px-4"
       )}>
         <Link href="/" aria-label="Home" className="flex items-center gap-3">
@@ -230,8 +230,8 @@ export function Sidebar({ testResults }: SidebarProps) {
           />
           {!isCollapsed && (
             <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-semibold text-gray-900">Maester</span>
-              <span className="truncate text-xs text-gray-500">
+              <span className="text-sm font-semibold tracking-tight text-gray-900 dark:text-gray-100">Maester</span>
+              <span className="truncate text-xs tracking-tight text-gray-500 dark:text-gray-400">
                 {testResults?.TenantName || testResults?.TenantId || "Tenant"}
               </span>
             </div>
@@ -278,21 +278,21 @@ export function Sidebar({ testResults }: SidebarProps) {
       </nav>
 
       {/* Settings / Tenant info at bottom */}
-      <div className="border-t border-gray-200 p-3">
+      <div className="border-t border-gray-200 p-3 dark:border-gray-800">
         <Link
           href="/settings"
           className={cx(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-100",
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
             pathname === "/settings"
-              ? "bg-orange-50 text-orange-600"
-              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
           )}
         >
           {getTenantDisplay()}
           {!isCollapsed && (
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate font-medium">Settings</span>
-              <span className="truncate text-xs text-gray-500">
+              <span className="truncate font-medium tracking-tight">Settings</span>
+              <span className="truncate text-xs tracking-tight text-gray-500 dark:text-gray-400">
                 {testResults?.TenantName || testResults?.TenantId || "Tenant"}
               </span>
             </div>

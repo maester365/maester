@@ -4,6 +4,7 @@ import "./globals.css"
 
 import { Sidebar, SidebarProvider } from "@/components/Sidebar"
 import { Breadcrumb } from "@/components/Breadcrumb"
+import { ThemeProvider } from "@/components/ThemeProvider"
 import { testResults } from "@/lib/testResults"
 import { siteConfig } from "./siteConfig"
 
@@ -21,21 +22,23 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${GeistSans.className} min-h-screen overflow-x-hidden bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600`}
+        className={`${GeistSans.className} min-h-screen overflow-x-hidden bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600 dark:bg-black`}
       >
-        <SidebarProvider>
-          <div className="flex h-screen">
-            <Sidebar testResults={testResults} />
-            <div className="flex flex-1 flex-col overflow-hidden">
-              <Breadcrumb />
-              <main className="flex-1 overflow-auto">
-                <div className="p-6">{children}</div>
-              </main>
+        <ThemeProvider>
+          <SidebarProvider>
+            <div className="flex h-screen">
+              <Sidebar testResults={testResults} />
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <Breadcrumb />
+                <main className="flex-1 overflow-auto">
+                  <div className="p-6">{children}</div>
+                </main>
+              </div>
             </div>
-          </div>
-        </SidebarProvider>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

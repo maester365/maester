@@ -26,11 +26,11 @@ export default function HomePage() {
 
   return (
     <div className="text-left">
-      <h1 className="mb-6 text-2xl font-semibold text-gray-900">
+      <h1 className="mb-2 text-3xl font-semibold tracking-tighter text-gray-900 dark:text-white">
         Test Results
       </h1>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         <Badge
           className="bg-orange-50 text-orange-600"
           icon={RiBuilding2Line}
@@ -47,7 +47,7 @@ export default function HomePage() {
 
       <Divider />
 
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
         Test summary
       </h2>
 
@@ -74,7 +74,7 @@ export default function HomePage() {
 
       <Divider />
 
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">
+      <h2 className="mb-6 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
         Test details
       </h2>
 
