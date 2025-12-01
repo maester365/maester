@@ -13,6 +13,7 @@ import {
   ChevronsUpDown,
   ChevronUp,
   ChevronDown,
+  FileJson,
 } from "lucide-react"
 import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "react-router-dom"
@@ -285,6 +286,12 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
   }, [])
 
   const menuItems = [
+    {
+      label: "Config",
+      icon: FileJson,
+      href: "/config",
+      isActive: pathname === "/config",
+    },
     {
       label: "System",
       icon: Monitor,

@@ -404,6 +404,7 @@ function ConvertTo-MtMaesterResult {
         InvokeCommand     = $InvokeMaesterCommand
         MgContext         = GetMgContextInfo
         PesterConfig      = GetPesterConfigInfo $PesterConfiguration
+        MaesterConfig     = $__MtSession.MaesterConfig
         Tests             = $mtTests
         Blocks            = $mtBlocks
         EndOfJson         = "EndOfJson" # Always leave this as the last property. Used by the script to determine the end of the JSON

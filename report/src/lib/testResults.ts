@@ -120,6 +120,32 @@ export const testResults = {
       "RenderMode": "Auto"
     }
   },
+  "MaesterConfig": {
+    "GlobalSettings": {
+      "EmergencyAccessAccounts": [
+        {
+          "Type": "User" as const,
+          "UserPrincipalName": "BreakGlass1@contoso.com"
+        },
+        {
+          "Type": "User" as const,
+          "Id": "00000000-0000-0000-0000-000000000001"
+        },
+        {
+          "Type": "Group" as const,
+          "Id": "00000000-0000-0000-0000-000000000002",
+          "UserPrincipalName": "EmergencyAccessGroup@contoso.com"
+        }
+      ]
+    },
+    "TestSettings": [
+      { "Id": "CIS.M365.1.1.1", "Severity": "High", "Title": "(L1) Ensure Administrative accounts are cloud-only" },
+      { "Id": "CIS.M365.1.1.3", "Severity": "High", "Title": "(L1) Ensure that between two and four global admins are designated" },
+      { "Id": "CISA.MS.AAD.1.1", "Severity": "High", "Title": "Legacy authentication SHALL be blocked." },
+      { "Id": "CISA.MS.AAD.2.1", "Severity": "High", "Title": "Users detected as high risk SHALL be blocked." },
+      { "Id": "MT.1001", "Severity": "Medium", "Title": "At least one Conditional Access policy is configured with device compliance." }
+    ]
+  },
   "Tests": [
     {
       "Index": 1,
