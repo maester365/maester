@@ -15,6 +15,10 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
   },
+  esbuild: {
+    minifyIdentifiers: false,
+    keepNames: true,
+  },
   server: {
     port: 3000,
     open: true,

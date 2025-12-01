@@ -20703,7 +20703,8 @@ export const testResults = {
     "OutputJsonFile": "./test-results/TestResults-2025-11-27-212901.json",
     "OutputCsvFile": null,
     "OutputExcelFile": null
-  }
+  },
+  "EndOfJson": "EndOfJson"
 }
 
 

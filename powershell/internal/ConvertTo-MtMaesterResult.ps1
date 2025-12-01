@@ -216,7 +216,7 @@ function ConvertTo-MtMaesterResult {
         }
     }
 
-    $mtTestResults = [PSCustomObject]@{
+    $mtTestResults = [PSCustomObject][ordered]@{
         Result            = $PesterResults.Result
         FailedCount       = $Recount.FailedCount
         PassedCount       = $Recount.PassedCount
@@ -236,6 +236,7 @@ function ConvertTo-MtMaesterResult {
         LatestVersion     = $latestVersion
         Tests             = $mtTests
         Blocks            = $mtBlocks
+        EndOfJson         = "EndOfJson" # Always leave this as the last property. Used by the script to determine the end of the JSON
     }
 
     # Add output files information if provided
