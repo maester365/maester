@@ -89,11 +89,11 @@ export default function MtBlocksArea(props) {
 
             {/* Full-screen Modal */}
             {isModalOpen && (
-                <div 
+                <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
                     onClick={closeModal}
                 >
-                    <div 
+                    <div
                         className="relative w-[95vw] h-[90vh] bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6"
                         onClick={(e) => e.stopPropagation()}
                     >
