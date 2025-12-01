@@ -38,9 +38,9 @@ The Maester module includes [`Connect-Maester`](/docs/commands/Connect-Maester) 
 
 **Recommended for automation use**
 
-The Maester module provides a framework for creating, executing, and reporting on configuration state using tests. Each test can rely on one or more sources to perform validation. Each source a test validates may be available without authentication (e.g., Domain Name System) or may require authentication to a sepcific environment (e.g., Microsoft Graph API).
+The Maester module provides a framework for creating, executing, and reporting on configuration state using tests. Each test can rely on one or more sources to perform validation. Each source a test validates may be available without authentication (e.g., Domain Name System) or may require authentication to a specific environment (e.g., Microsoft Graph API).
 
-The recommendation for authenticating to modules necessary to support tests for the most extensibility is to authentcate within those source modules and running `Invoke-Maester` with the `-SkipGraphConnect` property.
+The recommendation for authenticating to modules necessary to support tests for the most extensibility is to authenticate within those source modules and running `Invoke-Maester` with the `-SkipGraphConnect` property.
 
 As an example, connecting to the Microsoft Graph PowerShell SDK module as a managed identity and then running Maester.
 
@@ -79,7 +79,7 @@ For use with the Maester tests the following provides an overview of creating th
 
 ## Authenticating Across Tenants
 
-You may have a need to use Maester with multiple tenanats. The Maester tests enable you to accomplish this, but it is best to authenticate within the respective modules for the tests you wish to run.
+You may have a need to use Maester with multiple tenants. The Maester tests enable you to accomplish this, but it is best to authenticate within the respective modules for the tests you wish to run.
 
 ### Microsoft Graph PowerShell SDK Module
 
