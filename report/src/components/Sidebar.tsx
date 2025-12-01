@@ -1,5 +1,3 @@
-"use client"
-
 import { cx } from "@/lib/utils"
 import {
   RiArrowDownSLine,
@@ -12,9 +10,7 @@ import {
   Printer,
   Table,
 } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { Link, useLocation } from "react-router-dom"
 import React, { useState, createContext, useContext } from "react"
 
 interface SidebarContextType {
@@ -46,7 +42,7 @@ function NavItem({
 }: NavItemProps) {
   return (
     <Link
-      href={href}
+      to={href}
       className={cx(
         "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
         isActive
@@ -135,7 +131,7 @@ interface SubNavItemProps {
 function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
   return (
     <Link
-      href={href}
+      to={href}
       className={cx(
         "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm tracking-tight transition-all duration-100",
         isActive
@@ -183,7 +179,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
 export function Sidebar({ testResults }: SidebarProps) {
   const { isCollapsed } = useSidebar()
-  const pathname = usePathname()
+  const location = useLocation()
+  const pathname = location.pathname
 
   const isViewActive = pathname.startsWith("/view")
   const currentView = pathname.split("/").pop()
@@ -219,9 +216,9 @@ export function Sidebar({ testResults }: SidebarProps) {
         "flex h-16 items-center gap-3 border-b border-gray-200 dark:border-gray-800",
         isCollapsed ? "justify-center px-2" : "px-4"
       )}>
-        <Link href="/" aria-label="Home" className="flex items-center gap-3">
+        <Link to="/" aria-label="Home" className="flex items-center gap-3">
           <span className="sr-only">Maester Logo (go home)</span>
-          <Image
+          <img
             src="/assets/maester.png"
             alt="Maester"
             width={32}
@@ -280,7 +277,7 @@ export function Sidebar({ testResults }: SidebarProps) {
       {/* Settings / Tenant info at bottom */}
       <div className="border-t border-gray-200 p-3 dark:border-gray-800">
         <Link
-          href="/settings"
+          to="/settings"
           className={cx(
             "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
             pathname === "/settings"

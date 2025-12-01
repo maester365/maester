@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { testResults } from "@/lib/testResults"
 import { Button } from "@/components/Button"

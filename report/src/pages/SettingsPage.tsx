@@ -1,5 +1,3 @@
-"use client"
-
 import { testResults } from "@/lib/testResults"
 import { Divider } from "@/components/Divider"
 

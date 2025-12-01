@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/Button"
 import { RiClipboardLine } from "@remixicon/react"
 import { testResults } from "@/lib/testResults"

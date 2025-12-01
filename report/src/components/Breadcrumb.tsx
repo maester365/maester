@@ -1,10 +1,7 @@
-"use client"
-
 import { cx } from "@/lib/utils"
 import { RiArrowRightSLine } from "@remixicon/react"
 import { PanelLeft } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { Link, useLocation } from "react-router-dom"
 import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
 
@@ -37,7 +34,8 @@ function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
 }
 
 export function Breadcrumb() {
-  const pathname = usePathname()
+  const location = useLocation()
+  const pathname = location.pathname
   const { isCollapsed, setIsCollapsed } = useSidebar()
   const breadcrumbs = getBreadcrumbs(pathname)
 
@@ -68,7 +66,7 @@ export function Breadcrumb() {
                 )}
                 {item.href ? (
                   <Link
-                    href={item.href}
+                    to={item.href}
                     className="text-sm tracking-tight text-gray-500 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100"
                   >
                     {item.label}

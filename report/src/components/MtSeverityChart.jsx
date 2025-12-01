@@ -1,4 +1,4 @@
-"use client";
+
 import React, { useState } from "react";
 import { Card, Title, BarChart, Switch, Flex, Text } from "@tremor/react";
 

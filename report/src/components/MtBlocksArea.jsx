@@ -1,4 +1,4 @@
-"use client";
+
 import React from "react";
 import { Text, AreaChart, ListItem, Card, Title, CategoryBar } from "@tremor/react";
 
