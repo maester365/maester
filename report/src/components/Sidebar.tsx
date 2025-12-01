@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import React, { useState, createContext, useContext } from "react"
+import maesterLogo from "@/assets/maester.png"
 
 interface SidebarContextType {
   isCollapsed: boolean
@@ -99,21 +100,9 @@ function NavGroup({
         )}
       </button>
       {isOpen && !isCollapsed && (
-        <div className="relative ml-4 mt-1 space-y-1 pl-4">
-          {/* Vertical connecting line - dashed */}
-          <div className="absolute left-0 top-0 bottom-2 w-px">
-            <svg className="h-full w-full" preserveAspectRatio="none">
-              <line
-                x1="0.5"
-                y1="0"
-                x2="0.5"
-                y2="100%"
-                className="stroke-gray-300 dark:stroke-gray-600"
-                strokeWidth="1"
-                strokeDasharray="3 3"
-              />
-            </svg>
-          </div>
+        <div className="relative ml-4 mt-1 space-y-0.5 pl-4">
+          {/* Vertical connecting line - solid */}
+          <div className="absolute left-0 top-0 bottom-2 w-px bg-gray-200 dark:bg-gray-700" />
           {children}
         </div>
       )}
@@ -139,20 +128,6 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
           : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
       )}
     >
-      {/* Horizontal connecting line - dashed */}
-      <div className="absolute -left-4 top-1/2 w-4 h-px">
-        <svg className="h-full w-full" preserveAspectRatio="none">
-          <line
-            x1="0"
-            y1="0.5"
-            x2="100%"
-            y2="0.5"
-            className="stroke-gray-300 dark:stroke-gray-600"
-            strokeWidth="1"
-            strokeDasharray="3 3"
-          />
-        </svg>
-      </div>
       <Icon className="size-[18px] shrink-0" />
       <span>{label}</span>
     </Link>
@@ -219,7 +194,7 @@ export function Sidebar({ testResults }: SidebarProps) {
         <Link to="/" aria-label="Home" className="flex items-center gap-3">
           <span className="sr-only">Maester Logo (go home)</span>
           <img
-            src="/assets/maester.png"
+            src={maesterLogo}
             alt="Maester"
             width={32}
             height={32}
@@ -251,7 +226,7 @@ export function Sidebar({ testResults }: SidebarProps) {
           label="View"
           isActive={isViewActive}
           isCollapsed={isCollapsed}
-          defaultOpen={isViewActive}
+          defaultOpen={true}
         >
           <SubNavItem
             href="/view/markdown"
