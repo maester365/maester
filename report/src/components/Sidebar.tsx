@@ -235,16 +235,16 @@ export function Sidebar({ testResults }: SidebarProps) {
             isActive={currentView === "markdown"}
           />
           <SubNavItem
-            href="/view/print"
-            icon={Printer}
-            label="Print"
-            isActive={currentView === "print"}
-          />
-          <SubNavItem
             href="/view/excel"
             icon={Table}
             label="Excel"
             isActive={currentView === "excel"}
+          />
+          <SubNavItem
+            href="/view/print"
+            icon={Printer}
+            label="Print"
+            isActive={currentView === "print"}
           />
         </NavGroup>
       </nav>

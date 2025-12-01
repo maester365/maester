@@ -5,9 +5,18 @@ import { RiPrinterLine } from "@remixicon/react"
 import StatusLabel from "@/components/StatusLabel"
 import SeverityBadge from "@/components/SeverityBadge"
 import ResultInfo from "@/components/ResultInfo"
+import maesterLogo from "@/assets/maester.png"
 
 export default function PrintPage() {
   const [isPrinting, setIsPrinting] = useState(false)
+  const tenantName = testResults.TenantName || testResults.TenantId || "Tenant"
+  const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
+    undefined,
+    {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }
+  )
 
   const handlePrint = () => {
     setIsPrinting(true)
@@ -55,10 +64,7 @@ export default function PrintPage() {
 
   return (
     <div>
-      <div className="no-print mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-          Print Report
-        </h1>
+      <div className="no-print mb-6 flex items-center justify-end">
         <Button variant="primary" onClick={handlePrint} disabled={isPrinting}>
           <RiPrinterLine className="mr-2 h-4 w-4" />
           {isPrinting ? "Preparing..." : "Print Report"}
@@ -67,15 +73,19 @@ export default function PrintPage() {
 
       <div className="print-content">
         {/* Report Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-            Maester Test Results
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Tenant: {testResults.TenantName} ({testResults.TenantId})
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Generated: {new Date(testResults.ExecutedAt).toLocaleString()}
+        <div className="mb-6">
+          <div className="mb-4 flex items-center gap-3">
+            <img
+              src={maesterLogo}
+              alt="Maester Logo"
+              className="h-10 w-10"
+            />
+            <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+              Maester Test Results
+            </h1>
+          </div>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {tenantName} • {testDateLocal}
           </p>
         </div>
 
