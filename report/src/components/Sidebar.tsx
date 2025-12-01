@@ -1,17 +1,22 @@
 import { cx } from "@/lib/utils"
 import {
-  RiArrowDownSLine,
-  RiArrowUpSLine,
-} from "@remixicon/react"
-import {
   House,
   Eye,
   FileText,
   Printer,
   Table,
+  Monitor,
+  Globe,
+  CircleAlert,
+  Settings,
+  ArrowUpRight,
+  ChevronsUpDown,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react"
+import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "react-router-dom"
-import React, { useState, createContext, useContext } from "react"
+import React, { useState, createContext, useContext, useRef, useEffect } from "react"
 import maesterLogo from "@/assets/maester.png"
 
 interface SidebarContextType {
@@ -93,9 +98,9 @@ function NavGroup({
         </div>
         {!isCollapsed && (
           isOpen ? (
-            <RiArrowUpSLine className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <ChevronUp className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           ) : (
-            <RiArrowDownSLine className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-gray-400 dark:text-gray-500" />
           )
         )}
       </button>
@@ -134,11 +139,15 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
   )
 }
 
+interface TenantLogos {
+  Banner?: string | null
+}
+
 interface SidebarProps {
   testResults?: {
     TenantName?: string
     TenantId?: string
-    TenantLogo?: string
+    TenantLogos?: TenantLogos | null
   }
 }
 
@@ -161,21 +170,8 @@ export function Sidebar({ testResults }: SidebarProps) {
   const currentView = pathname.split("/").pop()
 
   const getTenantDisplay = () => {
-    if (testResults?.TenantLogo) {
-      return (
-        <img
-          src={testResults.TenantLogo}
-          alt={testResults.TenantName || "Tenant"}
-          className="h-8 w-8 rounded-full object-cover"
-        />
-      )
-    }
-    const name = testResults?.TenantName || testResults?.TenantId || "Te"
-    const prefix = name.substring(0, 2).toUpperCase()
     return (
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 text-xs font-semibold text-white">
-        {prefix}
-      </div>
+      <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
     )
   }
 
@@ -250,30 +246,143 @@ export function Sidebar({ testResults }: SidebarProps) {
       </nav>
 
       {/* Settings / Tenant info at bottom */}
-      <div className="border-t border-gray-200 p-3 dark:border-gray-800">
-        <Link
-          to="/settings"
+      <div className="relative border-t border-gray-200 p-3 dark:border-gray-800">
+        <SettingsMenu
+          isCollapsed={isCollapsed}
+          getTenantDisplay={getTenantDisplay}
+          tenantName={testResults?.TenantName}
+          tenantId={testResults?.TenantId}
+          pathname={pathname}
+        />
+      </div>
+    </div>
+  )
+}
+
+interface SettingsMenuProps {
+  isCollapsed: boolean
+  getTenantDisplay: () => React.ReactNode
+  tenantName?: string
+  tenantId?: string
+  pathname: string
+}
+
+function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pathname }: SettingsMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  const menuItems = [
+    {
+      label: "System",
+      icon: Monitor,
+      href: "/system",
+      isActive: pathname === "/system",
+    },
+    { separator: true },
+    {
+      label: "Maester.dev",
+      icon: Globe,
+      href: "https://maester.dev",
+      external: true,
+    },
+    {
+      label: "GitHub",
+      icon: RiGithubFill,
+      href: "https://github.com/maester365/maester",
+      external: true,
+    },
+    {
+      label: "Issues",
+      icon: CircleAlert,
+      href: "https://github.com/maester365/maester/issues",
+      external: true,
+    },
+  ]
+
+  return (
+    <div ref={menuRef} className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={cx(
+          "flex w-full items-center gap-3 rounded-md text-sm font-medium tracking-tight transition-all duration-100",
+          isCollapsed ? "justify-center px-0 py-2" : "px-3 py-2",
+          isOpen
+            ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+        )}
+      >
+        <div className="shrink-0">
+          {getTenantDisplay()}
+        </div>
+        {!isCollapsed && (
+          <div className="flex flex-1 flex-col overflow-hidden text-left">
+            <span className="truncate font-medium tracking-tight">Settings</span>
+            <span className="truncate text-xs tracking-tight text-gray-500 dark:text-gray-400">
+              {tenantName || tenantId || "Tenant"}
+            </span>
+          </div>
+        )}
+        {!isCollapsed && (
+          <ChevronsUpDown className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+        )}
+      </button>
+
+      {/* Popup Menu */}
+      {isOpen && (
+        <div
           className={cx(
-            "flex items-center gap-3 rounded-md text-sm font-medium tracking-tight transition-all duration-100",
-            isCollapsed ? "justify-center px-0 py-2" : "px-3 py-2",
-            pathname === "/settings"
-              ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
-              : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+            "absolute z-50 rounded-md border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900",
+            isCollapsed ? "bottom-0 left-full ml-2 w-48" : "bottom-full left-0 mb-2 w-full"
           )}
         >
-          <div className="shrink-0">
-            {getTenantDisplay()}
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col overflow-hidden">
-              <span className="truncate font-medium tracking-tight">Settings</span>
-              <span className="truncate text-xs tracking-tight text-gray-500 dark:text-gray-400">
-                {testResults?.TenantName || testResults?.TenantId || "Tenant"}
-              </span>
-            </div>
+          {menuItems.map((item, index) =>
+            item.separator ? (
+              <div key={`separator-${index}`} className="my-1 border-t border-gray-200 dark:border-gray-700" />
+            ) : item.external ? (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                <item.icon className="h-4 w-4" />
+                <span className="flex-1">{item.label}</span>
+                <ArrowUpRight className="h-3 w-3 text-gray-400 dark:text-gray-500" />
+              </a>
+            ) : (
+              <Link
+                key={item.label}
+                to={item.href}
+                onClick={() => setIsOpen(false)}
+                className={cx(
+                  "flex items-center gap-3 px-3 py-2 text-sm",
+                  item.isActive
+                    ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                <span>{item.label}</span>
+              </Link>
+            )
           )}
-        </Link>
-      </div>
+        </div>
+      )}
     </div>
   )
 }

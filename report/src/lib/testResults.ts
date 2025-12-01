@@ -16,9 +16,110 @@ export const testResults = {
   "FrameworkDuration": "00:00:01",
   "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
   "TenantName": "Pora Inc.",
+  "TenantLogos": {
+    "Banner": null
+  },
   "Account": "merill@elapora.com",
   "CurrentVersion": "Next",
   "LatestVersion": "1.3.0",
+  "SystemInfo": {
+    "MachineName": "DESKTOP-ABC123",
+    "OSDescription": "Microsoft Windows 11 Pro (10.0.22631)",
+    "OSPlatform": "Windows",
+    "ProcessorCount": 8,
+    "UserName": "merill",
+    "UserDomain": "DESKTOP-ABC123"
+  },
+  "PowerShellInfo": {
+    "Version": "7.4.1",
+    "Edition": "Core",
+    "Platform": "Win32NT"
+  },
+  "LoadedModules": [
+    { "Name": "Maester", "Version": "1.3.0" },
+    { "Name": "Microsoft.Graph.Authentication", "Version": "2.15.0" },
+    { "Name": "Microsoft.Graph.Identity.DirectoryManagement", "Version": "2.15.0" },
+    { "Name": "Microsoft.Graph.Users", "Version": "2.15.0" },
+    { "Name": "Pester", "Version": "5.5.0" },
+    { "Name": "PSReadLine", "Version": "2.3.4" }
+  ],
+  "InvokeCommand": "Invoke-Maester -Path ./tests -OutputFolder ./test-results -OutputHtmlFile TestResults.html",
+  "MgContext": {
+    "ClientId": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
+    "TenantId": "0817c655-a853-4d8f-9723-3a333b5b9235",
+    "Scopes": [
+      "Directory.Read.All",
+      "Policy.Read.All",
+      "User.Read.All",
+      "openid",
+      "profile",
+      "email"
+    ],
+    "AuthType": "Delegated",
+    "TokenCredentialType": "InteractiveBrowser",
+    "Account": "merill@elapora.com",
+    "AppName": "Microsoft Graph Command Line Tools",
+    "ContextScope": "CurrentUser",
+    "Environment": "Global",
+    "ManagedIdentityId": ""
+  },
+  "PesterConfig": {
+    "Run": {
+      "Path": ["./tests"],
+      "ExcludePath": [],
+      "ScriptBlock": [],
+      "Container": [],
+      "TestExtension": ".Tests.ps1",
+      "Exit": false,
+      "Throw": false,
+      "PassThru": true,
+      "SkipRun": false,
+      "SkipRemainingOnFailure": "None"
+    },
+    "Filter": {
+      "Tag": [],
+      "ExcludeTag": ["LongRunning", "Preview"],
+      "Line": [],
+      "ExcludeLine": [],
+      "FullName": []
+    },
+    "CodeCoverage": {
+      "Enabled": false,
+      "OutputFormat": "JaCoCo",
+      "OutputPath": "coverage.xml",
+      "OutputEncoding": "UTF8",
+      "Path": [],
+      "ExcludeTests": true,
+      "RecursePaths": true,
+      "CoveragePercentTarget": 75,
+      "UseBreakpoints": true,
+      "SingleHitBreakpoints": true
+    },
+    "TestResult": {
+      "Enabled": false,
+      "OutputFormat": "NUnitXml",
+      "OutputPath": "testResults.xml",
+      "OutputEncoding": "UTF8",
+      "TestSuiteName": "Pester"
+    },
+    "Should": {
+      "ErrorAction": "Stop"
+    },
+    "Debug": {
+      "ShowFullErrors": false,
+      "WriteDebugMessages": false,
+      "WriteDebugMessagesFrom": ["Discovery", "Skip", "Mock", "CodeCoverage"],
+      "ShowNavigationMarkers": false,
+      "ReturnRawResultObject": false
+    },
+    "Output": {
+      "Verbosity": "None",
+      "StackTraceVerbosity": "Filtered",
+      "CIFormat": "Auto",
+      "CILogLevel": "Error",
+      "RenderMode": "Auto"
+    }
+  },
   "Tests": [
     {
       "Index": 1,
