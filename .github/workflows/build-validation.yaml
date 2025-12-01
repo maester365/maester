@@ -7,6 +7,9 @@ on:
 
   pull_request:
     branches: ["main"]
+    paths:
+      - 'powershell/**'
+      - '.github/workflows/build-validation.yaml'
 
 permissions:
   contents: read
