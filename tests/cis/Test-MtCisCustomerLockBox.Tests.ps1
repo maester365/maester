@@ -1,7 +1,7 @@
 BeforeDiscovery {
     try {
         $CustomerLockboxPlan = Get-MtLicenseInformation -Product CustomerLockbox
-        if ($CustomerLockboxPlan -ne $true) {
+        if ($null -eq $CustomerLockboxPlan) {
             Add-MtTestResultDetail -SkippedBecause NotLicensedCustomerLockbox
         }
     } catch {
