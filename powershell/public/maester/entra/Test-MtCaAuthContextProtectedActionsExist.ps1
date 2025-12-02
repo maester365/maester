@@ -40,10 +40,6 @@ function Test-MtCaAuthContextProtectedActionsExist {
             return $true
         }
 
-        # Get all protected actions
-        $protectedActions = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/authenticationStrength/policies' -ApiVersion beta -ErrorAction SilentlyContinue
-        $protectedActionContexts = Invoke-MtGraphRequest -RelativeUri 'policies/authenticationStrengthPolicies' -ApiVersion beta -ErrorAction SilentlyContinue
-
         # Get the role management policy assignments to find protected actions
         # Protected Actions are configured through PIM policies
         $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'Directory'" -ErrorAction SilentlyContinue
