@@ -5,7 +5,7 @@ The minimum length in seconds of each lockout. If an account locks repeatedly, t
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 ```
 
 #### Related links
