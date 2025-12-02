@@ -42,41 +42,41 @@ interface SeverityOption {
 }
 
 const SEVERITY_OPTIONS: SeverityOption[] = [
-  { 
-    value: "Critical", 
-    label: "Critical", 
+  {
+    value: "Critical",
+    label: "Critical",
     icon: ShieldAlert,
     bgColor: "bg-purple-100 dark:bg-purple-900/50",
     textColor: "text-purple-800 dark:text-purple-200",
     iconColor: "text-purple-600 dark:text-purple-400"
   },
-  { 
-    value: "High", 
-    label: "High", 
+  {
+    value: "High",
+    label: "High",
     icon: AlertCircle,
     bgColor: "bg-red-100 dark:bg-red-900/50",
     textColor: "text-red-800 dark:text-red-200",
     iconColor: "text-red-600 dark:text-red-400"
   },
-  { 
-    value: "Medium", 
-    label: "Medium", 
+  {
+    value: "Medium",
+    label: "Medium",
     icon: AlertTriangle,
     bgColor: "bg-orange-100 dark:bg-orange-900/50",
     textColor: "text-orange-800 dark:text-orange-200",
     iconColor: "text-orange-600 dark:text-orange-400"
   },
-  { 
-    value: "Low", 
-    label: "Low", 
+  {
+    value: "Low",
+    label: "Low",
     icon: CircleAlert,
     bgColor: "bg-yellow-100 dark:bg-yellow-900/50",
     textColor: "text-yellow-800 dark:text-yellow-200",
     iconColor: "text-yellow-600 dark:text-yellow-400"
   },
-  { 
-    value: "Info", 
-    label: "Info", 
+  {
+    value: "Info",
+    label: "Info",
     icon: Info,
     bgColor: "bg-blue-100 dark:bg-blue-900/50",
     textColor: "text-blue-800 dark:text-blue-200",
@@ -111,17 +111,17 @@ const getInitialIdentifierType = (account: EmergencyAccessAccount): IdentifierTy
 export default function ConfigPage({ testResults }: ConfigPageProps) {
   const { isCollapsed } = useSidebar()
   const originalConfig = testResults?.MaesterConfig
-  
+
   // State for edited emergency access accounts
   const [editedEmergencyAccounts, setEditedEmergencyAccounts] = useState<EmergencyAccessAccount[]>(
-    () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts 
-      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))] 
+    () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
       : []
   )
 
   // State for tracking which identifier type is selected for each account
   const [identifierTypes, setIdentifierTypes] = useState<IdentifierType[]>(
-    () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts 
+    () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
       ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
       : []
   )
@@ -139,12 +139,12 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
       editedEmergencyAccounts.some((account, index) => {
         const original = originalAccounts[index]
         if (!original) return true
-        return account.Type !== original.Type || 
-               account.Id !== original.Id || 
+        return account.Type !== original.Type ||
+               account.Id !== original.Id ||
                account.UserPrincipalName !== original.UserPrincipalName
       })
 
-    // Check test settings changes  
+    // Check test settings changes
     const testSettingsChanged = originalConfig?.TestSettings && editedTestSettings.some((setting, index) => {
       const original = originalConfig.TestSettings?.[index]
       if (!original) return true
@@ -238,7 +238,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
       },
       TestSettings: editedTestSettings
     }
-    
+
     const blob = new Blob([JSON.stringify(exportConfig, null, 2)], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -252,18 +252,18 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
 
   const handleReset = () => {
     setEditedEmergencyAccounts(
-      originalConfig?.GlobalSettings?.EmergencyAccessAccounts 
-        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))] 
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
         : []
     )
     setIdentifierTypes(
-      originalConfig?.GlobalSettings?.EmergencyAccessAccounts 
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
         ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
         : []
     )
     setEditedTestSettings(
-      originalConfig?.TestSettings 
-        ? [...originalConfig.TestSettings.map(t => ({ ...t }))] 
+      originalConfig?.TestSettings
+        ? [...originalConfig.TestSettings.map(t => ({ ...t }))]
         : []
     )
   }
@@ -307,7 +307,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
           Configure emergency access (break glass) accounts that should be excluded from all Conditional Access policies.
         </p>
-        
+
         {editedEmergencyAccounts.length > 0 ? (
           <div className="space-y-3">
             {editedEmergencyAccounts.map((account, index) => (
@@ -474,7 +474,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
           <FileJson className="h-5 w-5" />
           Test Settings
         </h2>
-        
+
         {editedTestSettings.length > 0 ? (
           <div className="grid gap-4">
             {editedTestSettings.map((setting) => (
@@ -486,7 +486,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
                       {setting.Id}
                     </span>
                   </div>
-                  
+
                   {/* Title - Editable */}
                   <div className="flex flex-col gap-1">
                     <label htmlFor={`title-${setting.Id}`} className="text-xs font-medium text-gray-500 dark:text-gray-400">Title</label>
@@ -499,7 +499,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
                       className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
-                  
+
                   {/* Severity - Dropdown */}
                   <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-gray-500 dark:text-gray-400">Severity</label>
@@ -563,7 +563,7 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
       </section>
 
       {/* Fixed Export Bar at bottom of right pane */}
-      <div 
+      <div
         className="fixed bottom-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 py-4 shadow-lg z-50 transition-all duration-200"
         style={{ left: isCollapsed ? '4rem' : '16rem' }}
       >
