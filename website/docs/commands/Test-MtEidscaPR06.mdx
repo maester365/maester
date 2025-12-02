@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to '10'
+description: Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to 10
 id: Test-MtEidscaPR06
 title: Test-MtEidscaPR06
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to '10'
+Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to 10
 
 ## SYNTAX
 
@@ -25,7 +25,7 @@ If the first sign-in after a lockout also fails, the account locks out again.
 
 Queries settings
 and returns the result of
- graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
+ graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ and returns the result of
 Test-MtEidscaPR06
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
+Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
 
 ## PARAMETERS
 

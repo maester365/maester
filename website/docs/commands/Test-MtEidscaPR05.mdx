@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to '60'
+description: Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
 id: Test-MtEidscaPR05
 title: Test-MtEidscaPR05
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to '60'
+Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
 
 ## SYNTAX
 
@@ -25,7 +25,7 @@ If an account locks repeatedly, this duration increases.
 
 Queries settings
 and returns the result of
- graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+ graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ and returns the result of
 Test-MtEidscaPR05
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 
 ## PARAMETERS
 
