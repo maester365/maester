@@ -25,7 +25,7 @@ How many failed sign-ins are allowed on an account before its first lockout. If 
 | **Recommendation** | [Prevent attacks using smart lockout - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/howto-password-smart-lockout) |
 | **Configuration** | settings |
 | **Setting** | `values | where-object name -eq 'LockoutThreshold' | select-object -expand value` |
-| **Recommended Value** | is less than or equal to '10' |
+| **Recommended Value** | is less than or equal to 10 |
 | **Default Value** | 10 |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
 | **Graph Explorer** | [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=settings&method=GET&version=beta&GraphUrl=https://graph.microsoft.com) |
