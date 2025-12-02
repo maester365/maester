@@ -85,7 +85,7 @@
         Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
     }
 
-    It "MT.1090: All Protected Actions Authentication Contexts should be referenced by a Conditional Access policy. See https://maester.dev/docs/tests/MT.1090" -Tag "MT.1090" {
+    It "MT.1106: All Protected Actions Authentication Contexts should be referenced by a Conditional Access policy. See https://maester.dev/docs/tests/MT.1106" -Tag "MT.1106" {
         Test-MtCaAuthContextProtectedActionsExist | Should -Be $true -Because "all Authentication Contexts used in Protected Actions should be enforced by Conditional Access policies."
     }
 

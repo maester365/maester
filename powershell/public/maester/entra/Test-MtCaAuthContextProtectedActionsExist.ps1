@@ -54,7 +54,7 @@ function Test-MtCaAuthContextProtectedActionsExist {
                     $policyDetails = Invoke-MtGraphRequest -RelativeUri "policies/roleManagementPolicies/$($assignment.policyId)" -ApiVersion beta -ErrorAction SilentlyContinue
                     if ($policyDetails.rules) {
                         foreach ($rule in $policyDetails.rules) {
-                            if ($rule.'@odata.type' -eq '#microsoft.graph.unifiedRoleManagementPolicyAuthenticationContextRule' -and $rule.claimValue) {
+                            if ($rule.'@odata.type' -eq '#microsoft.graph.unifiedRoleManagementPolicyAuthenticationContextRule' -and $rule.isEnabled -and $rule.claimValue) {
                                 [void]$authContextsInProtectedActions.Add($rule.claimValue)
                             }
                         }
@@ -65,8 +65,8 @@ function Test-MtCaAuthContextProtectedActionsExist {
             }
         }
 
-        # Get all conditional access policies
-        $caPolicies = Get-MtConditionalAccessPolicy
+        # Get all enabled conditional access policies
+        $caPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
         # Collect all auth context IDs referenced in CA policies
         $authContextsInCAPolicies = [System.Collections.Generic.HashSet[string]]::new()
@@ -81,17 +81,15 @@ function Test-MtCaAuthContextProtectedActionsExist {
         # Check for auth contexts that are used in protected actions but not in CA policies
         $unprotectedContexts = [System.Collections.Generic.List[object]]::new()
 
-        foreach ($authContext in $authContexts) {
-            # Only check if this auth context is used in protected actions
-            if ($authContextsInProtectedActions.Contains($authContext.id)) {
-                if (-not $authContextsInCAPolicies.Contains($authContext.id)) {
-                    $unprotectedContexts.Add(@{
-                        Id = $authContext.id
-                        DisplayName = $authContext.displayName
-                        Description = $authContext.description
-                        IsAvailable = $authContext.isAvailable
-                    })
-                }
+        foreach ($id in $authContextsInProtectedActions) {
+            if (-not $authContextsInCAPolicies.Contains($id)) {
+                $ctx = $authContexts | Where-Object { $_.id -eq $id } | Select-Object -First 1
+                $unprotectedContexts.Add(@{
+                    Id = $id
+                    DisplayName = if ($ctx) { $ctx.displayName } else { '(Deleted or not found)' }
+                    Description = if ($ctx) { $ctx.description } else { '' }
+                    IsAvailable = if ($ctx) { $ctx.isAvailable } else { $null }
+                })
             }
         }
 
