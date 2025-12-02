@@ -1,34 +1,36 @@
-# This workflow takes the current 'main' branch and updates the 'website-prod' branch with its contents.
-# This will trigger Cloudflare to publish a new version of the website.
+# To be deleted: Not needed anymore since we are switching to Docusaurus versioning.
 
-# NOTE: DO NOT make PRs against the website-prod branch.
-# Any changes here will be overwritten automatically in the next release.
+# # This workflow takes the current 'main' branch and updates the 'website-prod' branch with its contents.
+# # This will trigger Cloudflare to publish a new version of the website.
 
-# Avoid running this workflow manually, as it is intended to be run only after a new release is published.
-# Running it manually can cause preview cmdlets and instructions to be published to the main version.
+# # NOTE: DO NOT make PRs against the website-prod branch.
+# # Any changes here will be overwritten automatically in the next release.
 
-name: publish-website
+# # Avoid running this workflow manually, as it is intended to be run only after a new release is published.
+# # Running it manually can cause preview cmdlets and instructions to be published to the main version.
 
-on:
-  # Runs whenever a new Maester module is published
-  release:
-    types: [published]
+# name: publish-website
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+# on:
+#   # Runs whenever a new Maester module is published
+#   release:
+#     types: [published]
 
-permissions:
-  contents: write
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
 
-jobs:
-  update-branch:
-    runs-on: ubuntu-latest
+# permissions:
+#   contents: write
 
-    steps:
-      - uses: actions/checkout@v6.0.0
+# jobs:
+#   update-branch:
+#     runs-on: ubuntu-latest
 
-      - name: Update website-prod branch
-        run: |
-          git push origin --delete website-prod || true
-          git checkout -b website-prod
-          git push origin website-prod
+#     steps:
+#       - uses: actions/checkout@v6.0.0
+
+#       - name: Update website-prod branch
+#         run: |
+#           git push origin --delete website-prod || true
+#           git checkout -b website-prod
+#           git push origin website-prod
