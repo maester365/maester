@@ -52,7 +52,8 @@ function GetRecommendedValue($RecommendedValue) {
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
                 $isNumericComparison = $true
-                $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
+                $RecommendedValue = $RecommendedValue.Substring($compareOperator.Length).Trim()
+                break
             }
         }
         # Don't wrap in quotes for numeric comparisons to ensure proper numeric comparison in Pester
