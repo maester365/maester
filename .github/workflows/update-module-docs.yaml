@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.0
       - name: Update maester.dev powershell docs
         run: ./build/Update-CommandReference.ps1
         shell: pwsh

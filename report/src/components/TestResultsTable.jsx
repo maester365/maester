@@ -124,7 +124,7 @@ export default function TestResultsTable(props) {
 
   const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
-  const status = ['Passed', 'Failed', 'NotRun', 'Skipped', 'Error'];
+  const status = ['Passed', 'Failed', 'Skipped', 'NotRun', 'Error'];
   const severities = ['Critical', 'High', 'Medium', 'Low', 'Info', 'None'];
   const uniqueTags = [...new Set(testResults.Tests.flatMap((t) => t.Tag || []))];
 
@@ -142,6 +142,8 @@ export default function TestResultsTable(props) {
   return (
     <Card>
       {/* First row: Search, Status, Severity in one row */}
+      {!props.isPrintView && (
+      <>
       <Flex justifyContent="between" className="gap-2 mb-2">
         <TextInput
           icon={MagnifyingGlassIcon}
@@ -209,6 +211,8 @@ export default function TestResultsTable(props) {
             ))}
         </MultiSelect>
       </Flex>
+      </>
+      )}
 
       <Table className="mt-2 w-full">
         <TableHead>
@@ -229,20 +233,32 @@ export default function TestResultsTable(props) {
 
             return (<TableRow key={item.Index}>
               <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
-                <button
-                  onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-zinc-700 dark:hover:text-zinc-100 truncate w-full"
-                >
-                  <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
-                </button>
+                {props.isPrintView ? (
+                  <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full block">
+                    <span className="truncate text-tremor-default">{item.Id || item.Name}</span>
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setSelectedItem(item)}
+                    className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full"
+                  >
+                    <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
+                  </button>
+                )}
               </TableCell>
               <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
-                <button
-                  onClick={() => setSelectedItem(item)}
-                  className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
-                  <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
-                </button>
+                {props.isPrintView ? (
+                  <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors block">
+                    <span className="whitespace-normal text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => setSelectedItem(item)}
+                    className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
+                  </button>
+                )}
               </TableCell>
               <TableCell className="text-center">
                 {item.Severity && item.Severity !== "" ? <SeverityBadge Severity={item.Severity} /> : ""}
@@ -251,16 +267,18 @@ export default function TestResultsTable(props) {
                 <StatusLabel Result={item.Result} />
               </TableCell>
               <TableCell className="text-center">
-                <div className="text-right">
-                  <Button
-                    size="xs"
-                    variant="secondary"
-                    color="gray"
-                    tooltip="View details"
-                    icon={WindowIcon}
-                    onClick={() => setSelectedItem(item)}
-                  />
-                </div>
+                {!props.isPrintView && (
+                  <div className="text-right">
+                    <Button
+                      size="xs"
+                      variant="secondary"
+                      color="gray"
+                      tooltip="View details"
+                      icon={WindowIcon}
+                      onClick={() => setSelectedItem(item)}
+                    />
+                  </div>
+                )}
               </TableCell>
             </TableRow>
             );

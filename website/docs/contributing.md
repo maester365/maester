@@ -29,13 +29,12 @@ Follow the guide below to set up Maester for development on your local machine, 
 - Run Maester
   - `Invoke-Maester`
 
-## Contributing to Maester docs
+### Pester Tests
 
-Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
-
-For more complex changes, you can fork the repository and submit a pull request.
-
-The docs/commands folder is auto-generated based on the comments in the PowerShell cmdlets. If you want to update the documentation for a command, you will need to update the comment-based help in the .ps1 file for the command.
+- Tests for the Maester module are at /powershell/tests
+- When making changes to the module you can run the test locally by running `/powershell/tests/pester.ps1`
+- The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
+- The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
 ## Contributing new tests and updating existing tests
 
@@ -107,17 +106,25 @@ $affectedFilePath = '/Users/merill/GitHub/maester/powershell/public/maester/entr
 $content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
 ```
 
-## Running documentation locally
+## Contributing to Maester docs and blog posts
+
+Simple edits can be made in the GitHub UI by selecting the `Edit this page` link at the bottom of each page or you can browse to the [docs](https://github.com/maester365/maester/tree/main/website/docs) folder on GitHub.
+
+For more complex changes, you can fork the repository and submit a pull request.
+
+The docs/commands folder is auto-generated based on the comments in the PowerShell cmdlets. If you want to update the documentation for a command, you will need to update the comment-based help in the .ps1 file for the command.
+
+### Running documentation locally
 
 The [Maester.dev](https://maester.dev) website is built using [Docusaurus](https://docusaurus.io/).
 
 Follow this guide if you want to run the documentation locally and view changes in real-time.
 
-### Pre-requisites
+#### Pre-requisites
 
 [Node.js](https://nodejs.org/en/download/) version 18.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
-### Installation
+#### Installation
 
 When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
 
@@ -125,7 +132,7 @@ When running the documentation for the first time, you will need to install the 
 npm install
 ```
 
-### Starting the site
+#### Starting the site
 
 While in the ./website folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
 
@@ -133,7 +140,7 @@ While in the ./website folder run the following command to start the site locall
 npm start
 ```
 
-### Editing content
+#### Editing content
 
 You will now be able to edit add and edit markdown files in the ./website/docs folder and see the changes in real-time in your browser.
 
@@ -141,4 +148,26 @@ You will now be able to edit add and edit markdown files in the ./website/docs f
 - You can search for icons at [Iconify](https://icon-sets.iconify.design/) and include them in the markdown. See the [Daily Automation](https://maester.dev/docs/automation/) page for examples.
 - The `Command Reference` section is auto-generated. To update the documentation for this, the .ps1 file for the command needs to be updated with comment-based documentation.
 
+### Site versioning
 
+There are two versions of the Maester website:
+
+- [Production](https://maester.dev) - This is the live version of the site that is updated whenever a new version of the Maester module is released.
+- [Preview](https://preview.maester.dev) - This is the version of the site that is updated with every commit to the main branch. This allows you to see changes before they are published to production.
+
+| Environment | URL                          | Branch       |  Update Trigger                    |
+|-------------|------------------------------|--------------| -----------------------------------|
+| Production  | https://maester.dev          | website-prod | New Maester module release         |
+| Preview     | https://preview.maester.dev  | main         | Every commit to the main branch    |
+
+When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
+
+#### Urgent changes to blog posts and documentation
+
+If a blog post or doc change is urgent and cannot wait till the next release, create a PR against the `website-prod` branch directly.
+
+Once that is reviewed and merged, you will need to create another PR to bring the changes into the `main` branch.
+
+This is because the `website-prod` branch is deleted and recreated with every Maester module release to ensure it is always in sync with the released version of the module.
+
+This process ensures any interim changes to the production site are intentional.

@@ -128,3 +128,7 @@ The Github Action is moved to a new [repository](https://github.com/maester365/m
 
 > [!NOTE]
 > If you are using the old action `maester365/maester` you should migrate to the new action `maester365/maester-action`. Check out the [deprecation notice](https://github.com/maester365/maester/blob/main/action/deprecation.md) for more details.
+
+## Contributing
+
+Contributions are welcome! If you want to contribute new tests or improve existing ones, please refer to the [contribution guide](https://preview.maester.dev/docs/contributing).

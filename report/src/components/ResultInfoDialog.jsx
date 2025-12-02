@@ -1,13 +1,8 @@
 "use client";
 import React, { useEffect, useCallback } from "react";
-import { Card, Button, Dialog, DialogPanel, Title, Text, Flex } from "@tremor/react";
-import { ArrowTopRightOnSquareIcon, WindowIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { Divider } from "@tremor/react";
-import StatusLabel from "./StatusLabel";
-import StatusLabelSm from "./StatusLabelSm";
-import SeverityBadge from "./SeverityBadge";
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { Button, Dialog, DialogPanel, Flex } from "@tremor/react";
+import { WindowIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import ResultInfo from "./ResultInfo";
 
 // We've removed the global dialog state manager since we now use a single dialog instance
 
@@ -15,10 +10,6 @@ function ResultInfoDialog(props) {
   const itemIndex = props.Item.Index;
   // Control dialog state based on parent control only
   const [isOpen, setIsOpen] = React.useState(props.isOpen);
-
-  const openInNewTab = useCallback((url) => {
-    window.open(url, "_blank", "noreferrer");
-  }, []);
 
   // Only update local state when props.isOpen changes, not when isOpen changes
   useEffect(() => {
@@ -75,54 +66,6 @@ function ResultInfoDialog(props) {
     }
   }, [props.onNavigatePrevious]);
 
-  function getTestResult() {
-    if (props.Item.ResultDetail) {
-      return props.Item.ResultDetail.TestResult;
-    }
-    else if (props.Item.ResultDetail) {
-      return props.Item.ResultDetail;
-    }
-    else {
-      if (props.Item.Result === "Passed") {
-        return "Tested successfully.";
-      }
-      if (props.Item.Result === "Failed") {
-        return "Test failed.";
-      }
-      if (props.Item.Result === "Skipped") {
-        return "Test skipped.";
-      }
-    }
-    return "";
-  }
-
-  function getTestDetails() {
-    if (props.Item.ResultDetail) {
-      return props.Item.ResultDetail.TestDescription;
-    }
-    else {
-      //trim the scriptblock whitespace at the beginning and end
-      if (props.Item.ScriptBlock) {
-        return props.Item.ScriptBlock.replace(/^\s+|\s+$/g, '');
-      }
-    }
-    return "";
-  }
-
-  //Set bgcolor based on result
-  function getBgColor(result) {
-    if (result === "Passed") {
-      return "bg-green-100 dark:bg-green-900 dark:bg-opacity-40";
-    }
-    if (result === "Failed") {
-      return "bg-red-100 dark:bg-red-900 dark:bg-opacity-30";
-    }
-    if (result === "Skipped") {
-      return "bg-yellow-100";
-    }
-    return "bg-gray-100";
-  }
-
   return (
     <>
       {props.Title &&
@@ -149,52 +92,7 @@ function ResultInfoDialog(props) {
       }
       <Dialog open={isOpen} onClose={handleCloseDialog} static={true}>
         <DialogPanel className="max-w-4xl">
-          <div className="grid grid-cols-1">
-            <div className="text-right flex justify-end space-x-2 items-center">
-              {props.Item.Severity && (
-                <div title="Severity" className="flex items-center">
-                  <SeverityBadge Severity={props.Item.Severity} />
-                </div>
-              )}
-              <StatusLabel Result={props.Item.Result} />
-            </div>
-            <Title>{props.Item.Name}</Title>
-            {props.Item.HelpUrl &&
-              <div className="text-left mt-2">
-                <Button icon={ArrowTopRightOnSquareIcon} variant="light" onClick={() => openInNewTab(props.Item.HelpUrl)}>
-                  Learn more @ {new URL(props.Item.HelpUrl).hostname}
-                </Button>
-              </div>
-            }
-            <Divider></Divider>
-
-            <Card className={"break-words " + getBgColor(props.Item.Result)}>
-              <div className="flex flex-row items-center">
-                <Title>Test result</Title><StatusLabelSm Result={props.Item.Result} />
-              </div>
-              <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestResult()}</Markdown>
-            </Card>
-            <Card className="mt-4 bg-slate-50">
-              <Title>Test details</Title>
-              <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestDetails()}</Markdown>
-            </Card>
-
-            <Card className="mt-4">
-              <Title>Category</Title>
-              <Text>{props.Item.Block}</Text>
-            </Card>
-            <Card className="mt-4">
-              <Title>Tags</Title>
-              <Flex justifyContent="start">
-                {props.Item.Tag && props.Item.Tag.map((item) => (
-                  <Text key={item} className="mr-3">{item}</Text>
-                ))}
-              </Flex>
-            </Card>
-            <Card className="mt-4">
-              <Title>Source</Title>
-              <Text>{props.Item.ScriptBlockFile}</Text>
-            </Card>
+          <ResultInfo Item={props.Item} />
 
             <Flex className="mt-6 justify-between">
               <Button
@@ -220,7 +118,6 @@ function ResultInfoDialog(props) {
                 Next
               </Button>
             </Flex>
-          </div>
         </DialogPanel>
       </Dialog>
     </>
