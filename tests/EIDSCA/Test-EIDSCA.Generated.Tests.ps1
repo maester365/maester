@@ -150,18 +150,18 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "EIDSCA.PR05" {
     It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+            .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
         #>
-        Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual '60'
+        Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual 60
     }
 }
 Describe "EIDSCA" -Tag "EIDSCA", "Security", "EIDSCA.PR06" {
     It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
+            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
         #>
-        Test-MtEidscaControl -CheckId PR06 | Should -BeLessOrEqual '10'
+        Test-MtEidscaControl -CheckId PR06 | Should -BeLessOrEqual 10
     }
 }
 
@@ -410,9 +410,9 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "EIDSCA.CR04" {
     It "EIDSCA.CR04: Consent Framework - Admin Consent Request - Consent request duration (days). See https://maester.dev/docs/tests/EIDSCA.CR04" -TestCases @{ EnabledAdminConsentWorkflow = $EnabledAdminConsentWorkflow } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy"
-            .requestDurationInDays -le '30'
+            .requestDurationInDays -le 30
         #>
-        Test-MtEidscaControl -CheckId CR04 | Should -BeLessOrEqual '30'
+        Test-MtEidscaControl -CheckId CR04 | Should -BeLessOrEqual 30
     }
 }
 

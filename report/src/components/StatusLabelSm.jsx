@@ -1,4 +1,4 @@
-"use client";
+
 import React from "react";
 import { Icon } from "@tremor/react";
 import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon } from "@heroicons/react/24/solid";

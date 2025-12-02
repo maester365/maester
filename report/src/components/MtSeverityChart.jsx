@@ -1,4 +1,4 @@
-"use client";
+
 import React, { useState } from "react";
 import { Card, Title, BarChart, Switch, Flex, Text } from "@tremor/react";
 
@@ -37,9 +37,17 @@ export default function MtSeverityChart(props) {
         Failed: severityCounts[severity].Failed
     }));
 
+    // Filter data: always show High, Medium, Low; only show Critical and Info if they have counts
+    const filteredData = data.filter(item => {
+        const alwaysShow = ["High", "Medium", "Low"];
+        if (alwaysShow.includes(item.name)) return true;
+        // Only show Critical and Info if they have any Passed or Failed counts
+        return item.Passed > 0 || item.Failed > 0;
+    });
+
     // Sort by severity level
     const severityOrder = ["Critical", "High", "Medium", "Low", "Info"];
-    data.sort((a, b) => {
+    filteredData.sort((a, b) => {
         const aIndex = severityOrder.indexOf(a.name);
         const bIndex = severityOrder.indexOf(b.name);
         if (aIndex === -1 && bIndex === -1) return 0;
@@ -59,7 +67,7 @@ export default function MtSeverityChart(props) {
         colors.push("rose");
     }
 
-    const maxValue = Math.max(...data.map(item => Math.max(item.Passed, item.Failed)));
+    const maxValue = Math.max(...filteredData.map(item => Math.max(item.Passed, item.Failed)));
 
     return (
         <Card>
@@ -74,7 +82,7 @@ export default function MtSeverityChart(props) {
             </Flex>
             <BarChart
                 className="mt-4 h-40"
-                data={data}
+                data={filteredData}
                 index="name"
                 categories={categories}
                 colors={colors}

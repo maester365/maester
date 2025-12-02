@@ -450,7 +450,26 @@ function Invoke-Maester {
     if ($pesterResults) {
 
         Write-MtProgress -Activity 'Processing test results' -Status "$($pesterResults.TotalCount) test(s)" -Force
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out
+
+        # Build the Invoke-Maester command string from bound parameters
+        $invokeMaesterCommand = "Invoke-Maester"
+        foreach ($param in $PSBoundParameters.GetEnumerator()) {
+            $paramName = $param.Key
+            $paramValue = $param.Value
+            if ($paramValue -is [switch]) {
+                if ($paramValue.IsPresent) {
+                    $invokeMaesterCommand += " -$paramName"
+                }
+            } elseif ($paramValue -is [array]) {
+                $invokeMaesterCommand += " -$paramName @('$($paramValue -join "', '")')"
+            } elseif ($paramValue -is [string]) {
+                $invokeMaesterCommand += " -$paramName '$paramValue'"
+            } elseif ($null -ne $paramValue) {
+                $invokeMaesterCommand += " -$paramName $paramValue"
+            }
+        }
+
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
