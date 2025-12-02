@@ -181,7 +181,7 @@ function Get-MtLicenseInformation {
                             $EnabledUnits = $SKU.prepaidUnits.enabled
                             if ($EnabledUnits -gt 0) {
                                 $TotalLicenses += $EnabledUnits
-                                Write-Verbose "Found $EnabledUnits licenses for service plan: $($ServicePlan.servicePlanName) in SKU: $($Sku.skuPartNumber)"
+                                Write-Verbose "Found $EnabledUnits licenses for service plan: $($ServicePlan.servicePlanName) in SKU: $($SKU.skuPartNumber)"
                                 break # Avoid double counting if multiple Exchange plans in same SKU
                             }
                         }
