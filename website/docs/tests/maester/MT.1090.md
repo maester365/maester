@@ -1,5 +1,5 @@
 ---
-title: MT.1090 - All Protected Actions Authentication Contexts should be referenced by a Conditional Access policy.
+title: MT.1090 - All Protected Actions Authentication Contexts should be referenced by a Conditional Access policy
 description: This test checks if all Authentication Contexts used in Protected Actions are properly referenced in at least one Conditional Access policy.
 slug: /tests/MT.1090
 sidebar_class_name: hidden
