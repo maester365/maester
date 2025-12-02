@@ -32,8 +32,13 @@ function Test-MtExoAdditionalStorageProvider {
 
         $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.Identity -eq "OwaMailboxPolicy-Default" }
-        Write-Verbose "Filtered $($owaMailboxPolicyDefault.Count) Default Web mailbox policy"
+        $owaMailboxPolicyDefault = $owaMailboxPolicy | Where-Object { $_.IsDefault -eq $true }
+        Write-Verbose "Filtered $(@($owaMailboxPolicyDefault).Count) Default Web mailbox policy"
+
+        if ($null -eq $owaMailboxPolicyDefault) {
+            Add-MtTestResultDetail -SkippedBecause "No default OWA mailbox policy was found."
+            return $null
+        }
 
         $result = $owaMailboxPolicyDefault.AdditionalStorageProvidersAvailable
 
