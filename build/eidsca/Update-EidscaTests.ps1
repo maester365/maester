@@ -57,7 +57,8 @@ function GetRecommendedValue($RecommendedValue) {
             }
         }
         # Don't wrap in quotes for numeric comparisons to ensure proper numeric comparison in Pester
-        if ($isNumericComparison -and $RecommendedValue -match "^[\d\.]+$") {
+        # Pattern matches integers (e.g., 30) and valid decimals (e.g., 3.14)
+        if ($isNumericComparison -and $RecommendedValue -match "^\d+(\.\d+)?$") {
             return $RecommendedValue
         }
         return "'$RecommendedValue'"
