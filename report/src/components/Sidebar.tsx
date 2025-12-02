@@ -6,7 +6,6 @@ import {
   Printer,
   Table,
   Monitor,
-  Globe,
   CircleAlert,
   Settings,
   ArrowUpRight,
@@ -14,6 +13,8 @@ import {
   ChevronUp,
   ChevronDown,
   FileJson,
+  BookOpen,
+  MessageCircle,
 } from "lucide-react"
 import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "react-router-dom"
@@ -300,9 +301,9 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
     },
     { separator: true },
     {
-      label: "Maester.dev",
-      icon: Globe,
-      href: "https://maester.dev",
+      label: "Documentation",
+      icon: BookOpen,
+      href: "https://maester.dev/docs/intro",
       external: true,
     },
     {
@@ -315,6 +316,12 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
       label: "Issues",
       icon: CircleAlert,
       href: "https://github.com/maester365/maester/issues",
+      external: true,
+    },
+    {
+      label: "Join Discord",
+      icon: MessageCircle,
+      href: "https://discord.maester.dev/",
       external: true,
     },
   ]
