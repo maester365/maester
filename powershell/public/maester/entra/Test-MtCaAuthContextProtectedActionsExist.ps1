@@ -1,0 +1,136 @@
+<#
+ .Synopsis
+  Checks if all Protected Actions Authentication Contexts have a conditional access policy referenced.
+
+ .Description
+    Protected Actions allow organizations to require step-up authentication for sensitive operations by
+    assigning Authentication Contexts to those actions. However, if an Authentication Context is not
+    referenced in any Conditional Access policy, the protected action is not effectively protected.
+
+    This test verifies that all Authentication Contexts used by Protected Actions are properly referenced
+    in at least one Conditional Access policy.
+
+  Learn more:
+  https://learn.microsoft.com/entra/identity/role-based-access-control/protected-actions-overview
+
+ .Example
+  Test-MtCaAuthContextProtectedActionsExist
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCaAuthContextProtectedActionsExist
+#>
+function Test-MtCaAuthContextProtectedActionsExist {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param ()
+
+    if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
+    try {
+        # Get all authentication contexts
+        $authContexts = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/authenticationContextClassReferences' -ApiVersion beta
+
+        if (-not $authContexts -or ($authContexts | Measure-Object).Count -eq 0) {
+            $testResult = 'No Authentication Contexts are configured in the tenant.'
+            Add-MtTestResultDetail -Result $testResult
+            return $true
+        }
+
+        # Get all protected actions
+        $protectedActions = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/authenticationStrength/policies' -ApiVersion beta -ErrorAction SilentlyContinue
+        $protectedActionContexts = Invoke-MtGraphRequest -RelativeUri 'policies/authenticationStrengthPolicies' -ApiVersion beta -ErrorAction SilentlyContinue
+
+        # Get the role management policy assignments to find protected actions
+        # Protected Actions are configured through PIM policies
+        $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'Directory'" -ErrorAction SilentlyContinue
+
+        # Collect all auth context IDs that are used in protected actions
+        $authContextsInProtectedActions = [System.Collections.Generic.HashSet[string]]::new()
+
+        # Check role management policies for protected actions configuration
+        if ($pimPolicies) {
+            foreach ($assignment in $pimPolicies) {
+                try {
+                    $policyDetails = Invoke-MtGraphRequest -RelativeUri "policies/roleManagementPolicies/$($assignment.policyId)" -ApiVersion beta -ErrorAction SilentlyContinue
+                    if ($policyDetails.rules) {
+                        foreach ($rule in $policyDetails.rules) {
+                            if ($rule.'@odata.type' -eq '#microsoft.graph.unifiedRoleManagementPolicyAuthenticationContextRule' -and $rule.claimValue) {
+                                [void]$authContextsInProtectedActions.Add($rule.claimValue)
+                            }
+                        }
+                    }
+                } catch {
+                    Write-Verbose "Could not retrieve policy details for $($assignment.policyId): $_"
+                }
+            }
+        }
+
+        # Get all conditional access policies
+        $caPolicies = Get-MtConditionalAccessPolicy
+
+        # Collect all auth context IDs referenced in CA policies
+        $authContextsInCAPolicies = [System.Collections.Generic.HashSet[string]]::new()
+        foreach ($policy in $caPolicies) {
+            if ($policy.conditions.applications.includeAuthenticationContextClassReferences) {
+                foreach ($context in $policy.conditions.applications.includeAuthenticationContextClassReferences) {
+                    [void]$authContextsInCAPolicies.Add($context)
+                }
+            }
+        }
+
+        # Check for auth contexts that are used in protected actions but not in CA policies
+        $unprotectedContexts = [System.Collections.Generic.List[object]]::new()
+
+        foreach ($authContext in $authContexts) {
+            # Only check if this auth context is used in protected actions
+            if ($authContextsInProtectedActions.Contains($authContext.id)) {
+                if (-not $authContextsInCAPolicies.Contains($authContext.id)) {
+                    $unprotectedContexts.Add(@{
+                        Id = $authContext.id
+                        DisplayName = $authContext.displayName
+                        Description = $authContext.description
+                        IsAvailable = $authContext.isAvailable
+                    })
+                }
+            }
+        }
+
+        # Determine result
+        $result = $unprotectedContexts.Count -eq 0
+
+        if ($result) {
+            if ($authContextsInProtectedActions.Count -eq 0) {
+                $testResult = 'No Authentication Contexts are configured for Protected Actions in this tenant.'
+            } else {
+                $testResult = "All Authentication Contexts used in Protected Actions are properly referenced in Conditional Access policies.`n`n"
+                $testResult += "**Protected Action Auth Contexts with CA policies:**`n`n"
+                foreach ($authContext in $authContexts) {
+                    if ($authContextsInProtectedActions.Contains($authContext.id)) {
+                        $testResult += "- $($authContext.displayName) ($($authContext.id))`n"
+                    }
+                }
+            }
+        } else {
+            $testResult = "The following Authentication Contexts are used in Protected Actions but are not referenced by any Conditional Access policy:`n`n"
+            $testResult += "| Authentication Context | ID | Description |`n"
+            $testResult += "| --- | --- | --- |`n"
+            foreach ($context in $unprotectedContexts) {
+                $displayName = if ($context.DisplayName) { $context.DisplayName } else { "(No name)" }
+                $description = if ($context.Description) { $context.Description } else { "(No description)" }
+                $testResult += "| $displayName | $($context.Id) | $description |`n"
+            }
+            $testResult += "`n`n⚠️ **Warning**: These Protected Actions are not effectively protected because their Authentication Contexts are not enforced by any Conditional Access policy.`n"
+        }
+
+        Add-MtTestResultDetail -Result $testResult
+        return $result
+
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
+    }
+}
