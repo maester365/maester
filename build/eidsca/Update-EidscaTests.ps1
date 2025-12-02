@@ -47,11 +47,17 @@ function GetVersion($graphUri) {
 
 function GetRecommendedValue($RecommendedValue) {
     if($RecommendedValue -notlike "@('*,*')") {
+        $isNumericComparison = $false
         $compareOperators = @(">=","<=",">","<")
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
+                $isNumericComparison = $true
                 $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
             }
+        }
+        # Don't wrap in quotes for numeric comparisons to ensure proper numeric comparison in Pester
+        if ($isNumericComparison -and $RecommendedValue -match "^[\d\.]+$") {
+            return $RecommendedValue
         }
         return "'$RecommendedValue'"
     } else {
