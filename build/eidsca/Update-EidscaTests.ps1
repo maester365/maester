@@ -57,8 +57,8 @@ function GetRecommendedValue($RecommendedValue) {
             }
         }
         # Don't wrap in quotes for numeric comparisons to ensure proper numeric comparison in Pester
-        # Pattern matches integers (e.g., 30) and valid decimals (e.g., 3.14)
-        if ($isNumericComparison -and $RecommendedValue -match "^\d+(\.\d+)?$") {
+        # Pattern matches integers (e.g., 30), decimals with leading zero (e.g., 0.5), and decimals without leading zero (e.g., .5)
+        if ($isNumericComparison -and $RecommendedValue -match "^(\d+(\.\d+)?|\.\d+)$") {
             return $RecommendedValue
         }
         return "'$RecommendedValue'"
