@@ -68,7 +68,7 @@ function Get-MtLicenseInformation {
                     '326e2b78-9d27-42c9-8509-46c827743a17' # Exchange Online Protection / EOP_ENTERPRISE
                 )
                 $LicenseType = $null
-                foreach ($SKU in $RequiredKUs) {
+                foreach ($SKU in $RequiredSKUs) {
                     $SkuId = $SKU -in $SKUs.skuId
                     $ServicePlanId = $SKU -in $SKUs.servicePlans.servicePlanId
                     if ($SkuId -or $ServicePlanId) {
