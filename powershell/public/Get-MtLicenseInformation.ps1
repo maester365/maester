@@ -188,8 +188,8 @@ function Get-MtLicenseInformation {
                     }
                 }
 
-                Write-Information "Total Exchange Online licenses: $totalLicenses"
-                return $totalLicenses
+                Write-Information "Total Exchange Online licenses: $TotalLicenses"
+                return $TotalLicenses
                 break
             }
             'DefenderXDR' {
