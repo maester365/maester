@@ -72,7 +72,7 @@ function Add-MtTestResultDetail {
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
-            'NotAuthorized'
+            'NotLicensedCustomerLockbox','NotAuthorized'
         )]
         [string] $SkippedBecause,
 
