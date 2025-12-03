@@ -22,7 +22,7 @@ Invoke-Maester
 
 ## Invoke-Maester
 
-To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](/docs/commands/Invoke-Maester) documentation.
+To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](commands/Invoke-Maester.mdx) documentation.
 
 
 ## Optional modules and permissions
@@ -43,7 +43,7 @@ Install-Module MicrosoftTeams -Scope CurrentUser
 
 In order to run all the CISA tests, you need to connect to the Azure, Exchange Online, and other modules.
 
-For a more detailed introduction to these concepts see the [Connect-Maester](/docs/connect-maester) documentation.
+For a more detailed introduction to these concepts see the [Connect-Maester](connect-maester/readme.md) documentation.
 
 Run the following command to interactively connect to the Azure, Exchange Online, and other modules. A sign in window will appear for each module.
 
@@ -61,11 +61,11 @@ Exchange Online implements a [role-based access control model](https://learn.mic
 ## Next Steps
 
 - Monitoring with Maester
-  - [Set up Maester on GitHub](/docs/monitoring/github)
-  - [Set up Maester on Azure DevOps](/docs/monitoring/azure-devops)
-  - [Set up Maester on Azure Container App Jobs](/docs/monitoring/azure-container-app-job)
+  - [Set up Maester on GitHub](monitoring/github.md)
+  - [Set up Maester on Azure DevOps](monitoring/azure-devops.md)
+  - [Set up Maester on Azure Container App Jobs](monitoring/azure-container-app-job.md)
 - Alerting with Maester
-  - [Set up Maester email alerts](/docs/alerts/email)
-  - [Set up Maester Teams alerts](/docs/alerts/teams)
-  - [Set up Maester Slack alerts](/docs/alerts/slack)
-- [Writing Custom Tests](/docs/writing-tests)
+  - [Set up Maester email alerts](alerts/email.md)
+  - [Set up Maester Teams alerts](alerts/teams.md)
+  - [Set up Maester Slack alerts](alerts/slack.md)
+- [Writing Custom Tests](writing-tests/index.mdx)
