@@ -1,7 +1,7 @@
-"use client";
+
 import React from "react";
 import { Icon } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon } from "@heroicons/react/24/solid";
 
 export default function StatusLabelSm(props) {
 
@@ -13,7 +13,13 @@ export default function StatusLabelSm(props) {
             {props.Result === "Failed" &&
                 <Icon icon={ExclamationTriangleIcon} color="rose" size="sm" />
             }
-            {props.Result != "Passed" && props.Result != "Failed" &&
+            {props.Result === "Skipped" &&
+                <Icon icon={ForwardIcon} color="yellow" size="sm" />
+            }
+            {props.Result === "Error" &&
+                <Icon icon={ExclamationCircleIcon} color="orange" size="sm" />
+            }
+            {(props.Result === "NotRun" || props.Result === "Not tested") &&
                 <Icon icon={ArchiveBoxIcon} size="md" color="gray" />
             }
         </>

@@ -61,7 +61,7 @@ The same applies to the `-SendTeamsMessage` in `Connect-Maester`.
 
 Maester is designed to require read-only access to a tenant to run tests.
 
-However, certain tests like  [Test-MtExoMoeraMailActivity](/docs/commands/Test-MtExoMoeraMailActivity) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
+However, certain tests like  [Test-MtExoMoeraMailActivity](../commands/Test-MtExoMoeraMailActivity.mdx) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
 
 Connecting with privileged scopes is optional. To connect with privileged scopes, use the `-Privileged` switch:
 

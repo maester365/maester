@@ -1,4 +1,7 @@
 {
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": []
+  },
   "TestSettings": [
     {
       "Id": "CIS.M365.1.1.1",
@@ -831,86 +834,6 @@
       "Title": "All users utilizing a P2 license should be licensed."
     },
     {
-      "Id": "MT.1024.1",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect your tenant with Insider Risk condition in Conditional Access policy"
-    },
-    {
-      "Id": "MT.1024.2",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect all users with a user risk policy"
-    },
-    {
-      "Id": "MT.1024.3",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect all users with a sign-in risk policy"
-    },
-    {
-      "Id": "MT.1024.4",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Enable self-service password reset"
-    },
-    {
-      "Id": "MT.1024.5",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Use least privileged administrative roles"
-    },
-    {
-      "Id": "MT.1024.6",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Designate more than one global admin"
-    },
-    {
-      "Id": "MT.1024.7",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Enable password hash sync if hybrid"
-    },
-    {
-      "Id": "MT.1024.8",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Do not expire passwords"
-    },
-    {
-      "Id": "MT.1024.9",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Ensure all users can complete multifactor authentication"
-    },
-    {
-      "Id": "MT.1024.10",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Do not allow users to grant consent to unreliable applications"
-    },
-    {
-      "Id": "MT.1024.11",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Enable policy to block legacy authentication"
-    },
-    {
-      "Id": "MT.1024.12",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Require multifactor authentication for administrative roles"
-    },
-    {
-      "Id": "MT.1024.13",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring service principal credentials"
-    },
-    {
-      "Id": "MT.1024.14",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring application credentials"
-    },
-    {
-      "Id": "MT.1024.15",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Remove unused credentials from applications"
-    },
-    {
-      "Id": "MT.1024.16",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Remove unused applications"
-    },
-    {
       "Id": "MT.1025",
       "Severity": "High",
       "Title": "No external user with permanent role assignment on Control Plane."
@@ -1246,6 +1169,26 @@
       "Title": "Pending approvals for Critical Asset Management should not be present"
     },
     {
+      "Id": "MT.1086",
+      "Severity": "Low",
+      "Title": "Devices should not share both critical and non-critical user credentials."
+    },
+    {
+      "Id": "MT.1087",
+      "Severity": "High",
+      "Title": "Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
+    },
+    {
+      "Id": "MT.1088",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by TPM."
+    },
+    {
+      "Id": "MT.1089",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by Credential Guard."
+    },
+        {
       "Id": "MT.1090",
       "Severity": "Medium",
       "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
