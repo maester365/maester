@@ -25,7 +25,11 @@ function Test-MtAppleVolumePurchaseProgramToken {
     try {
         Write-Verbose 'Retrieving Apple Volume Purchase Program token status...'
         $expirationThresholdDays = 30
-        $vppTokens = @(Invoke-MtGraphRequest -RelativeUri 'deviceAppManagement/vppTokens' -ApiVersion beta)
+        $vppTokens = Invoke-MtGraphRequest -RelativeUri 'deviceAppManagement/vppTokens' -ApiVersion beta
+
+        if ($vppTokens.value -is [array] -and $vppTokens.value.Length -eq 0) {
+            throw [System.Management.Automation.ItemNotFoundException]::new('No Apple Volume Purchase Program tokens found.')
+        }
 
         $testResultMarkdown = "Intune Volume Purchase Program Token Status:`n"
         $testResultMarkdown += "| Name | State | ExpirationDateTime | LastSyncDateTime |`n"
@@ -45,6 +49,8 @@ function Test-MtAppleVolumePurchaseProgramToken {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $healthStatus -notcontains $false
+    } catch [System.Management.Automation.ItemNotFoundException] {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

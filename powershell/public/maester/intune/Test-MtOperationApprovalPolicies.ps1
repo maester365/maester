@@ -20,28 +20,28 @@ function Test-MtOperationApprovalPolicies {
     param()
 
     Write-Verbose 'Testing Multi Admin Approval Policy configuration'
-     if (-not (Get-MtLicenseInformation -Product Intune)) {
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 
     try {
         Write-Verbose 'Retrieving Intune Multi Admin Approval Policies status...'
-        $approvalPolicies = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta)
-        if ($approvalPolicies.Count -lt 1) {
-            $testResultMarkdown = 'No Intune Multi Admin Approval Policy is configured.'
-            $return = $false
-        } else {
-            $testResultMarkdown = "Well done. At least one Intune Multi Admin Approval Policy is configured.`n"
+        $approvalPolicies = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta
+        $testResultMarkdown = ''
+        $hasPolicies = -not($approvalPolicies -is [array] -and $approvalPolicies.Count -eq 0)
+        if ($hasPolicies) {
+            $testResultMarkdown += "Well done. At least one Intune Multi Admin Approval Policy is configured.`n"
             $testResultMarkdown += "| Name | Type |`n"
             $testResultMarkdown += "| --- | --- |`n"
             foreach ($policy in $approvalPolicies) {
                 $testResultMarkdown += "| $($policy.displayName) | $($policy.policyType) |`n"
             }
-            $return = $true
+        } else {
+            $testResultMarkdown += 'No Intune Multi Admin Approval Policy is configured.'
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
-        return $return
+        return $hasPolicies
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

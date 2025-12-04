@@ -24,7 +24,11 @@ function Test-MtCertificateConnectors {
     }
     try {
         Write-Verbose 'Retrieving Intune Certificate Connectors status...'
-        $certificateConnectors = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/ndesConnectors' -ApiVersion beta)
+        $certificateConnectors = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/ndesConnectors' -ApiVersion beta
+
+        if ($certificateConnectors.value -is [array] -and $certificateConnectors.value.Length -eq 0) {
+            throw [System.Management.Automation.ItemNotFoundException]::new('No Intune Certificate Connectors found.')
+        }
 
         # https://learn.microsoft.com/en-us/intune/intune-service/protect/certificate-connector-overview#lifecycle
         $minimumVersion = [System.Version]'6.2406.0.1001'
@@ -47,6 +51,8 @@ function Test-MtCertificateConnectors {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $healthStatus -notcontains $false
+    } catch [System.Management.Automation.ItemNotFoundException] {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

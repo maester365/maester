@@ -25,7 +25,12 @@ function Test-MtFeatureUpdatePolicy {
 
     try {
         Write-Verbose 'Retrieving Windows Feature Update Profiles status...'
-        $featureUpdateProfiles = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/windowsFeatureUpdateProfiles' -ApiVersion beta)
+        $featureUpdateProfiles = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/windowsFeatureUpdateProfiles' -ApiVersion beta
+
+        if ($featureUpdateProfiles.value -is [array] -and $featureUpdateProfiles.value.Length -eq 0) {
+            throw [System.Management.Automation.ItemNotFoundException]::new('No Windows Feature Update Profiles found.')
+        }
+
         $unsupportedBuilds = @($featureUpdateProfiles | Where-Object {
                 [datetime]$_.endOfSupportDate -lt (Get-Date)
             })
@@ -43,6 +48,8 @@ function Test-MtFeatureUpdatePolicy {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return ($unsupportedBuilds.Count -eq 0)
+    } catch [System.Management.Automation.ItemNotFoundException] {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

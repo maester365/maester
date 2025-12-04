@@ -24,7 +24,7 @@ function Test-MtTenantCustomization {
 
     try {
         Write-Verbose 'Retrieving Intune Branding Profiles status...'
-        $brandingProfiles = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/intuneBrandingProfiles' -ApiVersion beta)
+        $brandingProfiles = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/intuneBrandingProfiles' -ApiVersion beta
         $defaultProfile = $brandingProfiles | Where-Object { $_.isDefaultProfile }
 
         # displayName is reflected as 'Organization name' in the portal

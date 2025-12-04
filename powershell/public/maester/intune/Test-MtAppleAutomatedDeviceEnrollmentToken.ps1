@@ -25,37 +25,34 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
     try {
         Write-Verbose 'Retrieving Apple Automated Device Enrollment token status...'
         $expirationThresholdDays = 30
-        $automatedDeviceEnrollmentTokens = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/depOnboardingSettings' -ApiVersion beta)
-        $isEmptyResponse = $automatedDeviceEnrollmentTokens.'@odata.count' -eq 0 -or $null -eq $automatedDeviceEnrollmentTokens.value
+        $adeTokens = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/depOnboardingSettings' -ApiVersion beta
 
-        if ($isEmptyResponse) {
-            $testResultMarkdown = 'No Apple Automated Device Enrollment tokens found.'
-            Add-MtTestResultDetail -SkippedBecause Custom -Result $testResultMarkdown
-            return $false
-        } else {
-            $testResultMarkdown = "Intune Automated Device Enrollment Token Status:`n"
-            $testResultMarkdown += "| Name | TokenExpirationDateTime | LastSuccessfulSyncDateTime | LastSyncErrorCode |`n"
-            $testResultMarkdown += "| --- | --- | --- | --- |`n"
-
-            $healthStatus = foreach ($token in $automatedDeviceEnrollmentTokens) {
-                $expiresInDays = [System.Math]::Ceiling(([datetime]$token.tokenExpirationDateTime - (Get-Date)).TotalDays)
-                $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$token.lastSuccessfulSyncDateTime).TotalDays)
-                $testResultMarkdown += "| $($token.tokenName) | $($token.tokenExpirationDateTime) | $($token.lastSuccessfulSyncDateTime) | $($token.lastSyncErrorCode) |`n"
-                Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -eq 0)
-            }
-
-            $testResultMarkdown += '```' + "`n"
-            $testResultMarkdown += $automatedDeviceEnrollmentTokens | ConvertTo-Json
-            $testResultMarkdown += "`n"
-            $testResultMarkdown += '```'
-
-            Add-MtTestResultDetail -Result $testResultMarkdown
-            return $healthStatus -notcontains $false
+        if ($adeTokens.value -is [array] -and $adeTokens.value.Length -eq 0) {
+            throw [System.Management.Automation.ItemNotFoundException]::new('No Apple Automated Device Enrollment tokens found.')
         }
 
-        return $false
+        Write-Verbose ('{0} Apple Automated Device Enrollment token(s) found.' -f $adeTokens.Count)
+        $testResultMarkdown = "Intune Automated Device Enrollment Token Status:`n"
+        $testResultMarkdown += "| Name | TokenExpirationDateTime | LastSuccessfulSyncDateTime | LastSyncErrorCode |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- |`n"
+
+        $healthStatus = foreach ($token in $adeTokens) {
+            $expiresInDays = [System.Math]::Ceiling(([datetime]$token.tokenExpirationDateTime - (Get-Date)).TotalDays)
+            $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$token.lastSuccessfulSyncDateTime).TotalDays)
+            $testResultMarkdown += "| $($token.tokenName) | $($token.tokenExpirationDateTime) | $($token.lastSuccessfulSyncDateTime) | $($token.lastSyncErrorCode) |`n"
+            Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -eq 0)
+        }
+
+        $testResultMarkdown += '```' + "`n"
+        $testResultMarkdown += $adeTokens | ConvertTo-Json
+        $testResultMarkdown += "`n"
+        $testResultMarkdown += '```'
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $healthStatus -notcontains $false
+    } catch [System.Management.Automation.ItemNotFoundException] {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $_
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
     }
 }
