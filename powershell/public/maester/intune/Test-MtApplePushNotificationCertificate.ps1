@@ -25,24 +25,33 @@ function Test-MtApplePushNotificationCertificate {
     try {
         Write-Verbose 'Retrieving Apple Push Notification Certificate status...'
         $expirationThresholdDays = 30
-        $pushNotificationCertificate = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/applePushNotificationCertificate' -ApiVersion beta)
-        $expiresInDays = [System.Math]::Ceiling(([datetime]$pushNotificationCertificate.expirationDateTime - (Get-Date)).TotalDays)
+        # if no APNS certificate is configured Graph API returns 404 error
+        $pushNotificationCertificate = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/applePushNotificationCertificate' -ApiVersion beta -ErrorAction SilentlyContinue
 
-        $testResult = if ($expiresInDays -gt $expirationThresholdDays) {
-            Write-Output "Apple Push Notification Certificate is valid for $($expiresInDays) more days.`n"
-        } elseif ($expiresInDays -lt 0) {
-            Write-Output "Apple Push Notification Certificate is expired since $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days ago).`n"
-        } else {
-            Write-Output "Apple Push Notification Certificate is expiring soon on $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days left).`n"
+        if ($pushNotificationCertificate) {
+            $expiresInDays = [System.Math]::Ceiling(([datetime]$pushNotificationCertificate.expirationDateTime - (Get-Date)).TotalDays)
+            $testResult = if ($expiresInDays -gt $expirationThresholdDays) {
+                Write-Output "Apple Push Notification Certificate is valid for $($expiresInDays) more days.`n"
+            } elseif ($expiresInDays -lt 0) {
+                Write-Output "Apple Push Notification Certificate is expired since $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days ago).`n"
+            } else {
+                Write-Output "Apple Push Notification Certificate is expiring soon on $([datetime]$pushNotificationCertificate.expirationDateTime) ($expiresInDays days left).`n"
+            }
+
+            $testResult += '```' + "`n"
+            $testResult += $pushNotificationCertificate | Select-Object -ExcludeProperty '@odata.context' | ConvertTo-Json
+            $testResult += "`n"
+            $testResult += '```'
+
+            Add-MtTestResultDetail -Result $testResult
+            return $expiresInDays -gt $expirationThresholdDays
+        }else{
+             $testResult += 'No Apple Push Notification Certificate configured.'
+            Add-MtTestResultDetail -SkippedBecause Custom -Result $testResult
+            return $false
         }
 
-        $testResult += '```' + "`n"
-        $testResult += $pushNotificationCertificate | Select-Object -ExcludeProperty '@odata.context' | ConvertTo-Json
-        $testResult += "`n"
-        $testResult += '```'
-
-        Add-MtTestResultDetail -Result $testResult
-        return $expiresInDays -gt $expirationThresholdDays
+        return $false
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

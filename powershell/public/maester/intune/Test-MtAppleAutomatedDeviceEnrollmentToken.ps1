@@ -26,25 +26,34 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
         Write-Verbose 'Retrieving Apple Automated Device Enrollment token status...'
         $expirationThresholdDays = 30
         $automatedDeviceEnrollmentTokens = @(Invoke-MtGraphRequest -RelativeUri 'deviceManagement/depOnboardingSettings' -ApiVersion beta)
+        $isEmptyResponse = $automatedDeviceEnrollmentTokens.'@odata.count' -eq 0 -or $null -eq $automatedDeviceEnrollmentTokens.value
 
-        $testResultMarkdown = "Intune Automated Device Enrollment Token Status:`n"
-        $testResultMarkdown += "| Name | TokenExpirationDateTime | LastSuccessfulSyncDateTime | LastSyncErrorCode |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- |`n"
+        if ($isEmptyResponse) {
+            $testResultMarkdown = 'No Apple Automated Device Enrollment tokens found.'
+            Add-MtTestResultDetail -SkippedBecause Custom -Result $testResultMarkdown
+            return $false
+        } else {
+            $testResultMarkdown = "Intune Automated Device Enrollment Token Status:`n"
+            $testResultMarkdown += "| Name | TokenExpirationDateTime | LastSuccessfulSyncDateTime | LastSyncErrorCode |`n"
+            $testResultMarkdown += "| --- | --- | --- | --- |`n"
 
-        $healthStatus = foreach ($token in $automatedDeviceEnrollmentTokens) {
-            $expiresInDays = [System.Math]::Ceiling(([datetime]$token.tokenExpirationDateTime - (Get-Date)).TotalDays)
-            $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$token.lastSuccessfulSyncDateTime).TotalDays)
-            $testResultMarkdown += "| $($token.tokenName) | $($token.tokenExpirationDateTime) | $($token.lastSuccessfulSyncDateTime) | $($token.lastSyncErrorCode) |`n"
-            Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -eq 0)
+            $healthStatus = foreach ($token in $automatedDeviceEnrollmentTokens) {
+                $expiresInDays = [System.Math]::Ceiling(([datetime]$token.tokenExpirationDateTime - (Get-Date)).TotalDays)
+                $lastSyncDiffDays = [System.Math]::Floor(((Get-Date) - [datetime]$token.lastSuccessfulSyncDateTime).TotalDays)
+                $testResultMarkdown += "| $($token.tokenName) | $($token.tokenExpirationDateTime) | $($token.lastSuccessfulSyncDateTime) | $($token.lastSyncErrorCode) |`n"
+                Write-Output $($expiresInDays -gt $expirationThresholdDays -and $lastSyncDiffDays -eq 0)
+            }
+
+            $testResultMarkdown += '```' + "`n"
+            $testResultMarkdown += $automatedDeviceEnrollmentTokens | ConvertTo-Json
+            $testResultMarkdown += "`n"
+            $testResultMarkdown += '```'
+
+            Add-MtTestResultDetail -Result $testResultMarkdown
+            return $healthStatus -notcontains $false
         }
 
-        $testResultMarkdown += '```' + "`n"
-        $testResultMarkdown += $automatedDeviceEnrollmentTokens | ConvertTo-Json
-        $testResultMarkdown += "`n"
-        $testResultMarkdown += '```'
-
-        Add-MtTestResultDetail -Result $testResultMarkdown
-        return $healthStatus -notcontains $false
+        return $false
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
