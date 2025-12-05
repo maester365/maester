@@ -3,7 +3,6 @@ import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, Tab
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { WindowIcon } from "@heroicons/react/24/outline";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
@@ -228,7 +227,6 @@ export default function TestResultsTable(props) {
             <SortableHeader column="Title" label="Title" className="text-left w-full" />
             <SortableHeader column="Severity" label="Severity" className="text-center whitespace-nowrap" />
             <SortableHeader column="Status" label="Status" className="text-center whitespace-nowrap" />
-            <TableHeaderCell className="text-center whitespace-nowrap">Info</TableHeaderCell>
           </TableRow>
         </TableHead>
 
@@ -238,33 +236,27 @@ export default function TestResultsTable(props) {
             const hasPrevious = index > 0;
             const hasNext = index < filteredSortedData.length - 1;
 
-            return (<TableRow key={item.Index}>
+            return (<TableRow
+              key={item.Index}
+              className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
+              onClick={() => !props.isPrintView && handleOpenSheet(item)}
+            >
               <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
                 {props.isPrintView ? (
                   <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full block">
                     <span className="truncate text-tremor-default">{item.Id || item.Name}</span>
                   </a>
                 ) : (
-                  <button
-                    onClick={() => handleOpenSheet(item)}
-                    className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full"
-                  >
-                    <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
-                  </button>
+                  <span className="truncate text-tremor-default">{item.Id || item.Name}</span>
                 )}
               </TableCell>
-              <TableCell className="whitespace-normal cursor-pointer hover:text-blue-600 hover:underline transition-colors">
+              <TableCell className="whitespace-normal">
                 {props.isPrintView ? (
                   <a href={`#${item.Id}`} className="text-left font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors block">
                     <span className="whitespace-normal text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                   </a>
                 ) : (
-                  <button
-                    onClick={() => handleOpenSheet(item)}
-                    className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
-                  </button>
+                  <span className="whitespace-normal text-tremor-default text-zinc-700 dark:text-zinc-200">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
                 )}
               </TableCell>
               <TableCell className="text-center">
@@ -272,20 +264,6 @@ export default function TestResultsTable(props) {
               </TableCell>
               <TableCell className="text-center">
                 <StatusLabel Result={item.Result} />
-              </TableCell>
-              <TableCell className="text-center">
-                {!props.isPrintView && (
-                  <div className="text-right">
-                    <Button
-                      size="xs"
-                      variant="secondary"
-                      color="gray"
-                      tooltip="View details"
-                      icon={WindowIcon}
-                      onClick={() => handleOpenSheet(item)}
-                    />
-                  </div>
-                )}
               </TableCell>
             </TableRow>
             );

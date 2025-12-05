@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router-dom"
+import { useEffect, useRef } from "react"
 import { Sidebar, SidebarProvider } from "@/components/Sidebar"
 import { Breadcrumb } from "@/components/Breadcrumb"
 import { ThemeProvider } from "@/components/ThemeProvider"
@@ -13,7 +14,22 @@ import ExcelPage from "@/pages/ExcelPage"
 import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
 
+// Component to scroll to top on route change
+function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null> }) {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo(0, 0)
+    }
+  }, [pathname, mainRef])
+
+  return null
+}
+
 function App() {
+  const mainRef = useRef<HTMLElement>(null)
+
   return (
     <ThemeProvider>
       <SidebarProvider>
@@ -21,7 +37,8 @@ function App() {
           <Sidebar testResults={testResults} />
           <div className="flex flex-1 flex-col overflow-hidden">
             <Breadcrumb testResults={testResults} />
-            <main className="flex-1 overflow-auto">
+            <main ref={mainRef} className="flex-1 overflow-auto">
+              <ScrollToTop mainRef={mainRef} />
               <div className="p-6">
                 <Routes>
                   <Route path="/" element={<HomePage />} />

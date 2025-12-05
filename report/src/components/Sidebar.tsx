@@ -294,7 +294,7 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
       isActive: pathname === "/config",
     },
     {
-      label: "System",
+      label: "System info",
       icon: Monitor,
       href: "/system",
       isActive: pathname === "/system",
