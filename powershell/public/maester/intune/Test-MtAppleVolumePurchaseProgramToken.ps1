@@ -27,7 +27,7 @@ function Test-MtAppleVolumePurchaseProgramToken {
         $expirationThresholdDays = 30
         $vppTokens = Invoke-MtGraphRequest -RelativeUri 'deviceAppManagement/vppTokens' -ApiVersion beta
 
-        if ($vppTokens.value -is [array] -and $vppTokens.value.Length -eq 0) {
+        if (($vppTokens | Measure-Object).Count -eq 0) {
             throw [System.Management.Automation.ItemNotFoundException]::new('No Apple Volume Purchase Program tokens found.')
         }
 

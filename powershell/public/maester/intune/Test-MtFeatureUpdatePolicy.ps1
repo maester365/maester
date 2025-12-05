@@ -27,7 +27,7 @@ function Test-MtFeatureUpdatePolicy {
         Write-Verbose 'Retrieving Windows Feature Update Profiles status...'
         $featureUpdateProfiles = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/windowsFeatureUpdateProfiles' -ApiVersion beta
 
-        if ($featureUpdateProfiles.value -is [array] -and $featureUpdateProfiles.value.Length -eq 0) {
+        if (($featureUpdateProfiles | Measure-Object).Count -eq 0) {
             throw [System.Management.Automation.ItemNotFoundException]::new('No Windows Feature Update Profiles found.')
         }
 

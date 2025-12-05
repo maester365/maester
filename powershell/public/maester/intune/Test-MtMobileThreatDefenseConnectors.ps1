@@ -46,7 +46,7 @@ function Test-MtMobileThreatDefenseConnectors {
         Write-Verbose 'Retrieving Mobile Threat Defense Connectors status...'
         $mobileThreatDefenseConnectors = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/mobileThreatDefenseConnectors' -ApiVersion beta
 
-        if ($mobileThreatDefenseConnectors.value -is [array] -and $mobileThreatDefenseConnectors.value.Length -eq 0) {
+        if (($mobileThreatDefenseConnectors | Measure-Object).Count -eq 0) {
             throw [System.Management.Automation.ItemNotFoundException]::new('No Mobile Threat Defense Connectors found.')
         }
 

@@ -27,7 +27,7 @@ function Test-MtAppleAutomatedDeviceEnrollmentToken {
         $expirationThresholdDays = 30
         $adeTokens = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/depOnboardingSettings' -ApiVersion beta
 
-        if ($adeTokens.value -is [array] -and $adeTokens.value.Length -eq 0) {
+        if (($adeTokens | Measure-Object).Count -eq 0) {
             throw [System.Management.Automation.ItemNotFoundException]::new('No Apple Automated Device Enrollment tokens found.')
         }
 

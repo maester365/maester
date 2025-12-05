@@ -26,7 +26,7 @@ function Test-MtCertificateConnectors {
         Write-Verbose 'Retrieving Intune Certificate Connectors status...'
         $certificateConnectors = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/ndesConnectors' -ApiVersion beta
 
-        if ($certificateConnectors.value -is [array] -and $certificateConnectors.value.Length -eq 0) {
+        if (($certificateConnectors | Measure-Object).Count -eq 0) {
             throw [System.Management.Automation.ItemNotFoundException]::new('No Intune Certificate Connectors found.')
         }
 
