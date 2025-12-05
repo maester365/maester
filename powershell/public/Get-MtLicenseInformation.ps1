@@ -21,7 +21,7 @@ function Get-MtLicenseInformation {
     [CmdletBinding()]
     param (
         [Parameter(ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Position = 0, Mandatory)]
-        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2', 'AdvAudit', 'ExoLicenseCount', 'DefenderXDR', 'CustomerLockbox')]
+        [ValidateSet('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2', 'AdvAudit', 'ExoLicenseCount', 'DefenderXDR', 'CustomerLockbox', 'Intune')]
         [string] $Product
     )
 
@@ -227,7 +227,33 @@ function Get-MtLicenseInformation {
                 return $LicenseType
                 break
             }
-            default {}
-        } # end switch
-    } # end process
-} # end function
+            "Intune" {
+                Write-Verbose "Retrieving license SKUs for Intune"
+                $subscribedSkus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
+                $uniqueServicePlans = $subscribedSkus.servicePlans.servicePlanId | Sort-Object -Unique
+                $requiredServicePlans = @(
+                    # https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
+                    "c1ec4a95-1f05-45b3-a911-aa3fa01094f5", # INTUNE_A (Microsoft Intune Plan 1)
+                    "d216f254-796f-4dab-bbfa-710686e646b9", # INTUNE_A_GOV (Microsoft Intune Plan 1 for Government)
+                    "3e170737-c728-4eae-bbb9-3f3360f7184c", # INTUNE_A_VL (Microsoft Intune Plan 1 Volume License)
+                    "da24caf9-af8e-485c-b7c8-e73336da2693", # INTUNE_EDU (Microsoft Intune for Education)
+                    "2b317a4a-77a6-4188-9437-b68a77b4e2c6", # INTUNE_A_D (Microsoft Intune Device)
+                    "2c21e77a-e0d6-4570-b38a-7ff2dc17d2ca", # INTUNE_A_D_GOV (Microsoft Intune Device for Government)
+                    "b4288abe-01be-47d9-ad20-311d6e83fc24", # INTUNE_A_VL_USGOV_GCCHIGH (Microsoft Intune Plan 1 A VL_USGOV_GCCHIGH)
+                    "e6025b08-2fa5-4313-bd0a-7e5ffca32958"  # INTUNE_SMB (Microsoft Intune SMB)
+
+                )
+                $LicenseType = $null
+                foreach($servicePlan in $requiredServicePlans){
+                    if($servicePlan -in $uniqueServicePlans){
+                        $LicenseType = "Intune"
+                    }
+                }
+                Write-Information "The tenant is licensed for Intune"
+                return $LicenseType
+                Break
+            }
+            Default {}
+        }
+    }
+}

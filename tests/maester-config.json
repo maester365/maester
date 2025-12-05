@@ -1188,6 +1188,81 @@
       "Severity": "Medium",
       "Title": "Devices with critical credentials should be protected by Credential Guard."
     },
+        {
+      "Id": "MT.1090",
+      "Severity": "Medium",
+      "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
+    },
+    {
+      "Id": "MT.1091",
+      "Severity": "Medium",
+      "Title": "Registering user should not be added as local administrator on the device during Microsoft Entra join"
+    },
+    {
+      "Id": "MT.1092",
+      "Severity": "High",
+      "Title": "Intune APNS certificate should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1093",
+      "Severity": "High",
+      "Title": "Apple Automated Device Enrollment Tokens should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1094",
+      "Severity": "High",
+      "Title": "Apple Volume Purchase Program Tokens should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1095",
+      "Severity": "High",
+      "Title": "Android Enterprise Account Connection should be healthy"
+    },
+    {
+      "Id": "MT.1096",
+      "Severity": "Medium",
+      "Title": "Intune Multi Admin approval should be configured"
+    },
+    {
+      "Id": "MT.1097",
+      "Severity": "High",
+      "Title": "Certificate Connectors should be healthy and running supported versions"
+    },
+    {
+      "Id": "MT.1098",
+      "Severity": "Critical",
+      "Title": "Mobile Threat Defense Connectors should be healthy"
+    },
+    {
+      "Id": "MT.1099",
+      "Severity": "Low",
+      "Title": "Windows Diagnostic Data Processing should be enabled"
+    },
+    {
+      "Id": "MT.1100",
+      "Severity": "High",
+      "Title": "Intune Audit Logs should be retained"
+    },
+    {
+      "Id": "MT.1101",
+      "Severity": "Low",
+      "Title": "Default Branding Profile should be customized"
+    },
+    {
+      "Id": "MT.1102",
+      "Severity": "High",
+      "Title": "Windows Feature Update Policy Settings should not reference end of support builds"
+    },
+    {
+      "Id": "MT.1103",
+      "Severity": "High",
+      "Title": "Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups"
+    },
+    {
+      "Id": "MT.1105",
+      "Severity": "Low",
+      "Title": "MDM Authority should be set to Microsoft Intune"
+    },
     {
       "Id": "ORCA.100",
       "Severity": "Medium",

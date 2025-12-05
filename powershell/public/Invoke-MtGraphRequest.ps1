@@ -88,7 +88,9 @@ function Invoke-MtGraphRequest {
         $listRequests = New-Object 'System.Collections.Generic.List[psobject]'
 
         function Format-Result ($results, $RawOutput) {
-            if (!$RawOutput -and $results -and (Get-ObjectProperty $results 'value')) {
+            # Check if 'value' property exists (not just truthy) to handle empty arrays
+            $hasValueProperty = $null -ne $results -and $results.PSObject.Properties.Match('value').Count -gt 0
+            if (!$RawOutput -and $hasValueProperty) {
                 $dataContextName = '@odata.context'
                 foreach ($result in $results.value) {
                     if ($result -is [hashtable]) {
