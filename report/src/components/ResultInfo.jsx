@@ -29,6 +29,9 @@ export default function ResultInfo({ Item, isPrintView }) {
       if (Item.Result === "Skipped") {
         return "Test skipped.";
       }
+      if (Item.Result === "Investigate") {
+        return "Test requires investigation.";
+      }
     }
     return "";
   }
@@ -56,6 +59,9 @@ export default function ResultInfo({ Item, isPrintView }) {
     }
     if (result === "Skipped") {
       return "bg-yellow-100";
+    }
+    if (result === "Investigate") {
+      return "bg-purple-100 dark:bg-purple-900 dark:bg-opacity-30";
     }
     return "bg-gray-100";
   }

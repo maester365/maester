@@ -30,6 +30,11 @@
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
+.EXAMPLE
+    Add-MtTestResultDetail -Description 'Check for stale credentials' -Result 'Found 3 service principals with unused credentials' -Investigate
+
+    This example marks a test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
+
 .LINK
     https://maester.dev/docs/commands/Add-MtTestResultDetail
 #>
@@ -79,6 +84,11 @@ function Add-MtTestResultDetail {
         # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
         [Parameter(Mandatory = $false)]
         [string] $SkippedCustomReason,
+
+        # Marks the test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
+        # This is different from skipped - the test ran and collected data, but the result needs human interpretation.
+        [Parameter(Mandatory = $false)]
+        [switch] $Investigate,
 
         # The error object that caused the test to be skipped.
         [Parameter(Mandatory = $false)]
@@ -183,14 +193,18 @@ function Add-MtTestResultDetail {
         $Service = ''
     }
 
+    # Handle Investigate status separately from Skipped
+    $TestInvestigate = $Investigate.IsPresent
+
     $testInfo = @{
-        TestTitle       = $TestTitle
-        TestDescription = $Description
-        TestResult      = $Result
-        TestSkipped     = $SkippedBecause
-        SkippedReason   = $SkippedReason
-        Severity        = $Severity
-        Service         = $Service
+        TestTitle           = $TestTitle
+        TestDescription     = $Description
+        TestResult          = $Result
+        TestSkipped         = $SkippedBecause
+        SkippedReason       = $SkippedReason
+        TestInvestigate     = $TestInvestigate
+        Severity            = $Severity
+        Service             = $Service
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName

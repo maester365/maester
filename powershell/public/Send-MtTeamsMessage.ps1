@@ -105,14 +105,15 @@ function Send-MtTeamsMessage {
         title       = $Subject
         description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
         run         = @{
-            TenantName    = $MaesterResults.TenantName
-            TenantId      = $MaesterResults.TenantId
-            ModuleVersion = $ModuleVersion
-            TotalCount    = $MaesterResults.TotalCount
-            PassedCount   = $MaesterResults.PassedCount
-            FailedCount   = $MaesterResults.FailedCount
-            NotRunCount   = $NotRunCount
-            TestResultURL = $TestResultsUri
+            TenantName       = $MaesterResults.TenantName
+            TenantId         = $MaesterResults.TenantId
+            ModuleVersion    = $ModuleVersion
+            TotalCount       = $MaesterResults.TotalCount
+            PassedCount      = $MaesterResults.PassedCount
+            FailedCount      = $MaesterResults.FailedCount
+            InvestigateCount = $MaesterResults.InvestigateCount
+            NotRunCount      = $NotRunCount
+            TestResultURL    = $TestResultsUri
         }
     }
 

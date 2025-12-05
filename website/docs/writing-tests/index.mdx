@@ -32,7 +32,7 @@ A common scenario for this test would be a security group that is used in a crit
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "Check 'Contoso MFA Users' group" -Tag 'Severity:Medium' {
+    It "CT0001: Check 'Contoso MFA Users' group" -Tag 'Severity:Medium' {
 
         try {
             $groupId = "e05d094c-a785-4a7c-b7eb-f0ccebbe009e"

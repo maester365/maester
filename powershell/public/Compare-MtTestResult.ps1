@@ -31,7 +31,7 @@ function Compare-MtTestResult {
     )
 
     if (-not ($NewTest -and $PriorTest)) {
-        $reportProperties = @("Account", "Blocks", "CurrentVersion", "ExecutedAt", "FailedCount", "LatestVersion", "PassedCount", "Result", "SkippedCount", "TenantId", "TenantName", "Tests", "TotalCount")
+        $reportProperties = @("Account", "Blocks", "CurrentVersion", "ExecutedAt", "ErrorCount", "FailedCount", "InvestigateCount", "LatestVersion", "NotRunCount", "PassedCount", "Result", "SkippedCount", "TenantId", "TenantName", "Tests", "TotalCount")
         $reports = @()
         $files = Get-ChildItem "$BaseDir\TestResults-*.json"
         Write-Verbose "Found $($files.Count) TestResults-*.json files in $BaseDir"

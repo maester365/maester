@@ -19,7 +19,7 @@ You can copy and paste the following code and add it to the end of the `ContosoE
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "CA", "Contoso" {
-   It "Disabled CA policies must have reason for being disabled" {
+   It "CT0001: Disabled CA policies must have reason for being disabled" {
 
        try {
           $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -54,7 +54,7 @@ Copy and paste this code to any `*.Tests.ps1` file in the `Custom` folder to try
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "Disabled CA policies must have reason for being disabled" {
+    It "CT0001: Disabled CA policies must have reason for being disabled" {
 
         try {
             $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -99,7 +99,7 @@ Here's the updated test with the graph objects that you can try out.
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
-    It "Disabled CA policies must have reason for being disabled" {
+    It "CT0001: Disabled CA policies must have reason for being disabled" {
 
         try {
             $policies = Get-MgIdentityConditionalAccessPolicy -All
@@ -123,6 +123,50 @@ Describe "ContosoEntraConfig" -Tag "Privilege", "Contoso" {
 ```
 
 To add support for additional types see [Add-MtTestResultDetail](https://github.com/maester365/maester/blob/main/powershell/public/Add-MtTestResultDetail.ps1) and [Get-GraphObjectMarkdown](https://github.com/maester365/maester/blob/main/powershell/internal/Get-GraphObjectMarkdown.ps1).
+
+### Marking tests as Investigate
+
+The **Investigate** status is used when a test passed but the result requires manual review to confirm all scenarios were considered. This is different from a skipped test - the test ran and collected data, but the result needs human interpretation.
+
+Common scenarios for using Investigate:
+
+- **Anomaly detection**: The test detected unusual patterns that may or may not indicate a security issue
+- **Risk-based findings**: Items flagged by risk detection systems that need human verification
+- **Compliance gray areas**: Configurations that partially meet requirements but need manual assessment
+
+To mark a test as requiring investigation, use the `-Investigate` switch:
+
+```powershell
+Describe "ContosoEntraConfig" -Tag "Security", "Contoso" {
+    It "CT0002: Read-only CA policies should be reviewed" {
+
+        $policies = Invoke-MtGraphRequest -RelativeUri "identity/conditionalAccess/policies"
+
+        $readOnlyPolicies = $policies | Where-Object { $_.state -eq 'reportOnly' }
+
+        if ($readOnlyPolicies.Count -gt 0) {
+            $result = "Found $($readOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n"
+            $result += "| Policy Name | State |`n"
+            $result += "| --- | --- |`n"
+            foreach ($policy in $readOnlyPolicies) {
+                $result += "| $($policy.displayName) | $($policy.state) |`n"
+            }
+            Add-MtTestResultDetail -Description "Lists CA policies that are disabled or in report-only mode for review." -Result $result -Investigate
+        } else {
+            Add-MtTestResultDetail -Description "Lists CA policies that are disabled or in report-only mode." -Result "All conditional access policies are enabled."
+        }
+
+        $true | Should -Be $true
+    }
+}
+```
+
+Tests marked as Investigate will:
+
+- Appear with a purple **Investigate** badge in the report
+- Be counted separately from Passed, Failed, and Skipped tests
+- Be displayed in the pie chart and summary statistics
+- Be filterable in the test results table
 
 #### Adding custom markdown
 

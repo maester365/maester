@@ -3,9 +3,10 @@
 
 export const testResults = {
   "Result": "Failed",
-  "FailedCount": 70,
+  "FailedCount": 67,
   "PassedCount": 74,
   "ErrorCount": 2,
+  "InvestigateCount": 3,
   "SkippedCount": 150,
   "NotRunCount": 19,
   "TotalCount": 315,
@@ -315,6 +316,93 @@ export const testResults = {
     },
     {
       "Index": 3,
+      "Id": "MT.INV.001",
+      "Title": "Unusual sign-in activity detected for privileged accounts",
+      "Name": "MT.INV.001: Unusual sign-in activity detected for privileged accounts",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.INV.001",
+      "Severity": "High",
+      "Tag": [
+        "MT.INV.001",
+        "Security",
+        "Identity",
+        "Investigate"
+      ],
+      "Result": "Investigate",
+      "ScriptBlock": "\n        $result = Test-MtPrivilegedSignInActivity\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no unusual sign-in patterns should exist\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/security/Test-MtPrivilegedSignInActivity.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Identity Protection",
+      "Duration": "00:00:02",
+      "ResultDetail": {
+        "TestTitle": "MT.INV.001: Unusual sign-in activity detected for privileged accounts",
+        "SkippedReason": "This test requires further investigation. 🔍",
+        "TestDescription": "This test checks for unusual sign-in patterns for accounts with privileged roles. Anomalies may indicate a potential compromise.\n\n#### Investigation steps:\n\n1. Review the sign-in logs for the flagged accounts\n2. Check if the sign-ins are from expected locations\n3. Verify if the sign-in times match the user's normal working hours\n4. Contact the user to confirm the activity\n\n#### Related links\n\n* [Microsoft Entra sign-in logs](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/SignIns)\n* [Investigate risk in Identity Protection](https://learn.microsoft.com/entra/id-protection/howto-identity-protection-investigate-risk)\n\n",
+        "TestResult": "Investigate. The following privileged accounts have unusual sign-in activity that requires review:\n\n| Display Name | Role | Location | Risk Level |\n| --- | --- | --- | --- |\n| John Admin | Global Administrator | Unknown IP | Medium |\n| Jane SecOps | Security Administrator | New device | Low |\n",
+        "Severity": "High",
+        "Service": "Identity",
+        "TestSkipped": "Investigate"
+      }
+    },
+    {
+      "Index": 4,
+      "Id": "MT.INV.002",
+      "Title": "Service principal credentials nearing expiration",
+      "Name": "MT.INV.002: Service principal credentials nearing expiration",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.INV.002",
+      "Severity": "Medium",
+      "Tag": [
+        "MT.INV.002",
+        "Security",
+        "Applications",
+        "Investigate"
+      ],
+      "Result": "Investigate",
+      "ScriptBlock": "\n        $result = Test-MtAppCredentialExpiry\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no credentials should be expiring soon\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/security/Test-MtAppCredentialExpiry.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Applications",
+      "Duration": "00:00:01",
+      "ResultDetail": {
+        "TestTitle": "MT.INV.002: Service principal credentials nearing expiration",
+        "SkippedReason": "This test requires further investigation. 🔍",
+        "TestDescription": "This test identifies service principals and applications with credentials that will expire within the next 30 days. Expired credentials can cause service outages.\n\n#### Investigation steps:\n\n1. Identify the business owner of the application\n2. Schedule credential rotation before expiration\n3. Update any systems using these credentials\n\n#### Related links\n\n* [Microsoft Entra App Registrations](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)\n\n",
+        "TestResult": "Investigate. The following applications have credentials expiring soon:\n\n| App Name | Credential Type | Expires In |\n| --- | --- | --- |\n| Backup Service | Client Secret | 15 days |\n| API Gateway | Certificate | 22 days |\n| HR Integration | Client Secret | 7 days |\n",
+        "Severity": "Medium",
+        "Service": "Applications",
+        "TestSkipped": "Investigate"
+      }
+    },
+    {
+      "Index": 5,
+      "Id": "MT.INV.003",
+      "Title": "Inactive privileged accounts detected",
+      "Name": "MT.INV.003: Inactive privileged accounts detected",
+      "HelpUrl": "https://maester.dev/docs/tests/MT.INV.003",
+      "Severity": "Medium",
+      "Tag": [
+        "MT.INV.003",
+        "Security",
+        "Identity",
+        "Investigate"
+      ],
+      "Result": "Investigate",
+      "ScriptBlock": "\n        $result = Test-MtInactivePrivilegedAccounts\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"all privileged accounts should be active\"\n        }\n    ",
+      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/security/Test-MtInactivePrivilegedAccounts.Tests.ps1",
+      "ErrorRecord": [],
+      "Block": "Identity Protection",
+      "Duration": "00:00:03",
+      "ResultDetail": {
+        "TestTitle": "MT.INV.003: Inactive privileged accounts detected",
+        "SkippedReason": "Accounts require review to determine if they should be disabled or retained.",
+        "TestDescription": "This test identifies privileged accounts that have not signed in for more than 90 days. Inactive privileged accounts pose a security risk.\n\n#### Investigation steps:\n\n1. Contact the account owner to verify if the account is still needed\n2. If not needed, disable or delete the account\n3. If needed, investigate why there is no recent activity\n\n#### Related links\n\n* [Microsoft Entra Privileged Identity Management](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/CommonMenuBlade/~/quickStart)\n\n",
+        "TestResult": "Investigate. The following privileged accounts have been inactive for over 90 days:\n\n| Display Name | Role | Last Sign-in | Days Inactive |\n| --- | --- | --- | --- |\n| Legacy Admin | Global Administrator | 2024-09-15 | 95 |\n| Test Account | User Administrator | 2024-08-01 | 140 |\n",
+        "Severity": "Medium",
+        "Service": "Identity",
+        "TestSkipped": "Investigate"
+      }
+    },
+    {
+      "Index": 6,
       "Id": "CIS.M365.1.2.1",
       "Title": "Ensure that only organizationally managed/approved public groups exist",
       "Name": "CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist",
@@ -20635,11 +20723,44 @@ export const testResults = {
   ],
   "Blocks": [
     {
+      "Name": "Identity Protection",
+      "Result": "Investigate",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "ErrorCount": 0,
+      "InvestigateCount": 2,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 2,
+      "Tag": [
+        "Security",
+        "Identity",
+        "Investigate"
+      ]
+    },
+    {
+      "Name": "Applications",
+      "Result": "Investigate",
+      "FailedCount": 0,
+      "PassedCount": 0,
+      "ErrorCount": 0,
+      "InvestigateCount": 1,
+      "SkippedCount": 0,
+      "NotRunCount": 0,
+      "TotalCount": 1,
+      "Tag": [
+        "Security",
+        "Applications",
+        "Investigate"
+      ]
+    },
+    {
       "Name": "Exposure Management",
       "Result": "Passed",
       "FailedCount": 0,
       "PassedCount": 1,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 0,
       "NotRunCount": 9,
       "TotalCount": 10,
@@ -20656,6 +20777,7 @@ export const testResults = {
       "FailedCount": 11,
       "PassedCount": 27,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 6,
       "NotRunCount": 0,
       "TotalCount": 44,
@@ -20671,6 +20793,7 @@ export const testResults = {
       "FailedCount": 21,
       "PassedCount": 10,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 42,
       "NotRunCount": 0,
       "TotalCount": 73,
@@ -20688,6 +20811,7 @@ export const testResults = {
       "FailedCount": 0,
       "PassedCount": 1,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 0,
       "NotRunCount": 0,
       "TotalCount": 1,
@@ -20703,6 +20827,7 @@ export const testResults = {
       "FailedCount": 3,
       "PassedCount": 1,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 21,
       "NotRunCount": 0,
       "TotalCount": 25,
@@ -20722,6 +20847,7 @@ export const testResults = {
       "FailedCount": 0,
       "PassedCount": 1,
       "ErrorCount": 0,
+      "InvestigateCount": 0,
       "SkippedCount": 8,
       "NotRunCount": 0,
       "TotalCount": 9,
@@ -20737,6 +20863,7 @@ export const testResults = {
       "PassedCount": 1,
       "ErrorCount": 0,
       "SkippedCount": 0,
+      "InvestigateCount": 0,
       "NotRunCount": 0,
       "TotalCount": 3,
       "Tag": [
@@ -20751,6 +20878,7 @@ export const testResults = {
       "PassedCount": 0,
       "ErrorCount": 0,
       "SkippedCount": 5,
+      "InvestigateCount": 0,
       "NotRunCount": 0,
       "TotalCount": 6,
       "Tag": [
@@ -20766,6 +20894,7 @@ export const testResults = {
       "PassedCount": 0,
       "ErrorCount": 0,
       "SkippedCount": 0,
+      "InvestigateCount": 0,
       "NotRunCount": 0,
       "TotalCount": 2,
       "Tag": [
@@ -20780,6 +20909,7 @@ export const testResults = {
       "PassedCount": 31,
       "ErrorCount": 2,
       "SkippedCount": 1,
+      "InvestigateCount": 0,
       "NotRunCount": 10,
       "TotalCount": 74,
       "Tag": [
@@ -20795,6 +20925,7 @@ export const testResults = {
       "PassedCount": 1,
       "ErrorCount": 0,
       "SkippedCount": 0,
+      "InvestigateCount": 0,
       "NotRunCount": 0,
       "TotalCount": 1,
       "Tag": [
@@ -20812,6 +20943,7 @@ export const testResults = {
       "PassedCount": 0,
       "ErrorCount": 0,
       "SkippedCount": 67,
+      "InvestigateCount": 0,
       "NotRunCount": 0,
       "TotalCount": 67,
       "Tag": [

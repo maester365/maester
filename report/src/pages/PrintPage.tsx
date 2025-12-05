@@ -113,6 +113,14 @@ export default function PrintPage() {
             </div>
             <div className="text-sm text-red-600 dark:text-red-500">Failed</div>
           </div>
+          <div className="rounded-md border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950">
+            <div className="text-2xl font-semibold text-purple-700 dark:text-purple-400">
+              {testResults.InvestigateCount || 0}
+            </div>
+            <div className="text-sm text-purple-600 dark:text-purple-500">
+              Investigate
+            </div>
+          </div>
           <div className="rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
             <div className="text-2xl font-semibold text-amber-700 dark:text-amber-400">
               {testResults.SkippedCount}

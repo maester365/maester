@@ -5,7 +5,8 @@ import { List, ListItem, Card, Title, DonutChart } from "@tremor/react";
 export default function MtDonutChart(props) {
 
     function getPercentage(count) {
-        let percent = Math.round(count / (props.PassedCount + props.FailedCount) * 100);
+        let total = (props.PassedCount || 0) + (props.FailedCount || 0) + (props.InvestigateCount || 0);
+        let percent = Math.round(count / total * 100);
         if(isNaN(percent)) percent = "0";
         return percent + "%";
     }
@@ -25,11 +26,15 @@ export default function MtDonutChart(props) {
                         {
                             name: 'Fail',
                             count: props.FailedCount,
+                        },
+                        {
+                            name: 'Investigate',
+                            count: props.InvestigateCount || 0,
                         }
                     ]}
                     category="count"
                     index="name"
-                    colors={["green", "rose", "gray"]}
+                    colors={["green", "rose", "purple"]}
                     label={props.Result}
                 />
                 <List className="w-1/3">
@@ -47,6 +52,15 @@ export default function MtDonutChart(props) {
                         </div>
                         <span>{getPercentage(props.FailedCount)}</span>
                     </ListItem>
+                    {(props.InvestigateCount > 0) && (
+                        <ListItem className="space-x-2">
+                            <div className="flex items-center space-x-2 truncate">
+                                <span className="h-2.5 w-2.5 rounded-sm flex-shrink-0 bg-purple-500" />
+                                <span className="truncate">Investigate</span>
+                            </div>
+                            <span>{getPercentage(props.InvestigateCount)}</span>
+                        </ListItem>
+                    )}
                 </List>
             </div>
         </Card>

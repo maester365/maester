@@ -6,9 +6,9 @@ This is a summary of the test results from the Maester test run.
 
 **Date:** %TestDate%
 
-| 🔥 <br/> Total Tests | ✅ <br/> Passed  | ❌ <br/> Failed | ❔ <br/> Skipped | ❔ <br/> Not Run |
-|:-:|:-:|:-:|:-:|:-:|
-| **%TotalCount%** | **%PassedCount%** | **%FailedCount%** | **%SkippedCount%** |**%NotRunCount%** |
+| 🔥 <br/> Total Tests | ✅ <br/> Passed  | ❌ <br/> Failed | 🔍 <br/> Investigate | ❔ <br/> Skipped | ❔ <br/> Not Run |
+|:-:|:-:|:-:|:-:|:-:|:-:|
+| **%TotalCount%** | **%PassedCount%** | **%FailedCount%** | **%InvestigateCount%** | **%SkippedCount%** |**%NotRunCount%** |
 
 
 ## Test summary

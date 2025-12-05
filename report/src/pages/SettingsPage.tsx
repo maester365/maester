@@ -60,7 +60,7 @@ export default function SettingsPage() {
             Test Summary
           </h2>
           <div className="rounded-md border border-gray-200 bg-white p-6">
-            <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-4 sm:grid-cols-5">
               <div className="text-center">
                 <dt className="text-sm font-medium text-gray-500">
                   Total
@@ -83,6 +83,14 @@ export default function SettingsPage() {
                 </dt>
                 <dd className="mt-1 text-2xl font-semibold text-red-600">
                   {testResults.FailedCount}
+                </dd>
+              </div>
+              <div className="text-center">
+                <dt className="text-sm font-medium text-purple-600">
+                  Investigate
+                </dt>
+                <dd className="mt-1 text-2xl font-semibold text-purple-600">
+                  {testResults.InvestigateCount || 0}
                 </dd>
               </div>
               <div className="text-center">

@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MtTestSummary(props) {
 
@@ -10,15 +10,17 @@ export default function MtTestSummary(props) {
     const pctSkipped = getPercentage(props.SkippedCount);
     const pctNotRun = getPercentage(props.NotRunCount);
     const pctError = getPercentage(props.ErrorCount);
+    const pctInvestigate = getPercentage(props.InvestigateCount);
 
     const testSummary = [
         props.PassedCount || 0,
         props.FailedCount || 0,
+        props.InvestigateCount || 0,
         props.SkippedCount || 0,
         props.NotRunCount || 0,
         props.ErrorCount || 0
     ];
-    const testSummaryColors = ["emerald", "rose", "yellow", "gray", "orange"];
+    const testSummaryColors = ["emerald", "rose", "purple", "yellow", "gray", "orange"];
 
     function getPercentage(count) {
         const total = props.TotalCount || 0;
@@ -27,6 +29,7 @@ export default function MtTestSummary(props) {
     }
 
     let visibleCards = 3;
+    if (props.InvestigateCount > 0) visibleCards++;
     if (props.SkippedCount > 0) visibleCards++;
     if (props.NotRunCount > 0) visibleCards++;
     if (props.ErrorCount > 0) visibleCards++;
@@ -68,6 +71,18 @@ export default function MtTestSummary(props) {
                 </Flex>
                 <ProgressBar value={pctFailed} color="rose" className="mt-3" showAnimation={true} />
             </Card>
+            {props.InvestigateCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Investigate</Text>
+                        <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="md" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.InvestigateCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctInvestigate} color="purple" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
             {props.SkippedCount > 0 && (
                 <Card>
                     <Flex alignItems="start">

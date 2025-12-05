@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Icon } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function StatusLabelSm(props) {
 
@@ -18,6 +18,9 @@ export default function StatusLabelSm(props) {
             }
             {props.Result === "Error" &&
                 <Icon icon={ExclamationCircleIcon} color="orange" size="sm" />
+            }
+            {props.Result === "Investigate" &&
+                <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="sm" />
             }
             {(props.Result === "NotRun" || props.Result === "Not tested") &&
                 <Icon icon={ArchiveBoxIcon} size="md" color="gray" />

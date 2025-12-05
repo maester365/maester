@@ -20,9 +20,9 @@ function generateMarkdown(results: typeof testResults) {
   md += `**Date:** ${testDateLocal}\n\n`
 
   md += `## Test Summary\n\n`
-  md += `| Total | Passed | Failed | Skipped | Not Run | Error |\n`
-  md += `| :---: | :---: | :---: | :---: | :---: | :---: |\n`
-  md += `| ${results.TotalCount} | ${results.PassedCount} | ${results.FailedCount} | ${results.SkippedCount} | ${results.NotRunCount || 0} | ${results.ErrorCount || 0} |\n\n`
+  md += `| Total | Passed | Failed | Investigate | Skipped | Not Run | Error |\n`
+  md += `| :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n`
+  md += `| ${results.TotalCount} | ${results.PassedCount} | ${results.FailedCount} | ${results.InvestigateCount || 0} | ${results.SkippedCount} | ${results.NotRunCount || 0} | ${results.ErrorCount || 0} |\n\n`
 
   md += `## Test Results\n\n`
   md += `| Name | Severity | Result |\n`
@@ -43,7 +43,9 @@ function generateMarkdown(results: typeof testResults) {
           ? "❌"
           : test.Result === "Skipped"
             ? "⏭️"
-            : "⚠️"
+            : test.Result === "Investigate"
+              ? "🔍"
+              : "⚠️"
     md += `### ${icon} ${test.Name}\n\n`
     md += `**Result:** ${test.Result}  \n`
     md += `**Severity:** ${test.Severity}  \n`

@@ -300,9 +300,11 @@ function ConvertTo-MtMaesterResult {
             $severity = $testSetting.Severity
         }
 
-        # Setting Result to Error, Overwriting the Skipped state
+        # Setting Result to Error or Investigate, Overwriting the Skipped state
         if ($testResultDetail.TestSkipped -eq "Error" ) {
             $result = "Error"
+        } elseif ($testResultDetail.TestInvestigate -eq $true) {
+            $result = "Investigate"
         } elseif ((
                 $test -and
                 $test.ErrorRecord -and
@@ -336,18 +338,20 @@ function ConvertTo-MtMaesterResult {
         }
         $mtTests += $mtTestInfo
     }
-    # Count all Passed, Failed, Skipped, Error, NotRun and Total results
+    # Count all Passed, Failed, Skipped, Error, Investigate, NotRun and Total results
     $Recount = [PSCustomObject]@{
-        FailedCount  = 0
-        PassedCount  = 0
-        SkippedCount = 0
-        NotRunCount  = 0
-        ErrorCount   = 0
-        TotalCount   = 0
+        FailedCount      = 0
+        PassedCount      = 0
+        SkippedCount     = 0
+        NotRunCount      = 0
+        ErrorCount       = 0
+        InvestigateCount = 0
+        TotalCount       = 0
     }
     $Recount.FailedCount = @($mtTests | Where-Object { $_.Result -eq 'Failed' }).Count
     $Recount.PassedCount = @($mtTests | Where-Object { $_.Result -eq 'Passed' }).Count
     $Recount.ErrorCount = @($mtTests | Where-Object { $_.Result -eq 'Error' }).Count
+    $Recount.InvestigateCount = @($mtTests | Where-Object { $_.Result -eq 'Investigate' }).Count
     $Recount.SkippedCount = @($mtTests | Where-Object { $_.Result -eq 'Skipped' }).Count
     $Recount.NotRunCount = @($mtTests | Where-Object { $_.Result -eq 'NotRun' }).Count
     $Recount.TotalCount = $mtTests.Count
@@ -361,15 +365,16 @@ function ConvertTo-MtMaesterResult {
             if ($null -eq $mtBlockInfo) {
                 Write-Verbose "Recalculating block: $($block.Name)"
                 $mtBlockInfo = [PSCustomObject]@{
-                    Name         = $block.Name
-                    Result       = $block.Result
-                    FailedCount  = @($mtTests | Where-Object { $_.Result -eq 'Failed' -and $_.Block -eq $block.name }).Count
-                    PassedCount  = @($mtTests | Where-Object { $_.Result -eq 'Passed' -and $_.Block -eq $block.name }).Count
-                    ErrorCount   = @($mtTests | Where-Object { $_.Result -eq 'Error' -and $_.Block -eq $block.name }).Count
-                    SkippedCount = @($mtTests | Where-Object { $_.Result -eq 'Skipped' -and $_.Block -eq $block.name }).Count
-                    NotRunCount  = @($mtTests | Where-Object { $_.Result -eq 'NotRun' -and $_.Block -eq $block.name }).Count
-                    TotalCount   = @($mtTests | Where-Object { $_.Block -eq $block.name }).Count
-                    Tag          = $block.Tag
+                    Name             = $block.Name
+                    Result           = $block.Result
+                    FailedCount      = @($mtTests | Where-Object { $_.Result -eq 'Failed' -and $_.Block -eq $block.name }).Count
+                    PassedCount      = @($mtTests | Where-Object { $_.Result -eq 'Passed' -and $_.Block -eq $block.name }).Count
+                    ErrorCount       = @($mtTests | Where-Object { $_.Result -eq 'Error' -and $_.Block -eq $block.name }).Count
+                    InvestigateCount = @($mtTests | Where-Object { $_.Result -eq 'Investigate' -and $_.Block -eq $block.name }).Count
+                    SkippedCount     = @($mtTests | Where-Object { $_.Result -eq 'Skipped' -and $_.Block -eq $block.name }).Count
+                    NotRunCount      = @($mtTests | Where-Object { $_.Result -eq 'NotRun' -and $_.Block -eq $block.name }).Count
+                    TotalCount       = @($mtTests | Where-Object { $_.Block -eq $block.name }).Count
+                    Tag              = $block.Tag
                 }
                 $mtBlocks += $mtBlockInfo
             }
@@ -384,6 +389,7 @@ function ConvertTo-MtMaesterResult {
         FailedCount       = $Recount.FailedCount
         PassedCount       = $Recount.PassedCount
         ErrorCount        = $Recount.ErrorCount
+        InvestigateCount  = $Recount.InvestigateCount
         SkippedCount      = $Recount.SkippedCount
         NotRunCount       = $Recount.NotRunCount
         TotalCount        = $Recount.TotalCount
