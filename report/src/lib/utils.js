@@ -5,6 +5,9 @@ export function cx(...args) {
   return twMerge(clsx(...args));
 }
 
+// Alias for shadcn compatibility
+export const cn = cx;
+
 export const focusInput = [
   // base
   "focus:ring-2",

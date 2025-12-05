@@ -5,8 +5,8 @@ import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { WindowIcon } from "@heroicons/react/24/outline";
 
-// Lazy load the ResultInfoDialog component
-const ResultInfoDialog = lazy(() => import("./ResultInfoDialog"));
+// Lazy load the ResultInfoSheet component
+const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
 
 export default function TestResultsTable(props) {
   const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped','Error']);
@@ -17,10 +17,17 @@ export default function TestResultsTable(props) {
   const [sortColumn, setSortColumn] = useState("Id");
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const testResults = props.TestResults;
 
-  const handleDialogClose = useCallback(() => {
-    setSelectedItem(null);
+  const handleOpenSheet = useCallback((item) => {
+    setSelectedItem(item);
+    setIsSheetOpen(true);
+  }, []);
+
+  const handleCloseSheet = useCallback(() => {
+    setIsSheetOpen(false);
+    // Don't clear selectedItem immediately - let the animation complete
   }, []);
 
   const isStatusSelected = (item) => {
@@ -239,7 +246,7 @@ export default function TestResultsTable(props) {
                   </a>
                 ) : (
                   <button
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => handleOpenSheet(item)}
                     className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-500 dark:text-zinc-300 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate w-full"
                   >
                     <span className="truncate tremor-Button-text text-tremor-default">{item.Id || item.Name}</span>
@@ -253,7 +260,7 @@ export default function TestResultsTable(props) {
                   </a>
                 ) : (
                   <button
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => handleOpenSheet(item)}
                     className="text-left tremor-Button-root font-medium outline-none text-sm text-zinc-700 dark:text-zinc-200 bg-transparent hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     <span className="whitespace-normal tremor-Button-text text-tremor-default">{item.Title || (item.Name && item.Name.split(': ')[1])}</span>
@@ -275,7 +282,7 @@ export default function TestResultsTable(props) {
                       color="gray"
                       tooltip="View details"
                       icon={WindowIcon}
-                      onClick={() => setSelectedItem(item)}
+                      onClick={() => handleOpenSheet(item)}
                     />
                   </div>
                 )}
@@ -286,18 +293,16 @@ export default function TestResultsTable(props) {
         </TableBody>
       </Table>
 
-      {/* Single dialog instance for all items - lazy loaded with Suspense */}
-      {selectedItem && (
-        <Suspense fallback={null}>
-          <ResultInfoDialog
-            Item={selectedItem}
-            isOpen={Boolean(selectedItem)}
-            onDialogClose={handleDialogClose}
-            onNavigateNext={handleNavigateToNext}
-            onNavigatePrevious={handleNavigateToPrevious}
-          />
-        </Suspense>
-      )}
+      {/* Single sheet instance for all items - lazy loaded with Suspense */}
+      <Suspense fallback={null}>
+        <ResultInfoSheet
+          Item={selectedItem}
+          isOpen={isSheetOpen}
+          onClose={handleCloseSheet}
+          onNavigateNext={handleNavigateToNext}
+          onNavigatePrevious={handleNavigateToPrevious}
+        />
+      </Suspense>
     </Card>
   );
 }
