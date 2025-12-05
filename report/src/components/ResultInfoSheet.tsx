@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useCallback } from "react";
-import { Button } from "@tremor/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import {
   Sheet,
@@ -8,7 +7,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
 } from "@/components/ui/sheet";
 import ResultInfo from "./ResultInfo";
 
@@ -74,6 +72,28 @@ function ResultInfoSheet({
         side="right"
         className="w-full sm:max-w-2xl lg:max-w-4xl overflow-y-auto"
       >
+        {/* Navigation buttons in the header area, positioned to the right of the close button */}
+        <div className="absolute left-10 top-4 flex items-center gap-1">
+          <button
+            onClick={onNavigatePrevious}
+            disabled={!onNavigatePrevious}
+            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
+            title="Previous result (Left arrow key)"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+            <span className="sr-only">Previous</span>
+          </button>
+          <button
+            onClick={onNavigateNext}
+            disabled={!onNavigateNext}
+            className="rounded-sm p-1 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-30"
+            title="Next result (Right arrow key)"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+            <span className="sr-only">Next</span>
+          </button>
+        </div>
+
         <SheetHeader className="sr-only">
           <SheetTitle>{Item.Title || Item.Name}</SheetTitle>
           <SheetDescription>Test result details</SheetDescription>
@@ -82,28 +102,6 @@ function ResultInfoSheet({
         <div className="mt-2">
           <ResultInfo Item={Item} isPrintView={false} />
         </div>
-
-        <SheetFooter className="mt-6 flex-row justify-between sm:justify-between gap-2">
-          <Button
-            variant="secondary"
-            icon={ChevronLeftIcon}
-            onClick={onNavigatePrevious}
-            disabled={!onNavigatePrevious}
-            className="flex-1 sm:flex-none"
-          >
-            Previous
-          </Button>
-          <Button
-            variant="secondary"
-            icon={ChevronRightIcon}
-            iconPosition="right"
-            onClick={onNavigateNext}
-            disabled={!onNavigateNext}
-            className="flex-1 sm:flex-none"
-          >
-            Next
-          </Button>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
