@@ -29,19 +29,21 @@ export default function TestResultsTable(props) {
     // Don't clear selectedItem immediately - let the animation complete
   }, []);
 
-  const isStatusSelected = (item) => {
+  const isStatusSelected = useCallback((item) => {
     const matchesSearch = !searchQuery ||
       (item.Id && item.Id.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (item.Title && item.Title.toLowerCase().includes(searchQuery.toLowerCase()));
 
+    const matchesSeverity = selectedSeverity.length === 0 ||
+      selectedSeverity.includes(item.Severity) ||
+      (selectedSeverity.includes("None") && !item.Severity);
+
     return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
       (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag))) &&
-      (selectedSeverity.length === 0 ||
-        (selectedSeverity.includes(item.Severity)) ||
-        (selectedSeverity.includes("None") && (!item.Severity))) &&
+      matchesSeverity &&
       matchesSearch;
-  }
+  }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity]);
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -52,7 +54,7 @@ export default function TestResultsTable(props) {
     }
   };
 
-  const getSortedData = (data) => {
+  const getSortedData = useCallback((data) => {
     if (!sortColumn) return data;
 
     return [...data].sort((a, b) => {
@@ -84,11 +86,14 @@ export default function TestResultsTable(props) {
         return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
       }
     });
-  };
+  }, [sortColumn, sortDirection]);
+
+  // Memoize the filtered and sorted data to prevent unnecessary recalculations
   // Memoize the filtered and sorted data to prevent unnecessary recalculations
   const filteredSortedData = useMemo(() => {
-    return getSortedData(testResults.Tests.filter((item) => isStatusSelected(item)));
-  }, [testResults.Tests, selectedStatus, selectedBlock, selectedTag, selectedSeverity, searchQuery, sortColumn, sortDirection]);
+    const filtered = testResults.Tests.filter((item) => isStatusSelected(item));
+    return getSortedData(filtered);
+  }, [testResults.Tests, isStatusSelected, getSortedData]);
 
   const dialogRefs = useRef({});
   useEffect(() => {
@@ -159,6 +164,7 @@ export default function TestResultsTable(props) {
         />
 
         <MultiSelect
+          value={selectedSeverity}
           onValueChange={setSelectedSeverity}
           placeholder="Severity"
           className="w-1/3"
@@ -174,9 +180,9 @@ export default function TestResultsTable(props) {
         </MultiSelect>
 
         <MultiSelect
+          value={selectedStatus}
           onValueChange={setSelectedStatus}
           placeholder="Status"
-          defaultValue={['Passed', 'Failed', 'Investigate', 'Skipped','Error']}
           className="w-1/3"
         >
           {status.map((item) => (
@@ -190,6 +196,7 @@ export default function TestResultsTable(props) {
       {/* Second row: Category and Tag in one row */}
       <Flex justifyContent="between" className="gap-2 mb-4">
         <MultiSelect
+          value={selectedBlock}
           onValueChange={setSelectedBlock}
           placeholder="Category"
           className="w-1/2"
@@ -204,6 +211,7 @@ export default function TestResultsTable(props) {
         </MultiSelect>
 
         <MultiSelect
+          value={selectedTag}
           onValueChange={setSelectedTag}
           placeholder="Tag"
           className="w-1/2"
@@ -237,7 +245,7 @@ export default function TestResultsTable(props) {
             const hasNext = index < filteredSortedData.length - 1;
 
             return (<TableRow
-              key={item.Index}
+              key={`${item.Index}-${item.Id || index}`}
               className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
               onClick={() => !props.isPrintView && handleOpenSheet(item)}
             >
