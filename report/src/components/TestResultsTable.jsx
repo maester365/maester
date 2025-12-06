@@ -95,25 +95,41 @@ export default function TestResultsTable(props) {
     return getSortedData(filtered);
   }, [testResults.Tests, isStatusSelected, getSortedData]);
 
-  const dialogRefs = useRef({});
+  // Store the current index in filtered data as state to avoid findIndex issues with non-unique Index values
+  const [currentFilteredIndex, setCurrentFilteredIndex] = useState(-1);
 
-  const handleNavigateToNext = () => {
-    if (!selectedItem) return;
-
-    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
-    if (currentIndexInFiltered !== -1 && currentIndexInFiltered < filteredSortedData.length - 1) {
-      setSelectedItem(filteredSortedData[currentIndexInFiltered + 1]);
+  // Update currentFilteredIndex when selectedItem changes from external source (clicking on row)
+  useEffect(() => {
+    if (selectedItem && filteredSortedData.length > 0) {
+      // Find by both Index and Id to ensure uniqueness
+      const idx = filteredSortedData.findIndex(
+        item => item.Index === selectedItem.Index && item.Id === selectedItem.Id
+      );
+      if (idx !== -1 && idx !== currentFilteredIndex) {
+        setCurrentFilteredIndex(idx);
+      }
     }
-  };
+  }, [selectedItem, filteredSortedData]);
 
-  const handleNavigateToPrevious = () => {
-    if (!selectedItem) return;
-
-    const currentIndexInFiltered = filteredSortedData.findIndex(item => item.Index === selectedItem.Index);
-    if (currentIndexInFiltered > 0) {
-      setSelectedItem(filteredSortedData[currentIndexInFiltered - 1]);
+  const handleNavigateToNext = useCallback(() => {
+    if (currentFilteredIndex === -1 || currentFilteredIndex >= filteredSortedData.length - 1) {
+      return;
     }
-  };
+    const nextIndex = currentFilteredIndex + 1;
+    const nextItem = filteredSortedData[nextIndex];
+    setCurrentFilteredIndex(nextIndex);
+    setSelectedItem(nextItem);
+  }, [currentFilteredIndex, filteredSortedData]);
+
+  const handleNavigateToPrevious = useCallback(() => {
+    if (currentFilteredIndex <= 0) {
+      return;
+    }
+    const prevIndex = currentFilteredIndex - 1;
+    const prevItem = filteredSortedData[prevIndex];
+    setCurrentFilteredIndex(prevIndex);
+    setSelectedItem(prevItem);
+  }, [currentFilteredIndex, filteredSortedData]);
 
   const uniqueBlocks = [...new Set(testResults.Tests.map(item => item.Block).filter(Boolean))];
 
@@ -267,9 +283,9 @@ export default function TestResultsTable(props) {
           Item={selectedItem}
           isOpen={isSheetOpen}
           onClose={handleCloseSheet}
-          onNavigateNext={handleNavigateToNext}
-          onNavigatePrevious={handleNavigateToPrevious}
-          currentIndex={selectedItem ? filteredSortedData.findIndex(item => item.Index === selectedItem.Index) + 1 : undefined}
+          onNavigateNext={currentFilteredIndex < filteredSortedData.length - 1 ? handleNavigateToNext : undefined}
+          onNavigatePrevious={currentFilteredIndex > 0 ? handleNavigateToPrevious : undefined}
+          currentIndex={currentFilteredIndex !== -1 ? currentFilteredIndex + 1 : undefined}
           totalCount={filteredSortedData.length}
         />
       </Suspense>
