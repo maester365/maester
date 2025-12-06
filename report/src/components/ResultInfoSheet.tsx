@@ -22,6 +22,8 @@ interface ResultInfoSheetProps {
   onClose: () => void;
   onNavigateNext?: () => void;
   onNavigatePrevious?: () => void;
+  currentIndex?: number;
+  totalCount?: number;
 }
 
 function ResultInfoSheet({
@@ -30,6 +32,8 @@ function ResultInfoSheet({
   onClose,
   onNavigateNext,
   onNavigatePrevious,
+  currentIndex,
+  totalCount,
 }: ResultInfoSheetProps) {
   // Memoize the keyboard handler to prevent recreating it on every render
   const handleKeyboard = useCallback(
@@ -83,6 +87,11 @@ function ResultInfoSheet({
             <ChevronLeftIcon className="h-4 w-4" />
             <span className="sr-only">Previous</span>
           </button>
+          {currentIndex !== undefined && totalCount !== undefined && (
+            <span className="text-xs text-muted-foreground tabular-nums px-1">
+              {currentIndex}/{totalCount}
+            </span>
+          )}
           <button
             onClick={onNavigateNext}
             disabled={!onNavigateNext}

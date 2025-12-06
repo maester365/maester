@@ -22,15 +22,15 @@ function ResultInfoDialog(props) {
     if (event.key === 'ArrowRight') {
       event.preventDefault();
       if (props.onNavigateNext) {
-        props.onNavigateNext(itemIndex);
+        props.onNavigateNext();
       }
     } else if (event.key === 'ArrowLeft') {
       event.preventDefault();
       if (props.onNavigatePrevious) {
-        props.onNavigatePrevious(itemIndex);
+        props.onNavigatePrevious();
       }
     }
-  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious, itemIndex]);
+  }, [isOpen, props.onNavigateNext, props.onNavigatePrevious]);
 
   // Add and remove the event listener
   useEffect(() => {
@@ -53,18 +53,6 @@ function ResultInfoDialog(props) {
       props.onDialogClose();
     }
   }, [props.onDialogClose]);
-
-  const navigateToNextResult = useCallback(() => {
-    if (props.onNavigateNext) {
-      props.onNavigateNext();
-    }
-  }, [props.onNavigateNext]);  // No need to pass itemIndex since parent already has access to it
-
-  const navigateToPreviousResult = useCallback(() => {
-    if (props.onNavigatePrevious) {
-      props.onNavigatePrevious();
-    }
-  }, [props.onNavigatePrevious]);
 
   return (
     <>
@@ -98,7 +86,7 @@ function ResultInfoDialog(props) {
               <Button
                 variant="secondary"
                 icon={ChevronLeftIcon}
-                onClick={navigateToPreviousResult}
+                onClick={props.onNavigatePrevious}
                 disabled={!props.onNavigatePrevious}
                 tooltip="Previous result (Left arrow key)"
               >
@@ -111,7 +99,7 @@ function ResultInfoDialog(props) {
                 variant="secondary"
                 icon={ChevronRightIcon}
                 iconPosition="right"
-                onClick={navigateToNextResult}
+                onClick={props.onNavigateNext}
                 disabled={!props.onNavigateNext}
                 tooltip="Next result (Right arrow key)"
               >

@@ -96,24 +96,6 @@ export default function TestResultsTable(props) {
   }, [testResults.Tests, isStatusSelected, getSortedData]);
 
   const dialogRefs = useRef({});
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (!selectedItem) return;
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        handleNavigateToNext();
-      } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        handleNavigateToPrevious();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selectedItem, filteredSortedData]);
 
   const handleNavigateToNext = () => {
     if (!selectedItem) return;
@@ -287,6 +269,8 @@ export default function TestResultsTable(props) {
           onClose={handleCloseSheet}
           onNavigateNext={handleNavigateToNext}
           onNavigatePrevious={handleNavigateToPrevious}
+          currentIndex={selectedItem ? filteredSortedData.findIndex(item => item.Index === selectedItem.Index) + 1 : undefined}
+          totalCount={filteredSortedData.length}
         />
       </Suspense>
     </Card>
