@@ -65,15 +65,15 @@ const config = {
         docs: {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
-          lastVersion: '1.3.0',
+          lastVersion: '2.0.0',
           versions: {
             current: {
               label: `${previewVersion} (preview)`,
               banner: 'unreleased',
               badge: true,
             },
-            '1.3.0': {
-              label: '1.3.0',
+            '2.0.0': {
+              label: '2.0.0',
               path: '/',
               banner: 'none',
               badge: true,
