@@ -137,12 +137,16 @@ function Set-MtAdCache {
                 ServiceClassesCount            = $null
                 ServiceClassesComputers        = @()
                 ServiceClassesComputersCount   = $null
+                UnknownServiceClasses          = @()
+                UnknownServiceClassesCount     = $null
                 HostBypassComputers            = @()
                 HostBypassComputersCount       = $null
                 ServiceHosts                   = @()
                 ServiceHostsCount              = $null
                 ServiceHostsComputers          = @()
                 ServiceHostsComputersCount     = $null
+                ServiceNoFqdnComputers         = @()
+                ServiceNoFqdnComputersCount    = $null
                 ServiceDnsBypassComputers      = @()
                 ServiceDnsBypassComputersCount = $null
                 DnsZones                       = @()
