@@ -15,6 +15,7 @@
 #>
 function Test-MtAdComputerKerberos {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Proper name')]
     [OutputType([bool])]
     param(
         [string]$Server = $__MtSession.AdServer,
