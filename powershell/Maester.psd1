@@ -185,6 +185,7 @@
     'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
     'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
     'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
+    'Set-MtAdCache','Clear-MtAdCache',
     'Test-MtAdComputerContainer.ps1',
     'Test-MtAdComputerCreatorSid.ps1',
     'Test-MtAdComputerDns.ps1',

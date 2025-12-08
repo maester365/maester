@@ -110,7 +110,7 @@
       [pscredential]$AdCredential = $null,
 
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Cloud', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
