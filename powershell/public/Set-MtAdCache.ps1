@@ -7,6 +7,15 @@
 
     Use this function to set the cache.
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
+.PARAMETER Objects
+    Specific type of AD objects to query.
+
 .EXAMPLE
     Set-MtAdCache
 
@@ -37,6 +46,7 @@ function Set-MtAdCache {
     $dcPrimaryGroupIds = @(516,521)
 
     $rootDse = try{
+        Write-Verbose "Attempting Get-AdRootDSE"
         Get-AdRootDSE
     }catch{
         Write-Error $_
@@ -49,6 +59,7 @@ function Set-MtAdCache {
         Properties = "*"
     }
     $directoryService = try{
+        Write-Verbose "Attempting query for Directory Service object"
         Get-ADObject @ADObjectDirectoryService
     }catch{
         Write-Error $_
@@ -84,6 +95,7 @@ function Set-MtAdCache {
 
     if($Objects -contains "Computers" -or $Objects -contains "All"){
         $computers = try{
+            Write-Verbose "Attempting AD query for Computers"
             Get-ADComputer -Filter * -Properties *
         }catch{
             Write-Error $_

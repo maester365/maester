@@ -186,16 +186,16 @@
     'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
     'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
     'Set-MtAdCache','Clear-MtAdCache',
-    'Test-MtAdComputerContainer.ps1',
-    'Test-MtAdComputerCreatorSid.ps1',
-    'Test-MtAdComputerDns.ps1',
-    'Test-MtAdComputerDomainController.ps1',
-    'Test-MtAdComputerKerberos.ps1',
-    'Test-MtAdComputerOperatingSystem.ps1',
-    'Test-MtAdComputerPrimaryGroup.ps1',
-    'Test-MtAdComputerService.ps1',
-    'Test-MtAdComputerSidHistory.ps1',
-    'Test-MtAdComputerStatus.ps1'
+    'Test-MtAdComputerContainer',
+    'Test-MtAdComputerCreatorSid',
+    'Test-MtAdComputerDns',
+    'Test-MtAdComputerDomainController',
+    'Test-MtAdComputerKerberos',
+    'Test-MtAdComputerOperatingSystem',
+    'Test-MtAdComputerPrimaryGroup',
+    'Test-MtAdComputerService',
+    'Test-MtAdComputerSidHistory',
+    'Test-MtAdComputerStatus'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
