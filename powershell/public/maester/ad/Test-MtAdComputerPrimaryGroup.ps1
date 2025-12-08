@@ -44,7 +44,7 @@ function Test-MtAdComputerPrimaryGroup {
 
     #region Collect
     $AdObjects.Data.NonPgIdCoumputers = $AdObjects.Computers | Where-Object {
-        $_.primaryGroupId -notin $AdObjects.Data.PrimaryGroupIds
+        $_.primaryGroupId -notin $__MtSession.AdCache.PrimaryGroupIds
     }
     $AdObjects.Data.NonPgIdCoumputersCount = ($AdObjects.Data.NonPgIdCoumputers | Measure-Object).Count
     $AdObjects.Data.NonPgIdComputersRatio = try{

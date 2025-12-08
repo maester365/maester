@@ -44,7 +44,7 @@ function Test-MtAdComputerDomainController {
 
     #region Collect
     $AdObjects.Data.DomainControllers = $AdObjects.Computers | Where-Object {
-        $_.primaryGroupId -notin $AdObjects.Data.DomainControllerPgids
+        $_.primaryGroupId -notin $__MtSession.AdCache.DomainControllerPgids
     }
     $AdObjects.Data.DomainControllersCount = ($AdObjects.Data.DomainControllers | Measure-Object).Count
     #endregion
