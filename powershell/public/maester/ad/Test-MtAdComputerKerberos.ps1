@@ -5,6 +5,12 @@
 .DESCRIPTION
     Identifies misconfigurations with computer objects and Kerberos
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
 .EXAMPLE
     Test-MtAdComputerKerberos
 
@@ -23,6 +29,7 @@ function Test-MtAdComputerKerberos {
     )
 
     if ('ActiveDirectory' -notin $__MtSession.Connections -and 'All' -notin $__MtSession.Connections ) {
+        Write-Verbose "ActiveDirectory not set as connection"
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }

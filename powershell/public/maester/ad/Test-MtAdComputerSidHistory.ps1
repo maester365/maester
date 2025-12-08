@@ -5,6 +5,12 @@
 .DESCRIPTION
     Identifies any computer objects with values set in the SID History attribute
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
 .EXAMPLE
     Test-MtAdComputerSidHistory
 
@@ -22,6 +28,7 @@ function Test-MtAdComputerSidHistory {
     )
 
     if ('ActiveDirectory' -notin $__MtSession.Connections -and 'All' -notin $__MtSession.Connections ) {
+        Write-Verbose "ActiveDirectory not set as connection"
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }

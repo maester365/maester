@@ -5,6 +5,12 @@
 .DESCRIPTION
     Identifies if computers are joining through non-admin users
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
 .EXAMPLE
     Test-MtAdComputerCreatorSid
 
@@ -22,6 +28,7 @@ function Test-MtAdComputerCreatorSid {
     )
 
     if ('ActiveDirectory' -notin $__MtSession.Connections -and 'All' -notin $__MtSession.Connections ) {
+        Write-Verbose "ActiveDirectory not set as connection"
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }

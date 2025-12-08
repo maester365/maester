@@ -5,6 +5,12 @@
 .DESCRIPTION
     Identifies if any computer objects do not have a normal primary group ID
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
 .EXAMPLE
     Test-MtAdComputerPrimaryGroup
 
@@ -22,6 +28,7 @@ function Test-MtAdComputerPrimaryGroup {
     )
 
     if ('ActiveDirectory' -notin $__MtSession.Connections -and 'All' -notin $__MtSession.Connections ) {
+        Write-Verbose "ActiveDirectory not set as connection"
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }

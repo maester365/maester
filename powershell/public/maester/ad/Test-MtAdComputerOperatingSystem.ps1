@@ -5,6 +5,12 @@
 .DESCRIPTION
     Identifies issues with computer object operating systems
 
+.PARAMETER Server
+    Server name to pass through to the AD Cmdlets
+
+.PARAMETER Credential
+    Credential object to pass through to the AD Cmdlets
+
 .EXAMPLE
     Test-MtAdComputerOperatingSystem
 
@@ -22,6 +28,7 @@ function Test-MtAdComputerOperatingSystem {
     )
 
     if ('ActiveDirectory' -notin $__MtSession.Connections -and 'All' -notin $__MtSession.Connections ) {
+        Write-Verbose "ActiveDirectory not set as connection"
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
