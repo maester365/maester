@@ -2,7 +2,7 @@
 
 This test checks if the communication with unmanaged Teams users is disabled .
 
-8.2.2 (L1):\ 
+8.2.2 (L1):\
 This policy setting controls chats and meetings with external unmanaged Teams users (those not managed by an organization, such as Microsoft Teams (free))
 
 Rationale:\
@@ -39,7 +39,7 @@ Set-CsTenantFederationConfiguration -AllowTeamsConsumerInbound $false
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 * [Manage external meetings and chat with people and organizations using Microsoft identities](https://learn.microsoft.com/en-us/microsoftteams/trusted-organizations-external-meetings-chat?tabs=organization-settings)
-* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 350 - 355](https://www.cisecurity.org/benchmark/microsoft_365)
+* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 378 - 384](https://www.cisecurity.org/benchmark/microsoft_365)
 * [CISA MS.TEAMS.2.2v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/teams.md#msteams22v1)
 * [DarkGate malware delivered via Microsoft Teams - detection and response](https://levelblue.com/blogs/security-essentials/darkgate-malware-delivered-via-microsoft-teams-detection-and-response)
 * [Midnight Blizzard conducts targeted social engineering over Microsoft Teams](https://www.microsoft.com/en-us/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/)

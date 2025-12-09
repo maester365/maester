@@ -39,11 +39,14 @@ function Get-MtHtmlReport {
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
     # Insert the test results json into the template
-    $insertLocationStart = $templateHtml.IndexOf("const testResults = {")
-    $insertLocationEnd = $templateHtml.IndexOf("function App() {")
+    # Note: The minified output from Vite has no spaces around '=' so we use 'testResults={'
+    $startMarker = 'testResults={'
+    $endMarker = 'EndOfJson:"EndOfJson"}'
+    $insertLocationStart = $templateHtml.IndexOf($startMarker)
+    $insertLocationEnd = $templateHtml.IndexOf($endMarker) + $endMarker.Length
 
     $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-    $outputHtml += "const testResults = $json;`n"
+    $outputHtml += "testResults=$json"
     $outputHtml += $templateHtml.Substring($insertLocationEnd)
 
     return $outputHtml

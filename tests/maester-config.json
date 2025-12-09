@@ -1,4 +1,7 @@
 {
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": []
+  },
   "TestSettings": [
     {
       "Id": "CIS.M365.1.1.1",
@@ -163,7 +166,7 @@
     {
       "Id": "CISA.MS.AAD.3.3",
       "Severity": "Medium",
-      "Title": "If phishing-resistant MFA has not been enforced and Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
+      "Title": "If Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
     },
     {
       "Id": "CISA.MS.AAD.3.4",
@@ -296,7 +299,7 @@
       "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
     },
     {
-      "Id": "CISA.MS.EXO.03.1",
+      "Id": "CISA.MS.EXO.3.1",
       "Severity": "Medium",
       "Title": "DKIM SHOULD be enabled for all domains."
     },
@@ -831,87 +834,6 @@
       "Title": "All users utilizing a P2 license should be licensed."
     },
     {
-      "Id": "MT.1024.1",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect your tenant with Insider Risk condition in Conditional Access policy"
-    },
-    {
-      "Id": "MT.1024.2",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect all users with a user risk policy"
-    },
-    {
-      "Id": "MT.1024.3",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Protect all users with a sign-in risk policy"
-    },
-    {
-      "Id": "MT.1024.4",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Enable self-service password reset"
-    },
-    {
-      "Id": "MT.1024.5",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Use least privileged administrative roles"
-    },
-    {
-      "Id": "MT.1024.6",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Designate more than one global admin"
-    },
-    {
-      "Id": "MT.1024.7",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Enable password hash sync if hybrid"
-    },
-    {
-      "Id": "MT.1024.8",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Do not expire passwords"
-    },
-    {
-      "Id": "MT.1024.9",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Ensure all users can complete multifactor authentication"
-    },
-    {
-      "Id": "MT.1024.10",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Do not allow users to grant consent to unreliable applications"
-    },
-    {
-      "Id": "MT.1024.11",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Enable policy to block legacy authentication"
-    },
-    {
-      "Id": "MT.1024.12",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Require multifactor authentication for administrative roles"
-    },
-    {
-      "Id": "MT.1024.13",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring service principal credentials"
-    },
-    {
-      "Id": "MT.1024.14",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Renew expiring application credentials"
-    },
-    {
-      "Id": "MT.1024.15",
-      "Severity": "High",
-      "Title": "Entra Recommendation - Remove unused credentials from applications"
-    },
-    {
-      "Id": "MT.1024.16",
-      "Severity": "Medium",
-      "Title": "Entra Recommendation - Remove unused applications"
-    },
-
-    {
       "Id": "MT.1025",
       "Severity": "High",
       "Title": "No external user with permanent role assignment on Control Plane."
@@ -952,12 +874,52 @@
       "Title": "Limited number of Global Admins are assigned."
     },
     {
-      "Id": "MT.1033",
+      "Id": "MT.1033.0",
       "Severity": "High",
       "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
     },
     {
-      "Id": "MT.1034",
+      "Id": "MT.1033.1",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.2",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.3",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1033.4",
+      "Severity": "High",
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.0",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.1",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.2",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.3",
+      "Severity": "High",
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+    },
+    {
+      "Id": "MT.1034.4",
       "Severity": "High",
       "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
     },
@@ -1080,6 +1042,226 @@
       "Id": "MT.1058",
       "Severity": "Medium",
       "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
+    },
+    {
+      "Id": "MT.1059",
+      "Severity": "Medium",
+      "Title": "Microsoft Defender for Identity health issues should be resolved"
+    },
+    {
+      "Id": "MT.1061",
+      "Severity": "Medium",
+      "Title": "Device registration MFA control conflicts with Conditional Access policies"
+    },
+    {
+      "Id": "MT.1062",
+      "Severity": "Medium",
+      "Title": "Ensure Direct Send is set to be rejected"
+    },
+    {
+      "Id": "MT.1063",
+      "Severity": "High",
+      "Title": "All app registration owners should have MFA registered"
+    },
+    {
+      "Id": "MT.1064",
+      "Severity": "High",
+      "Title": "Management group creation should be limited to users with explicit write access"
+    },
+    {
+      "Id": "MT.1065",
+      "Severity": "High",
+      "Title": "Soft Delete should be enabled on all Recovery Services Vaults"
+    },
+    {
+      "Id": "MT.1066",
+      "Severity": "Medium",
+      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
+    },
+    {
+      "Id": "MT.1067",
+      "Severity": "Medium",
+      "Title": "Authentication methods policies should not reference deleted groups."
+    },
+    {
+      "Id": "MT.1068",
+      "Severity": "Medium",
+      "Title": "Restrict non-admin users from creating tenants"
+    },
+    {
+      "Id": "MT.1069",
+      "Severity": "Low",
+      "Title": "Restrict non-admin users from creating security groups."
+    },
+    {
+      "Id": "MT.1070",
+      "Severity": "Medium",
+      "Title": "Restrict device join to selected users/groups or none."
+    },
+    {
+      "Id": "MT.1071",
+      "Severity": "Medium",
+      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps."
+    },
+    {
+      "Id": "MT.1072",
+      "Severity": "High",
+      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+    },
+    {
+      "Id": "MT.1073",
+      "Severity": "Medium",
+      "Title": "Soft- and hard-matching of synchronized objects should be blocked."
+    },
+    {
+      "Id": "MT.1074",
+      "Severity": "Medium",
+      "Title": "Mailboxes should not send outbound mails using the .onmicrosoft.com domain."
+    },
+    {
+      "Id": "MT.1075",
+      "Severity": "Medium",
+      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
+    },
+    {
+      "Id": "MT.1076",
+      "Severity": "High",
+      "Title": "MOERA SHOULD NOT be used for sent mail."
+    },
+    {
+      "Id": "MT.1077",
+      "Severity": "Medium",
+      "Title": "App registrations with privileged API permissions should not have owners"
+    },
+    {
+      "Id": "MT.1078",
+      "Severity": "Medium",
+      "Title": "App registrations with highly privileged directory roles should not have owners"
+    },
+    {
+      "Id": "MT.1079",
+      "Severity": "Medium",
+      "Title": "Privileged API permissions on service principals should not remain unused"
+    },
+    {
+      "Id": "MT.1080",
+      "Severity": "Medium",
+      "Title": "Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints"
+    },
+    {
+      "Id": "MT.1081",
+      "Severity": "Medium",
+      "Title": "Hybrid users should not be assigned Entra ID role assignments"
+    },
+    {
+      "Id": "MT.1083",
+      "Severity": "Low",
+      "Title": "Ensure Delicensing Resiliency is enabled"
+    },
+    {
+      "Id": "MT.1084",
+      "Severity": "High",
+      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
+    },
+    {
+      "Id": "MT.1085",
+      "Severity": "Medium",
+      "Title": "Pending approvals for Critical Asset Management should not be present"
+    },
+    {
+      "Id": "MT.1086",
+      "Severity": "Low",
+      "Title": "Devices should not share both critical and non-critical user credentials."
+    },
+    {
+      "Id": "MT.1087",
+      "Severity": "High",
+      "Title": "Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
+    },
+    {
+      "Id": "MT.1088",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by TPM."
+    },
+    {
+      "Id": "MT.1089",
+      "Severity": "Medium",
+      "Title": "Devices with critical credentials should be protected by Credential Guard."
+    },
+        {
+      "Id": "MT.1090",
+      "Severity": "Medium",
+      "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
+    },
+    {
+      "Id": "MT.1091",
+      "Severity": "Medium",
+      "Title": "Registering user should not be added as local administrator on the device during Microsoft Entra join"
+    },
+    {
+      "Id": "MT.1092",
+      "Severity": "High",
+      "Title": "Intune APNS certificate should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1093",
+      "Severity": "High",
+      "Title": "Apple Automated Device Enrollment Tokens should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1094",
+      "Severity": "High",
+      "Title": "Apple Volume Purchase Program Tokens should be valid for more than 30 days"
+    },
+    {
+      "Id": "MT.1095",
+      "Severity": "High",
+      "Title": "Android Enterprise Account Connection should be healthy"
+    },
+    {
+      "Id": "MT.1096",
+      "Severity": "Medium",
+      "Title": "Intune Multi Admin approval should be configured"
+    },
+    {
+      "Id": "MT.1097",
+      "Severity": "High",
+      "Title": "Certificate Connectors should be healthy and running supported versions"
+    },
+    {
+      "Id": "MT.1098",
+      "Severity": "Critical",
+      "Title": "Mobile Threat Defense Connectors should be healthy"
+    },
+    {
+      "Id": "MT.1099",
+      "Severity": "Low",
+      "Title": "Windows Diagnostic Data Processing should be enabled"
+    },
+    {
+      "Id": "MT.1100",
+      "Severity": "High",
+      "Title": "Intune Audit Logs should be retained"
+    },
+    {
+      "Id": "MT.1101",
+      "Severity": "Low",
+      "Title": "Default Branding Profile should be customized"
+    },
+    {
+      "Id": "MT.1102",
+      "Severity": "High",
+      "Title": "Windows Feature Update Policy Settings should not reference end of support builds"
+    },
+    {
+      "Id": "MT.1103",
+      "Severity": "High",
+      "Title": "Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups"
+    },
+    {
+      "Id": "MT.1105",
+      "Severity": "Low",
+      "Title": "MDM Authority should be set to Microsoft Intune"
     },
     {
       "Id": "ORCA.100",

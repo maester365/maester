@@ -113,36 +113,45 @@ function Get-MtUser {
             if ( $EmergencyAccessUsersCount -gt $EmergencyAccessGroupsCount ) {
                 # Handling Emergency Access Users
                 foreach ( $EmergencyAccessUser in $EmergencyAccessUsers ) {
-                    $TmpUsers = Invoke-MtGraphRequest -RelativeUri "users/$EmergencyAccessUser" -Select id, userPrincipalName, userType -OutputType Hashtable
-                    if ( $TmpUsers.ContainsKey('userType') ) {
-                        Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
-                        $TmpUsers | ForEach-Object {
-                            $_.userType = "EmergencyAccess"
-                            $Users.Add($_) | Out-Null
+                    try {
+                        $TmpUsers = Invoke-MtGraphRequest -RelativeUri "users/$EmergencyAccessUser" -Select id, userPrincipalName, userType -OutputType Hashtable
+                        if ( $TmpUsers.ContainsKey('userType') ) {
+                            Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
+                            $TmpUsers | ForEach-Object {
+                                $_.userType = "EmergencyAccess"
+                                $Users.Add($_) | Out-Null
 
-                            if ($Users.Count -ge $Count) {
-                                Write-Verbose "Found $Count $UserType users."
-                                break
+                                if ($Users.Count -ge $Count) {
+                                    Write-Verbose "Found $Count $UserType users."
+                                    break
+                                }
                             }
                         }
+                    } catch {
+                        Write-Warning -Message "Unable to retrieve user with GUID: ${EmergencyAccessUser}"
                     }
                 }
             } else {
                 # Handling Emergency Access Groups
                 Write-Verbose "Emergency access group: $EmergencyAccessGroups"
                 foreach ( $EmergencyAccessGroup in $EmergencyAccessGroups ) {
-                    $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable
-                    if ( $TmpUsers.ContainsKey('userType') ) {
-                        Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
-                        $TmpUsers | ForEach-Object {
-                            $_.userType = "EmergencyAccess"
-                            $Users.Add($_) | Out-Null
+                    # Disable paging to avoid timeout of large groups which are excluded. Fix for https://github.com/maester365/maester/issues/1227
+                    try {
+                        $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable -DisablePaging
+                        if ( $TmpUsers.ContainsKey('userType') ) {
+                            Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
+                            $TmpUsers | ForEach-Object {
+                                $_.userType = "EmergencyAccess"
+                                $Users.Add($_) | Out-Null
 
-                            if ($Users.Count -ge $Count) {
-                                Write-Verbose "Found $Count $UserType users."
-                                break
+                                if ($Users.Count -ge $Count) {
+                                    Write-Verbose "Found $Count $UserType users."
+                                    break
+                                }
                             }
                         }
+                    } catch {
+                        Write-Warning -Message "Unable to retrieve group with GUID: ${EmergencyAccessUser}"
                     }
                 }
             }

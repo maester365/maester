@@ -31,24 +31,30 @@ function Test-MtUserAccessAdmin {
 
     Write-Verbose "Getting all User Access Administrators at Root Scope"
 
-    $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'
-    $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
+    try {
+        $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'
+        $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
 
-    # Get the count of role assignments
-    $roleAssignmentCount = $userAccessAdmins | Measure-Object | Select-Object -ExpandProperty Count
+        # Get the count of role assignments
+        $roleAssignmentCount = $userAccessAdmins | Measure-Object | Select-Object -ExpandProperty Count
 
-    $testResult = $roleAssignmentCount -eq 0
+        $testResult = $roleAssignmentCount -eq 0
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has no User Access Administrators."
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant has no User Access Administrators."
+        }
+        else {
+            $testResultMarkdown = "Your tenant has $roleAssignmentCount resource(s) with access to manage access to all Azure subscriptions and management groups in this tenant.`n`n"
+
+            $testResultMarkdown += Get-MtDirectoryObjects $userAccessAdmins.properties.principalId -AsMarkdown
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
     }
-    else {
-        $testResultMarkdown = "Your tenant has $roleAssignmentCount resource(s) with access to manage access to all Azure subscriptions and management groups in this tenant.`n`n"
-
-        $testResultMarkdown += Get-MtDirectoryObjects $userAccessAdmins.properties.principalId -AsMarkdown
+    catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
 
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

@@ -47,11 +47,19 @@ function GetVersion($graphUri) {
 
 function GetRecommendedValue($RecommendedValue) {
     if($RecommendedValue -notlike "@('*,*')") {
+        $isNumericComparison = $false
         $compareOperators = @(">=","<=",">","<")
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
-                $RecommendedValue = $RecommendedValue.Replace($compareOperator, "")
+                $isNumericComparison = $true
+                $RecommendedValue = $RecommendedValue.Substring($compareOperator.Length).Trim()
+                break
             }
+        }
+        # Don't wrap in quotes for numeric comparisons to ensure proper numeric comparison in Pester
+        # Pattern matches integers (e.g., 30), decimals with leading zero (e.g., 0.5), and decimals without leading zero (e.g., .5)
+        if ($isNumericComparison -and $RecommendedValue -match "^(\d+(\.\d+)?|\.\d+)$") {
+            return $RecommendedValue
         }
         return "'$RecommendedValue'"
     } else {
@@ -87,7 +95,7 @@ function GetCompareOperator($RecommendedValue) {
             pester     = 'BeGreaterOrEqual'
             powershell = 'ge'
             text       = 'is greater than or equal to'
-            valuetype  = 'string'
+            valuetype  = 'int'
         }
     } elseif ($RecommendedValue.StartsWith("<=")) {
         $compareOperator = [PSCustomObject]@{
@@ -330,6 +338,11 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
             $output = $output -replace 'string', 'int'
         }
 
+        # Map severity to Maester values
+        if($controlItem.Severity -eq 'Informational') {
+            $controlItem.Severity = 'Info'
+        }
+
         $output = $output -replace '%DocName%', $docName
         $output = $output -replace '%ControlName%', $control.ControlName
         $output = $output -replace '%Description%', $control.Description
@@ -445,7 +458,7 @@ foreach ($control in $aadsc) {
         $docName = $controlItem.CheckId
 
 $testTemplate = @'
-Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
+Describe "EIDSCA" -Tag "EIDSCA", "Security", "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
@@ -480,7 +493,7 @@ Describe "EIDSCA" -Tag "EIDSCA", "Security", "All", "%CheckId%" {
 GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedControls
 
 $output = @'
-BeforeDiscovery {
+BeforeAll {
 <DiscoveryFromJson>}
 
 '@

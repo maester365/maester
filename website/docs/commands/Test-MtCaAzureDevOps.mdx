@@ -1,0 +1,66 @@
+---
+sidebar_class_name: hidden
+description: Checks if any conditional access policy explicitly includes Azure DevOps
+id: Test-MtCaAzureDevOps
+title: Test-MtCaAzureDevOps
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaAzureDevOps.ps1
+---
+
+## SYNOPSIS
+
+Checks if any conditional access policy explicitly includes Azure DevOps
+
+## SYNTAX
+
+```powershell
+Test-MtCaAzureDevOps [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Azure DevOps will no longer rely on the Azure Resource Manager (ARM) resource during sign-in or token refresh flows.
+Organizations must update their Conditional Access policies to explicitly include Azure DevOps to maintain secure access.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCaAzureDevOps
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCaAzureDevOps](https://maester.dev/docs/commands/Test-MtCaAzureDevOps)

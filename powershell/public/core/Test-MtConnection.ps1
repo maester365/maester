@@ -37,7 +37,7 @@
         # Checks if the current session is connected to the specified service
         [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0)]
-        [string[]]$Service = 'All',
+        [string[]]$Service = 'Graph',
 
         # Return the full details of the connections
         [Parameter()]
@@ -68,7 +68,12 @@
                 $IsConnected = $null -ne ($MtConnections.Azure)
                 # Validate that the credentials are still valid
                 if ($IsConnected) {
-                    Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' | Out-Null
+                    $azError = @()
+                    Invoke-AzRestMethod -Method GET -Path 'subscriptions?api-version=2022-12-01' -ErrorAction SilentlyContinue -ErrorVariable azError | Out-Null
+                    if ($azError.Count -gt 0) {
+                        $IsConnected = $false
+                        $MtConnections.Azure = $null
+                    }
                 }
             } catch {
                 $IsConnected = $false
@@ -99,7 +104,8 @@
         if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.ExchangeOnline = (Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
+                # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                $MtConnections.ExchangeOnline = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and -not $_.IsEopSession })
                 $IsConnected = $null -ne ($MtConnections.ExchangeOnline)
             } catch {
                 Write-Debug "Exchange Online: $false"
@@ -113,7 +119,8 @@
         if (($Service -contains 'SecurityCompliance' -or $Service -contains 'EOP') -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.ExchangeOnlineProtection = (Get-ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
+                # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
+                $MtConnections.ExchangeOnlineProtection = (Get-MtExo -Request ConnectionInformation | Where-Object { $_.Name -match 'ExchangeOnline' -and $_.state -eq 'Connected' -and $_.IsEopSession })
                 $IsConnected = $null -ne ($MtConnections.ExchangeOnlineProtection)
             } catch {
                 # Re-test

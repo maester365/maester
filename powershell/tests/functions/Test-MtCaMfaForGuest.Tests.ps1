@@ -1,9 +1,4 @@
-﻿BeforeDiscovery {
-  # Skip this PEster test if running on Windows PowerShell
-  $skip = $PSVersionTable.PSEdition -eq 'Desktop'
-}
-
-Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
+Describe 'Test-MtCaMfaForGuest' {
   BeforeAll {
     Import-Module $PSScriptRoot/../../Maester.psd1 -Force
     Mock -ModuleName Maester Get-MtLicenseInformation { return "P1" }
@@ -20,19 +15,19 @@ Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
       "applications": {
         "includeApplications": [
           "All"
-        ],
+        ]
       },
       "users": {
         "includeUsers": [
           "All"
-        ],
+        ]
       }
     },
     "grantControls": {
       "operator": "OR",
       "builtInControls": [
         "mfa"
-      ],
+      ]
     }
   }
 ]
@@ -78,7 +73,7 @@ Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
       "operator": "OR",
       "builtInControls": [
         "mfa"
-      ],
+      ]
     }
   }
 ]
@@ -109,7 +104,7 @@ Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
             "membershipKind": "all"
           }
         },
-        "excludeGuestsOrExternalUsers": null,
+        "excludeGuestsOrExternalUsers": null
       }
     },
     "grantControls": {
@@ -204,4 +199,3 @@ Describe 'Test-MtCaMfaForGuest' -Skip:$skip {
 
   }
 }
-

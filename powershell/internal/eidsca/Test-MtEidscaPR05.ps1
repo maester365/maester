@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to '60'
+    Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
 
 .DESCRIPTION
 
@@ -8,12 +8,12 @@
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 
 .EXAMPLE
     Test-MtEidscaPR05
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge '60'
+    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 #>
 
 function Test-MtEidscaPR05 {
@@ -22,21 +22,21 @@ function Test-MtEidscaPR05 {
     param()
 
     if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason ''
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
-    $testResult = $tenantValue -ge '60'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '60' -notlike '*$null*'
+    [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
+    $testResult = $tenantValue -ge 60
+    $tenantValueNotSet = $null -eq $tenantValue -and 60 -notlike '*$null*'
 
     if($testResult){
-        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is greater than or equal to **'60'** for **settings**"
+        $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is greater than or equal to **60** for **settings**"
     } elseif ($tenantValueNotSet) {
-        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'60'** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
+        $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **60** for **settings**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is greater than or equal to **'60'** for **settings**"
+        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is greater than or equal to **60** for **settings**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 

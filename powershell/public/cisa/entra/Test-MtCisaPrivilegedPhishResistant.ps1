@@ -6,7 +6,7 @@
     Phishing-resistant MFA SHALL be required for highly privileged roles.
 
 .EXAMPLE
-    Test-MtCisaPhishResistant
+    Test-MtCisaPrivilegedPhishResistant
 
     Returns true if at least one policy requires phishing resistant methods for the specific roles
 
