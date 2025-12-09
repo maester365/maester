@@ -1,0 +1,100 @@
+---
+sidebar_class_name: hidden
+description: Execute KQL query in Microsoft 365 Defender Advanced Hunting by using Graph API Security endpoint to get results programmatically.
+id: Invoke-MtGraphSecurityQuery
+title: Invoke-MtGraphSecurityQuery
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtGraphSecurityQuery.ps1
+---
+
+## SYNOPSIS
+
+Execute KQL query in Microsoft 365 Defender Advanced Hunting by using Graph API Security endpoint to get results programmatically.
+
+## SYNTAX
+
+```powershell
+Invoke-MtGraphSecurityQuery [-Query] <String> [-Timespan <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This cmdlet allows you to execute KQL queries against the Microsoft 365 Defender Advanced Hunting API.
+It simplifies the process of querying and retrieving data from the Microsoft Defender XDR for integration of Maester checks.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Invoke-MtGraphSecurityQuery -Query "IdentityInfo | where isnotempty(PrivilegedEntraPimRoles)" -Timespan "P14D"
+```
+
+# Get identities with eligible Entra roles of the last 14 days
+
+## PARAMETERS
+
+### -Query
+
+Valid KQL query
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Timespan
+
+Lookback/timespan for KQL query in ISO 8601 duration, e.g.
+P14D, PT6H, P2DT3H
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: P14D
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Invoke-MtGraphSecurityQuery](https://maester.dev/docs/commands/Invoke-MtGraphSecurityQuery)

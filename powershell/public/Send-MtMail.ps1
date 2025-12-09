@@ -13,8 +13,8 @@
     Connect-MtGraph -SendMail
     ```
 
-    When running in a non-interactive environment (Azure DevOps, GitHub) the Mail.Send permission
-    must be granted to the application in the Microsoft Entra portal.
+    When running in a non-interactive environment (Azure DevOps, GitHub) the app needs permission to send from a mailbox,
+    see https://maester.dev/docs/monitoring/email/ for instructions.
 
 .EXAMPLE
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
@@ -47,6 +47,14 @@ function Send-MtMail {
 
         # The user id of the sender of the mail. Defaults to the current user.
         # This is required when using application permissions.
+        # Accepts either a GUID or UPN (User Principal Name) format.
+        [ValidateScript({
+            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$' -and $_ -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
+                throw "Invalid UserId format. It should be a valid GUID or UPN (User Principal Name)."
+            }
+            return $true
+        })]
+        [ValidateNotNullOrEmpty()]
         [string] $UserId
     )
 
@@ -60,6 +68,9 @@ function Send-MtMail {
     #>
     if (! ($CreateBodyOnly)) {
         if (!(Test-MtContext -SendMail)) { return }
+        if ($context.AuthType -ne 'Delegated' -and -not $PSBoundParameters.ContainsKey('UserId')) {
+            throw "When running as an application, the UserId parameter must be specified."
+        }
 
         if (!$Subject) { $Subject = "Maester Test Results" }
     }
@@ -95,15 +106,17 @@ function Send-MtMail {
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
     $emailTemplate = $emailTemplate -replace "%PassedCount%", $MaesterResults.PassedCount
     $emailTemplate = $emailTemplate -replace "%FailedCount%", $MaesterResults.FailedCount
+    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $MaesterResults.InvestigateCount
     $emailTemplate = $emailTemplate -replace "%NotRunCount%", $notRunCount
 
     # Add a hidden div that will show in the preview line of the message.
     $bodyElement = '<body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word">'
-    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), ⬇️ Not run: $notRunCount</div>")
+    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($MaesterResults.InvestigateCount), ⬇️ Not run: $notRunCount</div>")
     $StatusIcon = @{
         Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+        Investigate = '<img src="https://maester.dev/img/test-result/pill-investigate.png" height="25" alt="Investigate"/>'
     }
 
     $table = "<table border='1' cellpadding='10' cellspacing='2' style='border-collapse: collapse; border-color: #f6f8fa;'><tr><th>Test Name</th><th>Status</th></tr>"
@@ -111,8 +124,7 @@ function Send-MtMail {
     foreach ($test in $MaesterResults.Tests) {
         $rowColor = ""
         if ($counter % 2 -eq 0) { $rowColor = "style='background-color: #f6f8fa'" }
-        if ($test.Result -ne "Passed" -and $test.Result -ne "Failed") { $test.Result = "NotRun" }
-        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Status)</td></tr>"
+        $table += "<tr $rowColor><td>$($test.Name)</td><td style='text-align: center; vertical-align: middle;'>$($StatusIcon[$test.Result]) $($test.Result)</td></tr>"
         $counter++
     }
     $table += "</table>"
@@ -156,7 +168,16 @@ function Send-MtMail {
     if ($CreateBodyOnly) {
         return $mailRequestBody
     }
-    else {
+
+    # Send email
+    try {
         Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
+    }
+    catch {
+        if ($_.Exception.Response.StatusCode -eq 403) {
+            # Delegated Mail.Send permission is checked earlier, so this is likely an application permission issue
+            Write-Error -Message "Sending email failed with access denied. Make sure you've granted Mail.Send permission to the specified mailbox, see https://maester.dev/docs/monitoring/email/ for instructions."
+        }
+        throw
     }
 }

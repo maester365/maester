@@ -3,11 +3,9 @@
 name: publish-tests
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-    paths:
-      - "tests/**"
+  # Runs whenever a new Maester module is published
+  release:
+    types: [published]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.0
       - name: Publish to maester-tests
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@target-branch

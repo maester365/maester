@@ -6,14 +6,14 @@
     External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
 
 .EXAMPLE
-    Test-MtCisaSharePointOnlineSharing
+    Test-MtCisaSpoSharing
 
     Returns true if sharing is restricted
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtCisaSharePointOnlineSharing
+    https://maester.dev/docs/commands/Test-MtCisaSpoSharing
 #>
-function Test-MtCisaSharePointOnlineSharing {
+function Test-MtCisaSpoSharing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -5,7 +5,7 @@ Specifies the duration the request is active before it automatically expires if 
 #### Test script
 ```
 https://graph.microsoft.com/beta/policies/adminConsentRequestPolicy
-.requestDurationInDays -le '30'
+.requestDurationInDays -le 30
 ```
 
 #### Related links

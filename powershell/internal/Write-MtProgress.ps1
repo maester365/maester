@@ -7,6 +7,7 @@
 #>
 
 function Write-MtProgress {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Required for reporting with colors')]
     [CmdletBinding()]
     Param (
         # Specifies the first line of text in the heading above the status bar. This text describes the activity whose progress is being reported.
@@ -31,32 +32,52 @@ function Write-MtProgress {
         $Activity = "🔥 $Activity"
 
         if ($Status) {
-            $statusString = Out-String -InputObject $Status
+            $statusString = if ($Status -is [string]) { $Status } else { Out-String -InputObject $Status }
+
+            # Safely get host width with fallback
+            $hostWidth = 80 # Default fallback
+            try {
+                if ($Host.UI.RawUI.WindowSize) {
+                    $hostWidth = $Host.UI.RawUI.WindowSize.Width
+                }
+            } catch {
+                Write-Debug "Unable to get host width, using default: $_"
+            }
+
             # Reduce the length of the status string to fit within host
-            $hostWidth = $Host.UI.RawUI.WindowSize.Width
             $buffer = 20
-            $totalWidth = $Activity.Length + $statusString.Length + $buffer # 10 for buffer
+            $totalWidth = $Activity.Length + $statusString.Length + $buffer
             if ($totalWidth -gt $hostWidth) {
                 $length = $hostWidth - $Activity.Length - $buffer
-                if ($length -lt $statusString.Length -and $length -gt 0) {
-                    $statusString = $statusString.Substring(0, $length) + "..."
+                if ($length -gt 0 -and $length -lt $statusString.Length) {
+                    $statusString = $statusString.Substring(0, $length).TrimEnd() + "..."
                 }
             }
 
             Write-Progress -Activity $Activity -Status $statusString -Completed:$Completed
-            if ($Force -and !$IsWindows) {
+
+            # Improved macOS workaround - only apply when needed
+            if ($Force -and $IsMacOS) {
                 Start-Sleep -Milliseconds 200
                 Write-Progress -Activity $Activity -Status $statusString -Completed:$Completed
             }
 
         } else {
             Write-Progress -Activity $Activity -Completed:$Completed
-            if ($Force -and !$IsWindows) {
+
+            # Improved macOS workaround - only apply when needed
+            if ($Force -and $IsMacOS) {
                 Start-Sleep -Milliseconds 200
                 Write-Progress -Activity $Activity -Completed:$Completed
             }
         }
     } catch {
-        Write-Verbose $_
+        Write-Debug "Error in Write-MtProgress: $($_.Exception.Message)"
+        # Fallback to simple Write-Host if Write-Progress fails
+        if ($Status) {
+            Write-Host "$Activity - $Status" -ForegroundColor Yellow
+        } else {
+            Write-Host $Activity -ForegroundColor Yellow
+        }
     }
 }

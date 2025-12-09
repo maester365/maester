@@ -20,7 +20,7 @@ if ( -not (Test-Path $ManifestPath )) {
     $ver = [version]($previousVersion -replace '-preview')
 
     # Set new version number. If it is pre-release, increment the build number otherwise increment the minor version.
-    $major = 1 # Update this to change the major version number of Maester.
+    $major = 2 # Update this to change the major version number of Maester.
     if ($major -ne $ver.Major) {
         $minor = 0 # Reset the minor & build version when incrementing the major version.
         $build = 0

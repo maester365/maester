@@ -1,0 +1,150 @@
+---
+sidebar_class_name: hidden
+description: Compares two PowerShell objects (typically JSON objects) and returns a list of differences.
+id: Compare-MtJsonObject
+title: Compare-MtJsonObject
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Compare-MtJsonObject.ps1
+---
+
+## SYNOPSIS
+
+Compares two PowerShell objects (typically JSON objects) and returns a list of differences.
+
+## SYNTAX
+
+```powershell
+Compare-MtJsonObject [-Baseline] <Object> [-Current] <Object> [[-Path] <String>] [[-Settings] <Object>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The Compare-MtJsonObject function recursively compares two objects (such as those imported from JSON)
+and returns an array of differences.
+It supports comparison of nested objects, arrays, and allows
+exclusion of specific properties via the Settings parameter.
+The function is useful for configuration
+drift detection, regression testing, or validating changes between baseline and current states.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+# Compare two JSON files and output the differences
+$baseline = Get-Content -Raw -Path 'baseline.json' | ConvertFrom-Json
+$current = Get-Content -Raw -Path 'current.json' | ConvertFrom-Json
+$diffs = Compare-MtJsonObject -Baseline $baseline -Current $current
+$diffs | Format-Table
+```
+
+### EXAMPLE 2
+
+```powershell
+# Exclude specific properties from comparison
+$settings = [PSCustomObject]@{ ExcludeProperties = @('timestamp', 'lastModified') }
+$diffs = Compare-MtJsonObject -Baseline $baseline -Current $current -Settings $settings
+```
+
+## PARAMETERS
+
+### -Baseline
+
+The reference object to compare against (e.g., the expected or original state).
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Current
+
+The object to compare to the baseline (e.g., the actual or new state).
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Path
+
+(Optional) The property path being compared.
+Used internally for recursion and reporting.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Settings
+
+(Optional) An object that may contain an ExcludeProperties property (array of property names to skip).
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [MtPropertyDifference[]] Returns an array of objects describing each difference found.
+
+## NOTES
+Author: Stephan van Rooij @svrooij
+Date:   2025-06-26
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Compare-MtJsonObject](https://maester.dev/docs/commands/Compare-MtJsonObject)

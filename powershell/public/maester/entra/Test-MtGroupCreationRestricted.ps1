@@ -20,26 +20,30 @@ function Test-MtGroupCreationRestricted {
     [OutputType([bool])]
     param()
 
-    Write-Verbose "Test-MtGroupCreationRestricted: Checking if Microsoft 365 Group creation is restricted to approved users."
+    Write-Verbose 'Test-MtGroupCreationRestricted: Checking if Microsoft 365 Group creation is restricted to approved users.'
 
-    $settings = Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion 'beta'
+    try {
+        $settings = Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion 'beta'
 
-    $groupCreationRestricted = $false
+        $groupCreationRestricted = $false
 
-    $enableGroupCreation = $settings.values | Where-Object { $_.name -eq 'EnableGroupCreation' }
+        $enableGroupCreation = $settings.values | Where-Object { $_.name -eq 'EnableGroupCreation' }
 
-    if ($null -ne $enableGroupCreation) {
-        # If the setting is not found, it means that group creation is not restricted.
-        $groupCreationRestricted = ($enableGroupCreation.value -eq 'false')
+        if ($null -ne $enableGroupCreation) {
+            # If the setting is not found, it means that group creation is not restricted.
+            $groupCreationRestricted = ($enableGroupCreation.value -eq 'false')
+        }
+
+        if ($groupCreationRestricted) {
+            $testResultMarkdown = 'Well done. Microsoft 365 Group creation is restricted to approved users.'
+        } else {
+            $testResultMarkdown = 'Microsoft 365 Group creation is not restricted and any user can create groups.'
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $groupCreationRestricted
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    if ($groupCreationRestricted) {
-        $testResultMarkdown = "Well done. Microsoft 365 Group creation is restricted to approved users."
-    } else {
-        $testResultMarkdown = "Microsoft 365 Group creation is not restricted and any user can create groups."
-    }
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $groupCreationRestricted
 }

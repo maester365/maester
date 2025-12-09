@@ -34,17 +34,17 @@
     Return the flattened object to the pipeline.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json'
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object that is then returned to the pipeline.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportExcel
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to an Excel file (C:\path\to\results.xlsx). Requires the ImportExcel module.
 
     .EXAMPLE
-    Convert-MtJsonResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
+    Convert-MtResultsToFlatObject -JsonFilePath 'C:\path\to\results.json' -ExportCsv -CsvFilePath 'C:\path\to\results.csv'
 
     Convert the Maester test results in C:\path\to\results.json to a flattened object, and then export that object to C:\path\to\results.csv.
 
@@ -127,14 +127,6 @@
             throw "The specified Excel file path '$ExcelFilePath' already exists. Use -Force if you want to overwrite this file or specify a new filename."
         }
 
-        # Replacement strings for emoji characters and apostrophes that do not translate well to CSV files.
-        [hashtable]$ReplacementStrings = @{
-            'âŒ'       = ''
-            'âž¡ï¸'    = ''
-            'âœ…'       = ''
-            'youâ€™re'  = 'you are'
-            'arenâ€™nt' = 'are not'
-        } ; [void]$ReplacementStrings # Not Used Yet
         [string]$TruncationFYI = 'NOTE: DETAILS ARE TRUNCATED DUE TO FIELD SIZE LIMITATIONS. PLEASE SEE THE HTML REPORT FOR FULL DETAILS.'
 
         if ($PSCmdlet.ParameterSetName -eq 'FromInputObject') {
@@ -154,7 +146,7 @@
 
             # Truncate the ResultDetail.TestResult data if it is longer than 30000 characters.
             if ($_.ResultDetail.TestResult.Length -gt 30000) {
-                Write-Verbose -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters." -Verbose
+                Write-Warning -Message "Truncating the ResultDetail.TestResult data for test '$($_.Name)' to 30000 characters."
                 $TestResultDetail = "$TruncationFYI`n`n$($TestResultDetail -replace '(?s)(.*?)#### Impacted resources.*?#### Remediation actions:','$1#### Remediation actions:')"
             } else {
                 $TestResultDetail = $_.ResultDetail.TestResult
@@ -165,7 +157,7 @@
                     ID             = $_.ID
                     Title          = $_.Title
                     Result         = $_.Result
-                    Severity       = $_.ResultDetail.Severity
+                    Severity       = $_.Severity
                     Tag            = $_.Tag -join ', '
                     Block          = $_.Block
                     Duration       = $_.Duration
@@ -190,7 +182,7 @@
             }
 
             try {
-                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -NoTypeInformation
+                $FlattenedResults | Export-Csv -Path $CsvFilePath -UseQuotes Always -Encoding utf8BOM -NoTypeInformation
                 Write-Verbose "Exported the Maester test results to '$CsvFilePath'." -InformationAction Continue
             } catch {
                 Write-Error "Failed to export the Maester test results to a CSV file. $_"

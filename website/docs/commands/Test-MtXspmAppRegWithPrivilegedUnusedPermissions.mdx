@@ -1,0 +1,65 @@
+---
+sidebar_class_name: hidden
+description: Tests if app registration have assigned privileged API permissions which are unused.
+id: Test-MtXspmAppRegWithPrivilegedUnusedPermissions
+title: Test-MtXspmAppRegWithPrivilegedUnusedPermissions
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtXspmAppRegWithPrivilegedUnusedPermissions.ps1
+---
+
+## SYNOPSIS
+
+Tests if app registration have assigned privileged API permissions which are unused.
+
+## SYNTAX
+
+```powershell
+Test-MtXspmAppRegWithPrivilegedUnusedPermissions [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks all Entra ID app registrations with privileged API permissions and checks if any of them are unused.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtXspmAppRegWithPrivilegedUnusedPermissions
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no owners on app registrations with privileged API permissions, $false if any owners have been assigned, $null if skipped or prerequisites not met.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedUnusedPermissions](https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedUnusedPermissions)

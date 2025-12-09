@@ -1,24 +1,41 @@
-"use client";
+
 import React from "react";
 import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MtTestSummary(props) {
 
     const pctPassed = getPercentage(props.PassedCount);
     const pctFailed = getPercentage(props.FailedCount);
     const pctSkipped = getPercentage(props.SkippedCount);
+    const pctNotRun = getPercentage(props.NotRunCount);
+    const pctError = getPercentage(props.ErrorCount);
+    const pctInvestigate = getPercentage(props.InvestigateCount);
 
-
-    const testSummary = [pctPassed, pctFailed, pctSkipped];
-    const testSummaryColors = ["emerald", "rose", "gray"];
+    const testSummary = [
+        props.PassedCount || 0,
+        props.FailedCount || 0,
+        props.InvestigateCount || 0,
+        props.SkippedCount || 0,
+        props.NotRunCount || 0,
+        props.ErrorCount || 0
+    ];
+    const testSummaryColors = ["emerald", "rose", "purple", "yellow", "gray", "orange"];
 
     function getPercentage(count) {
-        return Math.round((count / props.TotalCount) * 100);
+        const total = props.TotalCount || 0;
+        if (total === 0) return 0;
+        return Math.round(((count || 0) / total) * 100);
     }
 
+    let visibleCards = 3;
+    if (props.InvestigateCount > 0) visibleCards++;
+    if (props.SkippedCount > 0) visibleCards++;
+    if (props.NotRunCount > 0) visibleCards++;
+    if (props.ErrorCount > 0) visibleCards++;
+
     return (
-        <Grid numItemsSm={2} numItemsLg={4} className="gap-6 mb-6">
+        <Grid numItemsSm={2} numItemsLg={visibleCards} className="gap-6 mb-6">
             <Card>
                 <Flex alignItems="start">
                     <Text>Total tests</Text>
@@ -42,7 +59,7 @@ export default function MtTestSummary(props) {
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.PassedCount}</Metric>
                 </Flex>
-                <ProgressBar value={getPercentage(props.PassedCount)} color="emerald" className="mt-3" showAnimation={true} />
+                <ProgressBar value={pctPassed} color="emerald" className="mt-3" showAnimation={true} />
             </Card>
             <Card>
                 <Flex alignItems="start">
@@ -52,18 +69,56 @@ export default function MtTestSummary(props) {
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
                     <Metric>{props.FailedCount}</Metric>
                 </Flex>
-                <ProgressBar value={getPercentage(props.FailedCount)} color="rose" className="mt-3" showAnimation={true} />
+                <ProgressBar value={pctFailed} color="rose" className="mt-3" showAnimation={true} />
             </Card>
-            <Card>
-                <Flex alignItems="start">
-                    <Text>Not tested</Text>
-                    <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
-                </Flex>
-                <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                    <Metric>{props.SkippedCount}</Metric>
-                </Flex>
-                <ProgressBar value={getPercentage(props.SkippedCount)} color="gray" className="mt-3" showAnimation={true} />
-            </Card>
+            {props.InvestigateCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Investigate</Text>
+                        <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="md" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.InvestigateCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctInvestigate} color="purple" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
+            {props.SkippedCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Skipped</Text>
+                        <Icon icon={ForwardIcon} color="yellow" size="md" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.SkippedCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctSkipped} color="yellow" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
+            {props.NotRunCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Not tested</Text>
+                        <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.NotRunCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctNotRun} color="gray" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
+            {props.ErrorCount > 0 && (
+                <Card>
+                    <Flex alignItems="start">
+                        <Text>Error</Text>
+                        <Icon icon={ExclamationCircleIcon} color="orange" size="md" className="ml-2 w-4 h-4" />
+                    </Flex>
+                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
+                        <Metric>{props.ErrorCount}</Metric>
+                    </Flex>
+                    <ProgressBar value={pctError} color="orange" className="mt-3" showAnimation={true} />
+                </Card>
+            )}
         </Grid>
     );
 }

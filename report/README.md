@@ -2,7 +2,7 @@
 
 This folder contains the test report for the Maester project.
 
-It uses vite-plugin-singlefile to generate a single HTML file which will be used by the Export-MtHtmlReport cmdlet to generate the html report
+It uses vite-plugin-singlefile to generate a single HTML file which will be used by the Get-MtHtmlReport cmdlet to generate the html report
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
@@ -58,3 +58,9 @@ When making updates to the report you might want to bring in some fresh data to 
 - Open /report/src/App.jsx and search for `const testResults = {`.
 - Replace the contents between `const testResults = {` and `};` in App.jsx with the copied content.
 - Your report should now show the updated data.
+
+### Submitting a Pull-Request
+
+When submitting a PR for changes in `/report/src` you can skip updating the `/powershell/assets/ReportTemplate.html` artifact. The [report-build](https://github.com/maester365/maester/blob/main/.github/workflows/build-report.yaml) bot will build and create a PR to merge the ReportTemplate once your PR is approved and merged.
+
+

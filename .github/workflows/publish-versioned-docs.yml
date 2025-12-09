@@ -1,0 +1,63 @@
+# Merill: Commeting out since we use cloudflare.
+# For now we will create manual version when a new major release is published.
+
+# # This workflow deploys a new version of the Docusaurus documentation when a new GitHub Release is published.
+# name: Deploy Versioned Docs
+
+# on:
+#   # This workflow triggers whenever a new release is published in GitHub
+#   release:
+#     types: [published]
+
+# permissions:
+#   contents: write
+#   actions: read
+#   pull-requests: read
+
+# concurrency:
+#   group: docs-versioning-${{ github.event.release.tag_name }}
+#   cancel-in-progress: false
+
+# jobs:
+#   version_and_deploy_docs:
+#     # This job only runs if a GitHub release was successfully published
+#     if: github.event_name == 'release' && github.event.action == 'published'
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: ⬇️ Checkout Repository
+#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6
+#         # Important: Fetch all history, as the versioning command often needs it.
+#         with:
+#           fetch-depth: 0
+
+#       - name: ⚙️ Setup Node.js
+#         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6
+#         with:
+#           node-version: 20
+#           cache: 'npm'
+
+#       - name: 📦 Install Dependencies
+#         run: npm ci
+
+#       - name: Extract Version Tag
+#         id: tag_version
+#         # Extracts '1.2.3' from a tag like 'v1.2.3'
+#         run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
+
+#       - name: 💾 Create Docusaurus Document Version
+#         run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
+
+#       - name: ✍️ Commit Version Files to Main Branch
+#         uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 #v5
+#         with:
+#           commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
+#           # This commits the new files (versioned_docs/ and versions.json)
+
+#       - name: 🏗️ Build and Deploy Docusaurus Site
+#         run: |
+#           npm run build
+#           npm run deploy
+#         env:
+#           # Use the default GitHub Token for deployment authentication
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,7 +3,7 @@
     Advanced Spam filter options are turned off.
 
 .DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
 .EXAMPLE
     Test-ORCA102
@@ -38,7 +38,7 @@ function Test-ORCA102{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA102: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA102" -ErrorRecord $_ -AdditionalContext "Running ORCA102 test"
         throw
     } finally {
         if($obj.SkipInReport) {

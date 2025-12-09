@@ -1,0 +1,65 @@
+---
+sidebar_class_name: hidden
+description: Tests if app registration owners with privileged API permissions have delegated ownership.
+id: Test-MtXspmAppRegWithPrivilegedApiAndOwners
+title: Test-MtXspmAppRegWithPrivilegedApiAndOwners
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtXspmAppRegWithPrivilegedApiAndOwners.ps1
+---
+
+## SYNOPSIS
+
+Tests if app registration owners with privileged API permissions have delegated ownership.
+
+## SYNTAX
+
+```powershell
+Test-MtXspmAppRegWithPrivilegedApiAndOwners [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks all Entra ID app registrations with sensitive API permissions and checks if ownership has been delegated.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtXspmAppRegWithPrivilegedApiAndOwners
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no owners on app registrations with privileged API permissions, $false if any owners have been assigned, $null if skipped or prerequisites not met.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedApiAndOwners](https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedApiAndOwners)
