@@ -184,7 +184,14 @@
     'Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts',
     'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
     'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
-    'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices'
+    'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
+    'Set-MtAdCache','Clear-MtAdCache',
+    'Test-MtAdComputerContainer','Test-MtAdComputerCreatorSid','Test-MtAdComputerDns',
+    'Test-MtAdComputerDomainController','Test-MtAdComputerKerberos',
+    'Test-MtAdComputerOperatingSystem','Test-MtAdComputerPrimaryGroup',
+    'Test-MtAdComputerService','Test-MtAdComputerSidHistory','Test-MtAdComputerStatus',
+    'Test-MtAdForestDomain','Test-MtAdForestExternalLdap','Test-MtAdForestFsmoStatus',
+    'Test-MtAdForestFunctionalLevel','Test-MtAdForestSite','Test-MtAdForestSuffix'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
