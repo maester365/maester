@@ -30,7 +30,7 @@ function Set-MtAdCache {
     param(
         [string]$Server = $__MtSession.AdServer,
         [pscredential]$Credential = $__MtSession.AdCredential,
-        [ValidateSet('All', 'Computers')]
+        [ValidateSet('All', 'Computers', 'Forest')]
         [string[]]$Objects = 'All'
     )
 
@@ -91,6 +91,39 @@ function Set-MtAdCache {
         PrimaryGroupIds                = $primaryGroupIds
         DomainControllerPgids          = $dcPrimaryGroupIds
         AdComputers                    = $__MtSession.AdCache.AdComputers
+        AdForest                       = $__MtSession.AdCache.AdForest
+    }
+
+    if($Objects -contains "Forest" -or $Objects -contains "All"){
+        $forest = try{
+            Write-Verbose "Attempting AD query for Forest"
+            Get-ADForest
+        }catch{
+            Write-Error $_
+            return $null
+        }
+
+        $__MtSession.AdCache.AdForest = @{
+            SetFlag   = $true
+            Forest    = @($forest)
+            Data      = @{
+                FunctionalLevel            = $rootDse.forestFunctionality
+                CrossForestReferences      = @()
+                CrossForestReferencesCount = $null
+                DomainNamingMaster         = $null
+                SchemaMaster               = $null
+                CommonFsmo                 = $null
+                Sites                      = @()
+                SitesCount                 = $null
+                DefaultSite                = $null
+                Domains                    = @()
+                DomainsCount               = $null
+                UpnSuffixes                = @()
+                UpnSuffixesCount           = $null
+                SpnSuffixes                = @()
+                SpnSuffixesCount           = $null
+            }
+        }
     }
 
     if($Objects -contains "Computers" -or $Objects -contains "All"){
