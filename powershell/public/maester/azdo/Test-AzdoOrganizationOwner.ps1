@@ -1,28 +1,43 @@
+<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks if the Azure DevOps Organization owner is a indiviual or a service/admin account.
+    Returns a true boolean if the users matches adm|admin|btg|svc|service.
+
+    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops
+
+.EXAMPLE
+    ```
+    Test-AzdoOrganizationOwner
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoOrganizationOwner
+#>
 function Test-AzdoOrganizationOwner {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
-        return $null
-    }
+    Write-verbose 'Not connected to Azure DevOps'
 
-    # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
-    
+
+
     $Data = Get-ADOPSOrganizationAdminOverview
     if ($data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.exceptionType -eq 'AadGraphException') {
         $resultMarkdown = "Workload identities cannot fetch Organization Owner."
-        Add-MtTestResultDetail -Result "BUG: Workload identities cannot fetch Organization Owner." -SkippedCustomReason "Workload identities cannot fetch Organization Owner." -SkippedBecause Custom 
+        Add-MtTestResultDetail -Result "BUG: Workload identities cannot fetch Organization Owner." -SkippedCustomReason "Workload identities cannot fetch Organization Owner." -SkippedBecause Custom
         $result = $false
-    }
-    else {
+    } else {
         $currentOwner = $data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.currentOwner
         if ($currentOwner.email -match '(?i)(adm|admin|btg|svc|service)') {
             $resultMarkdown = "Well done. Azure DevOps organization owner should be a service account and not an individual.`n`n%TestResult%"
             $result = $true
-        }
-        else {
+        } else {
             $resultMarkdown = "Azure DevOps organization owner should not be an individual ($($currentOwner.name)). Note: This might be a false positive.`n`n%TestResult%"
             $result = $false
         }
@@ -30,7 +45,7 @@ function Test-AzdoOrganizationOwner {
         $markdown += "| --- | --- | --- |`n"
         $markdown += "| $($currentOwner.name) | $($currentOwner.id) | $($currentOwner.email) |`n"
         $resultMarkdown = $resultMarkdown -replace '%TestResult%', $markdown
-        Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'Critical'
+        Add-MtTestResultDetail -Result $resultMarkdown -Severity 'Critical'
     }
     return $result
 }

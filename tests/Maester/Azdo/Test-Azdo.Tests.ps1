@@ -2,33 +2,32 @@ BeforeAll {
     . $PSScriptRoot/Test-AzdoAllowRequestAccessToken.ps1
     . $PSScriptRoot/Test-AzdoAllowTeamAdminsInvitationsAccessToken.ps1
     . $PSScriptRoot/Test-AzdoArtifactsExternalPackageProtectionToken.ps1
-    . $PSScriptRoot/Test-AzdoAuditStreams.ps1
+    . $PSScriptRoot/Test-AzdoAuditStream.ps1
     . $PSScriptRoot/Test-AzdoEnforceAADConditionalAccess.ps1
     . $PSScriptRoot/Test-AzdoExternalGuestAccess.ps1
     . $PSScriptRoot/Test-AzdoFeedbackCollection.ps1
-    . $PSScriptRoot/Test-AzdoLogAuditEvents.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationArtifactFeed.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProjects.ps1
+    . $PSScriptRoot/Test-AzdoLogAuditEvent.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject.ps1
     . $PSScriptRoot/Test-AzdoOrganizationBadgesArePrivate.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationCreationClassicBuildPipelines.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationCreationClassicReleasePipelines.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipelines.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipelines.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationCreationClassicBuildPipeline.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationCreationClassicReleasePipeline.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline.ps1
     . $PSScriptRoot/Test-AzdoOrganizationLimitVariablesAtQueueTime.ps1
     . $PSScriptRoot/Test-AzdoOrganizationOwner.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationProtectAccessToRepositories.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepos.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationRepositorySettingsGravatarImages.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationProtectAccessToRepository.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationRepositorySettingsGravatarImage.ps1
     . $PSScriptRoot/Test-AzdoOrganizationStageChooser.ps1
     . $PSScriptRoot/Test-AzdoOrganizationStorageUsage.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTasks.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationTaskRestrictionsDisableNode6Tasks.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationTaskRestrictionsDisableNode6Task.ps1
     . $PSScriptRoot/Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation.ps1
-    . $PSScriptRoot/Test-AzdoOrganizationTriggerPullRequestGitHubRepositories.ps1
-    . $PSScriptRoot/Test-AzdoProjectCollectionAdministrators.ps1
-    . $PSScriptRoot/Test-AzdoPublicProjects.ps1
-    . $PSScriptRoot/Test-AzdoResourceUsageProjects.ps1
-    . $PSScriptRoot/Test-AzdoResourceUsageWorkItemTags.ps1
+    . $PSScriptRoot/Test-AzdoOrganizationTriggerPullRequestGitHubRepository.ps1
+    . $PSScriptRoot/Test-AzdoProjectCollectionAdministrator.ps1
+    . $PSScriptRoot/Test-AzdoPublicProject.ps1
+    . $PSScriptRoot/Test-AzdoResourceUsageProject.ps1
+    . $PSScriptRoot/Test-AzdoResourceUsageWorkItemTag.ps1
     . $PSScriptRoot/Test-AzdoSSHAuthentication.ps1
     . $PSScriptRoot/Test-AzdoThirdPartyAccessViaOauth.ps1
 }
@@ -37,6 +36,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps Security" {
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
 
         Test-AzdoThirdPartyAccessViaOauth | Should -Be $false -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
+
     }
 
     It "AZDO.1001: Identities can connect to your organization's Git repos through SSH. See https://aka.ms/vstspolicyssh" -Tag "AZDO.1001" {
@@ -153,7 +153,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps Security" {
 
         Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTasks | Should -Be $false -Because "Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline."
     }
-    
+
     It "AZDO.1024: Disable Node 6 tasks. See https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents" -Tag "AZDO.1024" {
 
         Test-AzdoOrganizationTaskRestrictionsDisableNode6Tasks | Should -Be $true -Because "With this enabled, pipelines will fail if they utilize a task with a Node 6 execution handler."

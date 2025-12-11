@@ -1,9 +1,29 @@
+<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks the configuration of external guest access to Azure DevOps.
+
+    https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access
+
+.EXAMPLE
+    ```
+    Test-AzdoExternalGuestAccess
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoExternalGuestAccess
+#>
 function Test-AzdoExternalGuestAccess {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
@@ -18,7 +38,7 @@ function Test-AzdoExternalGuestAccess {
         $resultMarkdown = "Well done. External users should not be allowed access to your Azure DevOps organization"
     }
 
-    # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
+
 
     Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'Critical'
 

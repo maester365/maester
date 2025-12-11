@@ -1,12 +1,28 @@
-function Test-AzdoProjectCollectionAdministrators {
+<#
+.SYNOPSIS
+    Returns a list of all Project Collection Administrators.
+
+.DESCRIPTION
+    Checks the status of how many Project Collection Administrators that are assigned to your Azure DevOps organisation.
+
+    https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions
+
+.EXAMPLE
+    ```
+    Test-AzdoProjectCollectionAdministrator
+    ```
+
+    Returns a list of all Project Collection Administrators.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoProjectCollectionAdministrator
+#>
+function Test-AzdoProjectCollectionAdministrator {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
-        return $null
-    }
+    Write-verbose 'Not connected to Azure DevOps'
 
     function Get-NestedAdoMembership {
         param (
@@ -20,8 +36,7 @@ function Test-AzdoProjectCollectionAdministrators {
                 Write-Verbose "Processing member '$($_.DisplayName)' - Descriptor '$($_.Descriptor)'"
                 Get-NestedAdoMembership -Member $_
             }
-        }
-        else {
+        } else {
             Write-output $Member
         }
     }
@@ -45,8 +60,7 @@ function Test-AzdoProjectCollectionAdministrators {
         Get-NestedAdoMembership -Member $_ | Foreach-object {
             if ($_.descriptor -notin $UniqueUsersWithPCA.descriptor) {
                 $UniqueUsersWithPCA.Add($_) | Out-Null
-            }
-            else {
+            } else {
                 Write-Verbose "$($_.subjectKind) - $($_.displayname) - $($_.descriptor) - has already been added."
             }
         }
@@ -56,24 +70,20 @@ function Test-AzdoProjectCollectionAdministrators {
     if ($UniqueUsersWithPCA.Count -ge 4) {
         $result = $false
         $resultMarkdown = "Restrict direct user access ('$($UniqueUsersWithPCA.Count)') to Project Collection Administrators role. The role holds the highest authority within an organization or project collection. Members can Perform all operations for the entire collection, Manage settings, policies, and processes for the organization, create and manage all projects and extensions.`n`n%TestResult%"
-    }
-    else {
+    } else {
         $result = $true
         $resultMarkdown = "Well done. Less than 4 users/service accounts are directly assigned to the Project Collection Administrators role.`n`n%TestResult%"
     }
-    $UniqueUsersWithPCA | ForEach-Object -Begin { 
+    $UniqueUsersWithPCA | ForEach-Object -Begin {
         $markdown = "| DisplayName | Alias | E-mail |`n"
-        $markdown += "| --- | --- | --- |`n" 
+        $markdown += "| --- | --- | --- |`n"
     } -Process {
-        $markdown += "| $($_.displayName) | $($_.directoryAlias) | $($_.mailAddress) |`n" 
+        $markdown += "| $($_.displayName) | $($_.directoryAlias) | $($_.mailAddress) |`n"
     } -end {
         $resultMarkdown = $resultMarkdown -replace '%TestResult%', $markdown
     }
-    
-    
-    # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
 
-    Add-MtTestResultDetail -Result $resultMarkdown   -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
 
     return $result
 }

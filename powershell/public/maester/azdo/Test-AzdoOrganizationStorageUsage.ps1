@@ -1,12 +1,32 @@
+<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks the status of Azure Artifacts storage, Azure DevOps provides 2 GiB of free storage for each organization.
+    Once your organization reaches the maximum storage limit, you won't be able to publish new artifacts.
+    To continue, you can either delete some of your existing artifacts or increase your storage limit.
+
+    https://learn.microsoft.com/en-us/azure/devops/artifacts/how-to/delete-and-recover-packages?view=azure-devops&tabs=nuget#delete-packages-automatically-with-retention-policies
+    https://learn.microsoft.com/en-us/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing
+    https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops
+
+.EXAMPLE
+    ```
+    Test-AzdoOrganizationStorageUsage
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoOrganizationStorageUsage
+#>
 function Test-AzdoOrganizationStorageUsage {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
-        return $null
-    }
+    Write-verbose 'Not connected to Azure DevOps'
 
     $StorageUsage = Get-ADOPSOrganizationCommerceMeterUsage -MeterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc'
     $availableQuantity = $StorageUsage.availableQuantity
@@ -14,9 +34,8 @@ function Test-AzdoOrganizationStorageUsage {
     if ($availableQuantity -lt [double]::Parse('0.1')) {
         $resultMarkdown = "Your storage is exceeding the usage limit or close to. '$availableQuantity' GB available."
         $result = $false
-    }
-    else {
-        $resultMarkdown = 
+    } else {
+        $resultMarkdown =
         @'
         Well done. You are not exceeding or approaching your storage usage limit.
         Current usage: {0} GB
@@ -25,9 +44,9 @@ function Test-AzdoOrganizationStorageUsage {
         $result = $true
     }
 
-    # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
 
-    Add-MtTestResultDetail -Result $resultMarkdown   -Severity 'High'
+
+    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
 
     return $result
 }

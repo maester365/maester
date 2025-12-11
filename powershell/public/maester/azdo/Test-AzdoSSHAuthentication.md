@@ -15,3 +15,4 @@ Users can no longer user SSH to connect to Azure DevOps.
 #### Related links
 
 * [Learn - Use SSH key authentication](https://aka.ms/vstspolicyssh)
+* [Learn - Authentication with Azure Repos](https://learn.microsoft.com/en-us/azure/devops/repos/git/auth-overview?view=azure-devops&source=recommendations&tabs=Windows)

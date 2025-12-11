@@ -1,12 +1,29 @@
-function Test-AzdoOrganizationCreationClassicBuildPipelines {
+<#
+.SYNOPSIS
+    Returns a boolean depending on the configuration.
+
+.DESCRIPTION
+    Checks if classic build pipelines can be created.
+
+    https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines
+
+.EXAMPLE
+    ```
+    Test-AzdoOrganizationCreationClassicBuildPipeline
+    ```
+
+    Returns a boolean depending on the configuration.
+
+.LINK
+    https://maester.dev/docs/commands/Test-AzdoOrganizationCreationClassicBuildPipeline
+#>
+
+function Test-AzdoOrganizationCreationClassicBuildPipeline {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
-        return $null
-    }
+Write-verbose 'Not connected to Azure DevOps'
 
     $PipelineCreation = (Get-ADOPSOrganizationPipelineSettings).disableClassicBuildPipelineCreation
 
@@ -19,7 +36,7 @@ function Test-AzdoOrganizationCreationClassicBuildPipelines {
         $result = $true
     }
 
-    # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
+
 
     Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'High'
 
