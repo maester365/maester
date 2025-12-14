@@ -6,34 +6,34 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$testsPath = Join-Path $RepoRoot 'tests'
-$docPath = Join-Path $RepoRoot 'website/docs/tags.md'
-$inventoryScript = Join-Path $RepoRoot 'powershell/public/Get-MtTestInventory.ps1'
+$TestsPath = Join-Path $RepoRoot 'tests'
+$DocPath = Join-Path $RepoRoot 'website/docs/tests/tags/readme.md'
+$InventoryScript = Join-Path $RepoRoot 'powershell/public/Get-MtTestInventory.ps1'
 
-if (-not (Test-Path $inventoryScript)) {
-    throw "Get-MtTestInventory.ps1 not found at $inventoryScript"
+if (-not (Test-Path $InventoryScript)) {
+    throw "Get-MtTestInventory.ps1 not found at $InventoryScript"
 }
 
-. $inventoryScript
+. $InventoryScript
 
 # Default excludes cover tests that require external connectivity during discovery.
-$defaultExcludes = @(
+$DefaultExcludes = @(
     'tests/cis/Test-MtCisCustomerLockBox.Tests.ps1',
     'tests/Maester/Defender/Test-MtMdiHealthIssues.Tests.ps1',
     'tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1',
     'tests/XSPM/Test-XspmDevices.Tests.ps1'
 ) | ForEach-Object { Join-Path $RepoRoot $_ }
 
-$effectiveExcludes = @()
-if ($ExcludePath) { $effectiveExcludes += $ExcludePath }
-$effectiveExcludes += $defaultExcludes
-$effectiveExcludes = $effectiveExcludes | Where-Object { Test-Path $_ } | Select-Object -Unique
+$EffectiveExcludes = @()
+if ($ExcludePath) { $EffectiveExcludes += $ExcludePath }
+$EffectiveExcludes += $DefaultExcludes
+$EffectiveExcludes = $EffectiveExcludes | Where-Object { Test-Path $_ } | Select-Object -Unique
 
-$inv = Get-MtTestInventory -Path $testsPath -ExcludePath $effectiveExcludes
+$Inv = Get-MtTestInventory -Path $TestsPath -ExcludePath $EffectiveExcludes
 
-$rows = [System.Collections.Generic.List[pscustomobject]]::new()
-foreach ($entry in $inv.GetEnumerator()) {
-    $rows.Add([pscustomobject]@{
+$Rows = [System.Collections.Generic.List[pscustomobject]]::new()
+foreach ($entry in $Inv.GetEnumerator()) {
+    $Rows.Add([pscustomobject]@{
             Tag         = $entry.Name
             Count       = $entry.Value.Count
             Description = $entry.Value[0].TestName
@@ -42,11 +42,11 @@ foreach ($entry in $inv.GetEnumerator()) {
 
 function Add-OrUpdateTag {
     param(
-        [string] $Tag,
-        [int] $Count,
-        [string] $Description
+        [string]$Tag,
+        [int]$Count,
+        [string]$Description
     )
-    $existing = $rows | Where-Object { $_.Tag -eq $Tag }
+    $existing = $Rows | Where-Object { $_.Tag -eq $Tag }
     if ($existing) {
         foreach ($item in $existing) {
             $item.Count += $Count
@@ -55,7 +55,7 @@ function Add-OrUpdateTag {
             }
         }
     } else {
-        $rows.Add([pscustomobject]@{ Tag = $Tag; Count = $Count; Description = $Description })
+        $Rows.Add([pscustomobject]@{ Tag = $Tag; Count = $Count; Description = $Description })
     }
 }
 
@@ -99,43 +99,44 @@ $groups = [ordered]@{
     'Platform & Operations'      = { param($t) $t.Tag -notlike 'CIS*' -and $t.Tag -notlike 'CISA*' -and $t.Tag -notlike 'MS.*' -and $t.Tag -notlike 'EIDSCA*' -and $t.Tag -notlike 'ORCA*' -and $t.Tag -notlike 'MT.*' }
 }
 
-function Convert-ToMarkdownTable {
+function ConvertTo-MarkdownTable {
     param(
         [string] $Title,
         [System.Collections.Generic.List[pscustomobject]] $Items
     )
     if (-not $Items -or $Items.Count -eq 0) { return $null }
-    $sb = [System.Text.StringBuilder]::new()
-    [void]$sb.AppendLine("### $Title")
-    [void]$sb.AppendLine()
-    [void]$sb.AppendLine('| Tag | Description | Count |')
-    [void]$sb.AppendLine('| --- | --- | --- |')
+    $SB = [System.Text.StringBuilder]::new()
+    [void]$SB.AppendLine("### $Title")
+    [void]$SB.AppendLine()
+    [void]$SB.AppendLine('| Tag | Description | Count |')
+    [void]$SB.AppendLine('| --- | --- | --- |')
     foreach ($i in $Items | Sort-Object -Property Tag) {
-        $desc = $i.Description
-        if (-not $desc) { $desc = '' }
-        $desc = $desc -replace '\|', '\\|'
-        [void]$sb.AppendLine("| $($i.Tag) | $desc | $($i.Count) |")
+        $Description = $i.Description
+        if (-not $Description) { $Description = '' }
+        $Description = $Description -replace '\|', '\\|'
+        [void]$SB.AppendLine("| $($i.Tag) | $Description | $($i.Count) |")
     }
-    [void]$sb.AppendLine()
-    return $sb.ToString()
+    #[void]$SB.AppendLine()
+    return $SB.ToString()
 }
 
-$sectionBlocks = @()
+$SectionBlocks = @()
 foreach ($key in $groups.Keys) {
-    $matched = $rows | Where-Object { & $groups[$key] $_ }
-    if ($matched) { $sectionBlocks += Convert-ToMarkdownTable -Title $key -Items ([System.Collections.Generic.List[pscustomobject]]$matched) }
+    $matched = $Rows | Where-Object { & $groups[$key] $_ }
+    if ($matched) { $SectionBlocks += ConvertTo-MarkdownTable -Title $key -Items ([System.Collections.Generic.List[pscustomobject]]$matched) }
 }
-$sectionsText = ($sectionBlocks | Where-Object { $_ }) -join "`n"
+$SectionsText = ($SectionBlocks | Where-Object { $_ }) -join "`n"
 
-$frontMatter = @(
+$FrontMatter = @(
     '---',
-    '#sidebar_position: 99',
-    'title: 🏷️ Tags',
-    '---',
-    ''
+    'id: overview'
+    'title: Tags Overview'
+    'sidebar_label: 🏷️ Tags'
+    'description: Overview of the tags used to identify and group related tests.'
+    '---'
 )
 
-$intro = @(
+$Intro = @(
     '## Tags Overview',
     '',
     'Tags are used by Maester to identify and group tests.',
@@ -146,6 +147,6 @@ $intro = @(
     ''
 )
 
-$body = ($frontMatter + $intro + $sectionsText) -join "`n"
-Set-Content -LiteralPath $docPath -Value $body -Encoding UTF8
-Write-Host "Updated $docPath"
+$Body = ($FrontMatter + $Intro + $SectionsText) -join "`n"
+Set-Content -LiteralPath $DocPath -Value $Body -Encoding UTF8
+Write-Host "Updated $DocPath"
