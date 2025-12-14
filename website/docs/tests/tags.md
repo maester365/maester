@@ -1,6 +1,7 @@
 ---
 #sidebar_position: 99
 title: 🏷️ Tags
+id: Tags
 ---
 
 ## Tags Overview
@@ -48,7 +49,6 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | CIS.M365.8.4.1 | CIS.M365.8.4.1: Ensure all or a majority of third-party and custom apps are blocked | 1 |
 | CIS.M365.8.5.3 | CIS.M365.8.5.3: Ensure only people in my org can bypass the lobby | 1 |
 | CIS.M365.8.6.1 | CIS.M365.8.6.1: Ensure users can report security concerns in Teams to internal destination | 1 |
-
 
 ### CISA Baseline
 
@@ -205,7 +205,6 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MS.SHAREPOINT.1.1 | CISA.MS.SHAREPOINT.1.1: External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | 1 |
 | MS.SHAREPOINT.1.3 | CISA.MS.SHAREPOINT.1.3: External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | 1 |
 
-
 ### EIDSCA (Entra ID Security Configuration Analyzer)
 
 | Tag | Description | Count |
@@ -255,7 +254,6 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | EIDSCA.PR06 | EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06 | 1 |
 | EIDSCA.ST08 | EIDSCA.ST08: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner. See https://maester.dev/docs/tests/EIDSCA.ST08 | 1 |
 | EIDSCA.ST09 | EIDSCA.ST09: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content. See https://maester.dev/docs/tests/EIDSCA.ST09 | 1 |
-
 
 ### ORCA (Microsoft Defender for Office 365 Recommended Configuration Analyzer) 
 
@@ -329,7 +327,6 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | ORCA.242 | ORCA.242: Important protection alerts responsible for AIR activities are enabled. | 1 |
 | ORCA.243 | ORCA.243: Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO. | 1 |
 | ORCA.244 | ORCA.244: Policies are configured to honor sending domains DMARC. | 1 |
-
 
 ### Maester Tests
 
@@ -436,7 +433,6 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MT.1102 | MT.1102: Windows Feature Update Policy Settings should not reference end of support builds | 1 |
 | MT.1103 | MT.1103: Ensure Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups | 1 |
 | MT.1105 | MT.1105: Ensure MDM Authority is set to Intune | 1 |
-
 
 ### Platform & Operations
 
