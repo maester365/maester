@@ -51,7 +51,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | CIS.M365.8.5.3 | CIS.M365.8.5.3: Ensure only people in my org can bypass the lobby | 1 |
 | CIS.M365.8.6.1 | CIS.M365.8.6.1: Ensure users can report security concerns in Teams to internal destination | 1 |
 
-### CISA Baseline
+### CISA & Microsoft Baselines
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -206,7 +206,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MS.SHAREPOINT.1.1 | CISA.MS.SHAREPOINT.1.1: External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | 1 |
 | MS.SHAREPOINT.1.3 | CISA.MS.SHAREPOINT.1.3: External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | 1 |
 
-### EIDSCA (Entra ID Security Configuration Analyzer)
+### EIDSCA
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -256,7 +256,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | EIDSCA.ST08 | EIDSCA.ST08: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner. See https://maester.dev/docs/tests/EIDSCA.ST08 | 1 |
 | EIDSCA.ST09 | EIDSCA.ST09: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content. See https://maester.dev/docs/tests/EIDSCA.ST09 | 1 |
 
-### ORCA (Microsoft Defender for Office 365 Recommended Configuration Analyzer) 
+### ORCA
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -329,7 +329,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | ORCA.243 | ORCA.243: Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO. | 1 |
 | ORCA.244 | ORCA.244: Policies are configured to honor sending domains DMARC. | 1 |
 
-### Maester Tests
+### Maester Tests (MT.*)
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -493,3 +493,4 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | Teams | MT.1037: Only users with Presenter role are allowed to present in Teams meetings | 6 |
 | TransportRule | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 1 |
 | XSPM | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 10 |
+
