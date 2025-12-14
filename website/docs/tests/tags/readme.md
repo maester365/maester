@@ -1,7 +1,8 @@
 ---
-#sidebar_position: 99
-title: 🏷️ Tags
-id: Tags
+id: overview
+title: Tags Overview
+sidebar_label: 🏷️ Tags
+description: Overview of the tags used to identify and group related tests.
 ---
 
 ## Tags Overview
