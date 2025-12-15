@@ -1,5 +1,5 @@
 ---
-title: Conditional Access What-If tests
+title: 🛂 Conditional Access What-If Tests
 ---
 
 ## Overview
@@ -87,7 +87,8 @@ Describe "Contoso.ConditionalAccess" {
     }
 }
 ```
+
 ## Next steps
 
-* To learn more about the **Test-MtConditionalAccessWhatIf** cmdlet, including the supported parameters and examples see [Test-MtConditionalAccessWhatIf | Maester Reference](https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf).
-* For a step by step guide on writing custom Maester tests and running them see [Writing Maester tests](/docs/writing-tests).
+- To learn more about the **Test-MtConditionalAccessWhatIf** cmdlet, including the supported parameters and examples see [Test-MtConditionalAccessWhatIf | Maester Reference](https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf).
+- For a step by step guide on writing custom Maester tests and running them see [Writing Maester tests](/docs/writing-tests).
