@@ -14797,7 +14797,6 @@ export const testResults = {
       "HelpUrl": "https://maester.dev/docs/tests/MT.1073",
       "Severity": "Medium",
       "Tag": [
-        "DirSync",
         "Entra",
         "Graph",
         "Maester",
@@ -15186,10 +15185,8 @@ export const testResults = {
       "HelpUrl": "https://maester.dev/docs/tests/MT.1084",
       "Severity": "High",
       "Tag": [
-        "EntraIdConnect",
         "Entra",
         "Graph",
-
         "MT.1084"
       ],
       "Result": "Error",

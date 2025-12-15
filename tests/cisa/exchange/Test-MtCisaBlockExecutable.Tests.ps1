@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.9.5", "CISA.MS.EXO.9.5", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.9.5", "CISA.MS.EXO.9.5", "CISA" {
     It "CISA.MS.EXO.9.5: At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)." {
 
         $result = Test-MtCisaBlockExecutable
