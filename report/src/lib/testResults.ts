@@ -14286,8 +14286,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Exchange",
-        "MT.1044",
-        "OAuth2ClientProfileEnabled"
+        "MT.1044"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoModernAuth\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"OAuth2ClientProfileEnabled should be True\"\n        }\n    ",

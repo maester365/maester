@@ -8,7 +8,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1044: Ensure modern authentication for Exchange Online is enabled' -Tag 'MT.1044', 'OAuth2ClientProfileEnabled' {
+    It 'MT.1044: Ensure modern authentication for Exchange Online is enabled' -Tag 'MT.1044' {
         $result = Test-MtExoModernAuth
 
         if ($null -ne $result) {
