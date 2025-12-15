@@ -2,7 +2,7 @@
 title: 🧪 Updating tests
 ---
 
-## Updating your Maester tests
+# Updating your Maester tests
 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update your GitHub repository with the latest tests.
 
