@@ -10791,9 +10791,7 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
-        "MT.1040",
-        "AdditionalStorageProvidersAvailable"
+        "MT.1040"
       ],
       "Result": "Failed",
       "ScriptBlock": "\n        # > CIS 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'\n\n        #Get-OwaMailboxPolicy | fl Name, AdditionalStorageProvidersAvailable, ThirdPartyFileProvidersEnabled, ConditionalAccessPolicy, ChangePasswordEnabled, *Offline*, ReportJunkEmailEnabled\n        #Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false\n\n        $result = $OwaMailboxPolicyDefault.AdditionalStorageProvidersAvailable\n\n        if ($result -eq $false) {\n            $testResultMarkdown = \"Well done. AdditionalStorageProvidersAvailable is $($result)`n`n\"\n        } else {\n            $testResultMarkdown = \"AdditionalStorageProvidersAvailable should be False and is $($result) in [SecureScore]($portalLink_SecureScore)`n`n\"\n        }\n        $testDetailsMarkdown = \"This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services. Ensure AdditionalStorageProvidersAvailable is restricted.\"\n        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown\n\n        # Actual test\n        if ($null -ne $result) {\n            $result | Should -Be $false -Because \"AdditionalStorageProvidersAvailable should be False\"\n        }\n    ",

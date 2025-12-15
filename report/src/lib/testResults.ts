@@ -13965,9 +13965,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Exchange",
-        "MT.1040",
-        "AdditionalStorageProvidersAvailable",
-        "SecureScore"
+        "MT.1040"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoAdditionalStorageProvider\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"AdditionalStorageProvidersAvailable should be False\"\n        }\n    ",
