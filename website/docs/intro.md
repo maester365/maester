@@ -1,5 +1,6 @@
 ---
 title: 📦 Installation guide
+sidebar_position: 1
 ---
 
 - Install the **Maester** PowerShell module, Pester, and the out of the box tests.
