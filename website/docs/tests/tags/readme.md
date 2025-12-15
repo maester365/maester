@@ -17,21 +17,21 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 
 | Tag | Description | Count |
 | --- | --- | --- |
-| CIS | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 25 |
+| CIS | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 26 |
 | CIS E3 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 16 |
 | CIS E3 Level 1 | CIS.M365.2.1.2: Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | 15 |
 | CIS E3 Level 2 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 4 |
-| CIS E5 | CIS.M365.2.1.7: Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | 6 |
+| CIS E5 | CIS.M365.1.3.6: Ensure the customer lockbox feature is enabled | 7 |
 | CIS E5 Level 1 | CIS.M365.2.1.7: Ensure that an anti-phishing policy has been created (Only Checks Default Policy) | 2 |
-| CIS E5 Level 2 | CIS.M365.2.1.4: Ensure Safe Attachments policy is enabled (Only Checks Default Policy) | 4 |
-| CIS M365 v5.0.0 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 25 |
+| CIS E5 Level 2 | CIS.M365.1.3.6: Ensure the customer lockbox feature is enabled | 5 |
+| CIS M365 v5.0.0 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 26 |
 | CIS.M365.1.1.1 | CIS.M365.1.1.1: Ensure Administrative accounts are cloud-only | 1 |
 | CIS.M365.1.1.3 | CIS.M365.1.1.3: Ensure that between two and four global admins are designated | 1 |
 | CIS.M365.1.2.1 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 1 |
 | CIS.M365.1.2.2 | CIS.M365.1.2.2: Ensure sign-in to shared mailboxes is blocked | 1 |
 | CIS.M365.1.3.1 | CIS.M365.1.3.1: Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' | 1 |
 | CIS.M365.1.3.3 | CIS.M365.1.3.3: Ensure 'External sharing' of calendars is not available | 1 |
-| CIS.M365.1.3.6 | CIS.M365.1.3.6: Ensure the customer lockbox feature is enabled | 1 |
+| CIS.M365.1.3.6 | CIS.M365.1.3.6: Ensure the customer lockbox feature is enabled | 2 |
 | CIS.M365.2.1.1 | CIS.M365.2.1.1: Ensure Safe Links for Office Applications is Enabled (Only Checks Priority 0 Policy) | 1 |
 | CIS.M365.2.1.11 | CIS.M365.2.1.11: Ensure comprehensive attachment filtering is applied | 1 |
 | CIS.M365.2.1.12 | CIS.M365.2.1.12: Ensure the connection filter IP allow list is not used (Only Checks Default Policy) | 1 |
@@ -51,7 +51,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | CIS.M365.8.5.3 | CIS.M365.8.5.3: Ensure only people in my org can bypass the lobby | 1 |
 | CIS.M365.8.6.1 | CIS.M365.8.6.1: Ensure users can report security concerns in Teams to internal destination | 1 |
 
-### CISA & Microsoft Baselines
+### CISA Baseline
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -206,7 +206,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MS.SHAREPOINT.1.1 | CISA.MS.SHAREPOINT.1.1: External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | 1 |
 | MS.SHAREPOINT.1.3 | CISA.MS.SHAREPOINT.1.3: External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | 1 |
 
-### EIDSCA
+### EIDSCA (Entra ID Security Configuration Analyzer)
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -256,7 +256,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | EIDSCA.ST08 | EIDSCA.ST08: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner. See https://maester.dev/docs/tests/EIDSCA.ST08 | 1 |
 | EIDSCA.ST09 | EIDSCA.ST09: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content. See https://maester.dev/docs/tests/EIDSCA.ST09 | 1 |
 
-### ORCA
+### ORCA (Microsoft Defender for Office 365 Recommended Configuration Analyzer)
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -329,10 +329,15 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | ORCA.243 | ORCA.243: Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO. | 1 |
 | ORCA.244 | ORCA.244: Policies are configured to honor sending domains DMARC. | 1 |
 
-### Maester Tests (MT.*)
+### Maester
 
 | Tag | Description | Count |
 | --- | --- | --- |
+| Maester | MT.1002: App management restrictions on applications and service principals is configured and enabled. See https://maester.dev/docs/tests/MT.1002 | 73 |
+| Maester/Entra | MT.1002: App management restrictions on applications and service principals is configured and enabled. See https://maester.dev/docs/tests/MT.1002 | 61 |
+| Maester/Exchange | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 9 |
+| Maester/Intune | MT.1092: Intune APNS certificate should be valid for more than 30 days | 15 |
+| Maester/Teams | MT.1037: Only users with Presenter role are allowed to present in Teams meetings | 6 |
 | MT.1001 | MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001 | 1 |
 | MT.1002 | MT.1002: App management restrictions on applications and service principals is configured and enabled. See https://maester.dev/docs/tests/MT.1002 | 1 |
 | MT.1003 | MT.1003: At least one Conditional Access policy is configured with All Apps. See https://maester.dev/docs/tests/MT.1003 | 1 |
@@ -356,6 +361,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MT.1021 | MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021 | 1 |
 | MT.1022 | MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022 | 1 |
 | MT.1023 | MT.1023: All users utilizing a P2 license should be licensed. See https://maester.dev/docs/tests/MT.1023 | 1 |
+| MT.1024 | MT.1024.: . See https://maester.dev/docs/tests/MT.1024 | 1 |
 | MT.1025 | MT.1025: No external user with permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1025 | 1 |
 | MT.1026 | MT.1026: No hybrid user with permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1026 | 1 |
 | MT.1027 | MT.1027: No Service Principal with Client Secret and permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1027 | 1 |
@@ -364,7 +370,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MT.1030 | MT.1030: Eligible role assignments on Control Plane are in use by administrators. See https://maester.dev/docs/tests/MT.1030 | 1 |
 | MT.1031 | MT.1031: Privileged role on Control Plane are managed by PIM only. See https://maester.dev/docs/tests/MT.1031 | 1 |
 | MT.1032 | MT.1032: Limited number of Global Admins are assigned. See https://maester.dev/docs/tests/MT.1032 | 1 |
-| MT.1033 | MT.1033: User should be blocked from using legacy authentication | 1 |
+| MT.1033 | MT.1033.0: User should be blocked from using legacy authentication (samerde@daserde.com) | 6 |
 | MT.1034 | MT.1034: Emergency access users should not be blocked | 1 |
 | MT.1035 | MT.1035: All security groups assigned to Conditional Access Policies should be protected by RMAU. See https://maester.dev/docs/tests/MT.1035 | 1 |
 | MT.1036 | MT.1036: All excluded objects should have a fallback include in another policy. See https://maester.dev/docs/tests/MT.1036 | 1 |
@@ -415,10 +421,10 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MT.1083 | MT.1083: Ensure Delicensing Resiliency is enabled | 1 |
 | MT.1084 | MT.1084: Microsoft Entra seamless single sign-on should be disabled for all domains in EntraID Connect servers. See https://maester.dev/docs/tests/MT.1084 | 1 |
 | MT.1085 | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 1 |
-| MT.1086 | MT.1086: Devices should not share both critical and non-critical user credentials | 1 |
-| MT.1087 | MT.1087: Devices should not be publicly exposed with dangerous CVEs | 1 |
-| MT.1088 | MT.1088: Devices with critical credentials should use TPM | 1 |
-| MT.1089 | MT.1089: Devices with critical credentials should use Credential Guard | 1 |
+| MT.1086 | MT.1086: Devices should not share both critical and non-critical user credentials. See https://maester.dev/docs/tests/MT.1086 | 2 |
+| MT.1087 | MT.1087: Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. See https://maester.dev/docs/tests/MT.1087 | 2 |
+| MT.1088 | MT.1088: Devices with critical credentials should be protected by TPM. See https://maester.dev/docs/tests/MT.1088 | 2 |
+| MT.1089 | MT.1089: Devices with critical credentials should be protected by Credential Guard. See https://maester.dev/docs/tests/MT.1089 | 2 |
 | MT.1090 | MT.1090: Global administrator role should not be added as local administrator on the device during Microsoft Entra join | 1 |
 | MT.1091 | MT.1091: Registering user should not be added as local administrator on the device during Microsoft Entra join | 1 |
 | MT.1092 | MT.1092: Intune APNS certificate should be valid for more than 30 days | 1 |
@@ -435,7 +441,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | MT.1103 | MT.1103: Ensure Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable groups | 1 |
 | MT.1105 | MT.1105: Ensure MDM Authority is set to Intune | 1 |
 
-### Platform & Operations
+### Fine-Grained Tags
 
 | Tag | Description | Count |
 | --- | --- | --- |
@@ -450,9 +456,9 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | Defender | MT.1059: Defender for Identity health issues | 1 |
 | DelicensingResiliency | MT.1083: Ensure Delicensing Resiliency is enabled | 1 |
 | Deprecated | CISA.MS.EXO.17.2: Microsoft Purview Audit (Premium) logging SHALL be enabled. | 1 |
-| Devices | Exposure management (Defender XSPM) device hygiene | 4 |
+| Devices | MT.1086: Devices should not share both critical and non-critical user credentials. See https://maester.dev/docs/tests/MT.1086 | 8 |
 | DirSync | MT.1073: Soft- and hard-matching of synchronized objects should be blocked. See https://maester.dev/docs/tests/MT.1073 | 1 |
-| Entra | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 21 |
+| Entra | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 22 |
 | Entra ID Free | CISA.MS.AAD.5.3: An admin consent workflow SHALL be configured for applications. | 11 |
 | Entra ID P1 | CISA.MS.AAD.3.3: If Microsoft Authenticator is enabled, it SHALL be configured to show login context information. | 10 |
 | Entra ID P2 | CISA.MS.AAD.7.8: User activation of the Global Administrator role SHALL trigger an alert. | 9 |
@@ -460,21 +466,16 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | EntraOps | MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077 | 5 |
 | Exchange | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 9 |
 | EXO | ORCA.100: Bulk Complaint Level threshold is between 4 and 6. | 67 |
-| Exposure Management | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 10 |
+| Exposure Management | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 14 |
 | Full | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 6 |
 | Governance | MT.1064: Ensure that write permissions are required to create new management groups | 6 |
 | Graph | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 13 |
 | Group | MT.1055: Microsoft 365 Group (and Team) creation should be restricted to approved users. See https://maester.dev/docs/tests/MT.1055 | 1 |
 | Intune | MT.1092: Intune APNS certificate should be valid for more than 30 days | 15 |
 | L1 | CIS.M365.2.1.2: Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | 15 |
-| L2 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 7 |
+| L2 | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 8 |
 | License | MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022 | 2 |
-| LongRunning | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 17 |
-| Maester | MT.1002: App management restrictions on applications and service principals is configured and enabled. See https://maester.dev/docs/tests/MT.1002 | 72 |
-| Maester/Entra | MT.1002: App management restrictions on applications and service principals is configured and enabled. See https://maester.dev/docs/tests/MT.1002 | 55 |
-| Maester/Exchange | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 9 |
-| Maester/Intune | MT.1092: Intune APNS certificate should be valid for more than 30 days | 15 |
-| Maester/Teams | MT.1037: Only users with Presenter role are allowed to present in Teams meetings | 6 |
+| LongRunning | MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057 | 21 |
 | MailTipsExternalRecipientsTipsEnabled | MT.1039: Ensure MailTips are enabled for end users | 1 |
 | MDI | MT.1059: Defender for Identity health issues | 1 |
 | MeetingPolicy | MT.1037: Only users with Presenter role are allowed to present in Teams meetings | 6 |
@@ -486,11 +487,11 @@ The tables below list every tag discovered via `Get-MtTestInventory`. Counts ref
 | PIM | MT.1029: Stale accounts are not assigned to privileged roles. See https://maester.dev/docs/tests/MT.1029 | 4 |
 | Preview | MT.1050: Apps with high-risk permissions having a direct path to Global Admin | 2 |
 | Privileged | MT.1056: Ensure that no person has permanent access to all Azure subscriptions at the root scope | 14 |
+| Recommendation | MT.1024.: . See https://maester.dev/docs/tests/MT.1024 | 1 |
 | RejectDirectSend | MT.1062: Ensure Direct Send is set to be rejected | 1 |
 | SecureScore | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 5 |
-| Security | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 268 |
+| Security | CIS.M365.1.2.1: Ensure that only organizationally managed/approved public groups exist | 267 |
 | SetScl | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 1 |
 | Teams | MT.1037: Only users with Presenter role are allowed to present in Teams meetings | 6 |
 | TransportRule | MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains | 1 |
-| XSPM | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 10 |
-
+| XSPM | MT.1085: Pending approvals for Critical Asset Management should not be present. See https://maester.dev/docs/tests/MT.1085 | 14 |

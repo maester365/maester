@@ -1,6 +1,6 @@
 Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
 
-    It 'MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains' -Tag 'MT.1043', 'SetScl', 'TransportRule' {
+    It 'MT.1043: Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains' -Tag 'MT.1043' {
         $result = Test-MtExoSetScl
 
         if ($null -ne $result) {
@@ -16,7 +16,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1039: Ensure MailTips are enabled for end users' -Tag 'MT.1039', 'MailTipsExternalRecipientsTipsEnabled' {
+    It 'MT.1039: Ensure MailTips are enabled for end users' -Tag 'MT.1039' {
         $result = Test-MtExoMailTip
 
         if ($null -ne $result) {
@@ -32,7 +32,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1041: Ensure users installing Outlook add-ins is not allowed' -Tag 'MT.1041', 'MyCustomApps', 'MyMarketplaceApps', 'MyReadWriteMailboxApps' {
+    It 'MT.1041: Ensure users installing Outlook add-ins is not allowed' -Tag 'MT.1041' {
         $result = Test-MtExoOutlookAddin
 
         if ($null -ne $result) {
@@ -40,7 +40,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1062: Ensure Direct Send is set to be rejected' -Tag 'MT.1062', 'RejectDirectSend' {
+    It 'MT.1062: Ensure Direct Send is set to be rejected' -Tag 'MT.1062' {
 
         $result = Test-MtExoRejectDirectSend
 
@@ -58,7 +58,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1076: MOERA SHOULD NOT be used for sent mail' -Tag 'MT.1076', 'MOERA' {
+    It 'MT.1076: MOERA SHOULD NOT be used for sent mail' -Tag 'MT.1076' {
 
         $result = Test-MtExoMoeraMailActivity
 
