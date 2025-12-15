@@ -60,8 +60,7 @@ Describe "Contoso.ConditionalAccess" {
         $userId = (Get-MgUser -UserId 'john@contoso.com').Id
         $sharePointAppId = '67ad5377-2d78-4ac2-a867-6300cda00e85'
 
-        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId `
-            -IncludeApplications $sharePointAppId `
+        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $sharePointAppId
 
         $policiesEnforced.grantControls.builtInControls | Should -Contain "mfa"
     }
@@ -80,14 +79,14 @@ Describe "Contoso.ConditionalAccess" {
         $userId = (Get-MgUser -UserId 'adele@contoso.com').Id
         $azureAppId = 'c44b4083-3bb0-49c1-b47d-974e53cbdf3c'
 
-        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId `
-            -IncludeApplications $azureAppId `
+        $policiesEnforced = Test-MtConditionalAccessWhatIf -UserId $userId -IncludeApplications $azureAppId
 
         $policiesEnforced.grantControls.builtInControls | Should -Contain "block"
     }
 }
 ```
+
 ## Next steps
 
-* To learn more about the **Test-MtConditionalAccessWhatIf** cmdlet, including the supported parameters and examples see [Test-MtConditionalAccessWhatIf | Maester Reference](https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf).
-* For a step by step guide on writing custom Maester tests and running them see [Writing Maester tests](/docs/writing-tests).
+- To learn more about the **Test-MtConditionalAccessWhatIf** cmdlet, including the supported parameters and examples see [Test-MtConditionalAccessWhatIf | Maester Reference](https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf).
+- For a step by step guide on writing custom Maester tests and running them see [Writing Maester tests](/docs/writing-tests).
