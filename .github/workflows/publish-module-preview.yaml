@@ -47,7 +47,7 @@ jobs:
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
       - name: Archive PowerShell build
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: maester-module
           path: |
