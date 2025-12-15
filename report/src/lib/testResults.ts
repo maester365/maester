@@ -13885,8 +13885,7 @@ export const testResults = {
         "Maester",
         "Exchange",
         "MT.1039",
-        "MailTipsExternalRecipientsTipsEnabled",
-        "SecureScore"
+        "MailTipsExternalRecipientsTipsEnabled"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoMailTip\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"MailTipsExternalRecipientsTipsEnabled should be True\"\n        }\n    ",
@@ -14047,8 +14046,7 @@ export const testResults = {
         "MT.1041",
         "MyCustomApps",
         "MyMarketplaceApps",
-        "MyReadWriteMailboxApps",
-        "SecureScore"
+        "MyReadWriteMailboxApps"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoOutlookAddin\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"Apps in 'Default Role Assignment Policy' should be False\"\n        }\n    ",
@@ -14209,8 +14207,7 @@ export const testResults = {
         "Exchange",
         "MT.1043",
         "SetScl",
-        "TransportRule",
-        "SecureScore"
+        "TransportRule"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoSetScl\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"SetScl should not be set to -1\"\n        }\n    ",
@@ -14290,8 +14287,7 @@ export const testResults = {
         "Maester",
         "Exchange",
         "MT.1044",
-        "OAuth2ClientProfileEnabled",
-        "SecureScore"
+        "OAuth2ClientProfileEnabled"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoModernAuth\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"OAuth2ClientProfileEnabled should be True\"\n        }\n    ",
