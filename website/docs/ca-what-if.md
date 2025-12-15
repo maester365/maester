@@ -1,5 +1,5 @@
 ---
-title: Conditional Access What-If Tests
+title: Conditional Access What-If tests
 ---
 
 ## Overview
