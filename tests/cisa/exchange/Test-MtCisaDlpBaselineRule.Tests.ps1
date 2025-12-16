@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.4", "CISA.MS.EXO.8.4", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.4", "CISA.MS.EXO.8.4", "CISA" {
     It "CISA.MS.EXO.8.4: At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email." {
 
         $cisa = Test-MtCisaDlpBaselineRule

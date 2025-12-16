@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.8", "CISA.MS.AAD.3.8", "CISA", "Security", "Entra ID P1" {
+Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.8", "CISA.MS.AAD.3.8", "CISA",  "Entra ID P1" {
     It "CISA.MS.AAD.3.8: Managed Devices SHOULD be required to register MFA." {
         $result = Test-MtCisaManagedDeviceRegistration
 

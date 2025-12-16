@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.7", "CISA.MS.AAD.3.7", "CISA", "Security", "Entra ID P1" {
+Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.7", "CISA.MS.AAD.3.7", "CISA",  "Entra ID P1" {
     It "CISA.MS.AAD.3.7: Managed devices SHOULD be required for authentication." {
         $result = Test-MtCisaManagedDevice
 

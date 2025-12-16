@@ -8,7 +8,7 @@
     }
 }
 
-Describe "Exposure Management" -Tag "XSPM", "LongRunning", "Devices" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
+Describe "Exposure Management" -Tag "XSPM", "LongRunning", "Device" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
     # Devices should not share both critical and non-critical user credentials.
     It "MT.1086: Devices should not share both critical and non-critical user credentials. See https://maester.dev/docs/tests/MT.1086" -Tag "MT.1086" {
         Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts | Should -Be $true -Because "Devices should not share both critical and non-critical user credentials, as this may lead to potential security risks and compromise of critical assets via a non-critical account."

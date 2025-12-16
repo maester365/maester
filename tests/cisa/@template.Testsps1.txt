@@ -1,4 +1,4 @@
-Describe "CISA SCuBA" -Tag "MS.***", "MS.***.#.#", "CISA", "Security" {
+Describe "CISA SCuBA" -Tag "MS.***", "MS.***.#.#", "CISA" {
     It "MS.***.#.#: Control Should/Must description." {
 
         $shortFunctionName = FunctionName

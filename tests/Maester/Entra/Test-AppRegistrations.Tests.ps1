@@ -1,4 +1,4 @@
-Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Full', 'Graph', 'LongRunning', 'Maester', 'Security' {
+Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Graph', 'LongRunning', 'Maester' {
     It 'MT.1057: App registrations should no longer use secrets. See https://maester.dev/docs/tests/MT.1057' -Tag 'MT.1057' {
         Test-MtAppRegistrationsWithSecrets | Should -Be $true -Because 'app registrations should not use secrets and instead use workload identities or certificate-based authentication'
     }

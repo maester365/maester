@@ -10,7 +10,7 @@ BeforeAll {
     }
 }
 
-Describe "Maester/Teams" -Tag "Maester", "Teams", "MeetingPolicy" {
+Describe "Maester/Teams" -Tag "Maester", "Teams" {
 
     It "MT.1037: Only users with Presenter role are allowed to present in Teams meetings" -Tag "MT.1037" -TestCases @{ TeamsMeetingPolicy = $script:TeamsMeetingPolicy } {
         # Secure Score Name: Configure which users are allowed to present in Teams meetings

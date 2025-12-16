@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.SHAREPOINT", "MS.SHAREPOINT.1.1", "CISA.MS.SHAREPOINT.1.1", "CISA", "Security" {
+Describe "CISA" -Tag "MS.SHAREPOINT", "MS.SHAREPOINT.1.1", "CISA.MS.SHAREPOINT.1.1", "CISA" {
     It "CISA.MS.SHAREPOINT.1.1: External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization." {
 
         $result = Test-MtCisaSpoSharing

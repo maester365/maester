@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.103", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.103", "EXO" {
     It "ORCA.103: Outbound spam filter policy settings configured." {
         $result = Test-ORCA103
 

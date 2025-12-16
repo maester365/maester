@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.15.1", "CISA.MS.EXO.15.1", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.15.1", "CISA.MS.EXO.15.1", "CISA" {
     It "CISA.MS.EXO.15.1: URL comparison with a block-list SHOULD be enabled." {
 
         $result = Test-MtCisaSafeLink

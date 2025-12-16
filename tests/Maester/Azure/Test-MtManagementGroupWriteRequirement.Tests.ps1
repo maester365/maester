@@ -1,4 +1,4 @@
-Describe "AzureConfig" -Tag "Governance", "Azure" {
+Describe "AzureConfig" -Tag "Azure" {
     It "MT.1064: Ensure that write permissions are required to create new management groups" -Tag "MT.1064" {
 
         $result = Test-MtManagementGroupWriteRequirement

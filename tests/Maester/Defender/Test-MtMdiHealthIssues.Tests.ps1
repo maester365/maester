@@ -1,11 +1,10 @@
 BeforeDiscovery {
-    $checkid = "MT.1059"
-
     try {
-        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
+        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError -ErrorAction Stop
     } catch {
-        Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        Write-Verbose "A problem occurred. Either the Microsoft Graph API is not reachable with the required permissions or MDI is not enabled in the tenant. Error details: $($_.Exception.Message)"
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        $MdiAllHealthIssues = $null
         return $null
     }
 
@@ -29,7 +28,7 @@ BeforeDiscovery {
     $MdiHealthIssuesGrouped = $MdiHealthIssues | Group-Object -Property displayName
 }
 
-Describe "Defender for Identity health issues" -Tag "Maester", "Defender", "Security", "MDI", "MT.1059" -ForEach $MdiHealthIssuesGrouped {
+Describe "Defender for Identity health issues" -Tag "Maester", "Defender",  "MDI", "MT.1059" -ForEach $MdiHealthIssuesGrouped {
     # We need to ID each grouped issue based on it's common displayName, so to keep it consistent and clean, we use MD5
     $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
     $utf8 = New-Object -TypeName System.Text.UTF8Encoding

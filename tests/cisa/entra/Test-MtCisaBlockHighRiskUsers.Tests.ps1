@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.AAD", "MS.AAD.2.1", "CISA.MS.AAD.2.1", "CISA", "Security", "Entra ID P2" {
+Describe "CISA" -Tag "MS.AAD", "MS.AAD.2.1", "CISA.MS.AAD.2.1", "CISA",  "Entra ID P2" {
     It "CISA.MS.AAD.2.1: Users detected as high risk SHALL be blocked." {
         $result = Test-MtCisaBlockHighRiskUser
 

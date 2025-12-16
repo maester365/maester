@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.11.1", "CISA.MS.EXO.11.1", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.11.1", "CISA.MS.EXO.11.1", "CISA" {
     It "CISA.MS.EXO.11.1: Impersonation protection checks SHOULD be used." {
 
         $result = Test-MtCisaImpersonation

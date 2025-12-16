@@ -161,7 +161,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Failed",
@@ -244,7 +244,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Failed",
@@ -323,7 +323,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "MT.INV.001",
-        "Security",
+
         "Identity",
         "Investigate"
       ],
@@ -352,7 +352,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "MT.INV.002",
-        "Security",
+
         "Applications",
         "Investigate"
       ],
@@ -381,7 +381,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "MT.INV.003",
-        "Security",
+
         "Identity",
         "Investigate"
       ],
@@ -414,7 +414,7 @@ export const testResults = {
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Failed",
@@ -497,7 +497,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Passed",
@@ -528,7 +528,7 @@ export const testResults = {
         "MS.AAD.1.1",
         "CISA",
         "CISA.MS.AAD.1.1",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -610,7 +610,7 @@ export const testResults = {
         "MS.AAD.2.1",
         "CISA.MS.AAD.2.1",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -641,7 +641,7 @@ export const testResults = {
         "MS.AAD.2.2",
         "CISA.MS.AAD.2.2",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -672,7 +672,7 @@ export const testResults = {
         "MS.AAD.2.3",
         "CISA.MS.AAD.2.3",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -754,7 +754,7 @@ export const testResults = {
         "MS.AAD.3.1",
         "CISA.MS.AAD.3.1",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -836,7 +836,7 @@ export const testResults = {
         "MS.AAD.3.2",
         "CISA.MS.AAD.3.2",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Passed",
@@ -867,7 +867,7 @@ export const testResults = {
         "MS.AAD.3.3",
         "CISA.MS.AAD.3.3",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -949,7 +949,7 @@ export const testResults = {
         "MS.AAD.3.4",
         "CISA.MS.AAD.3.4",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Passed",
@@ -980,7 +980,7 @@ export const testResults = {
         "MS.AAD.3.5",
         "CISA.MS.AAD.3.5",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1062,7 +1062,7 @@ export const testResults = {
         "MS.AAD.3.6",
         "CISA.MS.AAD.3.6",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1144,7 +1144,7 @@ export const testResults = {
         "MS.AAD.3.7",
         "CISA.MS.AAD.3.7",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1226,7 +1226,7 @@ export const testResults = {
         "MS.AAD.3.8",
         "CISA.MS.AAD.3.8",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1308,7 +1308,7 @@ export const testResults = {
         "MS.AAD.4.1",
         "CISA.MS.AAD.4.1",
         "CISA",
-        "Security",
+
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1390,7 +1390,7 @@ export const testResults = {
         "MS.AAD.5.1",
         "CISA.MS.AAD.5.1",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -1421,7 +1421,7 @@ export const testResults = {
         "MS.AAD.5.2",
         "CISA.MS.AAD.5.2",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -1503,7 +1503,7 @@ export const testResults = {
         "MS.AAD.5.3",
         "CISA.MS.AAD.5.3",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -1585,7 +1585,7 @@ export const testResults = {
         "MS.AAD.6.1",
         "CISA.MS.AAD.6.1",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -1616,7 +1616,7 @@ export const testResults = {
         "MS.AAD.7.1",
         "CISA.MS.AAD.7.1",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -1698,7 +1698,7 @@ export const testResults = {
         "MS.AAD.7.2",
         "CISA.MS.AAD.7.2",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -1780,7 +1780,7 @@ export const testResults = {
         "MS.AAD.7.3",
         "CISA",
         "CISA.MS.AAD.7.3",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -1862,7 +1862,7 @@ export const testResults = {
         "MS.AAD.7.4",
         "CISA.MS.AAD.7.4",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -1944,7 +1944,7 @@ export const testResults = {
         "MS.AAD.7.5",
         "CISA.MS.AAD.7.5",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -1975,7 +1975,7 @@ export const testResults = {
         "MS.AAD.7.6",
         "CISA.MS.AAD.7.6",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -2006,7 +2006,7 @@ export const testResults = {
         "MS.AAD.7.7",
         "CISA.MS.AAD.7.7",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -2088,7 +2088,7 @@ export const testResults = {
         "MS.AAD.7.8",
         "CISA.MS.AAD.7.8",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -2119,7 +2119,7 @@ export const testResults = {
         "MS.AAD.7.9",
         "CISA.MS.AAD.7.9",
         "CISA",
-        "Security",
+
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -2201,7 +2201,7 @@ export const testResults = {
         "MS.AAD.8.1",
         "CISA.MS.AAD.8.1",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -2232,7 +2232,7 @@ export const testResults = {
         "MS.AAD.8.2",
         "CISA.MS.AAD.8.2",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -2314,7 +2314,7 @@ export const testResults = {
         "MS.AAD.8.3",
         "CISA",
         "CISA.MS.AAD.8.3",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -2555,7 +2555,7 @@ export const testResults = {
       "Severity": null,
       "Tag": [
         "Custom",
-        "Security",
+
         "Device"
       ],
       "Result": "Passed",
@@ -2575,7 +2575,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF01"
       ],
       "Result": "Passed",
@@ -2603,7 +2603,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF02"
       ],
       "Result": "Passed",
@@ -2631,7 +2631,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF03"
       ],
       "Result": "Failed",
@@ -2710,7 +2710,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF04"
       ],
       "Result": "Failed",
@@ -2789,7 +2789,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AG01"
       ],
       "Result": "Passed",
@@ -2817,7 +2817,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AG02"
       ],
       "Result": "Failed",
@@ -2896,7 +2896,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AG03"
       ],
       "Result": "Passed",
@@ -2924,7 +2924,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM01"
       ],
       "Result": "Passed",
@@ -2952,7 +2952,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM02"
       ],
       "Result": "Failed",
@@ -3031,7 +3031,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM03"
       ],
       "Result": "Passed",
@@ -3059,7 +3059,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM04"
       ],
       "Result": "Passed",
@@ -3087,7 +3087,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM06"
       ],
       "Result": "Passed",
@@ -3115,7 +3115,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM07"
       ],
       "Result": "Passed",
@@ -3143,7 +3143,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM09"
       ],
       "Result": "Passed",
@@ -3171,7 +3171,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AM10"
       ],
       "Result": "Passed",
@@ -3199,7 +3199,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP01"
       ],
       "Result": "Passed",
@@ -3227,7 +3227,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP04"
       ],
       "Result": "Failed",
@@ -3306,7 +3306,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP05"
       ],
       "Result": "Failed",
@@ -3385,7 +3385,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP06"
       ],
       "Result": "Failed",
@@ -3464,7 +3464,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP07"
       ],
       "Result": "Passed",
@@ -3492,7 +3492,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP08"
       ],
       "Result": "Passed",
@@ -3520,7 +3520,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP09"
       ],
       "Result": "Passed",
@@ -3548,7 +3548,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP10"
       ],
       "Result": "Passed",
@@ -3576,7 +3576,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP14"
       ],
       "Result": "Passed",
@@ -3604,7 +3604,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AS04"
       ],
       "Result": "Passed",
@@ -3632,7 +3632,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AT01"
       ],
       "Result": "Passed",
@@ -3660,7 +3660,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AT02"
       ],
       "Result": "Passed",
@@ -3688,7 +3688,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AV01"
       ],
       "Result": "Passed",
@@ -3716,7 +3716,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CP03"
       ],
       "Result": "Passed",
@@ -3744,7 +3744,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CP04"
       ],
       "Result": "Failed",
@@ -3823,7 +3823,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CR01"
       ],
       "Result": "Failed",
@@ -3902,7 +3902,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.PR01"
       ],
       "Result": "Failed",
@@ -3981,7 +3981,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.PR02"
       ],
       "Result": "Passed",
@@ -4009,7 +4009,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.PR03"
       ],
       "Result": "Passed",
@@ -4037,7 +4037,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.PR05"
       ],
       "Result": "Passed",
@@ -4065,7 +4065,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.PR06"
       ],
       "Result": "Failed",
@@ -4144,7 +4144,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.ST08"
       ],
       "Result": "Passed",
@@ -4172,7 +4172,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.ST09"
       ],
       "Result": "Passed",
@@ -4201,7 +4201,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1001"
       ],
       "Result": "Passed",
@@ -4230,7 +4230,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "App",
-        "Security",
+
         "MT.1002"
       ],
       "Result": "Passed",
@@ -4259,7 +4259,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1003"
       ],
       "Result": "Passed",
@@ -4288,7 +4288,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1004"
       ],
       "Result": "Passed",
@@ -4317,7 +4317,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1005"
       ],
       "Result": "Failed",
@@ -4397,7 +4397,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1006"
       ],
       "Result": "Passed",
@@ -4426,7 +4426,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1007"
       ],
       "Result": "Passed",
@@ -4455,7 +4455,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1008"
       ],
       "Result": "Passed",
@@ -4484,7 +4484,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1009"
       ],
       "Result": "Failed",
@@ -4564,7 +4564,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1010"
       ],
       "Result": "Failed",
@@ -4644,7 +4644,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1011"
       ],
       "Result": "Failed",
@@ -4724,7 +4724,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1012"
       ],
       "Result": "Failed",
@@ -4804,7 +4804,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1013"
       ],
       "Result": "Passed",
@@ -4833,7 +4833,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1014"
       ],
       "Result": "Failed",
@@ -4913,7 +4913,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1015"
       ],
       "Result": "Failed",
@@ -4993,7 +4993,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1016"
       ],
       "Result": "Passed",
@@ -5022,7 +5022,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1017"
       ],
       "Result": "Failed",
@@ -5102,7 +5102,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1018"
       ],
       "Result": "Failed",
@@ -5182,7 +5182,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1019"
       ],
       "Result": "Failed",
@@ -5262,7 +5262,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1020"
       ],
       "Result": "Failed",
@@ -5398,7 +5398,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "adminMFAV2"
@@ -5480,7 +5480,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "applicationCredentialExpiry"
@@ -5562,7 +5562,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "blockLegacyAuthentication"
@@ -5593,7 +5593,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "unknownFutureValue"
@@ -5675,7 +5675,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "insiderRiskPolicy"
@@ -5757,7 +5757,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "integratedApps"
@@ -5788,7 +5788,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "mfaRegistrationV2"
@@ -5870,7 +5870,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "oneAdmin"
@@ -5901,7 +5901,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "passwordHashSync"
@@ -5983,7 +5983,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "pwagePolicyNew"
@@ -6014,7 +6014,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "roleOverlap"
@@ -6045,7 +6045,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "selfServicePasswordReset"
@@ -6076,7 +6076,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "servicePrincipalKeyExpiry"
@@ -6107,7 +6107,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "signinRiskPolicy"
@@ -6189,7 +6189,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "staleAppCreds"
@@ -6271,7 +6271,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "staleApps"
@@ -6353,7 +6353,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
+
         "Recommendation",
         "MT.1024",
         "userRiskPolicy"
@@ -6435,7 +6435,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
+
         "MT.1025"
       ],
       "Result": "Failed",
@@ -6515,7 +6515,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
+
         "MT.1026"
       ],
       "Result": "Passed",
@@ -6544,7 +6544,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
+
         "MT.1027"
       ],
       "Result": "Failed",
@@ -6624,7 +6624,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
+
         "MT.1028"
       ],
       "Result": "Failed",
@@ -6703,7 +6703,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "Privileged",
-        "Security",
+
         "PIM",
         "MT.1029"
       ],
@@ -6732,7 +6732,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "Privileged",
-        "Security",
+
         "PIM",
         "MT.1030"
       ],
@@ -6812,7 +6812,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "Privileged",
-        "Security",
+
         "PIM",
         "MT.1031"
       ],
@@ -6841,7 +6841,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "Privileged",
-        "Security",
+
         "PIM",
         "MT.1032"
       ],
@@ -6922,7 +6922,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1035"
       ],
       "Result": "Passed",
@@ -6951,7 +6951,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1036"
       ],
       "Result": "Failed",
@@ -7031,7 +7031,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1038"
       ],
       "Result": "Failed",
@@ -7183,7 +7183,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1049"
       ],
       "Result": "Passed",
@@ -7212,7 +7212,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1052"
       ],
       "Result": "Passed",
@@ -7399,7 +7399,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Group",
-        "Security",
+
         "MT.1055"
       ],
       "Result": "Passed",
@@ -7507,7 +7507,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Defender",
-        "Security",
+
         "MDI",
         "MT.1059",
         "Severity:",
@@ -7539,7 +7539,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1061"
       ],
       "Result": "Passed",
@@ -7675,7 +7675,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1066"
       ],
       "Result": "Failed",
@@ -7755,7 +7755,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Authentication",
-        "Security",
+
         "MT.1067"
       ],
       "Result": "Passed",
@@ -7784,7 +7784,7 @@ export const testResults = {
       "Tag": [
         "Governance",
         "Entra",
-        "Security",
+
         "MT.1068"
       ],
       "Result": "Passed",
@@ -7813,7 +7813,7 @@ export const testResults = {
       "Tag": [
         "Governance",
         "Entra",
-        "Security",
+
         "MT.1069"
       ],
       "Result": "Passed",
@@ -7842,7 +7842,7 @@ export const testResults = {
       "Tag": [
         "Governance",
         "Entra",
-        "Security",
+
         "MT.1070"
       ],
       "Result": "Passed",
@@ -7871,7 +7871,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1071"
       ],
       "Result": "Failed",
@@ -7951,7 +7951,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "CA",
-        "Security",
+
         "MT.1072"
       ],
       "Result": "Passed",
@@ -8008,7 +8008,7 @@ export const testResults = {
       "Tag": [
         "Entra",
         "Graph",
-        "Security",
+
         "XSPM",
         "MT.1085"
       ],
@@ -8041,7 +8041,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8124,7 +8124,7 @@ export const testResults = {
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8207,7 +8207,7 @@ export const testResults = {
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8290,7 +8290,7 @@ export const testResults = {
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8373,7 +8373,7 @@ export const testResults = {
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8456,7 +8456,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8539,7 +8539,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8622,7 +8622,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8705,7 +8705,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8788,7 +8788,7 @@ export const testResults = {
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8871,7 +8871,7 @@ export const testResults = {
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -8954,7 +8954,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9037,7 +9037,7 @@ export const testResults = {
         "CIS E5 Level 1",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9120,7 +9120,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9203,7 +9203,7 @@ export const testResults = {
         "CIS E5 Level 1",
         "CIS E5",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9286,7 +9286,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9364,7 +9364,7 @@ export const testResults = {
       "HelpUrl": "",
       "Severity": "Medium",
       "Tag": [
-        "Security",
+
         "CIS",
         "CIS M365 v5.0.0",
         "CIS.M365.8.1.1",
@@ -9446,7 +9446,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "CIS.M365.8.2.2",
-        "Security",
+
         "CIS",
         "CIS M365 v5.0.0",
         "CIS E3 Level 1"
@@ -9526,7 +9526,7 @@ export const testResults = {
       "HelpUrl": "",
       "Severity": "High",
       "Tag": [
-        "Security",
+
         "CIS",
         "CIS M365 v5.0.0",
         "CIS.M365.8.4.1",
@@ -9612,7 +9612,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9695,7 +9695,7 @@ export const testResults = {
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ],
       "Result": "Skipped",
@@ -9777,7 +9777,7 @@ export const testResults = {
         "MS.AAD.5.4",
         "CISA.MS.AAD.5.4",
         "CISA",
-        "Security",
+
         "Entra ID Free"
       ],
       "Result": "Skipped",
@@ -11479,7 +11479,7 @@ export const testResults = {
         "MS.EXO.17.2",
         "CISA.MS.EXO.17.2",
         "CISA",
-        "Security",
+
         "Deprecated"
       ],
       "Result": "Skipped",
@@ -13178,7 +13178,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF05"
       ],
       "Result": "Skipped",
@@ -13257,7 +13257,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AF06"
       ],
       "Result": "Skipped",
@@ -13336,7 +13336,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CP01"
       ],
       "Result": "Skipped",
@@ -13415,7 +13415,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CR02"
       ],
       "Result": "Skipped",
@@ -13494,7 +13494,7 @@ export const testResults = {
       "Severity": "Medium",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CR03"
       ],
       "Result": "Skipped",
@@ -13573,7 +13573,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.CR04"
       ],
       "Result": "Skipped",
@@ -13652,7 +13652,7 @@ export const testResults = {
       "Severity": "High",
       "Tag": [
         "CA",
-        "Security",
+
         "MT.1021"
       ],
       "Result": "Skipped",
@@ -13885,8 +13885,7 @@ export const testResults = {
         "Maester",
         "Exchange",
         "MT.1039",
-        "MailTipsExternalRecipientsTipsEnabled",
-        "SecureScore"
+        "MailTipsExternalRecipientsTipsEnabled"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoMailTip\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"MailTipsExternalRecipientsTipsEnabled should be True\"\n        }\n    ",
@@ -13965,9 +13964,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Exchange",
-        "MT.1040",
-        "AdditionalStorageProvidersAvailable",
-        "SecureScore"
+        "MT.1040"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoAdditionalStorageProvider\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"AdditionalStorageProvidersAvailable should be False\"\n        }\n    ",
@@ -14049,8 +14046,7 @@ export const testResults = {
         "MT.1041",
         "MyCustomApps",
         "MyMarketplaceApps",
-        "MyReadWriteMailboxApps",
-        "SecureScore"
+        "MyReadWriteMailboxApps"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoOutlookAddin\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"Apps in 'Default Role Assignment Policy' should be False\"\n        }\n    ",
@@ -14211,8 +14207,7 @@ export const testResults = {
         "Exchange",
         "MT.1043",
         "SetScl",
-        "TransportRule",
-        "SecureScore"
+        "TransportRule"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoSetScl\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"SetScl should not be set to -1\"\n        }\n    ",
@@ -14291,9 +14286,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Exchange",
-        "MT.1044",
-        "OAuth2ClientProfileEnabled",
-        "SecureScore"
+        "MT.1044"
       ],
       "Result": "Skipped",
       "ScriptBlock": "\n        $result = Test-MtExoModernAuth\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"OAuth2ClientProfileEnabled should be True\"\n        }\n    ",
@@ -14612,7 +14605,6 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "Graph",
         "LongRunning",
         "Preview",
@@ -14636,7 +14628,6 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "Graph",
         "LongRunning",
         "Preview",
@@ -14660,11 +14651,9 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "Graph",
         "LongRunning",
         "Maester",
-        "Security",
         "MT.1057"
       ],
       "Result": "NotRun",
@@ -14685,11 +14674,9 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "Graph",
         "LongRunning",
         "Maester",
-        "Security",
         "MT.1058"
       ],
       "Result": "NotRun",
@@ -14790,9 +14777,7 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "LongRunning",
-        "Security",
         "MT.1063"
       ],
       "Result": "NotRun",
@@ -14811,11 +14796,9 @@ export const testResults = {
       "HelpUrl": "https://maester.dev/docs/tests/MT.1073",
       "Severity": "Medium",
       "Tag": [
-        "DirSync",
         "Entra",
         "Graph",
         "Maester",
-        "Security",
         "MT.1073"
       ],
       "Result": "Error",
@@ -14895,11 +14878,9 @@ export const testResults = {
       "Tag": [
         "App",
         "Entra",
-        "Full",
         "Graph",
         "LongRunning",
         "Maester",
-        "Security",
         "MT.1075"
       ],
       "Result": "NotRun",
@@ -15002,7 +14983,7 @@ export const testResults = {
         "Entra",
         "Graph",
         "LongRunning",
-        "Security",
+
         "EntraOps",
         "XSPM",
         "MT.1077"
@@ -15027,7 +15008,7 @@ export const testResults = {
         "Entra",
         "Graph",
         "LongRunning",
-        "Security",
+
         "EntraOps",
         "XSPM",
         "MT.1078"
@@ -15052,7 +15033,7 @@ export const testResults = {
         "Entra",
         "Graph",
         "LongRunning",
-        "Security",
+
         "EntraOps",
         "XSPM",
         "MT.1079"
@@ -15077,7 +15058,7 @@ export const testResults = {
         "Entra",
         "Graph",
         "LongRunning",
-        "Security",
+
         "EntraOps",
         "XSPM",
         "MT.1080"
@@ -15102,7 +15083,7 @@ export const testResults = {
         "Entra",
         "Graph",
         "LongRunning",
-        "Security",
+
         "EntraOps",
         "XSPM",
         "MT.1081"
@@ -15203,10 +15184,8 @@ export const testResults = {
       "HelpUrl": "https://maester.dev/docs/tests/MT.1084",
       "Severity": "High",
       "Tag": [
-        "EntraIdConnect",
         "Entra",
         "Graph",
-        "Security",
         "MT.1084"
       ],
       "Result": "Error",
@@ -20733,7 +20712,7 @@ export const testResults = {
       "NotRunCount": 0,
       "TotalCount": 2,
       "Tag": [
-        "Security",
+
         "Identity",
         "Investigate"
       ]
@@ -20749,7 +20728,7 @@ export const testResults = {
       "NotRunCount": 0,
       "TotalCount": 1,
       "Tag": [
-        "Security",
+
         "Applications",
         "Investigate"
       ]
@@ -20767,7 +20746,7 @@ export const testResults = {
       "Tag": [
         "Entra",
         "Graph",
-        "Security",
+
         "XSPM"
       ]
     },
@@ -20783,7 +20762,7 @@ export const testResults = {
       "TotalCount": 44,
       "Tag": [
         "EIDSCA",
-        "Security",
+
         "EIDSCA.AP01"
       ]
     },
@@ -20817,7 +20796,7 @@ export const testResults = {
       "TotalCount": 1,
       "Tag": [
         "Custom",
-        "Security",
+
         "Device"
       ]
     },
@@ -20837,7 +20816,7 @@ export const testResults = {
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
+
         "CIS M365 v5.0.0"
       ]
     },
@@ -20931,7 +20910,7 @@ export const testResults = {
       "Tag": [
         "Maester",
         "Defender",
-        "Security",
+
         "MDI",
         "MT.1059"
       ]

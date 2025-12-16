@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.15.3", "CISA.MS.EXO.15.3", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.15.3", "CISA.MS.EXO.15.3", "CISA" {
     It "CISA.MS.EXO.15.3: User click tracking SHOULD be enabled." {
 
         $result = Test-MtCisaSafeLinkClickTracking

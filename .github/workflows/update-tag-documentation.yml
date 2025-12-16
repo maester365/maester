@@ -1,0 +1,39 @@
+name: 🏷️ Update Tag Documentation
+
+on:
+  push:
+    paths:
+      - 'tests/**'
+      - 'build/Update-TagsDocumentation.ps1'
+      - '.github/workflows/update-tags.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up PowerShell modules
+        run: |
+          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck"
+
+      - name: Generate tags document
+        run: pwsh -NoLogo -NoProfile -File build/Update-TagsDocumentation.ps1
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- website/docs/tags.md; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add website/docs/tags.md
+          git commit -m "chore: update tags documentation"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

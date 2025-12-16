@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.3", "CISA.MS.EXO.8.3", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.3", "CISA.MS.EXO.8.3", "CISA" {
     It "CISA.MS.EXO.8.3: The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft." {
 
         $cisa = Test-MtCisaDlpAlternate

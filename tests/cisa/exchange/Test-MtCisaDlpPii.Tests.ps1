@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.2", "CISA.MS.EXO.8.2", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.8.2", "CISA.MS.EXO.8.2", "CISA" {
     It "CISA.MS.EXO.8.2: The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency." {
 
         $cisaDlpPii = Test-MtCisaDlpPii

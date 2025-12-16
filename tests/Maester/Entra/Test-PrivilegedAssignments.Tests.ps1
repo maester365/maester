@@ -1,4 +1,4 @@
-﻿Describe "Maester/Entra" -Tag "Maester", "Privileged", "Security" {
+﻿Describe "Maester/Entra" -Tag "Maester", "Privileged" {
     It "MT.1025: No external user with permanent role assignment on Control Plane. See https://maester.dev/docs/tests/MT.1025" -Tag "MT.1025" {
         $Check = Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
         $Check | Should -Be $false -Because "External user shouldn't have high-privileged roles"
@@ -17,7 +17,7 @@
     }
 }
 
-Describe "Maester/Entra" -Tag "Privileged", "Security", "PIM" {
+Describe "Maester/Entra" -Tag "Privileged",  "PIM" {
     It "MT.1029: Stale accounts are not assigned to privileged roles. See https://maester.dev/docs/tests/MT.1029" -Tag "MT.1029" {
         if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2

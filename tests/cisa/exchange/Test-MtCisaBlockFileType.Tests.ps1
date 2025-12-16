@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.9.3", "CISA.MS.EXO.9.3", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.9.3", "CISA.MS.EXO.9.3", "CISA" {
     It "CISA.MS.EXO.9.3: Disallowed file types SHALL be determined and enforced." {
 
         $result = Test-MtCisaAttachmentFileType
