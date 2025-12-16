@@ -1,105 +1,141 @@
-﻿[CmdletBinding()]
+﻿# Update-TagsDocumentation.ps1
+
+<#
+.SYNOPSIS
+    Updates the tags documentation file with an inventory of tags used in Maester tests.
+
+.DESCRIPTION
+    This script scans Maester's tests directory for tags used in Pester tests and generates a
+    markdown documentation file. The document lists all tags along with their usage counts, grouped by categories.
+
+.PARAMETER RepoRoot
+    The path to the root of the repository. Defaults to the parent directory of the script location (i.e., the repository root).
+
+.PARAMETER TestsPath
+    The path to the Maester tests directory. Defaults to 'tests' within the repository root.
+
+.PARAMETER TagsDocPath
+    The path to the tags documentation file to update. Defaults to 'website/docs/tests/tags/readme.md' within the repository root.
+
+.EXAMPLE
+    .\Update-TagsDocumentation.ps1
+
+    Updates the tags documentation file using default paths for the repository root, tests directory, and tags documentation file.
+
+.EXAMPLE
+    .\Update-TagsDocumentation.ps1 -RepoRoot 'C:\Maester' -TestsPath 'C:\Maester\tests' -TagsDocPath 'C:\Maester\website\docs\tests\tags\readme.md'
+
+    Updates the tags documentation file using specified paths for the repository root, tests directory, and tags documentation file.
+#>
+[CmdletBinding()]
 param(
-    [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
-    [string]$TagsDocPath = (Join-Path -Path ((Resolve-Path (Join-Path $PSScriptRoot '..')).Path) -ChildPath 'website/docs/tests/tags/readme.md'),
-    [string[]]$ExcludePath
+    # The path to the root of the repository.
+    [Parameter()]
+    [ValidateScript( { Test-Path $_ } )]
+    [string]$RepoRoot = (Split-Path -Path $PSScriptRoot),
+
+    # The path to the Maester tests directory. Defaults to tests within the repository root.
+    [Parameter()]
+    [ValidateScript( { Test-Path $_ } )]
+    [string]$TestsPath = (Join-Path -Path (Split-Path -Path $PSScriptRoot) -ChildPath 'tests'),
+
+    # The path to the tags documentation file to update. Defaults to website/docs/tests/tags/readme.md within the repository root.
+    [Parameter()]
+    [ValidateScript( { Test-Path (Split-Path $_ -Parent) } )]
+    [string]$TagsDocPath = (Join-Path -Path (Split-Path -Path $PSScriptRoot) -ChildPath 'website/docs/tests/tags/readme.md')
 )
 
-$TestsPath = Join-Path $RepoRoot 'tests'
-$DocPath = Join-Path $RepoRoot 'website/docs/tests/tags/readme.md'
-$InventoryScript = Join-Path $RepoRoot 'powershell/public/Get-MtTestInventory.ps1'
-
-if (-not (Test-Path $InventoryScript)) {
-    throw "Get-MtTestInventory.ps1 not found at $InventoryScript"
+#region Get Tag Inventory
+# Dot-source the Get-MtTestInventory script (in lieu of importing the entire module).
+try {
+    $InventoryScript = Join-Path $RepoRoot 'powershell/public/Get-MtTestInventory.ps1'
+    . $InventoryScript
+} catch {
+    throw "Failed to load Get-MtTestInventory.ps1 from $InventoryScript. $_"
 }
-
-. $InventoryScript
-
-# Default excludes cover tests that require external connectivity during discovery.
-$DefaultExcludes = @(
-    'tests/cis/Test-MtCisCustomerLockBox.Tests.ps1',
-    'tests/Maester/Defender/Test-MtMdiHealthIssues.Tests.ps1',
-    'tests/Maester/Entra/Test-ConditionalAccessWhatIf.Tests.ps1',
-    'tests/XSPM/Test-XspmDevices.Tests.ps1'
-) | ForEach-Object { Join-Path $RepoRoot $_ }
-
-# Combine user-specified excludes with defaults. Ensure that paths exist and are not duplicated.
-$EffectiveExcludes = @()
-if ($ExcludePath) { $EffectiveExcludes += $ExcludePath }
-$EffectiveExcludes += $DefaultExcludes
-$EffectiveExcludes = $EffectiveExcludes | Where-Object { Test-Path $_ } | Select-Object -Unique
-# Get test inventory, excluding specified paths.
-#$Inventory = Get-MtTestInventory -Path $TestsPath -ExcludePath $EffectiveExcludes
 
 # Get test and tag inventory
 $Inventory = Get-MtTestInventory -Path $TestsPath
 
-# Create an inventory of tags grouped by describe block, with a list of strings in each value.
-$DescribeInventory = [System.Collections.Generic.Dictionary[string, System.Collections.Generic.List[string[]]]]::new()
-
-# Get all unique describe blocks
-$DescribeBlocks = $Inventory.Values.Describe | Sort-Object -Unique
-
-# Get all tags used per describe block
-foreach ($Block in $DescribeBlocks) {
-    $BlockTags = $Inventory.Values | Where-Object { $_.Describe -eq $Block } | Select-Object -ExpandProperty Tags -ErrorAction SilentlyContinue | Sort-Object -Unique
-    $DescribeInventory[$Block] = $BlockTags
-}
-
-$Rows = [System.Collections.Generic.List[pscustomobject]]::new()
-foreach ($entry in $Inventory.GetEnumerator()) {
-    $Rows.Add([pscustomobject]@{
-            Tag   = $entry.Name
-            Count = $entry.Value.Count
+# Build list of tags counts for use as table rows.
+$TagCounts = [System.Collections.Generic.List[pscustomobject]]::new()
+foreach ($Item in $Inventory.GetEnumerator()) {
+    $TagCounts.Add([pscustomobject]@{
+            Tag   = $Item.Name
+            Count = $Item.Value.Count
         })
 }
 
 function Add-OrUpdateTag {
+    <#
+    .SYNOPSIS
+        Adds a new tag and its count to the list, or updates the count if the tag already exists in the list.
+    #>
     param(
+        # The tag to add or update in the list.
         [string]$Tag,
+
+        # The count to add to the tag's existing count (or set if new).
         [int]$Count
     )
-    $existing = $Rows | Where-Object { $_.Tag -eq $Tag }
-    if ($existing) {
-        foreach ($item in $existing) {
+
+    # Check if the tag already exists in the TagCounts list.
+    $Existing = $TagCounts | Where-Object { $_.Tag -eq $Tag }
+    if ($Existing) {
+        # Increment the count if it already exists in the list.
+        foreach ($item in $Existing) {
             $item.Count += $Count
         }
     } else {
-        $Rows.Add([pscustomobject]@{
+        # Add a new entry if the tag does not exist in the list.
+        $TagCounts.Add([pscustomobject]@{
                 Tag   = $Tag
                 Count = $Count
             })
     }
 } # end function Add-OrUpdateTag
 
-# Manually add tags from excluded tests so counts remain accurate even when discovery skips them.
+#region Manually Add Tags
+# Manually add and count tags from tests that fail discovery so counts remain accurate.
+# For example, 'MT.1059' will always fail discovery unless connected to an environment that has implemented MDI.
 Add-OrUpdateTag -Tag 'MT.1059' -Count 1
 Add-OrUpdateTag -Tag 'MDI' -Count 1
+#endregion Manually Add Tags
 
-$Groups = [ordered]@{
-    'CIS'     = { param($t) $t.Tag -like 'CIS*' }
-    'CISA'    = { param($t) $t.Tag -like 'CISA*' -or $t.Tag -like 'MS.*' }
-    'ORCA'    = { param($t) $t.Tag -like 'ORCA*' }
-    'Maester' = { param($t) $t.Tag -like 'MT.*' -or $t.Tag -like 'Maester*' }
-    'EIDSCA'  = { param($t) $t.Tag -like 'EIDSCA*' }
+# Define groups for categorizing tags in the documentation.
+$TagGroups = [ordered]@{
+    'CIS'     = { param($t) $t.Tag -match '^CIS(\.|$)' }
+    'CISA'    = { param($t) $t.Tag -match '^CISA(\.|$)' -or $t.Tag -match '^MS\.' }
+    'EIDSCA'  = { param($t) $t.Tag -match '^EIDSCA(\.|$)' }
+    'ORCA'    = { param($t) $t.Tag -match '^ORCA(\.|$)' }
+    'Maester' = { param($t) $t.Tag -match '^(MT\.|Maester)' }
 }
+#endregion Get Tag Inventory
+
 
 function ConvertTo-MarkdownTable {
+    <#
+    .SYNOPSIS
+        Converts a list of tags and their counts into a markdown-formatted table.
+    #>
     param(
-        [string] $Title,
-        [System.Collections.Generic.List[pscustomobject]] $Items
+        [string] $TagCategoryTitle,
+        [System.Collections.Generic.List[PSCustomObject]] $Items
     )
+
+    # Return null if there are no items to process.
     if (-not $Items -or $Items.Count -eq 0) { return $null }
 
-    # Split items into multiple use (count > 1) and single use (count = 1)
+    # Split items into multiple use (count > 1) and single use (count = 1) for the summary.
     $MultipleUse = $Items | Where-Object { $_.Count -gt 1 } | Sort-Object -Property Tag
     $SingleUse = $Items | Where-Object { $_.Count -eq 1 } | Sort-Object -Property Tag
 
+    # Initialize a StringBuilder to construct the markdown table.
     $SB = [System.Text.StringBuilder]::new()
-    [void]$SB.AppendLine("### $Title")
+    [void]$SB.AppendLine("### $TagCategoryTitle")
     [void]$SB.AppendLine()
 
-    # Only create table if there are tags used more than once
+    # Only create table if there are tags used more than once.
     if ($MultipleUse) {
         [void]$SB.AppendLine('| Tag | Count |')
         [void]$SB.AppendLine('| --- | --- |')
@@ -116,16 +152,22 @@ function ConvertTo-MarkdownTable {
         [void]$SB.AppendLine()
     }
 
+    # Return the constructed markdown string.
     return $SB.ToString()
+} # end function ConvertTo-MarkdownTable
+
+# Build markdown sections for each tag group.
+$SectionBlocks = @()
+foreach ($Key in $TagGroups.Keys) {
+    $matched = $TagCounts | Where-Object { & $TagGroups[$Key] $_ }
+    if ($matched) { $SectionBlocks += ConvertTo-MarkdownTable -TagCategoryTitle $Key -Items ([System.Collections.Generic.List[PSCustomObject]]$matched) }
 }
 
-$SectionBlocks = @()
-foreach ($Key in $Groups.Keys) {
-    $matched = $Rows | Where-Object { & $Groups[$Key] $_ }
-    if ($matched) { $SectionBlocks += ConvertTo-MarkdownTable -Title $Key -Items ([System.Collections.Generic.List[pscustomobject]]$matched) }
-}
+# Join the section blocks into a single markdown string.
 $SectionsText = ($SectionBlocks | Where-Object { $_ }) -join "`n"
 
+#region Create Static Markdown Content
+# Create the markdown front matter.
 $FrontMatter = @"
 ---
 id: overview
@@ -136,6 +178,7 @@ description: Overview of the tags used to identify and group related tests.
 
 "@
 
+# Create the introductory text for the tags documentation.
 $Intro = @"
 ## Tags Overview
 
@@ -177,7 +220,21 @@ Less is more! When creating or assigning tags to tests, consider the following b
 The tables below list every tag discovered via `Get-MtTestInventory`.
 
 "@
+#endregion Create Static Markdown Content
 
+# Combine all parts into the final markdown content and write to the documentation file.
 $Body = ($FrontMatter + $Intro + $SectionsText) -join "`n"
-Set-Content -LiteralPath $DocPath -Value $Body -Encoding UTF8
-Write-Host "Updated $DocPath"
+
+# Create the directory for the tags documentation file if it doesn't exist.
+if (-not (Test-Path -Path (Split-Path -Parent $TagsDocPath))) {
+    New-Item -ItemType Directory -Path (Split-Path -Parent $TagsDocPath) -Force | Out-Null
+}
+
+# Write the final markdown content to the tags documentation file.
+try {
+    Set-Content -LiteralPath $TagsDocPath -Value $Body -Encoding UTF8
+    Write-Host "Updated $TagsDocPath"
+}
+catch {
+    Write-Error "Failed to write tags documentation to $TagsDocPath. $_"
+}
