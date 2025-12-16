@@ -104,11 +104,12 @@ Add-OrUpdateTag -Tag 'MDI' -Count 1
 
 # Define groups for categorizing tags in the documentation.
 $TagGroups = [ordered]@{
-    'CIS'     = { param($t) $t.Tag -match '^CIS(\.|$)' }
-    'CISA'    = { param($t) $t.Tag -match '^CISA(\.|$)' -or $t.Tag -match '^MS\.' }
-    'EIDSCA'  = { param($t) $t.Tag -match '^EIDSCA(\.|$)' }
-    'ORCA'    = { param($t) $t.Tag -match '^ORCA(\.|$)' }
-    'Maester' = { param($t) $t.Tag -match '^(MT\.|Maester)' }
+    'CIS'       = { param($t) $t.Tag -match '^CIS(\.|\s|$)|L1|L2' }
+    'CISA'      = { param($t) $t.Tag -match '^CISA(\.|$)' -or $t.Tag -match '^MS\.' }
+    'EIDSCA'    = { param($t) $t.Tag -match '^EIDSCA(\.|$)' }
+    'ORCA'      = { param($t) $t.Tag -match '^ORCA(\.|$)' }
+    'Maester'   = { param($t) $t.Tag -match '^(MT\.|Maester)' }
+    'Ungrouped' = { param($t) $t.Tag -notmatch '^(CIS|L1|L2|CISA|MS\.|EIDSCA|ORCA|MT\.|Maester)' }
 }
 #endregion Get Tag Inventory
 
@@ -138,7 +139,7 @@ function ConvertTo-MarkdownTable {
     # Only create table if there are tags used more than once.
     if ($MultipleUse) {
         [void]$SB.AppendLine('| Tag | Count |')
-        [void]$SB.AppendLine('| --- | --- |')
+        [void]$SB.AppendLine('| :--- | ---: |')
         foreach ($i in $MultipleUse) {
             [void]$SB.AppendLine("| $($i.Tag) | $($i.Count) |")
         }
@@ -149,7 +150,7 @@ function ConvertTo-MarkdownTable {
     if ($SingleUse) {
         $singleTagList = ($SingleUse | ForEach-Object { $_.Tag }) -join ', '
         [void]$SB.AppendLine("**Individual tags**: $singleTagList")
-        [void]$SB.AppendLine()
+        #[void]$SB.AppendLine()
     }
 
     # Return the constructed markdown string.
@@ -184,13 +185,14 @@ $Intro = @"
 
 Tags are used by Maester to identify and group related tests. They can also be used to select specific tests to run or exclude during test execution. This makes them very useful, but they can also get in the way if too many tags are created. Our goal is to minimize the "signal to noise" ratio when it comes to tags by focusing on a few key areas:
 
-1. **Test Suites**: We use standardized tag categories for test suites that align with well-known benchmarks and baselines. This helps users quickly identify tests that align with these widely recognized standards or with Maester's own suite of tests:
-  - CIS Benchmarks: Tags prefixed with `CIS` (e.g., `CIS.M365.1.1`, `CIS.Azure.3.2`)
-  - CISA & Microsoft Baseline: Tags prefixed with `CISA` or `MS` (e.g., `CISA.M365.Baseline`, `MS.Azure.Baseline`)
-  - EIDSCA: Tags prefixed with `EIDSCA` (e.g., `EIDSCA.EntraID.2.1`)
-  - ORCA: Tags prefixed with `ORCA` (e.g., `ORCA.Exchange.1.1`)
-  - Maester: Tags prefixed with `Maester` or `MT` (e.g., `MT.1001`, `MT.1024`)
-2. **Product Areas**: Tags related to specific products and services that are being tested:
+- **Test Suites**: We use standardized tag categories for test suites that align with well-known benchmarks and baselines. This helps users quickly identify tests that align with these widely recognized standards or with Maester's own suite of tests:
+  - **CIS Benchmarks**: Tags prefixed with `CIS` (e.g., `CIS.M365.1.1`, `CIS.Azure.3.2`)
+  - **CISA & Microsoft Baseline**: Tags prefixed with `CISA` or `MS` (e.g., `CISA.M365.Baseline`, `MS.Azure.Baseline`)
+  - **EIDSCA**: Tags prefixed with `EIDSCA` (e.g., `EIDSCA.EntraID.2.1`)
+  - **ORCA**: Tags prefixed with `ORCA` (e.g., `ORCA.Exchange.1.1`)
+  - **Maester**: Tags prefixed with `Maester` or `MT` (e.g., `MT.1001`, `MT.1024`)
+
+- **Product Areas**: Tags related to specific products and services that are being tested:
   - Azure
   - Defender XDR
   - Entra ID
@@ -198,7 +200,8 @@ Tags are used by Maester to identify and group related tests. They can also be u
   - Microsoft 365
   - SharePoint
   - Teams
-3. **Practices or Capabilities**: Tags that denote specific security practices or capabilities within the security domain, such as:
+
+- **Practices or Capabilities**: Tags that denote specific security practices or capabilities within the security domain, such as:
   - Authentication (May include related topics such as MFA, SSPR, etc.)
   - Conditional Access (CA)
   - Data Loss Prevention (DLP)
@@ -211,9 +214,9 @@ Tags are used by Maester to identify and group related tests. They can also be u
 
 Less is more! When creating or assigning tags to tests, consider the following best practices:
 
-1. Assign one **Test Suite** tag per test to ensure clarity on which benchmark or baseline the test aligns with. This tag will usually go in the `Describe` block of a Pester test file.
-2. Assign a **Product Area** tag to indicate which products or services the test is most relevant to. Limit these to 1-3 tags per test to avoid over-tagging.
-3. Use **Practice or Capability** tags sparingly and only when they add significant value in categorizing the test. Avoid creating overly specific tags that may only apply to a single test.
+1. Assign one ``Test Suite`` tag per test to ensure clarity on which benchmark or baseline the test aligns with. This tag will usually go in the `Describe` block of a Pester test file.
+2. Assign a ``Product Area`` tag to indicate which products or services the test is most relevant to. Limit these to 1-3 tags per test to avoid over-tagging.
+3. Use ``Practice`` or ``Capability`` tags sparingly and only when they add significant value in categorizing the test. Avoid creating overly specific tags that may only apply to a single test.
 
 ## Tags Used
 
@@ -223,7 +226,7 @@ The tables below list every tag discovered via `Get-MtTestInventory`.
 #endregion Create Static Markdown Content
 
 # Combine all parts into the final markdown content and write to the documentation file.
-$Body = ($FrontMatter + $Intro + $SectionsText) -join "`n"
+$Body = ($FrontMatter + $Intro + "`n" + $SectionsText) -join "`n"
 
 # Create the directory for the tags documentation file if it doesn't exist.
 if (-not (Test-Path -Path (Split-Path -Parent $TagsDocPath))) {
