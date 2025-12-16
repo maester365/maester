@@ -1,11 +1,10 @@
 BeforeDiscovery {
-    $checkid = "MT.1059"
-
     try {
-        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError
+        $MdiAllHealthIssues = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'security/identities/healthIssues' -OutputType Hashtable -ErrorVariable MdiSecurityApiError -ErrorAction Stop
     } catch {
-        Write-Verbose "Authentication needed. Please call Connect-MgGraph."
+        Write-Verbose "A problem occurred. Either the Microsoft Graph API is not reachable with the required permissions or MDI is not enabled in the tenant. Error details: $($_.Exception.Message)"
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        $MdiAllHealthIssues = $null
         return $null
     }
 
