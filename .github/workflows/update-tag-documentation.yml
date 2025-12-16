@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'tests/**'
-      - 'build/Update-DocsTags.ps1'
+      - 'build/Update-TagsDocumentation.ps1'
       - '.github/workflows/update-tags.yml'
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
           pwsh -NoLogo -NoProfile -Command "Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck"
 
       - name: Generate tags document
-        run: pwsh -NoLogo -NoProfile -File build/Update-DocsTags.ps1
+        run: pwsh -NoLogo -NoProfile -File build/Update-TagsDocumentation.ps1
 
       - name: Commit and push changes
         run: |
