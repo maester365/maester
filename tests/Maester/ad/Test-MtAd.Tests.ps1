@@ -95,4 +95,51 @@ Describe "Maester/Active Directory" -Tag "Maester", "Active Directory", "MT.AD" 
             $result | Should -Be $true -Because "Forest uses appropriate UPN and SPN suffixes"
         }
     }
+    It "MT.AD.0201: AD Domain Containers" -Tag "MT.AD.0200","MT.AD.0201","AD Domain" {
+        $result = Test-MtAdDomainContainer
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain containers are used properly"
+        }
+    }
+    It "MT.AD.0202: AD Domain FSMO Status" -Tag "MT.AD.0200","MT.AD.0202","AD Domain" {
+        $result = Test-MtAdDomainFsmoStatus
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain FSMO roles are on common DC"
+        }
+    }
+    It "MT.AD.0203: AD Domain Functional Level" -Tag "MT.AD.0200","MT.AD.0203","AD Domain" {
+        $result = Test-MtAdDomainFunctionalLevel
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Functional Level is modern"
+        }
+    }
+    It "MT.AD.0204: AD Domain Machine Account Quota" -Tag "MT.AD.0200","MT.AD.0204","AD Domain" {
+        $result = Test-MtAdDomainMachineAccountQuota
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Machine Account Quota is disabled"
+        }
+    }
+    It "MT.AD.0205: AD Domain Managed By" -Tag "MT.AD.0200","MT.AD.0205","AD Domain" {
+        $result = Test-MtAdDomainManagedBy
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Managed By is set"
+        }
+    }
+    It "MT.AD.0206: AD Domain Naming" -Tag "MT.AD.0200","MT.AD.0206","AD Domain" {
+        $result = Test-MtAdDomainNaming
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Naming conforms to standards"
+        }
+    }
+    It "MT.AD.0207: AD Domain Password Policy" -Tag "MT.AD.0200","MT.AD.0207","AD Domain" {
+        $result = Test-MtAdDomainPasswordPolicy
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Password Policy is configured"
+        }
+    It "MT.AD.0208: AD Domain Structure" -Tag "MT.AD.0200","MT.AD.0208","AD Domain" {
+        $result = Test-MtAdDomainStructure
+        if ($null -ne $result){
+            $result | Should -Be $true -Because "Domain Structure is adequate"
+        }
+    }
 }

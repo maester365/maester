@@ -30,7 +30,7 @@ function Set-MtAdCache {
     param(
         [string]$Server = $__MtSession.AdServer,
         [pscredential]$Credential = $__MtSession.AdCredential,
-        [ValidateSet('All', 'Computers', 'Forest')]
+        [ValidateSet('All', 'Computers', 'Domains', 'Forest')]
         [string[]]$Objects = 'All'
     )
 
@@ -91,7 +91,142 @@ function Set-MtAdCache {
         PrimaryGroupIds                = $primaryGroupIds
         DomainControllerPgids          = $dcPrimaryGroupIds
         AdComputers                    = $__MtSession.AdCache.AdComputers
+        AdDomains                      = $__MtSession.AdCache.AdDomains
         AdForest                       = $__MtSession.AdCache.AdForest
+    }
+
+
+    <#
+    if($Objects -contains "Domains" -or $Objects -contains "All"){
+        $domainControllers = @()
+        $domainControllersSplat = @{
+                SearchBase = $d.DomainControllersContainer
+                Server     = $domain
+                LDAPFilter = "objectClass=Computer"
+                Properties = "*"
+            }
+            $dcs = try{
+                Write-Verbose "Attempting AD query for DCs in $domain"
+                Get-ADObject @domainControllersSplat
+            }catch{
+                Write-Error $_
+                return $null
+            }
+            $domainControllers += @{
+                Domain            = $d.Name
+                DomainControllers = $dcs
+            }
+        }
+        $__MtSession.AdCache.AdDomainControllers = @{
+            SetFlag           = $true
+            DomainControllers = @($domainControllers) # TODO Process this
+            Data              = @{}
+        }
+        foreach ($domain in $__MtSession.AdCache.AdDomainControllers.Domains){
+            $__MtSession.AdCache.AdDomains.Add("Data-$($domain.Name)",$__MtSession.AdCache.AdDomains.Data)
+        }
+    }
+
+                #DeletedObjectsContainer            = $null
+                #ForeignSecurityPrincipalsContainer = $null
+                #LinkedGroupPolicyObjects           = $null
+                #LostAndFoundContainer              = $null
+                #QuotasContainer                    = $null
+                #SystemsContainer                   = $null
+    #>
+
+    if($Objects -contains "Domains" -or $Objects -contains "All"){
+        $forest = try{
+            Write-Verbose "Attempting AD query for Forest"
+            Get-ADForest
+        }catch{
+            Write-Error $_
+            return $null
+        }
+
+        $domains = @()
+        $domainObjects = @()
+        foreach ($domain in $forest.Domains){
+            $d = try{
+                Write-Verbose "Attempting AD query for $domain"
+                Get-ADDomain -Server $domain
+            }catch{
+                Write-Error $_
+                return $null
+            }
+
+            $do = try{
+                Write-Verbose "Attempting AD query for $domain object"
+                Get-ADObject -Identity $domain.DistinguishedName -Properties *
+            }catch{
+                Write-Error $_
+                return $null
+            }
+
+            $domains += $d
+            $domainObjects += $do
+        }
+
+        $__MtSession.AdCache.AdDomains = @{
+            SetFlag           = $true
+            Domains           = @($domains)
+            DomainObjects     = @($domainObjects)
+            Data              = @{
+                Name                               = $null
+                NetBIOSName                        = $null
+                IsNetBIOSNameCompliant             = $null
+                DistinguishedName                  = $null
+                DNSRoot                            = $null
+                IsDNSRootCompliant                 = $null
+                DomainFunctionalLevel              = $null
+                AllowedDNSSuffixes                 = @()
+                AllowedDNSSuffixesCount            = $null
+                InfrastructureMaster               = $null
+                PDCEmulator                        = $null
+                RIDMaster                          = $null
+                CommonFsmo                         = $null
+                ChildDomains                       = @()
+                ChildDomainsCount                  = $null
+                ComputersContainer                 = $null
+                DefaultComputersContainer          = $null
+                DomainControllersContainer         = $null
+                DefaultDomainControllersContainer  = $null
+                UsersContainer                     = $null
+                DefaultUsersContainer              = $null
+                ReadOnlyDomainControllers          = @()
+                ReadOnlyDomainControllersCount     = $null
+                DomainControllers                  = @()
+                DomainControllersCount             = $null
+                PublicKeyRequiredPasswordRolling   = $null
+                ManagedBy                          = $null
+                IsSetManagedBy                     = $null
+                ParentDomain                       = $null
+                IsRootDomain                       = $null
+                MachineAccountQuota                = $null
+                IsDefaultMachineAccountQuota       = $null
+                ForceLogoff                        = $null
+                LockoutDuration                    = $null
+                LockOutObservationWindow           = $null
+                LockoutThreshold                   = $null
+                MaxPwdAge                          = $null
+                MinPwdAge                          = $null
+                MinPwdLength                       = $null
+                PwdHistoryLength                   = $null
+                IsDefaultForceLogoff               = $null
+                IsDefaultLockoutDuration           = $null
+                IsDefaultLockOutObservationWindow  = $null
+                IsDefaultLockoutThreshold          = $null
+                IsDefaultMaxPwdAge                 = $null
+                IsDefaultMinPwdAge                 = $null
+                IsDefaultMinPwdLength              = $null
+                IsDefaultPwdHistoryLength          = $null
+                IsDefaultPasswordPolicy            = $null
+            }
+        }
+
+        foreach ($domain in $__MtSession.AdCache.AdDomains.Domains){
+            $__MtSession.AdCache.AdDomains.Add("Data-$($domain.Name)",$__MtSession.AdCache.AdDomains.Data)
+        }
     }
 
     if($Objects -contains "Forest" -or $Objects -contains "All"){
