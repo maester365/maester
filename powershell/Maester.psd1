@@ -191,7 +191,10 @@
     'Test-MtAdComputerOperatingSystem','Test-MtAdComputerPrimaryGroup',
     'Test-MtAdComputerService','Test-MtAdComputerSidHistory','Test-MtAdComputerStatus',
     'Test-MtAdForestDomain','Test-MtAdForestExternalLdap','Test-MtAdForestFsmoStatus',
-    'Test-MtAdForestFunctionalLevel','Test-MtAdForestSite','Test-MtAdForestSuffix'
+    'Test-MtAdForestFunctionalLevel','Test-MtAdForestSite','Test-MtAdForestSuffix',
+    'Test-MtAdDomainContainer','Test-MtAdDomainFsmoStatus','Test-MtAdDomainFunctionalLevel',
+    'Test-MtAdDomainMachineAccountQuota','Test-MtAdDomainManagedBy','Test-MtAdDomainNaming',
+    'Test-MtAdDomainPasswordPolicy','Test-MtAdDomainStructure'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
