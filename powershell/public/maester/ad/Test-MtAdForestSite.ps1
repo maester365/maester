@@ -48,7 +48,6 @@ function Test-MtAdForestSite {
     $AdObjects.Data.DefaultSite = ($AdObjects.Data.Sites -contains "Default-First-Site-Name")
     #endregion
 
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
     $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
 
     #region Analysis

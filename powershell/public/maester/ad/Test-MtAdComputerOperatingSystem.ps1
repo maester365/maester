@@ -64,7 +64,6 @@ function Test-MtAdComputerOperatingSystem {
     }catch{0}
     #endregion
 
-    $__MtSession.AdCache.AdComputers.Computers = $AdObjects.Computers
     $__MtSession.AdCache.AdComputers.Data = $AdObjects.Data
 
     #region Analysis
