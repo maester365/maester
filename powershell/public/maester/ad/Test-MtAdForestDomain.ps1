@@ -47,7 +47,6 @@ function Test-MtAdForestDomain {
     $AdObjects.Data.DomainsCount = ($AdObjects.Data.Domains | Measure-Object).Count
     #endregion
 
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
     $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
 
     #region Analysis

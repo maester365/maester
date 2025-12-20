@@ -47,7 +47,6 @@ function Test-MtAdForestExternalLdap {
     $AdObjects.Data.CrossForestReferencesCount = ($AdObjects.Data.CrossForestReferences | Measure-Object).Count
     #endregion
 
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
     $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
 
     #region Analysis

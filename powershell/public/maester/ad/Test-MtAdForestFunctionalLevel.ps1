@@ -37,18 +37,6 @@ function Test-MtAdForestFunctionalLevel {
         Set-MtAdCache -Objects "Forest" -Server $Server -Credential $Credential
     }
 
-    $AdObjects = @{
-        Forest = $__MtSession.AdCache.AdForest.Forest
-        Data   = $__MtSession.AdCache.AdForest.Data
-    }
-
-    #region Collect
-
-    #endregion
-
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
-    $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
-
     #region Analysis
     $Tests = @{
         FunctionalLevel = @{

@@ -49,7 +49,6 @@ function Test-MtAdForestFsmoStatus {
     $AdObjects.Data.CommonFsmo = ($AdObjects.Data.DomainNamingMaster -eq $AdObjects.Data.SchemaMaster)
     #endregion
 
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
     $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
 
     #region Analysis

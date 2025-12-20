@@ -50,7 +50,6 @@ function Test-MtAdForestSuffix {
     $AdObjects.Data.SpnSuffixesCount = ($AdObjects.Data.SpnSuffixes | Measure-Object).Count
     #endregion
 
-    $__MtSession.AdCache.AdForest.Forest = $AdObjects.Forest
     $__MtSession.AdCache.AdForest.Data   = $AdObjects.Data
 
     #region Analysis

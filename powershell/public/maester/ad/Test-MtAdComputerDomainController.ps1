@@ -49,7 +49,6 @@ function Test-MtAdComputerDomainController {
     $AdObjects.Data.DomainControllersCount = ($AdObjects.Data.DomainControllers | Measure-Object).Count
     #endregion
 
-    $__MtSession.AdCache.AdComputers.Computers = $AdObjects.Computers
     $__MtSession.AdCache.AdComputers.Data = $AdObjects.Data
 
     #region Analysis
