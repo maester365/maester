@@ -51,7 +51,7 @@ function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
     } else {
         $testResultMarkdown = "At least one enabled critical or privileged user is linked to a disabled identity.`n`n%TestResult%"
 
-        $result = "| AccountName | Classification | Sensitive Directory Role | Linked Identity |`n"
+        $result = "| AccountName | Classification | CriticalityLevel | Linked Identity |`n"
         $result += "| --- | --- | --- | --- |`n"
 
         Write-Verbose "Found $($EnabledPrivUsersToDisabledAccounts.Count) enabled and privileged users linked to disabled identities in total."
@@ -70,7 +70,7 @@ function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
 
             $PrivilegedUserLink = "[$($EnabledPrivUsersToDisabledAccount.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AccountObjectId))"
             $PrimaryIdentityLink = "[$($EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountUpn)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($EnabledPrivUsersToDisabledAccount.AssociatedPrimaryAccount.AccountObjectId))"
-            $result += "| $($AdminTierLevelIcon) $($PrivilegedUserLink) | $($EnabledPrivUsersToDisabledAccount.Classification) | $($UserSensitiveDirectoryRolesResult) | $($PrimaryIdentityLink) |`n"
+            $result += "| $($AdminTierLevelIcon) $($PrivilegedUserLink) | $($EnabledPrivUsersToDisabledAccount.Classification) | $($EnabledPrivUsersToDisabledAccount.CriticalityLevel) | $($PrimaryIdentityLink) |`n"
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
     }
