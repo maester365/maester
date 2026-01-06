@@ -1,20 +1,18 @@
 <#
 .SYNOPSIS
-    Tests if privileged users with assigned high privileged Entra ID roles are linked to an identity.
+    Tests if enabled privileged users with assigned high privileged Entra ID roles or criticality level (<= 1) are linked to a disabled identity in Microsoft Defender XDR.
 
 .DESCRIPTION
-    This function checks if any enabled privileged users with assigned high privileged Entra ID roles are linked to an identity in Microsoft Defender XDR.
-    Emergency access accounts defined in the Maester config under 'EmergencyAccessAccounts' are excluded from this test.
-    Entra ID role members should be a separate account from the day-to-day user account to reduce the attack surface but also linked in Defender XDR for visibility and option to apply containment to all associated accounts in case of a identity compromise.
+    This function checks if any enabled privileged users with assigned high privileged Entra ID roles or criticality level (<= 1) are linked to a disabled identity in Microsoft Defender XDR. Having enabled privileged users linked to disabled identities can pose a security risk, as it may indicate orphaned privileged accounts that could be exploited by attackers.
 
 .OUTPUTS
-    [bool] - Returns $true if all sensitive privileged users are linked to an identity, $false if any are found not linked, $null if skipped or prerequisites not met.
+    [bool] - Returns $true if no enabled privileged users are linked to disabled identities, otherwise returns $false.
 
 .EXAMPLE
-    Test-MtXspmPrivilegedUsersLinkedToIdentity
+    Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtXspmPrivilegedUsersLinkedToIdentity
+    https://maester.dev/docs/commands/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
 #>
 
 function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
@@ -41,17 +39,18 @@ function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
         | Where-Object {
                 $_.Type -eq "User" `
                 -and $_.AccountStatus -eq "Enabled" `
-                -and ($_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True) `
                 -and $_.AssociatedPrimaryAccount.AccountStatus -eq "Disabled" `
             } `
         | Sort-Object Classification, AccountDisplayName
 
+
+                       #-and ($_.AssignedEntraRoles.Classification -ne "UserAccess" -or $_.CriticalityLevel -le "1") `
     $Severity = "Medium"
 
     if ($return -or [string]::IsNullOrEmpty($EnabledPrivUsersToDisabledAccounts)) {
-        $testResultMarkdown = "Well done. No enabled privileged users linked to disabled identity."
+        $testResultMarkdown = "Well done. No enabled privileged or critical users linked to disabled identity."
     } else {
-        $testResultMarkdown = "At least one enabled and privileged user is linked to a disabled identity.`n`n%TestResult%"
+        $testResultMarkdown = "At least one enabled critical or privileged user is linked to a disabled identity.`n`n%TestResult%"
 
         $result = "| AccountName | Classification | Sensitive Directory Role | Linked Identity |`n"
         $result += "| --- | --- | --- | --- |`n"
