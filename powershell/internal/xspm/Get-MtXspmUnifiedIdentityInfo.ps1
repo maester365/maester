@@ -336,7 +336,7 @@ function Get-MtXspmUnifiedIdentityInfo {
                         | where IsPrimary == true
                         | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
                 ) on IdentityId
-                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, IdentityLinkType, IdentityId)
+                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, IdentityLinkType, IdentityId, AccountStatus)
                 | project AccountObjectId = SourceProviderAccountId, AssociatedPrimaryAccount, PrimaryAccountObjectId = AccountObjectId
             ) on AccountObjectId
             | project-away AccountObjectId1
