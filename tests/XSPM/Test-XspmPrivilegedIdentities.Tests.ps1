@@ -27,11 +27,11 @@ Describe "Exposure Management" -Tag "Privileged", "Entra", "Graph", "LongRunning
         Test-MtXspmHybridUsersWithAssignedEntraIdRoles | Should -Be $true -Because "Hybrid users should not be assigned to eligible or permanent Entra ID role assignments to avoid lateral movement by compromised Active Directory."
     }
 
-    It "MT.1111: High privileged user should be linked to an identity. See https://maester.dev/docs/tests/MT.1111" -Tag "MT.1111" {
+    It "MT.1111: High privileged user should be linked to an identity. See https://maester.dev/docs/tests/MT.1111" -Tag "MT.1111", "Preview" {
         Test-MtXspmPrivilegedUsersLinkedToIdentity | Should -Be $true -Because "high privileged users should be linked to an identity of the regular user account for visibility and option to apply containment to all associated accounts in case of a identity compromise."
     }
 
-    It "MT.1112: Privileged user accounts should not remain enabled when the linked primary account is disabled. See https://maester.dev/docs/tests/MT.1112" -Tag "MT.1112" {
+    It "MT.1112: Privileged user accounts should not remain enabled when the linked primary account is disabled. See https://maester.dev/docs/tests/MT.1112" -Tag "MT.1112", "Preview" {
         Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity | Should -Be $true -Because "enabled privileged accounts should not be enabled if the linked primary account is disabled, to reduce the attack surface and could be an indicator of orphaned privileged accounts."
     }
 }
