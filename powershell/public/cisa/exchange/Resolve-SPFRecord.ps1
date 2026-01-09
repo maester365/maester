@@ -131,10 +131,10 @@ function Resolve-SPFRecord {
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
                 # Follow the redirect and resolve the redirect
                 # Check for circular SPF references to prevent infinite loops
-                if ( $RedirectRecord -notin $Visited ) {
-                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name -Visited $Visited
-                } elseif ( $RedirectRecord -eq $Name ) {
+                if ( $RedirectRecord -eq $Name ) {
                     return "Self-referencing SPF redirect"
+                } elseif ( $RedirectRecord -notin $Visited ) {
+                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name -Visited $Visited
                 } else {
                     return "Circular SPF reference detected"
                 }
