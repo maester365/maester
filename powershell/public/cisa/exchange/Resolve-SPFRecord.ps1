@@ -162,10 +162,10 @@ function Resolve-SPFRecord {
                             # Follow the include and resolve the include
                             $IncludeTarget = ( $SPFDirective -replace "^include:" )
                             # Check for circular SPF references to prevent infinite loops
-                            if ( $IncludeTarget -notin $Visited ) {
-                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name -Visited $Visited
-                            } elseif ( $IncludeTarget -eq $Name ) {
+                            if ( $IncludeTarget -eq $Name ) {
                                 return "Self-referencing SPF include"
+                            } elseif ( $IncludeTarget -notin $Visited ) {
+                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name -Visited $Visited
                             } else {
                                 return "Circular SPF reference detected"
                             }
