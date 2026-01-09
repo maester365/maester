@@ -31,7 +31,11 @@ function Resolve-SPFRecord {
 
         # If called nested provide a referrer to build valid objects
         [Parameter(Mandatory = $false)]
-        [string]$Referrer
+        [string]$Referrer,
+
+        # Tracks visited domains to prevent circular references
+        [Parameter(Mandatory = $false)]
+        [string[]]$Visited = @()
     )
 
     begin {
@@ -63,6 +67,9 @@ function Resolve-SPFRecord {
     }
 
     process {
+        # Add current domain to visited list for circular reference detection
+        $Visited = $Visited + $Name
+
         # Keep track of number of DNS queries
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
@@ -123,11 +130,13 @@ function Resolve-SPFRecord {
                 $RedirectRecord = $SPFDirectives -match "redirect" -replace "redirect="
                 Write-Verbose "[REDIRECT]`t$RedirectRecord"
                 # Follow the redirect and resolve the redirect
-                # Check for SPF records that redirect to themselves, it will lead to an infinite loop => ** explosion **
-                if ( $Name -ne $RedirectRecord ) {
-                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name
+                # Check for circular SPF references to prevent infinite loops
+                if ( $RedirectRecord -notin $Visited ) {
+                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name -Visited $Visited
+                } elseif ( $RedirectRecord -eq $Name ) {
+                    return "Self-referencing SPF redirect"
                 } else {
-                    return "Self-referencing SPF directive"
+                    return "Circular SPF reference detected"
                 }
             } else {
 
@@ -152,11 +161,13 @@ function Resolve-SPFRecord {
                         '^include:.*$' {
                             # Follow the include and resolve the include
                             $IncludeTarget = ( $SPFDirective -replace "^include:" )
-                            # Check for SPF records that include themselves, it will lead to an infinite loop => ** explosion **
-                            if ( $Name -ne $IncludeTarget ) {
-                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name
+                            # Check for circular SPF references to prevent infinite loops
+                            if ( $IncludeTarget -notin $Visited ) {
+                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name -Visited $Visited
+                            } elseif ( $IncludeTarget -eq $Name ) {
+                                return "Self-referencing SPF include"
                             } else {
-                                return "Self-referencing SPF directive"
+                                return "Circular SPF reference detected"
                             }
                         }
                         '^ip[46]:.*$' {
