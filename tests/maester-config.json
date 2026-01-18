@@ -1269,7 +1269,7 @@
       "Title": "High privileged user should be linked to an identity"
     },
     {
-      "Id": "MT.1112 ",
+      "Id": "MT.1112",
       "Severity": "Medium",
       "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
     },
