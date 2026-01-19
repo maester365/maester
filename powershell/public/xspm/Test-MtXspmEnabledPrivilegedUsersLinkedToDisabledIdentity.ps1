@@ -46,7 +46,7 @@ function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
 
     $Severity = "Medium"
 
-    if ($return -or [string]::IsNullOrEmpty($EnabledPrivUsersToDisabledAccounts)) {
+    if ([string]::IsNullOrEmpty($EnabledPrivUsersToDisabledAccounts)) {
         $testResultMarkdown = "Well done. No enabled privileged or critical users linked to disabled identity."
     } else {
         $testResultMarkdown = "At least one enabled critical or privileged user is linked to a disabled identity.`n`n%TestResult%"
