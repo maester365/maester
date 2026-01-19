@@ -39,7 +39,7 @@ function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
         | Where-Object {
                 $_.Type -eq "User" `
                 -and $_.AccountStatus -eq "Enabled" `
-                -and (($_.Classification -eq "ControlPlane" -and $_.Classification -eq "ManagementPlane") -or $_.CriticalityLevel -le 1) `
+                -and (($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane") -or $_.CriticalityLevel -le 1) `
                 -and $_.AssociatedPrimaryAccount.AccountStatus -eq "Disabled" `
             } `
         | Sort-Object Classification, AccountDisplayName
