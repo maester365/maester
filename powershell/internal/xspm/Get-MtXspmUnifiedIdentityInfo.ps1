@@ -112,14 +112,14 @@ function Get-MtXspmUnifiedIdentityInfo {
                 | where tolower(AccountDisplayName) contains tolower(ServicePrincipalName) and AccountObjectId contains tostring(ServicePrincipalObjectId)
                 | where Timestamp >ago(14d)
                 | summarize arg_max(Timestamp, *) by AccountObjectId
-                | project ServicePrincipalName = AccountDisplayName, ServicePrincipalId = AccountObjectId, CriticalityLevel
+                | extend AccountStatus = iff(IsAccountEnabled == true, 'Enabled', 'Disabled')
+                | project ServicePrincipalName = AccountDisplayName, ServicePrincipalId = AccountObjectId, CriticalityLevel, AccountStatus
             // Lookup for OAuth application details
             | lookup (
                 OAuthAppInfo
                     | where Timestamp >ago(30d)
                     | where tolower(AppName) contains tolower(ServicePrincipalName) and ServicePrincipalId contains tostring(ServicePrincipalObjectId)
-                    | extend OAuthAppInfoAppDisplayName = AppName
-                    | summarize arg_max(Timestamp, *) by ServicePrincipalId, OAuthAppInfoAppDisplayName
+                    | summarize arg_max(Timestamp, *) by ServicePrincipalId
             ) on ServicePrincipalId
             // Lookup for Graph API Classification
             | lookup (
@@ -270,10 +270,8 @@ function Get-MtXspmUnifiedIdentityInfo {
             ) on XspmGraphOAuthAppNodeId
             | extend CriticalityLevel = toint(parse_json(XspmCriticalAssetDetails)['criticalityLevel'])
             | project-away XspmGraphNodeId, XspmGraphNodeId1, ServicePrincipalId1, ServicePrincipalId2, XspmGraphNodeId1, XspmGraphNodeId2, TargetNodeId, XspmGraphOAuthAppNodeId, XspmGraphOAuthAppNodeId1
-            | extend ServicePrincipalName = coalesce(ServicePrincipalName, OAuthAppInfoAppDisplayName)
-            | extend ServicePrincipalName = coalesce(ServicePrincipalName, ServicePrincipalId)
             | sort by ServicePrincipalName asc
-            | project Timestamp, TimeGenerated, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy
+            | project Timestamp, TimeGenerated, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy, AccountStatus
             | extend Classification = case(
                 AssignedEntraRoles has 'ControlPlane' or ApiPermissions has 'ControlPlane', 'ControlPlane',
                 AssignedEntraRoles has 'ManagementPlane' or ApiPermissions has 'ManagementPlane', 'ManagementPlane',
@@ -289,7 +287,27 @@ function Get-MtXspmUnifiedIdentityInfo {
             | where Type == 'User'
             | where tolower(AccountDisplayName) contains tolower(ObjectName) and AccountObjectId contains tostring(ObjectId)
             | extend OnPremSynchronized = iff(isnotempty(OnPremObjectId), 'true', 'false')
-            | extend IsDeleted = iff(isnotempty(DeletedDateTime), 'true', 'false');
+            | extend IsDeleted = iff(isnotempty(DeletedDateTime), 'true', 'false')
+            | extend AccountStatus = iff(IsAccountEnabled == true, 'Enabled', 'Disabled')
+            // Enrichment to primary work account
+            | join kind=leftouter (
+                IdentityAccountInfo
+                | where SourceProvider == @'AzureActiveDirectory'
+                | where tolower(DisplayName) contains tolower(ObjectName) and SourceProviderAccountId contains tostring(ObjectId)
+                | summarize arg_max(TimeGenerated, *) by AccountId
+                | where IsPrimary == false
+                | project TimeGenerated, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
+                | join kind = leftouter (
+                    IdentityAccountInfo
+                        | where SourceProvider == @'AzureActiveDirectory'
+                        | summarize arg_max(TimeGenerated, *) by AccountId
+                        | where IsPrimary == true
+                        | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
+                ) on IdentityId
+                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, AccountStatus, IdentityLinkType, IdentityId)
+                | project AccountObjectId = SourceProviderAccountId, AssociatedPrimaryAccount, PrimaryAccountObjectId = AccountObjectId
+            ) on AccountObjectId
+            | project-away AccountObjectId1;
             let AllWorkloads = Int_WorkloadIdentityInfoXdr(ServicePrincipalName=tolower(ObjectName),ServicePrincipalObjectId=tostring(ObjectId))
             | extend Type = 'Workload'
             | project-rename AccountObjectId = ServicePrincipalId, AccountDisplayName = ServicePrincipalName;
@@ -300,8 +318,28 @@ function Get-MtXspmUnifiedIdentityInfo {
             | summarize arg_max(TimeGenerated, *) by AccountObjectId
             | where Type == 'User'
             | where tolower(AccountDisplayName) contains tolower(ObjectName) and AccountObjectId contains tostring(ObjectId)
+            | extend AccountStatus = iff(IsAccountEnabled == true, 'Enabled', 'Disabled')
             | summarize arg_max(TimeGenerated, *) by AccountObjectId
             | join kind=anti (PrivilegedUsers | where TimeGenerated > ago(14d)) on AccountObjectId
+            // Enrichment to primary work account
+            | join kind=leftouter (
+                IdentityAccountInfo
+                | where SourceProvider == @'AzureActiveDirectory'
+                | where tolower(DisplayName) contains tolower(ObjectName) and SourceProviderAccountId contains tostring(ObjectId)
+                | summarize arg_max(TimeGenerated, *) by AccountId
+                | where IsPrimary == false
+                | project TimeGenerated, DisplayName, SourceProviderAccountId, IdentityId, IdentityLinkBy, IdentityLinkType, IsPrimary, AccountId
+                | join kind = leftouter (
+                    IdentityAccountInfo
+                        | where SourceProvider == @'AzureActiveDirectory'
+                        | summarize arg_max(TimeGenerated, *) by AccountId
+                        | where IsPrimary == true
+                        | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
+                ) on IdentityId
+                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, IdentityLinkType, IdentityId, AccountStatus)
+                | project AccountObjectId = SourceProviderAccountId, AssociatedPrimaryAccount, PrimaryAccountObjectId = AccountObjectId
+            ) on AccountObjectId
+            | project-away AccountObjectId1
             | extend OnPremSynchronized = iff(isnotempty(OnPremObjectId), 'true', 'false')
             | extend IsDeleted = iff(isnotempty(DeletedDateTime), 'true', 'false')
             | project-away ReportId, AssignedRoles, PrivilegedEntraPimRoles;
@@ -322,9 +360,9 @@ function Get-MtXspmUnifiedIdentityInfo {
             | extend RuleName = tostring(CriticalityData)
             | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
             | extend CriticalAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, tostring(CriticalAssetDetail) !contains '') by AccountObjectId = ObjectId
+            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, isnotempty(CriticalAssetDetail)) by AccountObjectId = ObjectId
             ) on AccountObjectId
-            | project-reorder AccountObjectId, AccountDisplayName, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions;
+            | project-reorder AccountObjectId, AccountDisplayName, AccountStatus, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions, AssociatedPrimaryAccount;
         };
         // Lookback feature is limited to user identities only
         UnifiedIdentityInfoXdr(ObjectName='',ObjectId='',LookbackTimestamp=datetime(now))
