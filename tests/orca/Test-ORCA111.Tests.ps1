@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.111", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.111", "EXO" {
     It "ORCA.111: Anti-phishing policy exists and EnableUnauthenticatedSender is true." {
         $result = Test-ORCA111
 

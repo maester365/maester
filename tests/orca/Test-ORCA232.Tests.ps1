@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.232", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.232", "EXO" {
     It "ORCA.232: Each domain has a malware filter policy applied to it, or the default policy is being used." {
         $result = Test-ORCA232
 

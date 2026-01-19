@@ -6,7 +6,7 @@
     }
 }
 
-Describe "Exposure Management" -Tag "Privileged", "Entra", "Graph", "LongRunning", "Security", "EntraOps", "XSPM" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
+Describe "Exposure Management" -Tag "Privileged", "Entra", "Graph", "LongRunning",  "EntraOps", "XSPM" -Skip:( $DefenderPlan -ne "DefenderXDR" ) {
     # Privileged assets, identified by EntraOps and Critical Asset Management, should not be exposed due to weak security configurations.
     It "MT.1077: App registrations with privileged API permissions should not have owners. See https://maester.dev/docs/tests/MT.1077" -Tag "MT.1077" {
         Test-MtXspmAppRegWithPrivilegedApiAndOwners | Should -Be $true -Because "an app registration with privileged API permissions should not have assigned owner, as permanent and/or lower privileged users have full control over privileged application and may lead to privilege escalation."

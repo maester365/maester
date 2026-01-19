@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.AAD", "MS.AAD.5.1", "CISA.MS.AAD.5.1", "CISA", "Security", "Entra ID Free" {
+Describe "CISA" -Tag "MS.AAD", "MS.AAD.5.1", "CISA.MS.AAD.5.1", "CISA",  "Entra ID Free" {
     It "CISA.MS.AAD.5.1: Only administrators SHALL be allowed to register applications." {
         $result = Test-MtCisaAppRegistration
 
