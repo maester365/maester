@@ -360,7 +360,7 @@ function Get-MtXspmUnifiedIdentityInfo {
             | extend RuleName = tostring(CriticalityData)
             | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
             | extend CriticalAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, tostring(CriticalAssetDetail) !contains '''' ) by AccountObjectId = ObjectId
+            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, isnotempty(CriticalAssetDetail)) by AccountObjectId = ObjectId
             ) on AccountObjectId
             | project-reorder AccountObjectId, AccountDisplayName, AccountStatus, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions, AssociatedPrimaryAccount;
         };
