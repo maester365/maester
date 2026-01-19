@@ -27,7 +27,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -63,7 +63,7 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - uses: actions/upload-artifact@v5 # upload test results
+      - uses: actions/upload-artifact@v6.0.0 # upload test results
         if: success() || failure() # run this step even if previous step failed
         with:
           name: test-results-${{ runner.os }}

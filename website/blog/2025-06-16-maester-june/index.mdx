@@ -51,7 +51,7 @@ You can read more about this  in our previous blog post [Maester adds ORCA tests
 
 We have a number of app related tests that help you identify potential security issues with your Entra applications.
 
-Note: We don't run these new app related tests by default since they can take a long time to run. You will need to explicitly include them using `Invoke-Maester -Tag 'Full'`.
+Note: We don't run these new app related tests by default since they can take a long time to run. You will need to explicitly include them using `Invoke-Maester -IncludeLongRunning`.
 
 This is because it needs to query all applications and service principals in the tenant which can take many hours in large tenants.
 

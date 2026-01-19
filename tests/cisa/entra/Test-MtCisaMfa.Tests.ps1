@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.2", "CISA.MS.AAD.3.2", "CISA", "Security", "Entra ID P1" {
+Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.2", "CISA.MS.AAD.3.2", "CISA",  "Entra ID P1" {
     It "CISA.MS.AAD.3.2: If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users." {
         $result = Test-MtCisaMfa
 

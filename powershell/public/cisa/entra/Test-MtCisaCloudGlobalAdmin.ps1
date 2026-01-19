@@ -23,13 +23,6 @@ function Test-MtCisaCloudGlobalAdmin {
         return $null
     }
 
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes -and "RoleManagement.ReadWrite.Directory" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
-        return $null
-    }
-
     $role = Get-MtRole | Where-Object {`
         $_.id -eq "62e90394-69f5-4237-9190-012177145e10" } # Global Administrator
 

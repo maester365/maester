@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.5.1", "CISA.MS.EXO.5.1", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.5.1", "CISA.MS.EXO.5.1", "CISA" {
     It "CISA.MS.EXO.5.1: SMTP AUTH SHALL be disabled." {
 
         $cisaSmtpAuthentication = Test-MtCisaSmtpAuthentication

@@ -1,4 +1,4 @@
-Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Full', 'Graph', 'LongRunning', 'Preview' {
+Describe 'Maester/Entra' -Tag 'App', 'Entra', 'Graph', 'LongRunning', 'Preview' {
     It 'MT.1050: Apps with high-risk permissions having a direct path to Global Admin' -Tag 'MT.1050' {
         $result = Test-MtHighRiskAppPermissions -AttackPath 'Direct'
         if ($null -ne $result) {

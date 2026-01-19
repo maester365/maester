@@ -140,7 +140,7 @@ To mark a test as requiring investigation, use the `-Investigate` switch:
 This example also shows how you can directly use the `Invoke-MtGraphRequest` function to get the conditional access policies from the Microsoft Graph API as well as create custom markdown to display the results.
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Security", "Contoso" {
+Describe "ContosoEntraConfig" -Tag  "Contoso" {
     It "CT0002: Read-only CA policies should be reviewed" {
 
         $policies = Invoke-MtGraphRequest -RelativeUri "identity/conditionalAccess/policies"
@@ -169,7 +169,7 @@ Describe "ContosoEntraConfig" -Tag "Security", "Contoso" {
 Here's an alternative version using the out of the box Maester cmdlets for getting CA policies and displaying the results.
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Security", "Contoso" {
+Describe "ContosoEntraConfig" -Tag  "Contoso" {
     It "CT0003: Read-only CA policies should be reviewed" {
 
         $policies = Get-MtConditionalAccessPolicy

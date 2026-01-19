@@ -27,11 +27,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: updated-report-template
           path: powershell/assets/
@@ -47,7 +47,7 @@ jobs:
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
       - name: Archive PowerShell build
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: maester-module
           path: |

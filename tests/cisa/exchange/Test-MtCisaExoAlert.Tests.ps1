@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.16.1", "CISA.MS.EXO.16.1", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.16.1", "CISA.MS.EXO.16.1", "CISA" {
     It "CISA.MS.EXO.16.1: Alerts SHALL be enabled." {
 
         $result = Test-MtCisaExoAlert
