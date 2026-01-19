@@ -1,4 +1,4 @@
-# Merill: Commeting out since we use cloudflare.
+# Merill: Commenting out since we use cloudflare.
 # Sam: Re-enabled all but the build and deploy steps so the content can still be updated.
 # For now we will create a manual version when a new major release is published.
 
