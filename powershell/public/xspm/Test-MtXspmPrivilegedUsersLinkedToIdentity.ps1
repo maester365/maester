@@ -55,7 +55,7 @@ function Test-MtXspmPrivilegedUsersLinkedToIdentity {
 
     $Severity = "Low"
 
-    if ($return -or [string]::IsNullOrEmpty($UnlinkedPrivilegedUsers)) {
+    if ([string]::IsNullOrEmpty($UnlinkedPrivilegedUsers)) {
         $testResultMarkdown = "Well done. No privileged users unlinked to identity."
     } else {
         $testResultMarkdown = "At least one enabled and high-privileged user is not linked to an identity.`n`n%TestResult%"
