@@ -1,0 +1,67 @@
+---
+sidebar_class_name: hidden
+description: Tests if privileged users with assigned high privileged Entra ID roles are linked to an identity.
+id: Test-MtXspmPrivilegedUsersLinkedToIdentity
+title: Test-MtXspmPrivilegedUsersLinkedToIdentity
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtXspmPrivilegedUsersLinkedToIdentity.ps1
+---
+
+## SYNOPSIS
+
+Tests if privileged users with assigned high privileged Entra ID roles are linked to an identity.
+
+## SYNTAX
+
+```powershell
+Test-MtXspmPrivilegedUsersLinkedToIdentity [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks if any enabled privileged users with assigned high privileged Entra ID roles are linked to an identity in Microsoft Defender XDR.
+Emergency access accounts defined in the Maester config under 'EmergencyAccessAccounts' are excluded from this test.
+Entra ID role members should be a separate account from the day-to-day user account to reduce the attack surface but also linked in Defender XDR for visibility and option to apply containment to all associated accounts in case of a identity compromise.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtXspmPrivilegedUsersLinkedToIdentity
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if all sensitive privileged users are linked to an identity, $false if any are found not linked, $null if skipped or prerequisites not met.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtXspmPrivilegedUsersLinkedToIdentity](https://maester.dev/docs/commands/Test-MtXspmPrivilegedUsersLinkedToIdentity)
