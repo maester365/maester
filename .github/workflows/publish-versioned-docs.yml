@@ -9,6 +9,7 @@ on:
   # This workflow triggers whenever a new release is published in GitHub
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
