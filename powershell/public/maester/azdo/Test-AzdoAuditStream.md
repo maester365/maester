@@ -1,12 +1,12 @@
-Audit logs SHOULD BE retained according to your organizations needs and protected from purging.
+Audit logs SHOULD BE retained according to your organization's needs, and protected from purging.
 
-Rationale: Send auditing data to other Security Incident and Event Management (SIEM) tools and open new possibilities, such as the ability to trigger alerts for specific events, create views on auditing data, and perform anomaly detection. Setting up a stream also allows you to store more than 90-days worth of auditing data, which is the maximum amount of data that Azure DevOps keeps for your organizations.
+Rationale: Send auditing data to other Security Incident and Event Management (SIEM) tools and open new possibilities, such as the ability to trigger alerts for specific events, create views on auditing data, and perform anomaly detection. Setting up a stream also allows you to store more than 90-days of auditing data, which is the maximum amount of data that Azure DevOps keeps for your organizations.
 
 #### Remediation action:
+
 Create an audit stream, which sends data to other locations for further processing.
 
-
-1. Sign in to your organization
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Auditing.
 > If you don't see Auditing in Organization Settings, then auditing is not currently enabled for your organization. Someone in the organization owner or Project Collection Administrators (PCAs) group must enable Auditing in Organization Policies. You will then be able to see events on the Auditing page if you have the appropriate permissions.
