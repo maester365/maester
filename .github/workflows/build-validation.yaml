@@ -7,9 +7,6 @@ on:
 
   pull_request:
     branches: ["main"]
-    paths:
-      - 'powershell/**'
-      - '.github/workflows/build-validation.yaml'
 
 permissions:
   contents: read
@@ -27,16 +24,16 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@v6.0.1
-      - uses: dorny/paths-filter@v3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         id: filter
         with:
-          # This requires all patterns to match so exclusion works
-          predicate-quantifier: "every"
           filters: |
             pwshmodule:
               - 'powershell/**'
-              - "!powershell/Maester.psd1"
+              - 'report/**'
+              - 'tests/**'
+              - '.github/workflows/build-validation.yaml'
 
       - name: Install PowerShell dependencies
         if: steps.filter.outputs.pwshmodule == 'true'
@@ -63,8 +60,8 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - uses: actions/upload-artifact@v6.0.0 # upload test results
-        if: success() || failure() # run this step even if previous step failed
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true' # run this step even if previous step failed and tests were run
         with:
           name: test-results-${{ runner.os }}
           path: TestResults/*.xml
