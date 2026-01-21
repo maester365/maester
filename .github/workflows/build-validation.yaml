@@ -61,7 +61,7 @@ jobs:
           ./powershell/tests/pester.ps1
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: success() || failure() # run this step even if previous step failed
+        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true' # run this step even if previous step failed and tests were run
         with:
           name: test-results-${{ runner.os }}
           path: TestResults/*.xml
