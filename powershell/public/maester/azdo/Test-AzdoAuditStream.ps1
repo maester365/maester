@@ -3,9 +3,9 @@
     Returns a boolean depending on the configuration.
 
 .DESCRIPTION
-    Checks auditing data to other Security Incident and Event Management (SIEM) tools and open new possibilities,
-    such as the ability to trigger alerts for specific events, create views on auditing data,
-    and perform anomaly detection. Setting up a stream also allows you to store more than 90-days worth of auditing data,
+    Sends auditing data to Security Incident and Event Management (SIEM) tools and open new possibilities,
+    such as the ability to trigger alerts for specific events, create views on auditing data, and perform
+    anomaly detection. Setting up a stream also allows you to store more than 90-days of auditing data,
     which is the maximum amount of data that Azure DevOps keeps for your organizations.
 
     https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops
