@@ -40,6 +40,7 @@ jobs:
           cache-dependency-path: website/package-lock.json
 
       - name: 📦 Install Dependencies
+        working-directory: website
         run: npm ci
 
       - name: Extract Version Tag
