@@ -3,7 +3,7 @@
     Returns a boolean depending on the configuration.
 
 .DESCRIPTION
-    Checks IF YAML & build pipelines have restricted access to only those repositories that are in the same project as the pipeline..
+    Checks IF YAML & build pipelines have restricted access to only those repositories that are in the same project as the pipeline.
 
     https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope
 
