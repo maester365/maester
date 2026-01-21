@@ -4,7 +4,6 @@
 const sidebars = {
   siteSidebar: [
     "intro",
-    //"installation",
     {
       type: "category",
       label: "⚙️ Configure Maester",
