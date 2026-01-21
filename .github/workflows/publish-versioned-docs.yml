@@ -3,7 +3,7 @@
 # Sam: Re-enabled all but the build and deploy steps so the content can still be updated.
 
 # # This workflow deploys a new version of the Docusaurus documentation when a new GitHub Release is published.
-name: Deploy Versioned Docs
+name: Create Versioned Docs
 
 on:
   # This workflow triggers whenever a new release is published in GitHub
