@@ -47,6 +47,7 @@ jobs:
         run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
 
       - name: 💾 Create Docusaurus Document Version
+        working-directory: website
         run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
 
       - name: ✍️ Commit Version Files to Main Branch
