@@ -103,8 +103,14 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
+      # The AD Server to connect to.
+      [string]$AdServer = $null,
+
+      # The AD Credential object.
+      [pscredential]$AdCredential = $null,
+
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -116,11 +122,44 @@
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
+   $OrderedImport = Get-ModuleImportOrder -Name @('ActiveDirectory', 'Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
    switch ($OrderedImport.Name) {
 
+      'ActiveDirectory' {
+         if ($Service -contains 'ActiveDirectory' -or $Service -contains 'All') {
+            Write-Verbose 'Connecting to Active Directory'
+            $adWarning = @()
+            try {
+               if($AdServer -and $AdCredential){
+                  $rootDse = Get-ADRootDSE -Server $AdServer -Credential $AdCredential -WarningAction SilentlyContinue -WarningVariable adWarning
+                  $__MtSession.AdServer = $AdServer
+                  $__MtSession.AdCredential = $AdCredential
+               }elseif($AdServer){
+                  $rootDse = Get-ADRootDSE -Server $AdServer -WarningAction SilentlyContinue -WarningVariable adWarning
+                  $__MtSession.AdServer = $AdServer
+                  $__MtSession.AdCredential = $null
+               }elseif($AdCredential){
+                  $rootDse = Get-ADRootDSE -Credential $AdCredential -WarningAction SilentlyContinue -WarningVariable adWarning
+                  $__MtSession.AdServer = $rootDse.dnsHostName
+                  $__MtSession.AdCredential = $AdCredential
+               }else{
+                  $rootDse = Get-ADRootDSE -WarningAction SilentlyContinue -WarningVariable adWarning
+                  $__MtSession.AdServer = $rootDse.dnsHostName
+                  $__MtSession.AdCredential = $null
+               }
+               if ($adWarning.Count -gt 0) {
+                  foreach ($warning in $adWarning) {
+                     Write-Verbose $warning.Message
+                  }
+               }
+            } catch [Management.Automation.CommandNotFoundException] {
+               Write-Host "`nThe ActiveDirectory PowerShell module is not installed. Please install the module using the following information https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/remote-server-administration-tools#rsat-for-windows-10-version-1809-or-later-versions" -ForegroundColor Red
+            }
+         }
+      }
+
       'Az.Accounts' {
-         if ($Service -contains 'Azure' -or $Service -contains 'All') {
+         if ($Service -contains 'Azure' -or $Service -contains 'All' -or $Service -contains 'Cloud') {
             Write-Verbose 'Connecting to Microsoft Azure'
             try {
                $azWarning = @()
@@ -143,7 +182,7 @@
 
       'ExchangeOnlineManagement' {
          $ExchangeModuleNotInstalledWarningShown = $false
-         if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
+         if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All' -or $Service -contains 'Cloud') {
             Write-Verbose 'Connecting to Microsoft Exchange Online'
             try {
                if ($UseDeviceCode -and $PSVersionTable.PSEdition -eq 'Desktop') {
@@ -161,7 +200,7 @@
             }
          }
 
-         if ($Service -contains 'SecurityCompliance' -or $Service -contains 'All') {
+         if ($Service -contains 'SecurityCompliance' -or $Service -contains 'All' -or $Service -contains 'Cloud') {
             $Environments = @{
                'O365China'         = @{
                   ConnectionUri    = 'https://ps.compliance.protection.partner.outlook.cn/powershell-liveid'
@@ -189,7 +228,7 @@
                }
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
-            if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
+            if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All' -or $Service -notcontains 'Cloud') {
                Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
             } else {
                if ($UseDeviceCode) {
@@ -236,7 +275,7 @@
       }
 
       'Microsoft.Graph.Authentication' {
-         if ($Service -contains 'Graph' -or $Service -contains 'All') {
+         if ($Service -contains 'Graph' -or $Service -contains 'All' -or $Service -contains 'Cloud') {
             Write-Verbose 'Connecting to Microsoft Graph'
             try {
 
@@ -273,7 +312,7 @@
       }
 
       'MicrosoftTeams' {
-         if ($Service -contains 'Teams' -or $Service -contains 'All') {
+         if ($Service -contains 'Teams' -or $Service -contains 'All' -or $Service -contains 'Cloud') {
             Write-Verbose 'Connecting to Microsoft Teams'
             try {
                if ($UseDeviceCode) {
