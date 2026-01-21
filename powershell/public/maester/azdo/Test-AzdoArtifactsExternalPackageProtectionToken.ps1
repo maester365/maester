@@ -3,7 +3,7 @@
     Returns a boolean depending on the configuration.
 
 .DESCRIPTION
-    Checks the policy for additional security for your private feeds by limiting access to externally sourced packages when internally sources packages are already present.
+    Checks the policy for additional security for your private feeds by limiting access to externally sourced packages when internally sourced packages are already present.
     This provides a new layer of security, which prevents malicious packages from a public registry being inadvertently consumed.
     These changes will not affect any package versions that are already in use or cached in your feed.
 
