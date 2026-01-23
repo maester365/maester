@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.115", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.115", "EXO" {
     It "ORCA.115: Mailbox intelligence based impersonation protection is enabled in anti-phishing policies." {
         $result = Test-ORCA115
 

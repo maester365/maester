@@ -7,7 +7,7 @@ BeforeDiscovery {
     }
 }
 
-Describe "Maester/Entra" -Tag "Maester", "Entra", "Security", "Recommendation" -ForEach $EntraRecommendations {
+Describe "Maester/Entra" -Tag "Maester", "Entra",  "Recommendation" -ForEach $EntraRecommendations {
 
     # Define the test name and Id for each Entra recommendation.
     $RecommendationId = $_.id
