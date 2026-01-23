@@ -18,12 +18,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
       - name: Update maester.dev powershell docs
         run: ./build/Update-CommandReference.ps1
         shell: pwsh
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           title: Update maester.dev powershell docs

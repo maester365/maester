@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.14.3", "CISA.MS.EXO.14.3", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.14.3", "CISA.MS.EXO.14.3", "CISA" {
     It "CISA.MS.EXO.14.3: Allowed domains SHALL NOT be added to inbound anti-spam protection policies." {
 
         $result = Test-MtCisaSpamBypass

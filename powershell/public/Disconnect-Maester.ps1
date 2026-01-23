@@ -7,7 +7,7 @@
 
     This cmdlet is a helper method for running the following command.
     ```
-    Disconnnect-MgGraph
+    Disconnect-MgGraph
     ```
 
  .Example

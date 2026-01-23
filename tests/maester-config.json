@@ -1264,6 +1264,16 @@
       "Title": "MDM Authority should be set to Microsoft Intune"
     },
     {
+      "Id": "MT.1111",
+      "Severity": "Low",
+      "Title": "High privileged user should be linked to an identity"
+    },
+    {
+      "Id": "MT.1112",
+      "Severity": "Medium",
+      "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."

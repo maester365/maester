@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.EXO", "MS.EXO.4.3", "CISA.MS.EXO.4.3", "CISA", "Security" {
+Describe "CISA" -Tag "MS.EXO", "MS.EXO.4.3", "CISA.MS.EXO.4.3", "CISA" {
     It "CISA.MS.EXO.4.3: The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov." {
         $cisaDmarcAggregateCisa = Test-MtCisaDmarcAggregateCisa
 
