@@ -9,6 +9,7 @@ function Get-MtSkippedReason {
     )
 
     switch($SkippedBecause){
+        "NotConnectedActiveDirectory" { "Not connected to Active Directory. See [Connecting to Active Directory](https://maester.dev/docs/connect-maester/#todo)"; break}
         "NotConnectedAzure" { "Not connected to Azure. See [Connecting to Azure](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break}
         "NotConnectedExchange" { "Not connected to Exchange Online. See [Connecting to Exchange Online](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break}
         "NotConnectedSecurityCompliance" { "Not connected to Security & Compliance. See [Connecting to Security & Compliance](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break}

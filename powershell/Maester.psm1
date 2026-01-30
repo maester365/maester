@@ -14,6 +14,9 @@
 ## Initialize Module Variables
 ## Update Clear-ModuleVariable function in internal/Clear-ModuleVariable.ps1 if you add new variables here
 $__MtSession = @{
+	AdCredential = $null
+	AdServer = $null
+	AdCache = @{}
 	GraphCache = @{}
 	GraphBaseUri = $null
 	TestResultDetail = @{}
