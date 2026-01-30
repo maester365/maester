@@ -98,8 +98,13 @@ function Resolve-SPFRecord {
 
     process {
         # Add current domain to visited list for circular reference detection
-        $Visited = $Visited + $Name
+        if (-not $Visited) {
+            $Visited = @()
+        }
 
+        if ($Visited -notcontains $Name) {
+            $Visited = $Visited + $Name
+        }
         # Keep track of number of DNS queries
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
