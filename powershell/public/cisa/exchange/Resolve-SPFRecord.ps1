@@ -9,7 +9,7 @@ function Resolve-SPFRecord {
         Supported SPF directives and functions include:
         - mx
         - a
-        - ip4 and ip6
+        - ip4 und ip6
         - redirect
         - Warning for too many include entries
 
@@ -98,13 +98,8 @@ function Resolve-SPFRecord {
 
     process {
         # Add current domain to visited list for circular reference detection
-        if (-not $Visited) {
-            $Visited = @()
-        }
+        $Visited = $Visited + $Name
 
-        if ($Visited -notcontains $Name) {
-            $Visited = $Visited + $Name
-        }
         # Keep track of number of DNS queries
         # DNS Lookup Limit = 10
         # https://tools.ietf.org/html/rfc7208#section-4.6.4
@@ -176,7 +171,11 @@ function Resolve-SPFRecord {
                     Write-Warning "Self-referencing SPF redirect detected for $Name"
                     return
                 } elseif ( $RedirectRecord -notin $Visited ) {
-                    Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name -Visited $Visited
+                    if ($Server) {
+                        Resolve-SPFRecord -Name "$RedirectRecord" -Server $Server -Referrer $Name -Visited $Visited
+                    } else {
+                        Resolve-SPFRecord -Name "$RedirectRecord" -Referrer $Name -Visited $Visited
+                    }
                 } else {
                     Write-Warning "Circular SPF reference detected: $Name -> $RedirectRecord"
                     return
@@ -209,7 +208,11 @@ function Resolve-SPFRecord {
                                 Write-Warning "Self-referencing SPF include detected for $Name"
                                 continue
                             } elseif ( $IncludeTarget -notin $Visited ) {
-                                Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name -Visited $Visited
+                                if ($Server) {
+                                    Resolve-SPFRecord -Name $IncludeTarget -Server $Server -Referrer $Name -Visited $Visited
+                                } else {
+                                    Resolve-SPFRecord -Name $IncludeTarget -Referrer $Name -Visited $Visited
+                                }
                             } else {
                                 Write-Warning "Circular SPF reference detected: $Name includes $IncludeTarget"
                                 continue
