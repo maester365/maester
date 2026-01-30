@@ -9,7 +9,7 @@ function Resolve-SPFRecord {
         Supported SPF directives and functions include:
         - mx
         - a
-        - ip4 und ip6
+        - ip4 and ip6
         - redirect
         - Warning for too many include entries
 
