@@ -7,7 +7,7 @@ Enable the policy to restrict the job authorization scope.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Under the Pipelines section choose Settings.
-4. In the General section, toggle on "Limit job authorization scope to current project for non-release pipelines".
+4. In the General section, toggle on "Limit job authorization scope to current project for release pipelines".
 
 #### Related links
 
