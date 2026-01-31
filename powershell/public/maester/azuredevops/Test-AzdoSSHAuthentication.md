@@ -10,7 +10,7 @@ Disable the policy to stops these requests and notifications.
 4. Locate the "SSH authentication" policy and toggle it to off.
 
 **Results:**
-Users can no longer user SSH to connect to Azure DevOps.
+Users can no longer use SSH to connect to Azure DevOps.
 
 #### Related links
 
