@@ -430,25 +430,25 @@
 
     Context "Agent Identity and Service Principal policies" {
 
-        It 'Should pass when only an Agent Identity policy exists (should be ignored)' {
+        It 'Should return false (no emergency access detected) when only an Agent Identity policy exists (which should be ignored)' {
             $policy = Get-PolicyAgentIdentity
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
 
-            # Should pass because Agent Identity policies don't apply to users and should be filtered out
-            # When all policies are filtered out, there are no policies to check, so it should pass
+            # Returns $false because Agent Identity policies don't apply to users and are filtered out
+            # When all policies are filtered out, there are no policies to check, so no emergency access is detected
             Test-MtCaEmergencyAccessExists | Should -BeFalse
         }
 
-        It 'Should pass when only a Service Principal policy exists (should be ignored)' {
+        It 'Should return false (no emergency access detected) when only a Service Principal policy exists (which should be ignored)' {
             $policy = Get-PolicyServicePrincipal
 
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
 
-            # Should pass because Service Principal policies don't apply to users and should be filtered out
-            # When all policies are filtered out, there are no policies to check, so it should pass
+            # Returns $false because Service Principal policies don't apply to users and are filtered out
+            # When all policies are filtered out, there are no policies to check, so no emergency access is detected
             Test-MtCaEmergencyAccessExists | Should -BeFalse
         }
 
