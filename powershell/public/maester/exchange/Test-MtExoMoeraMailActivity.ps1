@@ -29,7 +29,7 @@ function Test-MtExoMoeraMailActivity {
         $file = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "Maester-EmailActivityUserDetail-$(Get-Date -Format yyMMddHHmmss).csv"
 
         # Track if we disabled obfuscation to re-enable it later
-        $script:obfuscationWasDisabled = $false
+        $obfuscationWasDisabled = $false
     }
 
     process {
@@ -48,7 +48,7 @@ function Test-MtExoMoeraMailActivity {
             try {
                 Write-Verbose 'Disabling report obfuscation'
                 [void](Invoke-MgGraphRequest -Method PATCH -Uri 'v1.0/admin/reportSettings' -Body (@{displayConcealedNames = $false } | ConvertTo-Json))
-                $script:obfuscationWasDisabled = $true
+                $obfuscationWasDisabled = $true
             } catch {
                 Write-Verbose "Failed to disable report obfuscation: $_. Continuing with obfuscated data."
             }
@@ -104,7 +104,7 @@ function Test-MtExoMoeraMailActivity {
 
     end {
         # Re-enable report obfuscation if we disabled it
-        if ($script:obfuscationWasDisabled) {
+        if ($obfuscationWasDisabled) {
             try {
                 Write-Verbose 'Re-enabling report obfuscation'
                 [void](Invoke-MgGraphRequest -Method PATCH -Uri 'v1.0/admin/reportSettings' -Body (@{displayConcealedNames = $true } | ConvertTo-Json))
