@@ -119,7 +119,7 @@ function Test-MtCaAuthContextProtectedActionsExist {
                 $description = if ($context.Description) { $context.Description } else { "(No description)" }
                 $testResult += "| $displayName | $($context.Id) | $description |`n"
             }
-            $testResult += "`n`n⚠️ **Warning**: These Protected Actions are not effectively protected because their Authentication Contexts are not enforced by any Conditional Access policy.`n"
+            $testResult += "`n`n⚠️ **Warning**: These Protected Actions are not effectively protected because their Authentication Contexts are not referenced by any Conditional Access policy.`n"
         }
 
         Add-MtTestResultDetail -Result $testResult
