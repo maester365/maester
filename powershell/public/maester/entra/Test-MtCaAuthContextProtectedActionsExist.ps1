@@ -1,13 +1,13 @@
 <#
  .Synopsis
-  Checks if all Protected Actions Authentication Contexts are enforced by a conditional access policy.
+  Checks if all Protected Actions Authentication Contexts are referenced by a conditional access policy.
 
  .Description
     Protected Actions allow organizations to require step-up authentication for sensitive operations by
     assigning Authentication Contexts to those actions. However, if an Authentication Context is not
-    enforced in any Conditional Access policy, the protected action is not effectively protected.
+    referenced in any Conditional Access policy, the protected action is not effectively protected.
 
-    This test verifies that all Authentication Contexts used by Protected Actions are properly enforced
+    This test verifies that all Authentication Contexts used by Protected Actions are properly referenced
     in at least one Conditional Access policy.
 
   Learn more:
