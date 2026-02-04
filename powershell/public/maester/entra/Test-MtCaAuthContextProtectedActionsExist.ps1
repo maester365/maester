@@ -25,8 +25,10 @@ function Test-MtCaAuthContextProtectedActionsExist {
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $pim) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         return $null
     }
 
