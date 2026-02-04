@@ -1,4 +1,4 @@
-<#
+﻿<#
  .Synopsis
   Checks if all Protected Actions Authentication Contexts are referenced by a conditional access policy.
 
