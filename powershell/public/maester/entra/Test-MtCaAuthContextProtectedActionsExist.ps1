@@ -42,31 +42,36 @@ function Test-MtCaAuthContextProtectedActionsExist {
             return $true
         }
 
-        # Get the role management policy assignments to find protected actions
-        # Protected Actions are configured through PIM policies
-        $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'DirectoryRole'" -ErrorAction SilentlyContinue
-
-        Write-Verbose "Found $($pimPolicies.Count) PIM policy assignments"
+        # Get Protected Actions with authentication contexts
+        # Protected Actions are accessed through roleManagement/directory/resourceNamespaces
+        try {
+            $resourceNamespaces = Invoke-MtGraphRequest -RelativeUri 'roleManagement/directory/resourceNamespaces' -ApiVersion beta -ErrorAction SilentlyContinue
+            Write-Verbose "Found $($resourceNamespaces.Count) resource namespaces"
+        } catch {
+            Write-Verbose "Could not retrieve resource namespaces: $_"
+            $resourceNamespaces = @()
+        }
 
         # Collect all auth context IDs that are used in protected actions
         $authContextsInProtectedActions = [System.Collections.Generic.HashSet[string]]::new()
 
-        # Check role management policies for protected actions configuration
-        if ($pimPolicies) {
-            foreach ($assignment in $pimPolicies) {
+        # Check each resource namespace for protected actions with authentication contexts
+        if ($resourceNamespaces) {
+            foreach ($namespace in $resourceNamespaces) {
                 try {
-                    $policyDetails = Invoke-MtGraphRequest -RelativeUri "policies/roleManagementPolicies/$($assignment.policyId)" -ApiVersion beta -ErrorAction SilentlyContinue
-                    if ($policyDetails.rules) {
-                        foreach ($rule in $policyDetails.rules) {
-                            Write-Verbose "Checking rule type: $($rule.'@odata.type'), isEnabled: $($rule.isEnabled), claimValue: $($rule.claimValue)"
-                            if ($rule.'@odata.type' -eq '#microsoft.graph.unifiedRoleManagementPolicyAuthenticationContextRule' -and $rule.isEnabled -and $rule.claimValue) {
-                                Write-Verbose "Found authentication context in protected action: $($rule.claimValue)"
-                                [void]$authContextsInProtectedActions.Add($rule.claimValue)
+                    # Get resource actions for this namespace
+                    $resourceActions = Invoke-MtGraphRequest -RelativeUri "roleManagement/directory/resourceNamespaces/$($namespace.id)/resourceActions" -ApiVersion beta -ErrorAction SilentlyContinue
+                    if ($resourceActions) {
+                        foreach ($action in $resourceActions) {
+                            # Check if this action has an authentication context requirement
+                            if ($action.authenticationContextId) {
+                                Write-Verbose "Found protected action '$($action.name)' with authentication context: $($action.authenticationContextId)"
+                                [void]$authContextsInProtectedActions.Add($action.authenticationContextId)
                             }
                         }
                     }
                 } catch {
-                    Write-Verbose "Could not retrieve policy details for $($assignment.policyId): $_"
+                    Write-Verbose "Could not retrieve resource actions for namespace $($namespace.id): $_"
                 }
             }
         }
