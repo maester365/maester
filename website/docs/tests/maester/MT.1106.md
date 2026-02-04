@@ -27,7 +27,7 @@ If this test fails, you need to create or update Conditional Access policies to 
 2. Go to **Protection** > **Conditional Access** > **Policies**
 3. Create a new policy or edit an existing one
 4. Under **Target resources** > **Authentication context**, select the Authentication Context(s) that need to be protected
-5. Configure the appropriate grant controls (e.g., require authentication context, require compliant device)
+5. Configure the appropriate grant controls (e.g., require multifactor authentication, require device to be marked as compliant, require approved client app)
 6. Enable the policy and save
 
 Alternatively, if the Protected Action no longer needs step-up authentication, you can remove the Authentication Context assignment from the Protected Action:
