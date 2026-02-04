@@ -57,16 +57,36 @@ function Test-MtCaAuthContextProtectedActionsExist {
 
         # Check each resource namespace for protected actions with authentication contexts
         if ($resourceNamespaces) {
+            $namespaceCount = 0
             foreach ($namespace in $resourceNamespaces) {
+                $namespaceCount++
                 try {
                     # Get resource actions for this namespace
                     $resourceActions = Invoke-MtGraphRequest -RelativeUri "roleManagement/directory/resourceNamespaces/$($namespace.id)/resourceActions" -ApiVersion beta -ErrorAction SilentlyContinue
                     if ($resourceActions) {
+                        Write-Verbose "Namespace $namespaceCount/$($resourceNamespaces.Count) ($($namespace.id)): Found $($resourceActions.Count) resource actions"
                         foreach ($action in $resourceActions) {
+                            # Debug: Log all properties of the first few actions to understand structure
+                            if ($namespaceCount -le 3 -and $resourceActions.IndexOf($action) -le 2) {
+                                Write-Verbose "Sample action properties: $($action | ConvertTo-Json -Depth 2 -Compress)"
+                            }
+                            
                             # Check if this action has an authentication context requirement
+                            # Try multiple possible property names
+                            $authContextId = $null
                             if ($action.authenticationContextId) {
-                                Write-Verbose "Found protected action '$($action.name)' with authentication context: $($action.authenticationContextId)"
-                                [void]$authContextsInProtectedActions.Add($action.authenticationContextId)
+                                $authContextId = $action.authenticationContextId
+                            } elseif ($action.authenticationContext) {
+                                $authContextId = $action.authenticationContext
+                            } elseif ($action.authContext) {
+                                $authContextId = $action.authContext
+                            } elseif ($action.PSObject.Properties['authenticationContextId']) {
+                                $authContextId = $action.PSObject.Properties['authenticationContextId'].Value
+                            }
+                            
+                            if ($authContextId) {
+                                Write-Verbose "Found protected action '$($action.name)' with authentication context: $authContextId"
+                                [void]$authContextsInProtectedActions.Add($authContextId)
                             }
                         }
                     }
