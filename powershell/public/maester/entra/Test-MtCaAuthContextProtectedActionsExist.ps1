@@ -46,6 +46,8 @@ function Test-MtCaAuthContextProtectedActionsExist {
         # Protected Actions are configured through PIM policies
         $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'DirectoryRole'" -ErrorAction SilentlyContinue
 
+        Write-Verbose "Found $($pimPolicies.Count) PIM policy assignments"
+
         # Collect all auth context IDs that are used in protected actions
         $authContextsInProtectedActions = [System.Collections.Generic.HashSet[string]]::new()
 
@@ -56,7 +58,9 @@ function Test-MtCaAuthContextProtectedActionsExist {
                     $policyDetails = Invoke-MtGraphRequest -RelativeUri "policies/roleManagementPolicies/$($assignment.policyId)" -ApiVersion beta -ErrorAction SilentlyContinue
                     if ($policyDetails.rules) {
                         foreach ($rule in $policyDetails.rules) {
+                            Write-Verbose "Checking rule type: $($rule.'@odata.type'), isEnabled: $($rule.isEnabled), claimValue: $($rule.claimValue)"
                             if ($rule.'@odata.type' -eq '#microsoft.graph.unifiedRoleManagementPolicyAuthenticationContextRule' -and $rule.isEnabled -and $rule.claimValue) {
+                                Write-Verbose "Found authentication context in protected action: $($rule.claimValue)"
                                 [void]$authContextsInProtectedActions.Add($rule.claimValue)
                             }
                         }
@@ -66,6 +70,8 @@ function Test-MtCaAuthContextProtectedActionsExist {
                 }
             }
         }
+
+        Write-Verbose "Total authentication contexts found in protected actions: $($authContextsInProtectedActions.Count)"
 
         # Get all enabled conditional access policies
         $caPolicies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
