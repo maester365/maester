@@ -86,7 +86,7 @@
     }
 
     It "MT.1106: All Protected Actions Authentication Contexts should be referenced by a Conditional Access policy. See https://maester.dev/docs/tests/MT.1106" -Tag "MT.1106" {
-        Test-MtCaAuthContextProtectedActionsExist | Should -Be $true -Because "all Authentication Contexts used in Protected Actions should be enforced by Conditional Access policies."
+        Test-MtCaAuthContextProtectedActionsExist | Should -Be $true -Because "all Authentication Contexts used in Protected Actions should be referenced by Conditional Access policies."
     }
 
     Context "Maester/Entra" -Tag "Entra", "License" {
