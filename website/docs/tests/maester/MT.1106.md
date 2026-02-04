@@ -13,7 +13,7 @@ Protected Actions allow organizations to require step-up authentication for sens
 
 This test verifies that all Authentication Contexts used by Protected Actions are properly referenced in at least one active Conditional Access policy.
 
-When a Protected Action has an Authentication Context assigned but that context is not enforced by any Conditional Access policy:
+When a Protected Action has an Authentication Context assigned but that context is not referenced by any Conditional Access policy:
 
 - Users will not be prompted for additional authentication when performing the protected action
 - The security benefit of the Protected Action is lost
