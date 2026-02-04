@@ -42,7 +42,7 @@ function Test-MtCaAuthContextProtectedActionsExist {
 
         # Get the role management policy assignments to find protected actions
         # Protected Actions are configured through PIM policies
-        $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'Directory'" -ErrorAction SilentlyContinue
+        $pimPolicies = Invoke-MtGraphRequest -RelativeUri 'policies/roleManagementPolicyAssignments' -ApiVersion beta -Filter "scopeId eq '/' and scopeType eq 'DirectoryRole'" -ErrorAction SilentlyContinue
 
         # Collect all auth context IDs that are used in protected actions
         $authContextsInProtectedActions = [System.Collections.Generic.HashSet[string]]::new()
