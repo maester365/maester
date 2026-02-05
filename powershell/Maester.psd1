@@ -105,7 +105,7 @@
     'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
     'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 'Test-MtCaMisconfiguredIDProtection',
     'Test-MtCaReferencedGroupsExist', 'Test-MtCaReferencedObjectsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
-    'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup',
+    'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup', 'Test-MtCisAdminConsentWorkflowEnabled',
     'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
     'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin',
     'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox',
