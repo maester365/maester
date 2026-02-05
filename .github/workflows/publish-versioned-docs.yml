@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0
 
       - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 #v6
         with:
           node-version: 20
           cache: 'npm'
@@ -54,7 +54,7 @@ jobs:
         run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
 
       - name: ✍️ Commit Version Files to Main Branch
-        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 #v5
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
         with:
           commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
           # This commits the new versioned docs files and metadata in the website directory
