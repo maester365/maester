@@ -107,7 +107,7 @@
     'Test-MtCaReferencedGroupsExist', 'Test-MtCaReferencedObjectsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
     'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup', 'Test-MtCisAdminConsentWorkflowEnabled',
     'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
-    'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin',
+    'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin', 'Test-MtCisCreateTenantDisallowed',
     'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox',
     'Test-MtCisDkim', 'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy',
     'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
