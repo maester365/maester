@@ -34,9 +34,9 @@ function Test-MtCisAdminConsentWorkflowEnabled {
         $testResult = (($checkAdminConsentWorkflowEnabled | Measure-Object).Count -eq 1)
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenants settings matches CIS recommendations.`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenants settings does not matches CIS recommendations.`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant settings not comply with CIS recommendations.`n`n%TestResult%"
         }
 
         $resultMd = "| Setting | Result |`n"

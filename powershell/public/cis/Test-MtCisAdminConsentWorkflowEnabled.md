@@ -14,7 +14,7 @@ The admin consent workflow (Preview) gives admins a secure way to grant access t
 
 #### Related links
 
-* [Microsoft 365 Entra Admin Center](https://entra.microsoft.com)
+* [Microsoft Entra admin center | Enterprise apps | Consent and permissions | Admin consent settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ConsentPoliciesMenuBlade/~/AdminConsentSettings)
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 187](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
