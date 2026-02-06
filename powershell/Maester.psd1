@@ -109,7 +109,7 @@
     'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
     'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin', 'Test-MtCisCreateTenantDisallowed',
     'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox', 'Test-MtCisDevicesWithoutCompliancePolicyMarked',
-    'Test-MtCisDkim', 'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy',
+    'Test-MtCisDkim', 'Test-MtCisEnsureGuestAccessRestricted', 'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy',
     'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
     'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
     'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
