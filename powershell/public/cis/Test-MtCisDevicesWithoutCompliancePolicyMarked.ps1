@@ -48,7 +48,7 @@ function Test-MtCisDevicesWithoutCompliancePolicyMarked {
             $checkSecureByDefaultResult = '❌ Fail'
         }
 
-        $resultMd += "| Mark devices with no compliance policy assigned as | $checkSecureByDefaultResult |`n"
+        $resultMd += "| Mark devices with no compliance policy assigned as 'Not compliant' | $checkSecureByDefaultResult |`n"
 
 
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
