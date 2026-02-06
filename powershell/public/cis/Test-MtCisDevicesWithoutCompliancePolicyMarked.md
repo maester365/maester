@@ -6,7 +6,6 @@ When used in together with Conditional Access policies the attack surface can be
 
 #### Remediation action:
 
-To enable notifications for internal users sending malware:
 1. Navigate to Microsoft Intune admin center [https://intune.microsoft.com](https://intune.microsoft.com).
 2. Click on **Devices** and then unter **Managed devices** on **Compliance**.
 3. Click **Compliance settings**.
