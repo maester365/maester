@@ -1,4 +1,20 @@
-﻿function Test-MtCisEnsureUserConsentToAppsDisallowed {
+﻿<#
+.SYNOPSIS
+    Checks if user consent to applications is disallowed.
+
+.DESCRIPTION
+    Users should not be allowed to consent to applications.
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
+
+.EXAMPLE
+    Test-MtCisEnsureUserConsentToAppsDisallowed
+
+    Returns true if users are not allowed to consent to applications.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisEnsureUserConsentToAppsDisallowed
+#>
+function Test-MtCisEnsureUserConsentToAppsDisallowed {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

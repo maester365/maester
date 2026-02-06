@@ -1,4 +1,20 @@
-﻿function Test-MtCisUserOwnedAppsRestricted {
+﻿<#
+.SYNOPSIS
+    Checks if users are restricted to install add-ins from the Office Store and start trials on behalf of the organization.
+
+.DESCRIPTION
+    Users should be restricted to install add-ins from the Office Store and start trials on behalf of the organization.
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
+
+.EXAMPLE
+    Test-MtCisUserOwnedAppsRestricted
+
+    Returns true if users cannot install add-ins from the Office Store and start trials on behalf of the organization.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisUserOwnedAppsRestricted
+#>
+function Test-MtCisUserOwnedAppsRestricted {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

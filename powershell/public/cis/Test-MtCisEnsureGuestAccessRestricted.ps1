@@ -1,4 +1,20 @@
-﻿function Test-MtCisEnsureGuestAccessRestricted {
+﻿<#
+.SYNOPSIS
+    Checks if guest user access is restricted.
+
+.DESCRIPTION
+    Guest user access should be restricted to only necessary resources.
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
+
+.EXAMPLE
+    Test-MtCisEnsureGuestAccessRestricted
+
+    Returns true if guest user access is restricted.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisEnsureGuestAccessRestricted
+#>
+function Test-MtCisEnsureGuestAccessRestricted {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

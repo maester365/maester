@@ -1,4 +1,19 @@
-﻿#Needed Graph Permission: OrgSettings-AppsAndServices.Read.All
+﻿<#
+.SYNOPSIS
+    Checks if devices without a compliance policy assigned are marked "not compliant".
+
+.DESCRIPTION
+    Devices without a compliance policy assigned should be marked "not compliant".
+    CIS Microsoft 365 Foundations Benchmark v5.0.0
+
+.EXAMPLE
+    Test-MtCisDevicesWithoutCompliancePolicyMarked
+
+    Returns true if devices without a compliance policy assigned are marked "not compliant".
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked
+#>
 function Test-MtCisDevicesWithoutCompliancePolicyMarked {
     [CmdletBinding()]
     [OutputType([bool])]
