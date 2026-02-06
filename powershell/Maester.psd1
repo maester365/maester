@@ -114,7 +114,7 @@
     'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
     'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
     'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyFileSharing',
-    'Test-MtCisZAP',
+    'Test-MtCisWeakAuthenticationMethodsDisabled', 'Test-MtCisZAP',
     'Test-MtCisaDkim', 'Test-MtCisaActivationNotification', 'Test-MtCisaAntiSpamAllowList',
     'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent', 'Test-MtCisaAppGroupOwnerConsent',
     'Test-MtCisaAppRegistration', 'Test-MtCisaAppUserConsent', 'Test-MtCisaAssignmentNotification',
