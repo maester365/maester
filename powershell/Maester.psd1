@@ -113,7 +113,7 @@
     'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
     'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
     'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
-    'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyFileSharing',
+    'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyApplicationsDisallowed', 'Test-MtCisThirdPartyFileSharing',
     'Test-MtCisThirdPartyStorageServicesRestricted', 'Test-MtCisUserOwnedAppsRestricted', 'Test-MtCisWeakAuthenticationMethodsDisabled', 'Test-MtCisZAP',
     'Test-MtCisaDkim', 'Test-MtCisaActivationNotification', 'Test-MtCisaAntiSpamAllowList',
     'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent', 'Test-MtCisaAppGroupOwnerConsent',
