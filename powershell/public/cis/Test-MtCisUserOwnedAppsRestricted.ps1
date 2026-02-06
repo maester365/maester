@@ -16,7 +16,7 @@
     }
 
     try {
-        Write-Verbose 'Getting "User owned apps and services" settings...'
+        Write-Verbose 'Getting settings...'
         $settings = Invoke-MtGraphRequest -ApiVersion beta -RelativeUri "admin/appsAndServices/settings" -DisableCache
 
         Write-Verbose 'Executing checks'

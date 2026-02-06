@@ -10,7 +10,7 @@ function Test-MtCisDevicesWithoutCompliancePolicyMarked {
     }
 
     try {
-        Write-Verbose 'Getting "User owned apps and services" settings...'
+        Write-Verbose 'Getting settings...'
         $settings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings" -DisableCache
 
         Write-Verbose 'Executing checks'

@@ -10,7 +10,7 @@
 
     try {
         Write-Verbose 'Getting settings...'
-        $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy").defaultUserRolePermissions
+        $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache).defaultUserRolePermissions
 
         Write-Verbose 'Executing checks'
         $checkAllowedToCreateApps = $settings | Where-Object { $_.allowedToCreateApps -eq $false }
