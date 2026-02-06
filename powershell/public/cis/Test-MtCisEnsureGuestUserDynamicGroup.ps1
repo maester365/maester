@@ -23,15 +23,6 @@
             $testResultMarkdown = "Your tenant settings not comply with CIS recommendations.`n`n%TestResult%"
         }
 
-        $resultMd = "| Group(s) |`n"
-        $resultMd += "| --- |`n"
-
-        foreach ($group in $checkGuestUserGroup) {
-            $resultMd += "| $($group.DisplayName) |`n"
-        }
-
-        $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
-
         Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjects $checkGuestUserGroup -GraphObjectType Groups
         return $testResult
     } catch {
