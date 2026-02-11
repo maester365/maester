@@ -229,7 +229,7 @@ function Test-MtEntitlementManagementOrphanedResources {
         }
         
     } catch {
-        Write-Error "Error running test: $_"
+        Write-Error "Error running test: $($_.Exception.Message)"
         return $false
     }
 }

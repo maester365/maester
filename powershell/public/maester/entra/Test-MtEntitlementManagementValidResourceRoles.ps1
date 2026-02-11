@@ -151,6 +151,8 @@ function Test-MtEntitlementManagementValidResourceRoles {
                                             $packageArray = $allPackages
                                         } elseif ($null -ne $allPackages.value) {
                                             $packageArray = $allPackages.value
+                                        } elseif ($null -ne $allPackages) {
+                                            $packageArray = @($allPackages)
                                         }
 
                                         $catalogPackages = $packageArray | Where-Object { $_.catalogId -eq $catalogId }
@@ -164,6 +166,8 @@ function Test-MtEntitlementManagementValidResourceRoles {
                                                     $roleScopeArray = $roleScopes
                                                 } elseif ($null -ne $roleScopes.value) {
                                                     $roleScopeArray = $roleScopes.value
+                                                } elseif ($null -ne $roleScopes) {
+                                                    $roleScopeArray = @($roleScopes)
                                                 }
 
                                                 foreach ($roleScope in $roleScopeArray) {
@@ -306,7 +310,7 @@ function Test-MtEntitlementManagementValidResourceRoles {
         }
 
     } catch {
-        Write-Error "Error running test: $_"
+        Write-Error "Error running test: $($_.Exception.Message)"
         return $false
     }
 }

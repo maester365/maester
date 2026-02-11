@@ -238,6 +238,8 @@ function Test-MtEntitlementManagementValidApprovers {
                                                 $memberCount = $members.Count
                                             } elseif ($null -ne $members.value) {
                                                 $memberCount = $members.value.Count
+                                            } elseif ($null -ne $members) {
+                                                $memberCount = 1
                                             }
                                             
                                             if ($memberCount -eq 0) {
@@ -315,7 +317,7 @@ function Test-MtEntitlementManagementValidApprovers {
         }
         
     } catch {
-        Write-Error "Error running test: $_"
+        Write-Error "Error running test: $($_.Exception.Message)"
         return $false
     }
 }

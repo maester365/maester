@@ -221,7 +221,7 @@ function Test-MtEntitlementManagementInactivePolicies {
         return $result
 
     } catch {
-        Write-Error "Error checking access package assignment policies: $_"
+        Write-Error "Error checking access package assignment policies: $($_.Exception.Message)"
         return $false
     }
 }
