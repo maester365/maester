@@ -118,7 +118,14 @@ function Test-MtEntitlementManagementDeletedGroups {
             try {
                 $resources = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages/$packageId/accessPackageResourceRoleScopes?`$expand=accessPackageResourceScope" -ApiVersion beta
 
-                $resourceArray = if ($resources -is [Array]) { $resources } else { @($resources) }
+                $resourceArray = @()
+                if ($resources -is [Array]) {
+                    $resourceArray = $resources
+                } elseif ($null -ne $resources.value) {
+                    $resourceArray = $resources.value
+                } elseif ($null -ne $resources) {
+                    $resourceArray = @($resources)
+                }
 
                 foreach ($resource in $resourceArray) {
                     $resourceScope = $resource.accessPackageResourceScope
