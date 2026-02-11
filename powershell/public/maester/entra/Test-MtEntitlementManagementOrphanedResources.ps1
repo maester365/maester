@@ -59,6 +59,20 @@ function Test-MtEntitlementManagementOrphanedResources {
         
         $unusedResourcesFound = @()
         
+        # Get all access packages once (cache for performance)
+        $allPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
+        
+        $allPackageArray = @()
+        if ($allPackages -is [Array]) {
+            $allPackageArray = $allPackages
+        } elseif ($null -ne $allPackages.value) {
+            $allPackageArray = $allPackages.value
+        } elseif ($null -ne $allPackages) {
+            $allPackageArray = @($allPackages)
+        }
+        
+        Write-Verbose "Found $($allPackageArray.Count) access package(s) total"
+        
         # Check each catalog for unused resources
         foreach ($catalog in $catalogArray) {
             $catalogId = if ($catalog.id) { $catalog.id } else { $catalog.PSObject.Properties['id'].Value }
@@ -91,19 +105,7 @@ function Test-MtEntitlementManagementOrphanedResources {
                 
                 Write-Verbose "Catalog '$catalogName' has $($resourceArray.Count) resource(s)"
                 
-                # Get all access packages and filter by catalog ID
-                $allPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
-                
-                $allPackageArray = @()
-                if ($allPackages -is [Array]) {
-                    $allPackageArray = $allPackages
-                } elseif ($null -ne $allPackages.value) {
-                    $allPackageArray = $allPackages.value
-                } elseif ($null -ne $allPackages) {
-                    $allPackageArray = @($allPackages)
-                }
-                
-                # Filter packages to only those in this catalog
+                # Filter cached packages to only those in this catalog
                 $packageArray = @($allPackageArray | Where-Object { 
                     $pkgCatalogId = if ($_.catalogId) { $_.catalogId } else { $_.PSObject.Properties['catalogId'].Value }
                     $pkgCatalogId -eq $catalogId

@@ -66,6 +66,20 @@ function Test-MtEntitlementManagementValidResourceRoles {
 
         $staleResourcesFound = @()
 
+        # Get all access packages once (cache for performance)
+        $allPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
+
+        $allPackageArray = @()
+        if ($allPackages -is [Array]) {
+            $allPackageArray = $allPackages
+        } elseif ($null -ne $allPackages.value) {
+            $allPackageArray = $allPackages.value
+        } elseif ($null -ne $allPackages) {
+            $allPackageArray = @($allPackages)
+        }
+
+        Write-Verbose "Found $($allPackageArray.Count) access package(s) to check"
+
         # Check each catalog for stale resources
         foreach ($catalog in $catalogArray) {
             $catalogId = if ($catalog.id) { $catalog.id } else { $catalog.PSObject.Properties['id'].Value }
@@ -142,20 +156,8 @@ function Test-MtEntitlementManagementValidResourceRoles {
                                 } else {
                                     Write-Verbose "Service principal exists: $($sp.displayName)"
 
-                                    # Check for stale app roles
-                                    try {
-                                        $allPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
-
-                                        $packageArray = @()
-                                        if ($allPackages -is [Array]) {
-                                            $packageArray = $allPackages
-                                        } elseif ($null -ne $allPackages.value) {
-                                            $packageArray = $allPackages.value
-                                        } elseif ($null -ne $allPackages) {
-                                            $packageArray = @($allPackages)
-                                        }
-
-                                        $catalogPackages = $packageArray | Where-Object { $_.catalogId -eq $catalogId }
+                                    # Check for stale app roles using cached packages
+                                        $catalogPackages = $allPackageArray | Where-Object { $_.catalogId -eq $catalogId }
 
                                         foreach ($package in $catalogPackages) {
                                             try {
@@ -205,9 +207,6 @@ function Test-MtEntitlementManagementValidResourceRoles {
                                                 break
                                             }
                                         }
-                                    } catch {
-                                        Write-Verbose "Could not retrieve access packages for validation"
-                                    }
                                 }
                             } catch {
                                 $validationFailed = $true
