@@ -2,6 +2,8 @@
 title: MT.1107 - Access packages and catalogs should not reference deleted groups
 sidebar_label: MT.1107
 description: Checks if Entra ID Governance access packages or catalogs reference deleted groups
+slug: /tests/MT.1107
+sidebar_class_name: hidden
 ---
 
 # MT.1107 - Access packages and catalogs should not reference deleted groups

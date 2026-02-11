@@ -2,6 +2,8 @@
 title: MT.1108 - Access packages should not reference inactive or orphaned assignment policies
 sidebar_label: MT.1108
 description: Checks if access packages reference assignment policies that are disabled, misconfigured, or orphaned
+slug: /tests/MT.1108
+sidebar_class_name: hidden
 ---
 
 # MT.1108 - Access packages should not reference inactive or orphaned assignment policies

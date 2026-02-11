@@ -2,6 +2,8 @@
 title: MT.1111 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)
 sidebar_label: MT.1111
 description: Checks if catalog resources reference valid service principals, app roles, and accessible SharePoint sites
+slug: /tests/MT.1111
+sidebar_class_name: hidden
 ---
 
 # MT.1111 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)

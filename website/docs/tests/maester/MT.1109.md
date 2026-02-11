@@ -2,6 +2,8 @@
 title: MT.1109 - Access package approval workflows must have valid approvers
 sidebar_label: MT.1109
 description: Checks if approval workflows reference valid, active approvers that are not deleted or disabled
+slug: /tests/MT.1109
+sidebar_class_name: hidden
 ---
 
 # MT.1109 - Access package approval workflows must have valid approvers

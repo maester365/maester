@@ -2,6 +2,8 @@
 title: MT.1110 - No catalog should contain resources without any associated access packages
 sidebar_label: MT.1110
 description: Checks if catalogs contain orphaned resources that are not used in any access package
+slug: /tests/MT.1110
+sidebar_class_name: hidden
 ---
 
 # MT.1110 - No catalog should contain resources without any associated access packages
