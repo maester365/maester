@@ -75,7 +75,16 @@ function Test-MtEntitlementManagementDeletedGroups {
             try {
                 $policies = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages/$packageId/assignmentPolicies" -ApiVersion beta
 
-                foreach ($policy in $policies.value) {
+                $policyArray = @()
+                if ($policies -is [Array]) {
+                    $policyArray = $policies
+                } elseif ($null -ne $policies.value) {
+                    $policyArray = $policies.value
+                } elseif ($null -ne $policies) {
+                    $policyArray = @($policies)
+                }
+
+                foreach ($policy in $policyArray) {
                     if ($policy.requestApprovalSettings) {
                         foreach ($stage in $policy.requestApprovalSettings.approvalStages) {
                             if ($stage.primaryApprovers) {
