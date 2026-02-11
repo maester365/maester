@@ -1274,6 +1274,41 @@
       "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
     },
     {
+      "Id": "MT.1113",
+      "Severity": "Medium",
+      "Title": "Ensure your SharePoint tenant is integrated with Microsoft Entra B2B for external sharing."
+    },
+    {
+      "Id": "MT.1114",
+      "Severity": "Medium",
+      "Title": "Ensure custom script execution is restricted on site collections"
+    },
+    {
+      "Id": "MT.1115",
+      "Severity": "Low",
+      "Title": "Ensure link sharing is restricted in SharePoint and OneDrive"
+    },
+    {
+      "Id": "MT.1116",
+      "Severity": "Low",
+      "Title": "Ensure the SharePoint default sharing link permission is set"
+    },
+    {
+      "Id": "MT.1117",
+      "Severity": "Low",
+      "Title": "Ensure guest access to a site or OneDrive will expire automatically"
+    },
+    {
+      "Id": "MT.1118",
+      "Severity": "High",
+      "Title": "Ensure that SharePoint guest users cannot share items they don't own"
+    },
+    {
+      "Id": "MT.1119",
+      "Severity": "High",
+      "Title": "Ensure Office 365 SharePoint infected files are disallowed for download"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
