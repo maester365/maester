@@ -13,7 +13,7 @@
     - Configuration drift
 
     The test validates that all assignment policies are:
-    - Accepting requests (requestApprovalSettings.acceptRequests = true)
+    - Accepting requests (requestorSettings.acceptRequests = true)
     - Properly configured with valid scope types
     - Not using deprecated scope types (e.g., "NoSubjects")
     - Have valid approval settings where required
