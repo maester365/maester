@@ -31,6 +31,28 @@ We're excited to announce **Maester 2.0** - our biggest release yet! With over 4
 
 ---
 
+Here's a deeper dive into what's new in Maester 2.0:
+
+![Maester 2.0](./img/1.png)
+
+![Maester 2.0](./img/2.png)
+
+![Maester 2.0](./img/3.png)
+
+![Maester 2.0](./img/4.png)
+
+![Maester 2.0](./img/5.png)
+
+![Maester 2.0](./img/6.png)
+
+![Maester 2.0](./img/7.png)
+
+![Maester 2.0](./img/8.png)
+
+![Maester 2.0](./img/9.png)
+
+![Maester 2.0](./img/10.png)
+
 ## New Reporting Capabilities
 
 The Maester report has been completely redesigned with new views and capabilities.
