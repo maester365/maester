@@ -66,6 +66,7 @@ graph TD;
   Az.Accounts-->Invoke-AzRestMethod;
   ExchangeOnlineManagement-->Get-ConnectionInformation;
   ExchangeOnlineManagement-->Get-EXOMailbox;
+  ExchangeOnlineManagement-->Get-EXOSharedMailbox;
   ExchangeOnlineManagement-->Get-MtExo;
   Get-MtExo-->Get-AcceptedDomain;
   Get-MtExo-->o[Other Commands];

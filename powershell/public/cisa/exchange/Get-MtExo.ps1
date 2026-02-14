@@ -58,6 +58,7 @@ function Get-MtExo {
         "ATPProtectionPolicyRule"        = "Get-ATPProtectionPolicyRule"
         "ProtectionAlert"                = "Get-ProtectionAlert"
         "EXOMailbox"                     = "Get-EXOMailbox"
+        "EXOSharedMailbox"               = "Get-EXOMailbox -RecipientTypeDetails 'SharedMailbox'"
         "ArcConfig"                      = "Get-ArcConfig"
         "ExternalInOutlook"              = "Get-ExternalInOutlook"
         "InboundConnector"               = "Get-InboundConnector"
