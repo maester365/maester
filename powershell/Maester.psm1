@@ -21,6 +21,7 @@ $__MtSession = @{
 	DnsCache = @()
 	ExoCache = @{}
 	OrcaCache = @{}
+	AIAgentInfo = $null
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

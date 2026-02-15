@@ -28,6 +28,11 @@
    Connects to Microsoft Graph and Azure.
 
 .EXAMPLE
+   Connect-Maester -Service Dataverse,Graph
+
+   Connects to Microsoft Graph and Dataverse (Copilot Studio). The Dataverse connection uses the Az.Accounts module to obtain an access token for the Copilot Studio environment configured in maester-config.json.
+
+.EXAMPLE
    Connect-Maester -UseDeviceCode
 
    Connects to Microsoft Graph and Azure using the device code flow. This will open a browser window to prompt for authentication.
@@ -103,8 +108,8 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      # The services to connect to such as Azure, Dataverse, and EXO. Default is Graph.
+      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -120,23 +125,54 @@
    switch ($OrderedImport.Name) {
 
       'Az.Accounts' {
-         if ($Service -contains 'Azure' -or $Service -contains 'All') {
+         if ($Service -contains 'Azure' -or $Service -contains 'Dataverse' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to Microsoft Azure'
-            try {
-               $azWarning = @()
-               if ($TenantId) {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning
-               } else {
-                  Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning
+
+            # Skip Connect-AzAccount if there is already an active Az context
+            # This preserves sessions from federated credentials, managed identity, or prior Connect-AzAccount calls
+            $existingContext = Get-AzContext -ErrorAction SilentlyContinue
+            if ($existingContext) {
+               Write-Verbose "Using existing Az context for account '$($existingContext.Account.Id)'"
+            } else {
+               try {
+                  $azWarning = @()
+                  if ($TenantId) {
+                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -Tenant $TenantId -WarningAction SilentlyContinue -WarningVariable azWarning
+                  } else {
+                     Connect-AzAccount -SkipContextPopulation -UseDeviceAuthentication:$UseDeviceCode -Environment $AzureEnvironment -WarningAction SilentlyContinue -WarningVariable azWarning
+                  }
+                  if ($azWarning.Count -gt 0) {
+                     foreach ($warning in $azWarning) {
+                        Write-Verbose $warning.Message
+                     }
+                  }
+               } catch [Management.Automation.CommandNotFoundException] {
+                  Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
+                  Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
                }
-               if ($azWarning.Count -gt 0) {
-                  foreach ($warning in $azWarning) {
-                     Write-Verbose $warning.Message
+            }
+
+            # Note: Dataverse connectivity is validated at test time in Get-MtAIAgentInfo
+            # when the full config (including Custom overrides) has been loaded by Invoke-Maester.
+            if ($Service -contains 'Dataverse' -or $Service -contains 'All') {
+               Write-Verbose "Dataverse service requested. Configuration will be validated at test time."
+               $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
+               if (-not [string]::IsNullOrEmpty($dataverseUrl)) {
+                  $dataverseUrl = $dataverseUrl.TrimEnd('/')
+                  if ($dataverseUrl -notmatch '^https?://') {
+                     $dataverseUrl = "https://$dataverseUrl"
+                  }
+                  $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
+                  try {
+                     $tokenResult = Get-AzAccessToken -ResourceUrl $resourceUrl -ErrorAction Stop
+                     if ($tokenResult) {
+                        Write-Verbose "Successfully obtained Dataverse access token for $resourceUrl"
+                     }
+                  } catch {
+                     Write-Host "`nFailed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has Dataverse permissions." -ForegroundColor Yellow
+                     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
                   }
                }
-            } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Azure PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/azure/install-azure-powershell" -ForegroundColor Red
-               Write-Host "`Install-Module Az.Accounts -Scope CurrentUser`n" -ForegroundColor Yellow
             }
          }
       }

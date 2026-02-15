@@ -13,7 +13,8 @@
         "UserPrincipalName": "emergency@contoso.com",
         "Type": "User"
       }
-    ]
+    ],
+    "DataverseEnvironmentUrl": "org12345.crm.dynamics.com"
   },
   "TestSettings": [
     {
