@@ -1,6 +1,7 @@
 {
   "GlobalSettings": {
-    "EmergencyAccessAccounts": []
+    "EmergencyAccessAccounts": [],
+    "DataverseEnvironmentUrl": ""
   },
   "TestSettings": [
     {
@@ -1272,6 +1273,56 @@
       "Id": "MT.1112",
       "Severity": "Medium",
       "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
+    },
+    {
+      "Id": "MT.1113",
+      "Severity": "High",
+      "Title": "AI agents should not be shared with broad access control policies"
+    },
+    {
+      "Id": "MT.1114",
+      "Severity": "High",
+      "Title": "AI agents should require user authentication"
+    },
+    {
+      "Id": "MT.1115",
+      "Severity": "Medium",
+      "Title": "AI agents should not have risky HTTP configurations"
+    },
+    {
+      "Id": "MT.1116",
+      "Severity": "High",
+      "Title": "AI agents should not send email with AI-controlled inputs"
+    },
+    {
+      "Id": "MT.1117",
+      "Severity": "Low",
+      "Title": "Published AI agents should not be dormant"
+    },
+    {
+      "Id": "MT.1118",
+      "Severity": "Medium",
+      "Title": "AI agents with authentication should require it on every conversation"
+    },
+    {
+      "Id": "MT.1119",
+      "Severity": "High",
+      "Title": "AI agents should not have hard-coded credentials in topics"
+    },
+    {
+      "Id": "MT.1120",
+      "Severity": "Medium",
+      "Title": "AI agents should not use MCP server tools without review"
+    },
+    {
+      "Id": "MT.1121",
+      "Severity": "Medium",
+      "Title": "AI agents with generative orchestration should have custom instructions"
+    },
+    {
+      "Id": "MT.1122",
+      "Severity": "Medium",
+      "Title": "AI agents should not have orphaned ownership"
     },
     {
       "Id": "ORCA.100",

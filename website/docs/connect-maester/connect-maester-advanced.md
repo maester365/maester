@@ -138,3 +138,20 @@ Connect-MicrosoftTeams
 $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("C:\exampleCert.pfx",$password)
 Connect-MicrosoftTeams -Certificate $cert -ApplicationId $applicationId -TenantId $tenantId
 ```
+
+### Dataverse (Copilot Studio Agents)
+
+The [AI Agent security tests](/docs/tests/maester/ai-agent-setup) (MT.1113–MT.1122) use the Dataverse OData API via `Az.Accounts`. Authenticate with `Connect-AzAccount` and then connect Maester for Dataverse access.
+
+```powershell
+# Authenticate to Az (SPN example)
+Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
+
+# Connect Graph separately for SPN
+Connect-MgGraph -AppId $applicationId -Certificate $cert -TenantId $tenantId -NoWelcome
+
+# Connect Maester for Dataverse only (Graph already connected)
+Connect-Maester -Service Dataverse
+```
+
+> The service principal must be registered as an [Application User in Power Platform](/docs/tests/maester/ai-agent-setup#step-4-create-a-power-platform-application-user) with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
