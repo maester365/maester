@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if access package approval workflows have valid approvers
 
@@ -27,10 +27,11 @@
     Returns $true if all approval workflows have valid approvers
 
 .LINK
-    https://maester.dev/docs/tests/MT.1109
+    https://maester.dev/docs/commands/Test-MtEntitlementManagementValidApprovers
 #>
 
 function Test-MtEntitlementManagementValidApprovers {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Approvers is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -321,3 +322,5 @@ function Test-MtEntitlementManagementValidApprovers {
         return $false
     }
 }
+
+

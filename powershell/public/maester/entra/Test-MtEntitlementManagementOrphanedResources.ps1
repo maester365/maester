@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if catalogs contain unused resources without associated access packages
 
@@ -30,10 +30,11 @@
     Returns $true if all catalog resources are used in access packages
 
 .LINK
-    https://maester.dev/docs/tests/MT.1110
+    https://maester.dev/docs/commands/Test-MtEntitlementManagementOrphanedResources
 #>
 
 function Test-MtEntitlementManagementOrphanedResources {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Resources is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -235,3 +236,5 @@ function Test-MtEntitlementManagementOrphanedResources {
         return $false
     }
 }
+
+

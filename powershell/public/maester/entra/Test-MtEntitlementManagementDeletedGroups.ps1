@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if Entra ID Governance access packages or catalogs reference deleted groups
 
@@ -29,10 +29,11 @@
     Returns $true if all access packages and catalogs reference only active groups
 
 .LINK
-    https://maester.dev/docs/tests/MT.1107
+    https://maester.dev/docs/commands/Test-MtEntitlementManagementDeletedGroups
 #>
 
 function Test-MtEntitlementManagementDeletedGroups {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Groups is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -308,3 +309,5 @@ function Test-MtEntitlementManagementDeletedGroups {
         return $false
     }
 }
+
+

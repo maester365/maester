@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if access packages have inactive or orphaned assignment policies
 
@@ -29,10 +29,11 @@
     Returns $true if all access package assignment policies are active and properly configured
 
 .LINK
-    https://maester.dev/docs/tests/MT.1108
+    https://maester.dev/docs/commands/Test-MtEntitlementManagementInactivePolicies
 #>
 
 function Test-MtEntitlementManagementInactivePolicies {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Policies is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -225,3 +226,5 @@ function Test-MtEntitlementManagementInactivePolicies {
         return $false
     }
 }
+
+

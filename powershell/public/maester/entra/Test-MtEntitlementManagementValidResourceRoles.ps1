@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Validates catalog resources have no stale app roles or deleted service principals
 
@@ -35,10 +35,11 @@
     Returns $true if all catalog resources have valid roles and service principals
 
 .LINK
-    https://maester.dev/docs/tests/MT.1111
+    https://maester.dev/docs/commands/Test-MtEntitlementManagementValidResourceRoles
 #>
 
 function Test-MtEntitlementManagementValidResourceRoles {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Roles is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -116,7 +117,6 @@ function Test-MtEntitlementManagementValidResourceRoles {
                     $resourceOriginId = if ($resource.originId) { $resource.originId } else { $resource.PSObject.Properties['originId'].Value }
                     $resourceDisplayName = if ($resource.displayName) { $resource.displayName } else { $resource.PSObject.Properties['displayName'].Value }
                     $resourceType = if ($resource.resourceType) { $resource.resourceType } elseif ($resource.originSystem) { $resource.originSystem } else { "Unknown" }
-                    $resourceId = if ($resource.id) { $resource.id } else { $resource.PSObject.Properties['id'].Value }
 
                     if ([string]::IsNullOrEmpty($resourceOriginId)) {
                         $staleResourcesFound += [PSCustomObject]@{
@@ -313,3 +313,5 @@ function Test-MtEntitlementManagementValidResourceRoles {
         return $false
     }
 }
+
+
