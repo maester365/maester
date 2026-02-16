@@ -6,7 +6,7 @@
     }
 }
 
-Describe "AI Agent Security" -Tag "XSPM", "AIAgent" -Skip:( -not $DataverseConfigured ) {
+Describe "AI Agent Security" -Tag "XSPM", "AIAgent", "Maester" -Skip:( -not $DataverseConfigured ) {
     # AI agents should not be shared with broad access control policies.
     It "MT.1113: AI agents should not be shared with broad access control policies. See https://maester.dev/docs/tests/MT.1113" -Tag "MT.1113" {
         Test-MtAIAgentBroadSharing | Should -Be $true -Because "AI agents with 'Any' or 'Any multitenant' access control allow unauthenticated or cross-tenant access, increasing the risk of unauthorized data access and prompt injection."
