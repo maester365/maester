@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Checks all published Copilot Studio agents for those that have not been
-    modified or republished within a configurable threshold (default 180 days).
+    modified or republished within 180 days.
     Dormant agents may have outdated configurations, unpatched vulnerabilities,
     or stale permissions that present unnecessary risk.
 
