@@ -33,7 +33,7 @@ function Test-MtCisWeakAuthenticationMethodsDisabled {
         $checkVoice = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Voice" }).State -eq "disabled"
         $checkEmail = ($settings.authenticationMethodConfigurations | Where-Object { $_.id -eq "Email" }).State -eq "disabled"
 
-        $testResult = $checkSms -eq $true -and $checkVoice -eq $true -and $checkEmail -eq $true
+        $testResult = $checkSms -and $checkVoice -and $checkEmail
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
