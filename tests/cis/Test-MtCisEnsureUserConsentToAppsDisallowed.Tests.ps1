@@ -4,7 +4,7 @@ Describe "CIS" -Tag "CIS.M365.5.1.5.1", "L2", "CIS E3 Level 2", "CIS E3", "CIS E
         $result = Test-MtCisEnsureUserConsentToAppsDisallowed
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "user constent to apps accessing company data on their behalf is not allowed."
+            $result | Should -Be $true -Because "user consent to apps accessing company data on their behalf is not allowed."
         }
     }
 }
