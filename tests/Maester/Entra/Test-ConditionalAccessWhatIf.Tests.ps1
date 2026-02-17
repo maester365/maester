@@ -17,7 +17,7 @@ BeforeDiscovery {
 }
 
 
-Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester'  {
+Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester' {
 
     Context 'Maester/Entra' -ForEach @( $RegularUsers ) {
         # Regular users
