@@ -4,7 +4,7 @@
 	"name": "Maester",
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye",
 	"features": {
-		"ghcr.io/devcontainers/features/powershell:1": {
+		"ghcr.io/devcontainers/features/powershell:2": {
 			"modules": "Microsoft.Graph.Authentication, Pester, PSFramework, PSModuleDevelopment, PSScriptAnalyzer"
 		}
 	},
