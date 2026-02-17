@@ -7,7 +7,7 @@ When used in together with Conditional Access policies the attack surface can be
 #### Remediation action:
 
 1. Navigate to Microsoft Intune admin center [https://intune.microsoft.com](https://intune.microsoft.com).
-2. Click on **Devices** and then unter **Managed devices** on **Compliance**.
+2. Click on **Devices** and then under **Managed devices** on **Compliance**.
 3. Click **Compliance settings**.
 4. Ensure **Mark devices with no compliance policy assigned as** set to **Not compliant**
 
