@@ -1,6 +1,6 @@
 7.2.2 (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
 
-Before integration SharePoint Online with Microsoft Entra B2B external users authenticated via one-time passcode, directly to SharePoint.
+Before integrating SharePoint Online with Microsoft Entra B2B, external users authenticated via one-time passcode connect directly to SharePoint.
 This authentication bypasses all configurations from Microsoft Entra as well as sign-in logs and can only be monitoring in Auditing-logs.
 
 With SharePoint and OneDrive integrated with Microsoft Entra B2B Invitation Manager, invited people outside the organization are each given a guest account in the directory and are subject to Microsoft Entra ID access policies such as conditional access.
