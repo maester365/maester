@@ -17,3 +17,6 @@ By limiting guest access to the most restrictive state this helps prevent malici
 
 * [Microsoft 365 Entra Admin Center | External Identities | External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/ExternalIdentitiesGettingStarted)
 * [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 193](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%
