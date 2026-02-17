@@ -44,8 +44,7 @@ function Test-MtCisSharedMailboxSignIn {
 
     try {
         Write-Verbose 'For each mailbox get mailbox and AccountEnabled status'
-        $mailboxDetails = @()
-        $mgUsers = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $sharedMailboxes.ExternalDirectoryObjectId -Select id,displayName,userPrincipalName,accountEnabled
+        $mgUsers = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId @($sharedMailboxes.ExternalDirectoryObjectId) -Select id,displayName,userPrincipalName,accountEnabled
         $mailboxDetails = foreach ($mgUser in $mgUsers) {
             $mgUser | Select-Object DisplayName, UserPrincipalName, AccountEnabled
         }
