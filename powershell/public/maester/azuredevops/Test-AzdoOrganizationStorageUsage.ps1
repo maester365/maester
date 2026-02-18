@@ -30,8 +30,15 @@ function Test-AzdoOrganizationStorageUsage {
 
     $StorageUsage = Get-ADOPSOrganizationCommerceMeterUsage -MeterId '3efc2e47-d73e-4213-8368-3a8723ceb1cc'
     $availableQuantity = $StorageUsage.availableQuantity
+    if ($availableQuantity -eq [double]::MaxValue) {
+        $MaxQuantity = 'Unlimited'
+    } else {
+        $MaxQuantity = "$($StorageUsage.maxQuantity) GB"
+    }
+    # As regions have different ways to declare decimal separators, we will query the culture of the OS.
+    $DecimalSeparator = $((Get-Culture).NumberFormat.CurrencyDecimalSeparator)
 
-    if ($availableQuantity -lt [double]::Parse('0.1')) {
+    if ($availableQuantity -lt [double]::Parse("0$DecimalSeparator`1")) {
         $resultMarkdown = "Your storage is exceeding the usage limit or close to. '$availableQuantity' GB available."
         $result = $false
     } else {
@@ -39,8 +46,8 @@ function Test-AzdoOrganizationStorageUsage {
         @'
         Well done. You are not exceeding or approaching your storage usage limit.
         Current usage: {0} GB
-        Max quantity: {1} GB
-'@ -f $StorageUsage.currentQuantity, $StorageUsage.maxQuantity
+        Max quantity: {1}
+'@ -f $StorageUsage.currentQuantity, $MaxQuantity
         $result = $true
     }
 
