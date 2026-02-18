@@ -27,16 +27,12 @@ Write-verbose 'Not connected to Azure DevOps'
 
     $result = (Get-ADOPSOrganizationPipelineSettings).disableStageChooser
 
-    if ($result) {
-        $resultMarkdown = "Well done. Users will not be able to select stages to skip from the Queue Pipeline panel."
-        $result = $false
+    if (-not $result) {
+        $resultMarkdown = "Users are able to select stages to skip from the Queue Pipeline panel."
     }
     else {
-        $resultMarkdown = "Users are able to select stages to skip from the Queue Pipeline panel."
-        $result = $true
+        $resultMarkdown = "Well done. Users will not be able to select stages to skip from the Queue Pipeline panel."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'High'
 
