@@ -3,7 +3,7 @@ Connecting to Azure DevOps using SSH should be disabled.
 Rationale: OAuth is the preferred and most secure authentication method.
 
 #### Remediation action:
-Disable the policy to stops these requests and notifications.
+Disable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Policies under the Security section.
