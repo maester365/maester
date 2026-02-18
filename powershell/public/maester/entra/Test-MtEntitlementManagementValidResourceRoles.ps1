@@ -3,7 +3,7 @@
     Validates catalog resources have no stale app roles or deleted service principals
 
 .DESCRIPTION
-    MT.1111 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)
+    MT.1106 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)
 
     This test identifies Entra ID Governance access package catalog resources that
     reference deleted service principals, stale app roles, or inaccessible SharePoint sites.
@@ -27,7 +27,7 @@
     Note: Group validation is delegated to MT.1107 for comprehensive coverage.
 
     Learn more:
-    https://maester.dev/docs/tests/MT.1111
+    https://maester.dev/docs/tests/MT.1106
 
 .EXAMPLE
     Test-MtEntitlementManagementValidResourceRoles

@@ -1284,7 +1284,7 @@
       "Title": "No catalog should contain resources without any associated access packages"
     },
     {
-      "Id": "MT.1111",
+      "Id": "MT.1106",
       "Severity": "Medium",
       "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
     },
