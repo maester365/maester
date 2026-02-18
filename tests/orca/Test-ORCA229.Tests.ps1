@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.229", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.229", "EXO" {
     It "ORCA.229: No trusted domains in Anti-phishing policy." {
         $result = Test-ORCA229
 

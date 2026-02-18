@@ -169,6 +169,8 @@
     'Test-MtXspmAppRegWithPrivilegedUnusedPermissions',
     'Test-MtXspmExposedCredentialsForPrivilegedUsers',
     'Test-MtXspmHybridUsersWithAssignedEntraIdRoles',
+    'Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity',
+    'Test-MtXspmPrivilegedUsersLinkedToIdentity',
     'Test-MtXspmPendingApprovalCriticalAssetManagement',
     'Test-MtOperationApprovalPolicies',
     'Test-MtDeviceRegistrationLocalAdminsGlobalAdmin',

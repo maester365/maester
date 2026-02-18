@@ -1,6 +1,6 @@
 # Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "ORCA.223", "EXO", "Security" {
+Describe "ORCA" -Tag "ORCA", "ORCA.223", "EXO" {
     It "ORCA.223: User impersonation action is set to move to Quarantine." {
         $result = Test-ORCA223
 

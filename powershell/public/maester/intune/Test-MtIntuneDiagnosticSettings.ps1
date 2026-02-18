@@ -31,7 +31,7 @@ function Test-MtIntuneDiagnosticSettings {
     try {
         Write-Verbose 'Retrieving Intune Diagnostic Settings status...'
         $diagnosticSettingsRequest = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.intune/diagnosticSettings?api-version=2017-04-01-preview"
-        $diagnosticSettings = $diagnosticSettingsRequest | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty value
+        $diagnosticSettings = @($diagnosticSettingsRequest | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty value)
         $testResultMarkdown = ''
         if ($diagnosticSettings) {
             $testResultMarkdown += "Intune Diagnostic Settings:`n"

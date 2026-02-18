@@ -23,14 +23,7 @@ function Test-MtCisGlobalAdminCount {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
-
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = 'RoleEligibilitySchedule.ReadWrite.Directory' -notin $scopes -and 'RoleManagement.ReadWrite.Directory' -notin $scopes
-    if ($permissionMissing) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Missing Scope RoleEligibilitySchedule.ReadWrite.Directory'
-        return $null
-    }
-
+    
     try {
         Write-Verbose 'Getting role'
         $role = Get-MtRole | Where-Object {

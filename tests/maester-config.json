@@ -1264,6 +1264,11 @@
       "Title": "MDM Authority should be set to Microsoft Intune"
     },
     {
+      "Id": "MT.1106",
+      "Severity": "Medium",
+      "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
+    },
+    {
       "Id": "MT.1107",
       "Severity": "Medium",
       "Title": "Access packages and catalogs should not reference deleted groups"
@@ -1284,9 +1289,14 @@
       "Title": "No catalog should contain resources without any associated access packages"
     },
     {
-      "Id": "MT.1106",
+      "Id": "MT.1111",
+      "Severity": "Low",
+      "Title": "High privileged user should be linked to an identity"
+    },
+    {
+      "Id": "MT.1112",
       "Severity": "Medium",
-      "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
+      "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
     },
     {
       "Id": "ORCA.100",

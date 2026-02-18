@@ -17,11 +17,11 @@ BeforeDiscovery {
 }
 
 
-Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester', 'Security' -Skip:( $EntraIDPlan -eq 'Free' ) {
+Describe 'Maester/Entra' -Tag 'CA', 'CAWhatIf', 'LongRunning', 'Maester' {
 
     Context 'Maester/Entra' -ForEach @( $RegularUsers ) {
         # Regular users
-        It "MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))" -Tag 'MT.1033' {
+        It "MT.1033.$($RegularUsers.IndexOf($_)): User should be blocked from using legacy authentication ($($_.userPrincipalName))" -Tag 'MT.1033', 'CA', 'CAWhatIf', 'LongRunning', 'Maester' -Skip:( $EntraIDPlan -eq 'Free' ) {
             Test-MtCaWIFBlockLegacyAuthentication -UserId $id | Should -Be $true
         }
 

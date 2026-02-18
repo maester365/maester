@@ -1,58 +1,67 @@
-# Merill: Commeting out since we use cloudflare.
-# For now we will create manual version when a new major release is published.
+# Merill: Commenting out since we use cloudflare.
+# For now we will create a manual version when a new major release is published.
+# Sam: Re-enabled all but the build and deploy steps so the content can still be updated.
 
 # # This workflow deploys a new version of the Docusaurus documentation when a new GitHub Release is published.
-# name: Deploy Versioned Docs
+name: Create Versioned Docs
 
-# on:
-#   # This workflow triggers whenever a new release is published in GitHub
-#   release:
-#     types: [published]
+on:
+  # This workflow triggers whenever a new release is published in GitHub
+  release:
+    types: [published]
+  workflow_dispatch:
 
-# permissions:
-#   contents: write
-#   actions: read
-#   pull-requests: read
+permissions:
+  contents: write
+  actions: read
+  pull-requests: read
 
-# concurrency:
-#   group: docs-versioning-${{ github.event.release.tag_name }}
-#   cancel-in-progress: false
+concurrency:
+  group: docs-versioning-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
 
-# jobs:
-#   version_and_deploy_docs:
-#     # This job only runs if a GitHub release was successfully published
-#     if: github.event_name == 'release' && github.event.action == 'published'
-#     runs-on: ubuntu-latest
+jobs:
+  version_and_deploy_docs:
+    # This job only runs if a GitHub release was successfully published
+    if: github.event_name == 'release' && github.event.action == 'published'
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: ⬇️ Checkout Repository
-#         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6
-#         # Important: Fetch all history, as the versioning command often needs it.
-#         with:
-#           fetch-depth: 0
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6
+        # Important: Fetch all history, as the versioning command often needs it.
+        with:
+          fetch-depth: 0
 
-#       - name: ⚙️ Setup Node.js
-#         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6
-#         with:
-#           node-version: 20
-#           cache: 'npm'
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 #v6
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
 
-#       - name: 📦 Install Dependencies
-#         run: npm ci
+      - name: 📦 Install Dependencies
+        working-directory: website
+        run: npm ci
 
-#       - name: Extract Version Tag
-#         id: tag_version
-#         # Extracts '1.2.3' from a tag like 'v1.2.3'
-#         run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
+      - name: Extract Version Tag
+        id: tag_version
+        # Extracts '1.2.3' from a tag like 'v1.2.3'
+        run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
 
-#       - name: 💾 Create Docusaurus Document Version
-#         run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
+      - name: 💾 Create Docusaurus Document Version
+        working-directory: website
+        run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
 
-#       - name: ✍️ Commit Version Files to Main Branch
-#         uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 #v5
-#         with:
-#           commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
-#           # This commits the new files (versioned_docs/ and versions.json)
+      - name: ✍️ Commit Version Files to Main Branch
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
+        with:
+          commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
+          # This commits the new versioned docs files and metadata in the website directory
+          file_pattern: |
+            website/versioned_docs/
+            website/versioned_sidebars/
+            website/versions.json
 
 #       - name: 🏗️ Build and Deploy Docusaurus Site
 #         run: |
