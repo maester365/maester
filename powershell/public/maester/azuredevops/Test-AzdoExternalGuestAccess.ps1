@@ -38,8 +38,6 @@ function Test-AzdoExternalGuestAccess {
         $resultMarkdown = "Well done. External users should not be allowed access to your Azure DevOps organization"
     }
 
-
-
     Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'Critical'
 
     return $result
