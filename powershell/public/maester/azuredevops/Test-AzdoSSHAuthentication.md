@@ -1,6 +1,6 @@
 Connecting to Azure DevOps using SSH should be disabled.
 
-Rationale: Oauth is the prefered and most secure authentication method.
+Rationale: OAuth is the preferred and most secure authentication method.
 
 #### Remediation action:
 Disable the policy to stops these requests and notifications.
