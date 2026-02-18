@@ -5,8 +5,8 @@ Rationale: Gravatar images should not be exposed for external users.
 #### Remediation action:
 Disable the policy to stops these requests and notifications.
 1. On your Azure DevOps organization page, select Organization settings at lower left, and then select Repositories in the left navigation.
-2. On the All Repositories page, set Gravatar images to On or Off.
-   
+2. On the All Repositories page, set Gravatar images to Off.
+
 #### Related links
 
 * [Learn - Gravatar images](https://learn.microsoft.com/en-us/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images)
