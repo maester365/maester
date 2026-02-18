@@ -34,8 +34,6 @@ function Test-AzdoSSHAuthentication {
         $resultMarkdown = "Well done. Your tenant do not allow developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
     }
 
-
-
     Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
 
     return $result
