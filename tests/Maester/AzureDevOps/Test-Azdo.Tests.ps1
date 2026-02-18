@@ -12,12 +12,12 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1002: Log Audit Events. See https://aka.ms/log-audit-events" -Tag "AZDO.1002" {
 
-        Test-AzdoLogAuditEvents | Should -Be $true -Because "Auditing should be enabled for Azure DevOps"
+        Test-AzdoLogAuditEvent | Should -Be $true -Because "Auditing should be enabled for Azure DevOps"
     }
 
     It "AZDO.1003: Restricting public projects. See https://aka.ms/vsts-anon-access" -Tag "AZDO.1003" {
 
-        Test-AzdoPublicProjects | Should -Be $false -Because "Public projects should be disabled for Azure DevOps"
+        Test-AzdoPublicProject | Should -Be $false -Because "Public projects should be disabled for Azure DevOps"
     }
 
     It "AZDO.1004: Additional protections when using public package registries. See https://aka.ms/upstreamBehaviorBlog" -Tag "AZDO.1004" {
@@ -52,17 +52,17 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1010: Audit streaming. See https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops" -Tag "AZDO.1010" {
 
-        Test-AzdoAuditStreams | Should -Be $true -Because "Setting up a stream also allows you to store more than 90-days worth of auditing data."
+        Test-AzdoAuditStream | Should -Be $true -Because "Setting up a stream also allows you to store more than 90-days worth of auditing data."
     }
 
     It "AZDO.1011: Project Resource Limits. See https://learn.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops" -Tag "AZDO.1011" {
 
-        Test-AzdoResourceUsageProjects | Should -Be $true -Because "Azure DevOps supports up to 1,000 projects within an organization."
+        Test-AzdoResourceUsageProject | Should -Be $true -Because "Azure DevOps supports up to 1,000 projects within an organization."
     }
 
     It "AZDO.1012: Work Items Tags Limits. See https://learn.microsoft.com/en-us/azure/devops/organizations/settings/work/object-limits?view=azure-devops" -Tag "AZDO.1012" {
 
-        Test-AzdoResourceUsageWorkItemTags | Should -Be $true -Because "Azure DevOps supports up to 150,000 tag definitions per organization or collection."
+        Test-AzdoResourceUsageWorkItemTag | Should -Be $true -Because "Azure DevOps supports up to 150,000 tag definitions per organization or collection."
     }
 
     It "AZDO.1013: Organization Owner should not be an individual. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops" -Tag "AZDO.1013" {
@@ -82,17 +82,17 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1016: Limit job authorization scope to current project for non-release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1016" {
 
-        Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipelines  | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all classic release pipelines to the current project."
+        Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline  | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all classic release pipelines to the current project."
     }
 
     It "AZDO.1017: Limit job authorization scope to current project for classic release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1017" {
 
-        Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipelines | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all non-release pipelines to the current project."
+        Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all non-release pipelines to the current project."
     }
 
     It "AZDO.1018: Protect access to repositories in YAML pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access" -Tag "AZDO.1018" {
 
-        Test-AzdoOrganizationProtectAccessToRepositories | Should -Be $true -Because "Apply checks and approvals when accessing repositories from YAML pipelines. Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline."
+        Test-AzdoOrganizationProtectAccessToRepository | Should -Be $true -Because "Apply checks and approvals when accessing repositories from YAML pipelines. Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline."
     }
 
     It "AZDO.1019: Stage chooser. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops" -Tag "AZDO.1019" {
@@ -102,27 +102,27 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1020: Creation of classic build pipelines. See https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/" -Tag "AZDO.1020" {
 
-        Test-AzdoOrganizationCreationClassicBuildPipelines | Should -Be $false -Because "Creating classic build pipelines should not be allowed."
+        Test-AzdoOrganizationCreationClassicBuildPipeline | Should -Be $false -Because "Creating classic build pipelines should not be allowed."
     }
 
     It "AZDO.1021: Creation of classic release pipelines. See https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/" -Tag "AZDO.1021" {
 
-        Test-AzdoOrganizationCreationClassicReleasePipelines | Should -Be $false -Because "Creating classic release pipelines should not be allowed."
+        Test-AzdoOrganizationCreationClassicReleasePipeline | Should -Be $false -Because "Creating classic release pipelines should not be allowed."
     }
 
     It "AZDO.1022: Limit building pull requests from forked GitHub repositories. See https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks" -Tag "AZDO.1022" {
 
-        Test-AzdoOrganizationTriggerPullRequestGitHubRepositories | Should -Be $true -Because "Azure Pipelines can automatically build and validate every pull request and commit to your GitHub repository. This should be configured according to your organizations requirements."
+        Test-AzdoOrganizationTriggerPullRequestGitHubRepository | Should -Be $true -Because "Azure Pipelines can automatically build and validate every pull request and commit to your GitHub repository. This should be configured according to your organizations requirements."
     }
 
     It "AZDO.1023: Disable Marketplace tasks. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution" -Tag "AZDO.1023" {
 
-        Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTasks | Should -Be $false -Because "Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline."
+        Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask | Should -Be $true -Because "Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline."
     }
 
     It "AZDO.1024: Disable Node 6 tasks. See https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2022/no-node-6-on-hosted-agents" -Tag "AZDO.1024" {
 
-        Test-AzdoOrganizationTaskRestrictionsDisableNode6Tasks | Should -Be $true -Because "With this enabled, pipelines will fail if they utilize a task with a Node 6 execution handler."
+        Test-AzdoOrganizationTaskRestrictionsDisableNode6Task | Should -Be $true -Because "With this enabled, pipelines will fail if they utilize a task with a Node 6 execution handler."
     }
 
     It "AZDO.1025: Enable shell tasks arguments validation. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation" -Tag "AZDO.1025" {
@@ -132,17 +132,17 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1026: Enable automatic enrollment to Advanced Security for Azure DevOps. See https://learn.microsoft.com/en-us/azure/devops/repos/security/configure-github-advanced-security-features?view=azure-devops&tabs=yaml#organization-level-onboarding" -Tag "AZDO.1026" {
 
-        Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProjects | Should -Be $true -Because "Enable automatic enrollment for new git repositories to use GitHub Advanced Security for Azure DevOps. It adds GitHub Advanced Security's suite of security features to Azure Repos."
+        Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject | Should -Be $true -Because "Enable automatic enrollment for new git repositories to use GitHub Advanced Security for Azure DevOps. It adds GitHub Advanced Security's suite of security features to Azure Repos."
     }
 
     It "AZDO.1027: Disable showing Gravatar images for users outside of your enterprise. See https://learn.microsoft.com/en-us/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images" -Tag "AZDO.1027" {
 
-        Test-AzdoOrganizationRepositorySettingsGravatarImages | Should -Be $false -Because "Gravatar images should not be exposed outside of your enterprise."
+        Test-AzdoOrganizationRepositorySettingsGravatarImage | Should -Be $false -Because "Gravatar images should not be exposed outside of your enterprise."
     }
 
     It "AZDO.1028: Disable creation of TFVC repositories. See https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects" -Tag "AZDO.1028" {
 
-        Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepos | Should -Be $true -Because "Team Foundation Version Control (TFVC) has been deprecated."
+        Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo | Should -Be $true -Because "Team Foundation Version Control (TFVC) has been deprecated."
     }
 
     It "AZDO.1029: Storage Usage Limit. See https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops" -Tag "AZDO.1029" {
@@ -152,7 +152,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1030: Project Collection Administrators. See https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions" -Tag "AZDO.1030" {
 
-        Test-AzdoProjectCollectionAdministrators | Should -Be $true -Because "Users should not be directly assigned to 'Project Collection Administrator' as it is the most privileged role within Azure DevOps."
+        Test-AzdoProjectCollectionAdministrator | Should -Be $true -Because "Users should not be directly assigned to 'Project Collection Administrator' as it is the most privileged role within Azure DevOps."
     }
 
 }
