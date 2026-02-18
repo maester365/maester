@@ -217,7 +217,7 @@
     'Test-AzdoResourceUsageProject',
     'Test-AzdoResourceUsageWorkItemTag',
     'Test-AzdoSSHAuthentication',
-    'Test-AzdoThirdPartyAccessViaOauth'
+    'Test-AzdoThirdPartyAccessViaOauth',
     'Test-MtEntitlementManagementDeletedGroups',
     'Test-MtEntitlementManagementInactivePolicies',
     'Test-MtEntitlementManagementOrphanedResources',
