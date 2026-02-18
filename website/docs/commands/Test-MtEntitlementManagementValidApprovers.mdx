@@ -1,0 +1,84 @@
+---
+sidebar_class_name: hidden
+description: Checks if access package approval workflows have valid approvers
+id: Test-MtEntitlementManagementValidApprovers
+title: Test-MtEntitlementManagementValidApprovers
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEntitlementManagementValidApprovers.ps1
+---
+
+## SYNOPSIS
+
+Checks if access package approval workflows have valid approvers
+
+## SYNTAX
+
+```powershell
+Test-MtEntitlementManagementValidApprovers [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+MT.1109 - Access package approval workflows must have valid approvers
+
+This test identifies Microsoft Entra ID Governance access package assignment policies with
+approval workflows that reference invalid approvers.
+Invalid approvers can cause:
+- Approval workflow failures
+- Access request timeouts
+- Broken automation flows
+- User frustration and support tickets
+
+The test validates that all approval workflows have:
+- Valid user approvers (account enabled, not deleted)
+- Valid group approvers (group exists and has members)
+- Manager approvers where requestor has an assigned manager
+- No references to deleted or disabled accounts
+
+Learn more:
+https://maester.dev/docs/tests/MT.1109
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtEntitlementManagementValidApprovers
+```
+
+Returns $true if all approval workflows have valid approvers
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtEntitlementManagementValidApprovers](https://maester.dev/docs/commands/Test-MtEntitlementManagementValidApprovers)
