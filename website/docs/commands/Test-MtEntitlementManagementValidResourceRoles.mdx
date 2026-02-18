@@ -1,0 +1,91 @@
+---
+sidebar_class_name: hidden
+description: Validates catalog resources have no stale app roles or deleted service principals
+id: Test-MtEntitlementManagementValidResourceRoles
+title: Test-MtEntitlementManagementValidResourceRoles
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEntitlementManagementValidResourceRoles.ps1
+---
+
+## SYNOPSIS
+
+Validates catalog resources have no stale app roles or deleted service principals
+
+## SYNTAX
+
+```powershell
+Test-MtEntitlementManagementValidResourceRoles [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+MT.1106 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)
+
+This test identifies Entra ID Governance access package catalog resources that
+reference deleted service principals, stale app roles, or inaccessible SharePoint sites.
+
+When Enterprise Applications are deleted or reconfigured (app roles removed), or when
+SharePoint sites are deleted/moved, catalogs often retain references that cause
+provisioning failures when users request access.
+
+The test validates:
+- Application resources point to existing service principals
+- App roles assigned in access packages still exist in service principals
+- SharePoint sites are accessible via Graph API
+- "Default Access" roles are excluded (system defaults)
+
+Issues detected:
+- Deleted service principals (404 errors)
+- Stale app roles removed from service principal but still in access packages
+- Deleted or inaccessible SharePoint sites
+- Invalid SharePoint URLs
+
+Note: Group validation is delegated to MT.1107 for comprehensive coverage.
+
+Learn more:
+https://maester.dev/docs/tests/MT.1106
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtEntitlementManagementValidResourceRoles
+```
+
+Returns $true if all catalog resources have valid roles and service principals
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtEntitlementManagementValidResourceRoles](https://maester.dev/docs/commands/Test-MtEntitlementManagementValidResourceRoles)
