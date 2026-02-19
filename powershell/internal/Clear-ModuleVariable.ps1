@@ -20,5 +20,6 @@ function Clear-ModuleVariable {
     $__MtSession.AdminPortalUrl = @{}
     Clear-MtDnsCache
     Clear-MtExoCache
+    $__MtSession.AIAgentInfo = $null
     # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
 }

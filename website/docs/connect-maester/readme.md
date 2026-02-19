@@ -77,11 +77,11 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
-### Connect to Azure, Exchange Online and Teams
+### Connect to Azure, Exchange Online, Copilot Studio and Teams
 
-`Connect-Maester` also provides options to connect to Azure, Exchange Online and Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
+`Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online, Security Compliance and Microsoft Teams.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance and Microsoft Teams.
 
 ```powershell
 Connect-Maester -Service All
@@ -92,6 +92,16 @@ If you need to connect to just a subset of the services you can specifiy them us
 ```powershell
 Connect-Maester -Service Azure,Graph,Teams
 ```
+
+### Connect to Copilot Studio (via Dataverse)
+
+To run the [Copilot Studio Security Tests](/docs/tests/maester/ai-agent-setup) (MT.1113–MT.1122), connect with the `Dataverse` service:
+
+```powershell
+Connect-Maester -Service Graph,Dataverse
+```
+
+This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`. See the [Copilot Studio Security Tests setup guide](/docs/tests/maester/ai-agent-setup) for full configuration instructions.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 
