@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Retrieves AI agent information from Dataverse (Copilot Studio).
+    Retrieves Copilot Studio agent information via the Dataverse API.
 
 .DESCRIPTION
     Queries the Dataverse OData API to retrieve configuration and security details
@@ -26,14 +26,14 @@ function Get-MtAIAgentInfo {
 
     if ($null -ne $__MtSession.AIAgentInfo) {
         if ($__MtSession.AIAgentInfo.Count -eq 0) {
-            Write-Verbose "Previous Dataverse query failed or returned no results. Skipping."
+            Write-Verbose "Previous Copilot Studio query failed or returned no results. Skipping."
             return $null
         }
         Write-Verbose "Returning cached AI agent info."
         return $__MtSession.AIAgentInfo
     }
 
-    # Get the Dataverse environment URL from config
+    # Get the Dataverse environment URL from config (used to connect to Copilot Studio)
     $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
 
     if ([string]::IsNullOrEmpty($dataverseUrl)) {
@@ -66,7 +66,7 @@ function Get-MtAIAgentInfo {
             $token = $tokenResult.Token
         }
     } catch {
-        Write-Warning "Failed to get Dataverse access token. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
+        Write-Warning "Failed to get Dataverse access token for Copilot Studio. Ensure you are connected via 'Connect-Maester -Service Dataverse'. Error: $_"
         $__MtSession.AIAgentInfo = @()
         return $null
     }
@@ -104,13 +104,13 @@ function Get-MtAIAgentInfo {
         $selectFields = 'botid,name,accesscontrolpolicy,authenticationmode,authenticationtrigger,authorizedsecuritygroupids,statecode,statuscode,modifiedon,publishedon,configuration,schemaname,_ownerid_value,_createdby_value'
         $botsResponse = Invoke-RestMethod -Uri "$apiBase/bots?`$filter=ismanaged eq false&`$select=$selectFields" -Headers $headers -ErrorAction Stop
     } catch {
-        Write-Warning "Failed to query bots from Dataverse: $_"
+        Write-Warning "Failed to query Copilot Studio agents from Dataverse: $_"
         $__MtSession.AIAgentInfo = @()
         return $null
     }
 
     if ($null -eq $botsResponse.value -or $botsResponse.value.Count -eq 0) {
-        Write-Verbose "No bots found in the Dataverse environment."
+        Write-Verbose "No Copilot Studio agents found in the Dataverse environment."
         $__MtSession.AIAgentInfo = @()
         return $null
     }

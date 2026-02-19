@@ -103,10 +103,10 @@ $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?a
 </details>
 
 <details>
-  <summary>(Optional) Grant permissions to Dataverse (Copilot Studio agents)</summary>
-### (Optional) Grant permissions to Dataverse
+  <summary>(Optional) Grant Dataverse permissions for Copilot Studio tests</summary>
+### (Optional) Grant Dataverse permissions for Copilot Studio
 
-Dataverse access is required for the [AI Agent security tests](/docs/tests/maester/ai-agent-setup) (MT.1113–MT.1122) that evaluate Copilot Studio agent configurations.
+Dataverse access is required for the Copilot Studio security tests (MT.1113–MT.1122) that evaluate Copilot Studio agent configurations.
 
 #### Create an Application User in Power Platform
 
@@ -130,5 +130,4 @@ Add the environment URL to `maester-config.json`:
 }
 ```
 
-See the [AI Agent setup guide](/docs/tests/maester/ai-agent-setup) for full details.
 </details>
