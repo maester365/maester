@@ -48,10 +48,12 @@ function Test-AzdoOrganizationStorageUsage {
         $result = $false
     } else {
         $resultMarkdown =
-        @'
-        Well done. You are not exceeding or approaching your storage usage limit.
-        Current usage: {0} GB
-        Max quantity: {1}
+@'
+Well done. You are not exceeding or approaching your storage usage limit.
+
+Current usage: {0} GB
+
+Max quantity: {1}
 '@ -f $StorageUsage.currentQuantity, $MaxQuantity
         $result = $true
     }
