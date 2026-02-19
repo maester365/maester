@@ -1302,7 +1302,7 @@
     {
       "Id": "MT.1118",
       "Severity": "Medium",
-      "Title": "AI agents with authentication should require it on every conversation"
+      "Title": "AI agents should avoid using creator authentication for tools"
     },
     {
       "Id": "MT.1119",

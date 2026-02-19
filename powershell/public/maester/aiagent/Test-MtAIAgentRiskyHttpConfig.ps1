@@ -61,7 +61,7 @@ function Test-MtAIAgentRiskyHttpConfig {
             $portMatches = [regex]::Matches($data, 'https?://[^\s]+:(\d+)')
             foreach ($match in $portMatches) {
                 $port = $match.Groups[1].Value
-                if ($port -ne '443' -and $port -ne '80') {
+                if ($port -ne '443') {
                     $riskyActions += "Non-standard port :$port in topic '$($topic.Name)'"
                 }
             }
