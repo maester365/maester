@@ -82,12 +82,12 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1016: Limit job authorization scope to current project for non-release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1016" {
 
-        Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline  | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all classic release pipelines to the current project."
+        Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline  | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all non-release pipelines to the current project."
     }
 
     It "AZDO.1017: Limit job authorization scope to current project for classic release pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope" -Tag "AZDO.1017" {
 
-        Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all non-release pipelines to the current project."
+        Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline | Should -Be $true -Because "With this option enabled, you can reduce the scope of access for all classic pipelines to the current project."
     }
 
     It "AZDO.1018: Protect access to repositories in YAML pipelines. See https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access" -Tag "AZDO.1018" {

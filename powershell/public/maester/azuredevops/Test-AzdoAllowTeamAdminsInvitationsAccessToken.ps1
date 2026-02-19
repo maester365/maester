@@ -30,6 +30,7 @@ function Test-AzdoAllowTeamAdminsInvitationsAccessToken {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
+        break
     }
 
     $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User'
@@ -37,8 +38,7 @@ function Test-AzdoAllowTeamAdminsInvitationsAccessToken {
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "Team and project administrators is allowed to invite new users"
-    }
-    else {
+    } else {
         $resultMarkdown = "Well done. Enrolling to your Azure DevOps organization should be a controlled process."
     }
 

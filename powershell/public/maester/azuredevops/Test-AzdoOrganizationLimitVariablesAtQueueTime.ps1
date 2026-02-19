@@ -22,24 +22,25 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).enforceSettableVar
 
     if ($result) {
         $resultMarkdown = "Well done. With this option enabled, only those variables that are explicitly marked as ""Settable at queue time"" can be set"
-    }
-    else {
+    } else {
         $auditEnforceSettableVar = (Get-ADOPSOrganizationPipelineSettings).auditEnforceSettableVar
         if ($auditEnforceSettableVar) {
             $resultMarkdown = "Auditing is configured, however usage is not restricted."
-        }
-        else {
+        } else {
             $resultMarkdown = "Users can define new variables not defined by pipeline author, and may override system variables."
         }
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

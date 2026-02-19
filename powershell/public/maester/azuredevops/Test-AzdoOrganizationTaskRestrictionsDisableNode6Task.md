@@ -1,7 +1,7 @@
 Disable Node 6 tasks.
 
 #### Remediation action:
-Disable the policy to stops these requests and notifications.
+Disable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Settings under Pipelines.

@@ -22,22 +22,22 @@ function Test-AzdoOrganizationCreationClassicReleasePipeline {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
-
-    $PipelineCreation = (Get-ADOPSOrganizationPipelineSettings).disableClassicReleasePipelineCreation
-
-    if ($PipelineCreation) {
-        $resultMarkdown = "Well done. No classic release pipelines, task groups, and deployment groups can be created / imported. Existing ones will continue to work."
-        $result = $false
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
     }
-    else {
+
+    $result = (Get-ADOPSOrganizationPipelineSettings).disableClassicReleasePipelineCreation
+
+    if (-not $result) {
         $resultMarkdown = "Classic release pipelines, task groups, and deployment groups can be created / imported."
-        $result = $true
+    } else {
+        $resultMarkdown = "Well done. No classic release pipelines, task groups, and deployment groups can be created / imported. Existing ones will continue to work."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 
-    return $result
+    return -not $result
 }

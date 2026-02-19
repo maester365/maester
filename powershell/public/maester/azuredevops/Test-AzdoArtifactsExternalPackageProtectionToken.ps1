@@ -29,6 +29,7 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
+        break
     }
 
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
@@ -36,12 +37,9 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "Well done. Your Azure DevOps tenant limits access to externally sourced packages when internally sources packages are already present."
-    }
-    else {
+    } else {
         $resultMarkdown = "Your tenant should prefer to use internal source packages when present"
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

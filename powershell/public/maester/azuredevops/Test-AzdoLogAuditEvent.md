@@ -3,7 +3,7 @@ Auditing SHOULD BE enabled.
 Rationale: Keeping track of activities within your Azure DevOps environment is crucial for security and compliance. Auditing helps you monitor and log these activities, providing transparency and accountability.
 
 #### Remediation action:
-Enable the policy to stops these requests and notifications.
+Enable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Policies under the Security header.

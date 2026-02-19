@@ -23,18 +23,20 @@ function Test-AzdoOrganizationProtectAccessToRepository {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).enforceReferencedRepoScopedToken
 
     if ($result) {
         $resultMarkdown = "Well done. Checks and approvals are applied when accessing repositories from YAML pipelines. Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline."
-    }
-    else {
+    } else {
         $resultMarkdown = "Checks and approvals are not applied when accessing repositories from YAML pipelines. Also, a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline is not generated."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

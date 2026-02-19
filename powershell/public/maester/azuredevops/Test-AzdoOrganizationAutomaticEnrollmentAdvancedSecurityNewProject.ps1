@@ -23,18 +23,19 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
-
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
     $result = (Get-ADOPSOrganizationAdvancedSecurity).enableOnCreate
 
     if ($result) {
         $resultMarkdown = "Well done. New projects will by default have Advanced Security enabled."
-    }
-    else {
+    } else {
         $resultMarkdown = "New projects must be manually enrolled in Advanced Security."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

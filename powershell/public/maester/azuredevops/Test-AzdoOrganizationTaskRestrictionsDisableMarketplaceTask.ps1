@@ -22,18 +22,20 @@ function Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).disableMarketplaceTasksVar
 
     if ($result) {
         $resultMarkdown = "Well done. The ability to install and run tasks from the Marketplace has been restricted."
-    }
-    else {
+    } else {
         $resultMarkdown = "It is allowed to install and run tasks from the Marketplace."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

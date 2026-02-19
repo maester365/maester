@@ -26,6 +26,7 @@ function Test-AzdoExternalGuestAccess {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
+        break
     }
 
     $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User'
@@ -33,8 +34,7 @@ function Test-AzdoExternalGuestAccess {
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "External user(s) can be added to the organization to which they were invited and has immediate access. A guest user can add other guest users to the organization after being granted the Guest Inviter role in Microsoft Entra ID."
-    }
-    else {
+    } else {
         $resultMarkdown = "Well done. External users should not be allowed access to your Azure DevOps organization"
     }
 

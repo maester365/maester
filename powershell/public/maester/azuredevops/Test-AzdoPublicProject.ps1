@@ -23,7 +23,12 @@ function Test-AzdoPublicProject {
     [OutputType([bool])]
     param()
 
-    Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.AllowAnonymousAccess'

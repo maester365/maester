@@ -23,18 +23,20 @@ function Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).enableShellTasksArgsSanitizing
 
     if ($result) {
         $resultMarkdown = "Well done. Argument parameters for built-in shell tasks are validated to check for inputs that can inject commands into scripts."
-    }
-    else {
+    } else {
         $resultMarkdown = "Argument parameters for built-in shell tasks may inject commands into scripts."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

@@ -3,7 +3,7 @@ Disable the ability to install and run tasks from the Marketplace, which gives y
 Rationale: Tasks from marketplace should be reviewed and approved.
 
 #### Remediation action:
-Disable the policy to stops these requests and notifications.
+Disable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Settings under Pipelines.

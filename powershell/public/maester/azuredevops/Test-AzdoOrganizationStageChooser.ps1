@@ -23,18 +23,22 @@ function Test-AzdoOrganizationStageChooser {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).disableStageChooser
 
     if (-not $result) {
         $resultMarkdown = "Users are able to select stages to skip from the Queue Pipeline panel."
-    }
-    else {
+    } else {
         $resultMarkdown = "Well done. Users will not be able to select stages to skip from the Queue Pipeline panel."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
 
-    return $result
+    return -not $result
 }

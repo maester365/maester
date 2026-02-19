@@ -23,9 +23,12 @@ function Test-AzdoOrganizationOwner {
     [OutputType([bool])]
     param()
 
-    Write-verbose 'Not connected to Azure DevOps'
-
-
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $Data = Get-ADOPSOrganizationAdminOverview
     if ($data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.exceptionType -eq 'AadGraphException') {

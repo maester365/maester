@@ -3,7 +3,7 @@ Enable Shell Task Validation to prevent code injection.
 Rationale: Code injection through arguments parameters should be prevented.
 
 #### Remediation action:
-Enable the policy to stops these requests and notifications.
+Enable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Settings under Pipelines.

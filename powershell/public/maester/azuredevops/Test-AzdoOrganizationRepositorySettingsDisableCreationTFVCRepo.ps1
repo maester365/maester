@@ -22,18 +22,20 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "DisableTfvcRepositories").value
 
     if ($result) {
         $resultMarkdown = "Well done. Team Foundation Version Control (TFVC) repositories cannot be created."
-    }
-    else {
+    } else {
         $resultMarkdown = "Team Foundation Version Control (TFVC) can be created."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

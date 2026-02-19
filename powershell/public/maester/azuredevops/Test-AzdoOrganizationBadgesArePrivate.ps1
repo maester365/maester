@@ -23,18 +23,20 @@ function Test-AzdoOrganizationBadgesArePrivate {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).statusBadgesArePrivate
 
     if ($result) {
         $resultMarkdown = "Well done. Azure DevOps badges are private."
-    }
-    else {
+    } else {
         $resultMarkdown = "Anonymous users can access the status badge API for all pipelines."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
     return $result

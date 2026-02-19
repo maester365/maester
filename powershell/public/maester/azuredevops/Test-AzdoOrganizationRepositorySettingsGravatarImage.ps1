@@ -22,18 +22,20 @@ function Test-AzdoOrganizationRepositorySettingsGravatarImage {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "GravatarEnabled").value
 
     if ($result) {
         $resultMarkdown = "Gravatar images are exposed for users outside of your enterprise."
-    }
-    else {
+    } else {
         $resultMarkdown = "Well done. Gravatar images are not exposed outside of your enterprise."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

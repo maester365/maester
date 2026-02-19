@@ -22,18 +22,20 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).enforceJobAuthScope
 
     if ($result) {
         $resultMarkdown = "Well done. Access tokens have reduced scope of access for all non-release pipelines."
-    }
-    else {
+    } else {
         $resultMarkdown = "Non-Release Pipelines can run with collection scoped access tokens"
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

@@ -3,7 +3,7 @@ Status badges in Azure DevOps SHOULD BE disabled.
 Rationale: Even in a private project, anonymous badge access is enabled by default. With anonymous badge access enabled, users outside your organization might be able to query information such as project names, branch names, job names, and build status through the badge status API.
 
 #### Remediation action:
-Disable the policy to stops these requests and notifications.
+Disable the policy to stop these requests and notifications.
 1. Sign in to your organization
 2. Choose Organization settings.
 3. Select Settings under Pipelines.

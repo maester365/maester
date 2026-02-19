@@ -25,19 +25,21 @@ function Test-AzdoLogAuditEvent {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.LogAuditEvents'
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "Well done. Your tenant has auditing enabled, tracking events such as permission changes, deleted resources, log access and downloads with many other types of changes."
-    }
-    else {
+    } else {
         $resultMarkdown = "Your tenant do not have logging enabled for Azure DevOps"
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

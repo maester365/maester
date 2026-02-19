@@ -29,6 +29,7 @@ function Test-AzdoAllowRequestAccessToken {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
+        break
     }
 
     $UserPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User'
@@ -36,8 +37,7 @@ function Test-AzdoAllowRequestAccessToken {
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "When enabled, this policy allows users to request access, triggering email notifications to administrators for review and approval."
-    }
-    else {
+    } else {
         $resultMarkdown = "Well done. Disabling the policy stops these requests and notifications."
     }
 

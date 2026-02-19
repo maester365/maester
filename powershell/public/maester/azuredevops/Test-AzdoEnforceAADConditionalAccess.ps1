@@ -27,18 +27,17 @@ function Test-AzdoEnforceAADConditionalAccess {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
+        break
     }
 
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.EnforceAADConditionalAccess'
     $result = $Policy.effectiveValue
-    if ($result) {a
+    if ($result) {
         $resultMarkdown = "Well done. Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators."
     } else {
         $resultMarkdown = "Your tenant should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators. "
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 

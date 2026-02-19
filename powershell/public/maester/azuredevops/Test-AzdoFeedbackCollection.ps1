@@ -24,19 +24,21 @@ function Test-AzdoFeedbackCollection {
     [OutputType([bool])]
     param()
 
-Write-verbose 'Not connected to Azure DevOps'
+    if ($null -eq (Get-ADOPSConnection)['Organization']) {
+        Write-verbose 'Not connected to Azure DevOps'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+        return $null
+        break
+    }
 
     $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Privacy'
     $Policy = $PrivacyPolicies.policy | where-object -property name -eq 'Policy.AllowFeedbackCollection'
     $result = $Policy.effectiveValue
     if ($result) {
         $resultMarkdown = "Well done. Your Azure DevOps tenant allows feedback collection."
-    }
-    else {
+    } else {
         $resultMarkdown = "You should have confidence that we're handling your data appropriately and for legitimate uses. Part of that assurance involves carefully restricting usage."
     }
-
-
 
     Add-MtTestResultDetail -Result $resultMarkdown
 
