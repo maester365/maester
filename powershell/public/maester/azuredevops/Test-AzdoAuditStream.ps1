@@ -51,7 +51,7 @@ function Test-AzdoAuditStream {
 
 
 
-    Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'Critical'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

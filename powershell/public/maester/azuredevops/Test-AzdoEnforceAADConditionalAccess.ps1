@@ -32,7 +32,7 @@ function Test-AzdoEnforceAADConditionalAccess {
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.EnforceAADConditionalAccess'
     $result = $Policy.effectiveValue
-    if ($result) {
+    if ($result) {a
         $resultMarkdown = "Well done. Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators."
     } else {
         $resultMarkdown = "Your tenant should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators. "
@@ -40,7 +40,7 @@ function Test-AzdoEnforceAADConditionalAccess {
 
 
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'Critical'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

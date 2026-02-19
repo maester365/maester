@@ -42,7 +42,7 @@ function Test-AzdoAllowTeamAdminsInvitationsAccessToken {
         $resultMarkdown = "Well done. Enrolling to your Azure DevOps organization should be a controlled process."
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

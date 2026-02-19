@@ -39,7 +39,7 @@ Write-verbose 'Not connected to Azure DevOps'
 
 
 
-    Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'Critical'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

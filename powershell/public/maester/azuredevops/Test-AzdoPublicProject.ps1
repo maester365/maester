@@ -34,7 +34,7 @@ function Test-AzdoPublicProject {
         $resultMarkdown = "Well done. Your tenant has disabled the use of public projects"
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'Critical'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

@@ -55,7 +55,7 @@ Write-verbose 'Not connected to Azure DevOps'
 
     # $Description = Get-Content $PSScriptRoot\$($MyInvocation.MyCommand.Name).md -Raw
 
-    Add-MtTestResultDetail -Result $resultMarkdown   -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

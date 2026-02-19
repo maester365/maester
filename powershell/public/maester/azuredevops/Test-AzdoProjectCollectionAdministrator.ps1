@@ -83,7 +83,7 @@ function Test-AzdoProjectCollectionAdministrator {
         $resultMarkdown = $resultMarkdown -replace '%TestResult%', $markdown
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

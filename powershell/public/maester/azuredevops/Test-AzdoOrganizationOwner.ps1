@@ -45,7 +45,7 @@ function Test-AzdoOrganizationOwner {
         $markdown += "| --- | --- | --- |`n"
         $markdown += "| $($currentOwner.name) | $($currentOwner.id) | $($currentOwner.email) |`n"
         $resultMarkdown = $resultMarkdown -replace '%TestResult%', $markdown
-        Add-MtTestResultDetail -Result $resultMarkdown -Severity 'Critical'
+        Add-MtTestResultDetail -Result $resultMarkdown
     }
     return $result
 }

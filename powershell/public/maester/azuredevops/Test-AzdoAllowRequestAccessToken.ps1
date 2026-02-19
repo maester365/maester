@@ -41,7 +41,7 @@ function Test-AzdoAllowRequestAccessToken {
         $resultMarkdown = "Well done. Disabling the policy stops these requests and notifications."
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

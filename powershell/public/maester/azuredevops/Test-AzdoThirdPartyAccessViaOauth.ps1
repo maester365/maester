@@ -35,7 +35,7 @@ function Test-AzdoThirdPartyAccessViaOauth {
         $resultMarkdown = "Well done. Your tenant has restricted Azure DevOps OAuth apps to access resources in your organization through OAuth."
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

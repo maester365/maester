@@ -34,7 +34,7 @@ Write-verbose 'Not connected to Azure DevOps'
         $resultMarkdown = "Well done. Users will not be able to select stages to skip from the Queue Pipeline panel."
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

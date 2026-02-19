@@ -38,7 +38,7 @@ function Test-AzdoResourceUsageWorkItemTag {
 
 
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

@@ -47,7 +47,7 @@ function Test-AzdoOrganizationTriggerPullRequestGitHubRepository {
         $resultMarkdown = "No limits building pull requests from forked GitHub repositories have been configured."
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

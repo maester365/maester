@@ -43,7 +43,7 @@ function Test-AzdoArtifactsExternalPackageProtectionToken {
 
 
 
-    Add-MtTestResultDetail -Result $resultMarkdown  -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

@@ -36,7 +36,7 @@ function Test-AzdoResourceUsageProject {
         $result = $true
     }
 
-    Add-MtTestResultDetail -Result $resultMarkdown -Severity 'High'
+    Add-MtTestResultDetail -Result $resultMarkdown
 
     return $result
 }

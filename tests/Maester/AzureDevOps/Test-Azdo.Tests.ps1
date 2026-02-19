@@ -1,7 +1,7 @@
 Describe "Azure DevOps" -Tag "Azure DevOps" {
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
 
-        Test-AzdoThirdPartyAccessViaOauth | Should -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        Test-AzdoThirdPartyAccessViaOauth | Should -Be $false -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
 
     }
 
@@ -15,7 +15,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         Test-AzdoLogAuditEvent | Should -Be $true -Because "Auditing should be enabled for Azure DevOps"
     }
 
-    It "AZDO.1003: Restricting public projects. See https://aka.ms/vsts-anon-access" -Tag "AZDO.1003" {
+    It "AZDO.1003: Restrict public projects. See https://aka.ms/vsts-anon-access" -Tag "AZDO.1003" {
 
         Test-AzdoPublicProject | Should -Be $false -Because "Public projects should be disabled for Azure DevOps"
     }
