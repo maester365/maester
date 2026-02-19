@@ -21,7 +21,7 @@ Learn more: [Control how agents are shared](https://learn.microsoft.com/microsof
 
 ## Prerequisites
 
-This test requires the **Dataverse** service connection. See the [AI Agent Security Tests setup guide](/docs/tests/maester/ai-agent-setup) for configuration instructions.
+This test evaluates **Copilot Studio** agent configurations via the Dataverse API. See the [Copilot Studio Security Tests setup guide](/docs/tests/maester/ai-agent-setup) for configuration instructions.
 
 ```powershell
 Connect-Maester -Service Graph,Dataverse
@@ -30,4 +30,4 @@ Connect-Maester -Service Graph,Dataverse
 ## Learn more
 
 - [Copilot Studio Agent Security Top 10 Risks](https://learn.microsoft.com/microsoft-copilot-studio/guidance/security-top-10)
-- [Maester AI Agent Security Tests](/docs/tests/maester/ai-agent-setup)
+- [Maester Copilot Studio Security Tests](/docs/tests/maester/ai-agent-setup)

@@ -30,7 +30,7 @@
 .EXAMPLE
    Connect-Maester -Service Dataverse,Graph
 
-   Connects to Microsoft Graph and Dataverse (Copilot Studio). The Dataverse connection uses the Az.Accounts module to obtain an access token for the Copilot Studio environment configured in maester-config.json.
+   Connects to Microsoft Graph and the Dataverse API for Copilot Studio security tests. The Dataverse connection uses the Az.Accounts module to obtain an access token for the Copilot Studio environment configured in maester-config.json.
 
 .EXAMPLE
    Connect-Maester -UseDeviceCode
@@ -108,7 +108,7 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse, and EXO. Default is Graph.
+      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO. Default is Graph.
       [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
       [string[]]$Service = 'Graph',
 
@@ -155,7 +155,7 @@
             # Note: Dataverse connectivity is validated at test time in Get-MtAIAgentInfo
             # when the full config (including Custom overrides) has been loaded by Invoke-Maester.
             if ($Service -contains 'Dataverse' -or $Service -contains 'All') {
-               Write-Verbose "Dataverse service requested. Configuration will be validated at test time."
+               Write-Verbose "Dataverse service requested for Copilot Studio tests. Configuration will be validated at test time."
                $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
                if (-not [string]::IsNullOrEmpty($dataverseUrl)) {
                   $dataverseUrl = $dataverseUrl.TrimEnd('/')
@@ -169,7 +169,7 @@
                         Write-Verbose "Successfully obtained Dataverse access token for $resourceUrl"
                      }
                   } catch {
-                     Write-Host "`nFailed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has Dataverse permissions." -ForegroundColor Yellow
+                     Write-Host "`nFailed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has permissions to access the Copilot Studio environment via the Dataverse API." -ForegroundColor Yellow
                      Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
                   }
                }
