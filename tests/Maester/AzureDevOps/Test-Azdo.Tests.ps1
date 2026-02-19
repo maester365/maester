@@ -1,4 +1,5 @@
 Describe "Azure DevOps" -Tag "Azure DevOps" {
+
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
 
         Test-AzdoThirdPartyAccessViaOauth | Should -Be $false -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
