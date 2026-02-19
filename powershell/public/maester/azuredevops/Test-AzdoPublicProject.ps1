@@ -3,7 +3,7 @@
     Returns a boolean depending on the configuration.
 
 .DESCRIPTION
-    Checks the status of public projects within your Azure DevOps Organisation.
+    Checks the status of public projects within your Azure DevOps Organization.
 
     https://aka.ms/vsts-anon-access
     https://learn.microsoft.com/en-us/azure/devops/organizations/projects/make-project-public?view=azure-devops

@@ -13,7 +13,7 @@ To allow seamless access to your organization without repeatedly prompting for u
 
 Third-party application access via OAuth: Enable Azure DevOps OAuth apps to access resources in your organization through OAuth. This policy is defaulted to off for all new organizations. If you want access to Azure DevOps OAuth apps, enable this policy to ensure these apps can access resources in your organization. This policy doesn't affect Microsoft Entra ID OAuth app access.
 
-When you deny access to an authentication method, no application can access your organization through that method. Any application that previously had access encounter authentication errors and lose access.
+When you deny access to an authentication method, no application can access your organization through that method. Any application that previously had access will encounter authentication errors and lose access.
 
 #### Related links
 

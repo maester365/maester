@@ -38,7 +38,7 @@ function Test-AzdoLogAuditEvent {
     if ($result) {
         $resultMarkdown = "Well done. Your tenant has auditing enabled, tracking events such as permission changes, deleted resources, log access and downloads with many other types of changes."
     } else {
-        $resultMarkdown = "Your tenant do not have logging enabled for Azure DevOps"
+        $resultMarkdown = "Your tenant does not have logging enabled for Azure DevOps"
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
