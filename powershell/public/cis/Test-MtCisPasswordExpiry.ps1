@@ -29,14 +29,14 @@ function Test-MtCisPasswordExpiry {
         $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
 
         Write-Verbose 'Get domains where passwords are set to expire'
-        $result = $domains | Where-Object { $_.PasswordValidityPeriodInDays -ne '2147483647' }
+        $result = $domains | Where-Object { ($_.PasswordValidityPeriodInDays -ne '2147483647') -and ($_.authenticationType -eq "Managed") }
 
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire on all your 'managed' domains:`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant has 1 or more domains which expire passwords:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has 1 or more 'managed' domains which expire passwords:`n`n%TestResult%"
         }
 
         $resultMd = "| Display Name | Domain |`n"

@@ -216,9 +216,9 @@ function Get-MtLicenseInformation {
                 # Customer Lockbox is included in Microsoft 365 E5, Office 365 E5, A5, G5 subscriptions
                 # and can be added via Information Protection and Compliance or Advanced Compliance add-ons.
                 # Service Plan: LOCKBOX_ENTERPRISE
-                # Service Plan ID: c1ec4a95-1f05-45b3-a911-aa3fa01094f5
+                # Service Plan ID: 9f431833-0334-42de-a7dc-70aa40db46db (Customer Lockbox) or 3ec18638-bd4c-4d3b-8905-479ed636b83e (Customer Lockbox (A))
                 # Reference: https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
-                if ('c1ec4a95-1f05-45b3-a911-aa3fa01094f5' -in $ServicePlans) {
+                if ('9f431833-0334-42de-a7dc-70aa40db46db' -or '3ec18638-bd4c-4d3b-8905-479ed636b83e' -in $ServicePlans) {
                     $LicenseType = 'CustomerLockbox' # Customer Lockbox / LOCKBOX_ENTERPRISE
                 } else {
                     $LicenseType = $null

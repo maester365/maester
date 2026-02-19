@@ -1265,6 +1265,31 @@
       "Title": "MDM Authority should be set to Microsoft Intune"
     },
     {
+      "Id": "MT.1106",
+      "Severity": "Medium",
+      "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
+    },
+    {
+      "Id": "MT.1107",
+      "Severity": "Medium",
+      "Title": "Access packages and catalogs should not reference deleted groups"
+    },
+    {
+      "Id": "MT.1108",
+      "Severity": "Medium",
+      "Title": "Access packages should not have inactive or orphaned assignment policies"
+    },
+    {
+      "Id": "MT.1109",
+      "Severity": "Medium",
+      "Title": "Access package approval workflows must have valid approvers"
+    },
+    {
+      "Id": "MT.1110",
+      "Severity": "Medium",
+      "Title": "No catalog should contain resources without any associated access packages"
+    },
+    {
       "Id": "MT.1111",
       "Severity": "Low",
       "Title": "High privileged user should be linked to an identity"
