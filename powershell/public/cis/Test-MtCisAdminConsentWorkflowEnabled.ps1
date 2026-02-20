@@ -31,7 +31,7 @@ function Test-MtCisAdminConsentWorkflowEnabled {
         Write-Verbose 'Executing checks'
         $checkAdminConsentWorkflowEnabled = $settings | Where-Object { $_.isEnabled -eq $true }
 
-        $testResult = (($checkAdminConsentWorkflowEnabled | Measure-Object).Count -eq 1)
+        $testResult = (($checkAdminConsentWorkflowEnabled | Measure-Object).Count -ge 1)
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
