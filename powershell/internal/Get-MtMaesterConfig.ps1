@@ -103,8 +103,8 @@ function Get-MtMaesterConfig {
             $mainTestSetting = $maesterConfig.TestSettingsHash[$customSetting.Id]
             if ($mainTestSetting) {
                 Write-Verbose "Updating TestSetting with Id $($customSetting.Id) from custom config."
-                # Update the existing properties (right now only Severity is supported)
                 $mainTestSetting.Severity = $customSetting.Severity
+                $mainTestSetting.Title = $customSetting.Title
             }
         }
     } else {
