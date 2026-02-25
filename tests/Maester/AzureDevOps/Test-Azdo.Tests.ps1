@@ -156,6 +156,28 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         Test-AzdoProjectCollectionAdministrator | Should -Be $true -Because "Users should not be directly assigned to 'Project Collection Administrator' as it is the most privileged role within Azure DevOps."
     }
 
+    It "AZDO.1031: Validate SSH Key Expiration. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#validate-ssh-key-expiration" -Tag "AZDO.1031" {
+
+        Test-AzdoValidateSshKeyExpiration | Should -Be $true -Because "SSH keys should be validated for expiration."
+    }
+
+    It "AZDO.1032: Restrict creation of global Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy" -Tag "AZDO.1032" {
+
+        Test-AzdoDisableGlobalPATCreation | Should -Be $true -Because "Global Personal Access Tokens (PATs) should be restricted."
+    }
+
+    It "AZDO.1033: Enable automatic revocation of leaked Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens" -Tag "AZDO.1033" {
+
+        Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation | Should -Be $true -Because "Leaked Personal Access Tokens (PATs) should be automatically revoked."
+    }
+
+    It "AZDO.1034: Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/organization-management?view=azure-devops" -Tag "AZDO.1034" {
+
+        Test-AzdoOrganizationCreationRestriction | Should -Be $true -Because "Organization creation should be restricted to maintain governance and control."
+    }
+
+    It "AZDO.1035: Restrict Personal Access Token lifespan. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan" -Tag "AZDO.1035" {
+
+        Test-AzdoRestrictPersonalAccessTokenLifespan | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted lifespan with an expiration date."
+    }
 }
-
-
