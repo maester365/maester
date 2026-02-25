@@ -30,7 +30,6 @@ function Test-AzdoAuditStream {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
-        break
     }
 
     $AuditStreams = Get-ADOPSAuditStreams

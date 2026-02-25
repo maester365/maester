@@ -26,7 +26,6 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
-        break
     }
 
     $result = (Get-ADOPSOrganizationPipelineSettings).enforceJobAuthScopeForReleases

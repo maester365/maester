@@ -26,7 +26,6 @@ function Test-AzdoOrganizationRepositorySettingsGravatarImage {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
-        break
     }
 
     $result = (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "GravatarEnabled").value

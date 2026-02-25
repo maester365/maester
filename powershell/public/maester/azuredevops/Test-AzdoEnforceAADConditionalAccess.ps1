@@ -27,7 +27,6 @@ function Test-AzdoEnforceAADConditionalAccess {
         Write-verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
-        break
     }
 
     $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
