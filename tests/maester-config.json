@@ -1665,17 +1665,17 @@
     },
     {
       "Id": "AZDO.1001",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Identities can connect to your organization's Git repos through SSH"
     },
     {
       "Id": "AZDO.1002",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Log Audit Events"
     },
     {
       "Id": "AZDO.1003",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Restrict public projects"
     },
     {
@@ -1685,12 +1685,12 @@
     },
     {
       "Id": "AZDO.1005",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "IP Conditional Access policy validation"
     },
     {
       "Id": "AZDO.1006",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "External Users access"
     },
     {
@@ -1700,7 +1700,7 @@
     },
     {
       "Id": "AZDO.1008",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Request access to Azure DevOps by e-mail notifications to administrators"
     },
     {
@@ -1710,7 +1710,7 @@
     },
     {
       "Id": "AZDO.1010",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Audit streaming"
     },
     {
@@ -1725,17 +1725,17 @@
     },
     {
       "Id": "AZDO.1013",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Organization Owner should not be an individual"
     },
     {
       "Id": "AZDO.1014",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Anonymous access to pipeline badges"
     },
     {
       "Id": "AZDO.1015",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Limit variables that can be set at queue time"
     },
     {
@@ -1775,7 +1775,7 @@
     },
     {
       "Id": "AZDO.1023",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Disable Marketplace tasks"
     },
     {
@@ -1785,7 +1785,7 @@
     },
     {
       "Id": "AZDO.1025",
-      "Severity": "Critical",
+      "Severity": "High",
       "Title": "Enable shell tasks arguments validation"
     },
     {
@@ -1812,6 +1812,26 @@
       "Id": "AZDO.1030",
       "Severity": "High",
       "Title": "Project Collection Administrators"
+    },
+    {
+      "Id": "AZDO.1032",
+      "Severity": "High",
+      "Title": "Restrict creation of global Personal Access Tokens"
+    },
+    {
+      "Id": "AZDO.1033",
+      "Severity": "High",
+      "Title": "Enable automatic revocation of leaked Personal Access Tokens"
+    },
+    {
+      "Id": "AZDO.1034",
+      "Severity": "High",
+      "Title": "Restrict creation of new Azure DevOps organizations"
+    },
+    {
+      "Id": "AZDO.1035",
+      "Severity": "High",
+      "Title": "Restrict Personal Access Token lifespan"
     }
   ]
 }
