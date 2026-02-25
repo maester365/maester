@@ -1327,7 +1327,7 @@
     {
       "Id": "MT.1118",
       "Severity": "Medium",
-      "Title": "AI agents should avoid using creator authentication for tools"
+      "Title": "AI agents should avoid using author (maker) authentication for tools"
     },
     {
       "Id": "MT.1119",
