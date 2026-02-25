@@ -196,7 +196,7 @@
     'Test-MtAIAgentHardCodedCredentials',
     'Test-MtAIAgentMcpTools',
     'Test-MtAIAgentMissingInstructions',
-    'Test-MtAIAgentOrphaned'
+    'Test-MtAIAgentOrphaned',
     'Test-MtEntitlementManagementDeletedGroups',
     'Test-MtEntitlementManagementInactivePolicies',
     'Test-MtEntitlementManagementOrphanedResources',
