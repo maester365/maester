@@ -25,7 +25,7 @@
     }
 
     Context 'Using custom config' {
-         BeforeAll {
+        BeforeAll {
             $customFolderPath = Join-Path $testFolder 'Custom'
             $null = New-Item -Path $customFolderPath -ItemType Directory
             Set-Content -Path "$customFolderPath/maester-config.json" -Value (@{
