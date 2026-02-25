@@ -154,4 +154,4 @@ Connect-MgGraph -AppId $applicationId -Certificate $cert -TenantId $tenantId -No
 Connect-Maester -Service Dataverse
 ```
 
-> The service principal must be registered as an [Application User in Power Platform](/website/docs/sections/create-entra-app.md#create-an-application-user-in-power-platform) with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
+> The service principal must be registered as an [Application User in Power Platform](#create-an-application-user-in-power-platform) with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
