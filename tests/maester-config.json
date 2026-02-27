@@ -1832,6 +1832,11 @@
       "Id": "AZDO.1035",
       "Severity": "High",
       "Title": "Restrict Personal Access Token lifespan"
+    },
+    {
+      "Id": "AZDO.1036",
+      "Severity": "High",
+      "Title": "Restrict Personal Access Token full scope"
     }
   ]
 }
