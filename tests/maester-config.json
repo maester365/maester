@@ -1665,7 +1665,7 @@
     },
     {
       "Id": "AZDO.1001",
-      "Severity": "Medium",
+      "Severity": "High",
       "Title": "Identities can connect to your organization's Git repos through SSH"
     },
     {
@@ -1681,7 +1681,7 @@
     {
       "Id": "AZDO.1004",
       "Severity": "High",
-      "Title": "Additional protections whne using public registries"
+      "Title": "Additional protections when using public registries"
     },
     {
       "Id": "AZDO.1005",
@@ -1700,7 +1700,7 @@
     },
     {
       "Id": "AZDO.1008",
-      "Severity": "Medium",
+      "Severity": "High",
       "Title": "Request access to Azure DevOps by e-mail notifications to administrators"
     },
     {
@@ -1715,12 +1715,12 @@
     },
     {
       "Id": "AZDO.1011",
-      "Severity": "High",
+      "Severity": "Info",
       "Title": "Project Resource Limits"
     },
     {
       "Id": "AZDO.1012",
-      "Severity": "High",
+      "Severity": "Info",
       "Title": "Work Items Tags Limits"
     },
     {
@@ -1730,12 +1730,12 @@
     },
     {
       "Id": "AZDO.1014",
-      "Severity": "Medium",
+      "Severity": "High",
       "Title": "Anonymous access to pipeline badges"
     },
     {
       "Id": "AZDO.1015",
-      "Severity": "Medium",
+      "Severity": "High",
       "Title": "Limit variables that can be set at queue time"
     },
     {
@@ -1790,7 +1790,7 @@
     },
     {
       "Id": "AZDO.1026",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Enable automatic enrollment to Advanced Security for Azure DevOps"
     },
     {
@@ -1805,13 +1805,18 @@
     },
     {
       "Id": "AZDO.1029",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Storage Usage Limit"
     },
     {
       "Id": "AZDO.1030",
-      "Severity": "High",
+      "Severity": "Critical",
       "Title": "Project Collection Administrators"
+    },
+    {
+      "Id": "AZDO.1031",
+      "Severity": "High",
+      "Title": "Validate SSH key expiration"
     },
     {
       "Id": "AZDO.1032",
