@@ -4,7 +4,7 @@ Rationale: OAuth is the preferred and most secure authentication method.
 
 #### Remediation action:
 Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Policies under the Security section.
 4. Locate the "SSH authentication" policy and toggle it to off.

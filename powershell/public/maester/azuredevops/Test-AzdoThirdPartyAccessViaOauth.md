@@ -4,7 +4,7 @@ Rationale: Third-party application access should not be used for Azure DevOps.
 
 #### Remediation action:
 Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Policies, locate the Third-party application access via Oauth policy and toggle it to off.
 

@@ -1,10 +1,10 @@
-Creating classic release pipelines SHOULD BE disabled.
+Creating classic release pipelines **should be** disabled.
 
 Rationale: YAML pipelines offer the best security for your Azure Pipelines. In contrast to classic build and release pipelines.
 
 #### Remediation action:
 Enable the policy to disable creation of classic release pipelines.
-1. Sign in to your organization
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Under the Pipelines section choose Settings.
 4. In the General section, toggle on Disable creation of classic release pipelines.

@@ -1,10 +1,10 @@
 Disable the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline.
 
-Rationale: Tasks from marketplace should be reviewed and approved.
+Rationale: Tasks from the marketplace should be reviewed and approved.
 
 #### Remediation action:
-Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+Enable the restriction to prevent marketplace tasks from executing in pipelines.
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
 4. Go to the section "Task restrictions" and turn on "Disable marketplace tasks"

@@ -23,14 +23,14 @@ function Test-AzdoResourceUsageProject {
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-verbose 'Not connected to Azure DevOps'
+        Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
 
     $Projects = (Get-ADOPSResourceUsage).Projects
 
-    $CurrentUsage = $($Projects.count / $Projects.limit).Tostring("P")
+    $CurrentUsage = $($Projects.count / $Projects.limit).ToString("P")
 
     if ($($Projects.count / $Projects.limit) -gt 0.9) {
         $resultMarkdown = "Project Resource Usage limit is greater than 90% - Current usage: $CurrentUsage"

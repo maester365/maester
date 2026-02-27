@@ -23,14 +23,14 @@ function Test-AzdoResourceUsageWorkItemTag {
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-verbose 'Not connected to Azure DevOps'
+        Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
 
     $WorkItemTags = (Get-ADOPSResourceUsage).'Work Item Tags'
 
-    $CurrentUsage = $($WorkItemTags.count / $WorkItemTags.limit).Tostring("P")
+    $CurrentUsage = $($WorkItemTags.count / $WorkItemTags.limit).ToString("P")
 
     if ($($WorkItemTags.count / $WorkItemTags.limit) -gt 0.9) {
         $resultMarkdown = "Work Item Tags Resource Usage limit is greater than 90% - Current usage: $CurrentUsage"

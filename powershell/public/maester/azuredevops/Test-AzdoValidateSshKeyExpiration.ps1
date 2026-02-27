@@ -28,10 +28,9 @@ function Test-AzdoValidateSshKeyExpiration {
         Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
-        break
     }
 
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy
+    $SecurityPolicies = Get-ADOPSOrganizationPolicy -Force
     $Policy = $SecurityPolicies | where-object -property name -eq 'Policy.ValidateSshKeyExpiration'
     $result = $Policy.effectiveValue
     if ($result) {

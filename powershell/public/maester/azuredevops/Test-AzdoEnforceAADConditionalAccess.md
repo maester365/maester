@@ -1,10 +1,10 @@
-Conditional Access Policies SHOULD BE configured for Microsoft Entra ID-backed organizations.
+Conditional Access Policies **should be** configured for Microsoft Entra ID-backed organizations.
 
 Rationale: When you sign in to the web portal of a Microsoft Entra ID-backed organization, Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators.
 
 #### Remediation action:
-Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+Enable or configure the appropriate Conditional Access policy in Microsoft Entra to enforce sign-in requirements for your Azure DevOps organization.
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Policies, and then toggle your policy to on or off as needed.
    1. If the “Enable IP Conditional Access policy Validation” organization policy is enabled, we check IP fencing policies on both web and non-interactive flows, such as non-Microsoft client flows (e.g., using a PAT with git operations).

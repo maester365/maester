@@ -1,16 +1,25 @@
 Automatic revocation of leaked Personal Access Tokens **should be** enabled.
 
-Rationale: When Personal Access Tokens are leaked and detected, they should be automatically revoked to prevent unauthorized access to Azure DevOps.
+#### Prerequisites
 
-#### Remediation action:
-Enable the policy to automatically revoke leaked tokens.
-1. Sign in to your organization.
-2. Choose Organization settings.
-3. Select Microsoft Entra under General.
-4. Switch the Automatically revoke leaked personal access tokens button to ON.
+- Your organization must be linked to a Microsoft Entra tenant.
+- You must be an Azure DevOps Administrator to configure tenant policies.
+
+#### Rationale
+
+Automatically revoking PATs detected as leaked minimizes the window of opportunity for unauthorized access. Disabling this policy leaves exposed tokens active even if they appear in public repositories.
+
+#### Remediation action
+
+Enable the tenant policy to revoke leaked tokens.
+1. Sign in to your organization (https://dev.azure.com/{yourorganization}).
+2. Select Organization settings (gear icon).
+3. Select Microsoft Entra, locate the "Automatically revoke leaked personal access tokens" policy.
+4. Move the toggle to On.
 
 **Results:**
-When enabled, Azure DevOps will automatically revoke any Personal Access Tokens that are detected as leaked or exposed.
+
+When enabled, Azure DevOps will automatically revoke any PATs detected as leaked or exposed. If the policy is later disabled, tokens checked into public GitHub repositories remain active.
 
 
 #### Related links

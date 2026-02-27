@@ -23,12 +23,12 @@ function Test-AzdoExternalGuestAccess {
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-verbose 'Not connected to Azure DevOps'
+        Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
 
-    $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User'
+    $PrivacyPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'User' -Force
     $Policy = $PrivacyPolicies.policy | where-object -property name -eq 'Policy.DisallowAadGuestUserAccess'
     $result = $Policy.effectiveValue
     if ($result) {

@@ -10,7 +10,7 @@ Enable the policy to stop these requests and notifications.
 4. Switch the Validate SSH key expiration button to ON.
 
 **Results:**
-When active, Azure DevOps enforces that the expiration for date-expired keys immediately become invalid for authentication.
+When active, Azure DevOps enforces that keys with expired expiration dates immediately become invalid for authentication.
 
 #### Related links
 

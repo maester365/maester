@@ -1,10 +1,10 @@
-Users SHOULD NOT be able to skip stages defined by the pipeline author.
+Users should not be able to skip stages defined by the pipeline author.
 
 Rationale: Users should not be able to select stages to skip from the Queue Pipeline panel.
 
 #### Remediation action:
-Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+Enable the restriction to prevent users from skipping stages.
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines, locate the "Disable stage chooser" policy and toggle it to on.
 

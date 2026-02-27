@@ -4,7 +4,7 @@ Rationale: Code injection through arguments parameters should be prevented.
 
 #### Remediation action:
 Enable the policy to stop these requests and notifications.
-1. Sign in to your organization
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
 4. Go to the section "Task restrictions" and turn on "Enable shell tasks arguments validation"

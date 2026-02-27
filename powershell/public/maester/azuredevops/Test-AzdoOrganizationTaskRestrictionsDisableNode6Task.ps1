@@ -24,7 +24,7 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-verbose 'Not connected to Azure DevOps'
+        Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
@@ -34,7 +34,7 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
     if ($result) {
         $resultMarkdown = "Well done. Pipelines will fail if they utilize a task with a Node 6 execution handler."
     } else {
-        $resultMarkdown = "Pipeliens may utilize a task with Node 6 execution handler."
+        $resultMarkdown = "Pipelines may utilize a task with Node 6 execution handler."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown

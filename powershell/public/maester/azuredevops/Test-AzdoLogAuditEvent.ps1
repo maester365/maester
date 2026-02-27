@@ -26,12 +26,12 @@ function Test-AzdoLogAuditEvent {
     param()
 
     if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-verbose 'Not connected to Azure DevOps'
+        Write-Verbose 'Not connected to Azure DevOps'
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
         return $null
     }
 
-    $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security'
+    $SecurityPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'Security' -Force
     $Policy = $SecurityPolicies.policy | where-object -property name -eq 'Policy.LogAuditEvents'
     $result = $Policy.effectiveValue
     if ($result) {

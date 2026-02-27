@@ -1,16 +1,34 @@
-Creation of global PATs **should be** restricted.
+Restrict creation of global Personal Access Tokens (PATs) **should be** enabled.
 
-Rationale: PATs are the least secure authentication method provided in Azure DevOps. When used, these should be scoped according to the principle of least privilege.
+#### Prerequisites
 
-#### Remediation action:
-Enable the policy to stop these requests and notifications.
-1. Sign in to your organization.
-2. Choose Organization settings.
-3. Select Microsoft Entra under General.
-4. Switch the Restrict global personal access token creation button to ON.
+- Your organization must be linked to a Microsoft Entra tenant.
+- You must be an Azure DevOps Administrator to configure tenant policies.
+
+#### Rationale
+
+Global PATs can be used across all accessible organizations. Restricting their creation ensures tokens are confined to a single org, enforcing least privilege and reducing cross-org exposure risk.
+
+#### Remediation action
+
+Enable the tenant policy to stop creation of global PATs.
+1. Sign in to your organization (https://dev.azure.com/{Your_Organization}).
+2. Select Organization settings (gear icon).
+3. Select Microsoft Entra, locate the "Restrict global personal access token creation" policy.
+4. Move the toggle to On.
+
+#### Allowlist and exceptions
+
+- Add Microsoft Entra users or groups to the allowlist to exempt them from the restriction.
+- Prefer groups over individual users to avoid identity residency problems.
+
+**Existing PATs:**
+
+Existing global PATs remain valid until they expire; the policy affects only newly created tokens.
 
 **Results:**
-If enabled, new personal access tokens (PATs) must be associated with specific Azure DevOps organizations. Creating global tokens (tokens that work for all accessible organizations) will be restricted from all users.
+
+When enabled, new PATs must be associated with a single Azure DevOps organization. Users not on the allowlist cannot create global tokens.
 
 
 #### Related links

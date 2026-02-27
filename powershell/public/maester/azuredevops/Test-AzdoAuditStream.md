@@ -1,4 +1,4 @@
-Audit logs SHOULD BE retained according to your organization's needs, and protected from purging.
+Audit logs **should be** retained according to your organization's needs and protected from purging.
 
 Rationale: Send auditing data to other Security Incident and Event Management (SIEM) tools and open new possibilities, such as the ability to trigger alerts for specific events, create views on auditing data, and perform anomaly detection. Setting up a stream also allows you to store more than 90-days of auditing data, which is the maximum amount of data that Azure DevOps keeps for your organizations.
 
@@ -17,7 +17,7 @@ Create an audit stream, which sends data to other locations for further processi
    3. Azure Monitor Log
 
 **Results:**
-Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. Every half hour or less, new audit events are bundled and streamed to your targets. 
+Audit streams represent a pipeline that flows audit events from your Azure DevOps organization to a stream target. At least every half hour, new audit events are bundled and streamed to your targets. 
 
 #### Related links
 

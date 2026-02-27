@@ -1,8 +1,8 @@
 Disable Node 6 tasks.
 
 #### Remediation action:
-Disable the policy to stop these requests and notifications.
-1. Sign in to your organization
+Enable the restriction to prevent Node 6 tasks from executing in pipelines.
+1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
 4. Go to the section "Task restrictions" and turn on "Disable Node 6 tasks"
