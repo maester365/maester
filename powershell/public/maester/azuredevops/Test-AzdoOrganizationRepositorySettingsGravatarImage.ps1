@@ -28,12 +28,12 @@ function Test-AzdoOrganizationRepositorySettingsGravatarImage {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "GravatarEnabled").value
+    $result = (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "GravatarEnabled").value
 
-    if ($result) {
-        $resultMarkdown = "Gravatar images are exposed for users outside of your enterprise."
-    } else {
+    if (-not $result) {
         $resultMarkdown = "Well done. Gravatar images are not exposed outside of your enterprise."
+    } else {
+        $resultMarkdown = "Gravatar images are exposed for users outside of your enterprise."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown

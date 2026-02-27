@@ -28,7 +28,7 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationRepositorySettings | Where-object key -eq "DisableTfvcRepositories").value
+    $result = (Get-ADOPSOrganizationRepositorySettings -Force | Where-object key -eq "DisableTfvcRepositories").value
 
     if ($result) {
         $resultMarkdown = "Well done. Team Foundation Version Control (TFVC) repositories cannot be created."

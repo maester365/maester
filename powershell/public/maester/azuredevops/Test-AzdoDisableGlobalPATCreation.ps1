@@ -34,8 +34,7 @@ function Test-AzdoDisableGlobalPATCreation {
     }
 
     $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictGlobalPersonalAccessToken -Force
-    $result = [bool]$Policy.value
-    
+
     if ($null -eq $Policy) {
         $Message = "Tenant Policy for RestrictGlobalPersonalAccessToken not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
         Please see [Manage Tenant Policies](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
@@ -43,6 +42,7 @@ function Test-AzdoDisableGlobalPATCreation {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
     }
     else {
+        $result = [bool]$Policy.value
         if ($result) {
             $resultMarkdown = "Well done. Your tenant has Global Personal Access Token creation disabled."
         }

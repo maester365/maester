@@ -31,7 +31,6 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
     }
 
     $Policy = Get-ADOPSTenantPolicy -PolicyCategory RestrictFullScopePersonalAccessToken -Force
-    $result = [bool]$Policy.value
     if ($null -eq $Policy) {
         $Message = "Tenant Policy for RestrictFullScopePersonalAccessToken not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
         Please see [Manage Tenant Policies](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites)"
@@ -39,6 +38,7 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
     }
     else {
+        $result = [bool]$Policy.value
         if ($result) {
             $resultMarkdown = "Well done. Your tenant has Personal Access Token full scope restrictions enabled."
         }

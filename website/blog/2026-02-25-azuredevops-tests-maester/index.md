@@ -23,7 +23,7 @@ is defined by a pair of files under `powershell/public/maester/azuredevops`:
 a markdown document with rationale and remediation guidance, and a PowerShell
 script containing the implementation.
 
-The tests are inspired by [Learn - Azure DevOps Security Best Practices](https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops) and include a subset of the configurations and settings that can be configured.
+The tests are inspired by [Learn - Azure DevOps Security Best Practices](https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops) and include a subset of the available configurations and settings.
 
 To run the entire set, you can simply connect and run Invoke-Maester:
 
@@ -63,7 +63,7 @@ Invoke-Maester
 | AZDO.1015 | High | User-defined variables should not be able to override system variables or variables not defined by the pipeline author. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time) |
 | AZDO.1016 | High | YAML & build pipelines should have restricted access to only those repositories in the same project as the pipeline. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope) |
 | AZDO.1017 | High | Release pipelines should have restricted access to only those repositories in the same project as the pipeline. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/access-tokens?view=azure-devops&tabs=yaml#job-authorization-scope) |
-| AZDO.1018 | High | Access to repositories in YAML pipelines should apply checks and approval before accessing repositories. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access) |
+| AZDO.1018 | High | Access to repositories in YAML pipelines should apply checks and approval before granting access. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#restrict-project-repository-and-service-connection-access) |
 | AZDO.1019 | High | Users should not be able to select stages to skip from the Queue Pipeline panel. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops) |
 | AZDO.1020 | High | Creating classic build pipelines should be disabled. | [Learn more](https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/) |
 | AZDO.1021 | High | Creating classic release pipelines should be disabled. | [Learn more](https://devblogs.microsoft.com/devops/disable-creation-of-classic-pipelines/) |
@@ -75,7 +75,7 @@ Invoke-Maester
 | AZDO.1027 | Medium | Gravatar images should not be exposed for users outside your enterprise. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images) |
 | AZDO.1028 | High | Creation of Team Foundation Version Control (TFVC) repositories should be disabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/release-notes/roadmap/2024/no-tfvc-in-new-projects) |
 | AZDO.1029 | Medium | Azure Artifacts storage limit should not be met. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops) |
-| AZDO.1030 | Critical | Project Collection Administrator membership should be restricted to service accounts. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions) |
+| AZDO.1030 | Critical | Project Collection Administrator membership should be restricted to the minimum number of accounts required and regularly reviewed. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/security/about-permissions?view=azure-devops&tabs=preview-page#permissions) |
 | AZDO.1031 | High | Validation of SSH key expiration date should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#validate-ssh-key-expiration) |
 | AZDO.1032 | High | Restriction of global Personal Access Token creation should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy) |
 | AZDO.1033 | High | Automatic revocation of leaked Personal Access Tokens should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens) |
