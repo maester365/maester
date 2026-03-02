@@ -75,7 +75,7 @@ function Test-MtEntraIDConnectSsso {
 let devices = (
     DeviceInfo
     // Search for 14 days
-    | where TimeGenerated > ago(14d)
+    | where Timestamp > ago(14d)
     // Normalize DeviceName
     // --> if it is an IP Address we keep it
     // --> If it is not an IP Address we only use the hostname for correlation
@@ -85,7 +85,7 @@ let devices = (
 );
 IdentityLogonEvents
 // Get the last 14 days of logon events on Domain Controllers
-| where TimeGenerated > ago(14d)
+| where Timestamp > ago(14d)
 // Search for Seamless SSO events
 | where Application == "Active Directory" and Protocol == "Kerberos"
 | where TargetDeviceName == "AZUREADSSOACC"
