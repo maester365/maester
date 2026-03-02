@@ -1,6 +1,6 @@
 ---
-title: MT.1118 - Ensure that SharePoint guest users cannot share items they dont own
-description: Ensure that SharePoint guest users cannot share items they dont own
+title: MT.1118 - Ensure that SharePoint guest users cannot share items they don't own
+description: Ensure that SharePoint guest users cannot share items they don't own
 slug: /tests/MT.1118
 sidebar_class_name: hidden
 ---

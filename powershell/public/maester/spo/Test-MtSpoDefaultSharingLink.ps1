@@ -28,7 +28,7 @@ function Test-MtSpoDefaultSharingLink {
             $testResult = "Default sharing link type is not set to a restrictive option."
             $return = $false
         }
-         Add-MtTestResultDetail -Result $testResult
+        Add-MtTestResultDetail -Result $testResult
         return $return
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
