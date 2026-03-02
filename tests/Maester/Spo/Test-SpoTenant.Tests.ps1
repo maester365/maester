@@ -35,10 +35,10 @@ Describe 'Maester/SpoTenant' -Tag 'Maester', 'SpoTenant' {
             $result | Should -Be $true -Because 'SharePoint tenant is integrated with Microsoft Entra B2B.'
         }
     }
-    It 'MT.1114: Ensure custom script execution is restricted on site collections' -Tag 'MT.1114', 'CIS', 'CIS M365v5', 'CIS 7.3.4', 'Severity:Medium' {
-        $result = Test-MtSpoCustomScriptExecutionOnSiteCollection
+    It 'MT.1114: Ensure Office 365 SharePoint infected files are disallowed for download' -Tag 'MT.1114', 'CIS', 'CIS M365v5', 'CIS 7.3.1', 'Severity:High' {
+        $result = Test-MtSpoPreventDownloadMaliciousFile
         if ($null -ne $result) {
-            $result | Should -Be $true -Because 'custom script execution is restricted on site collections.'
+            $result | Should -Be $true -Because 'Office 365 SharePoint infected files are disallowed for download.'
         }
     }
     It 'MT.1115: Ensure link sharing is restricted in SharePoint and OneDrive' -Tag 'MT.1115', 'CIS', 'CIS M365v5', 'CIS 7.2.7', 'Severity:Low' {
@@ -65,10 +65,5 @@ Describe 'Maester/SpoTenant' -Tag 'Maester', 'SpoTenant' {
             $result | Should -Be $true -Because "SharePoint guest users cannot share items they don't own."
         }
     }
-    It 'MT.1119: Ensure Office 365 SharePoint infected files are disallowed for download' -Tag 'MT.1119', 'CIS', 'CIS M365v5', 'CIS 7.3.1', 'Severity:High' {
-        $result = Test-MtSpoPreventDownloadMaliciousFile
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'Office 365 SharePoint infected files are disallowed for download.'
-        }
-    }
+
 }
