@@ -25,7 +25,7 @@ function Test-MtSpoGuestCannotShareUnownedItem {
         if ($PreventExternalUsersFromResharing) {
             $testResult = "Well done. External users cannot share items they don't own."
         } else {
-            $testResult = "External users can share items they don't own."
+            $testResult = "External users can share items they dont own."
             $return = $false
         }
         Add-MtTestResultDetail -Result $testResult

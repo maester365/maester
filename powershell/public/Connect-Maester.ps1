@@ -104,7 +104,7 @@
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -116,7 +116,7 @@
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
+   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'Microsoft.Online.SharePoint.PowerShell')
    switch ($OrderedImport.Name) {
 
       'Az.Accounts' {
@@ -286,6 +286,34 @@
             } catch [Management.Automation.CommandNotFoundException] {
                Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
                Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
+            }
+         }
+      }
+
+      'Microsoft.Online.SharePoint.PowerShell' {
+         if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            if (
+                  ( $PSVersionTable.OS -match "Windows" -or [System.Environment]::OSVersion.VersionString -match "Windows" ) -and
+                  ( $PSVersionTable.PSVersion.Major -eq 5 ) -and
+                  ( Get-MtUserInteractive )
+            ) {
+               Write-Verbose 'Connecting to SharePoint Online'
+               try {
+                  $tenantDomain = Read-Host -Prompt "Conencting to SharePoint Online requires the onmicrosoft.com domain name of your tenant. Please enter the tenant domain (e.g. contoso.onmicrosoft.com)"
+                  if ($tenantDomain -notmatch "^[\w-]+\.onmicrosoft\.com$") {
+                     Write-Host "The tenant domain must be in the format contoso.onmicrosoft.com" -ForegroundColor Red
+                     return
+                  }
+                  $spoUri = "https://$(($tenantDomain).Replace(".onmicrosoft.com",$null))-admin.sharepoint.com"
+                  Connect-SpoService -Url $spoUri -UseSystemBrowser $true
+               } catch [Management.Automation.CommandNotFoundException] {
+                  Write-Host "`nThe SharePoint Online PowerShell module is not installed or imported. Please install and import the module using the following command. For more information see https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/connect-sposervice" -ForegroundColor Red
+                  Write-Host "`Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+                  Write-Host "`Import-Module Microsoft.Online.SharePoint.PowerShell`n" -ForegroundColor Yellow
+               }
+            } else {
+               Write-Host "`nThe SharePoint Online PowerShell module is currently limited in its functionality and can only be used on interactive sessions on a Windows machine with PowerShell 5" -ForegroundColor Red
+               Write-Host "Please connect to SharePoint Online using Connect-SpoService in a separate PowerShell session." -ForegroundColor Yellow
             }
          }
       }
