@@ -41,8 +41,8 @@ function Test-AzdoOrganizationTriggerPullRequestGitHubRepository {
         }
 
         $data = @'
-            Prevent pipelines from making secrets available to fork builds is set to '{0}'\
-            Prevent pipelines from making fork builds have the same permissions as regular builds is set to '{1}'\
+            Prevent pipelines from making secrets available to fork builds is set to '{0}'
+            Prevent pipelines from making fork builds have the same permissions as regular builds is set to '{1}'
             Require a team member's comment before building a pull request is set to '{2}' ({3})
 '@ -f $settings.enforceNoAccessToSecretsFromForks, $settings.enforceJobAuthScopeForForks, $settings.isCommentRequiredForPullRequest, $AdditionalInfo
 
