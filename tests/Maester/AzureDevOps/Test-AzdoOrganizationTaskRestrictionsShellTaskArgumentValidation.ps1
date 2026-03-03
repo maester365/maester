@@ -29,7 +29,14 @@ function Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).enableShellTasksArgsSanitizing
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.enableShellTasksArgsSanitizing
 
     if ($result) {
         $resultMarkdown = "Argument parameters for built-in shell tasks are validated to check for inputs that can inject commands into scripts."

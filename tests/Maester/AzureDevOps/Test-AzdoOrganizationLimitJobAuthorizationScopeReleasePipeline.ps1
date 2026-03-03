@@ -28,7 +28,14 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).enforceJobAuthScopeForReleases
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.enforceJobAuthScopeForReleases
 
     if ($result) {
         $resultMarkdown = "Access tokens have reduced scope of access for all classic release pipelines."

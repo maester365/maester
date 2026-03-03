@@ -29,7 +29,14 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).disableNode6TasksVar
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.disableNode6TasksVar
 
     if ($result) {
         $resultMarkdown = "Pipelines will fail if they utilize a task with a Node 6 execution handler."

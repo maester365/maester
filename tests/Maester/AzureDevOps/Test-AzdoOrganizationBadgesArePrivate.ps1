@@ -29,7 +29,14 @@ function Test-AzdoOrganizationBadgesArePrivate {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).statusBadgesArePrivate
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.statusBadgesArePrivate
 
     if ($result) {
         $resultMarkdown = "Azure DevOps badges are private."
@@ -38,5 +45,6 @@ function Test-AzdoOrganizationBadgesArePrivate {
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
+
     return $result
 }

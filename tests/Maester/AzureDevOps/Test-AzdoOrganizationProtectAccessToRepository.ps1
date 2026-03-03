@@ -29,7 +29,14 @@ function Test-AzdoOrganizationProtectAccessToRepository {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).enforceReferencedRepoScopedToken
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.enforceReferencedRepoScopedToken
 
     if ($result) {
         $resultMarkdown = "Checks and approvals are applied when accessing repositories from YAML pipelines. Also, generate a job access token that is scoped to repositories that are explicitly referenced in the YAML pipeline."

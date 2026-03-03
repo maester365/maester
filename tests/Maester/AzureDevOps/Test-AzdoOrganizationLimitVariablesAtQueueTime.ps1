@@ -28,12 +28,19 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).enforceSettableVar
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.enforceSettableVar
 
     if ($result) {
         $resultMarkdown = "With this option enabled, only those variables that are explicitly marked as ""Settable at queue time"" can be set"
     } else {
-        $auditEnforceSettableVar = (Get-ADOPSOrganizationPipelineSettings).auditEnforceSettableVar
+        $auditEnforceSettableVar = $settings.auditEnforceSettableVar
         if ($auditEnforceSettableVar) {
             $resultMarkdown = "Auditing is configured, however usage is not restricted."
         } else {

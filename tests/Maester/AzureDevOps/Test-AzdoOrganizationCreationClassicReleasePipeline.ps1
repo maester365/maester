@@ -28,7 +28,14 @@ function Test-AzdoOrganizationCreationClassicReleasePipeline {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).disableClassicReleasePipelineCreation
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.disableClassicReleasePipelineCreation
 
     if (-not $result) {
         $resultMarkdown = "Classic release pipelines, task groups, and deployment groups can be created / imported."

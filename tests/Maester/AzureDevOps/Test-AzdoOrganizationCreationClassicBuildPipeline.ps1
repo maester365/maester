@@ -29,7 +29,14 @@ function Test-AzdoOrganizationCreationClassicBuildPipeline {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).disableClassicBuildPipelineCreation
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.disableClassicBuildPipelineCreation
 
     if (-not $result) {
         $resultMarkdown = "Classic build pipelines can be created / imported."

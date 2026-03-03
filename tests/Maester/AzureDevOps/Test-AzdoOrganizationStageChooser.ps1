@@ -29,7 +29,14 @@ function Test-AzdoOrganizationStageChooser {
         return $null
     }
 
-    $result = (Get-ADOPSOrganizationPipelineSettings).disableStageChooser
+    $settings = Get-ADOPSOrganizationPipelineSettings
+
+    if ($settings -eq 'AccessDeniedException') {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to access the pipeline settings API. Please ensure you have the necessary permissions to access this information.'
+        return $null
+    }
+
+    $result = $settings.disableStageChooser
 
     if (-not $result) {
         $resultMarkdown = "Users are able to select stages to skip from the Queue Pipeline panel."

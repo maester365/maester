@@ -39,6 +39,7 @@ function Test-AzdoAuditStream {
         Please see [Manage Audit Streams](https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#prerequisites)"
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
+        return $null
     } else {
         if ($AuditStreams) {
             if ('Enabled' -in $AuditStreams.status) {
