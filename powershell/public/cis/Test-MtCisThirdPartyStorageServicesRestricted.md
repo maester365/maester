@@ -1,7 +1,7 @@
 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'
 
 **Rationale:**
-Enabling internal phishing protection for Microsoft Forms will prevent attackers using forms for phishing attacks by asking personal or other sensitive information and URLs.
+By using external storage services an organization may increase the risk of data breaches and unauthorized access to confidential information. Additionally, third-party services may not adhere to the same security standards as the organization, making it difficult to maintain data privacy and security.
 
 #### Remediation action:
 
