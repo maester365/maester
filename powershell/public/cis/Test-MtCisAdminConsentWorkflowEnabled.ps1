@@ -36,7 +36,7 @@ function Test-MtCisAdminConsentWorkflowEnabled {
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant settings not comply with CIS recommendations.`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
         $resultMd = "| Setting | Result |`n"
@@ -49,7 +49,6 @@ function Test-MtCisAdminConsentWorkflowEnabled {
         }
 
         $resultMd += "| Users can request admin consent to apps they are unable to consent to | $checkAdminConsentWorkflowEnabledResult |`n"
-
 
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd
 

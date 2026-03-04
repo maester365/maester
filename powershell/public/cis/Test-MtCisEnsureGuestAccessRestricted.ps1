@@ -33,7 +33,7 @@ function Test-MtCisEnsureGuestAccessRestricted {
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations."
         } else {
-            $testResultMarkdown = "Your tenant settings not comply with CIS recommendations."
+            $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations."
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

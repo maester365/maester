@@ -36,7 +36,7 @@ function Test-MtCisThirdPartyApplicationsDisallowed {
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant settings not comply with CIS recommendations.`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
         $resultMd = "| Setting | Result |`n"

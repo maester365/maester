@@ -26,7 +26,7 @@ function Test-MtCisCreateTenantDisallowed {
 
     try {
         Write-Verbose 'Getting settings...'
-        $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy").defaultUserRolePermissions
+        $settings = (Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -DisableCache).defaultUserRolePermissions
 
         Write-Verbose 'Executing checks'
         $checkAllowedToCreateTenants = $settings | Where-Object { $_.allowedToCreateTenants -eq $false }
@@ -36,7 +36,7 @@ function Test-MtCisCreateTenantDisallowed {
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant settings not comply with CIS recommendations.`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
         $resultMd = "| Setting | Result |`n"
