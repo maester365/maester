@@ -1,5 +1,5 @@
 name: "Maester Action"
-description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework. [depreciation notice](https://github.com/maester365/maester/blob/main/action/deprecation.md)"
+description: "Monitor your Microsoft 365 tenant's security configuration using Maester, THE PowerShell-based test automation framework."
 branding:
   icon: "check-circle"
   color: "red"
@@ -122,3 +122,4 @@ runs:
         notification_teams_webhook: ${{ inputs.notification_teams_webhook }}
         notification_teams_channel_id: ${{ inputs.notification_teams_channel_id }}
         notification_teams_team_id: ${{ inputs.notification_teams_team_id }}
+

@@ -148,6 +148,62 @@
 "@
             return $policyJson | ConvertFrom-Json
         }
+
+        function Get-PolicyAgentIdentity {
+            $policyJson = @"
+[
+    {
+        "id": "policy-agent",
+        "displayName": "Block Agent Identities",
+        "state": "enabled",
+        "conditions": {
+            "applications": {
+                "includeApplications": ["All"]
+            },
+            "users": {
+                "includeUsers": ["None"],
+                "excludeUsers": [],
+                "excludeGroups": []
+            },
+            "clientApplications": {
+                "includeServicePrincipals": [],
+                "includeAgentIdServicePrincipals": ["All"],
+                "excludeServicePrincipals": []
+            }
+        }
+    }
+]
+"@
+            return $policyJson | ConvertFrom-Json
+        }
+
+        function Get-PolicyServicePrincipal {
+            $policyJson = @"
+[
+    {
+        "id": "policy-sp",
+        "displayName": "Block Service Principals",
+        "state": "enabled",
+        "conditions": {
+            "applications": {
+                "includeApplications": ["All"]
+            },
+            "users": {
+                "includeUsers": ["None"],
+                "excludeUsers": [],
+                "excludeGroups": []
+            },
+            "clientApplications": {
+                "includeServicePrincipals": ["All"],
+                "includeAgentIdServicePrincipals": [],
+                "excludeServicePrincipals": []
+            }
+        }
+    }
+]
+"@
+            return $policyJson | ConvertFrom-Json
+        }
     }
 
     Context "No emergency access config defined (auto-detection mode)" {
@@ -368,6 +424,44 @@
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
             Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
 
+            Test-MtCaEmergencyAccessExists | Should -BeTrue
+        }
+    }
+
+    Context "Agent Identity and Service Principal policies" {
+
+        It 'Should return false (no emergency access detected) when only an Agent Identity policy exists (which should be ignored)' {
+            $policy = Get-PolicyAgentIdentity
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+
+            # Returns $false because Agent Identity policies don't apply to users and are filtered out
+            # When all policies are filtered out, there are no policies to check, so no emergency access is detected
+            Test-MtCaEmergencyAccessExists | Should -BeFalse
+        }
+
+        It 'Should return false (no emergency access detected) when only a Service Principal policy exists (which should be ignored)' {
+            $policy = Get-PolicyServicePrincipal
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+
+            # Returns $false because Service Principal policies don't apply to users and are filtered out
+            # When all policies are filtered out, there are no policies to check, so no emergency access is detected
+            Test-MtCaEmergencyAccessExists | Should -BeFalse
+        }
+
+        It 'Should only check user-targeted policies when both Agent Identity and user policies exist' {
+            # Get both types of policies
+            $agentPolicy = Get-PolicyAgentIdentity
+            $userPolicy = Get-PolicyWithUserExclusion -UserIds @($emergencyUserId1)
+            $policies = @($agentPolicy[0], $userPolicy[0])
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policies }
+            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $null }
+
+            # Should pass because the Agent Identity policy is ignored and the user policy has exclusions
             Test-MtCaEmergencyAccessExists | Should -BeTrue
         }
     }
