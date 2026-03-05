@@ -33,7 +33,7 @@ function Test-MtIntuneDiagnosticSettings {
         $diagnosticSettingsRequest = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.intune/diagnosticSettings?api-version=2017-04-01-preview"
 
         # check whether the user has permissions to read diagnostic settings
-        if ($diagnosticSettingsRequest.StatusCode -eq 403) {
+        if ($diagnosticSettingsRequest.StatusCode -ne '200') {
             throw [System.UnauthorizedAccessException]::new('No Azure RBAC permissions to read Intune diagnostic settings.')
         }
 
