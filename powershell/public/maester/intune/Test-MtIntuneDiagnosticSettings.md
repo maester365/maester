@@ -2,7 +2,7 @@ This test checks for the existence of Intune Diagnostic settings collecting Intu
 
 #### Test Prerequisites
 
-For this test to run, the executing principal must have permissions to read Intune diagnostic settings in Azure (`microsoft.intune/diagnosticSettings/read` action). This typically requires at least the 'Monitoring Reader' or 'Reader' Azure role assigned at the subscription where the target Intune Log Analytics workspace or storage account resides.
+For this test to run, the executing principal must have permissions to read Intune diagnostic settings in Azure (`microsoft.intune/diagnosticSettings/read` action). This typically requires at least the 'Monitoring Reader' or 'Reader' Azure role assigned at the subscription level (for example, with scope `/subscriptions/$SubscriptionId`), which provides access to the provider-level Intune diagnostic settings.
 
 Alternatively, you can create a custom RBAC role with the following snippet:
 
