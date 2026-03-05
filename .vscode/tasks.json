@@ -4,8 +4,11 @@
         {
             "label": "Start Website",
             "type": "shell",
-            // Logic: If node_modules doesn't exist, run npm ci first
-            "command": "cd website && [ ! -d 'node_modules' ] && npm ci; npm start",
+            // Run install only on first run; fail fast if install fails.
+            "command": "if (-not (Test-Path 'node_modules')) { npm ci; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; npm start",
+            "options": {
+                "cwd": "${workspaceFolder}/website"
+            },
             "isBackground": true,
             "problemMatcher": {
                 "owner": "custom",
@@ -15,7 +18,7 @@
                 "background": {
                     "activeOnStart": true,
                     "beginsPattern": ".*",
-                    "endsPattern": "Compiled successfully|DONE"
+                    "endsPattern": "Compiled successfully|DONE|website is running at|Local:"
                 }
             },
             "presentation": {
@@ -26,7 +29,10 @@
         {
             "label": "Start Report Dev",
             "type": "shell",
-            "command": "cd report && [ ! -d 'node_modules' ] && npm ci; npm run dev",
+            "command": "if (-not (Test-Path 'node_modules')) { npm ci; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/report"
+            },
             "isBackground": true,
             "problemMatcher": {
                 "owner": "custom",
