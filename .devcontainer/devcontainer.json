@@ -1,6 +1,6 @@
 {
   "name": "Maester",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye",
   "features": {
     "ghcr.io/devcontainers/features/powershell:1": {
       "modules": "Pester, PSFramework, PSModuleDevelopment, PSScriptAnalyzer, Microsoft.Graph.Authentication, Az.Accounts, ExchangeOnlineManagement, MicrosoftTeams"
@@ -17,25 +17,7 @@
     "vscode": {
       "settings": {
         "markdown.extension.preview.autoOpenPreview": true,
-        "terminal.integrated.defaultProfile.linux": "pwsh",
-        "statusBarButtons.buttons": [
-          {
-            "text": "$(play) Start Website",
-            "tooltip": "Launch Docusaurus Dev Server",
-            "command": "workbench.action.tasks.runTask",
-            "args": "Start Website",
-            "alignment": "left",
-            "color": "#3ecc5f"
-          },
-          {
-            "text": "$(dashboard) Start Report",
-            "tooltip": "Launch Vite/React Dev Server (Port 5173)",
-            "command": "workbench.action.tasks.runTask",
-            "args": "Start Report Dev",
-            "alignment": "left",
-            "color": "#646cff"
-          }
-        ]
+        "terminal.integrated.defaultProfile.linux": "pwsh"
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
@@ -44,7 +26,6 @@
         "ms-vscode.makefile-tools",
         "ms-vscode.powershell",
         "ms-vscode.vscode-typescript-next",
-        "seatonreid.vscode-status-bar-buttons", // To create a button to launch the website in a browser.
         "streetsidesoftware.code-spell-checker"
       ]
     },
