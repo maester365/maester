@@ -1,5 +1,3 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README for image at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
   "name": "Maester",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bullseye",
@@ -9,25 +7,54 @@
     },
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  "forwardPorts": [3000, 5173, 1234],
+  "forwardPorts": [
+    3000,
+    5173,
+    1234
+  ],
   "postCreateCommand": "/bin/bash ./.devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "pwsh"
+        "markdown.extension.preview.autoOpenPreview": true,
+        "terminal.integrated.defaultProfile.linux": "pwsh",
+        "statusBarButtons.buttons": [
+          {
+            "text": "$(play) Start Website",
+            "tooltip": "Launch Docusaurus Dev Server",
+            "command": "workbench.action.tasks.runTask",
+            "args": "Start Website",
+            "alignment": "left",
+            "color": "#3ecc5f"
+          },
+          {
+            "text": "$(dashboard) Start Report",
+            "tooltip": "Launch Vite/React Dev Server (Port 5173)",
+            "command": "workbench.action.tasks.runTask",
+            "args": "Start Report Dev",
+            "alignment": "left",
+            "color": "#646cff"
+          }
+        ]
       },
       "extensions": [
+        "dbaeumer.vscode-eslint",
+        "github.vscode-github-actions",
+        "GlenBuktenica.unicode-substitutions",
+        "ms-vscode.makefile-tools",
         "ms-vscode.powershell",
         "ms-vscode.vscode-typescript-next",
-        "github.vscode-github-actions",
-        "dbaeumer.vscode-eslint",
-        "streetsidesoftware.code-spell-checker",
-        "ms-vscode.makefile-tools"
+        "seatonreid.vscode-status-bar-buttons", // To create a button to launch the website in a browser.
+        "streetsidesoftware.code-spell-checker"
       ]
     },
     "codespaces": {
-      "openFiles": ["website/docs/contributing.md"]
+      "openFiles": [
+        "website/docs/contributing.md"
+      ]
     }
   },
-  "runArgs": ["--network=host"]
+  "runArgs": [
+    "--network=host"
+  ]
 }
