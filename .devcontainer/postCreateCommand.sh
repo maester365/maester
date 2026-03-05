@@ -6,52 +6,40 @@ echo "Maester Dev Container Setup"
 echo "=========================================="
 
 # Install system dependencies
-echo ""
-echo "Installing system dependencies..."
-sudo apt-get update
-sudo apt-get install -y \
+echo -e "\nInstalling system dependencies..."
+# Combined to reduce layer size and ensure fresh metadata
+sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     xdg-utils \
     curl \
-    wget \
-    build-essential \
-    python3-dev
+    wget
+&& sudo rm -rf /var/lib/apt/lists/*
 
 # Install Node.js dependencies with reproducible lock files
-echo ""
-echo "Installing Node.js dependencies..."
-echo "Installing website dependencies..."
-cd ./website && npm ci && cd - > /dev/null
+# echo ""
+# echo "Installing Node.js dependencies..."
+# echo "Installing website dependencies..."
+# cd ./website && npm ci > /dev/null
 
-echo "Installing report dependencies..."
-cd ./report && npm ci && cd - > /dev/null
+# echo "Installing report dependencies..."
+# cd ./report && npm ci > /dev/null
 
-# Restore PowerShell module dependencies
-echo ""
-echo "Restoring PowerShell module dependencies..."
-pwsh -NoProfile -File ./build/Restore-PSModuleDependencies.ps1 -ModuleManifestPath ".\powershell\*.psd1"
+# Run dev container validation
+echo -e "\nRunning dev container validation..."
+pwsh -NoProfile -File ./.devcontainer/Validate-DevContainer.ps1
 
-# Run dev container initialization and validation
-echo ""
-echo "Running dev container initialization..."
-pwsh -NoProfile -File ./.devcontainer/Initialize-DevContainer.ps1
-
-echo ""
-echo "=========================================="
+echo -e "\n=========================================="
 echo "Dev Container Setup Complete!"
 echo "=========================================="
-echo ""
-echo "Available commands:"
+echo -e "\nAvailable commands:"
 echo "  PowerShell Module:"
 echo "    ./build/Test-PSModule.ps1        - Run Pester tests"
 echo "    ./build/Build-PSModule.ps1       - Build the module"
-echo "    ./build/Copy-MaesterTestsToPSModule.ps1  - Copy tests to module"
 echo ""
-echo "  Website (Docusaurus):"
-echo "    cd ./website && npm start        - Start dev server (port 3000)"
-echo "    cd ./website && npm run build    - Build for production"
+echo "  Website & Report:"
+echo "    Click the 'Start Website' or 'Start Report' buttons in the Status Bar."
+echo "    (The first run will automatically install Node dependencies)"
 echo ""
-echo "  Report (Vite + React):"
-echo "    cd ./report && npm run dev       - Start dev server (port 5173)"
-echo "    cd ./report && npm run build     - Build report template (output to dist/)"
-echo ""
+echo "  Manual Install (if buttons aren't used):"
+echo "    cd ./website && npm ci"
+echo "    cd ./report && npm ci"
 echo "=========================================="
