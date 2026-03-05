@@ -11,8 +11,8 @@ echo -e "\nInstalling system dependencies..."
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     xdg-utils \
     curl \
-    wget
-&& sudo rm -rf /var/lib/apt/lists/*
+    wget \
+    && sudo rm -rf /var/lib/apt/lists/*
 
 # Install Node.js dependencies with reproducible lock files
 # echo ""
