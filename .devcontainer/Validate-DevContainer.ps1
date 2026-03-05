@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Initializes and validates the Maester dev container environment.
+    Validates the Maester dev container environment.
 
 .DESCRIPTION
     This script validates that all required components are installed and properly configured:
@@ -11,11 +11,12 @@
 
 .EXAMPLE
     ./.devcontainer/Initialize-DevContainer.ps1
-
 #>
 
-Set-StrictMode -Version 2.0
-$ErrorActionPreference = 'Stop'
+[CmdletBinding()]
+param(
+    [string]$ManifestPath = './powershell/*.psd1'
+)
 
 # Color helpers
 function Write-Header {
@@ -67,7 +68,7 @@ $requiredModules = @(
 )
 
 foreach ($module in $requiredModules) {
-    $installedModule = Get-Module -Name $module.Name -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+    $installedModule = Get-InstalledModule -Name $module.Name -MinimumVersion $module.MinVersion | Sort-Object Version -Descending | Select-Object -First 1
 
     if ($installedModule) {
         Write-Success "$($module.Name) $($installedModule.Version)"
@@ -76,6 +77,34 @@ foreach ($module in $requiredModules) {
         $allValid = $false
     }
 }
+
+$manifestFiles = Get-ChildItem $ManifestPath
+foreach ($file in $manifestFiles) {
+    Write-Host "Validating dependencies for: $($file.Name)" -ForegroundColor Cyan
+
+    try {
+        $data = Import-PowerShellDataFile -Path $file.FullName
+        $requiredModules = $data.RequiredModules
+
+        foreach ($module in $requiredModules) {
+            $name = if ($module -is [hashtable]) { $module.ModuleName } else { $module }
+
+            Write-Host "Checking for $name..." -NoNewline
+            if (Get-Module -ListAvailable -Name $name) {
+                Write-Host ' [OK]' -ForegroundColor Green
+            } else {
+                Write-Host ' [MISSING]' -ForegroundColor Red
+                Write-Error "Module '$name' is required by $($file.Name) but is not installed in the container."
+                Write-Warning "Action: Add '$name' to the 'features' section of your devcontainer.json and rebuild."
+                exit 1
+            }
+        }
+    } catch {
+        Write-Error "Failed to parse manifest $($file.FullName): $($_.Exception.Message)"
+        exit 1
+    }
+}
+Write-Host "`n✅ PowerShell dependencies validated successfully." -ForegroundColor Green
 
 # Validate Node.js and npm
 Write-Host ''
