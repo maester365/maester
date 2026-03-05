@@ -30,7 +30,7 @@ function Write-Success {
     Write-Host "✓ $($args[0])" -ForegroundColor Green
 }
 
-function Write-Error {
+function Write-ErrorMessage {
     Write-Host "✗ $($args[0])" -ForegroundColor Red
 }
 
@@ -51,7 +51,7 @@ if ($psVersion.Major -ge 7) {
 } elseif ($psVersion.Major -ge 5 -and $psVersion.Minor -ge 1) {
     Write-Success "PowerShell $($psVersion.Major).$($psVersion.Minor)"
 } else {
-    Write-Error "PowerShell $($psVersion.Major).$($psVersion.Minor) - Requires 5.1 or higher"
+    Write-ErrorMessage "PowerShell $($psVersion.Major).$($psVersion.Minor) - Requires 5.1 or higher"
     $allValid = $false
 }
 
@@ -73,7 +73,7 @@ foreach ($module in $requiredModules) {
     if ($installedModule) {
         Write-Success "$($module.Name) $($installedModule.Version)"
     } else {
-        Write-Error "$($module.Name) - Not found"
+        Write-ErrorMessage "$($module.Name) - Not found"
         $allValid = $false
     }
 }
@@ -94,13 +94,13 @@ foreach ($file in $manifestFiles) {
                 Write-Host ' [OK]' -ForegroundColor Green
             } else {
                 Write-Host ' [MISSING]' -ForegroundColor Red
-                Write-Error "Module '$name' is required by $($file.Name) but is not installed in the container."
+                Write-ErrorMessage "Module '$name' is required by $($file.Name) but is not installed in the container."
                 Write-Warning "Action: Add '$name' to the 'features' section of your devcontainer.json and rebuild."
                 exit 1
             }
         }
     } catch {
-        Write-Error "Failed to parse manifest $($file.FullName): $($_.Exception.Message)"
+        Write-ErrorMessage "Failed to parse manifest $($file.FullName): $($_.Exception.Message)"
         exit 1
     }
 }
@@ -117,15 +117,15 @@ try {
         if ($nodeVersionObj.Major -ge 20) {
             Write-Success "Node.js $nodeVersion"
         } else {
-            Write-Error "Node.js $nodeVersion - Requires 20.0 or higher"
+            Write-ErrorMessage "Node.js $nodeVersion - Requires 20.0 or higher"
             $allValid = $false
         }
     } else {
-        Write-Error 'Node.js not found'
+        Write-ErrorMessage 'Node.js not found'
         $allValid = $false
     }
 } catch {
-    Write-Error 'Node.js not found'
+    Write-ErrorMessage 'Node.js not found'
     $allValid = $false
 }
 
@@ -133,7 +133,7 @@ try {
     $npmVersion = npm --version 2>$null
     Write-Success "npm $npmVersion"
 } catch {
-    Write-Error 'npm not found'
+    Write-ErrorMessage 'npm not found'
     $allValid = $false
 }
 
@@ -146,11 +146,11 @@ try {
     if ($gitVersion) {
         Write-Success "$gitVersion"
     } else {
-        Write-Error 'Git not found'
+        Write-ErrorMessage 'Git not found'
         $allValid = $false
     }
 } catch {
-    Write-Error 'Git not found'
+    Write-ErrorMessage 'Git not found'
     $allValid = $false
 }
 
@@ -170,7 +170,7 @@ foreach ($dir in $requiredDirs) {
     if (Test-Path -Path $dir.Path -PathType Container) {
         Write-Success "$($dir.Description) ($($dir.Path))"
     } else {
-        Write-Error "$($dir.Description) not found at $($dir.Path)"
+        Write-ErrorMessage "$($dir.Description) not found at $($dir.Path)"
         $allValid = $false
     }
 }
@@ -190,7 +190,7 @@ foreach ($project in $npmProjects) {
         $pkgCount = (Get-ChildItem -Path $nodeModulesPath -Directory 2>$null | Measure-Object).Count
         Write-Success "$($project.Name) - $pkgCount packages installed"
     } else {
-        Write-Error "$($project.Name) - Dependencies not installed (expected at $nodeModulesPath)"
+        Write-ErrorMessage "$($project.Name) - Dependencies not installed (expected at $nodeModulesPath)"
         $allValid = $false
     }
 }
