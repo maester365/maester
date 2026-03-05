@@ -68,7 +68,7 @@ $requiredModules = @(
 )
 
 foreach ($module in $requiredModules) {
-    $installedModule = Get-InstalledModule -Name $module.Name -MinimumVersion $module.MinVersion | Sort-Object Version -Descending | Select-Object -First 1
+    $installedModule = Get-InstalledModule -Name $module.Name -MinimumVersion $module.MinVersion -ErrorAction SilentlyContinue | Sort-Object Version -Descending | Select-Object -First 1
 
     if ($installedModule) {
         Write-Success "$($module.Name) $($installedModule.Version)"
