@@ -1,11 +1,5 @@
 Describe "Azure DevOps" -Tag "Azure DevOps" {
 
-    BeforeAll {
-        Get-Childitem -Path "$PSScriptRoot\*.ps1" | Where-Object -Property name -ne 'Test-Azdo.Tests.ps1' | ForEach-Object {
-            . $_.FullName
-        }
-    }
-
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
         $result = Test-AzdoThirdPartyAccessViaOauth
         $result | Should -Not -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
