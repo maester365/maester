@@ -6,7 +6,7 @@
     Checks the status of when you sign in to the web portal of a Microsoft Entra ID-backed organization,
     Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops
+    https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-conditional-access?view=azure-devops&tabs=preview-page
 
 .EXAMPLE
     ```
