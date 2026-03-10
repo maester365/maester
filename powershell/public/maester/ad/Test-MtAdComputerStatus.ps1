@@ -34,14 +34,15 @@ function Test-MtAdComputerStatus {
         return $null
     }
 
-    if (-not $__MtSession.AdCache.AdComputers.SetFlag){
-        Set-MtAdCache -Objects "Computers" -Server $Server -Credential $Credential
+    
+    # Use on-demand cache helper to fetch only required properties and build indexes
+    $cache = Get-MtAdCacheItem -Type Computers -Properties @('DistinguishedName','Name','Enabled','LastLogonDate','Modified') -Server $Server -Credential $Credential -TtlMinutes 30
+    if ($null -eq $cache) { Add-MtTestResultDetail -SkippedBecause CacheFailure; return $null }
+    $AdObjects = @{
+        Computers = $cache.Data
+        Data      = @{}
     }
 
-    $AdObjects = @{
-        Computers = $__MtSession.AdCache.AdComputers.Computers
-        Data      = $__MtSession.AdCache.AdComputers.Data
-    }
 
     #region Collect
     $AdObjects.Data.EnabledComputers = $AdObjects.Computers | Where-Object {
