@@ -17,6 +17,7 @@
 #>
 function Set-MtAdCache {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Internal function')]
     param(
         [string]$Server = $__MtSession.AdServer,
         [pscredential]$Credential = $__MtSession.AdCredential,
