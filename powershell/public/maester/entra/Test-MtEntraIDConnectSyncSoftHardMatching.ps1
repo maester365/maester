@@ -39,7 +39,6 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
 
     try {
         $onPremisesSynchronizationConfig = Invoke-MtGraphRequest -RelativeUri "directory/onPremisesSynchronization"
-
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"
 
@@ -68,7 +67,11 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
         }
         return $return
     } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        if ($_.Exception.Response.StatusCode -eq 403) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
         return $null
     }
 }
