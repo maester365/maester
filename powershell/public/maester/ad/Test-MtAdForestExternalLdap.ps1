@@ -33,16 +33,15 @@ function Test-MtAdForestExternalLdap {
         return $null
     }
 
-    if (-not $__MtSession.AdCache.AdForest.SetFlag){
-        Set-MtAdCache -Objects "Forest" -Server $Server -Credential $Credential
-    }
-
+        # Use on-demand cache helper to fetch only required properties and build indexes
+    $cache = Get-MtAdCacheItem -Type Forest -Properties @('Name','Domains') -Server $Server -Credential $Credential -TtlMinutes 30
+    if ($null -eq $cache) { Add-MtTestResultDetail -SkippedBecause CacheFailure; return $null }
     $AdObjects = @{
-        Forest = $__MtSession.AdCache.AdForest.Forest
-        Data   = $__MtSession.AdCache.AdForest.Data
+        Forest = $cache.Data
+        Data      = @{}
     }
 
-    #region Collect
+    #region Collectllect
     $AdObjects.Data.CrossForestReferences = @($AdObjects.Forest.CrossForestReferences)
     $AdObjects.Data.CrossForestReferencesCount = ($AdObjects.Data.CrossForestReferences | Measure-Object).Count
     #endregion

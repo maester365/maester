@@ -34,16 +34,15 @@ function Test-MtAdComputerKerberos {
         return $null
     }
 
-    if (-not $__MtSession.AdCache.AdComputers.SetFlag){
-        Set-MtAdCache -Objects "Computers" -Server $Server -Credential $Credential
-    }
-
+        # Use on-demand cache helper to fetch only required properties and build indexes
+    $cache = Get-MtAdCacheItem -Type Computers -Properties @('DistinguishedName','Name','DNSHostName','LastLogonDate') -Server $Server -Credential $Credential -TtlMinutes 30
+    if ($null -eq $cache) { Add-MtTestResultDetail -SkippedBecause CacheFailure; return $null }
     $AdObjects = @{
-        Computers = $__MtSession.AdCache.AdComputers.Computers
-        Data      = $__MtSession.AdCache.AdComputers.Data
+        Computers = $cache.Data
+        Data      = @{}
     }
 
-    #region Collect
+    #region Collectllect
     $AdObjects.Data.UnconstrainedComputers = $AdObjects.Computers | Where-Object {
         $_.TrustedForDelegation -and
         $_.primaryGroupId -notin $AdObjects.Data.DomainControllerPgids

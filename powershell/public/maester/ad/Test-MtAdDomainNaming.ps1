@@ -33,13 +33,15 @@ function Test-MtAdDomainNaming {
         return $null
     }
 
-    if (-not $__MtSession.AdCache.AdDomains.SetFlag){
-        Set-MtAdCache -Objects "Domains" -Server $Server -Credential $Credential
+        # Use on-demand cache helper to fetch only required properties and build indexes
+    $cache = Get-MtAdCacheItem -Type Domains -Properties @('DistinguishedName','Name') -Server $Server -Credential $Credential -TtlMinutes 30
+    if ($null -eq $cache) { Add-MtTestResultDetail -SkippedBecause CacheFailure; return $null }
+    $AdObjects = @{
+        Domains = $cache.Data
+        Data      = @{}
     }
 
-    $AdObjects = $__MtSession.AdCache.AdDomains
-
-    #region Collect
+    #region Collectllect
     foreach($domain in $AdObjects.Domains){
         $AdObjects."Data-$($domain.Name)".Name = $domain.Name
 
