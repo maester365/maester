@@ -35,7 +35,7 @@ function Test-AzdoProjectCollectionAdministrator {
         )
 
         if ($Member.subjectKind -eq 'group') {
-            Write-Verbose "Finding members in group '$($Member.DisplayName)' - Descriptor '$($_.Descriptor)'"
+            Write-Verbose "Finding members in group '$($Member.DisplayName)' - Descriptor '$($Member.Descriptor)'"
             Get-ADOPSMembership -Descriptor $Member.descriptor -Direction 'down' | Foreach-object {
                 Write-Verbose "Processing member '$($_.DisplayName)' - Descriptor '$($_.Descriptor)'"
                 Get-NestedAdoMembership -Member $_
