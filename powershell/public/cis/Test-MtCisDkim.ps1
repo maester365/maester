@@ -55,7 +55,10 @@ function Test-MtCisDkim {
             }
 
             $isMicrosoftDomain = $domain.DomainName.EndsWith(".onmicrosoft.com")
-            $dkimDnsName = if ($isMicrosoftDomain) {
+            $isMicrosoftExoHybridDomain = $domain.DomainName.EndsWith(".mail.onmicrosoft.com")
+            $dkimDnsName = if ($isMicrosoftExoHybridDomain) {
+                "$($Selector)._domainkey.$($domain.DomainName)"
+            } elseif ($isMicrosoftDomain) {
                 $dkimSigningConfig."$($selector)CNAME"
             } else {
                 "$($Selector)._domainkey.$($domain.DomainName)"
