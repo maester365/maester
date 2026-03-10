@@ -113,8 +113,7 @@
     'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
     'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
     'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
-    'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyFileSharing',
-    'Test-MtCisZAP',
+    'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyFileSharing', 'Test-MtCisZAP',
     'Test-MtCisaDkim', 'Test-MtCisaActivationNotification', 'Test-MtCisaAntiSpamAllowList',
     'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent', 'Test-MtCisaAppGroupOwnerConsent',
     'Test-MtCisaAppRegistration', 'Test-MtCisaAppUserConsent', 'Test-MtCisaAssignmentNotification',
@@ -136,8 +135,7 @@
     'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaSafeLinkDownloadScan', 'Test-MtCisaSmtpAuthentication',
     'Test-MtCisaSpamAction', 'Test-MtCisaSpamAlternative', 'Test-MtCisaSpamBypass', 'Test-MtCisaSpamFilter',
     'Test-MtCisaSpfDirective', 'Test-MtCisaSpfRestriction', 'Test-MtCisaSpoSharing',
-    'Test-MtCisaSpoSharingAllowedDomain', 'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor',
-    'Test-MtConditionalAccessWhatIf', 'Test-MtConnection', 'Test-MtDeviceComplianceSettings',
+    'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor', 'Test-MtConditionalAccessWhatIf', 'Test-MtConnection', 'Test-MtDeviceComplianceSettings',
     'Test-MtExoRejectDirectSend',
     'Test-MtExoSetScl',
     'Test-MtExoModernAuth',
@@ -187,11 +185,22 @@
     'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
     'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
     'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
+    'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
     'Test-MtEntitlementManagementDeletedGroups',
     'Test-MtEntitlementManagementInactivePolicies',
     'Test-MtEntitlementManagementOrphanedResources',
     'Test-MtEntitlementManagementValidApprovers',
-    'Test-MtEntitlementManagementValidResourceRoles'
+    'Test-MtEntitlementManagementValidResourceRoles',
+    'Test-MtAdComputerContainer.ps1',
+    'Test-MtAdComputerCreatorSid.ps1',
+    'Test-MtAdComputerDns.ps1',
+    'Test-MtAdComputerDomainController.ps1',
+    'Test-MtAdComputerKerberos.ps1',
+    'Test-MtAdComputerOperatingSystem.ps1',
+    'Test-MtAdComputerPrimaryGroup.ps1',
+    'Test-MtAdComputerService.ps1',
+    'Test-MtAdComputerSidHistory.ps1',
+    'Test-MtAdComputerStatus.ps1'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
