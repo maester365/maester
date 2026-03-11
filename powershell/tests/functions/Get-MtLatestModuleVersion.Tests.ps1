@@ -17,13 +17,13 @@
         }
 
         It 'returns a stable version from an XML OData response' {
-            $xmlResponse = @"
+            $xmlResponse = @'
 <entry xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices">
   <m:properties>
     <d:Version>3.1.0</d:Version>
   </m:properties>
 </entry>
-"@
+'@
 
             Mock Invoke-RestMethod {
                 ([xml]$xmlResponse).DocumentElement
