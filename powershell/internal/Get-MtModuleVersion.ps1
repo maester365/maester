@@ -1,17 +1,16 @@
-﻿<#
-.SYNOPSIS
-    Returns the module version from the psd1 fle.
-
-#>
-function Get-MtModuleVersion {
+﻿function Get-MtModuleVersion {
+    <#
+    .SYNOPSIS
+    Return the module version.
+    #>
+    [CmdletBinding()]
     param()
 
-    $psd1Version = $ModuleInfo.ModuleVersion
-    # In dev, we'll call it vNext, if the static value in .psd1 is changed, update here as well
-    if ('0.1.0' -eq $psd1Version) {
+    $PSD1Version = $MyInvocation.MyCommand.Module.Version
+    # In dev, we'll call it vNext, if the static value in the .PSD1 is changed, update here as well.
+    if ('0.1.0' -eq $PSD1Version) {
         return 'Next'
-    }
-    else {
-        return $psd1Version
+    } else {
+        return $PSD1Version
     }
 }
