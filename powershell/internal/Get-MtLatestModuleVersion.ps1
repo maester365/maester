@@ -3,8 +3,8 @@
     .SYNOPSIS
     Retrieves the latest stable version (non-prerelease) of a module from the PowerShell Gallery.
     #>
-    [OutputType([version])]
     [CmdletBinding()]
+    [OutputType([version])]
     param(
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]

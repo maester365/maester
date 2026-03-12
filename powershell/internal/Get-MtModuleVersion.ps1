@@ -4,6 +4,7 @@
     Return the module version.
     #>
     [CmdletBinding()]
+    [OutputType([string], [version])]
     param()
 
     $PSD1Version = $MyInvocation.MyCommand.Module.Version
