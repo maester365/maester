@@ -26,6 +26,7 @@
         This ensures that only stable versions are considered when determining the latest module version.
         #>
         [CmdletBinding()]
+        [OutputType([version])]
         param(
             [Parameter(Mandatory = $true)]
             [AllowNull()]
@@ -61,6 +62,7 @@
         Retrieves the latest stable version (non-prerelease) of a module from the PowerShell Gallery using the OData API.
         #>
         [CmdletBinding()]
+        [OutputType([version])]
         param(
             [Parameter(Mandatory = $true)]
             [string] $ModuleName,
@@ -100,6 +102,8 @@
     } # End of Get-LatestVersionFromOData
 
     function Get-LatestVersionFromPSResourceGet {
+        [CmdletBinding()]
+        [OutputType([version])]
         param(
             [Parameter(Mandatory = $true)]
             [string] $ModuleName
@@ -110,6 +114,8 @@
     } # End of Get-LatestVersionFromPSResourceGet
 
     function Get-LatestVersionFromPowerShellGet {
+        [CmdletBinding()]
+        [OutputType([version])]
         param(
             [Parameter(Mandatory = $true)]
             [string] $ModuleName
