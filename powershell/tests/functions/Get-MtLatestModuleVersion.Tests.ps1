@@ -64,6 +64,11 @@
 
     Context 'Fallback to PSResourceGet' {
         It 'uses Find-PSResource when OData lookup fails' {
+            if (-not (Get-Command 'Find-PSResource' -ErrorAction SilentlyContinue)) {
+                Set-ItResult -Skipped -Because 'Find-PSResource is not available in this host session.'
+                return
+            }
+
             Mock Invoke-RestMethod { throw 'Network failure' }
             Mock Get-Command {
                 [PSCustomObject]@{ Name = 'Find-PSResource' }
@@ -76,6 +81,19 @@
             $latestVersion = Get-MtLatestModuleVersion -Name 'Maester' -TimeoutSec 10
 
             $latestVersion | Should -Be ([version]'2.6.1')
+        }
+
+        It 'returns null when Find-PSResource returns no results' {
+            Mock Invoke-RestMethod { throw 'Network failure' }
+            Mock Get-Command {
+                [PSCustomObject]@{ Name = 'Find-PSResource' }
+            } -ParameterFilter { $Name -eq 'Find-PSResource' }
+            Mock Get-Command { $null } -ParameterFilter { $Name -eq 'Find-Module' }
+            Mock Find-PSResource { @() }
+
+            $latestVersion = Get-MtLatestModuleVersion -Name 'Maester' -TimeoutSec 10
+
+            $latestVersion | Should -BeNullOrEmpty
         }
     }
 
