@@ -35,6 +35,8 @@ function Test-MtIntuneDiagnosticSettings {
         # check whether the user has permissions to read diagnostic settings
         if ($diagnosticSettingsRequest.StatusCode -ne '200') {
             throw [System.UnauthorizedAccessException]::new('No Azure RBAC permissions to read Intune diagnostic settings.')
+        } elseif ($diagnosticSettingsRequest.StatusCode -ne 200) {
+            throw [System.Exception]::new(("Failed to retrieve Intune diagnostic settings. HTTP status code: {0}" -f $diagnosticSettingsRequest.StatusCode))
         }
 
         $diagnosticSettings = @($diagnosticSettingsRequest | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty value)
