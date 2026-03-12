@@ -1,6 +1,8 @@
 # Updates the maester-tests repository with the latest tests
 # This is still required since we use it for the GitHub action and Azure DevOPs starter guide.
 name: publish-tests
+permissions:
+  contents: read
 
 on:
   # Runs whenever a new Maester module is published
