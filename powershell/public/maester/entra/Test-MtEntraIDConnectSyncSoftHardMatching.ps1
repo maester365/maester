@@ -67,7 +67,7 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
         }
         return $return
     } catch {
-        if ($_.Exception.Response.StatusCode -eq 403) {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
         } else {
             Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
