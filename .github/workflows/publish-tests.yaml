@@ -1,6 +1,8 @@
 # Updates the maester-tests repository with the latest tests
 # This is still required since we use it for the GitHub action and Azure DevOPs starter guide.
 name: publish-tests
+permissions:
+  contents: read
 
 on:
   # Runs whenever a new Maester module is published
@@ -14,10 +16,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Publish to maester-tests
         id: push_directory
-        uses: cpina/github-action-push-to-another-repository@target-branch
+        uses: cpina/github-action-push-to-another-repository@3fc9348237c8c6954ff88e58719af8a88af543f7
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
