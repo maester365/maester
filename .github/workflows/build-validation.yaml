@@ -42,6 +42,12 @@ jobs:
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          try {
+            Install-Module Microsoft.PowerShell.PSResourceGet -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+          }
+          catch {
+            Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
+          }
 
       - name: Run Pester tests
         if: steps.filter.outputs.pwshmodule == 'true'
