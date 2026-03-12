@@ -7,6 +7,6 @@
     [OutputType([PSObject])]
     param()
     $MtModuleInfo = $MyInvocation.MyCommand.Module
-    Write-Debug $MtModuleInfo | ConvertTo-Json -Depth 5
+    $MtModuleInfo | ConvertTo-Json -Depth 5 | Write-Debug
     return $MtModuleInfo
 }
