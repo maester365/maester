@@ -46,12 +46,12 @@ function Get-MtAIAgentInfo {
 
     # Normalize URL - ensure https:// prefix and no trailing slash
     $dataverseUrl = $dataverseUrl.TrimEnd('/')
-    if ($dataverseUrl -match '^https?://') {
-        $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
-    } else {
-        $resourceUrl = "https://$dataverseUrl"
+    if (-not ($dataverseUrl -match '^https?://')) {
+        $dataverseUrl = "https://$dataverseUrl"
     }
 
+    # Resource URL should always point to the environment host (without '.api.')
+    $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
     # Derive API URL by inserting .api. after the hostname prefix
     # e.g. https://org5acae060.crm19.dynamics.com -> https://org5acae060.api.crm19.dynamics.com
     $apiUrl = $resourceUrl -replace '(https://[^.]+)\.', '$1.api.'
