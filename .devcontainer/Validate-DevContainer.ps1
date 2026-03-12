@@ -114,10 +114,10 @@ try {
     $nodeVersion = node --version 2>$null
     if ($nodeVersion) {
         $nodeVersionObj = [version]$nodeVersion.Substring(1)
-        if ($nodeVersionObj.Major -ge 20) {
+        if ($nodeVersionObj -ge [version]'20.18.1') {
             Write-Success "Node.js $nodeVersion"
         } else {
-            Write-ErrorMessage "Node.js $nodeVersion - Requires 20.0 or higher"
+            Write-ErrorMessage "Node.js $nodeVersion - Requires 20.18.1 or higher"
             $allValid = $false
         }
     } else {
