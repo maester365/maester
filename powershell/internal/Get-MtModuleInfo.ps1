@@ -1,7 +1,7 @@
 ﻿function Get-MtModuleInfo {
 <#
 .SYNOPSIS
-    Returns the module details from the psd1 fle.
+    Returns the module details from the psd1 file.
 #>
     [CmdletBinding()]
     [OutputType([PSObject])]
