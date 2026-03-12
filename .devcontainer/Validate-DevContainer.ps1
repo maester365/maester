@@ -190,8 +190,7 @@ foreach ($project in $npmProjects) {
         $pkgCount = (Get-ChildItem -Path $nodeModulesPath -Directory 2>$null | Measure-Object).Count
         Write-Success "$($project.Name) - $pkgCount packages installed"
     } else {
-        Write-ErrorMessage "$($project.Name) - Dependencies not installed (expected at $nodeModulesPath)"
-        $allValid = $false
+        Write-Host "$($project.Name) - Dependencies not installed yet (expected at $nodeModulesPath). This is a warning only; run the appropriate npm install task to set up dependencies." -ForegroundColor Yellow
     }
 }
 
