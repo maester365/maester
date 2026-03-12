@@ -50,7 +50,7 @@
         try {
             return [version]$versionString
         } catch {
-            Write-Error "Could not parse version '$versionString': $_"
+            Write-Warning "Could not parse version '$versionString': $_"
             return $null
         }
     } # End of ConvertTo-StableVersion
