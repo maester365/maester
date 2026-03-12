@@ -109,7 +109,17 @@
             [string] $ModuleName
         )
 
+        if (-not (Get-Command 'Find-PSResource' -ErrorAction SilentlyContinue)) {
+            Write-Verbose 'Skipping Find-PSResource fallback because Microsoft.PowerShell.PSResourceGet is not installed.'
+            return $null
+        }
+
         $resource = Find-PSResource -Name $ModuleName -ErrorAction Stop | Select-Object -First 1
+        if ($null -eq $resource) {
+            Write-Verbose "Find-PSResource returned no results for '$ModuleName'."
+            return $null
+        }
+
         return ConvertTo-StableVersion -InputVersion $resource.Version
     } # End of Get-LatestVersionFromPSResourceGet
 
