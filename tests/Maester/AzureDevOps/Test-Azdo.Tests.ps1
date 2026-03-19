@@ -1,7 +1,7 @@
 BeforeAll {
     $script:ADOPSConnected = $false
     try {
-        if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction SilentlyContinue)) {
+        if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction Stop)) {
             $connection = Get-ADOPSConnection
             if ($null -ne $connection['Organization']) {
                 $script:ADOPSConnected = $true
@@ -9,6 +9,7 @@ BeforeAll {
         }
     } catch {
         Write-Verbose "ADOPS module is not installed or not connected to Azure DevOps"
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
     }
 }
 
