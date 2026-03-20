@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Retrieves cached SPO tenant settings or requests from Get-SPOTenant
 

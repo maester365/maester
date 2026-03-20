@@ -1,4 +1,4 @@
-File and folder default sharing permissions SHALL be set to view only.
+﻿File and folder default sharing permissions SHALL be set to view only.
 
 Rationale: Setting the default link permissions to "View" limits sharing to view-only access for files and folders shared in SharePoint. This default reduces the risk of unintentional editing or modification of shared content by external parties or other users.
 

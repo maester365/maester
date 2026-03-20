@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Resets the local cache of SharePoint Online queries. Use this if you need to force a refresh of the cache in the current session.
 

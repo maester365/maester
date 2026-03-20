@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if Anyone link expiration is set to 30 days or less
 

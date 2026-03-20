@@ -1,4 +1,4 @@
-External sharing for OneDrive SHALL be limited to Existing guests or Only people in your organization.
+﻿External sharing for OneDrive SHALL be limited to Existing guests or Only people in your organization.
 
 Rationale: Sharing information outside the organization via OneDrive increases the risk of unauthorized access. By limiting OneDrive external sharing, administrators decrease the risk of access to information.
 

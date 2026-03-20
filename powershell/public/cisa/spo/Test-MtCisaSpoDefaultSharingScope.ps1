@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if file and folder default sharing scope is set to Specific people
 

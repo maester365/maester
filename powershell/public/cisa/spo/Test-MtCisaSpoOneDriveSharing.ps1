@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if OneDrive external sharing is limited
 

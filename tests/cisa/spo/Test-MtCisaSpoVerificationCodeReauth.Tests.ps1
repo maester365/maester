@@ -1,4 +1,4 @@
-Describe "CISA" -Tag "MS.SHAREPOINT", "MS.SHAREPOINT.3.3", "CISA.MS.SHAREPOINT.3.3", "CISA" {
+﻿Describe "CISA" -Tag "MS.SHAREPOINT", "MS.SHAREPOINT.3.3", "CISA.MS.SHAREPOINT.3.3", "CISA" {
     It "CISA.MS.SHAREPOINT.3.3: Reauthentication days for people who use a verification code SHALL be set to 30 days or less." {
 
         $result = Test-MtCisaSpoVerificationCodeReauth

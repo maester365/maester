@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if file and folder default sharing permissions are set to view only
 

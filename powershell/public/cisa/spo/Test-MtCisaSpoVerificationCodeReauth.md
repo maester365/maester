@@ -1,4 +1,4 @@
-Reauthentication days for people who use a verification code SHALL be set to 30 days or less.
+﻿Reauthentication days for people who use a verification code SHALL be set to 30 days or less.
 
 Rationale: When external users access shared content using a verification code, limiting the reauthentication period to 30 days or less ensures that access is regularly revalidated. This reduces the risk of prolonged unauthorized access through expired or compromised verification codes.
 

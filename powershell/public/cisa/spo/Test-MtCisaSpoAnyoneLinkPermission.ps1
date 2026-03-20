@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if Anyone link permissions are set to view only
 

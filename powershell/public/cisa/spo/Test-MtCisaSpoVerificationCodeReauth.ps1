@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Checks if verification code reauthentication is set to 30 days or less
 

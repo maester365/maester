@@ -1,4 +1,4 @@
-File and folder default sharing scope SHALL be set to Specific people (only the people the user specifies).
+﻿File and folder default sharing scope SHALL be set to Specific people (only the people the user specifies).
 
 Rationale: Sharing files with specific people forces users to be intentional about who they are sharing information with, reducing the risk of accidental or overly broad information exposure. The default should require users to explicitly choose recipients rather than defaulting to broader sharing options.
 
