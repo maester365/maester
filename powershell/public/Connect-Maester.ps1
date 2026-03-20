@@ -104,14 +104,18 @@
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
       # The services to connect to such as Azure and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      [ValidateSet('All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
-      [string]$GraphClientId
+      [string]$GraphClientId,
+
+      # The SharePoint Online admin URL to connect to. If not specified, the URL will be derived from the tenant's initial domain.
+      # Example: https://contoso-admin.sharepoint.com
+      [string]$SharePointAdminUrl
    )
 
    $__MtSession.Connections = $Service
@@ -290,5 +294,55 @@
          }
       }
    } # end switch OrderedImport
+
+   # SharePoint Online — not part of the Identity Client DLL ordering, handled separately
+   if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+      Write-Verbose 'Connecting to SharePoint Online'
+      try {
+         # Import the SPO module. On PowerShell 7+, use -UseWindowsPowerShell to proxy
+         # through a PS 5.1 session, avoiding the known 400 Bad Request compatibility issue.
+         if (-not (Get-Module -Name 'Microsoft.Online.SharePoint.PowerShell' -ErrorAction SilentlyContinue)) {
+            if ($PSVersionTable.PSEdition -eq 'Core') {
+               Write-Verbose "PowerShell Core detected — importing SPO module via Windows PowerShell compatibility layer"
+               Import-Module 'Microsoft.Online.SharePoint.PowerShell' -UseWindowsPowerShell -DisableNameChecking -ErrorAction Stop
+            } else {
+               Import-Module 'Microsoft.Online.SharePoint.PowerShell' -DisableNameChecking -ErrorAction Stop
+            }
+         }
+
+         if ($SharePointAdminUrl) {
+            $spoAdminUrl = $SharePointAdminUrl
+         } else {
+            # Derive the SharePoint admin URL from the Graph context tenant domain
+            $graphContext = Get-MgContext
+            if ($null -eq $graphContext) {
+               Write-Host "`nPlease connect to Microsoft Graph first before connecting to SharePoint Online." -ForegroundColor Red
+               return
+            }
+
+            $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+            $tenantDomain = $domains |
+               Where-Object { $_.isInitial -eq $true } |
+               Select-Object -ExpandProperty id -First 1
+
+            if (-not $tenantDomain) {
+               Write-Host "`nUnable to determine tenant name for SharePoint Online admin URL. Use the -SharePointAdminUrl parameter to specify it manually." -ForegroundColor Red
+               Write-Host "Example: Connect-Maester -Service SharePointOnline -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'" -ForegroundColor Yellow
+               return
+            }
+
+            $tenantName = $tenantDomain -replace '\.onmicrosoft\.com$', ''
+            $spoAdminUrl = "https://$tenantName-admin.sharepoint.com"
+         }
+
+         Write-Verbose "Connecting to SharePoint Online admin at $spoAdminUrl"
+         Connect-SPOService -Url $spoAdminUrl
+      } catch [Management.Automation.CommandNotFoundException] {
+         Write-Host "`nThe SharePoint Online PowerShell module is not installed. Please install the module using the following command." -ForegroundColor Red
+         Write-Host "`nInstall-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+      } catch {
+         Write-Host "`nFailed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
+      }
+   }
 
 } # end function Connect-Maester
