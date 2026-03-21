@@ -207,7 +207,7 @@
                      $ExoUPN = Get-MtExo -Request ConnectionInformation | Select-Object -ExpandProperty UserPrincipalName -First 1 -ErrorAction SilentlyContinue
                      if ($ExoUPN) {
                         Write-Host "`nAttempting to connect to the Security & Compliance PowerShell using UPN '$ExoUPN' derived from the ExchangeOnline connection." -ForegroundColor Yellow
-                        Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ShowBanner:$false
+                        Connect-IPPSSession -BypassMailboxAnchoring -UserPrincipalName $ExoUPN -ConnectionUri $Environments[$ExchangeEnvironmentName].ConnectionUri -AzureADAuthorizationEndpointUri $Environments[$ExchangeEnvironmentName].AuthZEndpointUri -ShowBanner:$false
                      } else {
                         Write-Host "`nFailed to connect to the Security & Compliance PowerShell. Please ensure you are connected to Exchange Online first." -ForegroundColor Red
                      }
@@ -258,6 +258,20 @@
 
                Write-Verbose "🦒 Connecting to Microsoft Graph with parameters:"
                Write-Verbose ($connectParams | ConvertTo-Json -Depth 5)
+
+               # On Windows, the Microsoft Graph SDK uses Windows Account Manager (WAM) as the authentication broker by default.
+               # WAM may not support national cloud accounts (e.g. GCC High, DoD, China) in the account picker.
+               # Warn users to use -UseDeviceCode if they encounter authentication issues.
+               if ($Environment -ne 'Global' -and ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') -and -not $UseDeviceCode) {
+                  # Build a suggested retry command using only the non-default parameter values provided by the caller.
+                  $retryCmd = "Connect-Maester -UseDeviceCode -Environment $Environment"
+                  if ($AzureEnvironment -ne 'AzureCloud') { $retryCmd += " -AzureEnvironment $AzureEnvironment" }
+                  if ($ExchangeEnvironmentName -ne 'O365Default') { $retryCmd += " -ExchangeEnvironmentName $ExchangeEnvironmentName" }
+                  Write-Host "`n💡 Tip: When connecting to the '$Environment' environment on Windows, Windows Account Manager (WAM) may not recognize national cloud accounts in the sign-in prompt." -ForegroundColor Yellow
+                  Write-Host "   If authentication fails or is cancelled, add the -UseDeviceCode parameter to authenticate via browser instead of WAM:`n" -ForegroundColor Yellow
+                  Write-Host "   $retryCmd`n" -ForegroundColor Cyan
+               }
+
                Connect-MgGraph @connectParams
 
                #ensure TenantId
@@ -268,6 +282,19 @@
             } catch [Management.Automation.CommandNotFoundException] {
                Write-Host "`nThe Graph PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/powershell/microsoftgraph/installation" -ForegroundColor Red
                Write-Host "`Install-Module Microsoft.Graph.Authentication -Scope CurrentUser`n" -ForegroundColor Yellow
+            } catch {
+               # For non-global environments on Windows, WAM (Windows Account Manager) may not support national cloud accounts,
+               # causing authentication to fail or be cancelled. Provide actionable guidance to the user.
+               if ($Environment -ne 'Global' -and ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') -and -not $UseDeviceCode) {
+                  $retryCmd = "Connect-Maester -UseDeviceCode -Environment $Environment"
+                  if ($AzureEnvironment -ne 'AzureCloud') { $retryCmd += " -AzureEnvironment $AzureEnvironment" }
+                  if ($ExchangeEnvironmentName -ne 'O365Default') { $retryCmd += " -ExchangeEnvironmentName $ExchangeEnvironmentName" }
+                  Write-Host "`n💡 Authentication failed for the '$Environment' environment on Windows." -ForegroundColor Yellow
+                  Write-Host "   Windows Account Manager (WAM) may not support national cloud accounts in the sign-in prompt." -ForegroundColor Yellow
+                  Write-Host "   Run Connect-Maester with -UseDeviceCode to authenticate via browser instead of WAM:`n" -ForegroundColor Yellow
+                  Write-Host "   $retryCmd`n" -ForegroundColor Cyan
+               }
+               throw
             }
          }
       }
