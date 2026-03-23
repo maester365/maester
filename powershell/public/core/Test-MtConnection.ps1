@@ -150,13 +150,20 @@
         #region SharePoint Online
         if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
             $IsConnected = $false
+            $MtConnections.SharePointOnline = $null
             try {
                 if (Get-Module -Name 'Microsoft.Online.SharePoint.PowerShell' -ErrorAction SilentlyContinue) {
                     # Attempt to call Get-SPOTenant to verify the connection is active
                     $spoTenant = Get-SPOTenant -ErrorAction Stop
                     $IsConnected = $null -ne $spoTenant
+                    if ($IsConnected) {
+                        $MtConnections.SharePointOnline = $spoTenant
+                    } else {
+                        $MtConnections.SharePointOnline = $null
+                    }
                 }
             } catch {
+                $MtConnections.SharePointOnline = $null
                 Write-Debug "SharePoint Online: $false"
             }
             Write-Verbose "SharePoint Online: $IsConnected"
