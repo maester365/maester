@@ -1,0 +1,60 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Website",
+            "type": "shell",
+            // Run install only on first run; fail fast if install fails.
+            "command": "if (-not (Test-Path 'node_modules')) { npm ci; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; npm start",
+            "options": {
+                "cwd": "${workspaceFolder}/website"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*",
+                    "endsPattern": "Compiled successfully|DONE|website is running at|Local:"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Report Dev",
+            "type": "shell",
+            "command": "if (-not (Test-Path 'node_modules')) { npm ci; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }; npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/report"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*",
+                    "endsPattern": "ready in|Local:"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Validate Dependencies",
+            "type": "shell",
+            "command": "pwsh -NoProfile -File ./.devcontainer/Validate-DevContainer.ps1",
+            "problemMatcher": []
+        }
+    ]
+}
