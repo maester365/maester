@@ -12,7 +12,7 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-      - uses: dorny/test-reporter@v2
+      - uses: dorny/test-reporter@d6b6b979a50e94f3ba9e88a5ebac47c9f381c7d3 # v3.0.0
         with:
           artifact: test-results-Windows
           name: Maester Test Results
