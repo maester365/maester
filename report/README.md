@@ -11,7 +11,7 @@ It uses vite-plugin-singlefile to generate a single HTML file which will be used
 
 ### Pre-requisites
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above (which can be checked by running `node -v`). You can use [nvm](https://github.com/nvm-sh/nvm) for managing multiple Node versions on a single machine installed.
+- [Node.js](https://nodejs.org/en/download/) version 20.0 or above (which can be checked by running `node -v`). You can use [nvm](https://github.com/nvm-sh/nvm) for managing multiple Node versions on a single machine installed.
 - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
 ### First time run
@@ -62,5 +62,3 @@ When making updates to the report you might want to bring in some fresh data to 
 ### Submitting a Pull-Request
 
 When submitting a PR for changes in `/report/src` you can skip updating the `/powershell/assets/ReportTemplate.html` artifact. The [report-build](https://github.com/maester365/maester/blob/main/.github/workflows/build-report.yaml) bot will build and create a PR to merge the ReportTemplate once your PR is approved and merged.
-
-
