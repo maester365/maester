@@ -43,5 +43,8 @@
     "typescript": "^5.0.0",
     "vite": "^6.0.0",
     "vite-plugin-singlefile": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=20.0"
   }
 }
