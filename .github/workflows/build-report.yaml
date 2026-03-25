@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v6.3.0
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: report/package-lock.json
 
