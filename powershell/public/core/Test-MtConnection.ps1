@@ -35,7 +35,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -51,6 +51,7 @@
             Graph = $null
             ExchangeOnline = $null
             ExchangeOnlineProtection = $null
+            SharePointOnline = $null
             Teams = $null
             AllConnected = $false
         }
@@ -145,6 +146,30 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion Teams
+
+        #region SharePoint Online
+        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            $IsConnected = $false
+            $MtConnections.SharePointOnline = $null
+            try {
+                if (Get-Module -Name 'Microsoft.Online.SharePoint.PowerShell' -ErrorAction SilentlyContinue) {
+                    # Attempt to call Get-SPOTenant to verify the connection is active
+                    $spoTenant = Get-SPOTenant -ErrorAction Stop
+                    $IsConnected = $null -ne $spoTenant
+                    if ($IsConnected) {
+                        $MtConnections.SharePointOnline = $spoTenant
+                    } else {
+                        $MtConnections.SharePointOnline = $null
+                    }
+                }
+            } catch {
+                $MtConnections.SharePointOnline = $null
+                Write-Debug "SharePoint Online: $false"
+            }
+            Write-Verbose "SharePoint Online: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion SharePoint Online
 
         if ($IsConnected) {
             $MtConnections.AllConnected = $true
