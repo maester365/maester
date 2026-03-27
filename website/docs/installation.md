@@ -35,9 +35,11 @@ Maester includes optional [CISA](tests/cisa/) tests that require additional perm
 Install-Module Az.Accounts -Scope CurrentUser
 Install-Module ExchangeOnlineManagement -Scope CurrentUser
 Install-Module MicrosoftTeams -Scope CurrentUser
+Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser
 ```
 
 > The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
+> The Microsoft.Online.SharePoint.PowerShell module is currently limited in its functionality and can only be used on a Windows machine with PowerShell 5.
 
 ### Connecting to Azure, Exchange and other services
 
@@ -57,6 +59,8 @@ Exchange Online implements a [role-based access control model](https://learn.mic
 
 * View-Only Configuration OR
 * O365SupportViewConfig
+
+SharePoint Online requires the user to be at least a SharePoint Administrator to connect and run the tests that interact with SharePoint Online Powershell.
 
 ## Next Steps
 
