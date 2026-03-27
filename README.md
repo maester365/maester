@@ -10,7 +10,12 @@ To learn more about Maester and to get started, visit [Maester.dev](https://maes
 
 [![build-validation](https://github.com/maester365/maester/actions/workflows/build-validation.yaml/badge.svg)](https://github.com/maester365/maester/actions/workflows/build-validation.yaml)
 [![publish-module-preview](https://github.com/maester365/maester/actions/workflows/publish-module-preview.yaml/badge.svg)](https://github.com/maester365/maester/actions/workflows/publish-module-preview.yaml)
+
 ---
+
+> [!WARNING]
+>
+> Known Issue: We recommend *not* using v3.9.2 of the the **ExchangeOnlineManagement** module at this time. Many users experience errors while connecting with v3.9.2 but previous versions are generally reliable. This is an issue with the ExchangeOnlineManagement module and not Maester itself.
 
 ## Key Features
 
