@@ -34,7 +34,7 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.27",
     "eslint": "^8.55.0",
     "postcss": "^8.5.8",
