@@ -15,7 +15,7 @@ To learn more about Maester and to get started, visit [Maester.dev](https://maes
 
 > [!WARNING]
 >
-> Known Issue: We recommend *not* using v3.9.2 of the the **ExchangeOnlineManagement** module at this time. Many users experience errors while connecting with v3.9.2 but previous versions are generally reliable. This is an issue with the ExchangeOnlineManagement module and not Maester itself.
+> Known Issue: We recommend *not* using v3.9.2 of the **ExchangeOnlineManagement** module at this time. Many users experience errors while connecting with v3.9.2 but previous versions are generally reliable. This is an issue with the ExchangeOnlineManagement module and not Maester itself.
 
 ## Key Features
 
