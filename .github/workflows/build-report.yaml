@@ -41,6 +41,11 @@ jobs:
           cd report
           npm ci
 
+      - name: Audit dependencies
+        run: |
+          cd report
+          npm audit --audit-level=high
+
       - name: Build report
         run: |
           cd report
