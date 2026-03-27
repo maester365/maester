@@ -1,0 +1,26 @@
+name: dependency-review
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "website/package.json"
+      - "website/package-lock.json"
+      - "report/package.json"
+      - "report/package-lock.json"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Dependency review
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+        with:
+          fail-on-severity: high

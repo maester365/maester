@@ -18,7 +18,7 @@ It uses vite-plugin-singlefile to generate a single HTML file which will be used
 
 Open terminal window and navigate to /report folder and run the following command to install all dependencies:
 
-```
+```shell
 npm install
 ```
 
@@ -26,7 +26,7 @@ npm install
 
 To start the development server, run the following command:
 
-```
+```shell
 npm run dev
 ```
 
@@ -36,15 +36,17 @@ Once you are done with making updates to the report, you can build the project t
 
 To build the project, run the following command:
 
-```
+```shell
 npm run build
 ```
 
 - This will generate the report.html file in the /dist folder.
 - Copy it to the /powershell/assets folder and rename it to ReportTemplate.html (overwrite the existing file).
+
 ```powershell
 Copy-Item ./dist/index.html ../powershell/assets/ReportTemplate.html -Force
 ```
+
 - Now PowerShell will package and use the new report template.
 
 ### Updating the sample data in the report

@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "20"
+          node-version: "22.12.x"
           cache: "npm"
           cache-dependency-path: report/package-lock.json
 
@@ -40,6 +40,11 @@ jobs:
         run: |
           cd report
           npm ci
+
+      - name: Audit dependencies
+        run: |
+          cd report
+          npm audit --audit-level=high
 
       - name: Build report
         run: |
