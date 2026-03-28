@@ -32,9 +32,13 @@ function Disconnect-Maester {
       Disconnect-MgGraph
    }
 
-   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "All"){
+   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All"){
       Write-Verbose -Message "Disconnecting from Microsoft Azure."
-      Disconnect-AzAccount
+      try {
+         Disconnect-AzAccount -ErrorAction Stop | Out-Null
+      } catch {
+         Write-Verbose "Disconnect-AzAccount encountered an error: $($_.Exception.Message)"
+      }
    }
 
    if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){
