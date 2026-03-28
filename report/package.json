@@ -20,7 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.7.0",
-    "react": "^18.2.0",
+    "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.12.0",
@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
+    "@types/react": "^19.2.14",
     "@types/node": "^25.5.0",
-    "@types/react": "^18.2.43",
     "@vitejs/plugin-react": "^6.0.1",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.27",
