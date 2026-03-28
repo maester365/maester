@@ -144,11 +144,11 @@ If you already have an authenticated Azure context (e.g., managed identity, work
 #$moera = "contoso.onmicrosoft.com"
 
 # Exchange Online
-$outlookToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText
+$outlookToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText -Force
 Connect-ExchangeOnline -AccessToken $outlookToken -AppId $clientId -Organization $tenantId -ShowBanner:$false
 
 # Security & Compliance (IPPS)
-$isspToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText
+$isspToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText -Force
 Connect-IPPSSession -AccessToken $isspToken -Organization $moera
 ```
 
