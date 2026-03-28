@@ -186,8 +186,8 @@ $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSe
 $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239' -AsSecureString
 
 $tokens = @(
-    (ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText),
-    (ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText)
+    (ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText -Force),
+    (ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText -Force)
 )
 
 Connect-MicrosoftTeams -AccessTokens $tokens
