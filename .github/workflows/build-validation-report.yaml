@@ -18,7 +18,7 @@ jobs:
       # never be uploaded. Trade-off: if tests *should* have run but the upload step failed
       # silently, this check will report neutral instead of failing. Consider moving to a
       # fan-in required-status-check pattern (Option 3) for a more robust long-term solution.
-      - uses: dorny/test-reporter@d6b6b979a50e94f3ba9e88a5ebac47c9f381c7d3 # v3.0.0
+      - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
         with:
           artifact: test-results-Windows
           name: Maester Test Results
