@@ -27,16 +27,31 @@ function Test-MtEidscaAS04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')" -ApiVersion beta
 
-    [string]$tenantValue = $result.includeTargets.isUsableForSignIn
-    $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $includeTargets = @($result.includeTargets)
+    $tenantValueNotSet = ($includeTargets.Count -eq 0) -and 'false' -notlike '*$null*'
 
-    if($testResult){
+    if (-not $tenantValueNotSet) {
+        $failingTargets = @($includeTargets | Where-Object { [string]$_.isUsableForSignIn -ne 'false' })
+        $testResult = $failingTargets.Count -eq 0
+        $tenantValue = if ($testResult) { 'false' } else { 'true' }
+    } else {
+        $testResult = $false
+        $tenantValue = $null
+    }
+
+    if ($testResult) {
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
     } elseif ($tenantValueNotSet) {
         $testResultMarkdown = "Your tenant is **not configured explicitly**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**. It seems that you are using a default value by Microsoft. We recommend to set the setting value explicitly since non set values could change depending on what Microsoft decides the current default should be."
     } else {
-        $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
+        $directoryObjects = Get-MtDirectoryObjects -ObjectId $failingTargets.id
+        $failingDetails = ($failingTargets | ForEach-Object {
+            $target = $PSItem
+            $displayName = ($directoryObjects | Where-Object { $_.id -eq $target.id }).displayName
+            if (-not $displayName) { $displayName = $target.id }
+            "- Target **$displayName**: isUsableForSignIn = **$($target.isUsableForSignIn)**"
+        }) -join "`n"
+        $testResultMarkdown = "Your tenant has **$($failingTargets.Count)** target(s) with **isUsableForSignIn** not set to **false** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**:`n`n$failingDetails`n`nThe recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'High'
 
