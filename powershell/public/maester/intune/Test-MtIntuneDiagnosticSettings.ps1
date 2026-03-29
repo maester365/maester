@@ -31,6 +31,16 @@ function Test-MtIntuneDiagnosticSettings {
     try {
         Write-Verbose 'Retrieving Intune Diagnostic Settings status...'
         $diagnosticSettingsRequest = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.intune/diagnosticSettings?api-version=2017-04-01-preview"
+
+        # check whether the user has permissions to read diagnostic settings
+        if ($diagnosticSettingsRequest.StatusCode -ne '200') {
+            if ($diagnosticSettingsRequest.StatusCode -in @('401', '403')) {
+                throw [System.UnauthorizedAccessException]::new('No Azure RBAC permissions to read Intune diagnostic settings.')
+            } else {
+                throw [System.Exception]::new(("Failed to retrieve Intune diagnostic settings. HTTP status code: {0}" -f $diagnosticSettingsRequest.StatusCode))
+            }
+        }
+
         $diagnosticSettings = @($diagnosticSettingsRequest | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty value)
         $testResultMarkdown = ''
         if ($diagnosticSettings) {
@@ -62,6 +72,9 @@ function Test-MtIntuneDiagnosticSettings {
         }
         Add-MtTestResultDetail -Result $testResultMarkdown
         return [bool]($diagnosticSettings | Where-Object { $_.properties.logs | Where-Object { $_.category -eq 'AuditLogs' -and $_.enabled -eq $true } })
+    } catch [System.UnauthorizedAccessException] {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Insufficient permissions to read Intune diagnostic settings in Azure.'
+        return $null
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
