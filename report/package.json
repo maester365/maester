@@ -45,6 +45,6 @@
     "vite-plugin-singlefile": "^2.3.2"
   },
   "engines": {
-    "node": ">=22.12"
+    "node": ">=24"
   }
 }
