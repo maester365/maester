@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "node scripts/patch-combine-promises.js",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
@@ -50,5 +51,9 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "//overrides": "Workaround: cacheable-request@10.2.14 has a broken npm publish — dist/types.js is missing but dist/index.js imports it, causing ERR_MODULE_NOT_FOUND on Node.js v24. Pinned to 10.2.13 until the upstream package is fixed. See: https://github.com/jaredwray/cacheable/issues",
+  "overrides": {
+    "cacheable-request": "10.2.13"
   }
 }
