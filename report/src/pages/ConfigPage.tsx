@@ -3,6 +3,7 @@ import { Card } from "@tremor/react"
 import { Download, FileJson, Settings2, AlertTriangle, AlertCircle, Info, CircleAlert, ShieldAlert, ChevronDown, Check, Plus, Trash2, User, Users, Mail, Hash } from "lucide-react"
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { useSidebar } from "@/components/Sidebar"
+import { useTenant } from "@/context/TenantContext"
 
 interface EmergencyAccessAccount {
   Type: "User" | "Group"
@@ -16,21 +17,7 @@ interface TestSetting {
   Title: string
 }
 
-interface GlobalSettings {
-  EmergencyAccessAccounts?: EmergencyAccessAccount[]
-  [key: string]: unknown
-}
 
-interface MaesterConfig {
-  GlobalSettings?: GlobalSettings
-  TestSettings?: TestSetting[]
-}
-
-interface ConfigPageProps {
-  testResults?: {
-    MaesterConfig?: MaesterConfig
-  }
-}
 
 interface SeverityOption {
   value: string
@@ -108,27 +95,28 @@ const getInitialIdentifierType = (account: EmergencyAccessAccount): IdentifierTy
   return "upn"
 }
 
-export default function ConfigPage({ testResults }: ConfigPageProps) {
+export default function ConfigPage() {
   const { isCollapsed } = useSidebar()
+  const { selectedTenant: testResults } = useTenant()
   const originalConfig = testResults?.MaesterConfig
 
   // State for edited emergency access accounts
   const [editedEmergencyAccounts, setEditedEmergencyAccounts] = useState<EmergencyAccessAccount[]>(
     () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
+      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
       : []
   )
 
   // State for tracking which identifier type is selected for each account
   const [identifierTypes, setIdentifierTypes] = useState<IdentifierType[]>(
     () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-      ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
+      ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
       : []
   )
 
   // State for edited test settings
   const [editedTestSettings, setEditedTestSettings] = useState<TestSetting[]>(
-    () => originalConfig?.TestSettings ? [...originalConfig.TestSettings.map(t => ({ ...t }))] : []
+    () => originalConfig?.TestSettings ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))] : []
   )
 
   // Check if any changes have been made
@@ -253,17 +241,17 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
   const handleReset = () => {
     setEditedEmergencyAccounts(
       originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
+        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
         : []
     )
     setIdentifierTypes(
       originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
+        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
         : []
     )
     setEditedTestSettings(
       originalConfig?.TestSettings
-        ? [...originalConfig.TestSettings.map(t => ({ ...t }))]
+        ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))]
         : []
     )
   }
