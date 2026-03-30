@@ -5,9 +5,15 @@
     "ghcr.io/devcontainers/features/powershell:2": {
       "modules": "Pester, PSFramework, PSModuleDevelopment, PSScriptAnalyzer, Microsoft.Graph.Authentication, Az.Accounts, ExchangeOnlineManagement, MicrosoftTeams"
     },
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "extensions": "github/gh-copilot"
+    }
   },
   "forwardPorts": [3000, 5173],
+  "portsAttributes": {
+    "3000": { "label": "Docusaurus Website", "onAutoForward": "notify" },
+    "5173": { "label": "Vite Report Dev", "onAutoForward": "notify" }
+  },
   "postCreateCommand": "/bin/bash ./.devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {
@@ -19,7 +25,6 @@
         "dbaeumer.vscode-eslint",
         "github.vscode-github-actions",
         "GlenBuktenica.unicode-substitutions",
-        "ms-vscode.makefile-tools",
         "ms-vscode.powershell",
         "ms-vscode.vscode-typescript-next",
         "streetsidesoftware.code-spell-checker"
