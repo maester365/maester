@@ -33,6 +33,12 @@ function Test-MtUserAccessAdmin {
 
     try {
         $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'
+
+        if ($null -eq $userAccessResult) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+            return $null
+        }
+
         $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
 
         # Get the count of role assignments

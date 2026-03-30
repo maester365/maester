@@ -122,7 +122,7 @@ Follow this guide if you want to run the documentation locally and view changes 
 
 #### Pre-requisites
 
-[Node.js](https://nodejs.org/en/download/) version 18.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+[Node.js](https://nodejs.org/en/download/) version 20.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
 #### Installation
 
