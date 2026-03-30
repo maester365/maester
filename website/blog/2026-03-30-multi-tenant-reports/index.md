@@ -32,6 +32,8 @@ The sidebar now shows a **Tenants** section when you have multiple tenants in th
 
 ![Tenant selector in sidebar](./img/tenant-selector.png)
 
+> The screenshot shows duplicate "PROD" entries for demonstration purposes only.
+
 Each tenant gets the full experience. Test overview, severity charts, category breakdown, and the detailed test results table with all the filters you're used to.
 
 ![Switching between tenants](./img/tenant-switch.png)
@@ -103,12 +105,6 @@ Each tenant accepts the following parameters:
 | --- | --- | --- |
 | `includeTeams` | No | Run Microsoft Teams tests, defaults to `false` |
 
-**Azure DevOps**
-| Parameter | Required | Description |
-| --- | --- | --- |
-| `includeAzureDevOps` | No | Run Azure DevOps tests, defaults to `false` |
-| `devOpsOrganization` | When Azure DevOps enabled | Azure DevOps organization name |
-
 At minimum you only need the five general parameters per tenant. The rest defaults to `false`/empty:
 
 ```yaml
@@ -124,9 +120,7 @@ parameters:
         includeTeams: true
         includeExchange: true
         includeISSP: true
-        includeAzureDevOps: true
         organizationName: contoso.onmicrosoft.com
-        devOpsOrganization: contosodevops
       - name: Development
         serviceConnection: sc-maester-development
         tenantId: <your-dev-tenant-id>
@@ -170,9 +164,7 @@ parameters:
         includeTeams: true
         includeExchange: true
         includeISSP: true
-        includeAzureDevOps: true
         organizationName: contoso.onmicrosoft.com
-        devOpsOrganization: contosodevops
       - name: Development
         serviceConnection: sc-maester-development
         tenantId: <your-dev-tenant-id>
@@ -216,7 +208,7 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
+        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
         New-Item -ItemType Directory -Force -Path '$(ResultsDir)'
     displayName: 'Install required modules'
 
@@ -231,7 +223,6 @@ jobs:
           $includeExchange = '${{ tenant.includeExchange }}'.Trim().ToLower() -eq 'true'
           $includeTeams = '${{ tenant.includeTeams }}'.Trim().ToLower() -eq 'true'
           $includeISSP = '${{ tenant.includeISSP }}'.Trim().ToLower() -eq 'true'
-          $includeAzureDevOps = '${{ tenant.includeAzureDevOps }}'.Trim().ToLower() -eq 'true'
           $TenantId = '${{ tenant.tenantId }}'
           $ClientId = '${{ tenant.clientId }}'
           $Environment = '${{ tenant.environment }}'
@@ -294,12 +285,6 @@ jobs:
               $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
               $teamsTokenPlainText = ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText
               Connect-MicrosoftTeams -AccessTokens @($regularGraphToken, $teamsTokenPlainText)
-          }
-
-          if ($includeAzureDevOps) {
-            $DevOpsAccessToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -AsSecureString -TenantId $TenantId).Token -AsPlainText)
-            Import-Module -Name ADOPS -Force
-            Connect-ADOPS -Organization '${{ tenant.devOpsOrganization }}' -OAuthToken $DevOpsAccessToken
           }
 
           $runFolder = Join-Path "$(Agent.TempDirectory)" '${{ tenant.name }}-tests'
