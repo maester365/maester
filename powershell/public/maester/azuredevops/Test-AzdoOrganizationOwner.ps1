@@ -32,8 +32,8 @@ function Test-AzdoOrganizationOwner {
     $Data = Get-ADOPSOrganizationAdminOverview
     if ($data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.exceptionType -eq 'AadGraphException') {
         $resultMarkdown = "Workload identities cannot fetch Organization Owner."
-        Add-MtTestResultDetail -Result "BUG: Workload identities cannot fetch Organization Owner." -SkippedCustomReason "Workload identities cannot fetch Organization Owner." -SkippedBecause Custom
-        $result = $false
+        Add-MtTestResultDetail -Result $resultMarkdown -SkippedCustomReason "Workload identities cannot fetch Organization Owner." -SkippedBecause Custom
+        $result = $null
     } else {
         $currentOwner = $data.'ms.vss-admin-web.organization-admin-overview-delay-load-data-provider'.currentOwner
         if ($currentOwner.email -match '(?i)(adm|admin|btg|svc|service)') {
