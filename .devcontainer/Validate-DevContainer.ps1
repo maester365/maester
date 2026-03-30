@@ -96,15 +96,17 @@ foreach ($file in $manifestFiles) {
                 Write-Host ' [MISSING]' -ForegroundColor Red
                 Write-ErrorMessage "Module '$name' is required by $($file.Name) but is not installed in the container."
                 Write-Warning "Action: Add '$name' to the 'features' section of your devcontainer.json and rebuild."
-                exit 1
+                $allValid = $false
             }
         }
     } catch {
         Write-ErrorMessage "Failed to parse manifest $($file.FullName): $($_.Exception.Message)"
-        exit 1
+        $allValid = $false
     }
 }
-Write-Host "`n✅ PowerShell dependencies validated successfully." -ForegroundColor Green
+if ($allValid) {
+    Write-Host "`n✅ PowerShell dependencies validated successfully." -ForegroundColor Green
+}
 
 # Validate Node.js and npm
 Write-Host ''
