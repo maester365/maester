@@ -5,6 +5,7 @@ echo "=========================================="
 echo "Maester Dev Container Setup"
 echo "=========================================="
 
+
 # Install system dependencies
 echo -e "\nInstalling system dependencies..."
 # Combined to reduce layer size and ensure fresh metadata
@@ -12,14 +13,16 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     xdg-utils \
     && sudo rm -rf /var/lib/apt/lists/*
 
-# Install Node.js dependencies with reproducible lock files
-# echo ""
-# echo "Installing Node.js dependencies..."
-# echo "Installing website dependencies..."
-# cd ./website && npm ci > /dev/null
 
-# echo "Installing report dependencies..."
-# cd ./report && npm ci > /dev/null
+# Install Node.js dependencies with reproducible lock files
+echo ""
+echo "Installing Node.js dependencies..."
+echo "Installing website dependencies..."
+(cd ./website && npm ci > /dev/null)
+
+echo "Installing report dependencies..."
+(cd ./report && npm ci > /dev/null)
+
 
 echo -e "\n=========================================="
 echo "Dev Container Setup Complete!"
