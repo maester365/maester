@@ -4,6 +4,8 @@
 # service connections (workload identity federation), merges the results,
 # and publishes a single HTML report with a tenant selector.
 #
+# Supports Global, China (21Vianet), US Government and other cloud environments.
+#
 # Prerequisites:
 #   - One Azure DevOps service connection per tenant (federated credentials)
 #   - Each service principal needs Microsoft Graph read permissions (see Maester docs)
@@ -20,6 +22,7 @@ parameters:
         serviceConnection: sc-maester-production
         tenantId: 00000000-0000-0000-0000-000000000000
         clientId: 00000000-0000-0000-0000-000000000000
+        environment: Global
         includeTeams: true
         includeExchange: true
         includeAzureDevOps: false
@@ -30,6 +33,18 @@ parameters:
         serviceConnection: sc-maester-development
         tenantId: 11111111-1111-1111-1111-111111111111
         clientId: 11111111-1111-1111-1111-111111111111
+        environment: Global
+        includeTeams: false
+        includeExchange: false
+        includeAzureDevOps: false
+        includeISSP: false
+        organizationName: ''
+        devOpsOrganization: ''
+      - name: China
+        serviceConnection: sc-maester-china
+        tenantId: 22222222-2222-2222-2222-222222222222
+        clientId: 22222222-2222-2222-2222-222222222222
+        environment: China
         includeTeams: false
         includeExchange: false
         includeAzureDevOps: false
@@ -89,19 +104,39 @@ jobs:
           $includeAzureDevOps = '${{ tenant.includeAzureDevOps }}'.Trim().ToLower() -eq 'true'
           $TenantId = '${{ tenant.tenantId }}'
           $ClientId = '${{ tenant.clientId }}'
+          $Environment = '${{ tenant.environment }}'
+
+          # Set endpoints based on cloud environment
+          switch ($Environment) {
+              'China' {
+                  $graphUrl = 'https://microsoftgraph.chinacloudapi.cn'
+                  $graphEnvironment = 'China'
+                  $outlookUrl = 'https://partner.outlook.cn'
+                  $exchangeEnv = 'O365China'
+                  $complianceUrl = 'https://ps.compliance.protection.partner.outlook.cn'
+              }
+              default {
+                  $graphUrl = 'https://graph.microsoft.com'
+                  $graphEnvironment = 'Global'
+                  $outlookUrl = 'https://outlook.office365.com'
+                  $exchangeEnv = 'O365Default'
+                  $complianceUrl = 'https://ps.compliance.protection.outlook.com'
+              }
+          }
 
           # Connect to Microsoft Graph
-          $graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
-          Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
+          Write-Verbose "Connecting to Microsoft Graph ($Environment)" -Verbose
+          $graphToken = Get-AzAccessToken -ResourceUrl $graphUrl -AsSecureString
+          Connect-MgGraph -AccessToken $graphToken.Token -Environment $graphEnvironment -NoWelcome
 
           # Exchange Online (optional)
           if ($includeExchange) {
               Import-Module ExchangeOnlineManagement
-              $outlookToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText)
-              Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+              $outlookToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl $outlookUrl -AsSecureString).Token -AsPlainText)
+              Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ExchangeEnvironmentName $exchangeEnv -ShowBanner:$false
 
               if ($includeISSP) {
-                $ISSPToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText)
+                $ISSPToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl $complianceUrl -AsSecureString).Token -AsPlainText)
                 Connect-IPPSSession -AccessToken $ISSPToken -Organization '${{ tenant.organizationName }}'
               }
           }
@@ -134,7 +169,7 @@ jobs:
           Pop-Location
 
           Write-Verbose "JSON results saved to: $jsonFile" -Verbose
-      displayName: 'Run Maester tests — ${{ tenant.name }}'
+      displayName: 'Run Maester tests (${{ tenant.name }})'
 
   # Merge tenant results into a single multi-tenant report
   - task: AzurePowerShell@5

@@ -50,7 +50,7 @@ function Get-MtHtmlReport {
     $depth = if ($isMultiTenant) { 7 } else { 5 }
 
     Write-Verbose "Generating HTML report."
-    $json = $MaesterResults | ConvertTo-Json -Depth $depth -WarningAction Ignore
+    $json = $MaesterResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
@@ -60,7 +60,7 @@ function Get-MtHtmlReport {
     $startMarker = 'testResults={'
     $endMarker = 'EndOfJson:"EndOfJson"}'
     $insertLocationStart = $templateHtml.IndexOf($startMarker)
-    $insertLocationEnd = $templateHtml.IndexOf($endMarker)
+    $insertLocationEnd = $templateHtml.LastIndexOf($endMarker)
 
     if ($insertLocationStart -lt 0) {
         throw "Could not find start marker '$startMarker' in the report template."
