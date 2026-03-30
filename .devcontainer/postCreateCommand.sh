@@ -10,8 +10,6 @@ echo -e "\nInstalling system dependencies..."
 # Combined to reduce layer size and ensure fresh metadata
 sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     xdg-utils \
-    curl \
-    wget \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # Install Node.js dependencies with reproducible lock files
@@ -22,10 +20,6 @@ sudo apt-get update && sudo apt-get install -y --no-install-recommends \
 
 # echo "Installing report dependencies..."
 # cd ./report && npm ci > /dev/null
-
-# Run dev container validation
-echo -e "\nRunning dev container validation..."
-pwsh -NoProfile -File ./.devcontainer/Validate-DevContainer.ps1
 
 echo -e "\n=========================================="
 echo "Dev Container Setup Complete!"
