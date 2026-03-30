@@ -115,6 +115,27 @@ jobs:
                   $exchangeEnv = 'O365China'
                   $complianceUrl = 'https://ps.compliance.protection.partner.outlook.cn'
               }
+              'USGov' {
+                  $graphUrl = 'https://graph.microsoft.us'
+                  $graphEnvironment = 'USGov'
+                  $outlookUrl = 'https://outlook.office365.us'
+                  $exchangeEnv = 'O365USGovGCCHigh'
+                  $complianceUrl = 'https://ps.compliance.protection.office365.us'
+              }
+              'USGovDoD' {
+                  $graphUrl = 'https://dod-graph.microsoft.us'
+                  $graphEnvironment = 'USGovDoD'
+                  $outlookUrl = 'https://outlook.office365.us'
+                  $exchangeEnv = 'O365USGovDoD'
+                  $complianceUrl = 'https://ps.compliance.protection.office365.us'
+              }
+              'Germany' {
+                  $graphUrl = 'https://graph.microsoft.de'
+                  $graphEnvironment = 'Germany'
+                  $outlookUrl = 'https://outlook.office.de'
+                  $exchangeEnv = 'O365GermanyCloud'
+                  $complianceUrl = 'https://ps.compliance.protection.outlook.de'
+              }
               default {
                   $graphUrl = 'https://graph.microsoft.com'
                   $graphEnvironment = 'Global'
