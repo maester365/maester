@@ -200,10 +200,6 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        # Import the multi-tenant functions (ship these in your repo)
-        . "$(Build.SourcesDirectory)/powershell/Merge-MtMaesterResult.ps1"
-        . "$(Build.SourcesDirectory)/powershell/New-MtMultiTenantHtmlReport.ps1"
-
         $resultsDir = '$(ResultsDir)'
         $jsonFiles = Get-ChildItem -Path $resultsDir -Filter '*.json' | Sort-Object Name
 
@@ -230,7 +226,8 @@ jobs:
         $date = (Get-Date).ToString("yyyyMMdd-HHmm")
         $outputDir = Join-Path "$(Agent.TempDirectory)" "report-$date"
         New-Item -ItemType Directory -Force -Path $outputDir
-        New-MtMultiTenantHtmlReport -MaesterResults $merged -OutputFile (Join-Path $outputDir 'index.html')
+        $html = Get-MtHtmlReport -MaesterResults $merged
+        $html | Out-File -FilePath (Join-Path $outputDir 'index.html') -Encoding UTF8
 
         $zipPath = Join-Path "$(Agent.TempDirectory)" "MaesterReport$date.zip"
         Compress-Archive -Path (Get-ChildItem -Path $outputDir).FullName -DestinationPath $zipPath

@@ -148,12 +148,10 @@ Each tenant's tests run under their own `AzurePowerShell@5` task with their own 
 1. **Install modules** once (Maester, Pester, Graph, Exchange, Teams)
 2. **Run Maester tests** for each tenant, connecting with the tenant's service connection and saving the results as JSON
 3. **Merge** all tenant JSON results into a single multi-tenant object using `Merge-MtMaesterResult`
-4. **Generate** a combined HTML report with `New-MtMultiTenantHtmlReport` and package it as a zip
+4. **Generate** a combined HTML report with `Get-MtHtmlReport` and package it as a zip
 5. **Publish** the zip to an Azure Web App using `Publish-AzWebApp`
 
 The pipeline expects an Azure Web App to already exist. If you don't have one yet, check out [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) to get one up and running. The web app is secured with Entra ID authentication, so only users in your tenant can view the report.
-
-You also need the two PowerShell functions (`Merge-MtMaesterResult.ps1` and `New-MtMultiTenantHtmlReport.ps1`) and the built `ReportTemplate.html` in your repo. The pipeline dot-sources these in the merge step.
 
 Here is the full pipeline YAML:
 
@@ -322,9 +320,6 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        . "$(Build.SourcesDirectory)/powershell/Merge-MtMaesterResult.ps1"
-        . "$(Build.SourcesDirectory)/powershell/New-MtMultiTenantHtmlReport.ps1"
-
         $resultsDir = '$(ResultsDir)'
         $jsonFiles = Get-ChildItem -Path $resultsDir -Filter '*.json' | Sort-Object Name
 
@@ -349,7 +344,8 @@ jobs:
         $date = (Get-Date).ToString("yyyyMMdd-HHmm")
         $outputDir = Join-Path "$(Agent.TempDirectory)" "report-$date"
         New-Item -ItemType Directory -Force -Path $outputDir
-        New-MtMultiTenantHtmlReport -MaesterResults $merged -OutputFile (Join-Path $outputDir 'index.html')
+        $html = Get-MtHtmlReport -MaesterResults $merged
+        $html | Out-File -FilePath (Join-Path $outputDir 'index.html') -Encoding UTF8
 
         $zipPath = Join-Path "$(Agent.TempDirectory)" "MaesterReport$date.zip"
         Compress-Archive -Path (Get-ChildItem -Path $outputDir).FullName -DestinationPath $zipPath
@@ -386,10 +382,8 @@ Before running the pipeline, make sure you have the following in place:
 - An **Azure Web App** to host the report (see [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) for how to set one up)
 - A **service connection** with Website Contributor role on the web app
 
-**In your repo (copy from the [examples folder](https://github.com/maester365/maester/tree/main/powershell/examples)):**
-- `powershell/Merge-MtMaesterResult.ps1` merges tenant results into one object
-- `powershell/New-MtMultiTenantHtmlReport.ps1` injects the merged data into the report template
-- `powershell/ReportTemplate.html` the built multi-tenant report UI
+**Maester module:**
+- Version X.X or later (includes `Merge-MtMaesterResult` and multi-tenant support in `Get-MtHtmlReport`)
 
 ### Want to add another tenant?
 
