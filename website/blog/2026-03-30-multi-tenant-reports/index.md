@@ -24,7 +24,7 @@ If you're like me and manage multiple Azure tenants that span across national cl
 - 🚀 Run Maester tests across multiple tenants in a single pipeline run
 - 🔥 Switch between tenants in one report using the sidebar
 - 🤝 Full dashboard per tenant, charts, filters, everything
-- 🔐 Each tenant uses its own service connection with read only permissions
+- 🔐 Each tenant uses its own service connection with read-only permissions
 
 ### How it looks
 
@@ -32,7 +32,7 @@ The sidebar now shows a **Tenants** section when you have multiple tenants in th
 
 ![Tenant selector in sidebar](./img/tenant-selector.png)
 
-Each tenant gets the full experience. Test overview, severity charts, category breakdown and the detailed test results table with all the filters you're used to.
+Each tenant gets the full experience. Test overview, severity charts, category breakdown, and the detailed test results table with all the filters you're used to.
 
 ![Switching between tenants](./img/tenant-switch.png)
 
@@ -76,7 +76,7 @@ Get-MtHtmlReport -MaesterResults $merged | Out-File ./MultiTenantReport.html -En
 
 ## Azure DevOps Pipeline
 
-For automated monitoring we use an Azure DevOps pipeline with separate service connections per tenant. Each one uses workload identity federation to authenticate with read only permissions.
+For automated monitoring we use an Azure DevOps pipeline with separate service connections per tenant. Each one uses workload identity federation to authenticate with read-only permissions.
 
 The pipeline uses a `${{ each }}` loop to generate a step per tenant, so adding more tenants is just adding another entry to the YAML.
 
@@ -216,7 +216,7 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
+        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
         New-Item -ItemType Directory -Force -Path '$(ResultsDir)'
     displayName: 'Install required modules'
 
@@ -298,7 +298,6 @@ jobs:
 
           if ($includeAzureDevOps) {
             $DevOpsAccessToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -AsSecureString -TenantId $TenantId).Token -AsPlainText)
-            Install-Module -Name ADOPS -SkipPublisherCheck -Force
             Import-Module -Name ADOPS -Force
             Connect-ADOPS -Organization '${{ tenant.devOpsOrganization }}' -OAuthToken $DevOpsAccessToken
           }

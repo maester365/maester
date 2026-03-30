@@ -85,7 +85,7 @@ jobs:
       pwsh: true
       azurePowerShellVersion: latestVersion
       Inline: |
-        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams' -Confirm:$false -Force
+        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
         New-Item -ItemType Directory -Force -Path '$(ResultsDir)'
     displayName: 'Install required modules'
 
@@ -174,7 +174,6 @@ jobs:
           # Azure DevOps (optional)
           if ($includeAzureDevOps) {
             $DevOpsAccessToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -AsSecureString -TenantId $TenantId).Token -AsPlainText)
-            Install-Module -Name ADOPS -SkipPublisherCheck -Force
             Import-Module -Name ADOPS -Force
             Connect-ADOPS -Organization '${{ tenant.devOpsOrganization }}' -OAuthToken $DevOpsAccessToken
           }
