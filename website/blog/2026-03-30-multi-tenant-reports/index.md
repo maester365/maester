@@ -383,7 +383,7 @@ Before running the pipeline, make sure you have the following in place:
 - A **service connection** with Website Contributor role on the web app
 
 **Maester module:**
-- Version X.X or later (includes `Merge-MtMaesterResult` and multi-tenant support in `Get-MtHtmlReport`)
+- Latest version with multi-tenant support (`Merge-MtMaesterResult` and `Get-MtHtmlReport` are included as part of this release)
 
 ### Want to add another tenant?
 
