@@ -46,7 +46,7 @@ function Test-AzdoOrganizationStorageUsage {
         $resultMarkdown = "Your storage is exceeding the usage limit or close to. '$availableQuantity' GB available."
         $result = $false
     } else {
-        $CurrentQuantity = $StorageUsage.currentQuantity ? $StorageUsage.currentQuantity : 0
+        $CurrentQuantity = if ($StorageUsage.currentQuantity) { $StorageUsage.currentQuantity } else { 0 }
         $resultMarkdown =
 @'
 You are not exceeding or approaching your storage usage limit.
