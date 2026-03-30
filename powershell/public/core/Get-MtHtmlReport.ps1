@@ -55,24 +55,58 @@ function Get-MtHtmlReport {
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
-    # Insert the test results json into the template
-    # Note: The minified output from Vite has no spaces around '=' so we use 'testResults={'
-    $startMarker = 'testResults={'
-    $endMarker = 'EndOfJson:"EndOfJson"}'
-    $insertLocationStart = $templateHtml.IndexOf($startMarker)
-    $insertLocationEnd = $templateHtml.LastIndexOf($endMarker)
+    # Find the LAST end marker (multi-tenant templates have one per tenant in the sample data)
+    # Support both double-quote (older Vite) and backtick (newer Vite/Rolldown) formats
+    $endMarkerDoubleQuote = 'EndOfJson:"EndOfJson"}'
+    $endMarkerBacktick = 'EndOfJson:`EndOfJson`}'
+    $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerDoubleQuote)
+    $endMarkerLength = $endMarkerDoubleQuote.Length
 
-    if ($insertLocationStart -lt 0) {
-        throw "Could not find start marker '$startMarker' in the report template."
-    }
     if ($insertLocationEnd -lt 0) {
-        throw "Could not find end marker '$endMarker' in the report template."
+        $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerBacktick)
+        $endMarkerLength = $endMarkerBacktick.Length
     }
 
-    $insertLocationEnd += $endMarker.Length
+    if ($insertLocationEnd -lt 0) {
+        throw "Could not find EndOfJson marker in the report template."
+    }
 
+    $insertLocationEnd += $endMarkerLength
+
+    # Find the start marker: try classic 'testResults=' first, then scan for minified format
+    $startMarker = 'testResults='
+    $insertLocationStart = $templateHtml.IndexOf($startMarker)
+
+    if ($insertLocationStart -ge 0) {
+        # Classic format: testResults={...}
+        Write-Verbose "Found classic marker: testResults="
+    } else {
+        # Newer minified format: var xx={Tenants:... or var xx={Result:...
+        $searchRegion = $templateHtml.Substring(0, $insertLocationEnd)
+        $dataStartPatterns = @('={Tenants:[', '={Result:', '={Result:`')
+        $insertLocationStart = -1
+
+        foreach ($pattern in $dataStartPatterns) {
+            $pos = $searchRegion.LastIndexOf($pattern)
+            if ($pos -ge 0) {
+                $insertLocationStart = $pos + 1
+                Write-Verbose "Found minified data pattern '$pattern' at position $pos"
+                break
+            }
+        }
+
+        if ($insertLocationStart -lt 0) {
+            throw "Could not find test results data object in the report template."
+        }
+    }
+
+    # Build the output: everything before the data + our JSON + everything after
     $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-    $outputHtml += "testResults=$json"
+    if ($templateHtml[$insertLocationStart - 1] -ne '=') {
+        $outputHtml += "testResults=$json"
+    } else {
+        $outputHtml += $json
+    }
     $outputHtml += $templateHtml.Substring($insertLocationEnd)
 
     return $outputHtml

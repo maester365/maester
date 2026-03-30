@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card } from "@tremor/react"
 import { Download, FileJson, Settings2, AlertTriangle, AlertCircle, Info, CircleAlert, ShieldAlert, ChevronDown, Check, Plus, Trash2, User, Users, Mail, Hash } from "lucide-react"
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
@@ -118,6 +118,23 @@ export default function ConfigPage() {
   const [editedTestSettings, setEditedTestSettings] = useState<TestSetting[]>(
     () => originalConfig?.TestSettings ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))] : []
   )
+
+  // Reset state when tenant changes to prevent data leak between tenants
+  useEffect(() => {
+    setEditedEmergencyAccounts(
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
+        : []
+    )
+    setIdentifierTypes(
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
+        : []
+    )
+    setEditedTestSettings(
+      originalConfig?.TestSettings ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))] : []
+    )
+  }, [originalConfig])
 
   // Check if any changes have been made
   const hasChanges = useMemo(() => {
