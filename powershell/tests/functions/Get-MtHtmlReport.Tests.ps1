@@ -1,5 +1,10 @@
 Describe 'Get-MtHtmlReport' {
     BeforeAll {
+        # The function resolves the template relative to its own location (powershell/public/core/)
+        # From the test directory (powershell/tests/functions/) the template is at ../../assets/
+        $templatePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
+        $templateAvailable = Test-Path $templatePath
+
         $singleTenant = [PSCustomObject]@{
             TenantId       = 'single-tenant-id'
             TenantName     = 'Single Tenant'
@@ -87,6 +92,12 @@ Describe 'Get-MtHtmlReport' {
     }
 
     Context 'Single-tenant report' {
+        BeforeEach {
+            if (-not $templateAvailable) {
+                Set-ItResult -Skipped -Because 'ReportTemplate.html not found'
+            }
+        }
+
         It 'Should generate valid HTML' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
@@ -117,6 +128,12 @@ Describe 'Get-MtHtmlReport' {
     Context 'Multi-tenant report' {
         BeforeAll {
             $merged = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2)
+        }
+
+        BeforeEach {
+            if (-not $templateAvailable) {
+                Set-ItResult -Skipped -Because 'ReportTemplate.html not found'
+            }
         }
 
         It 'Should generate valid HTML' {

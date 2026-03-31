@@ -88,4 +88,53 @@ Describe 'Merge-MtMaesterResult' {
 
         $result.EndOfJson | Should -BeExactly 'EndOfJson'
     }
+
+    It 'Should merge three or more tenant results' {
+        $tenant3 = [PSCustomObject]@{
+            TenantId       = 'tenant-3-id'
+            TenantName     = 'Tenant Three'
+            Result         = 'Passed'
+            TotalCount     = 7
+            PassedCount    = 7
+            FailedCount    = 0
+            CurrentVersion = '2.0.0'
+            LatestVersion  = '2.0.0'
+            Tests          = @(
+                [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
+            )
+            Blocks         = @(
+                [PSCustomObject]@{ Name = 'Maester'; PassedCount = 7; TotalCount = 7 }
+            )
+            EndOfJson      = 'EndOfJson'
+        }
+
+        $result = Merge-MtMaesterResult -MaesterResults @($tenant1, $tenant2, $tenant3)
+
+        $result.Tenants.Count | Should -BeExactly 3
+        $result.Tenants[2].TenantName | Should -BeExactly 'Tenant Three'
+        $result.Tenants[2].TotalCount | Should -BeExactly 7
+    }
+
+    It 'Should handle a result with empty TenantName' {
+        $noName = [PSCustomObject]@{
+            TenantId       = 'no-name-id'
+            TenantName     = ''
+            Result         = 'Passed'
+            TotalCount     = 1
+            PassedCount    = 1
+            FailedCount    = 0
+            CurrentVersion = '2.0.0'
+            LatestVersion  = '2.0.0'
+            Tests          = @(
+                [PSCustomObject]@{ Id = 'MT.1001'; Result = 'Passed'; Block = 'Maester' }
+            )
+            Blocks         = @()
+            EndOfJson      = 'EndOfJson'
+        }
+
+        $result = Merge-MtMaesterResult -MaesterResults @($noName)
+
+        $result.Tenants.Count | Should -BeExactly 1
+        $result.Tenants[0].TenantName | Should -BeExactly ''
+    }
 }
