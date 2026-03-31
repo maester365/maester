@@ -37,7 +37,7 @@ function Merge-MtMaesterResult {
 
     # Validate each result has the expected structure
     foreach ($result in $MaesterResults) {
-        if (-not $result.PSObject.Properties.Name -contains 'Tests') {
+        if (-not ($result.PSObject.Properties.Name -contains 'Tests')) {
             throw "MaesterResults object is missing the 'Tests' property. TenantId: $($result.TenantId)"
         }
     }
