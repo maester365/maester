@@ -166,11 +166,6 @@ export function Sidebar() {
 
   const displayTenantName = selectedTenant?.TenantName || selectedTenant?.TenantId || "Tenant"
 
-  const getTenantDisplay = () => {
-    return (
-      <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-    )
-  }
 
   return (
     <div
@@ -293,7 +288,6 @@ export function Sidebar() {
       <div className="relative border-t border-gray-200 p-3 dark:border-gray-800">
         <SettingsMenu
           isCollapsed={isCollapsed}
-          getTenantDisplay={getTenantDisplay}
           tenantName={selectedTenant?.TenantName}
           tenantId={selectedTenant?.TenantId}
           pathname={pathname}
@@ -305,13 +299,12 @@ export function Sidebar() {
 
 interface SettingsMenuProps {
   isCollapsed: boolean
-  getTenantDisplay: () => React.ReactNode
   tenantName?: string
   tenantId?: string
   pathname: string
 }
 
-function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pathname }: SettingsMenuProps) {
+function SettingsMenu({ isCollapsed, tenantName, tenantId, pathname }: SettingsMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -381,7 +374,7 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
         )}
       >
         <div className="shrink-0">
-          {getTenantDisplay()}
+          <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </div>
         {!isCollapsed && (
           <div className="flex flex-1 flex-col overflow-hidden text-left">
