@@ -40,6 +40,23 @@ Each tenant gets the full experience. Test overview, severity charts, category b
 
 Single tenant reports continue to work exactly as before. The tenant selector only appears when there are multiple tenants in the report.
 
+## Tenant-specific configuration
+
+Each tenant can have its own `maester-config.json` by naming it with the tenant ID:
+
+```
+tests/
+  maester-config.json                                          # shared default
+  maester-config.a1b2c3d4-e5f6-7890-abcd-ef1234567890.json    # Contoso Production
+  maester-config.b2c3d4e5-f6a7-8901-bcde-f12345678901.json    # Fabrikam Development
+```
+
+When Maester runs, it automatically detects the connected tenant ID and looks for `maester-config.{tenantId}.json` first. If no tenant-specific file exists, it falls back to `maester-config.json`. This lets you configure different emergency access accounts and severity overrides per tenant while sharing a common baseline.
+
+In multi-tenant reports, the Config page shows which config file was loaded for each tenant so you can verify the right file is being used.
+
+Single-tenant users are not affected — everything works exactly as before with the default `maester-config.json`.
+
 ## How it works
 
 The approach is straightforward:
