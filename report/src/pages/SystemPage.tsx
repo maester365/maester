@@ -1,4 +1,4 @@
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 import { Divider } from "@/components/Divider"
 import { useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
@@ -64,6 +64,7 @@ function ConfigSection({ title, config }: { title: string; config: any }) {
 }
 
 export default function SystemPage() {
+  const { selectedTenant: testResults } = useTenant()
   const systemInfo = testResults.SystemInfo || {}
   const powerShellInfo = testResults.PowerShellInfo || {}
   const loadedModules = testResults.LoadedModules || []

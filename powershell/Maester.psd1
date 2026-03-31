@@ -88,7 +88,7 @@
     'Get-MtAzureManagementGroup', 'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
     'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
     'Get-MtExoThreatPolicyMalware',
-    'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSession',
+    'Get-MtHtmlReport', 'Merge-MtMaesterResult', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSession',
     'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
     'Install-MaesterTests',
     'Invoke-Maester', 'Invoke-MtGraphRequest', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
