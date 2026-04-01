@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCR01 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Defines if admin consent request feature is enabled or disabled
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
+    graph/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR01
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.isEnabled -eq 'true'
-#>
-
-function Test-MtEidscaCR01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

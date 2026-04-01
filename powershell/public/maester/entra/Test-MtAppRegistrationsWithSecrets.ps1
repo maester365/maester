@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-MtAppRegistrationsWithSecrets {
+    <#
+    .SYNOPSIS
     Check if any service principals are still using secrets instead of certificates or managed identities.
 
-.DESCRIPTION
+    .DESCRIPTION
     It is advised to use certificates or managed identities instead of secrets for service principals. This test checks if any service principals are still using secrets.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtAppRegistrationsWithSecrets
 
     Returns true if no service principals are using secrets, otherwise returns false.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtAppRegistrationsWithSecrets
-#>
-function Test-MtAppRegistrationsWithSecrets {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks credentials for all apps.')]
     [OutputType([bool])]

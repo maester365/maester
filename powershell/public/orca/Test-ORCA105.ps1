@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA105{
+    <#
+    .SYNOPSIS
     Safe Links Synchronous URL detonation is enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA105
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA105
-#>
-function Test-ORCA105{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

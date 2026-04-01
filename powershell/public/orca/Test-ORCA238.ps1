@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA238{
+    <#
+    .SYNOPSIS
     Safe Links is enabled for office documents.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA238
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA238
-#>
-function Test-ORCA238{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

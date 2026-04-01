@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtUserAccessAdmin {
+    <#
+    .SYNOPSIS
     Checks if any Global Admins have User Access Control permissions at the Root Scope
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure that no one has permanent access to all subscriptions through the Root Scope.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtUserAccessAdmin
 
     Returns true if no User Access Control permissions are assigned at the root scope
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtUserAccessAdmin
-#>
-function Test-MtUserAccessAdmin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

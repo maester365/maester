@@ -1,9 +1,8 @@
-﻿<#
-.SYNOPSIS
+﻿function ConvertTo-MtMaesterResult {
+    <#
+    .SYNOPSIS
     Converts Pester results to the Maester test results format which includes additional information.
-#>
-
-function ConvertTo-MtMaesterResult {
+    #>
     [CmdletBinding()]
     param(
         # The Pester test results returned from Invoke-Pester -PassThru

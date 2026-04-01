@@ -1,16 +1,16 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtSecurityGroupCreationRestricted {
+    <#
+    .SYNOPSIS
     Tests if security group creation is restricted to admin users.
-.DESCRIPTION
+    .DESCRIPTION
     This function checks if security group creation is restricted to admin users by querying the authorization policy settings.
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if security group creation is restricted to admin users, otherwise returns $false.
-.EXAMPLE
+    .EXAMPLE
     Test-MtSecurityGroupCreationRestricted
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtSecurityGroupCreationRestricted
-#>
-function Test-MtSecurityGroupCreationRestricted {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

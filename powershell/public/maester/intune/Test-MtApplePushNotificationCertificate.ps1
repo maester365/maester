@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtApplePushNotificationCertificate {
+    <#
+    .SYNOPSIS
     Check the validity of the Apple Push Notification Service (APNS) Certificate for Intune.
-.DESCRIPTION
+    .DESCRIPTION
     The Apple Push Notification Service (APNS) Certificate is required for managing Apple devices with Microsoft Intune. This command checks if the APNS certificate is valid and not expired.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtApplePushNotificationCertificate
 
     Returns true if the APNS certificate is valid for more than 30 days, false if it is expired or expiring soon.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtApplePushNotificationCertificate
-#>
-function Test-MtApplePushNotificationCertificate {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

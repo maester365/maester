@@ -1,17 +1,17 @@
-﻿<#
- .Synopsis
-  Returns all the members of the specific group ID.
+﻿function Get-MtGroupMember {
+    <#
+    .Synopsis
+    Returns all the members of the specific group ID.
 
- .Description
-  Returns all the members of the specific group ID.
+    .Description
+    Returns all the members of the specific group ID.
 
- .Example
-  Get-MtGroupMember
+    .Example
+    Get-MtGroupMember
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtGroupMember
-#>
-function Get-MtGroupMember {
+    #>
   [CmdletBinding()]
   param(
     # ID for the Entra group to return members for.

@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisCalendarSharing {
+    <#
+    .SYNOPSIS
     Checks state of sharing policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Calendar details SHALL NOT be shared with all domains.
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisCalendarSharing
 
     Returns true if no sharing policies allow uncontrolled calendar sharing.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisCalendarSharing
-#>
-function Test-MtCisCalendarSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

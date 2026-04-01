@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAM09 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Determines whether the user's Authenticator app will show them the geographic location of where the authentication request originated from.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayLocationInformationRequiredState.state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayLocationInformationRequiredState.state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM09
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayLocationInformationRequiredState.state -eq 'enabled'
-#>
-
-function Test-MtEidscaAM09 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

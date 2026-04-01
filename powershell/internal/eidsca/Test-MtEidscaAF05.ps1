@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAF05 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Restricted is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     You can work with your Security key provider to determine the AAGuids of their devices for allowing or blocking usage.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -eq 'true'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAF05
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -eq 'true'
-#>
-
-function Test-MtEidscaAF05 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDlpPii {
+    <#
+    .SYNOPSIS
     Checks state of DLP for EXO
 
-.DESCRIPTION
+    .DESCRIPTION
     The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDlpPii
 
     Returns true if
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDlpPii
-#>
-function Test-MtCisaDlpPii {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

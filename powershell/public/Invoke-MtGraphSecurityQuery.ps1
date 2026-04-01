@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-  Execute KQL query in Microsoft 365 Defender Advanced Hunting by using Graph API Security endpoint to get results programmatically.
+﻿function Invoke-MtGraphSecurityQuery {
+    <#
+    .SYNOPSIS
+    Execute KQL query in Microsoft 365 Defender Advanced Hunting by using Graph API Security endpoint to get results programmatically.
 
-.DESCRIPTION
-  This cmdlet allows you to execute KQL queries against the Microsoft 365 Defender Advanced Hunting API.
-  It simplifies the process of querying and retrieving data from the Microsoft Defender XDR for integration of Maester checks.
+    .DESCRIPTION
+    This cmdlet allows you to execute KQL queries against the Microsoft 365 Defender Advanced Hunting API.
+    It simplifies the process of querying and retrieving data from the Microsoft Defender XDR for integration of Maester checks.
 
-.EXAMPLE
-  Invoke-MtGraphSecurityQuery -Query "IdentityInfo | where isnotempty(PrivilegedEntraPimRoles)" -Timespan "P14D"
+    .EXAMPLE
+    Invoke-MtGraphSecurityQuery -Query "IdentityInfo | where isnotempty(PrivilegedEntraPimRoles)" -Timespan "P14D"
 
-  # Get identities with eligible Entra roles of the last 14 days
+    # Get identities with eligible Entra roles of the last 14 days
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Invoke-MtGraphSecurityQuery
-#>
-function Invoke-MtGraphSecurityQuery {
+    #>
     [CmdletBinding()]
     param(
         # Valid KQL query

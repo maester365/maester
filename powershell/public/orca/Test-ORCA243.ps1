@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA243{
+    <#
+    .SYNOPSIS
     Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA243
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA243
-#>
-function Test-ORCA243{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

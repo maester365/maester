@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAppUserConsent {
+    <#
+    .SYNOPSIS
     Checks if user app consent is prevented
 
-.DESCRIPTION
+    .DESCRIPTION
     Only administrators SHALL be allowed to consent to applications.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAppUserConsent
 
     Returns true if disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAppUserConsent
-#>
-function Test-MtCisaAppUserConsent {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

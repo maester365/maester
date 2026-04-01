@@ -1,21 +1,21 @@
-﻿<#
- .Synopsis
-  Returns all the role definitions in the tenant.
+﻿function Get-MtRole {
+    <#
+    .Synopsis
+    Returns all the role definitions in the tenant.
 
- .Description
-  Returns all the role definitions in the tenant.
+    .Description
+    Returns all the role definitions in the tenant.
 
- .Parameter CisaHighlyPrivilegedRoles
-  Filters the returned roles to only those described
-  by CISA as highly privieleged.
+    .Parameter CisaHighlyPrivilegedRoles
+    Filters the returned roles to only those described
+    by CISA as highly privieleged.
 
- .Example
-  Get-MtRole
+    .Example
+    Get-MtRole
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtRole
-#>
-function Get-MtRole {
+    #>
   [CmdletBinding()]
   param(
     [switch]$CisaHighlyPrivilegedRoles

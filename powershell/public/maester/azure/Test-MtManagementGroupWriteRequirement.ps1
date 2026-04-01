@@ -1,20 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtManagementGroupWriteRequirement {
+    <#
+    .SYNOPSIS
     Checks if write permissions are required to create new management groups
 
-.DESCRIPTION
+    .DESCRIPTION
     This test ensures that only users with explicit write access can create new management groups.
     This is important to prevent unauthorized creation of management groups which could lead to security risks.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtManagementGroupWriteRequirement
 
     Returns true if write permissions are required for creating new management groups.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtManagementGroupWriteRequirement
-#>
-function Test-MtManagementGroupWriteRequirement {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

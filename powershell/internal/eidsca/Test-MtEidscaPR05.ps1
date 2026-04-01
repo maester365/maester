@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaPR05 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
 
-.DESCRIPTION
+    .DESCRIPTION
 
     The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
+    graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaPR05
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
-#>
-
-function Test-MtEidscaPR05 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

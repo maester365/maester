@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA109{
+    <#
+    .SYNOPSIS
     Senders are not being allow listed in an unsafe manner.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA109
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA109
-#>
-function Test-ORCA109{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
