@@ -2,11 +2,7 @@
 title: "Introducing Maester 2.0 🚀"
 description: A major release with 400+ commits, 15+ new security tests, XSPM integration, enhanced reports, and more.
 slug: maester-2-0
-authors:
-  - name: Maester Team
-    title: Contributors
-    url: https://github.com/maester365
-    image_url: https://github.com/maester365.png
+authors: [maesterteam]
 tags: [maester, release, security, entra, m365]
 hide_table_of_contents: false
 date: 2026-02-11
@@ -104,11 +100,13 @@ We've added over 15 new tests to help you secure your Microsoft 365 environment.
 | **MT.1083** | Ensure Delicensing Resiliency is enabled |
 
 **Why it matters:**
+
 - Prevent shadow IT by restricting tenant and group creation
 - Protect your hybrid identity by blocking on-prem sync attacks
 - Secure your Azure backup infrastructure
 
 **How to use:**
+
 ```powershell
 # Run all new tests
 Invoke-Maester -Tag "MT.1068", "MT.1069", "MT.1070"
@@ -137,11 +135,13 @@ A brand new category! Integrate with **Microsoft Security Exposure Management** 
 | **High Exposure Devices** | Publicly exploitable devices with high exposure scores |
 
 **Why it matters:**
+
 - Identify attack paths before attackers do
 - Prioritize remediation based on exposure risk
 - Leverage Microsoft's threat intelligence
 
 **How to use:**
+
 ```powershell
 # Run XSPM tests
 Invoke-Maester -Tag "XSPM"
@@ -168,11 +168,13 @@ The Maester report has been completely redesigned with new views and capabilitie
 | **Dark Mode** | Beautiful dark mode for late-night security reviews |
 
 **Why it matters:**
+
 - Share results with stakeholders in their preferred format
 - Track remediation progress over time
 - Present findings to leadership with professional reports
 
 **How to use:**
+
 ```powershell
 # Generate the enhanced report
 Invoke-Maester -OutputFolder ./results
@@ -188,6 +190,7 @@ Invoke-Maester -OutputFolder ./results
 Define your break-glass accounts in the Maester configuration to improve test accuracy.
 
 **Why it matters:**
+
 - Tests correctly identify your emergency access accounts
 - No more false positives on Conditional Access exclusions
 - Audit trail for break-glass account usage
@@ -195,6 +198,7 @@ Define your break-glass accounts in the Maester configuration to improve test ac
 **How to use:**
 
 Edit your `maester-config.json`:
+
 ```json
 {
   "GlobalSettings": {
@@ -207,6 +211,7 @@ Edit your `maester-config.json`:
 ```
 
 Then run your tests:
+
 ```powershell
 Invoke-Maester
 # Tests will now recognize your defined emergency access accounts
@@ -228,11 +233,13 @@ New cmdlets to simplify setting up Maester for DevOps pipelines.
 | `Add-MtMaesterAppFederatedCredential` | Add GitHub Actions federated credentials |
 
 **Why it matters:**
+
 - One command to set up your DevOps app registration
 - Automatically configures the minimum required permissions
 - Supports workload identity federation for GitHub Actions
 
 **How to use:**
+
 ```powershell
 # Create a new Maester app for GitHub Actions
 New-MtMaesterApp -Name "Maester Pipeline" -GitHubOrganization "myorg" -GitHubRepository "maester-tests"
@@ -251,11 +258,13 @@ Add-MtMaesterAppFederatedCredential -GitHubOrganization "myorg" -GitHubRepositor
 A new command to discover and explore available tests.
 
 **Why it matters:**
+
 - Understand what tests are available before running
 - Filter tests by tags or capabilities
 - Export inventory for documentation
 
 **How to use:**
+
 ```powershell
 # Get all available tests grouped by tag
 $inventory = Get-MtTestInventory
@@ -272,18 +281,22 @@ Get-MtTestInventory -OutputType CSV -ExportPath ./TestInventory.csv
 ## 🔧 Improvements & Fixes
 
 ### Performance
+
 - Optimized `Invoke-MtGraphRequest` for faster batch operations
 - Improved `ConvertTo-QueryString` with better null handling
 
 ### CISA Compliance
+
 - Enhanced CISA test accuracy and reliability
 - Individual test IDs for CA What-If analysis
 
 ### CIS Benchmarks
+
 - Improved DKIM test with skip logic for onmicrosoft.com domains
 - Cleaner test names without level numbers for better readability
 
 ### Defender for Identity
+
 - Refactored health issue detection
 - Better integration with MDI alerts
 
