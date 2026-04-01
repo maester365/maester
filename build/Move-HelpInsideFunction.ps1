@@ -36,18 +36,27 @@ param(
     [string[]] $Path
 )
 
-# Collect all target files from the provided paths. Skip Pester test files (ending with .Tests.ps1) since they often have different formatting and we don't want to risk breaking them.
+# Collect all target files from the provided paths. Skip Pester test files (ending with .Tests.ps1)
+# since they often have different formatting and we don't want to risk breaking them.
 $TargetFiles = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 foreach ($InputPath in $Path) {
-    $ResolvedPath = Resolve-Path -Path $InputPath -ErrorAction Stop
-    if (Test-Path -Path $ResolvedPath -PathType Container) {
-        $Files = Get-ChildItem -Path $ResolvedPath -Recurse -Include '*.ps1', '*.psm1' |
-            Where-Object { $_.Name -notlike '*.Tests.ps1' }
-        foreach ($File in $Files) {
-            $TargetFiles.Add($File)
+    # Resolve-Path can return multiple results when the path contains wildcards, so iterate each.
+    foreach ($ResolvedPath in (Resolve-Path -Path $InputPath -ErrorAction Stop)) {
+        if (Test-Path -Path $ResolvedPath -PathType Container) {
+            # Use -Filter (one call per extension) instead of -Include, which is unreliable
+            # when -Path does not contain a wildcard.
+            $Files = @()
+            $Files += Get-ChildItem -Path $ResolvedPath -Recurse -Filter '*.ps1' -File
+            $Files += Get-ChildItem -Path $ResolvedPath -Recurse -Filter '*.psm1' -File
+            foreach ($File in ($Files | Where-Object { $_.Name -notlike '*.Tests.ps1' })) {
+                $TargetFiles.Add($File)
+            }
+        } elseif (Test-Path -Path $ResolvedPath -PathType Leaf) {
+            $LeafItem = Get-Item -Path $ResolvedPath
+            if ($LeafItem.Extension -in '.ps1', '.psm1') {
+                $TargetFiles.Add($LeafItem)
+            }
         }
-    } elseif (Test-Path -Path $ResolvedPath -PathType Leaf) {
-        $TargetFiles.Add((Get-Item -Path $ResolvedPath))
     }
 }
 
@@ -69,7 +78,15 @@ foreach ($File in $TargetFiles) {
             $File.FullName, [ref] $Tokens, [ref] $ParseErrors
         )
 
-        # Find all top-level function definitions in this file.
+        # Skip files with parse errors to avoid corrupting partially-parsed content.
+        if ($ParseErrors.Count -gt 0) {
+            Write-Warning "Skipping $($File.FullName): $($ParseErrors.Count) parse error(s) found."
+            $ErrorCount++
+            continue
+        }
+
+        # Find all function definitions in this file (including nested ones; the later
+        # matching logic self-corrects by only acting on functions preceded by a help block).
         $FunctionDefs = $Ast.FindAll({
                 param($Node)
                 $Node -is [System.Management.Automation.Language.FunctionDefinitionAst]
