@@ -15,12 +15,23 @@ jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yaml
 
+  build-report:
+    uses: ./.github/workflows/build-maester-report-template.yml
+
   create-release:
     # needs: build-validation
+    needs: build-report
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Download updated report template
+        if: needs.build-report.outputs.report-updated == 'true'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: updated-report-template
+          path: powershell/assets/
 
       - name: Package ./tests to PowerShell module
         id: package-tests
