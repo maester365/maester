@@ -1,0 +1,69 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoOrganizationLimitVariablesAtQueueTime
+title: Test-AzdoOrganizationLimitVariablesAtQueueTime
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoOrganizationLimitVariablesAtQueueTime.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoOrganizationLimitVariablesAtQueueTime [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks if user defined variables are able to override system variables or variables not defined by the pipeline author.
+
+https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoOrganizationLimitVariablesAtQueueTime
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoOrganizationLimitVariablesAtQueueTime](https://maester.dev/docs/commands/Test-AzdoOrganizationLimitVariablesAtQueueTime)
