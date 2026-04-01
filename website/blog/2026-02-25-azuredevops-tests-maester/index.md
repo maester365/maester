@@ -3,9 +3,9 @@ title: Azure DevOps tests for Maester
 description: Azure DevOps Security tests for Maester
 slug: azuredevops-tests-for-maester
 authors: sebastian
-tags: [AzureDevOps,Security]
+tags: [Azure-DevOps,Security]
 hide_table_of_contents: false
-date: 2026-02-25
+date: 2026-04-01
 # image: ./img/azure-devops-webapp-diagram.png
 #draft: true # Draft
 ---
@@ -36,6 +36,7 @@ Invoke-Maester
 > Certain cmdlets will use unsupported REST API endpoints in Azure DevOps and may result in error(s) when Azure DevOps endpoints are changed without notice, hence the -Force flag running for certain tests.
 
 ### Permissions
+
 - At least a basic license in Azure DevOps
 - Certain tests require either organization-level permissions such as "Project Collection Administrator" or tenant-level permissions such as "Azure DevOps Administrator".
 
@@ -44,7 +45,7 @@ Invoke-Maester
 ### Available tests
 
 | Test ID | Severity | Description | Link |
-|---------|----------|-------------|------|
+| --------- | ---------- | ------------- | ------ |
 | AZDO.1000 | High | Third-party application access via OAuth should be disabled. | [Learn more](https://aka.ms/vstspolicyoauth) |
 | AZDO.1001 | High | Connecting to Azure DevOps using SSH should be disabled. | [Learn more](https://aka.ms/vstspolicyssh) |
 | AZDO.1002 | High | Auditing should be enabled. | [Learn more](https://aka.ms/log-audit-events) |
@@ -83,7 +84,6 @@ Invoke-Maester
 | AZDO.1035 | High | Restriction of Personal Access Token lifespan should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan) |
 | AZDO.1036 | High | Restriction of full-scoped Personal Access Token creation should be enabled. | [Learn more](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens) |
 
-
 ### Quick Stats
 
 - 🚀 Automated security tests for Azure DevOps using Maester
@@ -94,7 +94,7 @@ Invoke-Maester
 
 Follow the step-by-step guide to set up Maester in Azure DevOps with required resources:
 
-- Documentation: [Azure DevOps tests](/docs/monitoring/azure-devops-tests)
+- Documentation: [Azure DevOps tests](/docs/monitoring/azure-devops)
 
 ## Contributor
 
