@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP05 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Sign-up for email based subscription is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicates whether users can sign up for email based subscriptions.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
+    graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP05
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
-#>
-
-function Test-MtEidscaAP05 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
