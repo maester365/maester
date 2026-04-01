@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaImpersonationTip {
+    <#
+    .SYNOPSIS
     Checks state of preset security policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Impersonation protection checks SHOULD be used.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaImpersonationTip
 
     Returns true if standard and strict protection is on
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaImpersonationTip
-#>
-function Test-MtCisaImpersonationTip {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

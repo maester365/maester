@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaPasswordExpiration {
+    <#
+    .SYNOPSIS
     Checks if passwords are set to not expire
 
-.DESCRIPTION
+    .DESCRIPTION
     User passwords SHALL NOT expire.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaPasswordExpiration
 
     Returns true if all verified managed domains have password expiration configured
     to be of 100 years or greater
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaPasswordExpiration
-#>
-function Test-MtCisaPasswordExpiration {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
