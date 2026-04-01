@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisAuditLogSearch {
+    <#
+    .SYNOPSIS
     Checks if audit log search is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Microsoft 365 audit log search should be enabled
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisAuditLogSearch
 
     Returns true if audit log search is enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisAuditLogSearch
-#>
-function Test-MtCisAuditLogSearch {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

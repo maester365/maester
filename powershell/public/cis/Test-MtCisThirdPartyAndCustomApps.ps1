@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisThirdPartyAndCustomApps {
+    <#
+    .SYNOPSIS
     Ensure all or a majority of third-party and custom apps are blocked
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure all or a majority of third-party and custom apps are blocked
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisThirdPartyAndCustomApps
 
     Returns true if all or a majority of third-party and custom apps are blocked
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyAndCustomApps
-#>
-function Test-MtCisThirdPartyAndCustomApps {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple types of apps.')]
     [OutputType([bool])]

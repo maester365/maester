@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisSharedMailboxSignIn {
+    <#
+    .SYNOPSIS
     Checks if shared mailboxes allow sign-ins
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure Sign ins are blocked for shared mailboxes.
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisSharedMailboxSignIn
 
     Returns true if no shared mailboxes allow sign-ins
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisSharedMailboxSignIn
-#>
-function Test-MtCisSharedMailboxSignIn {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
