@@ -1700,7 +1700,7 @@
     },
     {
       "Id": "AZDO.1008",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Request access to Azure DevOps by e-mail notifications to administrators"
     },
     {
@@ -1730,7 +1730,7 @@
     },
     {
       "Id": "AZDO.1014",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Anonymous access to pipeline badges"
     },
     {
@@ -1755,17 +1755,17 @@
     },
     {
       "Id": "AZDO.1019",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Stage chooser"
     },
     {
       "Id": "AZDO.1020",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Creation of classic build pipelines"
     },
     {
       "Id": "AZDO.1021",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Creation of classic release pipelines"
     },
     {
@@ -1780,7 +1780,7 @@
     },
     {
       "Id": "AZDO.1024",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Disable Node 6 tasks"
     },
     {
@@ -1800,7 +1800,7 @@
     },
     {
       "Id": "AZDO.1028",
-      "Severity": "High",
+      "Severity": "Medium",
       "Title": "Disable creation of TFVC repositories"
     },
     {
@@ -1825,7 +1825,7 @@
     },
     {
       "Id": "AZDO.1033",
-      "Severity": "High",
+      "Severity": "Critical",
       "Title": "Enable automatic revocation of leaked Personal Access Tokens"
     },
     {
