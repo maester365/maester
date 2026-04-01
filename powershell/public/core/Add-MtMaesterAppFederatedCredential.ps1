@@ -1,45 +1,45 @@
-﻿<#
-.SYNOPSIS
+﻿function Add-MtMaesterAppFederatedCredential {
+    <#
+    .SYNOPSIS
     Adds a federated credential to a Maester application for GitHub Actions authentication.
 
-.DESCRIPTION
+    .DESCRIPTION
     Adds a federated credential (workload identity) to a Maester application to enable
     authentication from GitHub Actions workflows without using client secrets.
     The credential allows the specified GitHub repository and branch to authenticate
     as the application.
 
-.PARAMETER Id
+    .PARAMETER Id
     The Object ID of the Maester application to add the federated credential to.
 
-.PARAMETER AppId
+    .PARAMETER AppId
     The Application (Client) ID of the Maester application to add the federated credential to.
 
-.PARAMETER GitHubRepository
+    .PARAMETER GitHubRepository
     The GitHub repository in the format 'owner/repo' (e.g., 'myorg/myrepo').
 
-.PARAMETER GitHubBranch
+    .PARAMETER GitHubBranch
     The GitHub branch that can use this credential. Defaults to 'main'.
 
-.PARAMETER Name
+    .PARAMETER Name
     The name for the federated credential. Defaults to 'maester-devops'.
 
-.PARAMETER Force
+    .PARAMETER Force
     Skip the confirmation prompt if a similar credential already exists.
 
-.EXAMPLE
+    .EXAMPLE
     Add-MtMaesterAppFederatedCredential -AppId "12345678-1234-1234-1234-123456789012" -GitHubOrganization "myorg" -GitHubRepository "myrepo"
 
     Adds a federated credential for the main branch of myorg/myrepo to the specified Maester app.
 
-.EXAMPLE
+    .EXAMPLE
     Add-MtMaesterAppFederatedCredential -Id "87654321-4321-4321-4321-210987654321" -GitHubOrganization "myorg" -GitHubRepository "myrepo" -Name "maester-develop"
 
     Adds a federated credential for the develop branch with a custom name.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Add-MtMaesterAppFederatedCredential
-#>
-function Add-MtMaesterAppFederatedCredential {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [CmdletBinding()]
     param(
