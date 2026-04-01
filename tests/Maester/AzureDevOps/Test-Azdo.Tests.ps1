@@ -31,7 +31,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $false -Because "Authentication towards your tenant should only be by Entra, do not allow developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
     }
 
-    It "AZDO.1002: Log Audit Events. See https://aka.ms/log-audit-events" -Tag "AZDO.1002" {
+    It "AZDO.1002: Log Audit Events. See https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing" -Tag "AZDO.1002" {
         $result = Test-AzdoLogAuditEvent
         $result | Should -Be $true -Because "Auditing should be enabled for Azure DevOps"
     }
@@ -41,17 +41,17 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $false -Because "Public projects should be disabled for Azure DevOps"
     }
 
-    It "AZDO.1004: Additional protections when using public package registries. See https://aka.ms/upstreamBehaviorBlog" -Tag "AZDO.1004" {
+    It "AZDO.1004: Additional protections when using public package registries. See https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior/" -Tag "AZDO.1004" {
         $result = Test-AzdoArtifactsExternalPackageProtectionToken
         $result | Should -Be $true -Because "Limiting access to externally sourced packages when internally sourced packages are already present in Azure DevOps"
     }
 
-    It "AZDO.1005: IP Conditional Access policy validation. See https://aka.ms/visual-studio-conditional-access-policy" -Tag "AZDO.1005" {
+    It "AZDO.1005: IP Conditional Access policy validation. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#cap-support-on-azure-devops" -Tag "AZDO.1005" {
         $result = Test-AzdoEnforceAADConditionalAccess
         $result | Should -Be $true -Because "Microsoft Entra ID should always perform validation for any Conditional Access Policies (CAPs) set by tenant administrators."
     }
 
-    It "AZDO.1006: External Users access. See https://aka.ms/vstspolicyguest" -Tag "AZDO.1006" {
+    It "AZDO.1006: External Users access. See https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access" -Tag "AZDO.1006" {
         $result = Test-AzdoExternalGuestAccess
         $result | Should -Be $false -Because "External users should not be allowed access to your Azure DevOps organization"
     }
@@ -176,7 +176,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $true -Because "Users should not be directly assigned to 'Project Collection Administrator' as it is the most privileged role within Azure DevOps."
     }
 
-    It "AZDO.1031: Validate SSH Key Expiration. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#validate-ssh-key-expiration" -Tag "AZDO.1031" {
+    It "AZDO.1031: Validate SSH Key Expiration. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-application-access-policies?view=azure-devops#ssh-key-policies" -Tag "AZDO.1031" {
         $result = Test-AzdoValidateSshKeyExpiration
         $result | Should -Be $true -Because "SSH keys should be validated for expiration."
     }
@@ -191,7 +191,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $true -Because "Leaked Personal Access Tokens (PATs) should be automatically revoked."
     }
 
-    It "AZDO.1034: Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/organization-management?view=azure-devops" -Tag "AZDO.1034" {
+    It "AZDO.1034: Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy" -Tag "AZDO.1034" {
         $result = Test-AzdoOrganizationCreationRestriction
         $result | Should -Be $true -Because "Organization creation should be restricted to maintain governance and control."
     }
@@ -201,7 +201,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted lifespan with an expiration date."
     }
 
-    It "AZDO.1036: Restrict Personal Access Token full scope. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-full-scope-personal-access-tokens" -Tag "AZDO.1036" {
+    It "AZDO.1036: Restrict Personal Access Token full scope. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy" -Tag "AZDO.1036" {
         $result = Test-AzdoRestrictFullScopePersonalAccessToken
         $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted scope and not have full access to the organization."
     }
