@@ -26,7 +26,7 @@
     "react-router-dom": "^7.12.0",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^3.5.0",
-    "tailwind-variants": "^0.3.0",
+    "tailwind-variants": "^3.2.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
