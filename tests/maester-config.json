@@ -1188,7 +1188,7 @@
       "Severity": "Medium",
       "Title": "Devices with critical credentials should be protected by Credential Guard."
     },
-        {
+    {
       "Id": "MT.1090",
       "Severity": "Medium",
       "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
@@ -1657,6 +1657,191 @@
       "Id": "ORCA.1004",
       "Severity": "High",
       "Title": "<URL> filtering policy settings configured."
+    },
+    {
+      "Id": "AZDO.1000",
+      "Severity": "High",
+      "Title": "Azure DevOps OAuth apps can access resources in your organization through OAuth"
+    },
+    {
+      "Id": "AZDO.1001",
+      "Severity": "High",
+      "Title": "Identities can connect to your organization's Git repos through SSH"
+    },
+    {
+      "Id": "AZDO.1002",
+      "Severity": "High",
+      "Title": "Log Audit Events"
+    },
+    {
+      "Id": "AZDO.1003",
+      "Severity": "High",
+      "Title": "Restrict public projects"
+    },
+    {
+      "Id": "AZDO.1004",
+      "Severity": "High",
+      "Title": "Additional protections when using public registries"
+    },
+    {
+      "Id": "AZDO.1005",
+      "Severity": "High",
+      "Title": "IP Conditional Access policy validation"
+    },
+    {
+      "Id": "AZDO.1006",
+      "Severity": "High",
+      "Title": "External Users access"
+    },
+    {
+      "Id": "AZDO.1007",
+      "Severity": "High",
+      "Title": "Team and project administrator are allowed to invite new users"
+    },
+    {
+      "Id": "AZDO.1008",
+      "Severity": "High",
+      "Title": "Request access to Azure DevOps by e-mail notifications to administrators"
+    },
+    {
+      "Id": "AZDO.1009",
+      "Severity": "Info",
+      "Title": "Feedback Collection"
+    },
+    {
+      "Id": "AZDO.1010",
+      "Severity": "High",
+      "Title": "Audit streaming"
+    },
+    {
+      "Id": "AZDO.1011",
+      "Severity": "Info",
+      "Title": "Project Resource Limits"
+    },
+    {
+      "Id": "AZDO.1012",
+      "Severity": "Info",
+      "Title": "Work Items Tags Limits"
+    },
+    {
+      "Id": "AZDO.1013",
+      "Severity": "High",
+      "Title": "Organization Owner should not be an individual"
+    },
+    {
+      "Id": "AZDO.1014",
+      "Severity": "High",
+      "Title": "Anonymous access to pipeline badges"
+    },
+    {
+      "Id": "AZDO.1015",
+      "Severity": "High",
+      "Title": "Limit variables that can be set at queue time"
+    },
+    {
+      "Id": "AZDO.1016",
+      "Severity": "High",
+      "Title": "Limit job authorization scope to current project for non-release pipelines"
+    },
+    {
+      "Id": "AZDO.1017",
+      "Severity": "High",
+      "Title": "Limit job authorization scope to current project for classic release pipelines"
+    },
+    {
+      "Id": "AZDO.1018",
+      "Severity": "High",
+      "Title": "Protect access to repositories in YAML pipelines"
+    },
+    {
+      "Id": "AZDO.1019",
+      "Severity": "High",
+      "Title": "Stage chooser"
+    },
+    {
+      "Id": "AZDO.1020",
+      "Severity": "High",
+      "Title": "Creation of classic build pipelines"
+    },
+    {
+      "Id": "AZDO.1021",
+      "Severity": "High",
+      "Title": "Creation of classic release pipelines"
+    },
+    {
+      "Id": "AZDO.1022",
+      "Severity": "High",
+      "Title": "Limit building pull requests from forked GitHub repositories"
+    },
+    {
+      "Id": "AZDO.1023",
+      "Severity": "High",
+      "Title": "Disable Marketplace tasks"
+    },
+    {
+      "Id": "AZDO.1024",
+      "Severity": "High",
+      "Title": "Disable Node 6 tasks"
+    },
+    {
+      "Id": "AZDO.1025",
+      "Severity": "High",
+      "Title": "Enable shell tasks arguments validation"
+    },
+    {
+      "Id": "AZDO.1026",
+      "Severity": "Medium",
+      "Title": "Enable automatic enrollment to Advanced Security for Azure DevOps"
+    },
+    {
+      "Id": "AZDO.1027",
+      "Severity": "Medium",
+      "Title": "Disable showing Gravatar images for users outside of your enterprise"
+    },
+    {
+      "Id": "AZDO.1028",
+      "Severity": "High",
+      "Title": "Disable creation of TFVC repositories"
+    },
+    {
+      "Id": "AZDO.1029",
+      "Severity": "Medium",
+      "Title": "Storage Usage Limit"
+    },
+    {
+      "Id": "AZDO.1030",
+      "Severity": "Critical",
+      "Title": "Project Collection Administrators"
+    },
+    {
+      "Id": "AZDO.1031",
+      "Severity": "High",
+      "Title": "Validate SSH key expiration"
+    },
+    {
+      "Id": "AZDO.1032",
+      "Severity": "High",
+      "Title": "Restrict creation of global Personal Access Tokens"
+    },
+    {
+      "Id": "AZDO.1033",
+      "Severity": "High",
+      "Title": "Enable automatic revocation of leaked Personal Access Tokens"
+    },
+    {
+      "Id": "AZDO.1034",
+      "Severity": "High",
+      "Title": "Restrict creation of new Azure DevOps organizations"
+    },
+    {
+      "Id": "AZDO.1035",
+      "Severity": "High",
+      "Title": "Restrict Personal Access Token lifespan"
+    },
+    {
+      "Id": "AZDO.1036",
+      "Severity": "High",
+      "Title": "Restrict Personal Access Token full scope"
     }
   ]
 }
