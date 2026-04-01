@@ -19,14 +19,21 @@
     "vscode": {
       "settings": {
         "markdown.extension.preview.autoOpenPreview": true,
-        "terminal.integrated.defaultProfile.linux": "pwsh"
+        "terminal.integrated.defaultProfile.linux": "pwsh",
+        "eslint.run": "onSave",
+        "cSpell.ignorePaths": [
+          "node_modules",
+          ".git",
+          "dist",
+          "build",
+          "*.lock"
+        ]
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
         "github.vscode-github-actions",
         "GlenBuktenica.unicode-substitutions",
         "ms-vscode.powershell",
-        "ms-vscode.vscode-typescript-next",
         "streetsidesoftware.code-spell-checker"
       ]
     },
