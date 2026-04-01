@@ -1,105 +1,105 @@
-﻿<#
-.SYNOPSIS
-This is the main Maester command that runs the tests and generates a report of the results.
+﻿function Invoke-Maester {
+    <#
+    .SYNOPSIS
+    This is the main Maester command that runs the tests and generates a report of the results.
 
-.DESCRIPTION
-Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
+    .DESCRIPTION
+    Using Invoke-Maester is the easiest way to run the Pester tests and generate a report of the results.
 
-For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
+    For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
+    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
 
-.PARAMETER IncludeLongRunning
-Include tests that can take a long time to run in tenants with a large number of objects.
+    .PARAMETER IncludeLongRunning
+    Include tests that can take a long time to run in tenants with a large number of objects.
 
-.PARAMETER IncludePreview
-Include tests that are still being tested or are dependent on preview APIs.
+    .PARAMETER IncludePreview
+    Include tests that are still being tested or are dependent on preview APIs.
 
-.PARAMETER NoLogo
-Do not show the Maester logo.
+    .PARAMETER NoLogo
+    Do not show the Maester logo.
 
-.PARAMETER NonInteractive
-This will suppress the logo when Maester starts, prevent the test results from being opened in the default browser, and suppress all pretty messages.
+    .PARAMETER NonInteractive
+    This will suppress the logo when Maester starts, prevent the test results from being opened in the default browser, and suppress all pretty messages.
 
-.EXAMPLE
-Invoke-Maester
+    .EXAMPLE
+    Invoke-Maester
 
-Runs all the test files under the current folder (except for those tagged as LongRunning and Preview) and generates a report of the results in the ./test-results folder.
+    Runs all the test files under the current folder (except for those tagged as LongRunning and Preview) and generates a report of the results in the ./test-results folder.
 
-.EXAMPLE
-Invoke-Maester ./maester-tests
+    .EXAMPLE
+    Invoke-Maester ./maester-tests
 
-Runs all the tests in the folder ./tests/Maester (except for those tagged as LongRunning and Preview) and generates a report of the results in the default ./test-results folder.
+    Runs all the tests in the folder ./tests/Maester (except for those tagged as LongRunning and Preview) and generates a report of the results in the default ./test-results folder.
 
-.EXAMPLE
-Invoke-Maester -Tag 'CA' -IncludeLongRunning
+    .EXAMPLE
+    Invoke-Maester -Tag 'CA' -IncludeLongRunning
 
-Runs the tests with the tag "CA" and includes long-running tests. Generates a report of the results in the default ./test-results folder.
+    Runs the tests with the tag "CA" and includes long-running tests. Generates a report of the results in the default ./test-results folder.
 
-.EXAMPLE
-Invoke-Maester -Tag 'CA', 'App' -IncludePreview
+    .EXAMPLE
+    Invoke-Maester -Tag 'CA', 'App' -IncludePreview
 
-Runs the tests with the tags 'CA' and 'App' and includes preview tests. Generates a report of the results in the default ./test-results folder.
+    Runs the tests with the tags 'CA' and 'App' and includes preview tests. Generates a report of the results in the default ./test-results folder.
 
-.EXAMPLE
-Invoke-Maester -OutputFolder './my-test-results'
+    .EXAMPLE
+    Invoke-Maester -OutputFolder './my-test-results'
 
-Runs tests and generates a report of the results in the ./my-test-results folder.
+    Runs tests and generates a report of the results in the ./my-test-results folder.
 
-.EXAMPLE
-Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
+    .EXAMPLE
+    Invoke-Maester -OutputHtmlFile './test-results/TestResults.html'
 
-Runs the tests and generates a report of the results in the specified file.
+    Runs the tests and generates a report of the results in the specified file.
 
-.EXAMPLE
-Invoke-Maester -Path ./tests/EIDSCA
+    .EXAMPLE
+    Invoke-Maester -Path ./tests/EIDSCA
 
-Runs tests in the EIDSCA folder.
+    Runs tests in the EIDSCA folder.
 
-.EXAMPLE
-Invoke-Maester -MailRecipient john@contoso.com
+    .EXAMPLE
+    Invoke-Maester -MailRecipient john@contoso.com
 
-Runs the tests and sends a report of the results to an email recipient.
+    Runs the tests and sends a report of the results to an email recipient.
 
-.EXAMPLE
-Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
+    .EXAMPLE
+    Invoke-Maester -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2'
 
-Runs the tests and posts a summary of the results to a Teams channel.
+    Runs the tests and posts a summary of the results to a Teams channel.
 
-.EXAMPLE
-Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
+    .EXAMPLE
+    Invoke-Maester -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01'
 
-Runs the tests and posts a summary of the results to a Teams channel.
+    Runs the tests and posts a summary of the results to a Teams channel.
 
-.EXAMPLE
-Invoke-Maester -Verbosity Normal
+    .EXAMPLE
+    Invoke-Maester -Verbosity Normal
 
-Shows results of tests as they are run, including details on failed tests.
+    Shows results of tests as they are run, including details on failed tests.
 
-.EXAMPLE
-```powershell
-$configuration = New-PesterConfiguration
-$configuration.Run.Path = './tests/Maester'
-$configuration.Filter.Tag = 'CA'
-$configuration.Filter.ExcludeTag = 'App'
+    .EXAMPLE
+    ```powershell
+    $configuration = New-PesterConfiguration
+    $configuration.Run.Path = './tests/Maester'
+    $configuration.Filter.Tag = 'CA'
+    $configuration.Filter.ExcludeTag = 'App'
 
-Invoke-Maester -PesterConfiguration $configuration
-```
+    Invoke-Maester -PesterConfiguration $configuration
+    ```
 
-Runs Pester tests in the ./tests/Maester folder that include the 'CA' tag and exclude the 'App' tag.
+    Runs Pester tests in the ./tests/Maester folder that include the 'CA' tag and exclude the 'App' tag.
 
-.EXAMPLE
-```powershell
-Connect-Maester -Service All
-Invoke-Maester -IncludeLongRunning -IncludePreview
-```
+    .EXAMPLE
+    ```powershell
+    Connect-Maester -Service All
+    Invoke-Maester -IncludeLongRunning -IncludePreview
+    ```
 
-Connect to all tested services and run all tests, including the long-running and preview tests.
+    Connect to all tested services and run all tests, including the long-running and preview tests.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Invoke-Maester
-#>
-function Invoke-Maester {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Incorrectly flags ExportCsv and ExportExcel as unused')]
     [Alias('Invoke-MtMaester')]
