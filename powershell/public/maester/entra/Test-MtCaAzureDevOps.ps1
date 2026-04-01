@@ -1,18 +1,18 @@
-<#
- .Synopsis
+﻿function Test-MtCaAzureDevOps {
+    <#
+    .Synopsis
     Checks if any conditional access policy explicitly includes Azure DevOps
 
- .Description
+    .Description
     Azure DevOps will no longer rely on the Azure Resource Manager (ARM) resource during sign-in or token refresh flows.
     Organizations must update their Conditional Access policies to explicitly include Azure DevOps to maintain secure access.
 
-  .Example
+    .Example
     Test-MtCaAzureDevOps
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaAzureDevOps
-#>
-function Test-MtCaAzureDevOps {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]

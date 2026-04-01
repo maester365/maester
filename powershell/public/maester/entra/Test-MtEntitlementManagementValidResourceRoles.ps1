@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntitlementManagementValidResourceRoles {
+    <#
+    .SYNOPSIS
     Validates catalog resources have no stale app roles or deleted service principals
 
-.DESCRIPTION
+    .DESCRIPTION
     MT.1106 - Catalog resources must have valid roles (no stale / removed app roles or SPNs)
 
     This test identifies Entra ID Governance access package catalog resources that
@@ -29,16 +30,14 @@
     Learn more:
     https://maester.dev/docs/tests/MT.1106
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntitlementManagementValidResourceRoles
 
     Returns $true if all catalog resources have valid roles and service principals
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntitlementManagementValidResourceRoles
-#>
-
-function Test-MtEntitlementManagementValidResourceRoles {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Roles is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -313,5 +312,3 @@ function Test-MtEntitlementManagementValidResourceRoles {
         return $false
     }
 }
-
-

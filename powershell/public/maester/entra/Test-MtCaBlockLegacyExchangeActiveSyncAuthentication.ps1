@@ -1,21 +1,21 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy that blocks legacy authentication for Exchange Active Sync authentication.
+﻿function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy that blocks legacy authentication for Exchange Active Sync authentication.
 
- .Description
+    .Description
     Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
     conditional access policy that blocks legacy authentication.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
 
- .Example
-  Test-MtCaBlockLegacyExchangeActiveSyncAuthentication
+    .Example
+    Test-MtCaBlockLegacyExchangeActiveSyncAuthentication
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaBlockLegacyExchangeActiveSyncAuthentication
-#>
-function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
