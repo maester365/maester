@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA107{
+    <#
+    .SYNOPSIS
     End-user spam notification is enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA107
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA107
-#>
-function Test-ORCA107{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

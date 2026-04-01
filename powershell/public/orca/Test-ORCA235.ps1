@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA235{
+    <#
+    .SYNOPSIS
     SPF records is set up for all your custom domains.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA235
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA235
-#>
-function Test-ORCA235{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
