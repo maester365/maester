@@ -3,7 +3,7 @@ title: Azure DevOps tests for Maester
 description: Azure DevOps Security tests for Maester
 slug: azuredevops-tests-for-maester
 authors: sebastian
-tags: [Azure-DevOps,Security]
+tags: [AzureDevOps,Security]
 hide_table_of_contents: false
 date: 2026-04-01
 # image: ./img/azure-devops-webapp-diagram.png
