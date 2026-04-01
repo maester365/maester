@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtDeviceComplianceSettings {
+    <#
+    .SYNOPSIS
     Ensure the built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'
 
-.DESCRIPTION
+    .DESCRIPTION
     The built-in Device Compliance Policy should mark devices with no compliance policy assigned as 'Not compliant'
 
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtDeviceComplianceSettings
 
     Returns true if the device compliance settings are configured
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtDeviceComplianceSettings
-#>
-function Test-MtDeviceComplianceSettings {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple settings.')]

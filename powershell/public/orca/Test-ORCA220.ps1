@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA220{
+    <#
+    .SYNOPSIS
     Advanced Phish filter Threshold level is adequate.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA220
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA220
-#>
-function Test-ORCA220{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

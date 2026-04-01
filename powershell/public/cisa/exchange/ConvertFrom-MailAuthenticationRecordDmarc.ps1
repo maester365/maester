@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function ConvertFrom-MailAuthenticationRecordDmarc {
+    <#
+    .SYNOPSIS
     Returns structured RFC compliant object for a DMARC record
 
-.DESCRIPTION
+    .DESCRIPTION
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -24,18 +25,17 @@
     alignmentSpf         : r
     version              : DMARC1
     warnings             : {sp: No subdomain policy set, adkim: No DKIM alignment set, defaults to relaxed, aspf: No SPF alignment set, defaults to relaxed, ri: No
-                        report interval set, defaults to 86400 seconds…}
+    report interval set, defaults to 86400 seconds…}
     ```
 
-.EXAMPLE
+    .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDmarc -DomainName "microsoft.com"
 
     Returns [DMARCRecord] or "Failure to obtain record"
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDmarc
-#>
-function ConvertFrom-MailAuthenticationRecordDmarc {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DMARCRecord], [System.String])]
     [cmdletbinding()]

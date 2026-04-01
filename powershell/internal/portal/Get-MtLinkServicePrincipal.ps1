@@ -1,10 +1,8 @@
-﻿<#
-
+﻿function Get-MtLinkServicePrincipal {
+    <#
     .SYNOPSIS
     Get the deep link to the Microsoft Entra admin portal for a specific Graph object type.
-#>
-
-function Get-MtLinkServicePrincipal {
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param(

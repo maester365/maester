@@ -1,21 +1,21 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one emergency/break glass account or account group excluded from all conditional access policies
+﻿function Test-MtCaEmergencyAccessExists {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one emergency/break glass account or account group excluded from all conditional access policies
 
- .Description
-  It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
-  This allows for emergency access to the tenant in case of a misconfiguration or other issues.
+    .Description
+    It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
+    This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access
+    Learn more:
+    https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access
 
- .Example
-  Test-MtCaEmergencyAccessExists
+    .Example
+    Test-MtCaEmergencyAccessExists
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaEmergencyAccessExists
-#>
-function Test-MtCaEmergencyAccessExists {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -32,8 +32,11 @@ function Test-MtCaEmergencyAccessExists {
         # Only check policies that are not related to authentication context (the state of policy does not have to be enabled)
         $policies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
 
-        # Remove policies that are scoped to service principals
-        $policies = $policies | Where-Object { -not $_.conditions.clientApplications.includeServicePrincipals }
+        # Remove policies that are scoped to service principals or agent identities
+        $policies = $policies | Where-Object {
+            -not $_.conditions.clientApplications.includeServicePrincipals -and
+            -not $_.conditions.clientApplications.includeAgentIdServicePrincipals
+        }
 
         $result = $false
         $PolicyCount = $policies | Measure-Object | Select-Object -ExpandProperty Count

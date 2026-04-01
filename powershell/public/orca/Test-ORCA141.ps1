@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA141{
+    <#
+    .SYNOPSIS
     Bulk action set to Move message to Junk Email Folder.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA141
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA141
-#>
-function Test-ORCA141{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

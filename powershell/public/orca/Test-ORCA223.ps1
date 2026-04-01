@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA223{
+    <#
+    .SYNOPSIS
     User impersonation action is set to move to Quarantine.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA223
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA223
-#>
-function Test-ORCA223{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

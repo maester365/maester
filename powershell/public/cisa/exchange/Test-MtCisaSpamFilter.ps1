@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpamFilter {
+    <#
+    .SYNOPSIS
     Checks state of spam filter
 
-.DESCRIPTION
+    .DESCRIPTION
     A spam filter SHALL be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpamFilter
 
     Returns true if spam filter enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpamFilter
-#>
-function Test-MtCisaSpamFilter {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

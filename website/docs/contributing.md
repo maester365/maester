@@ -59,6 +59,7 @@ When contributing tests, please ensure the following:
 - [x] Decide if the test should go into an existing .Tests.ps1
 
 #### Writing the test
+
 - [x] Decide in which folder the test should live. See **Test folder convention** above.
 - [x] Decide if you are going to add the test to an existing .Tests.ps1 file or create a new one. E.g. If it's CA related you can add to the existing CA tests file. Don't stress over this, it's easy to move it around at any time.
 - [x] Follow the guide at [Writing custom tests - Advanced Guide](/docs/writing-tests/advanced-concepts) to write your test.
@@ -122,7 +123,7 @@ Follow this guide if you want to run the documentation locally and view changes 
 
 #### Pre-requisites
 
-[Node.js](https://nodejs.org/en/download/) version 18.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+[Node.js](https://nodejs.org/en/download/) version 24.0 or above (which can be checked by running node -v). When installing Node.js, you are recommended to check all checkboxes related to dependencies.
 
 #### Installation
 

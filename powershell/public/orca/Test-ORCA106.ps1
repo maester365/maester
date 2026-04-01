@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA106{
+    <#
+    .SYNOPSIS
     Quarantine retention period is 30 days.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA106
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA106
-#>
-function Test-ORCA106{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

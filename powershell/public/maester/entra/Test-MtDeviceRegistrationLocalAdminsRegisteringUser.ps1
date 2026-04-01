@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtDeviceRegistrationLocalAdminsRegisteringUser {
+    <#
+    .SYNOPSIS
     Tests whether registering users are configured as local administrators on devices during Microsoft Entra join.
 
-.DESCRIPTION
+    .DESCRIPTION
     Registering users should not be added as local administrators on the device during Microsoft Entra join.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtDeviceRegistrationLocalAdminsRegisteringUser
 
     Returns true if registering users are not configured as local administrators on devices during Microsoft Entra join, false if they are, and null if the test could not be completed.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtDeviceRegistrationLocalAdminsRegisteringUser
-#>
-function Test-MtDeviceRegistrationLocalAdminsRegisteringUser {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -36,4 +36,3 @@ function Test-MtDeviceRegistrationLocalAdminsRegisteringUser {
         return $null
     }
 }
-

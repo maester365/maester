@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtAppRegistrationOwnersWithoutMFA {
+    <#
+    .SYNOPSIS
     Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks all Entra ID app registrations and verifies that their owners have MFA registered.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if all owners have MFA, $false if any owners lack MFA, $null if skipped
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtAppRegistrationOwnersWithoutMFA
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtAppRegistrationOwnersWithoutMFA
-#>
-
-function Test-MtAppRegistrationOwnersWithoutMFA {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks MFA for all app registration owners.')]
     [OutputType([bool])]

@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaPR03 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Enforce custom list is set to 'True'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     When enabled, the words in the list below are used in the banned password system to prevent easy-to-guess passwords.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
+    graph/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaPR03
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
-#>
-
-function Test-MtEidscaPR03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

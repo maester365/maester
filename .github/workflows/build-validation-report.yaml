@@ -12,10 +12,16 @@ jobs:
   report:
     runs-on: ubuntu-latest
     steps:
-      - uses: dorny/test-reporter@v2
+      # fail-on-error is set to false so that PRs which don't touch the path-filtered
+      # files (powershell/**, report/**, tests/**) — and bot-created PRs where GITHUB_TOKEN
+      # suppresses workflow triggers — don't get stuck waiting for an artifact that will
+      # never be uploaded. Trade-off: if tests *should* have run but the upload step failed
+      # silently, this check will report neutral instead of failing. Consider moving to a
+      # fan-in required-status-check pattern (Option 3) for a more robust long-term solution.
+      - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
         with:
           artifact: test-results-Windows
           name: Maester Test Results
           path: "*.xml"
           reporter: java-junit
-          fail-on-error: true
+          fail-on-error: false

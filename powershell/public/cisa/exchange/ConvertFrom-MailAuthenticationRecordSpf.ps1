@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function ConvertFrom-MailAuthenticationRecordSpf {
+    <#
+    .SYNOPSIS
     Returns a structured RFC compliant object for the supplied SPF record
 
-.DESCRIPTION
+    .DESCRIPTION
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -11,20 +12,19 @@
 
     ```
     record   : v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com
-            include:_spf1-meo.microsoft.com -all
+    include:_spf1-meo.microsoft.com -all
     terms    : {SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…}
     warnings :
     ```
 
-.EXAMPLE
+    .EXAMPLE
     ConvertFrom-MailAuthenticationRecordSpf -DomainName "microsoft.com"
 
     Returns [SPFRecord] object or "Failure to obtain record"
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordSpf
-#>
-function ConvertFrom-MailAuthenticationRecordSpf {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([SPFRecord], [System.String])]
     [cmdletbinding()]

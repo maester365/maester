@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA226{
+    <#
+    .SYNOPSIS
     Each domain has a Safe Link policy applied to it.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA226
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA226
-#>
-function Test-ORCA226{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

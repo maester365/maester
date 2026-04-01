@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaMailboxIntelligence {
+    <#
+    .SYNOPSIS
     Checks state of preset security policies
 
-.DESCRIPTION
+    .DESCRIPTION
     The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaMailboxIntelligence
 
     Returns true if standard and strict protection is on
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaMailboxIntelligence
-#>
-function Test-MtCisaMailboxIntelligence {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

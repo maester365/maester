@@ -1,19 +1,18 @@
-﻿<#
-  .Synopsis
-  Checks if Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable Groups.
+﻿function Test-MtIntuneRbacGroupsProtected {
+    <#
+    .Synopsis
+    Checks if Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable Groups.
 
-  .Description
-  This command checks if the security groups assigned in Intune RBAC roles are protected by Restricted Management Administrative Units or Role Assignable Groups.
-  This is important to ensure that only authorized administrators can manage specific devices or users, enhancing the security of your Intune environment.
+    .Description
+    This command checks if the security groups assigned in Intune RBAC roles are protected by Restricted Management Administrative Units or Role Assignable Groups.
+    This is important to ensure that only authorized administrators can manage specific devices or users, enhancing the security of your Intune environment.
 
-  .Example
-  Test-MtIntuneRbacGroupsProtected
+    .Example
+    Test-MtIntuneRbacGroupsProtected
 
-  .LINK
-  https://maester.dev/docs/commands/Test-MtIntuneRbacGroupsProtected
-#>
-
-function Test-MtIntuneRbacGroupsProtected {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtIntuneRbacGroupsProtected
+    #>
   [CmdletBinding()]
   [OutputType([bool])]
   param ()

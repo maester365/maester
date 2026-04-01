@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA104{
+    <#
+    .SYNOPSIS
     High Confidence Phish action set to Quarantine message.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA104
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA104
-#>
-function Test-ORCA104{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

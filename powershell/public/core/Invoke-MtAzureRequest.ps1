@@ -1,4 +1,5 @@
-﻿<#
+﻿function Invoke-MtAzureRequest {
+    <#
     .SYNOPSIS
     Invoke a REST API request to the Azure Management API.
 
@@ -12,9 +13,7 @@
 
     .LINK
     https://maester.dev/docs/commands/Invoke-MtAzureRequest
-#>
-
-function Invoke-MtAzureRequest {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '', Justification = 'Invoke-MtAzureRequest is required')]
     [CmdletBinding()]
     param(
@@ -62,7 +61,7 @@ function Invoke-MtAzureRequest {
     if ($Graph) {
         $baseUri = $((Get-AzContext).Environment.ExtendedProperties.MicrosoftGraphUrl)
         if ( -not $baseUri) { $baseUri = 'https://graph.microsoft.com' }
-        if ($ApiVersion -ne 'v1.0' -or $ApiVersion -ne 'beta') { $ApiVersion = 'v1.0' }
+        if ($ApiVersion -ne 'v1.0' -and $ApiVersion -ne 'beta') { $ApiVersion = 'v1.0' }
 
         $uriQueryEndpoint = New-Object System.UriBuilder -ArgumentList ([IO.Path]::Combine($baseUri, $ApiVersion, $RelativeUri))
 

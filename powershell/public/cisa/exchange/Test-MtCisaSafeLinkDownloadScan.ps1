@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSafeLinkDownloadScan {
+    <#
+    .SYNOPSIS
     Checks state of URL direct download scans
 
-.DESCRIPTION
+    .DESCRIPTION
     Direct download links SHOULD be scanned for malware.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSafeLinkDownloadScan
 
     Returns true if URL direct download scan enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSafeLinkDownloadScan
-#>
-function Test-MtCisaSafeLinkDownloadScan {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

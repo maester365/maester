@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisCloudAdmin {
+    <#
+    .SYNOPSIS
     Checks if Global Admins are cloud users
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure Administrative accounts are cloud-only
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisCloudAdmin
 
     Returns true if no global admins are hybrid sync
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisCloudAdmin
-#>
-function Test-MtCisCloudAdmin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

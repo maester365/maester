@@ -1,21 +1,21 @@
-﻿<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring device compliance for admins.
+﻿function Test-MtCaDeviceComplianceAdminsExists {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy requiring device compliance for admins.
 
- .Description
-  Device compliance conditional access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
-  This is a good way to prevent AITM attacks.
+    .Description
+    Device compliance conditional access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
+    This is a good way to prevent AITM attacks.
 
-  Learn more:
-  https://aka.ms/CATemplatesAdminDevices
+    Learn more:
+    https://aka.ms/CATemplatesAdminDevices
 
- .Example
-  Test-MtCaDeviceComplianceAdminsExists
+    .Example
+    Test-MtCaDeviceComplianceAdminsExists
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaDeviceComplianceAdminsExists
-#>
-function Test-MtCaDeviceComplianceAdminsExists {
+    #>
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PSScriptAnalyzer bug is not detecting usage of PolicyIncludesAllRoles')]
   [CmdletBinding()]

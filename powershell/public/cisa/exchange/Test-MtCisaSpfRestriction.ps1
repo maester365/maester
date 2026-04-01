@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpfRestriction {
+    <#
+    .SYNOPSIS
     Checks state of SPF records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     A list of approved IP addresses for sending mail SHALL be maintained.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpfRestriction
 
     Returns true if SPF record exists and has a fail all modifier for all exo domains
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpfRestriction
-#>
-function Test-MtCisaSpfRestriction {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

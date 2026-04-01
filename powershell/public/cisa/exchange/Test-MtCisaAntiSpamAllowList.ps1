@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAntiSpamAllowList {
+    <#
+    .SYNOPSIS
     Checks state of anti-spam policies
 
-.DESCRIPTION
+    .DESCRIPTION
     IP allow lists SHOULD NOT be created.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAntiSpamAllowList
 
     Returns true if no allowed IPs in anti-spam policy
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAntiSpamAllowList
-#>
-function Test-MtCisaAntiSpamAllowList {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

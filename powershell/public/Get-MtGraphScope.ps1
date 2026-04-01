@@ -1,34 +1,34 @@
-﻿<#
- .Synopsis
+﻿function Get-MtGraphScope {
+    <#
+    .Synopsis
     Returns the list of Graph scopes required to run Maester.
 
- .Description
+    .Description
     Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope)
 
     Connects to Microsoft Graph with the required scopes to run Maester.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send email.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -SendTeamsMessage)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send messages to a Teams Channel.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
 
     Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtGraphScope
-#>
-function Get-MtGraphScope {
+    #>
 
     [CmdletBinding()]
     param(
@@ -58,6 +58,7 @@ function Get-MtGraphScope {
         'Directory.Read.All'
         'DirectoryRecommendations.Read.All'
         'IdentityRiskEvent.Read.All'
+        'OnPremDirectorySynchronization.Read.All'
         'OrgSettings-AppsAndServices.Read.All'
         'OrgSettings-Forms.Read.All'
         'Policy.Read.All'

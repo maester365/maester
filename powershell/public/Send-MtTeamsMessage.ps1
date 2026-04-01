@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Send-MtTeamsMessage {
+    <#
+    .SYNOPSIS
     Send an adaptive card in a teams channel with the summary of the Maester test results
 
-.DESCRIPTION
+    .DESCRIPTION
     Uses Graph API to send an adaptive card in a teams channel with the summary of the Maester test results.
 
     This command requires the ChannelMessage.Send delegate permission in the Microsoft Graph API.
@@ -18,21 +19,20 @@
     When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
     must be granted to the application in the Microsoft Entra portal.
 
-.EXAMPLE
+    .EXAMPLE
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 
-.EXAMPLE
+    .EXAMPLE
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Send-MtTeamsMessage
-#>
-function Send-MtTeamsMessage {
+    #>
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`

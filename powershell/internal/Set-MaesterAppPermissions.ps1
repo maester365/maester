@@ -1,4 +1,5 @@
-﻿<#
+﻿function Set-MaesterAppPermission {
+    <#
     .SYNOPSIS
     Internal helper function to set Graph API permissions for a Maester application.
 
@@ -14,8 +15,7 @@
 
     .EXAMPLE
     Set-MaesterAppPermission -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
-#>
-function Set-MaesterAppPermission {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]

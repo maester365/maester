@@ -1,16 +1,15 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtMaesterConfig {
+    <#
+    .SYNOPSIS
     Reads the Maester config from (usually from the root of the ./tests directory)
 
-.DESCRIPTION
+    .DESCRIPTION
     This also uses the ./custom/maester-config.json file if it exists and
     merges the settings, allowing users to override the default settings.
 
-.EXAMPLE
+    .EXAMPLE
     $maesterConfig = Get-MtMaesterConfig -ConfigFilePath 'C:\path\to\maester-config.json'
-#>
-
-function Get-MtMaesterConfig {
+    #>
     [CmdletBinding()]
     [OutputType([object])]
     param(
@@ -82,7 +81,7 @@ function Get-MtMaesterConfig {
     }
 
     # Read the custom config file if it exists
-    $customConfigPath = Join-Path -Path (Split-Path -Path $ConfigFilePath -Parent) -ChildPath 'custom' | Join-Path -ChildPath 'maester-config.json'
+    $customConfigPath = Join-Path -Path (Split-Path -Path $ConfigFilePath -Parent) -ChildPath 'Custom' | Join-Path -ChildPath 'maester-config.json'
     if (Test-Path $customConfigPath) {
         Write-Verbose "Custom config file found at $customConfigPath. Merging with main config."
         $customConfig = Get-Content -Path $customConfigPath -Raw | ConvertFrom-Json

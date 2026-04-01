@@ -1,25 +1,25 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaActivationNotification {
+    <#
+    .SYNOPSIS
     Checks for notification on role activation
 
-.DESCRIPTION
+    .DESCRIPTION
     User activation of the Global Administrator role SHALL trigger an alert.
     User activation of other highly privileged roles SHOULD trigger an alert.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaActivationNotification
 
     Returns true if notifications are set for activation of the highly privileged roles other than Global Admin
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaActivationNotification -GlobalAdminOnly
 
     Returns true if notifications are set for activation of the Global Admin role
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaActivationNotification
-#>
-function Test-MtCisaActivationNotification {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

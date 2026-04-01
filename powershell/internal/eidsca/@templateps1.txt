@@ -1,22 +1,21 @@
-﻿<#
-.SYNOPSIS
-    Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
+﻿function %PSFunctionName% {
+    <#
+    .SYNOPSIS
+        Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
 
-.DESCRIPTION
+    .DESCRIPTION
 
-    %ControlItemDescription%
+        %ControlItemDescription%
 
-    Queries %RelativeUri%
-    and returns the result of
-     graph/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+        Queries %RelativeUri%
+        and returns the result of
+         graph/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
 
-.EXAMPLE
-    %PSFunctionName%
+    .EXAMPLE
+        %PSFunctionName%
 
-    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
-#>
-
-function %PSFunctionName% {
+        Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

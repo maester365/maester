@@ -4,6 +4,7 @@
 - **Directory.Read.All**
 - **DirectoryRecommendations.Read.All**
 - **IdentityRiskEvent.Read.All**
+- **OnPremDirectorySynchronization.Read.All**
 - **Policy.Read.All**
 - **Policy.Read.ConditionalAccess**
 - **PrivilegedAccess.Read.AzureAD**
@@ -16,4 +17,3 @@
 - **SharePointTenantSettings.Read.All**
 - **ThreatHunting.Read.All**
 - **UserAuthenticationMethod.Read.All**
-- **OnPremDirectorySynchronization.Read.All**

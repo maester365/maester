@@ -28,7 +28,7 @@ function generateMarkdown(results: typeof testResults) {
   md += `| Name | Severity | Result |\n`
   md += `| :--- | :---: | :---: |\n`
   results.Tests.forEach((test) => {
-    const safeName = test.Name.replace(/\|/g, "\\|")
+    const safeName = test.Name.replace(/\\/g, "\\\\").replace(/\|/g, "\\|")
     md += `| ${safeName} | ${test.Severity} | ${test.Result} |\n`
   })
   md += `\n`

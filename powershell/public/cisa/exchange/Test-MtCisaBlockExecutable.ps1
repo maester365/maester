@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaBlockExecutable {
+    <#
+    .SYNOPSIS
     Checks state of preset security policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Emails SHALL be filtered by attachment file types
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaBlockExecutable
 
     Returns true if standard and strict protection is on
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaBlockExecutable
-#>
-function Test-MtCisaBlockExecutable {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

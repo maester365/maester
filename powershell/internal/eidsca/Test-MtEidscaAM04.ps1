@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAM04 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications is set to 'all_users'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Object Id or scope of users which will be showing number matching in the Authenticator App.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.includeTarget.id -eq 'all_users'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.includeTarget.id -eq 'all_users'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM04
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.includeTarget.id -eq 'all_users'
-#>
-
-function Test-MtEidscaAM04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

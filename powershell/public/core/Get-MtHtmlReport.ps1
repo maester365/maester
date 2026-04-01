@@ -1,12 +1,13 @@
-﻿<#
- .Synopsis
-  Generates a formatted html report using the MaesterResults object created by ConvertTo-MtMaesterResult
+﻿function Get-MtHtmlReport {
+    <#
+    .Synopsis
+    Generates a formatted html report using the MaesterResults object created by ConvertTo-MtMaesterResult
 
- .Description
+    .Description
     The generated html is a single file that provides a visual representation of the test
     results with a summary view and click through of the details.
 
- .Example
+    .Example
     $pesterResults = Invoke-Pester -PassThru
     $maesterResults = ConvertTo-MtMaesterResult $pesterResults
     $output = Get-MtHtmlReport -MaesterResults $maesterResults
@@ -14,17 +15,16 @@
 
     This example shows how to generate the html report and save it to a file by using Invoke-Pester
 
- .Example
+    .Example
     $maesterResults = Invoke-Maester -PassThru
     $output = Get-MtHtmlReport -MaesterResults $maesterResults
     $output | Out-File -FilePath $out.OutputHtmlFile -Encoding UTF8
 
     This example shows how to generate the html report and save it to a file by using Invoke-Maester
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtHtmlReport
-#>
-function Get-MtHtmlReport {
+    #>
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
