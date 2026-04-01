@@ -59,6 +59,8 @@
         'DirectoryRecommendations.Read.All'
         'IdentityRiskEvent.Read.All'
         'OnPremDirectorySynchronization.Read.All'
+        'OrgSettings-AppsAndServices.Read.All'
+        'OrgSettings-Forms.Read.All'
         'Policy.Read.All'
         'Policy.Read.ConditionalAccess'
         'PrivilegedAccess.Read.AzureAD'
