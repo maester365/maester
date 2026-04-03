@@ -181,6 +181,7 @@
     'Test-MtAppleVolumePurchaseProgramToken',
     'Test-MtCertificateConnectors', 'Test-MtFeatureUpdatePolicy',
     'Test-MtIntuneDiagnosticSettings', 'Test-MtIntuneRbacGroupsProtected',
+    'Test-MtBitLockerFullDiskEncryption',
     'Test-MtMdmAuthority', 'Test-MtMobileThreatDefenseConnectors',
     'Test-MtTenantCustomization', 'Test-MtWindowsDataProcessor',
     'Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts',
