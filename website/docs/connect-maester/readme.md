@@ -61,7 +61,7 @@ The same applies to the `-SendTeamsMessage` in `Connect-Maester`.
 
 Maester is designed to require read-only access to a tenant to run tests.
 
-However, certain tests like  [Test-MtExoMoeraMailActivity](../commands/Test-MtExoMoeraMailActivity.mdx) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
+However, certain tests like [Test-MtExoMoeraMailActivity](../commands/Test-MtExoMoeraMailActivity.mdx) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
 
 Connecting with privileged scopes is optional. To connect with privileged scopes, use the `-Privileged` switch:
 
@@ -95,18 +95,17 @@ Connect-Maester -Service Azure,Graph,Teams
 
 ### Connect to Copilot Studio (via Dataverse)
 
-To run the [Copilot Studio Security Tests](/docs/tests/maester/ai-agent-setup) (MT.1113–MT.1122), connect with the `Dataverse` service:
+To run the Copilot Studio Security Tests (MT.1113–MT.1122), connect with the `Dataverse` service:
 
 ```powershell
 Connect-Maester -Service Graph,Dataverse
 ```
 
-This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`. See the [Copilot Studio Security Tests setup guide](/docs/tests/maester/ai-agent-setup) for full configuration instructions.
+This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 
 `Connect-Maester` also provides options to connect to the US Government, China and Germany clouds for Microsoft Graph, Azure and Exchange Online.
-
 
 #### US Government
 
