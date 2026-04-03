@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA234{
+    <#
+    .SYNOPSIS
     Click through is disabled for Safe Documents.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA234
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA234
-#>
-function Test-ORCA234{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

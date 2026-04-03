@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtMdmAuthority {
+    <#
+    .SYNOPSIS
     Check the MDM Authority for Intune.
-.DESCRIPTION
+    .DESCRIPTION
     This command checks the Mobile Device Management (MDM) Authority setting in Microsoft Intune to determine if Intune is the configured MDM authority.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtMdmAuthority
 
     Returns true if Intune is set as the MDM authority, false otherwise.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtMdmAuthority
-#>
-function Test-MtMdmAuthority {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

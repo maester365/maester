@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCR02 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Specifies whether reviewers will receive notifications
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
+    graph/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR02
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.notifyReviewers -eq 'true'
-#>
-
-function Test-MtEidscaCR02 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

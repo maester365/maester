@@ -1,21 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtExoAdditionalStorageProvider {
+    <#
+    .SYNOPSIS
     Checks if additional storage providers are restricted in Outlook on the web
 
-.DESCRIPTION
+    .DESCRIPTION
     This setting allows users to open certain external files while working in Outlook on the web.
     If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of
     those third-party services.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoAdditionalStorageProvider
 
     Returns true if additional storage providers are restricted.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoAdditionalStorageProvider
-#>
-function Test-MtExoAdditionalStorageProvider {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

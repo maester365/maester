@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA240{
+    <#
+    .SYNOPSIS
     Outlook is configured to display external tags for external emails.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA240
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA240
-#>
-function Test-ORCA240{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

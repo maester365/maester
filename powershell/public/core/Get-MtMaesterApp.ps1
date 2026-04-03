@@ -1,36 +1,36 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtMaesterApp {
+    <#
+    .SYNOPSIS
     Retrieves Maester applications from Azure AD/Entra ID.
 
-.DESCRIPTION
+    .DESCRIPTION
     Retrieves all applications in Azure AD/Entra ID that have been tagged as Maester applications.
     This includes applications created by New-MtMaesterApp or manually tagged with 'maester'.
 
-.PARAMETER AppId
+    .PARAMETER AppId
     If specified, retrieves only the Maester application with the specified Application (Client) ID.
 
-.PARAMETER Name
+    .PARAMETER Name
     If specified, retrieves only Maester applications with display names containing the specified text.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtMaesterApp
 
     Retrieves all Maester applications in the tenant.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
 
     Retrieves the specific Maester application with the given Application ID.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtMaesterApp -Name "DevOps"
 
     Retrieves all Maester applications that start with "DevOps" in their display name.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtMaesterApp
-#>
-function Get-MtMaesterApp {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [CmdletBinding()]
     param(

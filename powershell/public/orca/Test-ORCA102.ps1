@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA102{
+    <#
+    .SYNOPSIS
     Advanced Spam filter options are turned off.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA102
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA102
-#>
-function Test-ORCA102{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

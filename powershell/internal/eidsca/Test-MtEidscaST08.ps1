@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaST08 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicating whether or not a guest user can be an owner of groups, manage
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
+    graph/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaST08
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
-#>
-
-function Test-MtEidscaST08 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

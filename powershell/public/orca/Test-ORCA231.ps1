@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA231{
+    <#
+    .SYNOPSIS
     Each domain has a anti-spam policy applied to it, or the default policy is being used.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA231
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA231
-#>
-function Test-ORCA231{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

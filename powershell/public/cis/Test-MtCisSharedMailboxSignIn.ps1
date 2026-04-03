@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisSharedMailboxSignIn {
+    <#
+    .SYNOPSIS
     Checks if shared mailboxes allow sign-ins
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure Sign ins are blocked for shared mailboxes.
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisSharedMailboxSignIn
 
     Returns true if no shared mailboxes allow sign-ins
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisSharedMailboxSignIn
-#>
-function Test-MtCisSharedMailboxSignIn {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -31,7 +31,7 @@ function Test-MtCisSharedMailboxSignIn {
 
     try {
         Write-Verbose 'Getting all shared mailboxes'
-        $sharedMailboxes = Get-MtExo -Request EXOMailbox -ErrorAction Stop | Where-Object { $_.RecipientTypeDetails -eq 'SharedMailbox' }
+        $sharedMailboxes = Get-MtExo -Request EXOSharedMailbox -ErrorAction Stop
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
@@ -43,16 +43,10 @@ function Test-MtCisSharedMailboxSignIn {
     }
 
     try {
-
         Write-Verbose 'For each mailbox get mailbox and AccountEnabled status'
-        $mailboxDetails = @()
-        foreach ($mbx in $sharedMailboxes) {
-            $mgUser = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $mbx.ExternalDirectoryObjectId -Select id,displayName,userPrincipalName,accountEnabled
-            $mailboxDetails += [pscustomobject]@{
-                DisplayName       = $mgUser.DisplayName
-                UserPrincipalName = $mgUser.UserPrincipalName
-                AccountEnabled    = $mgUser.AccountEnabled
-            }
+        $mgUsers = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId @($sharedMailboxes.ExternalDirectoryObjectId) -Select id,displayName,userPrincipalName,accountEnabled
+        $mailboxDetails = foreach ($mgUser in $mgUsers) {
+            $mgUser | Select-Object DisplayName, UserPrincipalName, AccountEnabled
         }
 
         Write-Verbose 'Select shared mailboxes where sign-in is enabled'

@@ -1,17 +1,17 @@
-﻿<#
- .Synopsis
-  Checks if Permanent Assignments for Entra ID roles exists
+﻿function Test-MtPrivPermanentDirectoryRole {
+    <#
+    .Synopsis
+    Checks if Permanent Assignments for Entra ID roles exists
 
- .Description
-  GET /beta/roleManagement/directory/roleAssignments?$expand=principal
+    .Description
+    GET /beta/roleManagement/directory/roleAssignments?$expand=principal
 
- .Example
-  Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
+    .Example
+    Test-MtPrivPermanentDirectoryRole -FilteredAccessLevel "ControlPlane" -FilterPrincipal "ExternalUser"
 
-.LINK
-  https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole
-#>
-function Test-MtPrivPermanentDirectoryRole {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtPrivPermanentDirectoryRole
+    #>
   [OutputType([bool])]
   [CmdletBinding()]
   param (

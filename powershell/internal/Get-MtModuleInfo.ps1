@@ -1,13 +1,12 @@
-﻿<#
+﻿function Get-MtModuleInfo {
+<#
 .SYNOPSIS
-    Returns the module details from the psd1 fle.
-
+    Returns the module details from the psd1 file.
 #>
-function Get-MtModuleInfo {
+    [CmdletBinding()]
+    [OutputType([PSObject])]
     param()
-
-
-
-    Write-Debug $moduleInfo | ConvertTo-Json -Depth 5
-    return $moduleInfo
+    $MtModuleInfo = $MyInvocation.MyCommand.Module
+    $MtModuleInfo | ConvertTo-Json -Depth 5 | Write-Debug
+    return $MtModuleInfo
 }

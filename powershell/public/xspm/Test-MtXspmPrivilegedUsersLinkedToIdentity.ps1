@@ -1,23 +1,22 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmPrivilegedUsersLinkedToIdentity {
+    <#
+    .SYNOPSIS
     Tests if privileged users with assigned high privileged Entra ID roles are linked to an identity.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks if any enabled privileged users with assigned high privileged Entra ID roles are linked to an identity in Microsoft Defender XDR.
     Emergency access accounts defined in the Maester config under 'EmergencyAccessAccounts' are excluded from this test.
     Entra ID role members should be a separate account from the day-to-day user account to reduce the attack surface but also linked in Defender XDR for visibility and option to apply containment to all associated accounts in case of a identity compromise.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if all sensitive privileged users are linked to an identity, $false if any are found not linked, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmPrivilegedUsersLinkedToIdentity
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmPrivilegedUsersLinkedToIdentity
-#>
-
-function Test-MtXspmPrivilegedUsersLinkedToIdentity {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users and roles.')]
     [OutputType([bool])]

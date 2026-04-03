@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtMobileThreatDefenseConnectors {
+    <#
+    .SYNOPSIS
     Check the Intune Mobile Threat Defense Connectors.
-.DESCRIPTION
+    .DESCRIPTION
     This command checks the Mobile Threat Defense Connectors configured in Microsoft Intune to determine their status and connectivity.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtMobileThreatDefenseConnectors
 
     Returns true if all Mobile Threat Defense Connectors are enabled and have recent heartbeats, false otherwise.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtMobileThreatDefenseConnectors
-#>
-function Test-MtMobileThreatDefenseConnectors {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple MTD connectors can exist.')]

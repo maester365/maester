@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisCustomerLockBox {
+    <#
+    .SYNOPSIS
     Checks if the customer lockbox feature is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     The customer lockbox feature should be enabled
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisCustomerLockBox
 
     Returns true if the customer lockbox feature is enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisCustomerLockBox
-#>
-function Test-MtCisCustomerLockBox {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,20 +1,20 @@
-﻿<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
+﻿function Test-MtCaEnforceNonPersistentBrowserSession {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy enforcing non persistent browser session
 
- .Description
+    .Description
     Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
 
-  Learn more:
-  https://aka.ms/CATemplatesBrowserSession
+    Learn more:
+    https://aka.ms/CATemplatesBrowserSession
 
- .Example
-  Test-MtCaEnforceNonPersistentBrowserSession
+    .Example
+    Test-MtCaEnforceNonPersistentBrowserSession
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaEnforceNonPersistentBrowserSession
-#>
-function Test-MtCaEnforceNonPersistentBrowserSession {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param (
@@ -95,4 +95,3 @@ See [Require reauthentication and disable browser persistence - Microsoft Learn]
         return $null
     }
 }
-

@@ -1,4 +1,5 @@
-﻿<#
+﻿function Invoke-MtAzureRequest {
+    <#
     .SYNOPSIS
     Invoke a REST API request to the Azure Management API.
 
@@ -12,9 +13,7 @@
 
     .LINK
     https://maester.dev/docs/commands/Invoke-MtAzureRequest
-#>
-
-function Invoke-MtAzureRequest {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '', Justification = 'Invoke-MtAzureRequest is required')]
     [CmdletBinding()]
     param(

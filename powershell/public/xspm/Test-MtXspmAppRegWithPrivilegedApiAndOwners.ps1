@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
+    <#
+    .SYNOPSIS
     Tests if app registration owners with privileged API permissions have delegated ownership.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks all Entra ID app registrations with sensitive API permissions and checks if ownership has been delegated.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no owners on app registrations with privileged API permissions, $false if any owners have been assigned, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmAppRegWithPrivilegedApiAndOwners
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedApiAndOwners
-#>
-
-function Test-MtXspmAppRegWithPrivilegedApiAndOwners {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple owners for each application object.')]
     [OutputType([bool])]

@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisHostedConnectionFilterPolicy {
+    <#
+    .SYNOPSIS
     Checks if connection filter IPs are allow listed
 
-.DESCRIPTION
+    .DESCRIPTION
     The connection filter should not have allow listed IPs
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisHostedConnectionFilterPolicy
 
     Returns true if the IP allow list is empty
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisHostedConnectionFilterPolicy
-#>
-function Test-MtCisHostedConnectionFilterPolicy {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

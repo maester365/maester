@@ -31,8 +31,8 @@ If the calling script/cmdlet has a markdown file with the same name as the scrip
 it will be used to populate the description and result fields.
 
 A good example is the markdown for the Test-MtCaEmergencyAccessExists cmdlet:
-    - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
-    - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
+- https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
+- https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
 
 The markdown file can include a separator `<!--- Results --->` to split the description and result sections.
 This allows for the overview and detailed information to be displayed separately in the Test results.
@@ -48,9 +48,9 @@ Add-MtTestResultDetail -Description 'Test description' -Result 'Test result'
 This example adds detailed information about a test with a brief description and the result of the test.
 
 ```powershell
-    $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
+$policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
 
-    Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
+Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
 ```
 
 This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.

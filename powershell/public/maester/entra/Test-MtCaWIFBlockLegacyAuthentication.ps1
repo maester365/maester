@@ -1,20 +1,20 @@
-<#
-.SYNOPSIS
-  Checks if the user is blocked from using legacy authentication
+﻿function Test-MtCaWIFBlockLegacyAuthentication {
+    <#
+    .SYNOPSIS
+    Checks if the user is blocked from using legacy authentication
 
-.DESCRIPTION
+    .DESCRIPTION
     Checks if the user is blocked from using legacy authentication using the Conditional Access WhatIf Graph API endpoint.
 
-.PARAMETER UserId
+    .PARAMETER UserId
     The UserId to test the Conditional Access policies with
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCaWIFBlockLegacyAuthentication -UserId "e7417ac7-0485-4014-9100-33163bd6211f"
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaWIFBlockLegacyAuthentication
-#>
-function Test-MtCaWIFBlockLegacyAuthentication {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param (

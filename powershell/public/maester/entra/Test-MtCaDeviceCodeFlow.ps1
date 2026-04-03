@@ -1,8 +1,9 @@
-<#
- .Synopsis
+﻿function Test-MtCaDeviceCodeFlow {
+    <#
+    .Synopsis
     Checks if the tenant has at least one conditional access policy that includes Authentication Flows - Device Code Flow as a condition.
 
- .Description
+    .Description
     Organizations should block or limit device code flow because it can be exploited in phishing attacks, such as those conducted by the Storm-2372 group.
     Attackers leverage this authentication method to trick users into entering device codes on malicious websites, granting unauthorized access to accounts.
     Blocking or limiting this flow helps prevent exploitation by minimizing attack vectors, improving overall security posture, and safeguarding against compromised credentials through phishing techniques.
@@ -10,13 +11,12 @@
     Learn more:
     https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-authentication-flows
 
- .Example
+    .Example
     Test-MtCaDeviceCodeFlow
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaDeviceCodeFlow
-#>
-function Test-MtCaDeviceCodeFlow {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function ConvertFrom-MailAuthenticationRecordDkim {
+    <#
+    .SYNOPSIS
     Returns structured RFC compliant object from DKIM record
 
-.DESCRIPTION
+    .DESCRIPTION
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -10,27 +11,26 @@
     - DKIM https://datatracker.ietf.org/doc/html/rfc6376
     ```
     record      : v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric
-                7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;
+    7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;
     keyType     : rsa
     hash        : {sha1, sha256}
     notes       :
     publicKey   : MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric7f/S0h+qF4aqIiQqHF
-                CDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB
+    CDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB
     validBase64 : True
     services    : {*}
     flags       :
     warnings    :
     ```
 
-.EXAMPLE
+    .EXAMPLE
     ConvertFrom-MailAuthenticationRecordDkim -DomainName "microsoft.com"
 
     Returns [DKIMRecord] or "Failure to obtain record"
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/ConvertFrom-MailAuthenticationRecordDkim
-#>
-function ConvertFrom-MailAuthenticationRecordDkim {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [OutputType([DKIMRecord], [System.String])]
     [cmdletbinding()]
