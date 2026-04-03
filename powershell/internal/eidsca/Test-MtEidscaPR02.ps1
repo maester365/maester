@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaPR02 {
+function Test-MtEidscaPR02 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory is set to 'True'

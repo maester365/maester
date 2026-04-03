@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAT01 {
+function Test-MtEidscaAT01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Temporary Access Pass - State is set to 'enabled'

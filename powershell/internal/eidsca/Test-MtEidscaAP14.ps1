@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP14 {
+function Test-MtEidscaAP14 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to read other users is set to 'true'

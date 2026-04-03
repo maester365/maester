@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCR03 {
+function Test-MtEidscaCR03 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire is set to 'true'

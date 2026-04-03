@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaPR06 {
+function Test-MtEidscaPR06 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to 10
@@ -28,7 +28,7 @@
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
     $testResult = $tenantValue -le 10
-    $tenantValueNotSet = $null -eq $tenantValue -and 10 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 10 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **10** for **settings**"

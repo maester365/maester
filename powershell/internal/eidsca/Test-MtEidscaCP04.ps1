@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCP04 {
+function Test-MtEidscaCP04 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to is set to 'true'

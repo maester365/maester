@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaST08 {
+function Test-MtEidscaST08 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner is set to 'false'

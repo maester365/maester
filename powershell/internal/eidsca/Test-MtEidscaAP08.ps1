@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP08 {
+function Test-MtEidscaAP08 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - User consent policy assigned for applications is set to 'ManagePermissionGrantsForSelf.microsoft-user-default-low'

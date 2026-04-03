@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP10 {
+function Test-MtEidscaAP10 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to create Apps is set to 'false'

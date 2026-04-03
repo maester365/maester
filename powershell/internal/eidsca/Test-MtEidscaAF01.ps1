@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAF01 {
+function Test-MtEidscaAF01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - State is set to 'enabled'

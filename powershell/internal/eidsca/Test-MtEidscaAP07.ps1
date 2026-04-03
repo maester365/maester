@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP07 {
+function Test-MtEidscaAP07 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Guest user access is set to '2af84b1e-32c8-42b7-82bc-daa82404023b'

@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAF05 {
+function Test-MtEidscaAF05 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Restricted is set to 'true'

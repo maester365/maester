@@ -1,13 +1,9 @@
 BeforeDiscovery {
-    try {
-        $AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
-        $SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
-        $EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
-        $EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
-        $EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
-    } catch {
-        $EntraIDPlan = "NotConnected"
-    }
+$AuthorizationPolicyAvailable = (Invoke-MtGraphRequest -RelativeUri 'policies/authorizationpolicy' -ApiVersion beta)
+$SettingsApiAvailable = (Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion beta).values.name
+$EntraIDPlan = Get-MtLicenseInformation -Product 'EntraID'
+$EnabledAuthMethods = (Get-MtAuthenticationMethodPolicyConfig -State Enabled).Id
+$EnabledAdminConsentWorkflow = (Invoke-MtGraphRequest -RelativeUri 'policies/adminConsentRequestPolicy' -ApiVersion beta).isenabled
 }
 Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.AP01" {
     It "EIDSCA.AP01: Default Authorization Settings - Enabled Self service password reset for administrators. See https://maester.dev/docs/tests/EIDSCA.AP01" -TestCases @{ AuthorizationPolicyAvailable = $AuthorizationPolicyAvailable } {
@@ -373,7 +369,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.AS04" {
     It "EIDSCA.AS04: Authentication Method - SMS - Use for sign-in. See https://maester.dev/docs/tests/EIDSCA.AS04" -TestCases @{ EnabledAuthMethods = $EnabledAuthMethods } {
         <#
             Check if "https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')"
-            .includeTargets.isUsableForSignIn -eq 'false'
+            .includeTargets.isUsableForSignIn | select-object -unique -eq 'false'
         #>
         Test-MtEidscaControl -CheckId AS04 | Should -Be 'false'
     }
@@ -415,3 +411,5 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.CR04" {
         Test-MtEidscaControl -CheckId CR04 | Should -BeLessOrEqual 30
     }
 }
+
+

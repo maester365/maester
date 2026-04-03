@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP04 {
+function Test-MtEidscaAP04 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
