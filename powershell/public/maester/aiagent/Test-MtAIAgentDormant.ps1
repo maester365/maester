@@ -37,11 +37,11 @@ function Test-MtAIAgentDormant {
 
     $failedAgents = $agents | Where-Object {
         $_.AgentStatus -eq "Published" -and
-        $_.LastModifiedTime -ne $null -and
+        $null -ne $_.LastModifiedTime -and
         [datetime]$_.LastModifiedTime -lt $threshold
     }
 
-    if ([string]::IsNullOrEmpty($failedAgents)) {
+    if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No dormant AI agents found (threshold: $thresholdDays days)."
     } else {
         $testResultMarkdown = "Found $($failedAgents.Count) AI agent(s) that have not been modified in over $thresholdDays days.`n`n%TestResult%"
@@ -56,5 +56,5 @@ function Test-MtAIAgentDormant {
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity "Low"
-    return [string]::IsNullOrEmpty($failedAgents)
+    return $failedAgents.Count -eq 0
 }

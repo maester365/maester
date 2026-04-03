@@ -18,7 +18,7 @@
     https://maester.dev/docs/commands/Test-MtAIAgentBroadSharing
 #>
 
-function Test-MtAIAgentBroadSharing {
+function    Test-MtAIAgentBroadSharing {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -33,7 +33,7 @@ function Test-MtAIAgentBroadSharing {
 
     $failedAgents = $agents | Where-Object { $_.AccessControlPolicy -eq "Any" -or $_.AccessControlPolicy -eq "Any multitenant" }
 
-    if ([string]::IsNullOrEmpty($failedAgents)) {
+    if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents are shared broadly."
     } else {
         $testResultMarkdown = "Found $($failedAgents.Count) AI agent(s) with broad sharing configured.`n`n%TestResult%"
@@ -46,5 +46,5 @@ function Test-MtAIAgentBroadSharing {
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown -Severity "High"
-    return [string]::IsNullOrEmpty($failedAgents)
+    return $failedAgents.Count -eq 0
 }
