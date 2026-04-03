@@ -30,7 +30,7 @@
 .EXAMPLE
    Connect-Maester -Service Dataverse,Graph
 
-   Connects to Microsoft Graph and the Dataverse API for Copilot Studio security tests. The Dataverse connection uses the Az.Accounts module to obtain an access token for the Copilot Studio environment configured in maester-config.json.
+   Connects to Microsoft Graph and the Dataverse API for Copilot Studio security tests. The Dataverse connection uses the Az.Accounts module. The Copilot Studio environment is auto-discovered via the Global Discovery Service, or can be explicitly set with DataverseEnvironmentUrl in maester-config.json.
 
 .EXAMPLE
    Connect-Maester -UseDeviceCode
@@ -152,26 +152,52 @@
                }
             }
 
-            # Note: Dataverse connectivity is validated at test time in Get-MtAIAgentInfo
-            # when the full config (including Custom overrides) has been loaded by Invoke-Maester.
+            # Resolve, parse, and validate the Dataverse environment at connect time.
+            # The resolved API base URL, resource URL, and environment ID are stored in
+            # session variables for use by Get-MtAIAgentInfo at test time.
             if ($Service -contains 'Dataverse' -or $Service -contains 'All') {
-               Write-Verbose "Dataverse service requested for Copilot Studio tests. Configuration will be validated at test time."
+               # Step 1: Determine the Dataverse environment URL (explicit config or auto-discover)
                $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
+               if ([string]::IsNullOrEmpty($dataverseUrl)) {
+                  Write-Verbose "No DataverseEnvironmentUrl configured. Auto-discovering via Global Discovery Service."
+                  $dataverseUrl = Get-MtDataverseEnvironmentUrl
+               } else {
+                  Write-Verbose "Using configured DataverseEnvironmentUrl: $dataverseUrl"
+               }
+
                if (-not [string]::IsNullOrEmpty($dataverseUrl)) {
+                  # Step 2: Normalize and parse the URL into resource URL and API base URL
                   $dataverseUrl = $dataverseUrl.TrimEnd('/')
                   if ($dataverseUrl -notmatch '^https?://') {
                      $dataverseUrl = "https://$dataverseUrl"
                   }
+
+                  # Resource URL: environment host without '.api.' (used for token acquisition)
                   $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
+                  # API URL: insert .api. after the hostname prefix (used for OData calls)
+                  # e.g. https://org5acae060.crm19.dynamics.com -> https://org5acae060.api.crm19.dynamics.com
+                  $apiUrl = $resourceUrl -replace '(https://[^.]+)\.', '$1.api.'
+                  $apiBase = "$apiUrl/api/data/v9.2"
+                  $environmentId = $resourceUrl -replace 'https?://', ''
+
+                  # Step 3: Validate token acquisition for the resolved environment
                   try {
                      $tokenResult = Get-AzAccessToken -ResourceUrl $resourceUrl -ErrorAction Stop
                      if ($tokenResult) {
                         Write-Verbose "Successfully obtained Dataverse access token for $resourceUrl"
                      }
+
+                     # Store resolved values in session for Get-MtAIAgentInfo
+                     $__MtSession.DataverseApiBase = $apiBase
+                     $__MtSession.DataverseResourceUrl = $resourceUrl
+                     $__MtSession.DataverseEnvironmentId = $environmentId
                   } catch {
                      Write-Host "`nFailed to obtain Dataverse access token for '$resourceUrl'. Ensure the account has permissions to access the Copilot Studio environment via the Dataverse API." -ForegroundColor Yellow
                      Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
                   }
+               } else {
+                  Write-Host "`nNo Dataverse environment found. Copilot Studio agent security tests will be skipped." -ForegroundColor Yellow
+                  Write-Host "You can configure 'DataverseEnvironmentUrl' in maester-config.json GlobalSettings to specify an environment explicitly." -ForegroundColor Yellow
                }
             }
          }

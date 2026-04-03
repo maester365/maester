@@ -1,12 +1,14 @@
 ﻿BeforeDiscovery {
-    $DataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
-    $DataverseConfigured = -not [string]::IsNullOrEmpty($DataverseUrl)
-    if (-not $DataverseConfigured) {
-        Write-Verbose "DataverseEnvironmentUrl not configured in maester-config.json. Copilot Studio agent security tests will be skipped."
+    # Tests run when the Dataverse service is connected. The environment URL is
+    # resolved at connect time — either explicitly configured in maester-config.json
+    # or auto-discovered via the Global Discovery Service.
+    $DataverseConnected = $__MtSession.Connections -contains 'Dataverse' -or $__MtSession.Connections -contains 'All'
+    if (-not $DataverseConnected) {
+        Write-Verbose "Dataverse service not connected. Copilot Studio agent security tests will be skipped. Use 'Connect-Maester -Service Dataverse' to enable."
     }
 }
 
-Describe "Copilot Studio Agent Security" -Tag "AIAgent", "CopilotStudio" -Skip:( -not $DataverseConfigured ) {
+Describe "Copilot Studio Agent Security" -Tag "AIAgent", "CopilotStudio" -Skip:( -not $DataverseConnected ) {
     # AI agents should not be shared with broad access control policies.
     It "MT.1113: AI agents should not be shared with broad access control policies. See https://maester.dev/docs/tests/MT.1113" -Tag "MT.1113" {
         Test-MtAIAgentBroadSharing | Should -Be $true -Because "AI agents with 'Any' or 'Any multitenant' access control allow unauthenticated or cross-tenant access, increasing the risk of unauthorized data access and prompt injection."

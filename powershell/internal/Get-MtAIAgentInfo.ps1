@@ -4,9 +4,13 @@
 
 .DESCRIPTION
     Queries the Dataverse OData API to retrieve configuration and security details
-    for Copilot Studio agents, including their topics and tools. Requires the
-    DataverseEnvironmentUrl to be configured in maester-config.json GlobalSettings
-    and an active Dataverse connection (Connect-Maester -Service Dataverse).
+    for Copilot Studio agents, including their topics and tools. Requires an active
+    Dataverse connection established via Connect-Maester -Service Dataverse.
+
+    The Dataverse environment is resolved at connect time (either auto-discovered
+    via the Global Discovery Service or explicitly configured via
+    DataverseEnvironmentUrl in maester-config.json). This function reads the
+    pre-resolved connection details from the module session.
 
     Results are cached in the module session for reuse by multiple test functions.
 
@@ -33,29 +37,18 @@ function Get-MtAIAgentInfo {
         return $__MtSession.AIAgentInfo
     }
 
-    # Get the Dataverse environment URL from config (used to connect to Copilot Studio)
-    $dataverseUrl = Get-MtMaesterConfigGlobalSetting -SettingName 'DataverseEnvironmentUrl'
+    # Read pre-resolved Dataverse connection details from session (set by Connect-Maester)
+    $apiBase = $__MtSession.DataverseApiBase
+    $resourceUrl = $__MtSession.DataverseResourceUrl
+    $environmentId = $__MtSession.DataverseEnvironmentId
 
-    if ([string]::IsNullOrEmpty($dataverseUrl)) {
-        Write-Warning "DataverseEnvironmentUrl not configured in maester-config.json GlobalSettings. Add 'DataverseEnvironmentUrl' with your Copilot Studio environment URL (e.g. 'org12345.crm.dynamics.com')."
+    if ([string]::IsNullOrEmpty($apiBase) -or [string]::IsNullOrEmpty($resourceUrl)) {
+        Write-Warning "Dataverse connection not established. Ensure you are connected via 'Connect-Maester -Service Dataverse'."
         $__MtSession.AIAgentInfo = @()
         return $null
     }
 
-    Write-Verbose "Querying Copilot Studio agents from Dataverse: $dataverseUrl"
-
-    # Normalize URL - ensure https:// prefix and no trailing slash
-    $dataverseUrl = $dataverseUrl.TrimEnd('/')
-    if (-not ($dataverseUrl -match '^https?://')) {
-        $dataverseUrl = "https://$dataverseUrl"
-    }
-
-    # Resource URL should always point to the environment host (without '.api.')
-    $resourceUrl = $dataverseUrl -replace '\.api\.', '.'
-    # Derive API URL by inserting .api. after the hostname prefix
-    # e.g. https://org5acae060.crm19.dynamics.com -> https://org5acae060.api.crm19.dynamics.com
-    $apiUrl = $resourceUrl -replace '(https://[^.]+)\.', '$1.api.'
-    $apiBase = "$apiUrl/api/data/v9.2"
+    Write-Verbose "Querying Copilot Studio agents from Dataverse: $apiBase"
 
     # Get access token via Az module
     try {
@@ -138,9 +131,6 @@ function Get-MtAIAgentInfo {
             $userCache[$userId] = $userId
         }
     }
-
-    # Use the Dataverse URL as the environment identifier for display
-    $environmentId = $resourceUrl -replace 'https?://', ''
 
     # Process each bot
     $agents = @()
