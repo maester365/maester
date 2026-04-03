@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAF03 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Enforce attestation is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Requires the FIDO security key metadata to be published and verified with the FIDO Alliance Metadata Service, and also pass Microsoft's additional set of validation testing.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced -eq 'true'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAF03
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isAttestationEnforced -eq 'true'
-#>
-
-function Test-MtEidscaAF03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

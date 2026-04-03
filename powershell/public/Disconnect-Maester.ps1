@@ -1,8 +1,9 @@
-﻿<#
- .Synopsis
+﻿function Disconnect-Maester {
+    <#
+    .Synopsis
     Helper method to sign out of the current Microsoft Graph session. Alternate for Disconnect-MgGraph.
 
- .Description
+    .Description
     Use this cmdlet to sign out of the current Microsoft Graph session.
 
     This cmdlet is a helper method for running the following command.
@@ -10,19 +11,18 @@
     Disconnect-MgGraph
     ```
 
- .Example
+    .Example
     Disconnect-MtGraph
 
- .Example
+    .Example
     Disconnect-Maester
 
- .Example
+    .Example
     Disconnect-MtMaester
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Disconnect-Maester
-#>
-function Disconnect-Maester {
+    #>
    [Alias("Disconnect-MtMaester", "Disconnect-MtGraph")]
    [CmdletBinding()]
    param()

@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAM03 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Require number matching for push notifications is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Defines if number matching is required for MFA notifications.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM03
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
-#>
-
-function Test-MtEidscaAM03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

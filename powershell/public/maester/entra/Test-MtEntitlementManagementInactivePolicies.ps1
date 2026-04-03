@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntitlementManagementInactivePolicies {
+    <#
+    .SYNOPSIS
     Checks if access packages have inactive or orphaned assignment policies
 
-.DESCRIPTION
+    .DESCRIPTION
     MT.1108 - Access packages should not reference inactive or orphaned assignment policies
 
     This test identifies Microsoft Entra ID Governance access packages that contain assignment policies
@@ -23,16 +24,14 @@
     Learn more:
     https://maester.dev/docs/tests/MT.1108
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntitlementManagementInactivePolicies
 
     Returns $true if all access package assignment policies are active and properly configured
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntitlementManagementInactivePolicies
-#>
-
-function Test-MtEntitlementManagementInactivePolicies {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Policies is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -226,5 +225,3 @@ function Test-MtEntitlementManagementInactivePolicies {
         return $false
     }
 }
-
-

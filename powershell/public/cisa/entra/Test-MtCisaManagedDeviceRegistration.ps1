@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaManagedDeviceRegistration {
+    <#
+    .SYNOPSIS
     Checks if a policy is enabled requiring a managed device for registration
 
-.DESCRIPTION
+    .DESCRIPTION
     Managed Devices SHOULD be required to register MFA.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaManagedDeviceRegistration
 
     Returns true if at least one policy requires MFA for registration
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaManagedDeviceRegistration
-#>
-function Test-MtCisaManagedDeviceRegistration {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

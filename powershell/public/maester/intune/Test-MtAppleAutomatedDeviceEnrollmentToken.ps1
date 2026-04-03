@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtAppleAutomatedDeviceEnrollmentToken {
+    <#
+    .SYNOPSIS
     Check the validity of the Apple Automated Device Enrollment (ADE) token for Intune.
-.DESCRIPTION
+    .DESCRIPTION
     The Apple Automated Device Enrollment (ADE) token is required to synchronize Apple devices with Microsoft Intune. This command checks if the ADE token is valid and not expired.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtAppleAutomatedDeviceEnrollmentToken
 
     Returns true if the ADE token is valid for more than 30 days, false if it is expired or expiring soon.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtAppleAutomatedDeviceEnrollmentToken
-#>
-function Test-MtAppleAutomatedDeviceEnrollmentToken {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

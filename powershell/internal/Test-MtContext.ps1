@@ -1,9 +1,8 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtContext {
+    <#
+    .SYNOPSIS
     Validates the MgContext to ensure a valid connection to Microsoft Graph including the required permissions.
-#>
-
-function Test-MtContext {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param (

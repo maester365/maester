@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA189_2{
+    <#
+    .SYNOPSIS
     Safe Links is not bypassed.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA189_2
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA189_2
-#>
-function Test-ORCA189_2{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

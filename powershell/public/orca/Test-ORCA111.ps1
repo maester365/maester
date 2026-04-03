@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA111{
+    <#
+    .SYNOPSIS
     Anti-phishing policy exists and EnableUnauthenticatedSender is true.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA111
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA111
-#>
-function Test-ORCA111{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

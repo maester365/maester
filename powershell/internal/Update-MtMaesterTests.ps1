@@ -1,7 +1,4 @@
-﻿<#
-
-#>
-function Update-MtMaesterTests {
+﻿function Update-MtMaesterTests {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
@@ -40,11 +37,11 @@ function Update-MtMaesterTests {
         }
     }
 
-    $installOrUpdate = if ($Install) { "installed" } else { "updated" }
+    $installOrUpdate = if ($Install) { 'installed' } else { 'updated' }
 
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object {$_.Name -in $($MaesterTests)}
+        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object { $_.Name -in $($MaesterTests) }
 
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
@@ -52,14 +49,14 @@ function Update-MtMaesterTests {
 
             # Display prompt unless Force has been explicitly set
             if (!$Force) {
-                $message += "Do you want to continue? (y/n): "
+                $message += 'Do you want to continue? (y/n): '
                 $continue = Get-MtConfirmation $message
             }
 
             # Continue if either user has accepted prompt, or Force has been explicitly set
             if ($continue -or $Force) {
                 foreach ($item in $itemsToDelete) {
-                    if ($item.Attributes -ne "Directory") {
+                    if ($item.Attributes -ne 'Directory') {
                         Remove-Item -Path $item.FullName -Force
                     } else {
                         Remove-Item -Path $item.FullName -Recurse -Force
@@ -84,7 +81,7 @@ function Update-MtMaesterTests {
     $message = "Run `Connect-Maester` to sign in and then run `Invoke-Maester` to start testing."
     #if (Get-MgContext) { #ToAdjust: Issue with -SkipGraphConnect
     if (Test-MtConnection Graph) {
-        $message = "Run Invoke-Maester to start testing."
+        $message = 'Run Invoke-Maester to start testing.'
     }
 
     Write-Host "Maester tests $installOrUpdate successfully!`n$message" -ForegroundColor Green

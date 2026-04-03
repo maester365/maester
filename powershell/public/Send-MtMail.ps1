@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Send-MtMail {
+    <#
+    .SYNOPSIS
     Send an email with the summary of the Maester test results
 
-.DESCRIPTION
+    .DESCRIPTION
     Uses Graph API to send an email with the summary of the Maester test results.
 
     This command requires the Mail.Send permission in the Microsoft Graph API.
@@ -16,15 +17,14 @@
     When running in a non-interactive environment (Azure DevOps, GitHub) the app needs permission to send from a mailbox,
     see https://maester.dev/docs/monitoring/email/ for instructions.
 
-.EXAMPLE
+    .EXAMPLE
     Send-MtMail -MaesterResults $MaesterResults -Recipient john@contoso.com, sam@contoso.com -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an email with the summary of the Maester test results to two users along with the link to the detailed test results.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Send-MtMail
-#>
-function Send-MtMail {
+    #>
     [OutputType([System.Collections.Hashtable])]
     [CmdletBinding()]
     param(

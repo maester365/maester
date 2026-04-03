@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisThirdPartyFileSharing {
+    <#
+    .SYNOPSIS
     Ensure third-party file sharing cloud services in Teams are disabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure third-party file sharing cloud services in Teams are disabled
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisThirdPartyFileSharing
 
     Returns true if all third-party file sharing cloud services in Teams are disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyFileSharing
-#>
-function Test-MtCisThirdPartyFileSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

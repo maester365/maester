@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDkim {
+    <#
+    .SYNOPSIS
     Checks state of DKIM for all EXO domains
 
-.DESCRIPTION
+    .DESCRIPTION
     DKIM SHOULD be enabled for all domains.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDkim
 
     Returns true if DKIM record exists and EXO shows DKIM enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDkim
-#>
-function Test-MtCisaDkim {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

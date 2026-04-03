@@ -1,8 +1,9 @@
-﻿<#
- .Synopsis
+﻿function Test-MtCaApprovedClientApp {
+    <#
+    .Synopsis
     Checks if the tenant has no conditional access policy that requires an approved client app.
 
- .Description
+    .Description
     The approved client app grant is retiring in early March 2026.
     Organizations must transition all current Conditional Access policies that use only the require approved Client App grant control to Require Approved Client App or Application Protection Policy by March 2026.
     Additionally, for any new Conditional Access policy, only apply the Require application protection policy grant.
@@ -10,13 +11,12 @@
     Learn more:
     https://learn.microsoft.com/en-us/entra/identity/conditional-access/migrate-approved-client-app
 
-  .Example
+    .Example
     Test-MtCaApprovedClientApp
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaApprovedClientApp
-#>
-function Test-MtCaApprovedClientApp {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -43,4 +43,3 @@ function Test-MtCaApprovedClientApp {
     }
     return $result
 }
-

@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmExposedCredentialsForPrivilegedUsers {
+    <#
+    .SYNOPSIS
     Tests if exposed credentials for highly privileged users are present on vulnerable endpoints with high risk or exposure score.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks all credential artifacts exposed on vulnerable endpoints and correlates them with highly privileged users.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no exposed credentials for highly privileged users are found on vulnerable endpoints, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmExposedCredentialsForPrivilegedUsers
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmExposedCredentialsForPrivilegedUsers
-#>
-
-function Test-MtXspmExposedCredentialsForPrivilegedUsers {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple types of credentials and users.')]
     [OutputType([bool])]

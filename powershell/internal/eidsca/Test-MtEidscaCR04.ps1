@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCR04 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Consent request duration (days) is set to 30
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Specifies the duration the request is active before it automatically expires if no decision is applied
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
+    graph/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR04
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
-#>
-
-function Test-MtEidscaCR04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
