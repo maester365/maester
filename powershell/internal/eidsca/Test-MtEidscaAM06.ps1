@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM06 {
+function Test-MtEidscaAM06 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications is set to 'enabled'

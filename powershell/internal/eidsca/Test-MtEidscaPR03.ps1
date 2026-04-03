@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaPR03 {
+function Test-MtEidscaPR03 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Enforce custom list is set to 'True'

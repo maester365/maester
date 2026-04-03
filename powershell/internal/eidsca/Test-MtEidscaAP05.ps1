@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP05 {
+function Test-MtEidscaAP05 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Sign-up for email based subscription is set to 'false'

@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM01 {
+function Test-MtEidscaAM01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - State is set to 'enabled'

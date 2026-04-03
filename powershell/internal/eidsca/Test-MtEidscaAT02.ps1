@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAT02 {
+function Test-MtEidscaAT02 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Temporary Access Pass - One-time is set to 'true'

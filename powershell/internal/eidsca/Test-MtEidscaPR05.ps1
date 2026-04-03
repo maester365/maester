@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaPR05 {
+function Test-MtEidscaPR05 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
@@ -21,14 +21,14 @@
     param()
 
     if ( $EntraIDPlan -eq 'Free' ) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test is for tenants that are licensed for Entra ID P1 or higher. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)'
+            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason ''
             return $null
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
     $testResult = $tenantValue -ge 60
-    $tenantValueNotSet = $null -eq $tenantValue -and 60 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 60 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is greater than or equal to **60** for **settings**"

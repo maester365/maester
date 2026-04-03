@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP09 {
+function Test-MtEidscaAP09 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Allow user consent on risk-based apps is set to 'false'

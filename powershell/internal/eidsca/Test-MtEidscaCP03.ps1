@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCP03 {
+function Test-MtEidscaCP03 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Block user consent for risky apps is set to 'true'

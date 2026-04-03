@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM02 {
+function Test-MtEidscaAM02 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP is set to 'false'

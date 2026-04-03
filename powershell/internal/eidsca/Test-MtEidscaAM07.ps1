@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM07 {
+function Test-MtEidscaAM07 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications is set to 'all_users'

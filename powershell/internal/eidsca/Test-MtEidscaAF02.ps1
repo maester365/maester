@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAF02 {
+function Test-MtEidscaAF02 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Allow self-service set up is set to 'true'
