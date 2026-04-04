@@ -1,19 +1,19 @@
-﻿function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
+﻿function Test-MtCisCommunicateInitiateExternalTeamsUsers {
     <#
     .SYNOPSIS
-    Ensure communication with unmanaged Teams users is disabled
+    Ensure external Teams users cannot initiate conversations
 
     .DESCRIPTION
-    Communication with unmanaged Teams users is disabled
+    External Teams users cannot initiate conversations
     CIS Microsoft 365 Foundations Benchmark v6.0.1
 
     .EXAMPLE
-    Test-MtCisCommunicateWithUnmanagedTeamsUsers
+    Test-MtCisCommunicateInitiateExternalTeamsUsers
 
-    Returns true if communication with unmanaged Teams users is disabled
+    Returns true if external Teams users cannot initiate conversations
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers
+    https://maester.dev/docs/commands/Test-MtCisCommunicateInitiateExternalTeamsUsers
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -25,16 +25,16 @@
         return $null
     }
 
-    Write-Verbose 'Test-MtCisCommunicateWithUnmanagedTeamsUsers: Checking if communication with unmanaged Teams users is disabled'
+    Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if communication with unmanaged Teams users is disabled'
 
     try {
-        $AllowTeamsConsumer = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumer
-        if ($AllowTeamsConsumer -eq $false) {
+        $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
+        if ($AllowTeamsConsumerInbound -eq $false) {
             Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
             return $true
         } else {
             $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
-            if ($ExternalAccessPolicy.EnableTeamsConsumerAccess -eq $false) {
+            if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
                 Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
                 return $true
             } else {
