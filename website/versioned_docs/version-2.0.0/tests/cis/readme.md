@@ -56,7 +56,7 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                             | 2.1.8 (L1) Ensure that SPF records are published for all Exchange Domains                                                             |
 | [Test-MtCisDkim](/docs/commands/)                               | 2.1.9 (L1) Ensure that DKIM is enabled for all Exchange Online Domains                                                                |
 | TBD                                                             | 2.1.10 (L1) Ensure DMARC Records for all Exchange Online domains are published                                                        |
-| [Test-MtCisAttachmentFilterComprehensive](/docs/commands/)      |                                                                                                                                       | 2.1.11 (L2) Ensure comprehensive attachment filtering is applied |
+| [Test-MtCisAttachmentFilterComprehensive](/docs/commands/)      | 2.1.11 (L2) Ensure comprehensive attachment filtering is applied                                                                      |
 | [Test-MtCisHostedConnectionFilterPolicy](/docs/commands/)       | 2.1.12 (L1) Ensure the connection filter IP allow list is not used                                                                    |
 | [Test-MtCisConnectionFilterSafeList](/docs/commands/)           | 2.1.13 (L1) Ensure the connection filter safe list is off                                                                             |
 | TBD                                                             | 2.1.14 (L1) Ensure inbound anti-spam policies do not contain allowed domains                                                          |
@@ -134,7 +134,7 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                             | 7.2.3 (L1) Ensure external content sharing is restricted                                                                              |
 | TBD                                                             | 7.2.4 (L2) Ensure OneDrive content sharing is restricted                                                                              |
 | TBD                                                             | 7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own                                                       |
-| TBD                                                             | 7.2.6 (L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists                                          |
+| TBD                                                             | 7.2.6 (L2) Ensure SharePoint external sharing is restricted                                                                           |
 | TBD                                                             | 7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive                                                               |
 | TBD                                                             | 7.2.8 (L2) Ensure external sharing is restricted by security group                                                                    |
 | TBD                                                             | 7.2.9 (L1) Ensure guest access to a site or OneDrive will expire automatically                                                        |
@@ -149,7 +149,7 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                             | 8.2.1 (L2) Ensure external domains are restricted in the Teams admin center                                                           |
 | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](/docs/commands/) | 8.2.2 (L1) Ensure communication with unmanaged Teams users is disabled                                                                |
 | [Test-MtCisCommunicateWithUnmanagedTeamsUsers](/docs/commands/) | 8.2.3 (L1) Ensure external Teams users cannot initiate conversations                                                                  |
-| Obsolete                                                        | 8.2.4 (L1) Ensure communication with Skype users is disabled                                                                          |
+| TBD                                                             | 8.2.4 (L1) Ensure the organization cannot communicate with accounts in trial Teams tenants                                            |
 | [Test-MtCisThirdPartyAndCustomApps](/docs/commands/)            | 8.4.1 (L1) Ensure app permission policies are configured                                                                              |
 | TBD                                                             | 8.5.1 (L2) Ensure anonymous users can't join a meeting                                                                                |
 | TBD                                                             | 8.5.2 (L1) Ensure anonymous users and dial-in callers can't start a meeting                                                           |

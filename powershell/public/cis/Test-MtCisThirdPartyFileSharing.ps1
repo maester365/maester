@@ -28,7 +28,7 @@
 
     try {
         $return = $true
-        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration -Identity Global | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
 
         $passResult = '✅ Pass'
         $failResult = '❌ Fail'
