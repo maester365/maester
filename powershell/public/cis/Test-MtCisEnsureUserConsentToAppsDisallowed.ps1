@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Users should not be allowed to consent to applications.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
 .EXAMPLE
     Test-MtCisEnsureUserConsentToAppsDisallowed
@@ -33,7 +33,8 @@ function Test-MtCisEnsureUserConsentToAppsDisallowed {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -42,7 +43,8 @@ function Test-MtCisEnsureUserConsentToAppsDisallowed {
 
         if ($testResult) {
             $checkResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkResult = '❌ Fail'
         }
 
@@ -52,7 +54,8 @@ function Test-MtCisEnsureUserConsentToAppsDisallowed {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

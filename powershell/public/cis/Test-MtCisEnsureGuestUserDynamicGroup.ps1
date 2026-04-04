@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     There should be minimum one dynamic group with a membership rule targeting guest users to ensure that guest users are easily identifiable and can be managed effectively.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
 .EXAMPLE
     Test-MtCisEnsureGuestUserDynamicGroup
@@ -35,13 +35,15 @@ function Test-MtCisEnsureGuestUserDynamicGroup {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjects $checkGuestUserGroup -GraphObjectType Groups
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Users should be restricted to store and share files in third-party storage services in Microsoft 365 on the web.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
 .EXAMPLE
     Test-MtCisThirdPartyStorageServicesRestricted
@@ -32,16 +32,19 @@ function Test-MtCisThirdPartyStorageServicesRestricted {
         if ($ServicePrincipal) {
             if ($ServicePrincipal.accountEnabled) {
                 $testResult = $false
-            } else {
+            }
+            else {
                 $testResult = $true
             }
-        } else {
+        }
+        else {
             $testResult = $false
         }
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -50,7 +53,8 @@ function Test-MtCisThirdPartyStorageServicesRestricted {
 
         if ($testResult) {
             $ThirdPartyStorageResult = '✅ Pass'
-        } else {
+        }
+        else {
             $ThirdPartyStorageResult = '❌ Fail'
         }
 
@@ -60,7 +64,8 @@ function Test-MtCisThirdPartyStorageServicesRestricted {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Non-admin users should be restricted from creating tenants.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
 .EXAMPLE
     Test-MtCisCreateTenantDisallowed
@@ -35,7 +35,8 @@ function Test-MtCisCreateTenantDisallowed {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -44,7 +45,8 @@ function Test-MtCisCreateTenantDisallowed {
 
         if ($checkAllowedToCreateTenants) {
             $checkAllowedToCreateTenantsResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkAllowedToCreateTenantsResult = '❌ Fail'
         }
 
@@ -54,7 +56,8 @@ function Test-MtCisCreateTenantDisallowed {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
