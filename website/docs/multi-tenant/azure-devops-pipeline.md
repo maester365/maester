@@ -1,105 +1,37 @@
 ---
-title: Multi-Tenant Reports are here!
-description: Monitor multiple Microsoft 365 tenants in a single Maester report with a tenant selector
-slug: multi-tenant-reports
-authors: sebastian
-tags: [feature, multi-tenant]
-hide_table_of_contents: false
-image: ./img/multi-tenant-header.png
-date: 2026-03-30
+title: Azure DevOps Pipeline
+sidebar_label: Azure DevOps Pipeline
+sidebar_position: 4
 ---
 
-We are excited to announce that Maester now supports multi-tenant reports! Run your security tests across multiple tenants and view the results in a single report. 🚀
-
-<!-- truncate -->
-
-## Multi-Tenant Reports
-
-![Multi-tenant report overview](./img/multi-tenant-header.png)
-
-If you're like me and manage multiple Azure tenants that span across national clouds, you probably know the pain of having to open separate reports for each one. Not anymore!
-
-### Quick Stats
-
-- 🚀 Run Maester tests across multiple tenants in a single pipeline run
-- 🔥 Switch between tenants in one report using the sidebar
-- 🤝 Full dashboard per tenant, charts, filters, everything
-- 🔐 Each tenant uses its own service connection with read-only permissions
-
-### How it looks
-
-The sidebar now shows a **Tenants** section when you have multiple tenants in the report. Click any tenant to switch the entire dashboard to that tenant's data.
-
-![Tenant selector in sidebar](./img/tenant-selector.png)
-
-> The screenshot shows duplicate "PROD" entries for demonstration purposes only.
-
-Each tenant gets the full experience. Test overview, severity charts, category breakdown, and the detailed test results table with all the filters you're used to.
-
-![Switching between tenants](./img/tenant-switch.png)
-
-Single tenant reports continue to work exactly as before. The tenant selector only appears when there are multiple tenants in the report.
-
-## Tenant-specific configuration
-
-Each tenant can have its own `maester-config.json` by naming it with the tenant ID:
-
-```
-tests/
-  maester-config.json                                          # shared default
-  maester-config.a1b2c3d4-e5f6-7890-abcd-ef1234567890.json    # Contoso Production
-  maester-config.b2c3d4e5-f6a7-8901-bcde-f12345678901.json    # Fabrikam Development
-```
-
-When Maester runs, it automatically detects the connected tenant ID and looks for `maester-config.{tenantId}.json` first. If no tenant-specific file exists, it falls back to `maester-config.json`. This lets you configure different emergency access accounts and severity overrides per tenant while sharing a common baseline.
-
-In multi-tenant reports, the Config page shows which config file was loaded for each tenant so you can verify the right file is being used.
-
-Single-tenant users are not affected — everything works exactly as before with the default `maester-config.json`.
-
-## How it works
-
-The approach is straightforward:
-
-1. Run Maester separately for each tenant using its own service connection
-2. Save the JSON results from each run
-3. Merge them using `Merge-MtMaesterResult`
-4. Generate a single HTML report from the merged results
-
-### PowerShell example
-
-```powershell
-# Run Maester against three tenants and save JSON results
-Connect-MgGraph -TenantId $tenantProduction
-Invoke-Maester -PassThru -OutputJsonFile ./production.json
-Disconnect-MgGraph
-
-Connect-MgGraph -TenantId $tenantDevelopment
-Invoke-Maester -PassThru -OutputJsonFile ./development.json
-Disconnect-MgGraph
-
-Connect-MgGraph -TenantId $tenantChina -Environment China
-Invoke-Maester -PassThru -OutputJsonFile ./china.json
-Disconnect-MgGraph
-
-# Load results and merge
-$allResults = @()
-Get-ChildItem -Path . -Filter '*.json' | ForEach-Object {
-    $allResults += Get-Content $_.FullName -Raw | ConvertFrom-Json
-}
-$merged = Merge-MtMaesterResult -MaesterResults $allResults
-
-# Generate the multi-tenant HTML report
-Get-MtHtmlReport -MaesterResults $merged | Out-File ./MultiTenantReport.html -Encoding UTF8
-```
-
-## Azure DevOps Pipeline
+# Azure DevOps Pipeline
 
 For automated monitoring we use an Azure DevOps pipeline with separate service connections per tenant. Each one uses workload identity federation to authenticate with read-only permissions.
 
 The pipeline uses a `${{ each }}` loop to generate a step per tenant, so adding more tenants is just adding another entry to the YAML.
 
-Each tenant accepts the following parameters:
+![Pipeline in Azure DevOps](assets/pipeline-run.png)
+
+## Prerequisites
+
+**Per tenant:**
+- An **app registration** with the required [Microsoft Graph read permissions](https://maester.dev/docs/installation#permissions) granted with admin consent
+- A **workload identity federation service connection** in Azure DevOps pointing to the app registration
+
+**For publishing:**
+- An **Azure Web App** to host the report (see [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) for how to set one up)
+- A **service connection** with Website Contributor role on the web app
+
+**Maester module:**
+- Latest version with multi-tenant support (`Merge-MtMaesterResult` and `Get-MtHtmlReport` are included)
+
+:::note
+This pipeline uses OAuth (federated credentials) for authenticating towards all services including Exchange Online, Security & Compliance and Microsoft Teams. No certificates or client secrets are needed.
+:::
+
+## Tenant parameters
+
+Each tenant in the pipeline accepts the following parameters:
 
 **General**
 | Parameter | Required | Description |
@@ -150,11 +82,15 @@ parameters:
         environment: China
 ```
 
-Each tenant's tests run under their own `AzurePowerShell@5` task with their own service connection. The `environment` parameter controls which cloud endpoints are used (Global, China, USGov, etc).
+## Tenant isolation
 
-![Pipeline in Azure DevOps](./img/pipeline-run.png)
+Each tenant step explicitly disconnects from all services (Microsoft Graph, Exchange Online, Microsoft Teams) after the tests complete. This makes sure no session state leaks between tenant steps, even though all steps run in the same pipeline job on the same agent.
 
-### What the pipeline does
+:::tip
+Always disconnect between tenant steps. Without explicit disconnects, a previous tenant's session could carry over and cause tests to run against the wrong tenant.
+:::
+
+## What the pipeline does
 
 1. **Install modules** once (Maester, Pester, Graph, Exchange, Teams)
 2. **Run Maester tests** for each tenant, connecting with the tenant's service connection and saving the results as JSON
@@ -162,9 +98,7 @@ Each tenant's tests run under their own `AzurePowerShell@5` task with their own 
 4. **Generate** a combined HTML report with `Get-MtHtmlReport` and package it as a zip
 5. **Publish** the zip to an Azure Web App using `Publish-AzWebApp`
 
-The pipeline expects an Azure Web App to already exist. If you don't have one yet, check out [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) to get one up and running. The web app is secured with Entra ID authentication, so only users in your tenant can view the report.
-
-Here is the full pipeline YAML:
+## Full pipeline YAML
 
 ```yaml
 trigger: none
@@ -312,6 +246,15 @@ jobs:
           $jsonFile = Join-Path '$(ResultsDir)' '${{ tenant.name }}.json'
           Invoke-Maester -OutputJsonFile $jsonFile -PassThru -Verbosity Normal
           Pop-Location
+
+          # Disconnect all sessions to ensure tenant isolation between steps
+          Disconnect-MgGraph -ErrorAction SilentlyContinue
+          if ($includeExchange) {
+              Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+          }
+          if ($includeTeams) {
+              Disconnect-MicrosoftTeams -ErrorAction SilentlyContinue
+          }
       displayName: 'Run Maester tests (${{ tenant.name }})'
 
   - task: AzurePowerShell@5
@@ -369,31 +312,14 @@ jobs:
     displayName: 'Publish results to web app'
 ```
 
-### Prerequisites
+## Want to add another tenant?
 
-Before running the pipeline, make sure you have the following in place:
+Just add a new entry to the `tenants` parameter array. The pipeline generates the test step automatically and the merge picks up all JSON files. No other changes needed.
 
-**Per tenant:**
-- An **app registration** with the required [Microsoft Graph read permissions](https://maester.dev/docs/installation#configure-permissions) granted with admin consent
-- A **workload identity federation service connection** in Azure DevOps pointing to the app registration
+## Publishing the report
 
-> **Note:** This pipeline uses OAuth (federated credentials) for authenticating towards all services including Exchange Online, Security & Compliance and Microsoft Teams. No certificates or client secrets are needed.
-
-**For publishing:**
-- An **Azure Web App** to host the report (see [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) for how to set one up)
-- A **service connection** with Website Contributor role on the web app
-
-**Maester module:**
-- Latest version with multi-tenant support (`Merge-MtMaesterResult` and `Get-MtHtmlReport` are included as part of this release)
-
-### Want to add another tenant?
-
-Just add a new entry to the `tenants` parameter array. The pipeline generates the gather step automatically and the merge picks up all JSON files. No other changes needed.
+The pipeline expects an Azure Web App to already exist. If you don't have one yet, check out [Maester results on Azure Web App](/blog/maester-with-azdo-webapp) to get one up and running. The web app is secured with Entra ID authentication, so only users in your tenant can view the report.
 
 ### Get Started
 
-Follow the prerequisites above and the [Maester permissions docs](https://maester.dev/docs/installation#configure-permissions) to get your multi-tenant monitoring up and running.
-
-## Contributor
-
-- [Sebastian Claesson](/blog/authors/sebastian)
+Follow the prerequisites above and the [Maester permissions docs](https://maester.dev/docs/installation#permissions) to get your multi-tenant monitoring up and running.
