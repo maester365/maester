@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisDkim {
+    <#
+    .SYNOPSIS
     Checks state of DKIM for all EXO domains
 
-.DESCRIPTION
+    .DESCRIPTION
     DKIM SHOULD be enabled for all domains.
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisDkim
 
     Returns true if DKIM record exists and EXO shows DKIM enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisDkim
-#>
-function Test-MtCisDkim {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -55,7 +55,10 @@ function Test-MtCisDkim {
             }
 
             $isMicrosoftDomain = $domain.DomainName.EndsWith(".onmicrosoft.com")
-            $dkimDnsName = if ($isMicrosoftDomain) {
+            $isMicrosoftExoHybridDomain = $domain.DomainName.EndsWith(".mail.onmicrosoft.com")
+            $dkimDnsName = if ($isMicrosoftExoHybridDomain) {
+                "$($Selector)._domainkey.$($domain.DomainName)"
+            } elseif ($isMicrosoftDomain) {
                 $dkimSigningConfig."$($selector)CNAME"
             } else {
                 "$($Selector)._domainkey.$($domain.DomainName)"

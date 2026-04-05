@@ -1,21 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtExoOutlookAddin {
+    <#
+    .SYNOPSIS
     Checks if users installing Outlook add-ins is not allowed
 
-.DESCRIPTION
+    .DESCRIPTION
     This command checks if users are able to install add-ins for Outlook in Exchange Online.
     By default, users can install add-ins in their Microsoft Outlook Desktop client, allowing data
     access within the client application. Attackers exploit vulnerable or custom add-ins to access user data.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoOutlookAddin
 
     Returns true if users are restricted from installing Outlook add-ins.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoOutlookAddin
-#>
-function Test-MtExoOutlookAddin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

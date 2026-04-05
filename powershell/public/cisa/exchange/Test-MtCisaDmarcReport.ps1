@@ -1,22 +1,22 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcReport {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     An agency point of contact SHOULD be included for aggregate and failure reports.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcReport
 
     Returns true if DMARC record inlcudes report targets within same domain
 
-.PARAMETER Strict
+    .PARAMETER Strict
     Require the CISA explicit 2nd level validation
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcReport
-#>
-function Test-MtCisaDmarcReport {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA112{
+    <#
+    .SYNOPSIS
     Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA112
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA112
-#>
-function Test-ORCA112{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

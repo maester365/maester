@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
+    <#
+    .SYNOPSIS
     Test to find devices that have critical credentials stored on devices that are not protected by TPM.
 
-.DESCRIPTION
+    .DESCRIPTION
     Test to find devices that have critical credentials stored on devices that are not protected by TPM.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no devices are found, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices
-#>
-
-function Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for devices that have critical credentials stored on devices that are not protected by TPM.')]
     [OutputType([bool])]

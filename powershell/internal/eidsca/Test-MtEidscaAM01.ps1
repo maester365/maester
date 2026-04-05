@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAM01 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - State is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Whether the Authenticator App is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM01
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
-#>
-
-function Test-MtEidscaAM01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

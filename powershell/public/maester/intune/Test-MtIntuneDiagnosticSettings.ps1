@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtIntuneDiagnosticSettings {
+    <#
+    .SYNOPSIS
     Check the Intune Diagnostic Settings for Audit Logs.
-.DESCRIPTION
+    .DESCRIPTION
     Enumerate all diagnostic settings for Intune and check if Audit Logs are being sent to a destination (Log Analytics, Storage Account, Event Hub).
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtIntuneDiagnosticSettings
 
     Returns true if any Intune diagnostic settings include Audit Logs and are being sent to a destination (Log Analytics, Storage Account, Event Hub).
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtIntuneDiagnosticSettings
-#>
-function Test-MtIntuneDiagnosticSettings {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Multiple diagnostic settings can exist.')]

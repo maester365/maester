@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAM07 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications is set to 'all_users'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Object Id or scope of users which will be showing app information in the Authenticator App.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM07
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.displayAppInformationRequiredState.includeTarget.id -eq 'all_users'
-#>
-
-function Test-MtEidscaAM07 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

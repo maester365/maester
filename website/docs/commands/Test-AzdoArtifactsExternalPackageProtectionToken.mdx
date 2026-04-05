@@ -1,0 +1,71 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoArtifactsExternalPackageProtectionToken
+title: Test-AzdoArtifactsExternalPackageProtectionToken
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoArtifactsExternalPackageProtectionToken.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoArtifactsExternalPackageProtectionToken [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks the policy for additional security for your private feeds by limiting access to externally sourced packages when internally sourced packages are already present.
+This provides a new layer of security, which prevents malicious packages from a public registry being inadvertently consumed.
+These changes will not affect any package versions that are already in use or cached in your feed.
+
+https://devblogs.microsoft.com/devops/changes-to-azure-artifact-upstream-behavior
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoArtifactsExternalPackageProtectionToken
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoArtifactsExternalPackageProtectionToken](https://maester.dev/docs/commands/Test-AzdoArtifactsExternalPackageProtectionToken)

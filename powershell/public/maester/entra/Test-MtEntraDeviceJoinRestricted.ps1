@@ -1,16 +1,16 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntraDeviceJoinRestricted {
+    <#
+    .SYNOPSIS
     Tests if Entra ID device join is restricted to selected users/groups or disabled.
-.DESCRIPTION
+    .DESCRIPTION
     This function checks if Entra ID device join is restricted to selected users/groups or completely disabled by querying the device registration policy settings.
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if device join is restricted to selected users/groups or disabled, otherwise returns $false.
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntraDeviceJoinRestricted
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntraDeviceJoinRestricted
-#>
-function Test-MtEntraDeviceJoinRestricted {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

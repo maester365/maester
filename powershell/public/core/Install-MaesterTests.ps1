@@ -1,37 +1,37 @@
-﻿<#
-.SYNOPSIS
-   Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
+﻿function Install-MaesterTests {
+    <#
+    .SYNOPSIS
+    Installs the latest ready-made Maester tests built by the Maester team and the required Pester module.
 
-.DESCRIPTION
+    .DESCRIPTION
     The Maester team maintains a repository of ready made tests that can be used to verify the configuration of your Microsoft 365 tenant.
 
     The tests can be viewed at https://github.com/maester365/maester/tree/main/tests
 
-.PARAMETER Path
+    .PARAMETER Path
     The path to install the Maester tests in. Defaults to the current directory.
 
-.Parameter SkipPesterCheck
+    .Parameter SkipPesterCheck
     Skips the automatic installation check for Pester.
 
-.EXAMPLE
+    .EXAMPLE
     Install-MaesterTests
 
     Install the latest set of Maester tests in the current directory and installs the Pester module if needed.
 
-.EXAMPLE
+    .EXAMPLE
     Install-MaesterTests -Path .\maester-tests
 
     Installs the latest Maester tests in the specified directory and installs the Pester module if needed.
 
-.EXAMPLE
+    .EXAMPLE
     Install-MaesterTests -SkipPesterCheck
 
     Installs the latest Maester tests in the current directory. Skips the check for the required version of Pester.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Install-MaesterTests
-#>
-function Install-MaesterTests {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [CmdletBinding()]

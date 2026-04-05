@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAF06 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Restrict specific keys is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Defines if list of AADGUID will be used to allow or block registration.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAF06
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.aaGuids -notcontains $null -and ($result.keyRestrictions.enforcementType -eq 'allow' -or $result.keyRestrictions.enforcementType -eq 'block') -eq 'true'
-#>
-
-function Test-MtEidscaAF06 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

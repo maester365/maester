@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCP03 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Block user consent for risky apps is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Defines whether user consent will be blocked when a risky request is detected
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
+    graph/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCP03
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
-#>
-
-function Test-MtEidscaCP03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

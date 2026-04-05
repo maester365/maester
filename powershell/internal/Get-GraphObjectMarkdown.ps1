@@ -1,18 +1,17 @@
-﻿<#
- .Synopsis
-    Creates a markdown of Graph results to be used in test results.
+﻿function Get-GraphObjectMarkdown {
+    <#
+    .Synopsis
+       Creates a markdown of Graph results to be used in test results.
 
- .Description
-    Generates a list of markdown items with support for deeplinks to the Entra portal for known Graph object types.
+    .Description
+       Generates a list of markdown items with support for deeplinks to the Entra portal for known Graph object types.
 
- .Example
+    .Example
 
-    Get-GraphResultMarkdown -GraphObjects $policies -GraphObjectType ConditionalAccess
+       Get-GraphResultMarkdown -GraphObjects $policies -GraphObjectType ConditionalAccess
 
-    Returns a markdown list of Conditional Access policies with deeplinks to the relevant CA blade in Entra portal.
-#>
-
-function Get-GraphObjectMarkdown {
+       Returns a markdown list of Conditional Access policies with deeplinks to the relevant CA blade in Entra portal.
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param(

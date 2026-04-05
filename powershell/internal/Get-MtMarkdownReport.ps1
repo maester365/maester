@@ -1,17 +1,16 @@
-﻿<#
- .Synopsis
-  Generates a markdown report using the Maester test results format.
+﻿function Get-MtMarkdownReport {
+    <#
+    .Synopsis
+     Generates a markdown report using the Maester test results format.
 
- .Description
-    This markdown report can be used in GitHub actions to display the test results in a formatted way.
+    .Description
+       This markdown report can be used in GitHub actions to display the test results in a formatted way.
 
- .Example
-    $pesterResults = Invoke-Pester -PassThru
-    $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
-    Get-MtMarkdownReport $maesterResults
-#>
-
-function Get-MtMarkdownReport {
+    .Example
+       $pesterResults = Invoke-Pester -PassThru
+       $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
+       Get-MtMarkdownReport $maesterResults
+    #>
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`

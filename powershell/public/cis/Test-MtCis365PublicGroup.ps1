@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCis365PublicGroup {
+    <#
+    .SYNOPSIS
     Checks if there are public groups
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure that only organizationally managed and approved public groups exist
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCis365PublicGroup
 
     Returns true if no public Microsoft 365 groups are found
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCis365PublicGroup
-#>
-function Test-MtCis365PublicGroup {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

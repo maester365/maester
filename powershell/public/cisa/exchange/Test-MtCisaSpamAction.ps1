@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpamAction {
+    <#
+    .SYNOPSIS
     Checks state of spam filter
 
-.DESCRIPTION
+    .DESCRIPTION
     Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpamAction
 
     Returns true if spam filter enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpamAction
-#>
-function Test-MtCisaSpamAction {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

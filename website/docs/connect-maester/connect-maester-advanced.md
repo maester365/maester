@@ -12,17 +12,17 @@ import CreateEntraApp from '../sections/create-entra-app.md';
 
 There are two main methods of authenticating sessions for use with Maester:
 
-* Within the Maester module
-* Within the respective modules for the tests
+- Within the Maester module
+- Within the respective modules for the tests
 
 ### Module Integrations
 
 The Maester module integrates with the following modules:
 
-* Microsoft.Graph.Authentication
-* Az.Accounts
-* ExchangeOnlineManagement
-* MicrosoftTeams
+- Microsoft.Graph.Authentication
+- Az.Accounts
+- ExchangeOnlineManagement
+- MicrosoftTeams
 
 ### Within the Maester module
 
@@ -84,11 +84,12 @@ You may have a need to use Maester with multiple tenants. The Maester tests enab
 :::note Resource URLs vary by Azure cloud environment
 The resource URLs used with `Get-AzAccessToken` differ depending on your Azure cloud. The examples below use Azure Global (Commercial). Replace them with the appropriate URLs for your environment:
 
-| Service | Global | US Gov (GCC High / DoD) | China (21Vianet) |
-|---------|--------|------------------------|------------------|
-| Microsoft Graph | `https://graph.microsoft.com` | `https://graph.microsoft.us` | `https://microsoftgraph.chinacloudapi.cn` |
-| Exchange Online | `https://outlook.office365.com` | `https://outlook.office365.us` | `https://partner.outlook.cn` |
+| Service                      | Global                                         | US Gov (GCC High / DoD)                         | China (21Vianet)                                      |
+| ---------------------------- | ---------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
+| Microsoft Graph              | `https://graph.microsoft.com`                  | `https://graph.microsoft.us`                    | `https://microsoftgraph.chinacloudapi.cn`             |
+| Exchange Online              | `https://outlook.office365.com`                | `https://outlook.office365.us`                  | `https://partner.outlook.cn`                          |
 | Security & Compliance (IPPS) | `https://ps.compliance.protection.outlook.com` | `https://ps.compliance.protection.office365.us` | `https://ps.compliance.protection.partner.outlook.cn` |
+
 :::
 
 ### Microsoft Graph PowerShell SDK Module
@@ -207,3 +208,20 @@ Connect-MicrosoftTeams
 $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("C:\exampleCert.pfx",$password)
 Connect-MicrosoftTeams -Certificate $cert -ApplicationId $applicationId -TenantId $tenantId
 ```
+
+### Copilot Studio (via Dataverse)
+
+The Copilot Studio security tests (MT.1113–MT.1122) use the Dataverse OData API via `Az.Accounts`. Authenticate with `Connect-AzAccount` and then connect Maester for Copilot Studio access.
+
+```powershell
+# Authenticate to Az (SPN example)
+Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
+
+# Connect Graph separately for SPN
+Connect-MgGraph -AppId $applicationId -Certificate $cert -TenantId $tenantId -NoWelcome
+
+# Connect Maester for Copilot Studio only (Graph already connected)
+Connect-Maester -Service Dataverse
+```
+
+> The service principal must be registered as an Application User in Power Platform with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.

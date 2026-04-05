@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA118_1{
+    <#
+    .SYNOPSIS
     Domains are not being allow listed in an unsafe manner in Anti-Spam Policies.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA118_1
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA118_1
-#>
-function Test-ORCA118_1{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

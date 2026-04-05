@@ -61,7 +61,7 @@ The same applies to the `-SendTeamsMessage` in `Connect-Maester`.
 
 Maester is designed to require read-only access to a tenant to run tests.
 
-However, certain tests like  [Test-MtExoMoeraMailActivity](../commands/Test-MtExoMoeraMailActivity.mdx) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
+However, certain tests like [Test-MtExoMoeraMailActivity](../commands/Test-MtExoMoeraMailActivity.mdx) require privileged permission scopes to call certain APIs. If the permission is not granted, the specific test will be skipped.
 
 Connecting with privileged scopes is optional. To connect with privileged scopes, use the `-Privileged` switch:
 
@@ -77,11 +77,11 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
-### Connect to Azure, Exchange Online and Teams
+### Connect to Azure, Exchange Online, Copilot Studio and Teams
 
-`Connect-Maester` also provides options to connect to Azure, Exchange Online and Teams for running tests that use the Azure PowerShell, Exchange Online PowerShell or Teams PowerShell modules.
+`Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Exchange Online, Security Compliance and Microsoft Teams.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance and Microsoft Teams.
 
 ```powershell
 Connect-Maester -Service All
@@ -93,10 +93,19 @@ If you need to connect to just a subset of the services you can specifiy them us
 Connect-Maester -Service Azure,Graph,Teams
 ```
 
+### Connect to Copilot Studio (via Dataverse)
+
+To run the Copilot Studio Security Tests (MT.1113–MT.1122), connect with the `Dataverse` service:
+
+```powershell
+Connect-Maester -Service Graph,Dataverse
+```
+
+This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`.
+
 ### Connect to US Government, US DoD, China and Germany and other clouds
 
 `Connect-Maester` also provides options to connect to the US Government, China and Germany clouds for Microsoft Graph, Azure and Exchange Online.
-
 
 #### US Government
 

@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntitlementManagementValidApprovers {
+    <#
+    .SYNOPSIS
     Checks if access package approval workflows have valid approvers
 
-.DESCRIPTION
+    .DESCRIPTION
     MT.1109 - Access package approval workflows must have valid approvers
 
     This test identifies Microsoft Entra ID Governance access package assignment policies with
@@ -21,16 +22,14 @@
     Learn more:
     https://maester.dev/docs/tests/MT.1109
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntitlementManagementValidApprovers
 
     Returns $true if all approval workflows have valid approvers
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntitlementManagementValidApprovers
-#>
-
-function Test-MtEntitlementManagementValidApprovers {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Approvers is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -322,5 +321,3 @@ function Test-MtEntitlementManagementValidApprovers {
         return $false
     }
 }
-
-

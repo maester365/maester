@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA158{
+    <#
+    .SYNOPSIS
     Safe Attachments is enabled for SharePoint and Teams.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA158
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA158
-#>
-function Test-ORCA158{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

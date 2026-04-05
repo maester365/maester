@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy enforcing sign-in frequency for non-corporate devices
+﻿function Test-MtCaEnforceSignInFrequency {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy enforcing sign-in frequency for non-corporate devices
 
- .Description
+    .Description
     Sign-in frequency conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
 
-  Learn more:
-  https://aka.ms/CATemplatesBrowserSession
+    Learn more:
+    https://aka.ms/CATemplatesBrowserSession
 
- .Example
-  Test-MtCaEnforceSignInFrequency
+    .Example
+    Test-MtCaEnforceSignInFrequency
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaEnforceSignInFrequency
-#>
-function Test-MtCaEnforceSignInFrequency {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param (

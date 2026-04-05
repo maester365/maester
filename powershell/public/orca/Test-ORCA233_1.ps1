@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA233_1{
+    <#
+    .SYNOPSIS
     Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA233_1
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA233_1
-#>
-function Test-ORCA233_1{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

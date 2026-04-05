@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaPR06 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold is set to 10
 
-.DESCRIPTION
+    .DESCRIPTION
 
     How many failed sign-ins are allowed on an account before its first lockout. If the first sign-in after a lockout also fails, the account locks out again.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
+    graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaPR06
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
-#>
-
-function Test-MtEidscaPR06 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,46 +1,46 @@
-﻿<#
-.SYNOPSIS
+﻿function Update-MtMaesterApp {
+    <#
+    .SYNOPSIS
     Updates an existing Maester application with the latest required permissions.
 
-.DESCRIPTION
+    .DESCRIPTION
     Updates an existing Maester application in Azure AD/Entra ID with the current set of required
     Graph API permissions. This is useful when new permissions are added to Maester and existing
     applications need to be updated to include them.
 
-.PARAMETER ApplicationId
+    .PARAMETER ApplicationId
     The Application (Client) ID of the existing Maester application to update.
 
-.PARAMETER SendMail
+    .PARAMETER SendMail
     If specified, includes the Mail.Send permission scope.
 
-.PARAMETER SendTeamsMessage
+    .PARAMETER SendTeamsMessage
     If specified, includes the ChannelMessage.Send permission scope.
 
-.PARAMETER Privileged
+    .PARAMETER Privileged
     If specified, includes privileged permission scopes for read-write operations.
 
-.PARAMETER Scopes
+    .PARAMETER Scopes
     Additional custom permission scopes to include beyond the default Maester scopes.
 
-.EXAMPLE
+    .EXAMPLE
     Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
 
     Updates the specified Maester app with the current default permissions.
 
-.EXAMPLE
+    .EXAMPLE
     Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -SendMail -Privileged
 
     Updates the specified Maester app with mail sending and privileged capabilities.
 
-.EXAMPLE
+    .EXAMPLE
     Update-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("User.Read.All")
 
     Updates the specified Maester app with additional custom scopes.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Update-MtMaesterApp
-#>
-function Update-MtMaesterApp {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]
