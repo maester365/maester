@@ -12,8 +12,6 @@ Mailboxes that are used for support systems such as helpdesk and billing systems
 
 #### Remediation action:
 
-To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
-
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com)
 2. Click to expand **Email & collaboration** select **Policies & rules**
 3. Select **Threat policies**.
@@ -26,7 +24,7 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 * Check **Enable mailbox intelligence (Recommended)**.
 * Check **Enable Intelligence for impersonation protection (Recommended)**.
 * Check **Enable spoof intelligence (Recommended)**.
-6. Under Actions configure the following:
+1. Under Actions configure the following:
 * Set **If a message is detected as user impersonation to Quarantine the message**.
 * Set **If a message is detected as domain impersonation to Quarantine the message**.
 * Set **If Mailbox Intelligence detects an impersonated user to Quarantine the message**.
@@ -35,7 +33,7 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 * Check **Show user impersonation safety tip**.
 * Check **Show domain impersonation safety tip**.
 * Check **Show user impersonation unusual characters safety tip**.
-7. Finally click **Next** and **Submit** the policy.
+1. Finally click **Next** and **Submit** the policy.
 
 >Note: DefaultFullAccessWithNotificationPolicy is suggested but not required. Users will be notified that impersonation emails are in the Quarantine
 
@@ -43,7 +41,7 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 
 1. Connect to Exchange Online service using `Connect-ExchangeOnline`.
 2. Run the following Exchange Online PowerShell script to create an AntiPhish policy:
-```pwoershell
+```powershell
 # Create the Policy
 $params = @{
     Name                                = "CIS AntiPhish Policy"

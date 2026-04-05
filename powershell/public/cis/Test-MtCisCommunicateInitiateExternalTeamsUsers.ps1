@@ -25,20 +25,20 @@
         return $null
     }
 
-    Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if communication with unmanaged Teams users is disabled'
+    Write-Verbose 'Test-MtCisCommunicateInitiateExternalTeamsUsers: Checking if external unmanaged Teams users cannot initiate conversations'
 
     try {
         $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
         if ($AllowTeamsConsumerInbound -eq $false) {
-            Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
+            Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
             return $true
         } else {
             $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
             if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
-                Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
+                Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
                 return $true
             } else {
-                Add-MtTestResultDetail -Result 'Communication with unmanaged Teams users is enabled.'
+                Add-MtTestResultDetail -Result 'External unmanaged Teams users can initiate conversations.'
                 return $false
             }
         }
