@@ -21,6 +21,12 @@
     Path to the output directory for the built module. Defaults to ../module relative
     to this script. This directory is cleaned and recreated on every run.
 
+.PARAMETER Format
+    When specified, normalizes source file indentation to 4 spaces using
+    Invoke-Formatter (PSScriptAnalyzer) during consolidation. Requires the
+    PSScriptAnalyzer module to be installed. Without this switch, source
+    content is concatenated as-is.
+
 .PARAMETER Profile
     When specified, measures and reports Import-Module time and exported function count
     for the built module.
@@ -35,6 +41,9 @@ param (
 
     [Parameter()]
     [string] $OutputRoot = "$PSScriptRoot/../module",
+
+    [Parameter()]
+    [switch] $Format,
 
     [Parameter()]
     [switch] $Profile
@@ -299,6 +308,44 @@ function Remove-FileLevelPreamble {
     return ($Result -join "`n")
 }
 
+# Helper: normalize indentation to 4 spaces using Invoke-Formatter.
+# Only called when the -Format switch is specified. Requires PSScriptAnalyzer.
+function Format-SourceContent {
+    param (
+        [string] $Content,
+        [string] $FileName = ''
+    )
+
+    $Settings = @{
+        IncludeRules = @('PSUseConsistentIndentation')
+        Rules        = @{
+            PSUseConsistentIndentation = @{
+                Enable          = $true
+                IndentationSize = 4
+                Kind            = 'space'
+            }
+        }
+    }
+
+    try {
+        $Formatted = Invoke-Formatter -ScriptDefinition $Content -Settings $Settings
+        return $Formatted
+    } catch {
+        Write-Warning "Invoke-Formatter failed for '$FileName': $($_.Exception.Message)"
+        return $Content
+    }
+}
+
+# Validate PSScriptAnalyzer availability when -Format is requested.
+if ($Format) {
+    if (-not (Get-Command -Name Invoke-Formatter -ErrorAction SilentlyContinue)) {
+        Write-Warning 'PSScriptAnalyzer module is not installed. The -Format switch requires it. Continuing without formatting.'
+        $Format = $false
+    } else {
+        Write-Host '   Formatting enabled (Invoke-Formatter)'
+    }
+}
+
 # Build the consolidated PSM1 content.
 $Builder = [System.Text.StringBuilder]::new()
 
@@ -346,6 +393,9 @@ foreach ($File in $InternalFiles) {
     $FileContent = Remove-FileLevelPreamble -Content $FileContent -FileName $File.Name
     $Depth = Get-RelativeDepth -FilePath $File.FullName -BasePath $SourceRoot
     $FileContent = Resolve-ConsolidatedPaths -Content $FileContent -Depth $Depth -FileName $File.Name
+    if ($Format) {
+        $FileContent = Format-SourceContent -Content $FileContent -FileName $File.Name
+    }
 
     $null = $Builder.AppendLine("# ── $($File.Name) ──")
     $null = $Builder.AppendLine($FileContent.TrimEnd())
@@ -362,6 +412,9 @@ foreach ($File in $PublicFiles) {
     $FileContent = Remove-FileLevelPreamble -Content $FileContent -FileName $File.Name
     $Depth = Get-RelativeDepth -FilePath $File.FullName -BasePath $SourceRoot
     $FileContent = Resolve-ConsolidatedPaths -Content $FileContent -Depth $Depth -FileName $File.Name
+    if ($Format) {
+        $FileContent = Format-SourceContent -Content $FileContent -FileName $File.Name
+    }
 
     $null = $Builder.AppendLine("# ── $($File.Name) ──")
     $null = $Builder.AppendLine($FileContent.TrimEnd())
@@ -393,7 +446,6 @@ try {
     $ModuleInfo = $null
 }
 '@)
-$null = $Builder.AppendLine()
 
 $OutputPsm1 = Join-Path $OutputRoot 'Maester.psm1'
 Set-Content -Path $OutputPsm1 -Value $Builder.ToString() -Encoding utf8BOM -NoNewline
@@ -433,6 +485,9 @@ foreach ($File in $OrcaCheckFiles) {
     # Strip file-level preamble (SuppressMessageAttribute, param(), Generated-by,
     # using module) using the same preamble-aware helper as Phase C.
     $FileContent = Remove-FileLevelPreamble -Content $FileContent -FileName $File.Name
+    if ($Format) {
+        $FileContent = Format-SourceContent -Content $FileContent -FileName $File.Name
+    }
 
     # Also strip 'using module' references to the base class file that appear outside
     # the preamble, since the base classes are now defined inline above.
