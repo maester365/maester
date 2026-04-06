@@ -40,10 +40,10 @@ Obsolete below refers to a check which is no longer valid or required.
 | [Test-MtCisPasswordExpiry](/docs/commands/)                        | 1.3.1 (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'                            |
 | TBD                                                                | 1.3.2 (L1) Ensure 'Idle session timeout' is set to '3 hours (or less)' for unmanaged devices                                          |
 | [Test-MtCisCalendarSharing](/docs/commands/)                       | 1.3.3 (L2) Ensure 'External sharing' of calendars is not available                                                                    |
-| TBD (MT.1041)                                                      | 1.3.4 (L1) Ensure 'User owned apps and services' is restricted                                                                        |
-| TBD                                                                | 1.3.5 (L1) Ensure internal phishing protection for Forms is enabled                                                                   |
+| [Test-MtCisUserOwnedAppsRestricted](/docs/commands/)               | 1.3.4 (L1) Ensure 'User owned apps and services' is restricted                                                                        |
+| [Test-MtCisFormsPhishingProtectionEnabled](/docs/commands/)        | 1.3.5 (L1) Ensure internal phishing protection for Forms is enabled                                                                   |
 | [Test-MtCisCustomerLockBox](/docs/commands/)                       | 1.3.6 (L2) Ensure the customer lockbox feature is enabled                                                                             |
-| TBD (MT.1040)                                                      | 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'                                         |
+| [Test-MtCisThirdPartyStorageServicesRestricted](/docs/commands/)   | 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'                                         |
 | TBD                                                                | 1.3.8 (L2) Ensure that Sways cannot be shared with people outside of your organization                                                |
 | TBD                                                                | 1.3.9 (L1) Ensure shared bookings pages are restricted to select users                                                                |
 | [Test-MtCisSafeLink](/docs/commands/)                              | 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled                                                                       |
@@ -70,15 +70,15 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                                | 3.2.1 (L1) Ensure DLP policies are enabled                                                                                            |
 | TBD                                                                | 3.2.2 (L1) Ensure DLP policies are enabled for Microsoft Teams                                                                        |
 | TBD                                                                | 3.3.1 (L1) Ensure Information Protection sensitivity label policies are published                                                     |
-| TBD                                                                | 4.1 (L2) Ensure devices without a compliance policy are marked 'not compliant'                                                        |
+| [Test-MtCisDevicesWithoutCompliancePolicyMarked](/docs/commands/)  | 4.1 (L2) Ensure devices without a compliance policy are marked 'not compliant'                                                        |
 | TBD                                                                | 4.2 (L2) Ensure device enrollment for personally owned devices is blocked by default                                                  |
 | TBD                                                                | 5.1.2.1 (L1) Ensure 'Per-user MFA' is disabled                                                                                        |
-| TBD                                                                | 5.1.2.2 (L2) Ensure third party integrated applications are not allowed                                                               |
-| TBD                                                                | 5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'                                                  |
+| [Test-MtCisThirdPartyApplicationsDisallowed](/docs/commands/)      | 5.1.2.2 (L2) Ensure third party integrated applications are not allowed                                                               |
+| [Test-MtCisCreateTenantDisallowed](/docs/commands/)                | 5.1.2.3 (L1) Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes'                                                  |
 | TBD                                                                | 5.1.2.4 (L1) Ensure access to the Entra admin center is restricted                                                                    |
 | TBD                                                                | 5.1.2.5 (L2) Ensure the option to remain signed in is hidden                                                                          |
 | TBD                                                                | 5.1.2.6 (L2) Ensure 'LinkedIn account connections' is disabled                                                                        |
-| TBD                                                                | 5.1.3.1 (L1) Ensure a dynamic group for guest users is created                                                                        |
+| [Test-MtCisEnsureGuestUserDynamicGroup](/docs/commands/)           | 5.1.3.1 (L1) Ensure a dynamic group for guest users is created                                                                        |
 | TBD                                                                | 5.1.3.2 (L1) Ensure users cannot create security groups                                                                               |
 | TBD                                                                | 5.1.4.1 (L2) Ensure the ability to join devices to Entra is restricted                                                                |
 | TBD                                                                | 5.1.4.2 (L1) Ensure the maximum number of devices per user is limited                                                                 |
@@ -86,10 +86,10 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                                | 5.1.4.4 (L1) Ensure local administrator assignment is limited during Entra join                                                       |
 | TBD                                                                | 5.1.4.5 (L1) Ensure Local Administrator Password Solution is enabled                                                                  |
 | TBD                                                                | 5.1.4.6 (L2) Ensure users are restricted from recovering BitLocker keys                                                               |
-| TBD                                                                | 5.1.5.1 (L2) Ensure user consent to apps accessing company data on their behalf is not allowed                                        |
-| TBD                                                                | 5.1.5.2 (L1) Ensure the admin consent workflow is enabled                                                                             |
+| [Test-MtCisEnsureUserConsentToAppsDisallowed](/docs/commands/)     | 5.1.5.1 (L2) Ensure user consent to apps accessing company data on their behalf is not allowed                                        |
+| [Test-MtCisAdminConsentWorkflowEnabled](/docs/commands/)           | 5.1.5.2 (L1) Ensure the admin consent workflow is enabled                                                                             |
 | TBD                                                                | 5.1.6.1 (L2) Ensure that collaboration invitations are sent to allowed domains only                                                   |
-| TBD                                                                | 5.1.6.2 (L1) Ensure that guest user access is restricted                                                                              |
+| [Test-MtCisEnsureGuestAccessRestricted](/docs/commands/)           | 5.1.6.2 (L1) Ensure that guest user access is restricted                                                                              |
 | TBD                                                                | 5.1.6.3 (L2) Ensure guest user invitations are limited to the Guest Inviter role                                                      |
 | TBD                                                                | 5.1.8.1 (L1) Ensure that password hash sync is enabled for hybrid deployments                                                         |
 | TBD                                                                | 5.2.2.1 (L1) Ensure multifactor authentication is enabled for all users in administrative roles                                       |
@@ -108,7 +108,7 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD                                                                | 5.2.3.2 (L1) Ensure custom banned passwords lists are used                                                                            |
 | TBD                                                                | 5.2.3.3 (L1) Ensure password protection is enabled for on-prem Active Directory                                                       |
 | TBD                                                                | 5.2.3.4 (L1) Ensure all member users are 'MFA capable'                                                                                |
-| TBD                                                                | 5.2.3.5 (L1) Ensure weak authentication methods are disabled                                                                          |
+| [Test-MtCisWeakAuthenticationMethodsDisabled](/docs/commands/)     | 5.2.3.5 (L1) Ensure weak authentication methods are disabled                                                                          |
 | TBD                                                                | 5.2.3.6 (L1) Ensure system-preferred multifactor authentication is enabled                                                            |
 | TBD                                                                | 5.2.3.7 (L2) Ensure the email OTP authentication method is disabled                                                                   |
 | TBD                                                                | 5.2.4.1 (L1) Ensure 'Self service password reset enabled' is set to 'All'                                                             |
