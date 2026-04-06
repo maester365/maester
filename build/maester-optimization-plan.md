@@ -372,7 +372,7 @@ param (
 
 **Output directory structure:**
 
-```
+```text
 ./module/
 ├── Maester.psd1               # updated manifest (auto-generated FunctionsToExport)
 ├── Maester.psm1               # consolidated internal + public functions
@@ -576,7 +576,7 @@ release point. The tracking issue pattern is better suited to linear, sequential
 The following were considered and rejected during planning:
 
 | Idea | Reason rejected |
-|---|---|
+| --- | --- |
 | Remove `Microsoft.Graph.Authentication` from `RequiredModules` | `Connect-Maester` is optional. Automation users never call it. 180+ functions call Graph cmdlets directly and would fail with cryptic errors if the module is not loaded. The performance gain is near zero when the module is already in the session, which covers virtually all real-world usage. |
 | Lazy-loading Pester | The team intentionally pins Pester at `0.0.0` in `RequiredModules` to avoid conflicts with the Windows-bundled version. Runtime validation is already in place. |
 | Adding Graph response caching | Already implemented via `$Script:`-scoped caches in `Invoke-MtGraphRequest` and `Get-MtExo`. |
@@ -588,7 +588,7 @@ The following were considered and rejected during planning:
 
 The items above have dependencies and should be implemented in this sequence:
 
-```
+```text
 1. Move comment-based help inside function bodies   (one-time source pass, own PR)
         ↓
 2. Consolidate internal + public PS1 files into Maester.psm1
@@ -609,9 +609,9 @@ The items above have dependencies and should be implemented in this sequence:
 **Recommended PR sequence:**
 
 | PR | Contents |
-|---|---|
+| --- | --- |
 | PR 1 | Item 1 only — comment-based help move, project-wide. Isolated and reviewable on its own. |
-| PR 2 | Items 2, 3, 4, and 7 — build script that produces the consolidated `./module/` output. |
+| PR 2 | Items 2, 3, 4, 6, and 7 — build script that produces the consolidated `./module/` output. |
 | PR 3 | Item 5 — test suite consolidation and `Update-MaesterTests` runtime update. |
 | PR 4 | Item 8 — workflow updates to use `./build/` and publish from `./module/`. |
 | PR 5 | Item 9 — documentation and contributing guidelines. |
