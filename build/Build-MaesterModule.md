@@ -157,8 +157,7 @@ module/
 ├── Maester.Format.ps1xml      # Type formatting definitions
 ├── Maester.psd1               # Updated module manifest
 ├── Maester.psm1               # Consolidated module script
-├── OrcaClasses.ps1            # Consolidated ORCA class definitions
-└── README.md
+└── OrcaClasses.ps1            # Consolidated ORCA class definitions
 ```
 
 ## Design Notes
