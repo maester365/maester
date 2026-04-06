@@ -9,6 +9,9 @@ under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
 # Standard build
 ./build/Build-MaesterModule.ps1
 
+# Build with indentation normalization (requires PSScriptAnalyzer)
+./build/Build-MaesterModule.ps1 -Format
+
 # Build with import-time profiling
 ./build/Build-MaesterModule.ps1 -Profile
 
@@ -23,6 +26,7 @@ under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
 | `SourceRoot` | string | `../powershell` | Path to the module source directory |
 | `TestsRoot` | string | `../tests` | Path to the test suites directory |
 | `OutputRoot` | string | `../module` | Output directory (cleaned on every run) |
+| `Format` | switch | — | Normalize indentation to 4 spaces via `Invoke-Formatter` (requires PSScriptAnalyzer) |
 | `Profile` | switch | — | Measure and report `Import-Module` time |
 
 ## Build Phases
@@ -88,6 +92,10 @@ Two transformations are applied to each source file:
   (`../`) that were needed in the original subdirectory structure but are
   incorrect after consolidation to a flat module root. Any remaining
   `$PSScriptRoot/..` references trigger a warning for manual review.
+- **Indentation normalization** (with `-Format`) — Runs `Invoke-Formatter`
+  per file to enforce 4-space indentation. Only the
+  `PSUseConsistentIndentation` rule is applied. If PSScriptAnalyzer is not
+  installed, a warning is emitted and formatting is skipped.
 
 ### Phase D — Consolidate OrcaClasses.ps1
 
@@ -101,6 +109,9 @@ Merges the ORCA class hierarchy into a single `OrcaClasses.ps1`:
 
 This file is registered as `ScriptsToProcess` in the manifest so that class
 definitions are available before the module's `.psm1` loads.
+
+When `-Format` is specified, each derived check class file is also passed
+through `Invoke-Formatter` for indentation normalization.
 
 ### Phase E — Copy static assets
 
