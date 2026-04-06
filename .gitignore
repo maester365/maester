@@ -6,6 +6,9 @@
 # Claude Code
 .claude/
 
+# Build output: consolidated module produced by build/Build-MaesterModule.ps1
+/module/
+
 # User-specific files
 *.rsuser
 *.suo
