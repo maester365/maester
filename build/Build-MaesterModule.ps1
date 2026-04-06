@@ -526,11 +526,13 @@ if (Test-Path -LiteralPath $FormatFile) {
 }
 
 # README
+<# To Do: Consider creating a simplified README that is intended specifically to be shipped with the module. Otherwise, do not include.
 $ReadmeFile = Join-Path $SourceRoot 'README.md'
 if (Test-Path -LiteralPath $ReadmeFile) {
     Copy-Item -Path $ReadmeFile -Destination $OutputRoot -Force
     Write-Host '   Copied: README.md'
 }
+#>
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Phase F — Copy and update module manifest
