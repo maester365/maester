@@ -33,7 +33,7 @@ There may be increased administrative overhead in adopting more secure authentic
 ##### PowerShell
 
 1. Connect to Graph using `Connect-MgGraph -Scopes "Policy.ReadWrite.AuthenticationMethod"`
-2. Run the following to disable all three authentication methods:
+2. Run the following to disable these two authentication methods:
 ```powershell
 $params = @(
     @{ Id = "Sms"; State = "disabled" },
