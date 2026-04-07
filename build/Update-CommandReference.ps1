@@ -16,7 +16,7 @@ $commandsIndexFile = "./website/docs/commands/readme.md"
 $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it will be deleted by New-DocusaurusHelp
 
 # Get all the filenames in the ./powershell/internal folder without the extension
-$internalCommands = Get-ChildItem @("./powershell/internal","./powershell/internal/orca") -Filter *.ps1 | ForEach-Object { $_.BaseName }
+$internalCommands = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Filter *.ps1 | ForEach-Object { $_.BaseName }
 New-DocusaurusHelp -Module ./powershell/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/ -Exclude $internalCommands
 
 # Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
@@ -31,3 +31,23 @@ foreach ($file in $cmdMarkdownFiles) {
 }
 
 Set-Content $commandsIndexFile $readmeContent  # Restore the readme content
+
+# Sync generated command files to all versioned doc folders
+$versionedDocsRoot = "./website/versioned_docs"
+if (Test-Path $versionedDocsRoot) {
+    $sourceCommands = "./website/docs/commands"
+    $versionFolders = Get-ChildItem $versionedDocsRoot -Directory
+    foreach ($versionFolder in $versionFolders) {
+        $targetCommands = Join-Path $versionFolder.FullName "commands"
+        if (Test-Path $targetCommands) {
+            $sourceFiles = Get-ChildItem $sourceCommands -Filter *.mdx
+            foreach ($sourceFile in $sourceFiles) {
+                $targetFile = Join-Path $targetCommands $sourceFile.Name
+                if (-not (Test-Path $targetFile)) {
+                    Copy-Item $sourceFile.FullName $targetFile
+                    Write-Verbose "Copied $($sourceFile.Name) to $($versionFolder.Name)"
+                }
+            }
+        }
+    }
+}
