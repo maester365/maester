@@ -119,7 +119,6 @@ Copies unchanged files to the output directory:
 
 - `assets/` directory (icons, images)
 - `Maester.Format.ps1xml` (type formatting)
-- `README.md`
 
 This phase runs before the manifest update (Phase F) so that
 `FormatsToProcess` references can be validated by `Update-ModuleManifest`.
