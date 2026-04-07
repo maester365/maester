@@ -1,0 +1,27 @@
+diff --git a/node_modules/extend/index.js b/node_modules/extend/index.js
+index 2aa3faa..9da44aa 100644
+--- a/node_modules/extend/index.js
++++ b/node_modules/extend/index.js
+@@ -35,13 +35,15 @@ var isPlainObject = function isPlainObject(obj) {
+ 
+ // If name is '__proto__', and Object.defineProperty is available, define __proto__ as an own property on target
+ var setProperty = function setProperty(target, options) {
+-	if (defineProperty && options.name === '__proto__') {
+-		defineProperty(target, options.name, {
+-			enumerable: true,
+-			configurable: true,
+-			value: options.newValue,
+-			writable: true
+-		});
++	if (options.name === '__proto__') {
++		if (defineProperty) {
++			defineProperty(target, options.name, {
++				enumerable: true,
++				configurable: true,
++				value: options.newValue,
++				writable: true
++			});
++		}
+ 	} else {
+ 		target[options.name] = options.newValue;
+ 	}
