@@ -20,6 +20,7 @@
 #>
 
 function Test-MtAIAgentMissingInstructions {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Instructions is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
