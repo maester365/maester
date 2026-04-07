@@ -234,6 +234,8 @@
     'Test-AzdoPublicProject',
     'Test-AzdoResourceUsageProject',
     'Test-AzdoResourceUsageWorkItemTag',
+    'Test-AzdoAllowExtensionsLocalNetworkAccess',
+    'Test-AzdoDisablePATCreation',
     'Test-AzdoRestrictFullScopePersonalAccessToken',
     'Test-AzdoRestrictPersonalAccessTokenLifespan',
     'Test-AzdoSSHAuthentication',
