@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if the internal phishing protection for Microsoft Forms is enabled.
-
-.DESCRIPTION
-    The internal phishing protection for Microsoft Forms should be enabled.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisFormsPhishingProtectionEnabled
-
-    Returns true if the internal phishing protection for Microsoft Forms is enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisFormsPhishingProtectionEnabled
-#>
-function Test-MtCisFormsPhishingProtectionEnabled {
+﻿function Test-MtCisFormsPhishingProtectionEnabled {
+    <#
+    .SYNOPSIS
+        Checks if the internal phishing protection for Microsoft Forms is enabled.
+    
+    .DESCRIPTION
+        The internal phishing protection for Microsoft Forms should be enabled.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisFormsPhishingProtectionEnabled
+    
+        Returns true if the internal phishing protection for Microsoft Forms is enabled.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisFormsPhishingProtectionEnabled
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

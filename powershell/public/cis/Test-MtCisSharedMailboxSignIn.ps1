@@ -32,7 +32,8 @@
     try {
         Write-Verbose 'Getting all shared mailboxes'
         $sharedMailboxes = Get-MtExo -Request EXOSharedMailbox -ErrorAction Stop
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
@@ -44,7 +45,7 @@
 
     try {
         Write-Verbose 'For each mailbox get mailbox and AccountEnabled status'
-        $mgUsers = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId @($sharedMailboxes.ExternalDirectoryObjectId) -Select id,displayName,userPrincipalName,accountEnabled
+        $mgUsers = Invoke-MtGraphRequest -RelativeUri "users" -UniqueId @($sharedMailboxes.ExternalDirectoryObjectId) -Select id, displayName, userPrincipalName, accountEnabled
         $mailboxDetails = foreach ($mgUser in $mgUsers) {
             $mgUser | Select-Object DisplayName, UserPrincipalName, AccountEnabled
         }
@@ -56,7 +57,8 @@
         $testResult = if ($resultCount -eq 0) { $true } else { $false }
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant has no shared mailboxes with sign-in enabled:`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant has $(($result | Measure-Object).Count) shared mailboxes with sign-in enabled:`n`n%TestResult%"
         }
 
@@ -73,7 +75,8 @@
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

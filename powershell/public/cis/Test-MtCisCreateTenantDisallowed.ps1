@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if non-admin users are restricted from creating tenants
-
-.DESCRIPTION
-    Non-admin users should be restricted from creating tenants.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisCreateTenantDisallowed
-
-    Returns true if non-admin users are restricted from creating tenants.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisCreateTenantDisallowed
-#>
-function Test-MtCisCreateTenantDisallowed {
+﻿function Test-MtCisCreateTenantDisallowed {
+    <#
+    .SYNOPSIS
+        Checks if non-admin users are restricted from creating tenants
+    
+    .DESCRIPTION
+        Non-admin users should be restricted from creating tenants.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisCreateTenantDisallowed
+    
+        Returns true if non-admin users are restricted from creating tenants.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisCreateTenantDisallowed
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if users are not allowed to register applications.
-
-.DESCRIPTION
-    Users should not be allowed to register applications in the tenant.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisThirdPartyApplicationsDisallowed
-
-    Returns true if users are not allowed to register applications in the tenant.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisThirdPartyApplicationsDisallowed
-#>
-function Test-MtCisThirdPartyApplicationsDisallowed {
+﻿function Test-MtCisThirdPartyApplicationsDisallowed {
+    <#
+    .SYNOPSIS
+        Checks if users are not allowed to register applications.
+    
+    .DESCRIPTION
+        Users should not be allowed to register applications in the tenant.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisThirdPartyApplicationsDisallowed
+    
+        Returns true if users are not allowed to register applications in the tenant.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisThirdPartyApplicationsDisallowed
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

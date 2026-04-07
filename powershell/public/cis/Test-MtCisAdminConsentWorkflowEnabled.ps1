@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if the admin consent workflow is enabled
-
-.DESCRIPTION
-    The admin consent workflow should be enabled.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisAdminConsentWorkflowEnabled
-
-    Returns true if admin consent workflow is enabled
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisAdminConsentWorkflowEnabled
-#>
-function Test-MtCisAdminConsentWorkflowEnabled {
+﻿function Test-MtCisAdminConsentWorkflowEnabled {
+    <#
+    .SYNOPSIS
+        Checks if the admin consent workflow is enabled
+    
+    .DESCRIPTION
+        The admin consent workflow should be enabled.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisAdminConsentWorkflowEnabled
+    
+        Returns true if admin consent workflow is enabled
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisAdminConsentWorkflowEnabled
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

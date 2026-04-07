@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if users are restricted to store and share files in third-party storage services in Microsoft 365 on the web.
-
-.DESCRIPTION
-    Users should be restricted to store and share files in third-party storage services in Microsoft 365 on the web.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisThirdPartyStorageServicesRestricted
-
-    Returns true if users are restricted to store and share files in third-party storage services in Microsoft 365 on the web.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisThirdPartyStorageServicesRestricted
-#>
-function Test-MtCisThirdPartyStorageServicesRestricted {
+﻿function Test-MtCisThirdPartyStorageServicesRestricted {
+    <#
+    .SYNOPSIS
+        Checks if users are restricted to store and share files in third-party storage services in Microsoft 365 on the web.
+    
+    .DESCRIPTION
+        Users should be restricted to store and share files in third-party storage services in Microsoft 365 on the web.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisThirdPartyStorageServicesRestricted
+    
+        Returns true if users are restricted to store and share files in third-party storage services in Microsoft 365 on the web.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisThirdPartyStorageServicesRestricted
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

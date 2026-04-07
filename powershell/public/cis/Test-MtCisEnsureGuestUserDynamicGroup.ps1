@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if minimum one dynamic group exists with a membership rule targeting guest users.
-
-.DESCRIPTION
-    There should be minimum one dynamic group with a membership rule targeting guest users to ensure that guest users are easily identifiable and can be managed effectively.
-    CIS Microsoft 365 Foundations Benchmark v6.0.1
-
-.EXAMPLE
-    Test-MtCisEnsureGuestUserDynamicGroup
-
-    Returns true if a group with a membership rule targeting guest users exists.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisEnsureGuestUserDynamicGroup
-#>
-function Test-MtCisEnsureGuestUserDynamicGroup {
+﻿function Test-MtCisEnsureGuestUserDynamicGroup {
+    <#
+    .SYNOPSIS
+        Checks if minimum one dynamic group exists with a membership rule targeting guest users.
+    
+    .DESCRIPTION
+        There should be minimum one dynamic group with a membership rule targeting guest users to ensure that guest users are easily identifiable and can be managed effectively.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisEnsureGuestUserDynamicGroup
+    
+        Returns true if a group with a membership rule targeting guest users exists.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisEnsureGuestUserDynamicGroup
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
