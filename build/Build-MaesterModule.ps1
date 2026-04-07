@@ -58,6 +58,17 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host '── Phase A: Preparing output directory' -ForegroundColor Cyan
 
+# Safety guard: reject OutputRoot paths that could cause catastrophic deletion.
+$RepoRoot = (Resolve-Path -LiteralPath "$PSScriptRoot/..").Path
+$ResolvedOutput = [System.IO.Path]::GetFullPath($OutputRoot).TrimEnd('\', '/')
+$DriveRoot = [System.IO.Path]::GetPathRoot($ResolvedOutput).TrimEnd('\', '/')
+if ($ResolvedOutput -ieq $DriveRoot) {
+    throw "Refusing to use OutputRoot '$OutputRoot' because it resolves to a filesystem root: '$ResolvedOutput'."
+}
+if ($ResolvedOutput -ieq $RepoRoot.TrimEnd('\', '/')) {
+    throw "Refusing to use OutputRoot '$OutputRoot' because it resolves to the repository root: '$RepoRoot'."
+}
+
 if (Test-Path -LiteralPath $OutputRoot) {
     Remove-Item -LiteralPath $OutputRoot -Recurse -Force
 }
@@ -92,15 +103,21 @@ foreach ($File in $PublicSourceFiles) {
     }
 
     # Find top-level function definitions only (not nested inside other functions).
-    # A top-level function's parent chain: FunctionDefinitionAst → NamedBlockAst →
-    # ScriptBlockAst (of file) → nothing above.
+    # Walk the full parent chain — any FunctionDefinitionAst ancestor means this
+    # function is nested, regardless of intermediate block types.
     $TopLevelFunctions = $Ast.FindAll({
             param ($Node)
-            $Node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
-            -not ($Node.Parent -is [System.Management.Automation.Language.FunctionDefinitionAst] -or
-                ($Node.Parent -is [System.Management.Automation.Language.NamedBlockAst] -and
-                $Node.Parent.Parent -is [System.Management.Automation.Language.ScriptBlockAst] -and
-                $Node.Parent.Parent.Parent -is [System.Management.Automation.Language.FunctionDefinitionAst]))
+            if ($Node -isnot [System.Management.Automation.Language.FunctionDefinitionAst]) {
+                return $false
+            }
+            $Parent = $Node.Parent
+            while ($Parent) {
+                if ($Parent -is [System.Management.Automation.Language.FunctionDefinitionAst]) {
+                    return $false
+                }
+                $Parent = $Parent.Parent
+            }
+            return $true
         }, $true)
 
     if ($TopLevelFunctions.Count -eq 0) {
@@ -113,31 +130,37 @@ foreach ($File in $PublicSourceFiles) {
         Write-Warning "Multiple top-level functions in '$($File.Name)': $Names"
     }
 
-    foreach ($Function in $TopLevelFunctions) {
-        # Only export functions that follow the Verb-Noun naming convention.
-        # Helper functions, class definitions, and constructors that lack the
-        # conventional '-' separator are internal and should not be exported.
-        if ($Function.Name -notmatch '-') {
-            Write-Warning "Skipping '$($Function.Name)' in '$($File.Name)' — not a Verb-Noun function"
-            continue
-        }
-
-        # Validate function name matches filename
-        if ($Function.Name -ne $File.BaseName) {
-            Write-Warning "Function name '$($Function.Name)' does not match filename '$($File.Name)'"
-        }
-
-        # Validate approved verb
-        $Verb = ($Function.Name -split '-', 2)[0]
-        if ($Verb -and $Verb -notin $ApprovedVerbs) {
-            Write-Warning "Function '$($Function.Name)' uses unapproved verb '$Verb'"
-        }
-
-        $ExportFunctionList.Add($Function.Name)
+    # Only export the function whose name matches the filename. Additional
+    # top-level functions (helpers co-located in the same file) are logged
+    # and skipped to avoid unintentionally expanding the public API surface.
+    $MatchingFunction = $TopLevelFunctions | Where-Object { $_.Name -eq $File.BaseName } | Select-Object -First 1
+    if (-not $MatchingFunction) {
+        $DiscoveredNames = ($TopLevelFunctions | ForEach-Object { $_.Name }) -join ', '
+        Write-Warning "No top-level function matching filename '$($File.Name)' was found. Discovered: $DiscoveredNames"
+        continue
     }
+
+    $AdditionalTopLevelFunctions = $TopLevelFunctions | Where-Object { $_.Name -ne $File.BaseName }
+    foreach ($Extra in $AdditionalTopLevelFunctions) {
+        Write-Warning "Skipping additional top-level function '$($Extra.Name)' in '$($File.Name)' — only '$($File.BaseName)' is exported"
+    }
+
+    # Only export functions that follow the Verb-Noun naming convention.
+    if ($MatchingFunction.Name -notmatch '-') {
+        Write-Warning "Skipping '$($MatchingFunction.Name)' in '$($File.Name)' — not a Verb-Noun function"
+        continue
+    }
+
+    # Validate approved verb
+    $Verb = ($MatchingFunction.Name -split '-', 2)[0]
+    if ($Verb -and $Verb -notin $ApprovedVerbs) {
+        Write-Warning "Function '$($MatchingFunction.Name)' uses unapproved verb '$Verb'"
+    }
+
+    $ExportFunctionList.Add($MatchingFunction.Name)
 }
 
-$ExportFunctionList.Sort()
+$ExportFunctionList.Sort([System.StringComparer]::OrdinalIgnoreCase)
 
 # Deduplicate — some helper functions (e.g., SPFRecord) are defined in multiple files.
 $SeenFunctions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
@@ -149,7 +172,7 @@ foreach ($Name in $ExportFunctionList) {
 }
 if ($DuplicateNames.Count -gt 0) {
     $ExportFunctionList = [System.Collections.Generic.List[string]]::new($SeenFunctions)
-    $ExportFunctionList.Sort()
+    $ExportFunctionList.Sort([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($Dupe in $DuplicateNames) {
         Write-Warning "Deduplicated function: '$Dupe'"
     }
