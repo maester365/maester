@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA124{
+    <#
+    .SYNOPSIS
     Safe attachments unknown malware response set to block messages.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA124
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA124
-#>
-function Test-ORCA124{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

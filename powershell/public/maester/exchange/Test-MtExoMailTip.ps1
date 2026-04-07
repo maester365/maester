@@ -1,20 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtExoMailTip {
+    <#
+    .SYNOPSIS
     Checks if MailTips are enabled for end users
 
-.DESCRIPTION
+    .DESCRIPTION
     MailTips assist end users with identifying strange patterns to emails they send.
     This helps protect against accidental information disclosure and phishing attempts.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoMailTip
 
     Returns true if MailTips are enabled for end users.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoMailTip
-#>
-function Test-MtExoMailTip {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

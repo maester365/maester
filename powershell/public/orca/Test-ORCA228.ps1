@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA228{
+    <#
+    .SYNOPSIS
     No trusted senders in Anti-phishing policy.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA228
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA228
-#>
-function Test-ORCA228{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

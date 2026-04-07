@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcRecordReject {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     The DMARC message rejection option SHALL be p=reject.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcRecordReject
 
     Returns true if DMARC record with reject policy exists for every domain
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcRecordReject
-#>
-function Test-MtCisaDmarcRecordReject {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

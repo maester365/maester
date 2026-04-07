@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
+    <#
+    .SYNOPSIS
     Tests if app registration have assigned privileged API permissions which are unused.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks all Entra ID app registrations with privileged API permissions and checks if any of them are unused.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no owners on app registrations with privileged API permissions, $false if any owners have been assigned, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmAppRegWithPrivilegedUnusedPermissions
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmAppRegWithPrivilegedUnusedPermissions
-#>
-
-function Test-MtXspmAppRegWithPrivilegedUnusedPermissions {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple permissions.')]
     [OutputType([bool])]

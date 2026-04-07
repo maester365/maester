@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function New-MtMaesterApp {
+    <#
+    .SYNOPSIS
     Creates a new Maester application in Entra ID with required permissions.
 
-.DESCRIPTION
+    .DESCRIPTION
     Creates a new application registration in Entra ID specifically configured for running
     Maester tests in a DevOps pipeline. The application will be granted the necessary Graph API
     permissions based on the specified parameters and tagged for easy identification.
@@ -10,40 +11,39 @@
     The user running this command must have a permissions to create applications and consent to Graph Permissions.
     This requires a minimum of being a Privileged Role Administrator (and Cloud Application Administrator if needed) or Global Administrator.
 
-.PARAMETER Name
+    .PARAMETER Name
     The display name for the application. If not specified, defaults to 'Maester DevOps Account'.
 
-.PARAMETER SendMail
+    .PARAMETER SendMail
     If specified, includes the Mail.Send permission scope.
 
-.PARAMETER SendTeamsMessage
+    .PARAMETER SendTeamsMessage
     If specified, includes the ChannelMessage.Send permission scope.
 
-.PARAMETER Privileged
+    .PARAMETER Privileged
     If specified, includes privileged permission scopes for read-write operations.
 
-.PARAMETER Scopes
+    .PARAMETER Scopes
     Additional custom permission scopes to include beyond the default Maester scopes.
 
-.EXAMPLE
+    .EXAMPLE
     New-MtMaesterApp
 
     Creates a new Maester app with default permissions and name 'Maester DevOps Account'.
 
-.EXAMPLE
+    .EXAMPLE
     New-MtMaesterApp -Name "My Maester Pipeline App" -SendMail
 
     Creates a new Maester app with mail sending capabilities.
 
-.EXAMPLE
+    .EXAMPLE
     New-MtMaesterApp -Privileged -Scopes @("User.Read.All", "Group.Read.All")
 
     Creates a new Maester app with privileged scopes and additional custom scopes.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/New-MtMaesterApp
-#>
-function New-MtMaesterApp {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'TODO: Implement ShouldProcess')]
     [CmdletBinding()]

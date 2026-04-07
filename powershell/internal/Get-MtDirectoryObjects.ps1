@@ -1,13 +1,12 @@
-﻿<#
+﻿function Get-MtDirectoryObjects {
+    <#
     .SYNOPSIS
         Get directory objects by their object id's.
     .DESCRIPTION
         This function retrieves directory objects from Microsoft Graph by their object id's.
         It is a wrapper around the Microsoft Graph API endpoint "directoryObjects/getByIds".
         The function takes an array of object id's as input and returns the corresponding directory objects.
-#>
-
-function Get-MtDirectoryObjects {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command updates multiple tests')]
     [CmdletBinding()]
     param(

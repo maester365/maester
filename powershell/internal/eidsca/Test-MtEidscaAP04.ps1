@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP04 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Manages controls who can invite guests to your directory to collaborate on resources secured by your Entra ID (Azure AD), such as SharePoint sites or Azure resources.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
+    graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP04
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
-#>
-
-function Test-MtEidscaAP04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,9 +1,8 @@
-<#
-.SYNOPSIS
+﻿function Get-MtRoleInfo {
+    <#
+    .SYNOPSIS
     Returns the role GUID (template ID) for a given role name.
-
-#>
-function Get-MtRoleInfo {
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param(

@@ -1,8 +1,9 @@
-﻿<#
- .SYNOPSIS
-   Enhanced version of Invoke-MgGraphRequest that supports paging, batching and caching.
+﻿function Invoke-MtGraphRequest {
+    <#
+    .SYNOPSIS
+    Enhanced version of Invoke-MgGraphRequest that supports paging, batching and caching.
 
- .Description
+    .Description
     The version of Invoke-Graph request supports
     * Filter, Select and Unique IDs as parameters
     * Automatic paging if Graph returns a nextLink
@@ -15,15 +16,14 @@
     Note: Batch requests don't support caching.
     :::
 
- .Example
+    .Example
     Invoke-MtGraph -RelativeUri "users" -Filter "displayName eq 'John Doe'" -Select "displayName"
 
     Get all users with a display name of "John Doe" and return the first 10 results.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Invoke-MtGraphRequest
-#>
-function Invoke-MtGraphRequest {
+    #>
     [CmdletBinding()]
     param(
         # Graph endpoint such as "users".

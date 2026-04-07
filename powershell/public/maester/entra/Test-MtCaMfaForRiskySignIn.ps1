@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins.
+﻿function Test-MtCaMfaForRiskySignIn {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins.
 
- .Description
+    .Description
     MFA for risky sign-ins conditional access policy can be used to require MFA for all users in the tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk
 
- .Example
-  Test-MtCaMfaForRiskySignIn
+    .Example
+    Test-MtCaMfaForRiskySignIn
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaMfaForRiskySignIn
-#>
-function Test-MtCaMfaForRiskySignIn {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

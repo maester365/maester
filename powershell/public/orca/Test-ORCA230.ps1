@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA230{
+    <#
+    .SYNOPSIS
     Each domain has a Anti-phishing policy applied to it, or the default policy is being used.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA230
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA230
-#>
-function Test-ORCA230{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,17 +1,17 @@
-﻿<#
- .Synopsis
-  Checks if the default app management policy is enabled.
+﻿function Test-MtAppManagementPolicyEnabled {
+    <#
+    .Synopsis
+    Checks if the default app management policy is enabled.
 
- .Description
-  GET /policies/defaultAppManagementPolicy
+    .Description
+    GET /policies/defaultAppManagementPolicy
 
- .Example
-  Test-MtAppManagementPolicyEnabled
+    .Example
+    Test-MtAppManagementPolicyEnabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtAppManagementPolicyEnabled
-#>
-function Test-MtAppManagementPolicyEnabled {
+    #>
   [CmdletBinding()]
   [OutputType([bool])]
   param()

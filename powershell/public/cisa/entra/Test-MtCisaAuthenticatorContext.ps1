@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAuthenticatorContext {
+    <#
+    .SYNOPSIS
     Checks if the Authentication Methods policy for Microsoft Authenticator is set appropriately
 
-.DESCRIPTION
+    .DESCRIPTION
     If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAuthenticatorContext
 
     Returns true if the Authentication Methods policy for Microsoft Authenticator is set appropriately
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAuthenticatorContext
-#>
-function Test-MtCisaAuthenticatorContext {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

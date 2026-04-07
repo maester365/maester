@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCR03 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Specifies whether reviewers will receive reminder emails
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
+    graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR03
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
-#>
-
-function Test-MtEidscaCR03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaContactSharing {
+    <#
+    .SYNOPSIS
     Checks state of sharing policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Contact folders SHALL NOT be shared with all domains.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaContactSharing
 
     Returns true if no sharing policies allow uncontrolled contact sharing.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaContactSharing
-#>
-function Test-MtCisaContactSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

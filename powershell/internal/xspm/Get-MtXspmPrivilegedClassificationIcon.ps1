@@ -1,13 +1,13 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtXspmPrivilegedClassificationIcon {
+    <#
+    .SYNOPSIS
     Get the icon representation for a specific privileged classification level.
-.EXAMPLE
+    .EXAMPLE
     PS C:\> Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName 'ControlPlane'
     Returns the icon for the Control Plane classification.
-.INPUTS
+    .INPUTS
     System.String
-#>
-function Get-MtXspmPrivilegedClassificationIcon {
+    #>
     param (
         [Parameter(Mandatory = $true)]
         [object]$AdminTierLevelName

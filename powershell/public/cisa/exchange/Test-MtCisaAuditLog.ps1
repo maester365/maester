@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAuditLog {
+    <#
+    .SYNOPSIS
     Checks state of purview
 
-.DESCRIPTION
+    .DESCRIPTION
     Microsoft Purview Audit (Standard) logging SHALL be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAuditLog
 
     Returns true if audit log enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAuditLog
-#>
-function Test-MtCisaAuditLog {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

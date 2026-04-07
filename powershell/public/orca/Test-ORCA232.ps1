@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA232{
+    <#
+    .SYNOPSIS
     Each domain has a malware filter policy applied to it, or the default policy is being used.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA232
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA232
-#>
-function Test-ORCA232{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

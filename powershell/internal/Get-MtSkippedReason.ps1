@@ -1,8 +1,8 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtSkippedReason {
+    <#
+    .SYNOPSIS
     Returns the description for why a test was skipped.
-#>
-function Get-MtSkippedReason {
+    #>
     param(
         # The reason for skipping
         [string] $SkippedBecause

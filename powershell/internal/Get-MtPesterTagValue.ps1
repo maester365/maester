@@ -1,22 +1,21 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtPesterTagValue {
+    <#
+    .SYNOPSIS
     Gets the value of a specific tag from the current Pester test.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function extracts tag values from the current Pester test context.
     It looks for tags in the format 'TagName:Value' and returns the value part.
     If no matching tag is found in the current test, it checks the parent block.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtPesterTagValue -TagName 'Severity'
 
     Returns the severity value (e.g. 'Critical', 'High') if a tag like 'Severity:Critical' exists.
 
-.PARAMETER TagName
+    .PARAMETER TagName
     The name of the tag to look for (without the colon).
-
-#>
-function Get-MtPesterTagValue {
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param(

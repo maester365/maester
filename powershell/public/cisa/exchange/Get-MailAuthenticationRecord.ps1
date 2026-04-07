@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MailAuthenticationRecord {
+    <#
+    .SYNOPSIS
     Obtains and converts the mail authentication records of a domain
 
-.DESCRIPTION
+    .DESCRIPTION
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -11,15 +12,14 @@
     - DMARC https://datatracker.ietf.org/doc/html/rfc7489
     - DKIM https://datatracker.ietf.org/doc/html/rfc6376
 
-.EXAMPLE
+    .EXAMPLE
     Get-MailAuthenticationRecord -DomainName "microsoft.com"
 
     Returns an object containing the structured mail authentication objects
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MailAuthenticationRecord
-#>
-function Get-MailAuthenticationRecord {
+    #>
     [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(

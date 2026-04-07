@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaUnmanagedRoleAssignment {
+    <#
+    .SYNOPSIS
     Checks for active role assingments with no start time
 
-.DESCRIPTION
+    .DESCRIPTION
     Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaUnmanagedRoleAssignment
 
     Returns true if all role assignments have a start time
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaUnmanagedRoleAssignment
-#>
-function Test-MtCisaUnmanagedRoleAssignment {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

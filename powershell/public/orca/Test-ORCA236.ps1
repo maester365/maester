@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA236{
+    <#
+    .SYNOPSIS
     Safe Links is enabled for emails.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA236
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA236
-#>
-function Test-ORCA236{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

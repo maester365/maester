@@ -12,17 +12,17 @@ import CreateEntraApp from '../sections/create-entra-app.md';
 
 There are two main methods of authenticating sessions for use with Maester:
 
-* Within the Maester module
-* Within the respective modules for the tests
+- Within the Maester module
+- Within the respective modules for the tests
 
 ### Module Integrations
 
 The Maester module integrates with the following modules:
 
-* Microsoft.Graph.Authentication
-* Az.Accounts
-* ExchangeOnlineManagement
-* MicrosoftTeams
+- Microsoft.Graph.Authentication
+- Az.Accounts
+- ExchangeOnlineManagement
+- MicrosoftTeams
 
 ### Within the Maester module
 
@@ -81,13 +81,37 @@ For use with the Maester tests the following provides an overview of creating th
 
 You may have a need to use Maester with multiple tenants. The Maester tests enable you to accomplish this, but it is best to authenticate within the respective modules for the tests you wish to run.
 
+:::note Resource URLs vary by Azure cloud environment
+The resource URLs used with `Get-AzAccessToken` differ depending on your Azure cloud. The examples below use Azure Global (Commercial). Replace them with the appropriate URLs for your environment:
+
+| Service                      | Global                                         | US Gov (GCC High / DoD)                         | China (21Vianet)                                      |
+| ---------------------------- | ---------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
+| Microsoft Graph              | `https://graph.microsoft.com`                  | `https://graph.microsoft.us`                    | `https://microsoftgraph.chinacloudapi.cn`             |
+| Exchange Online              | `https://outlook.office365.com`                | `https://outlook.office365.us`                  | `https://partner.outlook.cn`                          |
+| Security & Compliance (IPPS) | `https://ps.compliance.protection.outlook.com` | `https://ps.compliance.protection.office365.us` | `https://ps.compliance.protection.partner.outlook.cn` |
+
+:::
+
 ### Microsoft Graph PowerShell SDK Module
 
-The Microsoft Graph PowerShell SDK Module provides many [options for authenticating](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands). Below is an example of using a X.509 Certificate private key file, `$cert`, to authenticate to `$tenantId` as the `$applicationId` service principal.
+The Microsoft Graph PowerShell SDK Module provides many [options for authenticating](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands).
+
+#### OAuth token-based authentication (recommended for automation)
+
+If you already have an authenticated Azure context, you can use `Get-AzAccessToken` to obtain an OAuth token and pass it directly to `Connect-MgGraph`.
+
+```powershell
+$graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
+Connect-MgGraph -AccessToken $graphToken.Token -NoWelcome
+```
+
+#### Certificate-based authentication
+
+Below is an example of using a X.509 Certificate private key file, `$cert`, to authenticate to `$tenantId` as the `$applicationId` service principal.
 
 ```powershell
 #$applicationId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
-#tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+#$tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
 #$b64 = Get-Content .\path\to\cert.pfx -Raw
 #$b64 = Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $applicationDisplayName -AsPlainText
 #$bytes = [Convert]::FromBase64String($b64)
@@ -102,14 +126,38 @@ The Microsoft Azure Accounts PowerShell Module provides many [options for authen
 
 ```powershell
 #$applicationId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
-#tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+#$tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
 
 Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
 ```
 
 ### Microsoft Exchange Online and Security & Compliance PowerShell Modules
 
-The Microsoft Exchange Online and Security & Compliance PowerShell Modules provide many [options for authenticating](https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2). Below is an example of using a X.509 Certificate private key file, `$cert`, to authenticate to `$tenantId` as the `$applicationId` service principal.
+The Microsoft Exchange Online and Security & Compliance PowerShell Modules provide many [options for authenticating](https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2).
+
+#### OAuth token-based authentication (recommended for automation)
+
+If you already have an authenticated Azure context (e.g., managed identity, workload identity federation, or `Connect-AzAccount`), you can use `Get-AzAccessToken` to obtain OAuth tokens and pass them directly. This eliminates the need for certificate management.
+
+```powershell
+#$clientId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+#$tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+#$moera = "contoso.onmicrosoft.com"
+
+# Exchange Online
+$outlookToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText -Force
+Connect-ExchangeOnline -AccessToken $outlookToken -AppId $clientId -Organization $tenantId -ShowBanner:$false
+
+# Security & Compliance (IPPS)
+$isspToken = ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText -Force
+Connect-IPPSSession -AccessToken $isspToken -Organization $moera
+```
+
+> `Connect-ExchangeOnline` accepts the tenant ID as the `-Organization` value, while `Connect-IPPSSession` requires the tenant's Microsoft Online Email Routing Address (MOERA), e.g., `contoso.onmicrosoft.com`.
+
+#### Certificate-based authentication
+
+Below is an example of using a X.509 Certificate private key file, `$cert`, to authenticate to `$tenantId` as the `$applicationId` service principal.
 
 > These modules don't reference the tenant ID GUID for authentication, they instead use the tenant's Microsoft Online Email Routing Address (MOERA).
 
@@ -128,7 +176,29 @@ Connect-IPPSSession -Certificate $cert -AppID $applicationId -Organization $moer
 
 ### Microsoft Teams PowerShell Module
 
-The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps). For interactive sessions, you can use the standard login prompt. For non-interactive use, such as in automation scenarios, service principal authentication is recommended.
+The Microsoft Teams PowerShell Module supports both interactive and non-interactive [authentication methods](https://learn.microsoft.com/powershell/module/teams/connect-microsoftteams?view=teams-ps).
+
+#### OAuth token-based authentication (recommended for automation)
+
+`Connect-MicrosoftTeams` accepts two access tokens via the `-AccessTokens` parameter: a Microsoft Graph token and a Teams-specific token. This approach works well when you already have an authenticated Azure context.
+
+```powershell
+$graphToken = Get-AzAccessToken -ResourceUrl 'https://graph.microsoft.com' -AsSecureString
+$teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239' -AsSecureString
+
+$tokens = @(
+    (ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText -Force),
+    (ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText -Force)
+)
+
+Connect-MicrosoftTeams -AccessTokens $tokens
+```
+
+> The resource URL `48ac35b8-9aa8-4d74-927d-1f4a14a0b239` is the application ID for the Microsoft Teams PowerShell module.
+
+#### Interactive and certificate-based authentication
+
+For interactive sessions, you can use the standard login prompt. For non-interactive use with certificates, service principal authentication is supported.
 
 ```powershell
 # Interactive
@@ -138,3 +208,20 @@ Connect-MicrosoftTeams
 $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("C:\exampleCert.pfx",$password)
 Connect-MicrosoftTeams -Certificate $cert -ApplicationId $applicationId -TenantId $tenantId
 ```
+
+### Copilot Studio (via Dataverse)
+
+The Copilot Studio security tests (MT.1113–MT.1122) use the Dataverse OData API via `Az.Accounts`. Authenticate with `Connect-AzAccount` and then connect Maester for Copilot Studio access.
+
+```powershell
+# Authenticate to Az (SPN example)
+Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $tenantId -CertificatePath /cert.pfx
+
+# Connect Graph separately for SPN
+Connect-MgGraph -AppId $applicationId -Certificate $cert -TenantId $tenantId -NoWelcome
+
+# Connect Maester for Copilot Studio only (Graph already connected)
+Connect-Maester -Service Dataverse
+```
+
+> The service principal must be registered as an Application User in Power Platform with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
