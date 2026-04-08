@@ -46,11 +46,6 @@
                 $candidate = Join-Path -Path $currentDir -ChildPath $FileName
                 if (Test-Path -Path $candidate) { return $candidate }
             }
-        } elseif (Test-Path -Path $SearchPath -PathType Leaf) {
-            # If a file path was passed directly, check if a tenant-specific variant exists next to it
-            $dir = Split-Path -Path $SearchPath -Parent
-            $candidate = Join-Path -Path $dir -ChildPath $FileName
-            if (Test-Path -Path $candidate) { return $candidate }
         }
 
         return $null

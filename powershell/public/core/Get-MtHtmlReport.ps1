@@ -56,15 +56,15 @@
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
     # Find the LAST end marker (multi-tenant templates have one per tenant in the sample data)
-    # Support both double-quote (older Vite) and backtick (newer Vite/Rolldown) formats
-    $endMarkerDoubleQuote = 'EndOfJson:"EndOfJson"}'
+    # Support both backtick (newer Vite/Rolldown) and double-quote (older Vite) formats
     $endMarkerBacktick = 'EndOfJson:`EndOfJson`}'
-    $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerDoubleQuote)
-    $endMarkerLength = $endMarkerDoubleQuote.Length
+    $endMarkerDoubleQuote = 'EndOfJson:"EndOfJson"}'
+    $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerBacktick)
+    $endMarkerLength = $endMarkerBacktick.Length
 
     if ($insertLocationEnd -lt 0) {
-        $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerBacktick)
-        $endMarkerLength = $endMarkerBacktick.Length
+        $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerDoubleQuote)
+        $endMarkerLength = $endMarkerDoubleQuote.Length
     }
 
     if ($insertLocationEnd -lt 0) {
