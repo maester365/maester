@@ -23,7 +23,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
         $result = Test-AzdoThirdPartyAccessViaOauth
-        $result | Should -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $result | Should -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     }
 
     It "AZDO.1001: Identities can connect to your organization's Git repos through SSH. See https://aka.ms/vstspolicyssh" -Tag "AZDO.1001" {
@@ -211,7 +211,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $true -Because "Personal Access Token creation should be restricted at the organization level."
     }
 
-    It "AZDO.1038: (Organization) Allow extensions to access resources on the local network. See https://learn.microsoft.com/en-us/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops" -Tag "AZDO.1038" {
+    It "AZDO.1038: (Organization) Disallow extensions from accessing resources on the local network. See https://learn.microsoft.com/en-us/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops" -Tag "AZDO.1038" {
         $result = Test-AzdoAllowExtensionsLocalNetworkAccess
         $result | Should -Be $false -Because "Extensions should not be allowed to access resources on the local network to prevent SSRF attacks."
     }

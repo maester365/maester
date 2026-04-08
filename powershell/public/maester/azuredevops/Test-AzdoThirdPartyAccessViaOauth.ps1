@@ -34,9 +34,9 @@ function Test-AzdoThirdPartyAccessViaOauth {
     $Policy = $ApplicationPolicies.policy | where-object -property name -eq 'Policy.DisallowOAuthAuthentication'
     $result = $Policy.value
     if ($result) {
-        $resultMarkdown = "Your tenant has restricted Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $resultMarkdown = "Your tenant has restricted Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     } else {
-        $resultMarkdown = "Your tenant has not restricted Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $resultMarkdown = "Your tenant has not restricted Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
