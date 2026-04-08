@@ -13,6 +13,12 @@ description: >-
 
 Create, edit, validate, and document Maester security checks -- the unit of work that assesses a Microsoft 365 tenant's security posture.
 
+## Agent Selection
+
+Use **maester-test-expert** as the primary agent for all normal workflows.
+
+Specialized planner and issue-manager agents are optional workflow components and should generally stay in the background to avoid user confusion.
+
 ## When to Use This Skill
 
 Activate this skill when the task involves any of the following:
