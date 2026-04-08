@@ -559,7 +559,7 @@ Identifies which Microsoft 365 products or services are tested. These tags also 
 |------------------------|
 | `Azure` |
 | `Defender XDR` |
-| `Entra ID` (or shorthand `Entra` in Describe titles like `"Maester/Entra"`) |
+| `Entra` |
 | `Exchange` |
 | `Microsoft 365` |
 | `SharePoint` |
