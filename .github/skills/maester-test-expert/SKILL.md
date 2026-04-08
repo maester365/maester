@@ -43,7 +43,7 @@ Activate this skill when the task involves any of the following:
 - The [Maester PowerShell module](https://www.powershellgallery.com/packages/Maester) installed.
 - Familiarity with [Pester v5](https://pester.dev/) test structure (`Describe`, `Context`, `It`, `BeforeAll`, `BeforeDiscovery`).
 - A working `Connect-Maester` session for local testing.
-- Review the Maester [contribution guidelines](/.github/CONTRIBUTING.md) before submitting changes.
+- Review the Maester [contribution guidelines](../../../.github/CONTRIBUTING.md) before submitting changes.
 
 ## Anatomy of a Maester Check
 
@@ -732,7 +732,7 @@ Before submitting a new or updated check, verify every item:
 - [ ] Practice/capability tags are used sparingly (0-1 per test in most cases).
 - [ ] `LongRunning` tag is applied if the test may be slow in large tenants.
 - [ ] `Preview` tag is applied if the test depends on preview/beta APIs.
-- [ ] Tags are consistent with the [tag taxonomy](website/docs/tests/tags/readme.md).
+- [ ] Tags are consistent with the [tag taxonomy](../../../website/docs/tests/tags/readme.md).
 
 ### Documentation
 - [ ] Companion `.md` file exists alongside the helper function.
