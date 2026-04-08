@@ -37,7 +37,7 @@ Activate this skill when the task involves any of the following:
 - The [Maester PowerShell module](https://www.powershellgallery.com/packages/Maester) installed.
 - Familiarity with [Pester v5](https://pester.dev/) test structure (`Describe`, `Context`, `It`, `BeforeAll`, `BeforeDiscovery`).
 - A working `Connect-Maester` session for local testing.
-- Review the Maester [contribution guidelines](.github/CONTRIBUTING.md) before submitting changes.
+- Review the Maester [contribution guidelines](/.github/CONTRIBUTING.md) before submitting changes.
 
 ## Anatomy of a Maester Check
 
@@ -669,8 +669,8 @@ Run the validation checklist below.
 For checks that live in `tests/Custom/` and do not need a separate helper function:
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Entra", "Contoso" {
-    It "CT.0001: {Description}" -Tag "Severity:Medium" {
+Describe "ContosoEntraConfig" -Tag "Entra" {
+    It "CT.0001: {Description}" -Tag "CT.0001", "Severity:Medium" {
 
         try {
             # Retrieve data

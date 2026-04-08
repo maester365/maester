@@ -9,8 +9,6 @@ description: >-
   Defender, Conditional Access, and the validation checklist for new checks.
 ---
 
-<!-- Source: /ai/skills/maester-test-expert/skill.md -->
-
 # Maester Test Expert
 
 Create, edit, validate, and document Maester security checks -- the unit of work that assesses a Microsoft 365 tenant's security posture.
@@ -39,7 +37,7 @@ Activate this skill when the task involves any of the following:
 - The [Maester PowerShell module](https://www.powershellgallery.com/packages/Maester) installed.
 - Familiarity with [Pester v5](https://pester.dev/) test structure (`Describe`, `Context`, `It`, `BeforeAll`, `BeforeDiscovery`).
 - A working `Connect-Maester` session for local testing.
-- Review the Maester [contribution guidelines](.github/CONTRIBUTING.md) before submitting changes.
+- Review the Maester [contribution guidelines](/.github/CONTRIBUTING.md) before submitting changes.
 
 ## Anatomy of a Maester Check
 
@@ -80,7 +78,7 @@ For quick custom checks (in the `tests/Custom/` directory), all logic and format
 ### Naming Convention
 
 | Suite | Pattern | Example |
-| ------- | --------- | --------- |
+|-------|---------|---------|
 | Maester | `Test-{Feature}.Tests.ps1` or `Test-Mt{Feature}.Tests.ps1` | `Test-AppManagementPolicies.Tests.ps1` |
 | CISA | `Test-MtCisa{Control}.Tests.ps1` | `Test-MtCisaWeakFactor.Tests.ps1` |
 | CIS | `Test-MtCis{Control}.Tests.ps1` | `Test-MtCisGlobalAdminCount.Tests.ps1` |
@@ -203,7 +201,7 @@ Describe "Maester/Entra" -Tag "Maester", "Entra" {
 ### Directory Placement
 
 | Suite | Directory |
-| ------- | ----------- |
+|-------|-----------|
 | Maester | `powershell/public/maester/{area}/` (e.g., `entra/`, `exchange/`, `teams/`, `azure/`) |
 | CISA | `powershell/public/cisa/{area}/` (e.g., `entra/`, `exchange/`, `spo/`) |
 | CIS | `powershell/public/cis/` |
@@ -671,8 +669,8 @@ Run the validation checklist below.
 For checks that live in `tests/Custom/` and do not need a separate helper function:
 
 ```powershell
-Describe "ContosoEntraConfig" -Tag "Entra", "Contoso" {
-    It "CT.0001: {Description}" -Tag "Severity:Medium" {
+Describe "ContosoEntraConfig" -Tag "Entra" {
+    It "CT.0001: {Description}" -Tag "CT.0001", "Severity:Medium" {
 
         try {
             # Retrieve data
@@ -763,7 +761,7 @@ Before submitting a new or updated check, verify every item:
 ## Common Mistakes
 
 | Mistake | Why It Matters | Fix |
-| --------- | --------------- | ----- |
+|---------|---------------|-----|
 | Using `Invoke-MgGraphRequest` or `Get-Mg*` cmdlets instead of `Invoke-MtGraphRequest` | Bypasses caching -- tests become slow and make redundant API calls | Replace with `Invoke-MtGraphRequest` |
 | Missing the null check pattern around `Should` | A skipped test (`$null`) is reported as a failure instead | Wrap assertion in `if ($null -ne $result) { ... }` |
 | Calling `Add-MtTestResultDetail -SkippedBecause` inside a `try` block | Test is reported as errored instead of skipped | Move the call outside the `try` block |
@@ -817,7 +815,7 @@ These existing files demonstrate the patterns described in this skill. Read them
 ## Troubleshooting
 
 | Symptom | Likely Cause | Resolution |
-| --------- | ------------- | ------------ |
+|---------|-------------|------------|
 | Test shows as "Error" instead of "Skipped" | `Add-MtTestResultDetail -SkippedBecause` was called inside a `try` block | Move the call outside the `try` block |
 | Test always fails with `$null` assertion error | Missing null check pattern around `Should` | Wrap assertion: `if ($null -ne $result) { $result \| Should ... }` |
 | Test runs but report shows no description | Companion `.md` file is missing or `-Description` was not provided | Create the companion `.md` or pass `-Description` to `Add-MtTestResultDetail` |
