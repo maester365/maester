@@ -579,7 +579,7 @@ Denotes a specific security practice. Only add when it provides significant cate
 |-----|---------|
 | `LongRunning` | Marks tests that may take significant time in large tenants. Excluded by default; included via `Invoke-Maester -IncludeLongRunning`. |
 | `Preview` | Marks tests that depend on preview APIs or are still being validated. Excluded by default; included via `Invoke-Maester -IncludePreview`. |
-| `Severity:{Level}` | Optionally set on `It` blocks. Valid levels: `Critical`, `High`, `Medium`, `Low`, `Info`. Can also be set in `maester-config.json`. |
+| `Severity:{Level}` | Optionally set on `It` blocks. Valid levels: `Critical`, `High`, `Medium`, `Low`, `Info`, and `Investigate`. The preferred location to set these is in `maester-config.json`. |
 | `License` | Used to tag license-related tests. |
 
 ### Deprecated Tags -- Do NOT Use
