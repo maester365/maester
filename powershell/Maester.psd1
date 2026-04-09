@@ -145,7 +145,7 @@
     'Test-MtExoAdditionalStorageProvider',
     'Test-MtExoOutlookAddin',
     'Test-MtEidscaControl', 'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions',
-    'Test-MtManagedDeviceCleanupSettings', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
+    'Test-MtManagedDeviceCleanupSettings', 'Test-MtPerUserMfaMigration', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
     'Test-MtTeamsRestrictParticipantGiveRequestControl', 'Test-MtUserAccessAdmin',
     'Test-ORCA100', 'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103', 'Test-ORCA104', 'Test-ORCA105',
     'Test-ORCA106', 'Test-ORCA107', 'Test-ORCA108', 'Test-ORCA108_1', 'Test-ORCA109', 'Test-ORCA110',
