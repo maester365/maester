@@ -44,9 +44,9 @@ function Test-MtBitLockerFullDiskEncryption {
 
     try {
         # Query only Endpoint Security Disk Encryption BitLocker policies (server-side filter)
-        $bitLockerPolicies = Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta
+        $bitLockerPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
-        if (-not $bitLockerPolicies -or $bitLockerPolicies.Count -eq 0) {
+        if ($bitLockerPolicies.Count -eq 0) {
             $testResultMarkdown = "No Endpoint Security Disk Encryption (BitLocker) policies found in Intune.`n`n"
             $testResultMarkdown += "Create a BitLocker policy under **Endpoint Security > Disk Encryption** with "
             $testResultMarkdown += "**Enforce drive encryption type** set to **Full encryption** for OS and fixed data drives."
@@ -183,8 +183,8 @@ function Test-MtBitLockerFullDiskEncryption {
             $testResultMarkdown += "`n**Result:** At least one BitLocker policy enforces **Full encryption** for OS drives."
 
             # Warn if any policy uses Used Space Only
-            $usedSpaceOnly = $policyResults | Where-Object { $_.OsEncryptionType -eq 'Used Space Only' }
-            if ($usedSpaceOnly) {
+            $usedSpaceOnly = @($policyResults | Where-Object { $_.OsEncryptionType -eq 'Used Space Only' })
+            if ($usedSpaceOnly.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Warning:** $($usedSpaceOnly.Count) policy/policies use **Used Space Only** encryption. "
                 $testResultMarkdown += "Previously deleted data remains recoverable from unencrypted free space on those devices."
             }
@@ -200,7 +200,11 @@ function Test-MtBitLockerFullDiskEncryption {
             return $false
         }
     } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
         return $null
     }
 }

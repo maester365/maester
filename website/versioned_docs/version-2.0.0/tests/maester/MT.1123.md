@@ -1,6 +1,6 @@
 ---
 title: MT.1123 - Ensure BitLocker full disk encryption is configured via Intune
-description: Checks if at least one Intune Endpoint Security Disk encryption policy enforces BitLocker full disk encryption for OS and fixed data drives.
+description: Checks if at least one Intune Endpoint Security Disk encryption policy enforces BitLocker full disk encryption for OS drives.
 slug: /tests/MT.1123
 sidebar_class_name: hidden
 ---
