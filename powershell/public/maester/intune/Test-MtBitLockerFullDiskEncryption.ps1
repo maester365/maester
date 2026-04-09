@@ -134,6 +134,7 @@ function Test-MtBitLockerFullDiskEncryption {
 
                 # Check Fixed drive encryption type (FixedDrivesEncryptionType)
                 if ($defId -eq $fixedEncryptionTypeId) {
+                    $policyDetail.IsBitLockerPolicy = $true
                     $parentVal = $setting.settingInstance.choiceSettingValue.value
                     if ($parentVal -like '*_1') {
                         $children = $setting.settingInstance.choiceSettingValue.children
@@ -152,6 +153,7 @@ function Test-MtBitLockerFullDiskEncryption {
 
                 # Check encryption method (cipher strength)
                 if ($defId -eq $encryptionMethodId) {
+                    $policyDetail.IsBitLockerPolicy = $true
                     $parentVal = $setting.settingInstance.choiceSettingValue.value
                     if ($parentVal -like '*_1') {
                         $children = $setting.settingInstance.choiceSettingValue.children
