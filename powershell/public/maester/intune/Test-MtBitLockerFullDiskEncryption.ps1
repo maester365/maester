@@ -43,12 +43,14 @@ function Test-MtBitLockerFullDiskEncryption {
     }
 
     try {
-        # Query only Endpoint Security Disk Encryption BitLocker policies (server-side filter)
-        $bitLockerPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta)
+        # Query Endpoint Security Disk Encryption policies (server-side filter).
+        # This template family can include non-BitLocker templates (e.g., Personal Data Encryption);
+        # BitLocker-specific settings are evaluated per-policy below.
+        $diskEncryptionPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
-        if ($bitLockerPolicies.Count -eq 0) {
-            $testResultMarkdown = "No Endpoint Security Disk Encryption (BitLocker) policies found in Intune.`n`n"
-            $testResultMarkdown += "Create a BitLocker policy under **Endpoint Security > Disk Encryption** with "
+        if ($diskEncryptionPolicies.Count -eq 0) {
+            $testResultMarkdown = "No Endpoint Security Disk Encryption policies found in Intune.`n`n"
+            $testResultMarkdown += "Create a Disk Encryption policy under **Endpoint Security > Disk Encryption** with "
             $testResultMarkdown += "**Enforce drive encryption type** set to **Full encryption** for OS and fixed data drives."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
@@ -78,13 +80,13 @@ function Test-MtBitLockerFullDiskEncryption {
             '_7' = 'XTS-AES 256-bit'
         }
 
-        $policyResults = @()
+        $policyResults = [System.Collections.Generic.List[hashtable]]::new()
         $hasFullEncryption = $false
 
-        foreach ($policy in $bitLockerPolicies) {
+        foreach ($policy in $diskEncryptionPolicies) {
             # Fetch settings for this policy with definitions expanded
             $settingsUri = "deviceManagement/configurationPolicies('$($policy.id)')/settings?`$expand=settingDefinitions&`$top=1000"
-            $settingsResponse = Invoke-MtGraphRequest -RelativeUri $settingsUri -ApiVersion beta
+            $settingsResponse = @(Invoke-MtGraphRequest -RelativeUri $settingsUri -ApiVersion beta)
 
             $policyDetail = @{
                 Name               = $policy.name
@@ -92,6 +94,7 @@ function Test-MtBitLockerFullDiskEncryption {
                 OsEncryptionType   = 'Not configured'
                 FixedEncryptionType = 'Not configured'
                 OsEncryptionMethod = 'Not configured'
+                IsBitLockerPolicy  = $false
             }
 
             foreach ($setting in $settingsResponse) {
@@ -99,6 +102,7 @@ function Test-MtBitLockerFullDiskEncryption {
 
                 # Check RequireDeviceEncryption
                 if ($defId -eq $requireEncryptionId) {
+                    $policyDetail.IsBitLockerPolicy = $true
                     $val = $setting.settingInstance.choiceSettingValue.value
                     if ($val -like '*_1') {
                         $policyDetail.RequireEncryption = 'Enabled'
@@ -109,6 +113,7 @@ function Test-MtBitLockerFullDiskEncryption {
 
                 # Check OS drive encryption type (SystemDrivesEncryptionType)
                 if ($defId -eq $osEncryptionTypeId) {
+                    $policyDetail.IsBitLockerPolicy = $true
                     $parentVal = $setting.settingInstance.choiceSettingValue.value
                     if ($parentVal -like '*_1') {
                         # Enabled — check the child dropdown for the actual encryption type
@@ -117,15 +122,13 @@ function Test-MtBitLockerFullDiskEncryption {
                             if ($child.settingDefinitionId -eq $osEncryptionTypeDropdownId) {
                                 $dropdownVal = $child.choiceSettingValue.value
                                 foreach ($suffix in $encryptionTypeLabels.Keys) {
-                                    if ($dropdownVal -like "*$suffix") {
+                                    if ($dropdownVal.EndsWith($suffix)) {
                                         $policyDetail.OsEncryptionType = $encryptionTypeLabels[$suffix]
                                         if ($suffix -eq '_1') { $hasFullEncryption = $true }
                                     }
                                 }
                             }
                         }
-                    } else {
-                        $policyDetail.OsEncryptionType = 'Disabled'
                     }
                 }
 
@@ -138,14 +141,12 @@ function Test-MtBitLockerFullDiskEncryption {
                             if ($child.settingDefinitionId -eq $fixedEncryptionTypeDropdownId) {
                                 $dropdownVal = $child.choiceSettingValue.value
                                 foreach ($suffix in $encryptionTypeLabels.Keys) {
-                                    if ($dropdownVal -like "*$suffix") {
+                                    if ($dropdownVal.EndsWith($suffix)) {
                                         $policyDetail.FixedEncryptionType = $encryptionTypeLabels[$suffix]
                                     }
                                 }
                             }
                         }
-                    } else {
-                        $policyDetail.FixedEncryptionType = 'Disabled'
                     }
                 }
 
@@ -158,7 +159,7 @@ function Test-MtBitLockerFullDiskEncryption {
                             if ($child.settingDefinitionId -eq $osEncryptionMethodDropdownId) {
                                 $methodVal = $child.choiceSettingValue.value
                                 foreach ($suffix in $encryptionMethodLabels.Keys) {
-                                    if ($methodVal -like "*$suffix") {
+                                    if ($methodVal.EndsWith($suffix)) {
                                         $policyDetail.OsEncryptionMethod = $encryptionMethodLabels[$suffix]
                                     }
                                 }
@@ -168,14 +169,25 @@ function Test-MtBitLockerFullDiskEncryption {
                 }
             }
 
-            $policyResults += $policyDetail
+            $policyResults.Add($policyDetail)
         }
 
-        # Build result markdown
+        # Filter to only BitLocker policies (those with BitLocker CSP settings)
+        $bitLockerPolicies = @($policyResults | Where-Object { $_.IsBitLockerPolicy })
+
+        if ($bitLockerPolicies.Count -eq 0) {
+            $testResultMarkdown = "Found $($diskEncryptionPolicies.Count) Disk Encryption policy/policies in Intune, but none are BitLocker policies.`n`n"
+            $testResultMarkdown += "Create a BitLocker policy under **Endpoint Security > Disk Encryption** with "
+            $testResultMarkdown += "**Enforce drive encryption type** set to **Full encryption** for OS and fixed data drives."
+            Add-MtTestResultDetail -Result $testResultMarkdown
+            return $false
+        }
+
+        # Build result markdown (only BitLocker policies)
         $testResultMarkdown = "Found $($bitLockerPolicies.Count) BitLocker Disk Encryption policy/policies in Intune.`n`n"
         $testResultMarkdown += "| Policy | Require Encryption | OS Encryption Type | Fixed Encryption Type | OS Cipher |`n"
         $testResultMarkdown += "| --- | --- | --- | --- | --- |`n"
-        foreach ($p in $policyResults) {
+        foreach ($p in $bitLockerPolicies) {
             $testResultMarkdown += "| $($p.Name) | $($p.RequireEncryption) | $($p.OsEncryptionType) | $($p.FixedEncryptionType) | $($p.OsEncryptionMethod) |`n"
         }
 
@@ -183,7 +195,7 @@ function Test-MtBitLockerFullDiskEncryption {
             $testResultMarkdown += "`n**Result:** At least one BitLocker policy enforces **Full encryption** for OS drives."
 
             # Warn if any policy uses Used Space Only
-            $usedSpaceOnly = @($policyResults | Where-Object { $_.OsEncryptionType -eq 'Used Space Only' })
+            $usedSpaceOnly = @($bitLockerPolicies | Where-Object { $_.OsEncryptionType -eq 'Used Space Only' })
             if ($usedSpaceOnly.Count -gt 0) {
                 $testResultMarkdown += "`n`n> **Warning:** $($usedSpaceOnly.Count) policy/policies use **Used Space Only** encryption. "
                 $testResultMarkdown += "Previously deleted data remains recoverable from unencrypted free space on those devices."
