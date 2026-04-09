@@ -1,4 +1,4 @@
-function Test-MtBitLockerFullDiskEncryption {
+﻿function Test-MtBitLockerFullDiskEncryption {
     <#
     .SYNOPSIS
     Ensure at least one Intune Disk Encryption policy enforces BitLocker with full disk encryption type.
@@ -8,11 +8,11 @@ function Test-MtBitLockerFullDiskEncryption {
     profiles that enforce full disk encryption rather than "Used space only" encryption.
 
     BitLocker supports two encryption types with very different security implications:
-    - "Full disk encryption" — encrypts the entire drive including free space. This is the secure option.
-    - "Used space only encryption" — only encrypts sectors currently holding data. Previously deleted
+    - "Full disk encryption" -- encrypts the entire drive including free space. This is the secure option.
+    - "Used space only encryption" -- only encrypts sectors currently holding data. Previously deleted
       files that were written before encryption was enabled remain in unencrypted free space and can be
       recovered using data recovery software (e.g., Recuva, PhotoRec, or forensic tools). This is because
-      NTFS marks sectors as free but does not zero them out — the raw data stays on disk until overwritten.
+      NTFS marks sectors as free but does not zero them out -- the raw data stays on disk until overwritten.
 
     This test queries the configurationPolicies Graph API (used by Endpoint Security > Disk Encryption)
     which exposes the actual BitLocker CSP settings including:
@@ -116,7 +116,7 @@ function Test-MtBitLockerFullDiskEncryption {
                     $policyDetail.IsBitLockerPolicy = $true
                     $parentVal = $setting.settingInstance.choiceSettingValue.value
                     if ($parentVal -like '*_1') {
-                        # Enabled — check the child dropdown for the actual encryption type
+                        # Enabled -- check the child dropdown for the actual encryption type
                         $children = $setting.settingInstance.choiceSettingValue.children
                         foreach ($child in $children) {
                             if ($child.settingDefinitionId -eq $osEncryptionTypeDropdownId) {
