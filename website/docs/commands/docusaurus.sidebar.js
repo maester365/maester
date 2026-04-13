@@ -119,6 +119,7 @@ module.exports = [
     'commands/Test-MtAppRegistrationOwnersWithoutMFA',
     'commands/Test-MtAppRegistrationsWithSecrets',
     'commands/Test-MtAuthenticationPolicyReferencedObjectsExist',
+    'commands/Test-MtBitLockerFullDiskEncryption',
     'commands/Test-MtCaAllAppsExists',
     'commands/Test-MtCaApplicationEnforcedRestriction',
     'commands/Test-MtCaApprovedClientApp',
