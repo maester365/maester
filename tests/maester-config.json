@@ -3,13 +3,6 @@
     "EmergencyAccessAccounts": [],
     "DataverseEnvironmentUrl": ""
   },
-  "MdeConfig": {
-    "ComplianceLogic": "Any",
-    "PolicyFiltering": {
-      "RequireAssignment": true,
-      "MinimumDeviceCount": 1
-    }
-  },
   "TestSettings": [
     {
       "Id": "CIS.M365.1.1.1",

@@ -23,15 +23,14 @@ The automated antivirus tests require the following Microsoft Graph permissions:
 
 ## MDE Configuration
 
-The MDE tests use configuration from `maester-config.json` to control compliance evaluation behavior. You can customize this in your `./Custom/maester-config.json` file.
+The MDE tests use configuration from the `GlobalSettings` section of `maester-config.json` to control compliance evaluation behavior. You can customize this in your `./Custom/maester-config.json` file.
 
 ```json
 {
-  "MdeConfig": {
-    "ComplianceLogic": "Any",
-    "PolicyFiltering": {
-      "RequireAssignment": true,
-      "MinimumDeviceCount": 1
+  "GlobalSettings": {
+    "MdeConfig": {
+      "ComplianceLogic": "AllPolicies",
+      "PolicyFiltering": "OnlyAssigned"
     }
   }
 }
@@ -41,9 +40,8 @@ The MDE tests use configuration from `maester-config.json` to control compliance
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ComplianceLogic` | `"Any"` | How to evaluate compliance across multiple policies. `"Any"` means at least one policy must be compliant. `"All"` means every matching policy must be compliant. |
-| `PolicyFiltering.RequireAssignment` | `true` | When `true`, only policies that have group assignments are evaluated. Unassigned policies are ignored. |
-| `PolicyFiltering.MinimumDeviceCount` | `1` | Minimum number of devices that must be targeted by a policy for it to be evaluated. Set to `0` to include all assigned policies regardless of device count. |
+| `ComplianceLogic` | `"AllPolicies"` | How to evaluate compliance across multiple policies. `"AllPolicies"` means every matching policy must be compliant. `"AnyPolicy"` means at least one policy must be compliant. |
+| `PolicyFiltering` | `"OnlyAssigned"` | Which policies to evaluate. `"OnlyAssigned"` evaluates only policies that have group assignments. `"All"` evaluates all matching policies regardless of assignment. |
 
 ### Manual Review Tests
 

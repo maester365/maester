@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-    Gets MDE configuration settings from the Maester config
+    Gets MDE configuration settings from the Maester global settings
 
 .DESCRIPTION
-    Reads MDE-specific settings (ComplianceLogic, PolicyFiltering) from the
-    MdeConfig section of maester-config.json. Falls back to sensible defaults
-    if the config is not loaded or the MdeConfig section is not present.
+    Reads MDE-specific settings (ComplianceLogic, PolicyFiltering) from
+    GlobalSettings.MdeConfig in maester-config.json. Falls back to sensible
+    code-based defaults if the settings are not present.
 
-    Users can customize these settings by adding an MdeConfig section to their
-    ./Custom/maester-config.json file.
+    Users can customize these settings by adding an MdeConfig object under
+    GlobalSettings in their ./Custom/maester-config.json file.
 
 .EXAMPLE
     $config = Get-MtMdeConfig
@@ -16,7 +16,7 @@
     Returns a hashtable with ComplianceLogic and PolicyFiltering settings.
 
 .LINK
-    https://maester.dev/docs/tests/mde
+    https://maester.dev/docs/tests/defender
 #>
 
 function Get-MtMdeConfig {
@@ -29,14 +29,15 @@ function Get-MtMdeConfig {
         PolicyFiltering = "OnlyAssigned"
     }
 
-    if ($__MtSession -and $__MtSession.MaesterConfig -and $__MtSession.MaesterConfig.MdeConfig) {
-        $mdeConfig = $__MtSession.MaesterConfig.MdeConfig
+    $mdeConfig = Get-MtMaesterConfigGlobalSetting -SettingName 'MdeConfig'
+
+    if ($mdeConfig) {
         return @{
             ComplianceLogic = if ($mdeConfig.ComplianceLogic) { $mdeConfig.ComplianceLogic } else { $defaults.ComplianceLogic }
             PolicyFiltering = if ($mdeConfig.PolicyFiltering) { $mdeConfig.PolicyFiltering } else { $defaults.PolicyFiltering }
         }
     }
 
-    Write-Verbose "MdeConfig not found in Maester config. Using defaults: ComplianceLogic=$($defaults.ComplianceLogic), PolicyFiltering=$($defaults.PolicyFiltering)"
+    Write-Verbose "MdeConfig not found in GlobalSettings. Using defaults: ComplianceLogic=$($defaults.ComplianceLogic), PolicyFiltering=$($defaults.PolicyFiltering)"
     return $defaults
 }

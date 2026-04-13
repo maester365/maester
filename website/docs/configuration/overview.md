@@ -89,6 +89,27 @@ The following global settings are available for customization:
 | Setting | Description | Documentation |
 |---------|-------------|---------------|
 | `EmergencyAccessAccounts` | Define your break glass accounts and groups | [Emergency Access Accounts](./emergency-access-accounts.md) |
+| `MdeConfig` | Configure Microsoft Defender for Endpoint test behavior | See below |
+
+### MdeConfig
+
+The `MdeConfig` setting controls how the Microsoft Defender for Endpoint (MDE) antivirus policy tests evaluate compliance across Intune configuration policies.
+
+```json
+{
+  "GlobalSettings": {
+    "MdeConfig": {
+      "ComplianceLogic": "AllPolicies",
+      "PolicyFiltering": "OnlyAssigned"
+    }
+  }
+}
+```
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ComplianceLogic` | `"AllPolicies"` | How to evaluate compliance across multiple Intune policies. `"AllPolicies"` means every matching policy must be compliant. `"AnyPolicy"` means at least one policy must be compliant. |
+| `PolicyFiltering` | `"OnlyAssigned"` | Which policies to evaluate. `"OnlyAssigned"` evaluates only policies with group assignments. `"All"` evaluates all matching policies regardless of assignment. |
 
 ## How Settings Are Merged
 

@@ -107,11 +107,6 @@
             }
         }
 
-        # Merge product-specific config sections (e.g., MdeConfig) from custom config
-        if ($customConfig.MdeConfig) {
-            Write-Verbose "Merging MdeConfig from custom config."
-            $maesterConfig | Add-Member -MemberType NoteProperty -Name 'MdeConfig' -Value $customConfig.MdeConfig -Force
-        }
     } else {
         Write-Verbose "No custom config file found. Using main config only."
     }
