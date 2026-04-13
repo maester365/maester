@@ -23,7 +23,7 @@ function Get-MtMdeDeviceCount {
     .LINK
         https://maester.dev/docs/commands/Get-MtMdeDeviceCount
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Count')]
     [OutputType([int], ParameterSetName = 'Count')]
     [OutputType([hashtable], ParameterSetName = 'Details')]
     param(

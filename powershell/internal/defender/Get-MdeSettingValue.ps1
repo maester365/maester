@@ -32,7 +32,7 @@ function Get-MdeSettingValue {
     switch ($ComplianceCheck) {
         "Boolean" {
             $choiceValue = $Setting.settingInstance.choiceSettingValue.value
-            if ($choiceValue -match "_(\d)$") {
+            if ($choiceValue -match "_(\d+)$") {
                 return "_$($matches[1])"
             }
             return $null
@@ -42,7 +42,7 @@ function Get-MdeSettingValue {
         }
         "Enum" {
             $choiceValue = $Setting.settingInstance.choiceSettingValue.value
-            if ($choiceValue -match "_(\d)$") {
+            if ($choiceValue -match "_(\d+)$") {
                 return "_$($matches[1])"
             }
             return $choiceValue
@@ -62,13 +62,6 @@ function Get-MdeSettingValue {
         }
         "Manual" {
             return "ManualVerificationRequired"
-        }
-        default {
-            $choiceValue = $Setting.settingInstance.choiceSettingValue.value
-            if ($choiceValue -match "_(\d)$") {
-                return "_$($matches[1])"
-            }
-            return $choiceValue
         }
     }
 }

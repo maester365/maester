@@ -43,15 +43,16 @@ function Get-MdePolicyConfiguration {
         $finalConfigPolicies = @()
 
         switch ($mdeGlobalConfig.PolicyFiltering) {
-            "All" {
+            { $_ -in "All", "IncludeUnassigned" } {
+                # Include all matching policies regardless of assignment status
                 $finalConfigPolicies = $configPolicies
-                Write-Verbose "Policy filtering: All - Including all $($configPolicies.Count) policies"
+                Write-Verbose "Policy filtering: $_ - Including all $($configPolicies.Count) policies"
             }
-            "IncludeUnassigned" {
-                $finalConfigPolicies = $configPolicies
-                Write-Verbose "Policy filtering: IncludeUnassigned - Including all $($configPolicies.Count) policies"
-            }
-            "OnlyAssigned" {
+            default {
+                # "OnlyAssigned" (default): only include policies with active assignments
+                if ($_ -ne "OnlyAssigned") {
+                    Write-Verbose "Unknown PolicyFiltering value '$_', defaulting to OnlyAssigned"
+                }
                 if ($configPolicies.Count -gt 0) {
                     Write-Verbose "Checking assignments for $($configPolicies.Count) policies"
                     foreach ($policy in $configPolicies) {
@@ -60,16 +61,6 @@ function Get-MdePolicyConfiguration {
                         }
                     }
                     Write-Verbose "Found $($finalConfigPolicies.Count) assigned policies"
-                }
-            }
-            default {
-                Write-Verbose "Invalid PolicyFiltering value '$($mdeGlobalConfig.PolicyFiltering)', defaulting to OnlyAssigned"
-                if ($configPolicies.Count -gt 0) {
-                    foreach ($policy in $configPolicies) {
-                        if (Test-MtMdePolicyHasAssignment -PolicyId $policy.id) {
-                            $finalConfigPolicies += $policy
-                        }
-                    }
                 }
             }
         }

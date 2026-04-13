@@ -47,7 +47,7 @@ function Test-MtMdeSignatureBeforeScan {
     $testResult = $compliance.IsCompliant
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Check for signatures before running scan is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Check for signatures before running scan is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
     } else {
         $testResultMarkdown = "Check for signatures before running scan is not properly configured in all policies."
         if ($compliance.NonCompliantPolicies.Count -gt 0) {
@@ -57,7 +57,7 @@ function Test-MtMdeSignatureBeforeScan {
             $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
         }
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

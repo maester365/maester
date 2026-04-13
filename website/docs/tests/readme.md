@@ -25,7 +25,7 @@ The tests in this section verifies that a Microsoft 365 tenant's configuration c
 
 ## [🛡️ Defender for Endpoint Tests](/docs/tests/defender)
 
-The tests in this section verify that your Microsoft Defender for Endpoint (MDE) configuration follows security best practices, covering antivirus policy settings, global configuration, and policy design quality.
+The tests in this section verify that your Microsoft Defender for Endpoint (MDE) antivirus configuration follows security best practices, validating Intune Settings Catalog policies for Microsoft Defender Antivirus.
 
 ## [🌀 CIS Tests](/docs/tests/cis)
 

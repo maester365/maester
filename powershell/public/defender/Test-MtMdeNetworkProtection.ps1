@@ -47,7 +47,7 @@ function Test-MtMdeNetworkProtection {
     $testResult = $compliance.IsCompliant
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Network Protection is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Network Protection is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
     } else {
         $testResultMarkdown = "Network Protection is not properly configured in all policies."
         if ($compliance.NonCompliantPolicies.Count -gt 0) {
@@ -57,7 +57,7 @@ function Test-MtMdeNetworkProtection {
             $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
         }
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

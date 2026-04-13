@@ -47,7 +47,7 @@ function Test-MtMdePuaProtection {
     $testResult = $compliance.IsCompliant
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. PUA protection is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. PUA protection is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
     } else {
         $testResultMarkdown = "PUA protection is not properly configured in all policies."
         if ($compliance.NonCompliantPolicies.Count -gt 0) {
@@ -57,7 +57,7 @@ function Test-MtMdePuaProtection {
             $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
         }
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

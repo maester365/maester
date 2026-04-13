@@ -48,7 +48,7 @@ function Test-MtMdeCloudExtendedTimeout {
     $testResult = $compliance.IsCompliant
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Cloud extended timeout is correctly configured between 30-50 seconds in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Cloud extended timeout is correctly configured between 30-50 seconds in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
     } else {
         $testResultMarkdown = "Cloud extended timeout is not properly configured in all policies."
         if ($compliance.NonCompliantPolicies.Count -gt 0) {
@@ -58,7 +58,7 @@ function Test-MtMdeCloudExtendedTimeout {
             $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
         }
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

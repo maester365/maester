@@ -48,7 +48,7 @@ function Test-MtMdeCloudBlockLevel {
     $testResult = $compliance.IsCompliant
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Cloud block level is correctly configured to High or higher in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Cloud block level is correctly configured to High or higher in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
     } else {
         $testResultMarkdown = "Cloud block level is not properly configured in all policies."
         if ($compliance.NonCompliantPolicies.Count -gt 0) {
@@ -58,7 +58,7 @@ function Test-MtMdeCloudBlockLevel {
             $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
         }
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+    Add-MtTestResultDetail -Result $testResultMarkdown
 
     return $testResult
 }

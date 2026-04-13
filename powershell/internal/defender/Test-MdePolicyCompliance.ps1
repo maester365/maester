@@ -50,7 +50,7 @@ function Test-MdePolicyCompliance {
         [string]$SettingId,
 
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Boolean", "Range", "Enum", "MinimumLevel", "MinimumValue", "NotRequired")]
+        [ValidateSet("Boolean", "Range", "Enum", "MinimumLevel", "MinimumValue", "NotRequired", "Manual")]
         [string]$ComplianceCheck,
 
         [string]$ExpectedValue,
@@ -105,6 +105,9 @@ function Test-MdePolicyCompliance {
                         "NonCompliant" { $nonCompliantPolicies += $policy.name }
                         "NotConfigured" { $notConfiguredPolicies += $policy.name }
                     }
+                } elseif ($ComplianceCheck -in "NotRequired", "Manual") {
+                    # Setting not present in policy — treat as compliant for non-required/manual checks
+                    $compliantPolicies += $policy.name
                 } else {
                     $notConfiguredPolicies += $policy.name
                 }

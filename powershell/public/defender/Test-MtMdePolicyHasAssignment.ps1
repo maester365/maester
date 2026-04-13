@@ -31,9 +31,9 @@ function Test-MtMdePolicyHasAssignment {
             ApiVersion  = 'beta'
             ErrorAction = 'Stop'
         }
-        $assignments = Invoke-MtGraphRequest @assignmentParams
+        $assignments = @(Invoke-MtGraphRequest @assignmentParams)
 
-        if (-not $assignments -or $assignments.Count -eq 0) {
+        if ($assignments.Count -eq 0) {
             Write-Verbose "Policy $PolicyId has no assignments"
             return $false
         }
