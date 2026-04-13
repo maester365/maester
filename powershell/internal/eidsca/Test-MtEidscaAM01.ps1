@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM01 {
+function Test-MtEidscaAM01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - State is set to 'enabled'
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

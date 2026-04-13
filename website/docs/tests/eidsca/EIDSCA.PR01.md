@@ -24,7 +24,7 @@ If set to Enforce, users will be prevented from setting banned passwords and the
 |-|-|
 | **Recommendation** | [Microsoft Entra Password Protection - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/authentication/concept-password-ban-bad-on-premises) |
 | **Configuration** | settings |
-| **Setting** | `values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value` |
+| **Setting** | `values` |
 | **Recommended Value** | 'Enforce' |
 | **Default Value** | Audit |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |
