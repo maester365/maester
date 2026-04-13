@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Communication with unmanaged Teams users is disabled
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
     .EXAMPLE
     Test-MtCisCommunicateWithUnmanagedTeamsUsers
@@ -29,13 +29,18 @@
 
     try {
         $AllowTeamsConsumer = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumer
-        $AllowTeamsConsumerInbound = Get-CsTenantFederationConfiguration | Select-Object -ExpandProperty AllowTeamsConsumerInbound
-        if (($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $false) -or ($AllowTeamsConsumer -eq $false -and $AllowTeamsConsumerInbound -eq $true)) {
+        if ($AllowTeamsConsumer -eq $false) {
             Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
             return $true
         } else {
-            Add-MtTestResultDetail -Result 'Communication with unmanaged Teams users is enabled.'
-            return $false
+            $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
+            if ($ExternalAccessPolicy.EnableTeamsConsumerAccess -eq $false) {
+                Add-MtTestResultDetail -Result 'Well done. Communication with unmanaged Teams users is disabled.'
+                return $true
+            } else {
+                Add-MtTestResultDetail -Result 'Communication with unmanaged Teams users is enabled.'
+                return $false
+            }
         }
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_

@@ -1,25 +1,30 @@
 1.1.1 (L1) Ensure Administrative accounts are cloud-only
 
-Administrative accounts are special privileged accounts that could have varying levels of access to data, users, and settings. Regular user accounts should never be utilized for administrative tasks and care should be taken, in the case of a hybrid environment, to keep Administrative accounts separated from on-prem accounts. Administrative accounts should not have applications assigned so that they have no access to potentially vulnerable services (EX. email, Teams, SharePoint, etc.) and only access to perform tasks as needed for administrative purposes.
+Administrative accounts are special privileged accounts that could have varying levels of access to data, users, and settings. Regular user accounts should never be utilized for administrative tasks and care should be taken, in the case of a hybrid environment, to keep administrative accounts separate from on-prem accounts. Administrative accounts should not have applications assigned so that they have no access to potentially vulnerable services (EX. email, Teams, SharePoint, etc.) and only access to perform tasks as needed for administrative purposes. **Ensure administrative accounts are not On-premises sync enabled.**
+
+#### Rationale
+
+In a hybrid environment, having separate accounts will help ensure that in the event of a breach in the cloud, that the breach does not affect the on-prem environment and vice versa.
+
+#### Impact
+
+Administrative users will need to utilize login/logout functionality to switch accounts when performing administrative tasks, which means they will not benefit from SSO. This will require a migration process from the 'daily driver' account to a dedicated admin account. Once the new admin account is created, permission sets should be migrated from the 'daily driver' account to the new admin account. This includes both M365 and Azure RBAC roles. Failure to migrate Azure RBAC roles could prevent an admin from seeing their subscriptions/resources while using their admin account.
+
 
 #### Remediation action:
 
-To created licensed, separate Administrative accounts for Administrative users:
-1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
-2. Click to expand **Users** select **Active users**
-3. Click **Add a user**.
-4. Fill out the appropriate fields for Name, user, etc.
-5. When prompted to assign licenses select as needed **Microsoft Entra ID P1** or
-**Microsoft Entra ID P2**, then click **Next**.
-6. Under the **Option settings** screen you may choose from several types of
-Administrative access roles. Choose **Admin center access** followed by the
-appropriate role then click **Next**.
-7. Select **Finish adding**.
+Remediation will require first identifying the privileged accounts that are synced from onpremises and then creating a new cloud-only account for that user. Once a replacement account is established, the hybrid account should have its role reduced to that of a nonprivileged user or removed depending on the need.
+
 
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [CIS Microsoft 365 Foundations Benchmark v 4.0.0 - Page 20](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Add users and assign licenses in Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/admin/add-users/add-users?view=o365-worldwide)
+* [Step 2. Protect your Microsoft 365 privileged accounts](https://learn.microsoft.com/en-us/microsoft-365/enterprise/protect-your-global-administrator-accounts?view=o365-worldwide)
+* [9. Use cloud native accounts for Microsoft Entra roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices#9-use-cloud-native-accounts-for-microsoft-entra-roles)
+* [What is Microsoft Entra?](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra)
+* [Microsoft Entra built-in roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference)
+* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 20](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

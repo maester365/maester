@@ -108,7 +108,7 @@
     'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup', 'Test-MtCisAdminConsentWorkflowEnabled',
     'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
     'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin', 'Test-MtCisCreateTenantDisallowed',
-    'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox', 'Test-MtCisDevicesWithoutCompliancePolicyMarked',
+    'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisCommunicateInitiateExternalTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox', 'Test-MtCisDevicesWithoutCompliancePolicyMarked',
     'Test-MtCisDkim', 'Test-MtCisEnsureGuestAccessRestricted', 'Test-MtCisEnsureGuestUserDynamicGroup', 'Test-MtCisEnsureUserConsentToAppsDisallowed', 'Test-MtCisFormsPhishingProtectionEnabled',
     'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy', 'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
     'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
