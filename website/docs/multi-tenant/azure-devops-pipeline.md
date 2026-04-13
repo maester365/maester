@@ -265,31 +265,14 @@ jobs:
       azurePowerShellVersion: latestVersion
       Inline: |
         $resultsDir = '$(ResultsDir)'
-        $jsonFiles = Get-ChildItem -Path $resultsDir -Filter '*.json' | Sort-Object Name
 
-        if ($jsonFiles.Count -eq 0) {
-            throw "No Maester result files found in: $resultsDir"
-        }
-
-        $allResults = @()
-        foreach ($file in $jsonFiles) {
-            try {
-                $result = Get-Content -Path $file.FullName -Raw | ConvertFrom-Json
-            } catch {
-                throw "Failed to parse JSON from $($file.Name): $_"
-            }
-            if (-not ($result.PSObject.Properties.Name -contains 'Tests')) {
-                throw "Invalid Maester result (missing 'Tests'): $($file.Name)"
-            }
-            $allResults += $result
-        }
-
-        $merged = Merge-MtMaesterResult -MaesterResults $allResults
+        # Merge all tenant JSON results and generate the report
+        $merged = Merge-MtMaesterResult -Path $resultsDir
         $date = (Get-Date).ToString("yyyyMMdd-HHmm")
         $outputDir = Join-Path "$(Agent.TempDirectory)" "report-$date"
         New-Item -ItemType Directory -Force -Path $outputDir
-        $html = Get-MtHtmlReport -MaesterResults $merged
-        $html | Out-File -FilePath (Join-Path $outputDir 'index.html') -Encoding UTF8
+        Get-MtHtmlReport -MaesterResults $merged |
+            Out-File -FilePath (Join-Path $outputDir 'index.html') -Encoding UTF8
 
         $zipPath = Join-Path "$(Agent.TempDirectory)" "MaesterReport$date.zip"
         Compress-Archive -Path (Get-ChildItem -Path $outputDir).FullName -DestinationPath $zipPath

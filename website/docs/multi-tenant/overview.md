@@ -33,7 +33,6 @@ Single-tenant reports continue to work exactly as before. The tenant selector on
 
 1. Run Maester separately for each tenant using its own service connection
 2. Save the JSON results from each run
-3. Merge them using `Merge-MtMaesterResult`
-4. Generate a single HTML report from the merged results
+3. Merge and generate the report: `Merge-MtMaesterResult -Path *.json | Get-MtHtmlReport | Out-File report.html`
 
 See [Merging Results](./merging-results) for the PowerShell example and [Azure DevOps Pipeline](./azure-devops-pipeline) for a complete CI/CD setup.

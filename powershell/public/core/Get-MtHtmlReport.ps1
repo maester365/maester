@@ -41,7 +41,7 @@
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
         # or from `Merge-MtMaesterResult` for multi-tenant reports.
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [psobject] $MaesterResults
     )
 

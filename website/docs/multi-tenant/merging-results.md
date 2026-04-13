@@ -6,7 +6,7 @@ sidebar_position: 2
 
 # Merging Results
 
-To create a multi-tenant report, run Maester against each tenant separately, collect the JSON output, and merge them into a single result using `Merge-MtMaesterResult`.
+To create a multi-tenant report, run Maester against each tenant separately, save the JSON output, and merge them with `Merge-MtMaesterResult`.
 
 ## PowerShell example
 
@@ -24,26 +24,40 @@ Connect-MgGraph -TenantId $tenantChina -Environment China
 Invoke-Maester -PassThru -OutputJsonFile ./china.json
 Disconnect-MgGraph
 
-# Load results and merge
-$allResults = @()
-Get-ChildItem -Path . -Filter '*.json' | ForEach-Object {
-    $allResults += Get-Content $_.FullName -Raw | ConvertFrom-Json
-}
-$merged = Merge-MtMaesterResult -MaesterResults $allResults
-
 # Generate the multi-tenant HTML report
-Get-MtHtmlReport -MaesterResults $merged | Out-File ./MultiTenantReport.html -Encoding UTF8
+Merge-MtMaesterResult -Path *.json | Get-MtHtmlReport | Out-File ./MultiTenantReport.html
 ```
+
+`Merge-MtMaesterResult -Path` loads the JSON files, validates them, and merges them into a single multi-tenant result — no manual file loading needed.
+
+:::tip Alternative: use a directory or explicit file paths
+```powershell
+# From a directory (auto-discovers TestResults-*.json, falls back to *.json)
+Merge-MtMaesterResult -Path ./results/ | Get-MtHtmlReport | Out-File ./report.html
+
+# Explicit file list
+Merge-MtMaesterResult -Path ./production.json, ./development.json, ./china.json |
+    Get-MtHtmlReport | Out-File ./report.html
+```
+:::
 
 ## Step by step
 
 1. **Connect and run** - For each tenant, connect using `Connect-MgGraph` with the tenant ID (and `-Environment` for national clouds), then run `Invoke-Maester` with `-OutputJsonFile` to save the results as JSON.
 
-2. **Load the JSON files** - Read all result files back into PowerShell objects. Each file contains the full Maester result for one tenant.
+2. **Merge and report** - Pass the file paths (or a directory/glob) to `Merge-MtMaesterResult -Path`. It loads each JSON file, validates the result structure, and creates a single object with a `Tenants` array. Pipe it into `Get-MtHtmlReport` to generate the report.
 
-3. **Merge** - Pass the array of results to `Merge-MtMaesterResult`. This creates a single object with a `Tenants` array where each entry contains the tenant's display name, ID, and test results.
+The report automatically detects the multi-tenant format and renders the tenant selector in the sidebar.
 
-4. **Generate the report** - Pass the merged object to `Get-MtHtmlReport`. The report automatically detects the multi-tenant format and renders the tenant selector in the sidebar.
+## Loading results separately with Import-MtMaesterResult
+
+If you need more control, use `Import-MtMaesterResult` to load the files first, then pipe them into `Merge-MtMaesterResult`:
+
+```powershell
+Import-MtMaesterResult -Path *.json | Merge-MtMaesterResult | Get-MtHtmlReport | Out-File ./report.html
+```
+
+`Import-MtMaesterResult` returns an array of individual result objects. It also auto-expands multi-tenant merged JSON files (files with a `Tenants` array) back into individual results, so you can re-process previously merged outputs.
 
 ## National clouds
 

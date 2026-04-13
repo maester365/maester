@@ -7,6 +7,7 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 10
             PassedCount    = 8
             FailedCount    = 2
+            ExecutedAt     = '2026-04-01T10:00:00'
             CurrentVersion = '2.0.0'
             LatestVersion  = '2.0.0'
             Tests          = @(
@@ -26,6 +27,7 @@ Describe 'Merge-MtMaesterResult' {
             TotalCount     = 5
             PassedCount    = 3
             FailedCount    = 2
+            ExecutedAt     = '2026-04-01T11:00:00'
             CurrentVersion = '2.0.0'
             LatestVersion  = '2.0.0'
             Tests          = @(
@@ -36,6 +38,22 @@ Describe 'Merge-MtMaesterResult' {
                 [PSCustomObject]@{ Name = 'Maester'; PassedCount = 3; FailedCount = 2; TotalCount = 5 }
             )
             EndOfJson      = 'EndOfJson'
+        }
+
+        # Create temp directory with JSON files for -Path tests
+        $testDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "MaesterMergeTests_$([guid]::NewGuid().ToString('N'))"
+        New-Item -Path $testDir -ItemType Directory -Force | Out-Null
+
+        $file1 = Join-Path $testDir 'TestResults-2026-04-01-100000.json'
+        $tenant1 | ConvertTo-Json -Depth 5 | Out-File -FilePath $file1 -Encoding UTF8
+
+        $file2 = Join-Path $testDir 'TestResults-2026-04-01-110000.json'
+        $tenant2 | ConvertTo-Json -Depth 5 | Out-File -FilePath $file2 -Encoding UTF8
+    }
+
+    AfterAll {
+        if (Test-Path $testDir) {
+            Remove-Item -Path $testDir -Recurse -Force
         }
     }
 
@@ -136,5 +154,75 @@ Describe 'Merge-MtMaesterResult' {
 
         $result.Tenants.Count | Should -BeExactly 1
         $result.Tenants[0].TenantName | Should -BeExactly ''
+    }
+
+    Context 'FromPath parameter set' {
+        It 'Should merge results from file paths' {
+            $result = Merge-MtMaesterResult -Path $file1, $file2
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.Tenants | Should -Not -BeNullOrEmpty
+            $result.Tenants.Count | Should -BeExactly 2
+            $result.Tenants[0].TenantId | Should -BeExactly 'tenant-1-id'
+            $result.Tenants[1].TenantId | Should -BeExactly 'tenant-2-id'
+            $result.EndOfJson | Should -BeExactly 'EndOfJson'
+        }
+
+        It 'Should merge results from a directory' {
+            $result = Merge-MtMaesterResult -Path $testDir
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.Tenants.Count | Should -BeExactly 2
+        }
+
+        It 'Should merge results from a glob pattern' {
+            $globPattern = Join-Path $testDir 'TestResults-*.json'
+            $result = Merge-MtMaesterResult -Path $globPattern
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.Tenants.Count | Should -BeExactly 2
+        }
+
+        It 'Should throw when path contains no valid results' {
+            $emptyDir = Join-Path $testDir 'empty'
+            New-Item -Path $emptyDir -ItemType Directory -Force | Out-Null
+
+            { Merge-MtMaesterResult -Path $emptyDir } | Should -Throw
+        }
+
+        It 'Should preserve test data when loading from files' {
+            $result = Merge-MtMaesterResult -Path $file1, $file2
+
+            $result.Tenants[0].Tests.Count | Should -BeExactly 2
+            $result.Tenants[0].TotalCount | Should -BeExactly 10
+            $result.Tenants[1].TotalCount | Should -BeExactly 5
+        }
+    }
+
+    Context 'Pipeline input' {
+        It 'Should accept pipeline input from Import-MtMaesterResult' {
+            $result = Import-MtMaesterResult -Path $file1, $file2 | Merge-MtMaesterResult
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.Tenants.Count | Should -BeExactly 2
+            $result.Tenants[0].TenantName | Should -BeExactly 'Tenant One'
+            $result.Tenants[1].TenantName | Should -BeExactly 'Tenant Two'
+        }
+
+        It 'Should accept pipeline input from in-memory objects' {
+            $result = @($tenant1, $tenant2) | Merge-MtMaesterResult
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.Tenants.Count | Should -BeExactly 2
+        }
+
+        It 'Should include all runs even when same TenantId appears multiple times' {
+            # Two runs from the same tenant — both should be included
+            $result = @($tenant1, $tenant1) | Merge-MtMaesterResult
+
+            $result.Tenants.Count | Should -BeExactly 2
+            $result.Tenants[0].TenantId | Should -BeExactly 'tenant-1-id'
+            $result.Tenants[1].TenantId | Should -BeExactly 'tenant-1-id'
+        }
     }
 }
