@@ -44,7 +44,7 @@ function Test-MtMdeSignatureUpdateInterval {
         -RangeMin 1 `
         -RangeMax 4
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Signature update interval is correctly configured between 1-4 hours in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

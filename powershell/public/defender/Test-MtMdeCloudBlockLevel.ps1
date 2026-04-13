@@ -44,7 +44,7 @@ function Test-MtMdeCloudBlockLevel {
         -ValidLevels @{ "_0" = 0; "_2" = 2; "_4" = 4; "_6" = 6 } `
         -MinimumValue 2
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Cloud block level is correctly configured to High or higher in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

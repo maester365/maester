@@ -42,7 +42,7 @@ function Test-MtMdeCatchupQuickScan {
         -ComplianceCheck "Boolean" `
         -ExpectedValue "_1"
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Catch-up quick scan is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

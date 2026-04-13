@@ -44,7 +44,7 @@ function Test-MtMdeCloudExtendedTimeout {
         -RangeMin 30 `
         -RangeMax 50
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Cloud extended timeout is correctly configured between 30-50 seconds in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

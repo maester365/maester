@@ -42,7 +42,7 @@ function Test-MtMdeMappedDriveScanning {
         -ComplianceCheck "Boolean" `
         -ExpectedValue "_0"
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Full scan on mapped network drives is correctly disabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

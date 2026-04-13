@@ -44,7 +44,7 @@ function Test-MtMdeCpuLoadFactor {
         -RangeMin 20 `
         -RangeMax 30
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Average CPU load factor is correctly configured between 20-30% in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

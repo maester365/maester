@@ -43,7 +43,7 @@ function Test-MtMdeScheduleScanDay {
         -ComplianceCheck "Enum" `
         -ValidValues @("_0", "_1", "_2", "_3", "_4", "_5", "_6", "_7")
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Schedule scan day is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

@@ -43,7 +43,7 @@ function Test-MtMdeSubmitSamplesConsent {
         -ComplianceCheck "Enum" `
         -ValidValues @("_1", "_2")
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Sample submission consent is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

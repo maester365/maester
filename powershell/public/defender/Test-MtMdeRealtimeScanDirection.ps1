@@ -42,7 +42,7 @@ function Test-MtMdeRealtimeScanDirection {
         -ComplianceCheck "Enum" `
         -ValidValues @("_0", "_1")
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Real-time scan direction is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

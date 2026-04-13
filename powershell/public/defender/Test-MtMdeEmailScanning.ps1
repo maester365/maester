@@ -42,7 +42,7 @@ function Test-MtMdeEmailScanning {
         -ComplianceCheck "Boolean" `
         -ExpectedValue "_1"
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Email scanning is enabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

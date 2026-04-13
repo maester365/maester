@@ -116,6 +116,21 @@ function Test-MdePolicyCompliance {
         }
     }
 
+    # Evaluate pass/fail based on ComplianceLogic from MDE config
+    $mdeConfig = Get-MtMdeConfig
+    $complianceLogic = $mdeConfig.ComplianceLogic
+
+    switch ($complianceLogic) {
+        "AnyPolicy" {
+            # At least one policy must be compliant
+            $isCompliant = $compliantPolicies.Count -gt 0
+        }
+        default {
+            # "AllPolicies" (default): every policy must be compliant
+            $isCompliant = ($compliantPolicies.Count -gt 0) -and ($compliantPolicies.Count -eq $PolicyConfiguration.TotalCount)
+        }
+    }
+
     return @{
         CompliantPolicies     = $compliantPolicies
         NonCompliantPolicies  = $nonCompliantPolicies
@@ -123,5 +138,7 @@ function Test-MdePolicyCompliance {
         HasCompliant          = $compliantPolicies.Count -gt 0
         HasNonCompliant       = $nonCompliantPolicies.Count -gt 0
         HasNotConfigured      = $notConfiguredPolicies.Count -gt 0
+        IsCompliant           = $isCompliant
+        ComplianceLogic       = $complianceLogic
     }
 }

@@ -43,7 +43,7 @@ function Test-MtMdePuaProtection {
         -ComplianceCheck "Enum" `
         -ValidValues @("_1", "_2")
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. PUA protection is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"

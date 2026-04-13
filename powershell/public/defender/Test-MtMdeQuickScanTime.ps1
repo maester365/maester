@@ -42,7 +42,7 @@ function Test-MtMdeQuickScanTime {
         -SettingId "device_vendor_msft_policy_config_defender_schedulequickscantime" `
         -ComplianceCheck "NotRequired"
 
-    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+    $testResult = $compliance.IsCompliant
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Quick scan time configuration is not required and all $($policyConfig.TotalCount) assigned Defender Antivirus policies are compliant:`n`n%TestResult%"
