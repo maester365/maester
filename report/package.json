@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
@@ -23,7 +24,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.12.0",
+    "react-router-dom": "^7.14.0",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2",
@@ -31,17 +32,18 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.27",
-    "eslint": "^10.1.0",
+    "eslint": "^10.2.0",
+    "patch-package": "^8.0.1",
     "postcss": "^8.5.8",
     "shadcn": "^4.1.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^6.0.2",
-    "vite": "^8.0.3",
+    "vite": "^8.0.6",
     "vite-plugin-singlefile": "^2.3.2"
   },
   "engines": {

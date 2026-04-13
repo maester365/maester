@@ -55,58 +55,21 @@
     $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
     $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
-    # Find the LAST end marker (multi-tenant templates have one per tenant in the sample data)
-    # Support both backtick (newer Vite/Rolldown) and double-quote (older Vite) formats
-    $endMarkerBacktick = 'EndOfJson:`EndOfJson`}'
-    $endMarkerDoubleQuote = 'EndOfJson:"EndOfJson"}'
-    $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerBacktick)
-    $endMarkerLength = $endMarkerBacktick.Length
+    # Insert the test results json into the template.
+    # Locate the EndOfJson sentinel (handles both double-quote and backtick strings
+    # produced by different Vite/Rolldown versions) then walk back to the variable
+    # assignment that owns the placeholder object so the same variable name is preserved.
+    $endPattern = 'EndOfJson:(?:"EndOfJson"|`EndOfJson`)\}'
+    $endMatch = [regex]::Match($templateHtml, $endPattern)
+    $insertLocationEnd = $endMatch.Index + $endMatch.Length
 
-    if ($insertLocationEnd -lt 0) {
-        $insertLocationEnd = $templateHtml.LastIndexOf($endMarkerDoubleQuote)
-        $endMarkerLength = $endMarkerDoubleQuote.Length
-    }
+    # Find the last variable declaration (var/const/let NAME=) before the end marker.
+    $startMatches = [regex]::Matches($templateHtml.Substring(0, $endMatch.Index), '(?:var|const|let)\s+\w+\s*=')
+    $startMatch = $startMatches[$startMatches.Count - 1]
+    $insertLocationStart = $startMatch.Index + $startMatch.Value.Length  # position just after the '='
 
-    if ($insertLocationEnd -lt 0) {
-        throw "Could not find EndOfJson marker in the report template."
-    }
-
-    $insertLocationEnd += $endMarkerLength
-
-    # Find the start marker: try classic 'testResults=' first, then scan for minified format
-    $startMarker = 'testResults='
-    $insertLocationStart = $templateHtml.IndexOf($startMarker)
-
-    if ($insertLocationStart -ge 0) {
-        # Classic format: testResults={...}
-        Write-Verbose "Found classic marker: testResults="
-    } else {
-        # Newer minified format: var xx={Tenants:... or var xx={Result:...
-        $searchRegion = $templateHtml.Substring(0, $insertLocationEnd)
-        $dataStartPatterns = @('={Tenants:[', '={Result:', '={Result:`')
-        $insertLocationStart = -1
-
-        foreach ($pattern in $dataStartPatterns) {
-            $pos = $searchRegion.LastIndexOf($pattern)
-            if ($pos -ge 0) {
-                $insertLocationStart = $pos + 1
-                Write-Verbose "Found minified data pattern '$pattern' at position $pos"
-                break
-            }
-        }
-
-        if ($insertLocationStart -lt 0) {
-            throw "Could not find test results data object in the report template."
-        }
-    }
-
-    # Build the output: everything before the data + our JSON + everything after
     $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-    if ($templateHtml[$insertLocationStart - 1] -ne '=') {
-        $outputHtml += "testResults=$json"
-    } else {
-        $outputHtml += $json
-    }
+    $outputHtml += $json
     $outputHtml += $templateHtml.Substring($insertLocationEnd)
 
     return $outputHtml
