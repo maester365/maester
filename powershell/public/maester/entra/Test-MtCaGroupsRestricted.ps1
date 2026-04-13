@@ -30,7 +30,7 @@
   }
 
   try {
-    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -in @('enabled','enabledForReportingButNotEnforced') }
 
     $Groups = $Policies.conditions.users | Where-Object {
       @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0
