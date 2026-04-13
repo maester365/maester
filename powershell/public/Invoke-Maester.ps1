@@ -441,7 +441,12 @@
     Set-MtProgressView
     Write-MtProgress -Activity 'Starting Maester' -Status 'Reading Maester config...' -Force
     Write-Verbose "Reading Maester config from: $Path"
-    $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path
+    # Resolve tenant ID for tenant-specific config lookup (maester-config.{tenantId}.json)
+    $configTenantId = $null
+    if (Test-MtConnection Graph) {
+        $configTenantId = (Get-MgContext).TenantId
+    }
+    $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path -TenantId $configTenantId
 
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
