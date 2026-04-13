@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Card } from "@tremor/react"
 import { Download, FileJson, Settings2, AlertTriangle, AlertCircle, Info, CircleAlert, ShieldAlert, ChevronDown, Check, Plus, Trash2, User, Users, Mail, Hash } from "lucide-react"
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { useSidebar } from "@/components/Sidebar"
+import { useTenant } from "@/context/TenantContext"
 
 interface EmergencyAccessAccount {
   Type: "User" | "Group"
@@ -16,21 +17,7 @@ interface TestSetting {
   Title: string
 }
 
-interface GlobalSettings {
-  EmergencyAccessAccounts?: EmergencyAccessAccount[]
-  [key: string]: unknown
-}
 
-interface MaesterConfig {
-  GlobalSettings?: GlobalSettings
-  TestSettings?: TestSetting[]
-}
-
-interface ConfigPageProps {
-  testResults?: {
-    MaesterConfig?: MaesterConfig
-  }
-}
 
 interface SeverityOption {
   value: string
@@ -108,28 +95,47 @@ const getInitialIdentifierType = (account: EmergencyAccessAccount): IdentifierTy
   return "upn"
 }
 
-export default function ConfigPage({ testResults }: ConfigPageProps) {
+export default function ConfigPage() {
   const { isCollapsed } = useSidebar()
+  const { selectedTenant: testResults, tenants } = useTenant()
+  const isMultiTenant = tenants.length > 1
   const originalConfig = testResults?.MaesterConfig
 
   // State for edited emergency access accounts
   const [editedEmergencyAccounts, setEditedEmergencyAccounts] = useState<EmergencyAccessAccount[]>(
     () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
+      ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
       : []
   )
 
   // State for tracking which identifier type is selected for each account
   const [identifierTypes, setIdentifierTypes] = useState<IdentifierType[]>(
     () => originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-      ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
+      ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
       : []
   )
 
   // State for edited test settings
   const [editedTestSettings, setEditedTestSettings] = useState<TestSetting[]>(
-    () => originalConfig?.TestSettings ? [...originalConfig.TestSettings.map(t => ({ ...t }))] : []
+    () => originalConfig?.TestSettings ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))] : []
   )
+
+  // Reset state when tenant changes to prevent data leak between tenants
+  useEffect(() => {
+    setEditedEmergencyAccounts(
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
+        : []
+    )
+    setIdentifierTypes(
+      originalConfig?.GlobalSettings?.EmergencyAccessAccounts
+        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
+        : []
+    )
+    setEditedTestSettings(
+      originalConfig?.TestSettings ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))] : []
+    )
+  }, [originalConfig])
 
   // Check if any changes have been made
   const hasChanges = useMemo(() => {
@@ -253,17 +259,17 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
   const handleReset = () => {
     setEditedEmergencyAccounts(
       originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => ({ ...a }))]
+        ? [...originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => ({ ...a }))]
         : []
     )
     setIdentifierTypes(
       originalConfig?.GlobalSettings?.EmergencyAccessAccounts
-        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map(a => getInitialIdentifierType(a))
+        ? originalConfig.GlobalSettings.EmergencyAccessAccounts.map((a: any) => getInitialIdentifierType(a))
         : []
     )
     setEditedTestSettings(
       originalConfig?.TestSettings
-        ? [...originalConfig.TestSettings.map(t => ({ ...t }))]
+        ? [...originalConfig.TestSettings.map((t: any) => ({ ...t }))]
         : []
     )
   }
@@ -282,12 +288,20 @@ export default function ConfigPage({ testResults }: ConfigPageProps) {
     )
   }
 
+  const configSource = originalConfig?.ConfigSource
+
   return (
     <div className="p-6 pb-24">
       <div className="flex items-center gap-3 mb-6">
         <FileJson className="h-8 w-8 text-orange-500" />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Maester Configuration</h1>
       </div>
+      {isMultiTenant && configSource && (
+        <div className="mb-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+          <Info className="h-4 w-4" />
+          <span>Loaded from: <code className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-mono text-xs">{configSource}</code></span>
+        </div>
+      )}
 
       {/* Emergency Access Accounts Section */}
       <section className="mb-8">

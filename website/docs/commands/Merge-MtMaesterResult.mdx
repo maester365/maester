@@ -1,0 +1,189 @@
+---
+sidebar_class_name: hidden
+description: Merges multiple MaesterResults objects into a single multi-tenant result for combined HTML reporting.
+id: Merge-MtMaesterResult
+title: Merge-MtMaesterResult
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Merge-MtMaesterResult.ps1
+---
+
+## SYNOPSIS
+
+Merges multiple MaesterResults objects into a single multi-tenant result for combined HTML reporting.
+
+## SYNTAX
+
+### FromObjects (Default)
+
+```powershell
+Merge-MtMaesterResult [-MaesterResults] <PSObject[]> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### FromPath
+
+```powershell
+Merge-MtMaesterResult [-Path] <String[]> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Takes an array of MaesterResults objects (each from a separate Invoke-Maester run against
+a different tenant) and combines them into a single object with a "Tenants" array.
+The resulting object can be passed to Get-MtHtmlReport to generate a multi-tenant report
+with a tenant selector in the sidebar.
+
+Accepts either in-memory MaesterResults objects (from Invoke-Maester -PassThru or pipeline)
+or file paths/directories that are loaded automatically via Import-MtMaesterResult.
+
+All results are included as-is - no deduplication is performed when the same TenantId
+appears multiple times.
+This is by design to support future scenarios such as historical
+trend reports where multiple runs from the same tenant are intentional.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+# Merge from file paths (one-liner)
+Merge-MtMaesterResult -Path ./production.json, ./development.json | Get-MtHtmlReport | Out-File report.html
+```
+
+### EXAMPLE 2
+
+```powershell
+# Merge from a directory of JSON files
+Merge-MtMaesterResult -Path ./results/ | Get-MtHtmlReport | Out-File report.html
+```
+
+### EXAMPLE 3
+
+```powershell
+# Merge from a glob pattern
+Merge-MtMaesterResult -Path *.json | Get-MtHtmlReport | Out-File report.html
+```
+
+### EXAMPLE 4
+
+```powershell
+# Pipeline: Import then merge
+Import-MtMaesterResult -Path *.json | Merge-MtMaesterResult | Get-MtHtmlReport | Out-File report.html
+```
+
+### EXAMPLE 5
+
+```powershell
+# In-memory: run against two tenants and merge
+$result1 = Invoke-Maester -PassThru
+# ... reconnect to second tenant ...
+$result2 = Invoke-Maester -PassThru
+```
+
+$merged = Merge-MtMaesterResult -MaesterResults @($result1, $result2)
+$html = Get-MtHtmlReport -MaesterResults $merged
+$html | Out-File -FilePath "MultiTenantReport.html" -Encoding UTF8
+
+## PARAMETERS
+
+### -MaesterResults
+
+An array of MaesterResults objects, each representing test results from a different tenant.
+Accepts pipeline input from Import-MtMaesterResult.
+
+```yaml
+Type: PSObject[]
+Parameter Sets: FromObjects
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Path
+
+One or more paths to JSON result files, glob patterns, or directories.
+Files are loaded via Import-MtMaesterResult internally.
+- File path:  ./production.json
+- Glob:       ./results/*.json
+- Directory:  ./results/  (discovers TestResults-*.json inside)
+
+```yaml
+Type: String[]
+Parameter Sets: FromPath
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## Design notes for future development
+
+### Multi-tenant reports (current)
+
+This command wraps all results into a Tenants[] array.
+The HTML report frontend
+detects the Tenants property and renders a tenant selector in the sidebar.
+No deduplication is performed - if the same TenantId appears multiple times,
+all instances are included.
+
+### Historical / trend reports (planned)
+
+A future command (e.g.
+New-MtTrendReport) can reuse Import-MtMaesterResult to
+load results, then group by TenantId and sort by ExecutedAt within each group.
+Each result already carries TenantId and ExecutedAt, so the intelligence is:
+
+  - Different TenantIds, similar dates  -&gt; multi-tenant (use Merge-MtMaesterResult)
+  - Same TenantId, different dates      -&gt; historical trend (use future trend command)
+  - Mixed                               -&gt; group by TenantId, each group has a timeline
+
+Import-MtMaesterResult is intentionally a "dumb loader" that returns everything.
+The consuming command (Merge, Compare, Trend) decides how to interpret the data.
+
+### Pipeline architecture
+
+The intended pipeline pattern is:
+
+  Import-MtMaesterResult -&gt; [Merge | Compare | Trend] -&gt; Get-MtHtmlReport -&gt; Out-File
+
+Merge-MtMaesterResult also accepts -Path directly for convenience (calls Import
+internally), so the user can skip the Import step for simple scenarios:
+
+  Merge-MtMaesterResult -Path *.json | Get-MtHtmlReport | Out-File report.html
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Merge-MtMaesterResult](https://maester.dev/docs/commands/Merge-MtMaesterResult)

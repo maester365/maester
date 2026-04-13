@@ -95,7 +95,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.CP01" {
     It "EIDSCA.CP01: Default Settings - Consent Policy Settings - Group owner consent for apps accessing data. See https://maester.dev/docs/tests/EIDSCA.CP01" -TestCases @{ SettingsApiAvailable = $SettingsApiAvailable } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+            .values -eq 'False'
         #>
         Test-MtEidscaControl -CheckId CP01 | Should -Be 'False'
     }
@@ -104,7 +104,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.CP03" {
     It "EIDSCA.CP03: Default Settings - Consent Policy Settings - Block user consent for risky apps. See https://maester.dev/docs/tests/EIDSCA.CP03" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
+            .values -eq 'true'
         #>
         Test-MtEidscaControl -CheckId CP03 | Should -Be 'true'
     }
@@ -113,7 +113,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.CP04" {
     It "EIDSCA.CP04: Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to. See https://maester.dev/docs/tests/EIDSCA.CP04" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
+            .values -eq 'true'
         #>
         Test-MtEidscaControl -CheckId CP04 | Should -Be 'true'
     }
@@ -123,7 +123,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.PR01" {
     It "EIDSCA.PR01: Default Settings - Password Rule Settings - Password Protection - Mode. See https://maester.dev/docs/tests/EIDSCA.PR01" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
+            .values -eq 'Enforce'
         #>
         Test-MtEidscaControl -CheckId PR01 | Should -Be 'Enforce'
     }
@@ -132,7 +132,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.PR02" {
     It "EIDSCA.PR02: Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory. See https://maester.dev/docs/tests/EIDSCA.PR02" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'EnableBannedPasswordCheckOnPremises' | select-object -expand value -eq 'True'
+            .values -eq 'True'
         #>
         Test-MtEidscaControl -CheckId PR02 | Should -Be 'True'
     }
@@ -141,7 +141,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.PR03" {
     It "EIDSCA.PR03: Default Settings - Password Rule Settings - Enforce custom list. See https://maester.dev/docs/tests/EIDSCA.PR03" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
+            .values -eq 'True'
         #>
         Test-MtEidscaControl -CheckId PR03 | Should -Be 'True'
     }
@@ -150,7 +150,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.PR05" {
     It "EIDSCA.PR05: Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds. See https://maester.dev/docs/tests/EIDSCA.PR05" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
+            .values -ge 60
         #>
         Test-MtEidscaControl -CheckId PR05 | Should -BeGreaterOrEqual 60
     }
@@ -159,7 +159,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.PR06" {
     It "EIDSCA.PR06: Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold. See https://maester.dev/docs/tests/EIDSCA.PR06" -TestCases @{ EntraIDPlan = $EntraIDPlan } {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
+            .values -le 10
         #>
         Test-MtEidscaControl -CheckId PR06 | Should -BeLessOrEqual 10
     }
@@ -169,7 +169,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.ST08" {
     It "EIDSCA.ST08: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner. See https://maester.dev/docs/tests/EIDSCA.ST08" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
+            .values -eq 'false'
         #>
         Test-MtEidscaControl -CheckId ST08 | Should -Be 'false'
     }
@@ -178,7 +178,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.ST09" {
     It "EIDSCA.ST09: Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content. See https://maester.dev/docs/tests/EIDSCA.ST09" {
         <#
             Check if "https://graph.microsoft.com/beta/settings"
-            .values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
+            .values -eq 'True'
         #>
         Test-MtEidscaControl -CheckId ST09 | Should -Be 'True'
     }
@@ -415,3 +415,5 @@ Describe "EIDSCA" -Tag "EIDSCA",  "EIDSCA.CR04" {
         Test-MtEidscaControl -CheckId CR04 | Should -BeLessOrEqual 30
     }
 }
+
+

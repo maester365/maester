@@ -1,0 +1,70 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoOrganizationOwner
+title: Test-AzdoOrganizationOwner
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoOrganizationOwner.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoOrganizationOwner [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks if the Azure DevOps Organization owner is a individual or a service/admin account.
+Returns a true boolean if the users matches adm|admin|btg|svc|service.
+
+https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/change-organization-ownership?view=azure-devops
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoOrganizationOwner
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoOrganizationOwner](https://maester.dev/docs/commands/Test-AzdoOrganizationOwner)

@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCR04 {
+function Test-MtEidscaCR04 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Consent request duration (days) is set to 30
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [int]$tenantValue = $result.requestDurationInDays
+    $rawValue = $result.requestDurationInDays
+    [int]$tenantValue = $rawValue
     $testResult = $tenantValue -le 30
-    $tenantValueNotSet = $null -eq $tenantValue -and 30 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 30 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **30** for **policies/adminConsentRequestPolicy**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

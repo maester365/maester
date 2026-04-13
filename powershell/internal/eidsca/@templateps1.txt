@@ -1,20 +1,20 @@
-﻿function %PSFunctionName% {
+function %PSFunctionName% {
     <#
     .SYNOPSIS
-        Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
+    Checks if %ControlName% - %DisplayName% is set to %RecommendedValue%
 
     .DESCRIPTION
 
-        %ControlItemDescription%
+    %ControlItemDescription%
 
-        Queries %RelativeUri%
-        and returns the result of
-         graph/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+    Queries %RelativeUri%
+    and returns the result of
+    graph/%RelativeUri%.%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
 
     .EXAMPLE
-        %PSFunctionName%
+    %PSFunctionName%
 
-        Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+    Returns the result of graph.microsoft.com/beta/%RelativeUri%.%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -23,9 +23,10 @@
     %SkipCheck%
     $result = Invoke-MtGraphRequest -RelativeUri "%RelativeUri%" -ApiVersion %ApiVersion%
 
-    [%ValueType%]$tenantValue = $result.%CurrentValue%
+    $rawValue = $result.%CurrentValue%
+    [%ValueType%]$tenantValue = $rawValue
     $testResult = $tenantValue -%PwshCompareOperator% %RecommendedValue%
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and %RecommendedValue% -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and %RecommendedValue% -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value %CompareOperatorText% **%RecommendedValue%** for **%RelativeUri%**"

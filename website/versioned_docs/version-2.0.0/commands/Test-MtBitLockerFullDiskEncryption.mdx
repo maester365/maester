@@ -1,0 +1,90 @@
+---
+sidebar_class_name: hidden
+description: Ensure at least one Intune Disk Encryption policy enforces BitLocker with full disk encryption type.
+id: Test-MtBitLockerFullDiskEncryption
+title: Test-MtBitLockerFullDiskEncryption
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtBitLockerFullDiskEncryption.ps1
+---
+
+## SYNOPSIS
+
+Ensure at least one Intune Disk Encryption policy enforces BitLocker with full disk encryption type.
+
+## SYNTAX
+
+```powershell
+Test-MtBitLockerFullDiskEncryption [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks Intune Endpoint Security Disk Encryption policies (configurationPolicies API) for BitLocker
+profiles that enforce full disk encryption rather than "Used space only" encryption.
+
+BitLocker supports two encryption types with very different security implications:
+- "Full disk encryption" -- encrypts the entire drive including free space.
+This is the secure option.
+- "Used space only encryption" -- only encrypts sectors currently holding data.
+Previously deleted
+  files that were written before encryption was enabled remain in unencrypted free space and can be
+  recovered using data recovery software (e.g., Recuva, PhotoRec, or forensic tools).
+This is because
+  NTFS marks sectors as free but does not zero them out -- the raw data stays on disk until overwritten.
+
+This test queries the configurationPolicies Graph API (used by Endpoint Security &gt; Disk Encryption)
+which exposes the actual BitLocker CSP settings including:
+- SystemDrivesEncryptionType (OS drive encryption type: full vs used space only)
+- FixedDrivesEncryptionType (fixed drive encryption type: full vs used space only)
+- RequireDeviceEncryption (require BitLocker encryption)
+- EncryptionMethodByDriveType (cipher strength: XTS-AES 128/256, AES-CBC 128/256)
+
+The test passes only if at least one BitLocker Disk Encryption policy has the OS drive encryption
+type set to "Full encryption".
+It fails if no policies exist, if encryption type is set to
+"Used space only", or if the encryption type setting is not configured.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtBitLockerFullDiskEncryption
+```
+
+Returns true if at least one Disk Encryption policy enforces full disk encryption for OS drives.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtBitLockerFullDiskEncryption](https://maester.dev/docs/commands/Test-MtBitLockerFullDiskEncryption)

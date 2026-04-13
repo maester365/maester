@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if weak authentication methods (SMS, voice call, email OTP) are disabled in the tenant.
-
-.DESCRIPTION
-    Weak authentication methods such as SMS, voice call, and email OTP should be disabled.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisWeakAuthenticationMethodsDisabled
-
-    Returns true if weak authentication methods are disabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisWeakAuthenticationMethodsDisabled
-#>
-function Test-MtCisWeakAuthenticationMethodsDisabled {
+﻿function Test-MtCisWeakAuthenticationMethodsDisabled {
+    <#
+    .SYNOPSIS
+        Checks if weak authentication methods (SMS, voice call, email OTP) are disabled in the tenant.
+    
+    .DESCRIPTION
+        Weak authentication methods such as SMS, voice call, and email OTP should be disabled.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisWeakAuthenticationMethodsDisabled
+    
+        Returns true if weak authentication methods are disabled.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisWeakAuthenticationMethodsDisabled
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -37,7 +37,8 @@ function Test-MtCisWeakAuthenticationMethodsDisabled {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -46,19 +47,22 @@ function Test-MtCisWeakAuthenticationMethodsDisabled {
 
         if ($checkSms) {
             $checkSmsResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkSmsResult = '❌ Fail'
         }
 
         if ($checkVoice) {
             $checkVoiceResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkVoiceResult = '❌ Fail'
         }
 
         if ($checkEmail) {
             $checkEmailResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkEmailResult = '❌ Fail'
         }
 
@@ -70,7 +74,8 @@ function Test-MtCisWeakAuthenticationMethodsDisabled {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

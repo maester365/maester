@@ -3,13 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Claude Code
-.claude/
-
-#Ignore Codacy's MCP server configuration and instruction files
-.github/instructions/codacy.instructions.md
-.codacy/**
-
 # User-specific files
 *.rsuser
 *.suo
@@ -494,9 +487,17 @@ test.json
 
 .idea
 
+#Ignore Codacy's MCP server configuration and instruction files
+.github/instructions/codacy.instructions.md
+.codacy/**
+
 ## ========================== ##
 ## Custom Entries for Maester ##
 ## ========================== ##
+
+# Claude Code
+.claude//**
+!.claude\agents\maester-test-expert.md
 
 # Don't allow Maester test results in the main branch
 test-results

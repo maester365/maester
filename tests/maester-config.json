@@ -1350,6 +1350,11 @@
       "Title": "AI agents should not have orphaned ownership"
     },
     {
+      "Id": "MT.1123",
+      "Severity": "High",
+      "Title": "Ensure BitLocker full disk encryption is configured via Intune"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
@@ -1872,27 +1877,37 @@
     {
       "Id": "AZDO.1032",
       "Severity": "High",
-      "Title": "Restrict creation of global Personal Access Tokens"
+      "Title": "(Tenant) Restrict creation of global Personal Access Tokens"
     },
     {
       "Id": "AZDO.1033",
       "Severity": "Critical",
-      "Title": "Enable automatic revocation of leaked Personal Access Tokens"
+      "Title": "(Tenant) Enable automatic revocation of leaked Personal Access Tokens"
     },
     {
       "Id": "AZDO.1034",
       "Severity": "High",
-      "Title": "Restrict creation of new Azure DevOps organizations"
+      "Title": "(Tenant) Restrict creation of new Azure DevOps organizations"
     },
     {
       "Id": "AZDO.1035",
       "Severity": "High",
-      "Title": "Restrict Personal Access Token lifespan"
+      "Title": "(Tenant) Restrict Personal Access Token lifespan"
     },
     {
       "Id": "AZDO.1036",
       "Severity": "High",
-      "Title": "Restrict Personal Access Token full scope"
+      "Title": "(Tenant) Restrict Personal Access Token full scope"
+    },
+    {
+      "Id": "AZDO.1037",
+      "Severity": "High",
+      "Title": "(Organization) Restrict Personal Access Token creation"
+    },
+    {
+      "Id": "AZDO.1038",
+      "Severity": "Medium",
+      "Title": "(Organization) Disallow extensions from accessing resources on the local network"
     }
   ]
 }

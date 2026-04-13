@@ -19,6 +19,7 @@
 #>
 
 function Test-MtAIAgentMcpTools {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'MCP Tools is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

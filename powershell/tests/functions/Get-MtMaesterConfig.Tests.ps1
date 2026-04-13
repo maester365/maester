@@ -22,6 +22,95 @@
         $sample = $result.TestSettings | Where-Object Id -eq 'MT.1001'
         $sample.Severity | Should -Not -Be 'Info'
         #$sample.Title | Should -Not -Be 'Overridden Title from Custom Config'
+
+        $result.ConfigSource | Should -Be 'maester-config.json'
+    }
+
+    Context 'Tenant-specific config' {
+        BeforeAll {
+            $tenantId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+            $tenantConfigPath = Join-Path $testFolder "maester-config.$tenantId.json"
+            Set-Content -Path $tenantConfigPath -Value (@{
+                GlobalSettings = @{
+                    EmergencyAccessAccounts = @(
+                        @{
+                            Type = 'User'
+                            UserPrincipalName = 'BreakGlass@tenant-specific.com'
+                        }
+                    )
+                }
+                TestSettings = @(
+                    @{
+                        Id = 'MT.1001'
+                        Severity = 'Critical'
+                        Title = 'Tenant-specific title'
+                    }
+                )
+            } | ConvertTo-Json -Depth 5)
+        }
+
+        It 'Loads tenant-specific config when TenantId matches a file' {
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder; tenantId = $tenantId } {
+                Get-MtMaesterConfig -Path $testFolder -TenantId $tenantId
+            }
+
+            $result | Should -Not -BeNullOrEmpty
+            $result.GlobalSettings.EmergencyAccessAccounts[0].UserPrincipalName | Should -Be 'BreakGlass@tenant-specific.com'
+            $sample = $result.TestSettings | Where-Object Id -eq 'MT.1001'
+            $sample.Severity | Should -Be 'Critical'
+        }
+
+        It 'Falls back to default config when TenantId has no matching file' {
+            $otherTenantId = 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder; otherTenantId = $otherTenantId } {
+                Get-MtMaesterConfig -Path $testFolder -TenantId $otherTenantId
+            }
+
+            $result | Should -Not -BeNullOrEmpty
+            # Should get the default config, not the tenant-specific one
+            $result.GlobalSettings.EmergencyAccessAccounts | Should -BeNullOrEmpty
+        }
+
+        It 'Sets ConfigSource to the tenant-specific filename' {
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder; tenantId = $tenantId } {
+                Get-MtMaesterConfig -Path $testFolder -TenantId $tenantId
+            }
+
+            $result.ConfigSource | Should -Be "maester-config.$tenantId.json"
+        }
+
+        It 'Sets ConfigSource to default filename when no tenant-specific config exists' {
+            $otherTenantId = 'ffffffff-ffff-ffff-ffff-ffffffffffff'
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder; otherTenantId = $otherTenantId } {
+                Get-MtMaesterConfig -Path $testFolder -TenantId $otherTenantId
+            }
+
+            $result.ConfigSource | Should -Be 'maester-config.json'
+        }
+
+        It 'Ignores TenantId that is not a valid GUID' {
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder } {
+                Get-MtMaesterConfig -Path $testFolder -TenantId 'not-a-guid'
+            }
+
+            $result | Should -Not -BeNullOrEmpty
+            # Should fall back to default config
+            $result.ConfigSource | Should -Be 'maester-config.json'
+        }
+
+        It 'Uses direct file path when Path points to a file' {
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ tenantConfigPath = $tenantConfigPath } {
+                Get-MtMaesterConfig -Path $tenantConfigPath
+            }
+
+            $result | Should -Not -BeNullOrEmpty
+            # Should use the file directly, not search for maester-config.json
+            $result.GlobalSettings.EmergencyAccessAccounts[0].UserPrincipalName | Should -Be 'BreakGlass@tenant-specific.com'
+        }
+
+        AfterAll {
+            Remove-Item -Path $tenantConfigPath -ErrorAction SilentlyContinue
+        }
     }
 
     Context 'Using custom config' {

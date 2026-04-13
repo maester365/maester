@@ -4,17 +4,7 @@ import { PanelLeft } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
-
-interface TenantLogos {
-  Banner?: string | null
-}
-
-interface BreadcrumbProps {
-  testResults?: {
-    TenantName?: string
-    TenantLogos?: TenantLogos | null
-  }
-}
+import { useTenant } from "@/context/TenantContext"
 
 interface BreadcrumbItem {
   label: string
@@ -38,12 +28,13 @@ function getBreadcrumbs(pathname: string): BreadcrumbItem[] {
   return breadcrumbs
 }
 
-export function Breadcrumb({ testResults }: BreadcrumbProps) {
+export function Breadcrumb() {
   const location = useLocation()
   const pathname = location.pathname
   const { isCollapsed, setIsCollapsed } = useSidebar()
   const breadcrumbs = getBreadcrumbs(pathname)
-  const bannerLogo = testResults?.TenantLogos?.Banner
+  const { selectedTenant } = useTenant()
+  const bannerLogo = selectedTenant?.TenantLogos?.Banner
 
   return (
     <div className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-black">
@@ -93,7 +84,7 @@ export function Breadcrumb({ testResults }: BreadcrumbProps) {
         {bannerLogo && (
           <img
             src={bannerLogo}
-            alt={testResults?.TenantName || "Organization"}
+            alt={selectedTenant?.TenantName || "Organization"}
             className="h-8 max-w-[200px] object-contain"
           />
         )}

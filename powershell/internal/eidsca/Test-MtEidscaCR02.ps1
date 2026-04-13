@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCR02 {
+function Test-MtEidscaCR02 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests is set to 'true'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.notifyReviewers
+    $rawValue = $result.notifyReviewers
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/adminConsentRequestPolicy**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+
