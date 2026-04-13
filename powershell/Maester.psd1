@@ -197,7 +197,7 @@
     'Test-MtAIAgentMcpTools',
     'Test-MtAIAgentMissingInstructions',
     'Test-MtAIAgentOrphaned',
-    'Get-MtMdeConfig', 'Get-MtMdeConfiguration', 'Get-MtMdeDeviceCount', 'Test-MtMdePolicyHasAssignments',
+    'Get-MtMdeConfig', 'Get-MtMdeConfiguration', 'Get-MtMdeDeviceCount', 'Test-MtMdePolicyHasAssignment',
     'Test-MtMdeArchiveScanning', 'Test-MtMdeBehaviorMonitoring', 'Test-MtMdeCloudProtection',
     'Test-MtMdeEmailScanning', 'Test-MtMdeScriptScanning', 'Test-MtMdeRealtimeMonitoring',
     'Test-MtMdeRemovableDriveScanning', 'Test-MtMdeMappedDriveScanning', 'Test-MtMdeNetworkFileScanning',

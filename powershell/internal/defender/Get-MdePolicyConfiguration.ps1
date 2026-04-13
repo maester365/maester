@@ -55,7 +55,7 @@ function Get-MdePolicyConfiguration {
                 if ($configPolicies.Count -gt 0) {
                     Write-Verbose "Checking assignments for $($configPolicies.Count) policies"
                     foreach ($policy in $configPolicies) {
-                        if (Test-MtMdePolicyHasAssignments -PolicyId $policy.id -PolicyType "ConfigurationPolicy") {
+                        if (Test-MtMdePolicyHasAssignment -PolicyId $policy.id) {
                             $finalConfigPolicies += $policy
                         }
                     }
@@ -66,7 +66,7 @@ function Get-MdePolicyConfiguration {
                 Write-Verbose "Invalid PolicyFiltering value '$($mdeGlobalConfig.PolicyFiltering)', defaulting to OnlyAssigned"
                 if ($configPolicies.Count -gt 0) {
                     foreach ($policy in $configPolicies) {
-                        if (Test-MtMdePolicyHasAssignments -PolicyId $policy.id -PolicyType "ConfigurationPolicy") {
+                        if (Test-MtMdePolicyHasAssignment -PolicyId $policy.id) {
                             $finalConfigPolicies += $policy
                         }
                     }

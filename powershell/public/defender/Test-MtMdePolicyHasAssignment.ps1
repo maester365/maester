@@ -1,4 +1,4 @@
-function Test-MtMdePolicyHasAssignments {
+function Test-MtMdePolicyHasAssignment {
     <#
     .SYNOPSIS
         Checks if a configuration policy is assigned to any groups or devices
@@ -10,33 +10,24 @@ function Test-MtMdePolicyHasAssignments {
     .PARAMETER PolicyId
         The ID of the configuration policy to check
 
-    .PARAMETER PolicyType
-        Type of policy. Currently only "ConfigurationPolicy" is supported.
-
     .EXAMPLE
-        Test-MtMdePolicyHasAssignments -PolicyId "abc-123" -PolicyType "ConfigurationPolicy"
+        Test-MtMdePolicyHasAssignment -PolicyId "abc-123"
 
         Returns $true if policy is assigned to groups or devices.
 
     .LINK
-        https://maester.dev/docs/commands/Test-MtMdePolicyHasAssignments
+        https://maester.dev/docs/commands/Test-MtMdePolicyHasAssignment
     #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$PolicyId,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("ConfigurationPolicy")]
-        [string]$PolicyType
+        [string]$PolicyId
     )
 
     try {
-        $endpoint = "deviceManagement/configurationPolicies/$PolicyId/assignments"
-
         $assignmentParams = @{
-            RelativeUri = $endpoint
+            RelativeUri = "deviceManagement/configurationPolicies/$PolicyId/assignments"
             ApiVersion  = 'beta'
             ErrorAction = 'Stop'
         }

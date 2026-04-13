@@ -19,7 +19,7 @@ function Get-MdeSettingValue {
         Returns the extracted value (e.g., "_1" for enabled).
     #>
     [CmdletBinding()]
-    [OutputType([object])]
+    [OutputType([string])]
     param(
         [Parameter(Mandatory = $true)]
         $Setting,

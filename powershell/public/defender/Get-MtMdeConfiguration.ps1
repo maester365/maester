@@ -19,6 +19,7 @@ function Get-MtMdeConfiguration {
         https://maester.dev/docs/commands/Get-MtMdeConfiguration
     #>
     [CmdletBinding()]
+    [OutputType([hashtable])]
     param(
         [switch]$DisableCache
     )
