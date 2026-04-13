@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if cloud block level is set to High or higher
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    cloud block level set to at least High. A low cloud block level reduces
-    proactive threat blocking capabilities.
-
-.EXAMPLE
-    Test-MtMdeCloudBlockLevel
-
-    Returns $true if all policies have cloud block level set to High or higher.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCloudBlockLevel
-#>
-
 function Test-MtMdeCloudBlockLevel {
+    <#
+    .SYNOPSIS
+        Checks if cloud block level is set to High or higher
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        cloud block level set to at least High. A low cloud block level reduces
+        proactive threat blocking capabilities.
+
+    .EXAMPLE
+        Test-MtMdeCloudBlockLevel
+
+        Returns $true if all policies have cloud block level set to High or higher.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCloudBlockLevel
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

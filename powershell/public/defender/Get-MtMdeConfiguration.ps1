@@ -1,24 +1,23 @@
-<#
-.SYNOPSIS
-    Gets information about your organization's Defender-protected devices and their policies
-
-.DESCRIPTION
-    Retrieves device inventory, configuration policies, and compliance information
-    from Microsoft Graph API for use in MDE tests.
-
-.PARAMETER DisableCache
-    Bypasses the Graph API response cache and fetches fresh data
-
-.EXAMPLE
-    Get-MtMdeConfiguration
-
-    Gets current MDE device and policy information.
-
-.LINK
-    https://maester.dev/docs/commands/Get-MtMdeConfiguration
-#>
-
 function Get-MtMdeConfiguration {
+    <#
+    .SYNOPSIS
+        Gets information about your organization's Defender-protected devices and their policies
+
+    .DESCRIPTION
+        Retrieves device inventory, configuration policies, and compliance information
+        from Microsoft Graph API for use in MDE tests.
+
+    .PARAMETER DisableCache
+        Bypasses the Graph API response cache and fetches fresh data
+
+    .EXAMPLE
+        Get-MtMdeConfiguration
+
+        Gets current MDE device and policy information.
+
+    .LINK
+        https://maester.dev/docs/commands/Get-MtMdeConfiguration
+    #>
     [CmdletBinding()]
     param(
         [switch]$DisableCache

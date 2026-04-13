@@ -1,19 +1,18 @@
-<#
-.SYNOPSIS
-    Gets Microsoft Defender Antivirus policies that are assigned to devices
-
-.DESCRIPTION
-    Retrieves configuration policies from Microsoft Graph, filters for
-    Defender Antivirus policies on Windows, and optionally checks which
-    ones are actually assigned based on the MDE configuration.
-
-.EXAMPLE
-    Get-MdePolicyConfiguration
-
-    Returns a hashtable with ConfigurationPolicies array and TotalCount.
-#>
-
 function Get-MdePolicyConfiguration {
+    <#
+    .SYNOPSIS
+        Gets Microsoft Defender Antivirus policies that are assigned to devices
+
+    .DESCRIPTION
+        Retrieves configuration policies from Microsoft Graph, filters for
+        Defender Antivirus policies on Windows, and optionally checks which
+        ones are actually assigned based on the MDE configuration.
+
+    .EXAMPLE
+        Get-MdePolicyConfiguration
+
+        Returns a hashtable with ConfigurationPolicies array and TotalCount.
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param()

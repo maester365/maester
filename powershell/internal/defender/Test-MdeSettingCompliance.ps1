@@ -1,42 +1,41 @@
-<#
-.SYNOPSIS
-    Tests compliance for a specific MDE setting value
-
-.DESCRIPTION
-    Evaluates a setting value against compliance criteria to determine
-    if it meets requirements. Returns "Compliant", "NonCompliant", or "NotConfigured".
-
-.PARAMETER Value
-    The setting value to test
-
-.PARAMETER ComplianceCheck
-    The type of compliance check to perform
-
-.PARAMETER ExpectedValue
-    The expected value for Boolean checks
-
-.PARAMETER RangeMin
-    Minimum value for Range checks
-
-.PARAMETER RangeMax
-    Maximum value for Range checks
-
-.PARAMETER ValidValues
-    Array of valid values for Enum checks
-
-.PARAMETER ValidLevels
-    Hashtable mapping values to numeric levels for MinimumLevel checks
-
-.PARAMETER MinimumValue
-    Minimum numeric value for MinimumValue and MinimumLevel checks
-
-.EXAMPLE
-    Test-MdeSettingCompliance -Value "_1" -ComplianceCheck "Boolean" -ExpectedValue "_1"
-
-    Returns "Compliant"
-#>
-
 function Test-MdeSettingCompliance {
+    <#
+    .SYNOPSIS
+        Tests compliance for a specific MDE setting value
+
+    .DESCRIPTION
+        Evaluates a setting value against compliance criteria to determine
+        if it meets requirements. Returns "Compliant", "NonCompliant", or "NotConfigured".
+
+    .PARAMETER Value
+        The setting value to test
+
+    .PARAMETER ComplianceCheck
+        The type of compliance check to perform
+
+    .PARAMETER ExpectedValue
+        The expected value for Boolean checks
+
+    .PARAMETER RangeMin
+        Minimum value for Range checks
+
+    .PARAMETER RangeMax
+        Maximum value for Range checks
+
+    .PARAMETER ValidValues
+        Array of valid values for Enum checks
+
+    .PARAMETER ValidLevels
+        Hashtable mapping values to numeric levels for MinimumLevel checks
+
+    .PARAMETER MinimumValue
+        Minimum numeric value for MinimumValue and MinimumLevel checks
+
+    .EXAMPLE
+        Test-MdeSettingCompliance -Value "_1" -ComplianceCheck "Boolean" -ExpectedValue "_1"
+
+        Returns "Compliant"
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param(

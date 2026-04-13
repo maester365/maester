@@ -1,24 +1,23 @@
-<#
-.SYNOPSIS
-    Extracts setting values from Graph API configuration policy responses
-
-.DESCRIPTION
-    Parses setting objects from Microsoft Graph API configuration policy responses
-    and extracts the appropriate value based on the compliance check type.
-
-.PARAMETER Setting
-    The setting object from Graph API
-
-.PARAMETER ComplianceCheck
-    The type of compliance check: Boolean, Range, Enum, MinimumLevel, MinimumValue, NotRequired, Manual
-
-.EXAMPLE
-    Get-MdeSettingValue -Setting $settingObj -ComplianceCheck "Boolean"
-
-    Returns the extracted value (e.g., "_1" for enabled).
-#>
-
 function Get-MdeSettingValue {
+    <#
+    .SYNOPSIS
+        Extracts setting values from Graph API configuration policy responses
+
+    .DESCRIPTION
+        Parses setting objects from Microsoft Graph API configuration policy responses
+        and extracts the appropriate value based on the compliance check type.
+
+    .PARAMETER Setting
+        The setting object from Graph API
+
+    .PARAMETER ComplianceCheck
+        The type of compliance check: Boolean, Range, Enum, MinimumLevel, MinimumValue, NotRequired, Manual
+
+    .EXAMPLE
+        Get-MdeSettingValue -Setting $settingObj -ComplianceCheck "Boolean"
+
+        Returns the extracted value (e.g., "_1" for enabled).
+    #>
     [CmdletBinding()]
     [OutputType([object])]
     param(

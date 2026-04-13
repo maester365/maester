@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if catch-up quick scan is disabled to avoid additional system load
-
-.DESCRIPTION
-    Verify that catch-up quick scan is disabled to avoid additional system load.
-    Enabled catchup scans may cause performance issues on mobile devices.
-
-.EXAMPLE
-    Test-MtMdeCatchupQuickScan
-
-    Returns true if all assigned Defender AV policies have catch-up quick scan disabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCatchupQuickScan
-#>
-
 function Test-MtMdeCatchupQuickScan {
+    <#
+    .SYNOPSIS
+        Checks if catch-up quick scan is disabled to avoid additional system load
+
+    .DESCRIPTION
+        Verify that catch-up quick scan is disabled to avoid additional system load.
+        Enabled catchup scans may cause performance issues on mobile devices.
+
+    .EXAMPLE
+        Test-MtMdeCatchupQuickScan
+
+        Returns true if all assigned Defender AV policies have catch-up quick scan disabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCatchupQuickScan
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

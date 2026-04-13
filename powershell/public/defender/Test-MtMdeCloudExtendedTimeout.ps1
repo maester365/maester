@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if cloud extended timeout is configured between 30-50 seconds
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    cloud extended timeout configured within the recommended range of 30-50 seconds.
-    Insufficient cloud timeout may prevent thorough analysis of suspicious files.
-
-.EXAMPLE
-    Test-MtMdeCloudExtendedTimeout
-
-    Returns $true if all policies have cloud extended timeout configured between 30-50 seconds.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCloudExtendedTimeout
-#>
-
 function Test-MtMdeCloudExtendedTimeout {
+    <#
+    .SYNOPSIS
+        Checks if cloud extended timeout is configured between 30-50 seconds
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        cloud extended timeout configured within the recommended range of 30-50 seconds.
+        Insufficient cloud timeout may prevent thorough analysis of suspicious files.
+
+    .EXAMPLE
+        Test-MtMdeCloudExtendedTimeout
+
+        Returns $true if all policies have cloud extended timeout configured between 30-50 seconds.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCloudExtendedTimeout
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

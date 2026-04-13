@@ -1,46 +1,45 @@
-<#
-.SYNOPSIS
-    Tests policy compliance for an MDE setting across all assigned policies
-
-.DESCRIPTION
-    Analyzes configuration policies for compliance with the specified setting.
-    Returns detailed compliance results categorized by compliant, non-compliant,
-    and not-configured.
-
-.PARAMETER PolicyConfiguration
-    Policy configuration hashtable from Get-MdePolicyConfiguration
-
-.PARAMETER SettingId
-    The Intune setting definition ID to check (e.g., "device_vendor_msft_policy_config_defender_allowarchivescanning")
-
-.PARAMETER ComplianceCheck
-    The type of compliance check: Boolean, Range, Enum, MinimumLevel, MinimumValue, NotRequired
-
-.PARAMETER ExpectedValue
-    The expected value for Boolean checks
-
-.PARAMETER RangeMin
-    Minimum value for Range checks
-
-.PARAMETER RangeMax
-    Maximum value for Range checks
-
-.PARAMETER ValidValues
-    Array of valid values for Enum checks
-
-.PARAMETER ValidLevels
-    Hashtable mapping values to numeric levels for MinimumLevel checks
-
-.PARAMETER MinimumValue
-    Minimum numeric value for MinimumValue and MinimumLevel checks
-
-.EXAMPLE
-    Test-MdePolicyCompliance -PolicyConfiguration $config -SettingId "device_vendor_msft_policy_config_defender_allowarchivescanning" -ComplianceCheck "Boolean" -ExpectedValue "_1"
-
-    Returns a hashtable with CompliantPolicies, NonCompliantPolicies, and NotConfiguredPolicies arrays.
-#>
-
 function Test-MdePolicyCompliance {
+    <#
+    .SYNOPSIS
+        Tests policy compliance for an MDE setting across all assigned policies
+
+    .DESCRIPTION
+        Analyzes configuration policies for compliance with the specified setting.
+        Returns detailed compliance results categorized by compliant, non-compliant,
+        and not-configured.
+
+    .PARAMETER PolicyConfiguration
+        Policy configuration hashtable from Get-MdePolicyConfiguration
+
+    .PARAMETER SettingId
+        The Intune setting definition ID to check (e.g., "device_vendor_msft_policy_config_defender_allowarchivescanning")
+
+    .PARAMETER ComplianceCheck
+        The type of compliance check: Boolean, Range, Enum, MinimumLevel, MinimumValue, NotRequired
+
+    .PARAMETER ExpectedValue
+        The expected value for Boolean checks
+
+    .PARAMETER RangeMin
+        Minimum value for Range checks
+
+    .PARAMETER RangeMax
+        Maximum value for Range checks
+
+    .PARAMETER ValidValues
+        Array of valid values for Enum checks
+
+    .PARAMETER ValidLevels
+        Hashtable mapping values to numeric levels for MinimumLevel checks
+
+    .PARAMETER MinimumValue
+        Minimum numeric value for MinimumValue and MinimumLevel checks
+
+    .EXAMPLE
+        Test-MdePolicyCompliance -PolicyConfiguration $config -SettingId "device_vendor_msft_policy_config_defender_allowarchivescanning" -ComplianceCheck "Boolean" -ExpectedValue "_1"
+
+        Returns a hashtable with CompliantPolicies, NonCompliantPolicies, and NotConfiguredPolicies arrays.
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(

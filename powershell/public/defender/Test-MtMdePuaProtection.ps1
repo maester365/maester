@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if PUA (Potentially Unwanted Applications) protection is enabled
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have PUA
-    protection enabled in block or audit mode. Disabled PUA protection allows
-    Shadow IT and potentially unwanted applications on managed devices.
-
-.EXAMPLE
-    Test-MtMdePuaProtection
-
-    Returns $true if all policies have PUA protection enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdePuaProtection
-#>
-
 function Test-MtMdePuaProtection {
+    <#
+    .SYNOPSIS
+        Checks if PUA (Potentially Unwanted Applications) protection is enabled
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have PUA
+        protection enabled in block or audit mode. Disabled PUA protection allows
+        Shadow IT and potentially unwanted applications on managed devices.
+
+    .EXAMPLE
+        Test-MtMdePuaProtection
+
+        Returns $true if all policies have PUA protection enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdePuaProtection
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

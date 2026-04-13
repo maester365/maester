@@ -1,27 +1,26 @@
-<#
-.SYNOPSIS
-    Checks if a configuration policy is assigned to any groups or devices
-
-.DESCRIPTION
-    Returns true if the policy has active assignments (not just exclusions).
-    This helps ensure we only test policies that are actually deployed.
-
-.PARAMETER PolicyId
-    The ID of the configuration policy to check
-
-.PARAMETER PolicyType
-    Type of policy. Currently only "ConfigurationPolicy" is supported.
-
-.EXAMPLE
-    Test-MtMdePolicyHasAssignments -PolicyId "abc-123" -PolicyType "ConfigurationPolicy"
-
-    Returns $true if policy is assigned to groups or devices.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdePolicyHasAssignments
-#>
-
 function Test-MtMdePolicyHasAssignments {
+    <#
+    .SYNOPSIS
+        Checks if a configuration policy is assigned to any groups or devices
+
+    .DESCRIPTION
+        Returns true if the policy has active assignments (not just exclusions).
+        This helps ensure we only test policies that are actually deployed.
+
+    .PARAMETER PolicyId
+        The ID of the configuration policy to check
+
+    .PARAMETER PolicyType
+        Type of policy. Currently only "ConfigurationPolicy" is supported.
+
+    .EXAMPLE
+        Test-MtMdePolicyHasAssignments -PolicyId "abc-123" -PolicyType "ConfigurationPolicy"
+
+        Returns $true if policy is assigned to groups or devices.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdePolicyHasAssignments
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

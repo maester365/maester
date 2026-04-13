@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if signature checking before scan is enabled for zero-day protection
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    check for signatures before running scan setting enabled. Scanning with
-    outdated signatures may miss recent threats and zero-day attacks.
-
-.EXAMPLE
-    Test-MtMdeSignatureBeforeScan
-
-    Returns $true if all policies have signature checking before scan enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeSignatureBeforeScan
-#>
-
 function Test-MtMdeSignatureBeforeScan {
+    <#
+    .SYNOPSIS
+        Checks if signature checking before scan is enabled for zero-day protection
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        check for signatures before running scan setting enabled. Scanning with
+        outdated signatures may miss recent threats and zero-day attacks.
+
+    .EXAMPLE
+        Test-MtMdeSignatureBeforeScan
+
+        Returns $true if all policies have signature checking before scan enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeSignatureBeforeScan
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

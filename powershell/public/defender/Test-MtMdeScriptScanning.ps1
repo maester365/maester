@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if script scanning is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that script scanning is enabled to block malicious scripts.
-    Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript execution.
-
-.EXAMPLE
-    Test-MtMdeScriptScanning
-
-    Returns true if all assigned Defender AV policies have script scanning enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeScriptScanning
-#>
-
 function Test-MtMdeScriptScanning {
+    <#
+    .SYNOPSIS
+        Checks if script scanning is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that script scanning is enabled to block malicious scripts.
+        Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript execution.
+
+    .EXAMPLE
+        Test-MtMdeScriptScanning
+
+        Returns true if all assigned Defender AV policies have script scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeScriptScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

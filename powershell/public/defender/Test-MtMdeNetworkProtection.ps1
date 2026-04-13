@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if Network Protection is enabled in block or audit mode
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have Network
-    Protection enabled in block or audit mode. Disabled network protection allows
-    web-based threats and malicious IP connections on managed devices.
-
-.EXAMPLE
-    Test-MtMdeNetworkProtection
-
-    Returns $true if all policies have Network Protection enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeNetworkProtection
-#>
-
 function Test-MtMdeNetworkProtection {
+    <#
+    .SYNOPSIS
+        Checks if Network Protection is enabled in block or audit mode
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have Network
+        Protection enabled in block or audit mode. Disabled network protection allows
+        web-based threats and malicious IP connections on managed devices.
+
+    .EXAMPLE
+        Test-MtMdeNetworkProtection
+
+        Returns $true if all policies have Network Protection enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeNetworkProtection
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

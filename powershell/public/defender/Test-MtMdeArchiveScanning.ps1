@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if archive scanning is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that archive scanning is enabled to detect malware in compressed files.
-    Disabled archive scanning allows malware to hide in compressed files (ZIP, RAR, etc.)
-
-.EXAMPLE
-    Test-MtMdeArchiveScanning
-
-    Returns true if all assigned Defender AV policies have archive scanning enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeArchiveScanning
-#>
-
 function Test-MtMdeArchiveScanning {
+    <#
+    .SYNOPSIS
+        Checks if archive scanning is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that archive scanning is enabled to detect malware in compressed files.
+        Disabled archive scanning allows malware to hide in compressed files (ZIP, RAR, etc.)
+
+    .EXAMPLE
+        Test-MtMdeArchiveScanning
+
+        Returns true if all assigned Defender AV policies have archive scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeArchiveScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

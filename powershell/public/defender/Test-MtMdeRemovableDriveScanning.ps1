@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if full scan of removable drives is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that full scan of removable drives is enabled to mitigate USB risks.
-    Disabled removable drive scanning allows USB-based malware infections.
-
-.EXAMPLE
-    Test-MtMdeRemovableDriveScanning
-
-    Returns true if all assigned Defender AV policies have removable drive scanning enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeRemovableDriveScanning
-#>
-
 function Test-MtMdeRemovableDriveScanning {
+    <#
+    .SYNOPSIS
+        Checks if full scan of removable drives is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that full scan of removable drives is enabled to mitigate USB risks.
+        Disabled removable drive scanning allows USB-based malware infections.
+
+    .EXAMPLE
+        Test-MtMdeRemovableDriveScanning
+
+        Returns true if all assigned Defender AV policies have removable drive scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeRemovableDriveScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

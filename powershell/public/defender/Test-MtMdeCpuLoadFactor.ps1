@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if the average CPU load factor is configured between 20-30%
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    average CPU load factor configured within the recommended range of 20-30%.
-    Inappropriate CPU load settings may impact system performance or scan effectiveness.
-
-.EXAMPLE
-    Test-MtMdeCpuLoadFactor
-
-    Returns $true if all policies have CPU load factor configured between 20-30%.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCpuLoadFactor
-#>
-
 function Test-MtMdeCpuLoadFactor {
+    <#
+    .SYNOPSIS
+        Checks if the average CPU load factor is configured between 20-30%
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        average CPU load factor configured within the recommended range of 20-30%.
+        Inappropriate CPU load settings may impact system performance or scan effectiveness.
+
+    .EXAMPLE
+        Test-MtMdeCpuLoadFactor
+
+        Returns $true if all policies have CPU load factor configured between 20-30%.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCpuLoadFactor
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

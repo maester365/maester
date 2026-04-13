@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if catch-up full scan is disabled to avoid additional system load
-
-.DESCRIPTION
-    Verify that catch-up full scan is disabled to avoid additional system load.
-    Enabled catchup scans may cause performance issues on mobile devices.
-
-.EXAMPLE
-    Test-MtMdeCatchupFullScan
-
-    Returns true if all assigned Defender AV policies have catch-up full scan disabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCatchupFullScan
-#>
-
 function Test-MtMdeCatchupFullScan {
+    <#
+    .SYNOPSIS
+        Checks if catch-up full scan is disabled to avoid additional system load
+
+    .DESCRIPTION
+        Verify that catch-up full scan is disabled to avoid additional system load.
+        Enabled catchup scans may cause performance issues on mobile devices.
+
+    .EXAMPLE
+        Test-MtMdeCatchupFullScan
+
+        Returns true if all assigned Defender AV policies have catch-up full scan disabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCatchupFullScan
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if behavior monitoring is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that behavior monitoring is enabled - prerequisite for EDR capabilities.
-    Disabled behavior monitoring reduces ability to detect zero-day threats and advanced persistent threats.
-
-.EXAMPLE
-    Test-MtMdeBehaviorMonitoring
-
-    Returns true if all assigned Defender AV policies have behavior monitoring enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeBehaviorMonitoring
-#>
-
 function Test-MtMdeBehaviorMonitoring {
+    <#
+    .SYNOPSIS
+        Checks if behavior monitoring is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that behavior monitoring is enabled - prerequisite for EDR capabilities.
+        Disabled behavior monitoring reduces ability to detect zero-day threats and advanced persistent threats.
+
+    .EXAMPLE
+        Test-MtMdeBehaviorMonitoring
+
+        Returns true if all assigned Defender AV policies have behavior monitoring enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeBehaviorMonitoring
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

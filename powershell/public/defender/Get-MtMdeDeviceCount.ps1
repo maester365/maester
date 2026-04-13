@@ -1,29 +1,28 @@
-<#
-.SYNOPSIS
-    Counts how many devices are protected by Microsoft Defender for Endpoint
-
-.DESCRIPTION
-    Returns the number of Windows devices that can receive MDE antivirus policies.
-    Only includes devices managed by Defender ('msSense') or Intune ('mdm').
-
-.PARAMETER IncludeDetails
-    Returns detailed device information instead of just the count
-
-.EXAMPLE
-    Get-MtMdeDeviceCount
-
-    Returns the number of MDE-protected devices.
-
-.EXAMPLE
-    Get-MtMdeDeviceCount -IncludeDetails
-
-    Returns a hashtable with Count, Devices, and TotalManagedDevices.
-
-.LINK
-    https://maester.dev/docs/commands/Get-MtMdeDeviceCount
-#>
-
 function Get-MtMdeDeviceCount {
+    <#
+    .SYNOPSIS
+        Counts how many devices are protected by Microsoft Defender for Endpoint
+
+    .DESCRIPTION
+        Returns the number of Windows devices that can receive MDE antivirus policies.
+        Only includes devices managed by Defender ('msSense') or Intune ('mdm').
+
+    .PARAMETER IncludeDetails
+        Returns detailed device information instead of just the count
+
+    .EXAMPLE
+        Get-MtMdeDeviceCount
+
+        Returns the number of MDE-protected devices.
+
+    .EXAMPLE
+        Get-MtMdeDeviceCount -IncludeDetails
+
+        Returns a hashtable with Count, Devices, and TotalManagedDevices.
+
+    .LINK
+        https://maester.dev/docs/commands/Get-MtMdeDeviceCount
+    #>
     [CmdletBinding()]
     [OutputType([int], ParameterSetName = 'Count')]
     [OutputType([hashtable], ParameterSetName = 'Details')]

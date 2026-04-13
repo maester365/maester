@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if sample submission consent is configured to send safe samples automatically
-
-.DESCRIPTION
-    Verify that sample submission consent is configured to send safe samples
-    automatically. Restricted sample submission reduces threat intelligence
-    and protection quality.
-
-.EXAMPLE
-    Test-MtMdeSubmitSamplesConsent
-
-    Returns true if all assigned Defender AV policies have sample submission consent configured to send safe samples automatically.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeSubmitSamplesConsent
-#>
-
 function Test-MtMdeSubmitSamplesConsent {
+    <#
+    .SYNOPSIS
+        Checks if sample submission consent is configured to send safe samples automatically
+
+    .DESCRIPTION
+        Verify that sample submission consent is configured to send safe samples
+        automatically. Restricted sample submission reduces threat intelligence
+        and protection quality.
+
+    .EXAMPLE
+        Test-MtMdeSubmitSamplesConsent
+
+        Returns true if all assigned Defender AV policies have sample submission consent configured to send safe samples automatically.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeSubmitSamplesConsent
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

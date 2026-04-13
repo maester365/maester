@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if full scan on mapped network drives is disabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that full scan of mapped network drives is disabled for performance.
-    Full scan on mapped drives can cause significant performance issues.
-
-.EXAMPLE
-    Test-MtMdeMappedDriveScanning
-
-    Returns true if all assigned Defender AV policies have full scan on mapped network drives disabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeMappedDriveScanning
-#>
-
 function Test-MtMdeMappedDriveScanning {
+    <#
+    .SYNOPSIS
+        Checks if full scan on mapped network drives is disabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that full scan of mapped network drives is disabled for performance.
+        Full scan on mapped drives can cause significant performance issues.
+
+    .EXAMPLE
+        Test-MtMdeMappedDriveScanning
+
+        Returns true if all assigned Defender AV policies have full scan on mapped network drives disabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeMappedDriveScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

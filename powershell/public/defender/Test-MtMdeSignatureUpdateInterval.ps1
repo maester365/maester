@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if signature update interval is configured between 1-4 hours
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    signature update interval configured within the recommended range of 1-4 hours.
-    Infrequent signature updates reduce detection of the latest threats.
-
-.EXAMPLE
-    Test-MtMdeSignatureUpdateInterval
-
-    Returns $true if all policies have signature update interval configured between 1-4 hours.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeSignatureUpdateInterval
-#>
-
 function Test-MtMdeSignatureUpdateInterval {
+    <#
+    .SYNOPSIS
+        Checks if signature update interval is configured between 1-4 hours
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        signature update interval configured within the recommended range of 1-4 hours.
+        Infrequent signature updates reduce detection of the latest threats.
+
+    .EXAMPLE
+        Test-MtMdeSignatureUpdateInterval
+
+        Returns $true if all policies have signature update interval configured between 1-4 hours.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeSignatureUpdateInterval
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

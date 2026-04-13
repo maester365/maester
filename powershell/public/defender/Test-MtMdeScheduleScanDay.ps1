@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if scans are scheduled for every day
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    schedule scan day properly configured for daily scanning. An irregular scan
-    schedule may miss persistent threats on managed devices.
-
-.EXAMPLE
-    Test-MtMdeScheduleScanDay
-
-    Returns $true if all policies have scan day configured for daily scanning.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeScheduleScanDay
-#>
-
 function Test-MtMdeScheduleScanDay {
+    <#
+    .SYNOPSIS
+        Checks if scans are scheduled for every day
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        schedule scan day properly configured for daily scanning. An irregular scan
+        schedule may miss persistent threats on managed devices.
+
+    .EXAMPLE
+        Test-MtMdeScheduleScanDay
+
+        Returns $true if all policies have scan day configured for daily scanning.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeScheduleScanDay
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

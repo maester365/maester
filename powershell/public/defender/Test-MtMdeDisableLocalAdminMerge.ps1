@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks if local admin merge is disabled to block local exclusions
-
-.DESCRIPTION
-    Tests that all assigned Microsoft Defender Antivirus policies have the
-    disable local admin merge setting enabled. Local admin policy override
-    allows privilege escalation to bypass security controls on managed devices.
-
-.EXAMPLE
-    Test-MtMdeDisableLocalAdminMerge
-
-    Returns $true if all policies have local admin merge disabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeDisableLocalAdminMerge
-#>
-
 function Test-MtMdeDisableLocalAdminMerge {
+    <#
+    .SYNOPSIS
+        Checks if local admin merge is disabled to block local exclusions
+
+    .DESCRIPTION
+        Tests that all assigned Microsoft Defender Antivirus policies have the
+        disable local admin merge setting enabled. Local admin policy override
+        allows privilege escalation to bypass security controls on managed devices.
+
+    .EXAMPLE
+        Test-MtMdeDisableLocalAdminMerge
+
+        Returns $true if all policies have local admin merge disabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeDisableLocalAdminMerge
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

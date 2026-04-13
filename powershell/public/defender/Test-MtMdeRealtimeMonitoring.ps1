@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if real-time monitoring is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that real-time monitoring is enabled as core protection function.
-    Disabled real-time monitoring allows malware to execute without immediate detection.
-
-.EXAMPLE
-    Test-MtMdeRealtimeMonitoring
-
-    Returns true if all assigned Defender AV policies have real-time monitoring enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeRealtimeMonitoring
-#>
-
 function Test-MtMdeRealtimeMonitoring {
+    <#
+    .SYNOPSIS
+        Checks if real-time monitoring is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that real-time monitoring is enabled as core protection function.
+        Disabled real-time monitoring allows malware to execute without immediate detection.
+
+    .EXAMPLE
+        Test-MtMdeRealtimeMonitoring
+
+        Returns true if all assigned Defender AV policies have real-time monitoring enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeRealtimeMonitoring
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if real-time scan direction is set to monitor both incoming and outgoing files
-
-.DESCRIPTION
-    Verify that real-time scan direction is configured to monitor both incoming and
-    outgoing files. Limited scan direction may miss malware in certain file operations.
-
-.EXAMPLE
-    Test-MtMdeRealtimeScanDirection
-
-    Returns true if all assigned Defender AV policies have real-time scan direction set to monitor both incoming and outgoing files.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeRealtimeScanDirection
-#>
-
 function Test-MtMdeRealtimeScanDirection {
+    <#
+    .SYNOPSIS
+        Checks if real-time scan direction is set to monitor both incoming and outgoing files
+
+    .DESCRIPTION
+        Verify that real-time scan direction is configured to monitor both incoming and
+        outgoing files. Limited scan direction may miss malware in certain file operations.
+
+    .EXAMPLE
+        Test-MtMdeRealtimeScanDirection
+
+        Returns true if all assigned Defender AV policies have real-time scan direction set to monitor both incoming and outgoing files.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeRealtimeScanDirection
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

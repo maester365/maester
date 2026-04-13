@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if email scanning is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that email scanning is enabled for Exchange queues protection.
-    Disabled email scanning allows malware to enter through Exchange message queues.
-
-.EXAMPLE
-    Test-MtMdeEmailScanning
-
-    Returns true if all assigned Defender AV policies have email scanning enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeEmailScanning
-#>
-
 function Test-MtMdeEmailScanning {
+    <#
+    .SYNOPSIS
+        Checks if email scanning is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that email scanning is enabled for Exchange queues protection.
+        Disabled email scanning allows malware to enter through Exchange message queues.
+
+    .EXAMPLE
+        Test-MtMdeEmailScanning
+
+        Returns true if all assigned Defender AV policies have email scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeEmailScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

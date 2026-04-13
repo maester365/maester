@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if scanning network files is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that scanning network files is enabled despite SMB load considerations.
-    Disabled network file scanning creates attack vectors through shared files.
-
-.EXAMPLE
-    Test-MtMdeNetworkFileScanning
-
-    Returns true if all assigned Defender AV policies have network file scanning enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeNetworkFileScanning
-#>
-
 function Test-MtMdeNetworkFileScanning {
+    <#
+    .SYNOPSIS
+        Checks if scanning network files is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that scanning network files is enabled despite SMB load considerations.
+        Disabled network file scanning creates attack vectors through shared files.
+
+    .EXAMPLE
+        Test-MtMdeNetworkFileScanning
+
+        Returns true if all assigned Defender AV policies have network file scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeNetworkFileScanning
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

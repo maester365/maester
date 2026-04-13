@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
-    Checks if cloud protection is enabled in Microsoft Defender Antivirus policies
-
-.DESCRIPTION
-    Verify that cloud protection is enabled for real-time threat intelligence.
-    Disabled cloud protection reduces real-time threat detection and response capabilities.
-
-.EXAMPLE
-    Test-MtMdeCloudProtection
-
-    Returns true if all assigned Defender AV policies have cloud protection enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeCloudProtection
-#>
-
 function Test-MtMdeCloudProtection {
+    <#
+    .SYNOPSIS
+        Checks if cloud protection is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that cloud protection is enabled for real-time threat intelligence.
+        Disabled cloud protection reduces real-time threat detection and response capabilities.
+
+    .EXAMPLE
+        Test-MtMdeCloudProtection
+
+        Returns true if all assigned Defender AV policies have cloud protection enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeCloudProtection
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

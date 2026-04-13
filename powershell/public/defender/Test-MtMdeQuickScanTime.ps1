@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
-    Checks that quick scan time configuration is not required
-
-.DESCRIPTION
-    Verifies that the quick scan time setting does not need to be configured
-    in Microsoft Defender Antivirus policies. Quick scans are replaced by
-    real-time protection, so this setting is not required for compliance.
-
-.EXAMPLE
-    Test-MtMdeQuickScanTime
-
-    Returns $true as this setting is not required.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtMdeQuickScanTime
-#>
-
 function Test-MtMdeQuickScanTime {
+    <#
+    .SYNOPSIS
+        Checks that quick scan time configuration is not required
+
+    .DESCRIPTION
+        Verifies that the quick scan time setting does not need to be configured
+        in Microsoft Defender Antivirus policies. Quick scans are replaced by
+        real-time protection, so this setting is not required for compliance.
+
+    .EXAMPLE
+        Test-MtMdeQuickScanTime
+
+        Returns $true as this setting is not required.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeQuickScanTime
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
