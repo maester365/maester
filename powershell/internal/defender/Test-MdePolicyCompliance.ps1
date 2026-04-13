@@ -106,7 +106,7 @@ function Test-MdePolicyCompliance {
                         "NotConfigured" { $notConfiguredPolicies += $policy.name }
                     }
                 } elseif ($ComplianceCheck -in "NotRequired", "Manual") {
-                    # Setting not present in policy — treat as compliant for non-required/manual checks
+                    # Setting not present in policy - treat as compliant for non-required/manual checks
                     $compliantPolicies += $policy.name
                 } else {
                     $notConfiguredPolicies += $policy.name
