@@ -68,6 +68,10 @@ if ($ResolvedOutput -ieq $DriveRoot) {
 if ($ResolvedOutput -ieq $RepoRoot.TrimEnd('\', '/')) {
     throw "Refusing to use OutputRoot '$OutputRoot' because it resolves to the repository root: '$RepoRoot'."
 }
+$RepoPath = $RepoRoot.TrimEnd('\', '/')
+if (-not $ResolvedOutput.StartsWith($RepoPath + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "Refusing to use OutputRoot '$OutputRoot' because it is outside the repository root '$RepoRoot'."
+}
 
 if (Test-Path -LiteralPath $OutputRoot) {
     Remove-Item -LiteralPath $OutputRoot -Recurse -Force
