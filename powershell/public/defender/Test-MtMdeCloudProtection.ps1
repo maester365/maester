@@ -1,0 +1,61 @@
+<#
+.SYNOPSIS
+    Checks if cloud protection is enabled in Microsoft Defender Antivirus policies
+
+.DESCRIPTION
+    Verify that cloud protection is enabled for real-time threat intelligence.
+    Disabled cloud protection reduces real-time threat detection and response capabilities.
+
+.EXAMPLE
+    Test-MtMdeCloudProtection
+
+    Returns true if all assigned Defender AV policies have cloud protection enabled.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtMdeCloudProtection
+#>
+
+function Test-MtMdeCloudProtection {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $deviceCount = Get-MtMdeDeviceCount
+    if ($deviceCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No MDE-managed Windows devices found"
+        return $null
+    }
+
+    $policyConfig = Get-MdePolicyConfiguration
+    if ($policyConfig.TotalCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No assigned Microsoft Defender Antivirus policies found"
+        return $null
+    }
+
+    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+        -SettingId "device_vendor_msft_policy_config_defender_allowcloudprotection" `
+        -ComplianceCheck "Boolean" `
+        -ExpectedValue "_1"
+
+    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Cloud protection is enabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Cloud protection is not properly configured in all policies."
+        if ($compliance.NonCompliantPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        }
+        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+        }
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+
+    return $testResult
+}

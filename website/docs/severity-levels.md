@@ -127,3 +127,27 @@ Avoid editing the maester-config.json file in the `./tests` root folder. Any cha
 
 The `maester-config.json` file in the `./Custom` folder is the only one that will be used for customizing the severity levels of tests.
 :::
+
+## Customizing MDE Test Configuration
+
+The Microsoft Defender for Endpoint (MDE) tests support additional configuration options beyond severity levels. You can customize these in your `./Custom/maester-config.json` file under the `MdeConfig` section:
+
+```json
+{
+  "MdeConfig": {
+    "ComplianceLogic": "Any",
+    "PolicyFiltering": {
+      "RequireAssignment": true,
+      "MinimumDeviceCount": 1
+    }
+  }
+}
+```
+
+### MDE Configuration Options
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ComplianceLogic` | `"Any"` | How to evaluate compliance across multiple Intune policies. `"Any"` means at least one policy must be compliant. `"All"` means every matching policy must be compliant. |
+| `PolicyFiltering.RequireAssignment` | `true` | When `true`, only policies with group assignments are evaluated. Unassigned policies are ignored. |
+| `PolicyFiltering.MinimumDeviceCount` | `1` | Minimum number of devices targeted by a policy for it to be evaluated. Set to `0` to include all assigned policies. |

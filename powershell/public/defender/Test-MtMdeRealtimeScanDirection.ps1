@@ -1,0 +1,61 @@
+<#
+.SYNOPSIS
+    Checks if real-time scan direction is set to monitor both incoming and outgoing files
+
+.DESCRIPTION
+    Verify that real-time scan direction is configured to monitor both incoming and
+    outgoing files. Limited scan direction may miss malware in certain file operations.
+
+.EXAMPLE
+    Test-MtMdeRealtimeScanDirection
+
+    Returns true if all assigned Defender AV policies have real-time scan direction set to monitor both incoming and outgoing files.
+
+.LINK
+    https://maester.dev/docs/commands/Test-MtMdeRealtimeScanDirection
+#>
+
+function Test-MtMdeRealtimeScanDirection {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $deviceCount = Get-MtMdeDeviceCount
+    if ($deviceCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No MDE-managed Windows devices found"
+        return $null
+    }
+
+    $policyConfig = Get-MdePolicyConfiguration
+    if ($policyConfig.TotalCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No assigned Microsoft Defender Antivirus policies found"
+        return $null
+    }
+
+    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+        -SettingId "device_vendor_msft_policy_config_defender_realtimescandirection" `
+        -ComplianceCheck "Enum" `
+        -ValidValues @("_0", "_1")
+
+    $testResult = $compliance.CompliantPolicies.Count -eq $policyConfig.TotalCount
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Real-time scan direction is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies:`n`n%TestResult%"
+    } else {
+        $testResultMarkdown = "Real-time scan direction is not properly configured in all policies."
+        if ($compliance.NonCompliantPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        }
+        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+        }
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType Devices
+
+    return $testResult
+}
