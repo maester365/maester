@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAF05 {
+function Test-MtEidscaAF05 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Restricted is set to 'true'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    [string]$tenantValue = $result.keyRestrictions.aaGuids -notcontains $null
+    $rawValue = $result.keyRestrictions.aaGuids -notcontains $null
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

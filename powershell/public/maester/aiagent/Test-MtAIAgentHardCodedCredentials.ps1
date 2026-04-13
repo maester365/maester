@@ -20,6 +20,7 @@
 #>
 
 function Test-MtAIAgentHardCodedCredentials {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Credentials is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

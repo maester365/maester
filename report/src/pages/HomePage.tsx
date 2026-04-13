@@ -1,5 +1,5 @@
 import { Grid } from "@tremor/react"
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 import MtTestSummary from "@/components/MtTestSummary"
 import MtDonutChart from "@/components/MtDonutChart"
 import MtSeverityChart from "@/components/MtSeverityChart"
@@ -7,6 +7,7 @@ import MtBlocksArea from "@/components/MtBlocksArea"
 import TestResultsTable from "@/components/TestResultsTable"
 
 export default function HomePage() {
+  const { selectedTenant: testResults } = useTenant()
   const tenantName = testResults.TenantName || testResults.TenantId || "Tenant"
   const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
     undefined,
