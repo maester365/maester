@@ -59,7 +59,7 @@ function Import-MtMaesterResult {
 
     process {
         foreach ($inputPath in $Path) {
-            # Resolve the path — handles globs, relative paths, etc.
+            # Resolve the path - handles globs, relative paths, etc.
             $resolvedPaths = @()
             try {
                 $resolvedPaths = @(Resolve-Path -Path $inputPath -ErrorAction Stop | Select-Object -ExpandProperty Path)

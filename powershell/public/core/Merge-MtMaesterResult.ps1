@@ -12,7 +12,7 @@ function Merge-MtMaesterResult {
         Accepts either in-memory MaesterResults objects (from Invoke-Maester -PassThru or pipeline)
         or file paths/directories that are loaded automatically via Import-MtMaesterResult.
 
-        All results are included as-is — no deduplication is performed when the same TenantId
+        All results are included as-is - no deduplication is performed when the same TenantId
         appears multiple times. This is by design to support future scenarios such as historical
         trend reports where multiple runs from the same tenant are intentional.
 
@@ -62,7 +62,7 @@ function Merge-MtMaesterResult {
         ### Multi-tenant reports (current)
         This command wraps all results into a Tenants[] array. The HTML report frontend
         detects the Tenants property and renders a tenant selector in the sidebar.
-        No deduplication is performed — if the same TenantId appears multiple times,
+        No deduplication is performed - if the same TenantId appears multiple times,
         all instances are included.
 
         ### Historical / trend reports (planned)
@@ -70,9 +70,9 @@ function Merge-MtMaesterResult {
         load results, then group by TenantId and sort by ExecutedAt within each group.
         Each result already carries TenantId and ExecutedAt, so the intelligence is:
 
-          - Different TenantIds, similar dates  → multi-tenant (use Merge-MtMaesterResult)
-          - Same TenantId, different dates      → historical trend (use future trend command)
-          - Mixed                               → group by TenantId, each group has a timeline
+          - Different TenantIds, similar dates  -> multi-tenant (use Merge-MtMaesterResult)
+          - Same TenantId, different dates      -> historical trend (use future trend command)
+          - Mixed                               -> group by TenantId, each group has a timeline
 
         Import-MtMaesterResult is intentionally a "dumb loader" that returns everything.
         The consuming command (Merge, Compare, Trend) decides how to interpret the data.
@@ -80,7 +80,7 @@ function Merge-MtMaesterResult {
         ### Pipeline architecture
         The intended pipeline pattern is:
 
-          Import-MtMaesterResult → [Merge | Compare | Trend] → Get-MtHtmlReport → Out-File
+          Import-MtMaesterResult -> [Merge | Compare | Trend] -> Get-MtHtmlReport -> Out-File
 
         Merge-MtMaesterResult also accepts -Path directly for convenience (calls Import
         internally), so the user can skip the Import step for simple scenarios:
@@ -102,7 +102,7 @@ function Merge-MtMaesterResult {
 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'FromObjects') {
-            # Collect pipeline input — may arrive one object at a time
+            # Collect pipeline input - may arrive one object at a time
             foreach ($result in $MaesterResults) {
                 $collectedResults.Add($result)
             }

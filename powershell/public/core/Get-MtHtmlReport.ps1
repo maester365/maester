@@ -45,32 +45,34 @@
         [psobject] $MaesterResults
     )
 
-    # Use depth 7 for multi-tenant to handle: Tenants > Tests > ErrorRecord > nested objects
-    $isMultiTenant = $MaesterResults.PSObject.Properties.Name -contains 'Tenants'
-    $depth = if ($isMultiTenant) { 7 } else { 5 }
+    process {
+        # Use depth 7 for multi-tenant to handle: Tenants > Tests > ErrorRecord > nested objects
+        $isMultiTenant = $MaesterResults.PSObject.Properties.Name -contains 'Tenants'
+        $depth = if ($isMultiTenant) { 7 } else { 5 }
 
-    Write-Verbose "Generating HTML report."
-    $json = $MaesterResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
+        Write-Verbose "Generating HTML report."
+        $json = $MaesterResults | ConvertTo-Json -Depth $depth -Compress -WarningAction Ignore
 
-    $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
-    $templateHtml = Get-Content -Path $htmlFilePath -Raw
+        $htmlFilePath = Join-Path -Path $PSScriptRoot -ChildPath '../../assets/ReportTemplate.html'
+        $templateHtml = Get-Content -Path $htmlFilePath -Raw
 
-    # Insert the test results json into the template.
-    # Locate the EndOfJson sentinel (handles both double-quote and backtick strings
-    # produced by different Vite/Rolldown versions) then walk back to the variable
-    # assignment that owns the placeholder object so the same variable name is preserved.
-    $endPattern = 'EndOfJson:(?:"EndOfJson"|`EndOfJson`)\}'
-    $endMatch = [regex]::Match($templateHtml, $endPattern)
-    $insertLocationEnd = $endMatch.Index + $endMatch.Length
+        # Insert the test results json into the template.
+        # Locate the EndOfJson sentinel (handles both double-quote and backtick strings
+        # produced by different Vite/Rolldown versions) then walk back to the variable
+        # assignment that owns the placeholder object so the same variable name is preserved.
+        $endPattern = 'EndOfJson:(?:"EndOfJson"|`EndOfJson`)\}'
+        $endMatch = [regex]::Match($templateHtml, $endPattern)
+        $insertLocationEnd = $endMatch.Index + $endMatch.Length
 
-    # Find the last variable declaration (var/const/let NAME=) before the end marker.
-    $startMatches = [regex]::Matches($templateHtml.Substring(0, $endMatch.Index), '(?:var|const|let)\s+\w+\s*=')
-    $startMatch = $startMatches[$startMatches.Count - 1]
-    $insertLocationStart = $startMatch.Index + $startMatch.Value.Length  # position just after the '='
+        # Find the last variable declaration (var/const/let NAME=) before the end marker.
+        $startMatches = [regex]::Matches($templateHtml.Substring(0, $endMatch.Index), '(?:var|const|let)\s+\w+\s*=')
+        $startMatch = $startMatches[$startMatches.Count - 1]
+        $insertLocationStart = $startMatch.Index + $startMatch.Value.Length  # position just after the '='
 
-    $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
-    $outputHtml += $json
-    $outputHtml += $templateHtml.Substring($insertLocationEnd)
+        $outputHtml = $templateHtml.Substring(0, $insertLocationStart)
+        $outputHtml += $json
+        $outputHtml += $templateHtml.Substring($insertLocationEnd)
 
-    return $outputHtml
+        return $outputHtml
+    }
 }
