@@ -227,6 +227,7 @@ module.exports = [
     'commands/Test-MtCisaWeakFactor',
     'commands/Test-MtCisCalendarSharing',
     'commands/Test-MtCisCloudAdmin',
+    'commands/Test-MtCisCommunicateInitiateExternalTeamsUsers',
     'commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers',
     'commands/Test-MtCisConnectionFilterSafeList',
     'commands/Test-MtCisCreateTenantDisallowed',
