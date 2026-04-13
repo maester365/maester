@@ -61,13 +61,23 @@ Connects to Microsoft Graph and Azure.
 ### EXAMPLE 4
 
 ```powershell
+Connect-Maester -Service Dataverse,Graph
+```
+
+Connects to Microsoft Graph and the Dataverse API for Copilot Studio security tests.
+The Dataverse connection uses the Az.Accounts module.
+The Copilot Studio environment is auto-discovered via the Global Discovery Service, or can be explicitly set with DataverseEnvironmentUrl in maester-config.json.
+
+### EXAMPLE 5
+
+```powershell
 Connect-Maester -UseDeviceCode
 ```
 
 Connects to Microsoft Graph and Azure using the device code flow.
 This will open a browser window to prompt for authentication.
 
-### EXAMPLE 5
+### EXAMPLE 6
 
 ```powershell
 Connect-Maester -SendMail
@@ -75,7 +85,7 @@ Connect-Maester -SendMail
 
 Connects to Microsoft Graph with the Mail.Send scope.
 
-### EXAMPLE 6
+### EXAMPLE 7
 
 ```powershell
 Connect-Maester -SendTeamsMessage
@@ -83,7 +93,7 @@ Connect-Maester -SendTeamsMessage
 
 Connects to Microsoft Graph with the ChannelMessage.Send scope.
 
-### EXAMPLE 7
+### EXAMPLE 8
 
 ```powershell
 Connect-Maester -Privileged
@@ -91,7 +101,7 @@ Connect-Maester -Privileged
 
 Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
-### EXAMPLE 8
+### EXAMPLE 9
 
 ```powershell
 Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
@@ -99,7 +109,7 @@ Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -Exchange
 
 Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 9
+### EXAMPLE 10
 
 ```powershell
 Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
@@ -107,7 +117,7 @@ Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -Excha
 
 Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 10
+### EXAMPLE 11
 
 ```powershell
 Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
@@ -115,7 +125,7 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 
 Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 11
+### EXAMPLE 12
 
 ```powershell
 Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
@@ -264,7 +274,7 @@ Accept wildcard characters: False
 
 ### -Service
 
-The services to connect to such as Azure and EXO.
+The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO.
 Default is Graph.
 
 ```yaml
