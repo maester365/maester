@@ -46,6 +46,27 @@ New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName f
 </details>
 
 <details>
+  <summary>(Optional) Grant permissions to Teams</summary>
+### (Optional) Grant permissions to Teams
+
+The Teams Role Based Access Control (RBAC) implementation utilizes service specific roles that apply to an application and the below configuration allows the authorization chain to the App Registration you created in the previous steps.
+
+> The Teams permissions are necessary to support tests that validate [Teams configurations](https://maester.dev/docs/installation#installing-azure-exchange-online-and-teams-modules).
+
+- Open Roles and administrators
+- Search and select **Teams Reader**
+- Select **Add assigment**
+- Select **No member selected**
+- Search for the name of previously created application
+- Select previously created application and select **Select** to confirm
+- Select **Next** to confirm
+- Ensure that **Active** and **Permanently assigned** are ticked
+- Enter **Justification**
+- Select **Assign** to confirm
+
+</details>
+
+<details>
   <summary>(Optional) Grant permissions to Azure</summary>
 ### (Optional) Grant permissions to Azure
 
@@ -79,4 +100,34 @@ New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/providers/Microsoft.aa
 $assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9|?{$_.Scope -eq "/" -and $_.SignInName -eq (Get-AzContext).Account.Id}
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
 ```
+</details>
+
+<details>
+  <summary>(Optional) Grant Dataverse permissions for Copilot Studio tests</summary>
+### (Optional) Grant Dataverse permissions for Copilot Studio
+
+Dataverse access is required for the Copilot Studio security tests (MT.1113–MT.1122) that evaluate Copilot Studio agent configurations.
+
+#### Create an Application User in Power Platform
+
+1. Go to the [Power Platform Admin Center](https://admin.powerplatform.microsoft.com) → select your environment → **Settings** → **Users + permissions** → **Application users**
+2. Click **New app user** → **Add an app** → select the app registration created above
+3. Select the correct **Business unit**
+4. Assign a security role with read access:
+   - **Basic User** for simplicity, or
+   - A **custom role** (e.g. `Maester Security Reader`) with Organization-level **Read** on: **Agent** (`bot`), **Agent component** (`botcomponent`), **User** (`systemuser`), and **Connection Reference** (`connectionreference`)
+5. Click **Create**
+
+#### Configure Maester
+
+Add the environment URL to `maester-config.json`:
+
+```json
+{
+  "GlobalSettings": {
+    "DataverseEnvironmentUrl": "https://org12345.crm.dynamics.com"
+  }
+}
+```
+
 </details>

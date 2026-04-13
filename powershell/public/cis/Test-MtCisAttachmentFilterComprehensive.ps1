@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisAttachmentFilterComprehensive {
+    <#
+    .SYNOPSIS
     Checks if the common attachment types filter is comprehensive
 
-.DESCRIPTION
+    .DESCRIPTION
     The common attachment types filter should be comprehensive
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisAttachmentFilterComprehensive
 
     Returns true if the attachment types match the comprehensive list supplied by CIS
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisAttachmentFilterComprehensive
-#>
-function Test-MtCisAttachmentFilterComprehensive {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -65,7 +65,7 @@ function Test-MtCisAttachmentFilterComprehensive {
             $policy = $policies | Where-Object { $_.Id -eq $policyId }
             if ($policy.EnableFileFilter -ne 'True') {
                 # If the policy isn't enabled, skip
-                break
+                continue
             }
 
             foreach ($extension in $L2Extensions) {

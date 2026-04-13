@@ -1,32 +1,25 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaGlobalAdminCount {
+    <#
+    .SYNOPSIS
     Checks if Global Admins is an acceptable number
 
-.DESCRIPTION
+    .DESCRIPTION
     A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaGlobalAdminCount
 
     Returns true if only 2 to 8 users are eligible to be global admins
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaGlobalAdminCount
-#>
-function Test-MtCisaGlobalAdminCount {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if(!(Test-MtConnection Graph)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes -and "RoleManagement.ReadWrite.Directory" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
         return $null
     }
 

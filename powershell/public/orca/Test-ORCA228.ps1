@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA228{
+    <#
+    .SYNOPSIS
     No trusted senders in Anti-phishing policy.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA228
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA228
-#>
-function Test-ORCA228{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA228{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA228: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA228" -ErrorRecord $_ -AdditionalContext "Running ORCA228 test"
         throw
     } finally {
         if($obj.SkipInReport) {

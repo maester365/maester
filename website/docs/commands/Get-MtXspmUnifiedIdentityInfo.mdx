@@ -1,0 +1,83 @@
+---
+sidebar_class_name: hidden
+description: Check data from various XDR tables to identify users and workload identities with sensitive privileges and apply classification from community project EntraOps.
+id: Get-MtXspmUnifiedIdentityInfo
+title: Get-MtXspmUnifiedIdentityInfo
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtXspmUnifiedIdentityInfo.ps1
+---
+
+## SYNOPSIS
+
+Check data from various XDR tables to identify users and workload identities with sensitive privileges and apply classification from community project EntraOps.
+
+## SYNTAX
+
+```powershell
+Get-MtXspmUnifiedIdentityInfo [-ValidateRequiredTablesOnly] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Executes KQL function over Advanced Hunting API to retrieves unified identity information from XDR, including user and workload identities with sensitive privileges.
+It applies classification from the EntraOps community project to identify critical assets and their roles.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtXspmUnifiedIdentityInfo
+```
+
+Returns a detailed list of user and workload identities with sensitive privileges, including their roles, classifications, and criticality levels.
+
+## PARAMETERS
+
+### -ValidateRequiredTablesOnly
+
+\{\{ Fill ValidateRequiredTablesOnly Description \}\}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtXspmUnifiedIdentityInfo](https://maester.dev/docs/commands/Get-MtXspmUnifiedIdentityInfo)

@@ -1,22 +1,22 @@
-<#
-.SYNOPSIS
+﻿function Compare-MtTestResult {
+    <#
+    .SYNOPSIS
     Compares Maester test result JSON files
-.DESCRIPTION
+    .DESCRIPTION
     Will compare the most recent two test result JSON outputs from prior Invoke-Maester
     runs, or will accept any two test result JSON files and provide the tests that have changed.
-.EXAMPLE
+    .EXAMPLE
     Compare-MtTestResult -BaseDir .\test-results
-.EXAMPLE
+    .EXAMPLE
     $tests = @{
-        NewTest   = (Get-Content .\test-results\TestResults-2024-05-21-182925.json | ConvertFrom-Json)
-        PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
+    NewTest   = (Get-Content .\test-results\TestResults-2024-05-21-182925.json | ConvertFrom-Json)
+    PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
     }
     Compare-MtTestResult @tests
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Compare-MtTestResult
-#>
-function Compare-MtTestResult {
+    #>
     [CmdletBinding()]
     param (
         [Parameter(ParameterSetName = "Directory", Position = 0, Mandatory = $true)]
@@ -31,7 +31,7 @@ function Compare-MtTestResult {
     )
 
     if (-not ($NewTest -and $PriorTest)) {
-        $reportProperties = @("Account", "Blocks", "CurrentVersion", "ExecutedAt", "FailedCount", "LatestVersion", "PassedCount", "Result", "SkippedCount", "TenantId", "TenantName", "Tests", "TotalCount")
+        $reportProperties = @("Account", "Blocks", "CurrentVersion", "ExecutedAt", "ErrorCount", "FailedCount", "InvestigateCount", "LatestVersion", "NotRunCount", "PassedCount", "Result", "SkippedCount", "TenantId", "TenantName", "Tests", "TotalCount")
         $reports = @()
         $files = Get-ChildItem "$BaseDir\TestResults-*.json"
         Write-Verbose "Found $($files.Count) TestResults-*.json files in $BaseDir"

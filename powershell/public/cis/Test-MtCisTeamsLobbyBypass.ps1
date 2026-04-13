@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisTeamsLobbyBypass {
+    <#
+    .SYNOPSIS
     Ensure only people in my org can bypass the lobby
 
-.DESCRIPTION
+    .DESCRIPTION
     Only people in my org can bypass the lobby
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisTeamsLobbyBypass
 
     Returns true if only people in my org can bypass the lobby
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisTeamsLobbyBypass
-#>
-function Test-MtCisTeamsLobbyBypass {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

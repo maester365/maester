@@ -1,0 +1,10 @@
+{
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "Preview",
+    "description": "The label used to tell the user they are viewing unreleased documentation."
+  },
+  "theme.docs.versions.unreleasedVersionBannerText": {
+    "message": "This documentation is for the **Preview release** ({versionLabel}). While generally stable, some features may be updated before the final release.",
+    "description": "The message shown in the banner for unreleased documentation."
+  }
+}

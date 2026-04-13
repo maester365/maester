@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA119{
+    <#
+    .SYNOPSIS
     Similar Domains Safety Tips is enabled.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA119
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA119
-#>
-function Test-ORCA119{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA119{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA119: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA119" -ErrorRecord $_ -AdditionalContext "Running ORCA119 test"
         throw
     } finally {
         if($obj.SkipInReport) {

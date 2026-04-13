@@ -16,7 +16,7 @@ Returns structured RFC compliant object from DKIM record
 
 ```powershell
 ConvertFrom-MailAuthenticationRecordDkim [-DomainName] <String> [[-DnsServerIpAddress] <IPAddress>]
- [[-DkimSelector] <String>] [-QuickTimeout] [-NoHostsFile] [-ProgressAction <ActionPreference>]
+ [-DkimDnsName] <String> [-QuickTimeout] [-NoHostsFile] [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
@@ -29,12 +29,12 @@ Adapted from:
 - DKIM https://datatracker.ietf.org/doc/html/rfc6376
 ```
 record      : v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric
-            7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;
+7f/S0h+qF4aqIiQqHFCDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB;
 keyType     : rsa
 hash        : {sha1, sha256}
 notes       :
 publicKey   : MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPkb8bu8RGWeJGk3hJrouZXIdZ+HTp/azRp8IUOHp5wKvPUAi/54PwuLscUjRk4Rh3hjIkMpKRfJJXPxWbrT7eMLric7f/S0h+qF4aqIiQqHF
-            CDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB
+CDAYfMnN6V3Wbke2U5EGm0H/cAUYkaf2AtuHJ/rdY/EXaldAm00PgT9QQMez66QIDAQAB
 validBase64 : True
 services    : {*}
 flags       :
@@ -80,23 +80,23 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 1.1.1.1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DkimSelector
+### -DkimDnsName
 
-Selector-name for the DKIM record to retrieve.
+DKIM DNS record Name to retrieve.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 3
-Default value: Selector1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

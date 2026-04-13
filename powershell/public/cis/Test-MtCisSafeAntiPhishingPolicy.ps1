@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisSafeAntiPhishingPolicy {
+    <#
+    .SYNOPSIS
     Checks if the anti-phishing policy matches CIS recommendations
 
-.DESCRIPTION
+    .DESCRIPTION
     The anti-phishing policy should be enabled, and the settings for PhishThresholdLevel, EnableMailboxIntelligenceProtection, EnableMailboxIntelligence, EnableSpoofIntelligence controls match CIS recommendations
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisSafeAntiPhishingPolicy
 
     Returns true if the default anti-phishing policy matches CIS recommendations
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisSafeAntiPhishingPolicy
-#>
-function Test-MtCisSafeAntiPhishingPolicy {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +35,7 @@ function Test-MtCisSafeAntiPhishingPolicy {
         $policies = Get-MtExo -Request AntiPhishPolicy
 
         # We grab the default policy as that is what CIS checks
-        $policy = $policies | Where-Object { $_.Name -eq 'Office365 AntiPhish Default' }
+        $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
         $antiPhishingPolicyCheckList = @()
 

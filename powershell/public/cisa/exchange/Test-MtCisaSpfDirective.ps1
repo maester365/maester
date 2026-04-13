@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpfDirective {
+    <#
+    .SYNOPSIS
     Checks state of SPF records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpfDirective
 
     Returns true if SPF record exists and has at least one directive
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpfDirective
-#>
-function Test-MtCisaSpfDirective {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -31,14 +31,12 @@ function Test-MtCisaSpfDirective {
     $spfRecords = @()
     foreach($domain in $sendingDomains){
         $spfRecord = Get-MailAuthenticationRecord -DomainName $domain.DomainName -Records SPF
-        $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed"
-        $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value ""
+        $spfRecord | Add-Member -MemberType NoteProperty -Name "pass" -Value "Failed" -ErrorAction Ignore
+        $spfRecord | Add-Member -MemberType NoteProperty -Name "reason" -Value "" -ErrorAction Ignore
 
-        $directives = ($spfRecord.spfRecord.terms|Where-Object {`
-            $_.mechanismTarget -ne ""
-        }).directive
+        $directives = ($spfRecord.spfLookups | Where-Object {$_.Include}).SPFSourceDomain | Select-Object -Unique
 
-        $check = "include:spf.protection.outlook.com" -in $directives
+        $check = "spf.protection.outlook.com" -in $directives -or "outlook.com" -in $directives
 
         if(($directives|Measure-Object).Count -ge 1 -and $check){
             $spfRecord.pass = "Passed"
@@ -47,7 +45,7 @@ function Test-MtCisaSpfDirective {
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = "coexistence domain"
         }elseif(($directives|Measure-Object).Count -ge 1 -and -not $check){
-            $spfRecord.reason = "No EXO directive"
+            $spfRecord.reason = "No Exchange Online directive"
         }elseif($spfRecord.spfRecord -like "*not available"){
             $spfRecord.pass = "Skipped"
             $spfRecord.reason = $spfRecord.spfRecord
@@ -57,7 +55,8 @@ function Test-MtCisaSpfDirective {
                 $spfRecord.reason = "Redirect modifier"
             }
         }else{
-            $spfRecord.reason = "No mechanism targets"
+            #$spfRecord.reason = "No mechanism targets"
+            $spfRecord.reason = "Failure to obtain record"
         }
 
         #Hacky sort, doesn't handle IPv6
@@ -81,7 +80,7 @@ function Test-MtCisaSpfDirective {
     if($testResult){
         $testResultMarkdown = "Well done. Your tenant's domains have at least 1 directives with specific mechanism targets, review authorized senders for accuracy.`n`n%TestResult%"
     }else{
-        $testResultMarkdown = "Your tenant's domains do not restrict authorized senders with SPF fully. Ensure authorized senders are specified.`n`n%TestResult%"
+        $testResultMarkdown = "Not all Exchange Online accepted domains designate Exchange Online as approved sender.`n`n%TestResult%"
     }
 
     $passResult = "✅ Pass"

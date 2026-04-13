@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Add-MtTestResultDetail {
+    <#
+    .SYNOPSIS
     Add detailed information about a test so that it can be displayed in the test results report.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function is used to add detailed information about a test so that it can be displayed in the test results report.
 
     The description and result support markdown format.
@@ -11,29 +12,33 @@
     it will be used to populate the description and result fields.
 
     A good example is the markdown for the Test-MtCaEmergencyAccessExists cmdlet:
-        - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
-        - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
+    - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.md
+    - https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaEmergencyAccessExists.ps1
 
     The markdown file can include a separator `<!--- Results --->` to split the description and result sections.
     This allows for the overview and detailed information to be displayed separately in the Test results.
 
-.EXAMPLE
+    .EXAMPLE
     Add-MtTestResultDetail -Description 'Test description' -Result 'Test result'
 
     This example adds detailed information about a test with a brief description and the result of the test.
 
     ```powershell
-        $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
+    $policiesWithoutEmergency = $policies | Where-Object { $CheckId -notin $_.conditions.users.excludeUsers -and $CheckId -notin $_.conditions.users.excludeGroups }
 
-        Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
+    Add-MtTestResultDetail -GraphObjects $policiesWithoutEmergency -GraphObjectType ConditionalAccess
     ```
 
     This example shows how to use the Add-MtTestResultDetail function to add rich markdown content to the test results with deep links to the admin portal.
 
-.LINK
+    .EXAMPLE
+    Add-MtTestResultDetail -Description 'Check for stale credentials' -Result 'Found 3 service principals with unused credentials' -Investigate
+
+    This example marks a test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
+
+    .LINK
     https://maester.dev/docs/commands/Add-MtTestResultDetail
-#>
-function Add-MtTestResultDetail {
+    #>
     [CmdletBinding()]
     param(
         # Brief description of what this test is checking.
@@ -71,13 +76,19 @@ function Add-MtTestResultDetail {
         [Parameter(Mandatory = $false)]
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
-            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error'
+            'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
+            'NotLicensedCustomerLockbox','NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps'
         )]
         [string] $SkippedBecause,
 
         # A custom reason for why the test was skipped. Requires `-SkippedBecause Custom`.
         [Parameter(Mandatory = $false)]
         [string] $SkippedCustomReason,
+
+        # Marks the test as requiring investigation. The test passed but needs manual review to confirm all scenarios were considered.
+        # This is different from skipped - the test ran and collected data, but the result needs human interpretation.
+        [Parameter(Mandatory = $false)]
+        [switch] $Investigate,
 
         # The error object that caused the test to be skipped.
         [Parameter(Mandatory = $false)]
@@ -102,6 +113,9 @@ function Add-MtTestResultDetail {
             $SkippedReason = "An error occurred while running the test. ⚠️"
             if ($SkippedError) {
                 $SkippedReason += "`n`n" + '```' + "`n`n" + ($SkippedError | Out-String) + "`n`n" + '```' + "`n`n"
+            }
+            if ([string]::IsNullOrEmpty($Result)) {
+                $Result = "Error. $SkippedReason"
             }
         } else {
             $SkippedReason = Get-MtSkippedReason $SkippedBecause
@@ -179,14 +193,18 @@ function Add-MtTestResultDetail {
         $Service = ''
     }
 
+    # Handle Investigate status separately from Skipped
+    $TestInvestigate = $Investigate.IsPresent
+
     $testInfo = @{
-        TestTitle       = $TestTitle
-        TestDescription = $Description
-        TestResult      = $Result
-        TestSkipped     = $SkippedBecause
-        SkippedReason   = $SkippedReason
-        Severity        = $Severity
-        Service         = $Service
+        TestTitle           = $TestTitle
+        TestDescription     = $Description
+        TestResult          = $Result
+        TestSkipped         = $SkippedBecause
+        SkippedReason       = $SkippedReason
+        TestInvestigate     = $TestInvestigate
+        Severity            = $Severity
+        Service             = $Service
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName

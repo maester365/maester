@@ -13,6 +13,7 @@ To remove all Admins with Root Scope permissions, as a Global Admin:
 3. On the **Properties** page, go to the **Access management for Azure resources** section.
 4. In the information bar, click **Manage elevated access users**.
 5. Select all User Access Administrators and click **Remove**.
+6. Also check other role assignments, as they need to be removed to pass the tests.
 
 To remove the admins through CLI:
 ```powershell

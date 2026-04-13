@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDiagnosticSettings {
+    <#
+    .SYNOPSIS
     Checks for configuration of Entra diagnostic settings
 
-.DESCRIPTION
+    .DESCRIPTION
     Security logs SHALL be sent to the agency's security operations center for monitoring.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDiagnosticSettings
 
     Returns true if diagnostic settings for the appropriate logs are configured
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDiagnosticSettings
-#>
-function Test-MtCisaDiagnosticSettings {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Diagnostic Settings is a specific term')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -54,6 +54,11 @@ function Test-MtCisaDiagnosticSettings {
     $configs = @()
 
     $settings = Invoke-AzRestMethod -Method GET -Path "/providers/microsoft.aadiam/diagnosticSettings?api-version=2017-04-01-preview"
+    if ($settings.StatusCode -ne '200') {
+        Write-Verbose "Could not retrieve diagnostic settings. Status code: $($settings.StatusCode) Message: $($settings.Content)"
+        Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        return $null
+    }
     $settings = ($settings.Content|ConvertFrom-Json).value
 
     $settings | ForEach-Object { `

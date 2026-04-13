@@ -1,26 +1,26 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisZAP {
+    <#
+    .SYNOPSIS
     Checks if the Zero-hour auto purge (ZAP) for Microsoft Teams is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Zero-hour auto purge (ZAP) should be enabled for Microsoft Teams
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisZAP
 
     Returns true if Zero-hour auto purge (ZAP) is enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisZAP
-#>
-function Test-MtCisZAP {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
-    if (!(Test-MtConnection ExchangeOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
+    if (!(Test-MtConnection Teams)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedTeams
         return $null
     }
 

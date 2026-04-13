@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP01 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Enabled Self service password reset for administrators is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicates whether administrators of the tenant can use the Self-Service Password Reset (SSPR). The policy applies to some critical critical roles in Microsoft Entra ID.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
+    graph/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP01
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToUseSSPR -eq 'false'
-#>
-
-function Test-MtEidscaAP01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +37,7 @@ function Test-MtEidscaAP01 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'false'** for **policies/authorizationPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Informational'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Info'
 
     return $tenantValue
 }

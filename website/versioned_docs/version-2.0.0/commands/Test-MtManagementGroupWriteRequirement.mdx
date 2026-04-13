@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Checks if write permissions are required to create new management groups
+id: Test-MtManagementGroupWriteRequirement
+title: Test-MtManagementGroupWriteRequirement
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtManagementGroupWriteRequirement.ps1
+---
+
+## SYNOPSIS
+
+Checks if write permissions are required to create new management groups
+
+## SYNTAX
+
+```powershell
+Test-MtManagementGroupWriteRequirement [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This test ensures that only users with explicit write access can create new management groups.
+This is important to prevent unauthorized creation of management groups which could lead to security risks.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtManagementGroupWriteRequirement
+```
+
+Returns true if write permissions are required for creating new management groups.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtManagementGroupWriteRequirement](https://maester.dev/docs/commands/Test-MtManagementGroupWriteRequirement)

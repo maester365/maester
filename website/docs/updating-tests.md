@@ -1,20 +1,20 @@
 ---
-title: Updating tests
+title: 🧪 Updating tests
 ---
 
 # Updating your Maester tests
 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update your GitHub repository with the latest tests.
 
-## Step 1: Change to the folder with your tests
+### Step 1: Change to the folder with your tests
 
 Open a command prompt and navigate to the folder where you have your Maester tests.
 
 ```powershell
-cd maester-tests\tests
+cd maester-tests
 ```
 
-## Step 2: Update the Maester module
+### Step 2: Update the Maester module
 
 Update the **Maester** PowerShell module to the latest version and load it.
 
@@ -23,7 +23,7 @@ Update-Module Maester -Force
 Import-Module Maester
 ```
 
-## Step 3: Update the tests folder
+### Step 3: Update the tests folder
 
 You will be prompted to confirm changes to the tests folder.
 
@@ -36,6 +36,6 @@ Update-MaesterTests
 
 :::note
 
-If you are not seeing the latests tests, try closing and reopening your PowerShell session after completing **Step 2** (`Update-Module`).
+If you are not seeing the latest tests, try closing and reopening your PowerShell session after completing **Step 2** (`Update-Module`).
 
 :::

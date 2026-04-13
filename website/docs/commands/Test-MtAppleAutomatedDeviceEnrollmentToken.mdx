@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Check the validity of the Apple Automated Device Enrollment (ADE) token for Intune.
+id: Test-MtAppleAutomatedDeviceEnrollmentToken
+title: Test-MtAppleAutomatedDeviceEnrollmentToken
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAppleAutomatedDeviceEnrollmentToken.ps1
+---
+
+## SYNOPSIS
+
+Check the validity of the Apple Automated Device Enrollment (ADE) token for Intune.
+
+## SYNTAX
+
+```powershell
+Test-MtAppleAutomatedDeviceEnrollmentToken [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The Apple Automated Device Enrollment (ADE) token is required to synchronize Apple devices with Microsoft Intune.
+This command checks if the ADE token is valid and not expired.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAppleAutomatedDeviceEnrollmentToken
+```
+
+Returns true if the ADE token is valid for more than 30 days, false if it is expired or expiring soon.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAppleAutomatedDeviceEnrollmentToken](https://maester.dev/docs/commands/Test-MtAppleAutomatedDeviceEnrollmentToken)

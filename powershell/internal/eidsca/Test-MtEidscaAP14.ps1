@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP14 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to read other users is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Prevents all non-admins from reading user information from the directory. This flag doesn't prevent reading user information in other Microsoft services like Exchange Online.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
+    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP14
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToReadOtherUsers -eq 'true'
-#>
-
-function Test-MtEidscaAP14 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +34,7 @@ function Test-MtEidscaAP14 {
     } else {
         $testResultMarkdown = "Your tenant is configured as **$($tenantValue)**.`n`nThe recommended value is **'true'** for **policies/authorizationPolicy**"
     }
-    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Informational'
+    Add-MtTestResultDetail -Result $testResultMarkdown -Severity 'Info'
 
     return $tenantValue
 }

@@ -1,43 +1,71 @@
 ---
+title: 📦 Installation guide
 sidebar_position: 1
-title: Introduction
 ---
 
-## What is Maester?
+- Install the **Maester** PowerShell module, Pester, and the out of the box tests.
 
-Maester is a PowerShell based test automation framework to help you stay in control of your Microsoft security configuration.
+```powershell
+Install-Module Pester -SkipPublisherCheck -Force -Scope CurrentUser
+Install-Module Maester -Scope CurrentUser
 
-## Why Maester?
+md maester-tests
+cd maester-tests
+Install-MaesterTests
+```
 
-As business needs evolve, we often need to make changes to our tenant configuration. As employees come and go, new features are added, and existing features are updated. How do you ensure that a change in one area doesn't introduce a security vulnerability in another?
+- Sign into your Microsoft 365 tenant and run the tests.
 
-Take for example conditional access policies. You may have a policy that requires multi-factor authentication for a group of users. What if someone accidentally deletes the group or removes users from the group? **Your conditional access policy is now ineffective.**
+```powershell
+Connect-Maester
+Invoke-Maester
+```
 
-Let's take another scenario that is fairly common. What if the original author of the conditional access policy leaves the company and someone else makes a change to the policy without understanding the implications?
+## Invoke-Maester
 
-## How does Maester help?
+To learn more about the `Invoke-Maester` cmdlet including how to filter tests, and customize the run of the Pester Configuration see the [Invoke-Maester](commands/Invoke-Maester.mdx) documentation.
 
-What if we could run a set of tests to ensure that our configuration is in compliance with our security policies?
+## Optional modules and permissions
 
-That is exactly what Maester does.
+Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
 
-:::info[Why Maester?]
+### Installing Azure, Exchange Online and Teams modules
 
-Maester helps you monitor your Microsoft 365 tenant by running a set of tests to ensure your configuration is in compliance with your security policies.
+```powershell
+Install-Module Az.Accounts -Scope CurrentUser
+Install-Module ExchangeOnlineManagement -Scope CurrentUser
+Install-Module MicrosoftTeams -Scope CurrentUser
+```
 
-:::
+> The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
 
-Maester provides a framework for you to bring DevOps practices to managing your Microsoft security configuration.
+### Connecting to Azure, Exchange and other services
 
-* Define your security policies as code and store them in a version control system.
-* Continuously run tests that ensure your tenant configuration is complying with the defined policies.
-* Found an incorrect configuration? Create a new test to ensure it doesn't happen again.
-* Write tests using [Pester](https://pester.dev/), a popular testing framework for PowerShell.
-* Use the built-in tests to quickly get started with monitoring your tenant.
-* Write custom tests as you introduce new configuration and codify your intent for the configuration.
+In order to run all the CISA tests, you need to connect to the Azure, Exchange Online, and other modules.
 
-## Introducing Maester
+For a more detailed introduction to these concepts see the [Connect-Maester](connect-maester/readme.md) documentation.
 
-This introductory session on Maester is from the [PowerShell + DevOps Global Summit 2024](https://www.powershellsummit.org/) and provides an overview of the Maester framework.
+Run the following command to interactively connect to the Azure, Exchange Online, and other modules. A sign in window will appear for each module.
 
-<iframe width="640" height="360" src="https://www.youtube.com/embed/xfs02tjSU24" title="Introducing Maester: Your Microsoft 365 test automation framework by Merill Fernando" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+```powershell
+Connect-Maester -Service All
+```
+
+### Permissions
+
+Exchange Online implements a [role-based access control model](https://learn.microsoft.com/exchange/permissions-exo/permissions-exo). The controls these cmdlets test, require minimum roles of either of the following:
+
+- View-Only Configuration OR
+- O365SupportViewConfig
+
+## Next Steps
+
+- Monitoring with Maester
+  - [Set up Maester on GitHub](monitoring/github.md)
+  - [Set up Maester on Azure DevOps](monitoring/azure-devops.md)
+  - [Set up Maester on Azure Container App Jobs](monitoring/azure-container-app-job.md)
+- Alerting with Maester
+  - [Set up Maester email alerts](alerts/email.md)
+  - [Set up Maester Teams alerts](alerts/teams.md)
+  - [Set up Maester Slack alerts](alerts/slack.md)
+- [Writing Custom Tests](writing-tests/index.mdx)

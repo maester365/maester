@@ -1,18 +1,18 @@
-<#
-.SYNOPSIS
+﻿function ConvertFrom-QueryString {
+    <#
+    .SYNOPSIS
     Convert Query String to object.
-.EXAMPLE
+    .EXAMPLE
     PS C:\>ConvertFrom-QueryString '?name=path/file.json&index=10'
     Convert query string to object.
-.EXAMPLE
+    .EXAMPLE
     PS C:\>'name=path/file.json&index=10' | ConvertFrom-QueryString -AsHashtable
     Convert query string to hashtable.
-.INPUTS
+    .INPUTS
     System.String
-.LINK
+    .LINK
     https://github.com/jasoth/Utility.PS
-#>
-function ConvertFrom-QueryString {
+    #>
     [CmdletBinding()]
     [OutputType([psobject])]
     [OutputType([hashtable])]

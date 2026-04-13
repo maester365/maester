@@ -26,8 +26,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -57,8 +55,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -139,8 +135,6 @@
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0",
         "Severity:Medium"
       ],
@@ -222,8 +216,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -253,8 +245,6 @@
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -335,8 +325,6 @@
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -417,8 +405,6 @@
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -499,8 +485,6 @@
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -581,8 +565,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -663,8 +645,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -694,8 +674,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -725,8 +703,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -807,8 +783,6 @@
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -838,8 +812,6 @@
         "CIS E5 Level 2",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -869,8 +841,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -951,8 +921,6 @@
         "CIS E5 Level 1",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -1033,8 +1001,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -1115,8 +1081,6 @@
         "CIS E5 Level 1",
         "CIS E5",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Passed",
@@ -1146,8 +1110,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Failed",
@@ -1223,8 +1185,6 @@
       "Name": "CIS.M365.8.1.1: (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
       "HelpUrl": "",
       "Tag": [
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS.M365.8.1.1",
@@ -1304,8 +1264,6 @@
       "HelpUrl": "",
       "Tag": [
         "CIS.M365.8.2.2",
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS E3 Level 1"
@@ -1384,8 +1342,6 @@
       "HelpUrl": "",
       "Tag": [
         "CIS.M365.8.2.4",
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS E3 Level 1"
@@ -1463,8 +1419,6 @@
       "Name": "CIS.M365.8.4.1: (L1) Ensure all or a majority of third-party and custom apps are blocked",
       "HelpUrl": "",
       "Tag": [
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS.M365.8.4.1",
@@ -1543,8 +1497,6 @@
       "Name": "CIS.M365.8.5.3: (L1) Ensure only people in my org can bypass the lobby",
       "HelpUrl": "",
       "Tag": [
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS.M365.8.5.3",
@@ -1623,8 +1575,6 @@
       "Name": "CIS.M365.8.6.1: (L1) Ensure users can report security concerns in Teams to internal destination",
       "HelpUrl": "",
       "Tag": [
-        "All",
-        "Security",
         "CIS",
         "CIS M365 v4.0.0",
         "CIS.M365.8.6.1",
@@ -1707,8 +1657,6 @@
         "MS.AAD.1.1",
         "CISA",
         "CISA.MS.AAD.1.1",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Passed",
@@ -1737,8 +1685,6 @@
         "MS.AAD.2.1",
         "CISA.MS.AAD.2.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -1767,8 +1713,6 @@
         "MS.AAD.2.2",
         "CISA.MS.AAD.2.2",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -1797,8 +1741,6 @@
         "MS.AAD.2.3",
         "CISA.MS.AAD.2.3",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -1878,8 +1820,6 @@
         "MS.AAD.3.1",
         "CISA.MS.AAD.3.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -1959,8 +1899,6 @@
         "MS.AAD.3.2",
         "CISA.MS.AAD.3.2",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Passed",
@@ -1989,8 +1927,6 @@
         "MS.AAD.3.3",
         "CISA.MS.AAD.3.3",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2070,8 +2006,6 @@
         "MS.AAD.3.4",
         "CISA.MS.AAD.3.4",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Passed",
@@ -2100,8 +2034,6 @@
         "MS.AAD.3.5",
         "CISA.MS.AAD.3.5",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2181,8 +2113,6 @@
         "MS.AAD.3.6",
         "CISA.MS.AAD.3.6",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2262,8 +2192,6 @@
         "MS.AAD.3.7",
         "CISA.MS.AAD.3.7",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2343,8 +2271,6 @@
         "MS.AAD.3.8",
         "CISA.MS.AAD.3.8",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2424,8 +2350,6 @@
         "MS.AAD.4.1",
         "CISA.MS.AAD.4.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P1"
       ],
       "Result": "Failed",
@@ -2505,8 +2429,6 @@
         "MS.AAD.5.1",
         "CISA.MS.AAD.5.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -2535,8 +2457,6 @@
         "MS.AAD.5.2",
         "CISA.MS.AAD.5.2",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -2616,8 +2536,6 @@
         "MS.AAD.5.3",
         "CISA.MS.AAD.5.3",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -2697,8 +2615,6 @@
         "MS.AAD.6.1",
         "CISA.MS.AAD.6.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -2727,8 +2643,6 @@
         "MS.AAD.7.1",
         "CISA.MS.AAD.7.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -2757,8 +2671,6 @@
         "MS.AAD.7.2",
         "CISA.MS.AAD.7.2",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -2838,8 +2750,6 @@
         "MS.AAD.7.3",
         "CISA",
         "CISA.MS.AAD.7.3",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -2868,8 +2778,6 @@
         "MS.AAD.7.4",
         "CISA.MS.AAD.7.4",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -2949,8 +2857,6 @@
         "MS.AAD.7.5",
         "CISA.MS.AAD.7.5",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Passed",
@@ -2979,8 +2885,6 @@
         "MS.AAD.7.6",
         "CISA.MS.AAD.7.6",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -3060,8 +2964,6 @@
         "MS.AAD.7.7",
         "CISA.MS.AAD.7.7",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -3141,8 +3043,6 @@
         "MS.AAD.7.8",
         "CISA.MS.AAD.7.8",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -3222,8 +3122,6 @@
         "MS.AAD.7.9",
         "CISA.MS.AAD.7.9",
         "CISA",
-        "Security",
-        "All",
         "Entra ID P2"
       ],
       "Result": "Failed",
@@ -3303,8 +3201,6 @@
         "MS.AAD.8.1",
         "CISA.MS.AAD.8.1",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Passed",
@@ -3333,8 +3229,6 @@
         "MS.AAD.8.2",
         "CISA.MS.AAD.8.2",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -3414,8 +3308,6 @@
         "MS.AAD.8.3",
         "CISA",
         "CISA.MS.AAD.8.3",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Failed",
@@ -3495,7 +3387,6 @@
         "MS.EXO.3.1",
         "CISA.MS.EXO.03.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -3575,7 +3466,6 @@
         "MS.EXO.6.1",
         "CISA.MS.EXO.06.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -3604,7 +3494,6 @@
         "MS.EXO.6.2",
         "CISA.MS.EXO.06.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -3684,7 +3573,6 @@
         "MS.EXO.7.1",
         "CISA.MS.EXO.07.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -3764,7 +3652,6 @@
         "MS.EXO.8.1",
         "CISA.MS.EXO.08.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -3844,7 +3731,6 @@
         "MS.EXO.9.3",
         "CISA.MS.EXO.09.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -3924,7 +3810,6 @@
         "MS.EXO.9.5",
         "CISA.MS.EXO.09.5",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4004,7 +3889,6 @@
         "MS.EXO.1.1",
         "CISA.MS.EXO.1.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -4033,7 +3917,6 @@
         "MS.EXO.10.1",
         "CISA.MS.EXO.10.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4113,7 +3996,6 @@
         "MS.EXO.10.2",
         "CISA.MS.EXO.10.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4193,7 +4075,6 @@
         "MS.EXO.10.3",
         "CISA.MS.EXO.10.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4273,7 +4154,6 @@
         "MS.EXO.11.1",
         "CISA.MS.EXO.11.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4353,7 +4233,6 @@
         "MS.EXO.11.2",
         "CISA.MS.EXO.11.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4433,7 +4312,6 @@
         "MS.EXO.11.3",
         "CISA.MS.EXO.11.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4513,7 +4391,6 @@
         "MS.EXO.12.1",
         "CISA.MS.EXO.12.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4593,7 +4470,6 @@
         "MS.EXO.12.2",
         "CISA.MS.EXO.12.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -4622,7 +4498,6 @@
         "MS.EXO.13.1",
         "CISA.MS.EXO.13.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -4651,7 +4526,6 @@
         "MS.EXO.14.1",
         "CISA.MS.EXO.14.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4731,7 +4605,6 @@
         "MS.EXO.14.2",
         "CISA.MS.EXO.14.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4811,7 +4684,6 @@
         "MS.EXO.14.3",
         "CISA.MS.EXO.14.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4891,7 +4763,6 @@
         "MS.EXO.15.1",
         "CISA.MS.EXO.15.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -4971,7 +4842,6 @@
         "MS.EXO.15.2",
         "CISA.MS.EXO.15.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5051,7 +4921,6 @@
         "MS.EXO.15.3",
         "CISA.MS.EXO.15.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5131,7 +5000,6 @@
         "MS.EXO.16.1",
         "CISA.MS.EXO.16.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -5160,7 +5028,6 @@
         "MS.EXO.17.1",
         "CISA.MS.EXO.17.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5240,7 +5107,6 @@
         "MS.EXO.17.2",
         "CISA.MS.EXO.17.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -5269,7 +5135,6 @@
         "MS.EXO.17.3",
         "CISA.MS.EXO.17.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5349,7 +5214,6 @@
         "MS.EXO.2.1",
         "CISA.MS.EXO.2.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5429,7 +5293,6 @@
         "MS.EXO.2.2",
         "CISA.MS.EXO.2.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5509,7 +5372,6 @@
         "MS.EXO.4.1",
         "CISA.MS.EXO.4.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5589,7 +5451,6 @@
         "MS.EXO.4.2",
         "CISA.MS.EXO.4.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5669,7 +5530,6 @@
         "MS.EXO.5.1",
         "CISA.MS.EXO.5.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -5698,7 +5558,6 @@
         "MS.EXO.8.2",
         "CISA.MS.EXO.8.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5778,7 +5637,6 @@
         "MS.EXO.8.4",
         "CISA.MS.EXO.8.4",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5858,7 +5716,6 @@
         "MS.EXO.9.1",
         "CISA.MS.EXO.9.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -5938,7 +5795,6 @@
         "MS.EXO.9.2",
         "CISA.MS.EXO.9.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -6018,7 +5874,6 @@
         "MS.SHAREPOINT.1.1",
         "CISA.MS.SHAREPOINT.1.1",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -6098,7 +5953,6 @@
         "MS.SHAREPOINT.1.3",
         "CISA.MS.SHAREPOINT.1.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -6237,8 +6091,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF01"
       ],
       "Result": "Passed",
@@ -6264,8 +6116,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF02"
       ],
       "Result": "Passed",
@@ -6291,8 +6141,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF03"
       ],
       "Result": "Failed",
@@ -6369,8 +6217,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF04"
       ],
       "Result": "Failed",
@@ -6447,8 +6293,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AG01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AG01"
       ],
       "Result": "Failed",
@@ -6520,8 +6364,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AG02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AG02"
       ],
       "Result": "Failed",
@@ -6598,8 +6440,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AG03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AG03"
       ],
       "Result": "Passed",
@@ -6625,8 +6465,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM01"
       ],
       "Result": "Passed",
@@ -6652,8 +6490,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM02"
       ],
       "Result": "Passed",
@@ -6679,8 +6515,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM03"
       ],
       "Result": "Passed",
@@ -6706,8 +6540,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM04"
       ],
       "Result": "Passed",
@@ -6733,8 +6565,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM06",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM06"
       ],
       "Result": "Passed",
@@ -6760,8 +6590,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM07",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM07"
       ],
       "Result": "Passed",
@@ -6787,8 +6615,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM09",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM09"
       ],
       "Result": "Passed",
@@ -6814,8 +6640,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AM10",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AM10"
       ],
       "Result": "Passed",
@@ -6841,8 +6665,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP01"
       ],
       "Result": "Failed",
@@ -6914,8 +6736,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP04"
       ],
       "Result": "Failed",
@@ -6992,8 +6812,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP05",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP05"
       ],
       "Result": "Failed",
@@ -7070,8 +6888,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP06",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP06"
       ],
       "Result": "Failed",
@@ -7148,8 +6964,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP07",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP07"
       ],
       "Result": "Passed",
@@ -7175,8 +6989,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP08",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP08"
       ],
       "Result": "Failed",
@@ -7253,8 +7065,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP09",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP09"
       ],
       "Result": "Passed",
@@ -7280,8 +7090,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP10",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP10"
       ],
       "Result": "Passed",
@@ -7307,8 +7115,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AP14",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP14"
       ],
       "Result": "Failed",
@@ -7380,8 +7186,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AS04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AS04"
       ],
       "Result": "Passed",
@@ -7407,8 +7211,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AT01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AT01"
       ],
       "Result": "Passed",
@@ -7434,8 +7236,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AT02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AT02"
       ],
       "Result": "Failed",
@@ -7512,8 +7312,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AV01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AV01"
       ],
       "Result": "Passed",
@@ -7539,8 +7337,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CP03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CP03"
       ],
       "Result": "Passed",
@@ -7566,8 +7362,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CP04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CP04"
       ],
       "Result": "Failed",
@@ -7644,8 +7438,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CR01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CR01"
       ],
       "Result": "Failed",
@@ -7722,8 +7514,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.PR01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.PR01"
       ],
       "Result": "Failed",
@@ -7800,8 +7590,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.PR02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.PR02"
       ],
       "Result": "Passed",
@@ -7827,8 +7615,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.PR03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.PR03"
       ],
       "Result": "Passed",
@@ -7854,8 +7640,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.PR05",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.PR05"
       ],
       "Result": "Passed",
@@ -7881,8 +7665,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.PR06",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.PR06"
       ],
       "Result": "Passed",
@@ -7908,8 +7690,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.ST08",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.ST08"
       ],
       "Result": "Passed",
@@ -7935,8 +7715,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.ST09",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.ST09"
       ],
       "Result": "Passed",
@@ -7963,8 +7741,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1001"
       ],
       "Result": "Passed",
@@ -7991,8 +7767,6 @@
       "Tag": [
         "Maester",
         "App",
-        "Security",
-        "All",
         "MT.1002"
       ],
       "Result": "Passed",
@@ -8019,8 +7793,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1003"
       ],
       "Result": "Passed",
@@ -8047,8 +7819,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1004"
       ],
       "Result": "Passed",
@@ -8075,8 +7845,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1005"
       ],
       "Result": "Failed",
@@ -8154,8 +7922,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1006"
       ],
       "Result": "Passed",
@@ -8182,8 +7948,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1007"
       ],
       "Result": "Passed",
@@ -8210,8 +7974,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1008"
       ],
       "Result": "Passed",
@@ -8238,8 +8000,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1009"
       ],
       "Result": "Passed",
@@ -8266,8 +8026,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1010"
       ],
       "Result": "Passed",
@@ -8294,8 +8052,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1011"
       ],
       "Result": "Failed",
@@ -8373,8 +8129,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1012"
       ],
       "Result": "Failed",
@@ -8452,8 +8206,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1013"
       ],
       "Result": "Passed",
@@ -8480,8 +8232,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1014"
       ],
       "Result": "Failed",
@@ -8559,8 +8309,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1015"
       ],
       "Result": "Failed",
@@ -8638,8 +8386,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1016"
       ],
       "Result": "Passed",
@@ -8666,8 +8412,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1017"
       ],
       "Result": "Failed",
@@ -8745,8 +8489,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1018"
       ],
       "Result": "Failed",
@@ -8824,8 +8566,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1019"
       ],
       "Result": "Failed",
@@ -8903,8 +8643,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1020"
       ],
       "Result": "Failed",
@@ -9034,8 +8772,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "selfServicePasswordReset"
@@ -9064,8 +8800,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "roleOverlap"
@@ -9094,8 +8828,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "oneAdmin"
@@ -9124,8 +8856,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "passwordHashSync"
@@ -9205,8 +8935,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "mfaRegistrationV2"
@@ -9286,8 +9014,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "integratedApps"
@@ -9367,8 +9093,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "blockLegacyAuthentication"
@@ -9448,8 +9172,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "adminMFAV2"
@@ -9529,8 +9251,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "applicationCredentialExpiry"
@@ -9559,8 +9279,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "staleAppCreds"
@@ -9640,8 +9358,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "staleApps"
@@ -9721,8 +9437,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "userRiskPolicy"
@@ -9802,8 +9516,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "insiderRiskPolicy"
@@ -9883,8 +9595,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "signinRiskPolicy"
@@ -9964,8 +9674,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "pwagePolicyNew"
@@ -9994,8 +9702,6 @@
       "Tag": [
         "Maester",
         "Entra",
-        "Security",
-        "All",
         "Recommendation",
         "MT.1024",
         "servicePrincipalKeyExpiry"
@@ -10024,8 +9730,6 @@
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
-        "All",
         "MT.1025"
       ],
       "Result": "Failed",
@@ -10103,8 +9807,6 @@
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
-        "All",
         "MT.1026"
       ],
       "Result": "Passed",
@@ -10131,8 +9833,6 @@
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
-        "All",
         "MT.1027"
       ],
       "Result": "Failed",
@@ -10210,8 +9910,6 @@
       "Tag": [
         "Maester",
         "Privileged",
-        "Security",
-        "All",
         "MT.1028"
       ],
       "Result": "Failed",
@@ -10288,8 +9986,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/MT.1029",
       "Tag": [
         "Privileged",
-        "Security",
-        "All",
         "PIM",
         "MT.1029"
       ],
@@ -10316,8 +10012,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/MT.1030",
       "Tag": [
         "Privileged",
-        "Security",
-        "All",
         "PIM",
         "MT.1030"
       ],
@@ -10395,8 +10089,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/MT.1031",
       "Tag": [
         "Privileged",
-        "Security",
-        "All",
         "PIM",
         "MT.1031"
       ],
@@ -10474,8 +10166,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/MT.1032",
       "Tag": [
         "Privileged",
-        "Security",
-        "All",
         "PIM",
         "MT.1032"
       ],
@@ -10554,8 +10244,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1035"
       ],
       "Result": "Passed",
@@ -10582,8 +10270,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1036",
         "Warning"
       ],
@@ -10663,7 +10349,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1037"
       ],
       "Result": "Passed",
@@ -10690,8 +10375,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1038",
         "Warning"
       ],
@@ -10771,7 +10454,6 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
         "MT.1039",
         "MailTipsExternalRecipientsTipsEnabled"
       ],
@@ -10791,9 +10473,7 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
-        "MT.1040",
-        "AdditionalStorageProvidersAvailable"
+        "MT.1040"
       ],
       "Result": "Failed",
       "ScriptBlock": "\n        # > CIS 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'\n\n        #Get-OwaMailboxPolicy | fl Name, AdditionalStorageProvidersAvailable, ThirdPartyFileProvidersEnabled, ConditionalAccessPolicy, ChangePasswordEnabled, *Offline*, ReportJunkEmailEnabled\n        #Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false\n\n        $result = $OwaMailboxPolicyDefault.AdditionalStorageProvidersAvailable\n\n        if ($result -eq $false) {\n            $testResultMarkdown = \"Well done. AdditionalStorageProvidersAvailable is $($result)`n`n\"\n        } else {\n            $testResultMarkdown = \"AdditionalStorageProvidersAvailable should be False and is $($result) in [SecureScore]($portalLink_SecureScore)`n`n\"\n        }\n        $testDetailsMarkdown = \"This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services. Ensure AdditionalStorageProvidersAvailable is restricted.\"\n        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown\n\n        # Actual test\n        if ($null -ne $result) {\n            $result | Should -Be $false -Because \"AdditionalStorageProvidersAvailable should be False\"\n        }\n    ",
@@ -10811,7 +10491,6 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
         "MT.1041",
         "MyCustomApps",
         "MyMarketplaceApps",
@@ -10834,7 +10513,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1042"
       ],
       "Result": "Passed",
@@ -10861,7 +10539,6 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
         "MT.1043",
         "SetScl",
         "TransportRule"
@@ -10882,9 +10559,7 @@
       "Tag": [
         "Maester",
         "Exchange",
-        "SecureScore",
-        "MT.1044",
-        "OAuth2ClientProfileEnabled"
+        "MT.1044"
       ],
       "Result": "Failed",
       "ScriptBlock": "\n\n        $result = $OrganizationConfig.OAuth2ClientProfileEnabled\n\n        if ($result -eq $true) {\n            $testResultMarkdown = \"Well done. OAuth2ClientProfileEnabled is $($result)`n`n\"\n        } else {\n            $testResultMarkdown = \"OAuth2ClientProfileEnabled should be True and is $($result) in [SecureScore]($portalLink_SecureScore)`n`n\"\n        }\n        $testDetailsMarkdown = \"Modern authentication in Microsoft 365 enables authentication features like multifactor authentication (MFA) using smart cards, certificate-based authentication (CBA), and third-party SAML identity providers. When you enable modern authentication in Exchange Online, Outlook 2016 and Outlook 2013 use modern authentication to log in to Microsoft 365 mailboxes. When you disable modern authentication in Exchange Online, Outlook 2016 and Outlook 2013 use basic authentication to log in to Microsoft 365 mailboxes. When users initially configure certain email clients, like Outlook 2013 and Outlook 2016, they may be required to authenticate using enhanced authentication mechanisms, such as multifactor authentication. Other Outlook clients that are available in Microsoft 365 (for example, Outlook Mobile and Outlook for Mac 2016) always use modern uthentication to log in to Microsoft 365 mailboxes\"\n        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown\n\n        # Actual test\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"OAuth2ClientProfileEnabled should be True\"\n        }\n    ",
@@ -10903,7 +10578,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1045"
       ],
       "Result": "Failed",
@@ -10982,7 +10656,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1046"
       ],
       "Result": "Failed",
@@ -11061,7 +10734,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1047"
       ],
       "Result": "Failed",
@@ -11140,7 +10812,6 @@
         "Maester",
         "Teams",
         "MeetingPolicy",
-        "All",
         "MT.1048"
       ],
       "Result": "Passed",
@@ -11167,8 +10838,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1049"
       ],
       "Result": "Passed",
@@ -11195,8 +10864,6 @@
       "Tag": [
         "Maester",
         "CA",
-        "Security",
-        "All",
         "MT.1052"
       ],
       "Result": "Failed",
@@ -11274,7 +10941,6 @@
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1053"
       ],
       "Result": "Failed",
@@ -11352,7 +11018,6 @@
       "Tag": [
         "Maester",
         "Intune",
-        "All",
         "MT.1054"
       ],
       "Result": "Failed",
@@ -11430,8 +11095,6 @@
       "Tag": [
         "Maester",
         "Group",
-        "Security",
-        "All",
         "MT.1055"
       ],
       "Result": "Passed",
@@ -11459,7 +11122,6 @@
         "ORCA",
         "ORCA.100",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -11538,7 +11200,6 @@
         "ORCA",
         "ORCA.101",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11566,7 +11227,6 @@
         "ORCA",
         "ORCA.102",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11594,7 +11254,6 @@
         "ORCA",
         "ORCA.103",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -11673,7 +11332,6 @@
         "ORCA",
         "ORCA.104",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11701,7 +11359,6 @@
         "ORCA",
         "ORCA.105",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11729,7 +11386,6 @@
         "ORCA",
         "ORCA.106",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -11808,7 +11464,6 @@
         "ORCA",
         "ORCA.107",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11836,7 +11491,6 @@
         "ORCA",
         "ORCA.109",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11864,7 +11518,6 @@
         "ORCA",
         "ORCA.110",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11892,7 +11545,6 @@
         "ORCA",
         "ORCA.111",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11920,7 +11572,6 @@
         "ORCA",
         "ORCA.112",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -11948,7 +11599,6 @@
         "ORCA",
         "ORCA.113",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12027,7 +11677,6 @@
         "ORCA",
         "ORCA.114",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12055,7 +11704,6 @@
         "ORCA",
         "ORCA.115",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12134,7 +11782,6 @@
         "ORCA",
         "ORCA.116",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12213,7 +11860,6 @@
         "ORCA",
         "ORCA.118.1",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12241,7 +11887,6 @@
         "ORCA",
         "ORCA.118.2",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12269,7 +11914,6 @@
         "ORCA",
         "ORCA.118.3",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12297,7 +11941,6 @@
         "ORCA",
         "ORCA.118.4",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12325,7 +11968,6 @@
         "ORCA",
         "ORCA.119",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12404,7 +12046,6 @@
         "ORCA",
         "ORCA.120.1",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12432,7 +12073,6 @@
         "ORCA",
         "ORCA.120.2",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12460,7 +12100,6 @@
         "ORCA",
         "ORCA.120.3",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12488,7 +12127,6 @@
         "ORCA",
         "ORCA.121",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12516,7 +12154,6 @@
         "ORCA",
         "ORCA.123",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12595,7 +12232,6 @@
         "ORCA",
         "ORCA.124",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12623,7 +12259,6 @@
         "ORCA",
         "ORCA.139",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12651,7 +12286,6 @@
         "ORCA",
         "ORCA.140",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12730,7 +12364,6 @@
         "ORCA",
         "ORCA.141",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12758,7 +12391,6 @@
         "ORCA",
         "ORCA.142",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12837,7 +12469,6 @@
         "ORCA",
         "ORCA.156",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12865,7 +12496,6 @@
         "ORCA",
         "ORCA.158",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -12893,7 +12523,6 @@
         "ORCA",
         "ORCA.179",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -12972,7 +12601,6 @@
         "ORCA",
         "ORCA.180",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13000,7 +12628,6 @@
         "ORCA",
         "ORCA.189",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13028,7 +12655,6 @@
         "ORCA",
         "ORCA.189.2",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13056,7 +12682,6 @@
         "ORCA",
         "ORCA.205",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13084,7 +12709,6 @@
         "ORCA",
         "ORCA.220",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13163,7 +12787,6 @@
         "ORCA",
         "ORCA.221",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13191,7 +12814,6 @@
         "ORCA",
         "ORCA.222",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13270,7 +12892,6 @@
         "ORCA",
         "ORCA.223",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13349,7 +12970,6 @@
         "ORCA",
         "ORCA.224",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13428,7 +13048,6 @@
         "ORCA",
         "ORCA.225",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13456,7 +13075,6 @@
         "ORCA",
         "ORCA.226",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13535,7 +13153,6 @@
         "ORCA",
         "ORCA.227",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -13614,7 +13231,6 @@
         "ORCA",
         "ORCA.228",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13642,7 +13258,6 @@
         "ORCA",
         "ORCA.229",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13670,7 +13285,6 @@
         "ORCA",
         "ORCA.230",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13698,7 +13312,6 @@
         "ORCA",
         "ORCA.231",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13726,7 +13339,6 @@
         "ORCA",
         "ORCA.232",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13754,7 +13366,6 @@
         "ORCA",
         "ORCA.233",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13782,7 +13393,6 @@
         "ORCA",
         "ORCA.233.1",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13810,7 +13420,6 @@
         "ORCA",
         "ORCA.234",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13838,7 +13447,6 @@
         "ORCA",
         "ORCA.236",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13866,7 +13474,6 @@
         "ORCA",
         "ORCA.237",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13894,7 +13501,6 @@
         "ORCA",
         "ORCA.238",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13922,7 +13528,6 @@
         "ORCA",
         "ORCA.239",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -13950,7 +13555,6 @@
         "ORCA",
         "ORCA.240",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -14029,7 +13633,6 @@
         "ORCA",
         "ORCA.241",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Failed",
@@ -14108,7 +13711,6 @@
         "ORCA",
         "ORCA.242",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -14136,7 +13738,6 @@
         "ORCA",
         "ORCA.243",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -14164,7 +13765,6 @@
         "ORCA",
         "ORCA.244",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Passed",
@@ -14194,8 +13794,6 @@
         "CIS E3 Level 1",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ],
       "Result": "Skipped",
@@ -14275,8 +13873,6 @@
         "MS.AAD.5.4",
         "CISA.MS.AAD.5.4",
         "CISA",
-        "Security",
-        "All",
         "Entra ID Free"
       ],
       "Result": "Skipped",
@@ -14356,7 +13952,6 @@
         "MS.EXO.14.4",
         "CISA.MS.EXO.14.4",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -14436,7 +14031,6 @@
         "MS.EXO.16.2",
         "CISA.MS.EXO.16.2",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -14516,7 +14110,6 @@
         "MS.EXO.4.3",
         "CISA.MS.EXO.4.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -14596,7 +14189,6 @@
         "MS.EXO.8.3",
         "CISA.MS.EXO.8.3",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -14676,7 +14268,6 @@
         "MS.EXO.9.4",
         "CISA.MS.EXO.9.4",
         "CISA",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -14753,8 +14344,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF05",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF05"
       ],
       "Result": "Skipped",
@@ -14831,8 +14420,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.AF06",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AF06"
       ],
       "Result": "Skipped",
@@ -14909,8 +14496,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CP01",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CP01"
       ],
       "Result": "Skipped",
@@ -14987,8 +14572,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CR02",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CR02"
       ],
       "Result": "Skipped",
@@ -15065,8 +14648,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CR03",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CR03"
       ],
       "Result": "Skipped",
@@ -15143,8 +14724,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/EIDSCA.CR04",
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.CR04"
       ],
       "Result": "Skipped",
@@ -15221,8 +14800,6 @@
       "HelpUrl": "https://maester.dev/docs/tests/MT.1021",
       "Tag": [
         "CA",
-        "Security",
-        "All",
         "MT.1021"
       ],
       "Result": "Skipped",
@@ -15378,7 +14955,6 @@
       "Name": "MT.1050: Apps with high-risk permissions having a direct path to Global Admin",
       "HelpUrl": "",
       "Tag": [
-        "Full",
         "Entra",
         "Graph",
         "App",
@@ -15398,7 +14974,6 @@
       "Name": "MT.1051: Apps with high-risk permissions having an indirect path to Global Admin",
       "HelpUrl": "",
       "Tag": [
-        "Full",
         "Entra",
         "Graph",
         "App",
@@ -15421,7 +14996,6 @@
         "ORCA",
         "ORCA.108",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -15500,7 +15074,6 @@
         "ORCA",
         "ORCA.108.1",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -15579,7 +15152,6 @@
         "ORCA",
         "ORCA.143",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -15658,7 +15230,6 @@
         "ORCA",
         "ORCA.235",
         "EXO",
-        "Security",
         "All"
       ],
       "Result": "Skipped",
@@ -15740,8 +15311,6 @@
       "TotalCount": 44,
       "Tag": [
         "EIDSCA",
-        "Security",
-        "All",
         "EIDSCA.AP01"
       ]
     },
@@ -15758,7 +15327,6 @@
         "MS.EXO.12.1",
         "CISA.MS.EXO.12.1",
         "CISA",
-        "Security",
         "All"
       ]
     },
@@ -15786,8 +15354,6 @@
         "CIS E3 Level 2",
         "CIS E3",
         "CIS",
-        "Security",
-        "All",
         "CIS M365 v4.0.0"
       ]
     },
@@ -15801,8 +15367,7 @@
       "TotalCount": 5,
       "Tag": [
         "Maester",
-        "Exchange",
-        "SecureScore"
+        "Exchange"
       ]
     },
     {
@@ -15845,7 +15410,6 @@
       "Tag": [
         "Maester",
         "App",
-        "Security",
         "All"
       ]
     },
@@ -15861,7 +15425,6 @@
         "ORCA",
         "ORCA.100",
         "EXO",
-        "Security",
         "All"
       ]
     }

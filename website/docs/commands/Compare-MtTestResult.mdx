@@ -45,7 +45,7 @@ Compare-MtTestResult -BaseDir .\test-results
 ```powershell
 $tests = @{
     NewTest   = (Get-Content .\test-results\TestResults-2024-05-21-182925.json | ConvertFrom-Json)
-    PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
+PriorTest = (Get-Content .\test-results\TestResults-2024-05-20-182925.json | ConvertFrom-Json)
 }
 Compare-MtTestResult @tests
 ```

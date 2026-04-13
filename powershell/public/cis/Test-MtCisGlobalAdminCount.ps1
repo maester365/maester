@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisGlobalAdminCount {
+    <#
+    .SYNOPSIS
     Checks if the number of Global Admins is between 2 and 4
 
-.DESCRIPTION
+    .DESCRIPTION
     A minimum of two users and a maximum of four users SHALL be provisioned with the Global Administrator role.
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisGlobalAdminCount
 
     Returns true if only 2 to 4 users are eligible to be global admins
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisGlobalAdminCount
-#>
-function Test-MtCisGlobalAdminCount {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -23,14 +23,7 @@ function Test-MtCisGlobalAdminCount {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
-
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = 'RoleEligibilitySchedule.ReadWrite.Directory' -notin $scopes -and 'RoleManagement.ReadWrite.Directory' -notin $scopes
-    if ($permissionMissing) {
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Missing Scope RoleEligibilitySchedule.ReadWrite.Directory'
-        return $null
-    }
-
+    
     try {
         Write-Verbose 'Getting role'
         $role = Get-MtRole | Where-Object {

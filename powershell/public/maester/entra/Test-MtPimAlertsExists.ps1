@@ -1,17 +1,17 @@
-﻿<#
- .Synopsis
-  Checks if PIM alerts exists
+﻿function Test-MtPimAlertsExists {
+    <#
+    .Synopsis
+    Checks if PIM alerts exists
 
- .Description
-  GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
+    .Description
+    GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
 
- .Example
-  Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
+    .Example
+    Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
 
-.LINK
-  https://maester.dev/docs/commands/Test-MtPimAlertsExists
-#>
-function Test-MtPimAlertsExists {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtPimAlertsExists
+    #>
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plurality')]
   [OutputType([object])]
   [CmdletBinding()]

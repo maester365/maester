@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAutoExternalForwarding {
+    <#
+    .SYNOPSIS
     Checks ...
 
-.DESCRIPTION
+    .DESCRIPTION
     Automatic forwarding to external domains SHALL be disabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAutoExternalForwarding
 
     Returns true if no domain is enabled for auto forwarding
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAutoExternalForwarding
-#>
-function Test-MtCisaAutoExternalForwarding {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

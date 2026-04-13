@@ -21,19 +21,42 @@ $__MtSession = @{
 	DnsCache = @()
 	ExoCache = @{}
 	OrcaCache = @{}
+	AIAgentInfo = $null
+	DataverseApiBase = $null       # Resolved Dataverse OData API base URL (e.g. https://org123.api.crm.dynamics.com/api/data/v9.2)
+	DataverseResourceUrl = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
+	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 
 # Import private and public scripts and expose the public ones
-$privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1")
-$publicScripts = @(Get-ChildItem -Path "$PSScriptRoot\public" -Recurse -Filter "*.ps1")
+$privateScripts = @(Get-ChildItem -Path "$PSScriptRoot\internal" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
+$publicScripts = @(Get-ChildItem -Path "$PSScriptRoot\public" -Recurse -Filter "*.ps1" -ErrorAction SilentlyContinue)
 
+$importErrors = @()
 foreach ($script in ($privateScripts + $publicScripts)) {
+	if (-not (Test-Path $script.FullName)) {
+		$importErrors += "Script file not found: $($script.FullName)"
+		continue
+	}
+
 	try {
 		. $script.FullName
 	} catch {
-		Write-Error -Message ("Failed to import function {0}: {1}" -f $script, $_)
+		$errorMessage = "Failed to import function from '$($script.FullName)': $($_.Exception.Message)"
+		$importErrors += $errorMessage
+		Write-Warning $errorMessage
 	}
 }
 
-$ModuleInfo = Import-PowerShellDataFile -Path "$PsScriptRoot/Maester.psd1"
+# Report import errors if any occurred
+if ($importErrors.Count -gt 0) {
+	Write-Warning "Module loaded with $($importErrors.Count) import error(s). Some functionality may be unavailable."
+}
+
+# Safely import module manifest
+try {
+	$ModuleInfo = Import-PowerShellDataFile -Path "$PsScriptRoot/Maester.psd1" -ErrorAction Stop
+} catch {
+	Write-Warning "Failed to load module manifest: $($_.Exception.Message)"
+	$ModuleInfo = $null
+}

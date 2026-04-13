@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA223{
+    <#
+    .SYNOPSIS
     User impersonation action is set to move to Quarantine.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA223
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA223
-#>
-function Test-ORCA223{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA223{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA223: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA223" -ErrorRecord $_ -AdditionalContext "Running ORCA223 test"
         throw
     } finally {
         if($obj.SkipInReport) {

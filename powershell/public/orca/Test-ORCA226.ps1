@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA226{
+    <#
+    .SYNOPSIS
     Each domain has a Safe Link policy applied to it.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA226
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA226
-#>
-function Test-ORCA226{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA226{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA226: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA226" -ErrorRecord $_ -AdditionalContext "Running ORCA226 test"
         throw
     } finally {
         if($obj.SkipInReport) {

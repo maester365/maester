@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA112{
+    <#
+    .SYNOPSIS
     Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA112
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA112
-#>
-function Test-ORCA112{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA112{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA112: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA112" -ErrorRecord $_ -AdditionalContext "Running ORCA112 test"
         throw
     } finally {
         if($obj.SkipInReport) {

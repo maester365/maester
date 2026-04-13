@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one Conditional Access policy is configured to block access for unknown or unsupported device platforms
+﻿function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one Conditional Access policy is configured to block access for unknown or unsupported device platforms
 
- .Description
+    .Description
     Microsoft recommends blocking access for unknown or unsupported device platforms.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-unknown-unsupported-device
 
- .Example
-  Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
+    .Example
+    Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaBlockUnknownOrUnsupportedDevicePlatform
-#>
-function Test-MtCaBlockUnknownOrUnsupportedDevicePlatform {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -35,7 +35,7 @@ See [Block access for unknown or unsupported device platform - Microsoft Learn](
 
         $result = $false
         foreach ($policy in $policies) {
-            if ( $policy.grantControls.buildInControls -eq 'block' `
+            if ( $policy.grantControls.builtInControls -eq 'block' `
                     -and $policy.conditions.platforms.includePlatforms -eq 'All'
             ) {
                 $result = $true

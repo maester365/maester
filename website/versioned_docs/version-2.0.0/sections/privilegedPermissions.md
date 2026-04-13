@@ -1,0 +1,2 @@
+- **ReportSettings.ReadWrite.All**
+  - Required to disable report obfuscation

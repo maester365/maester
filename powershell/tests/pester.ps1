@@ -35,6 +35,36 @@ $scriptAnalyzerFailures = [System.Collections.Generic.List[object]]::new()
 $config = New-PesterConfiguration
 $config.TestResult.Enabled = $true
 
+function Test-ContainsFailureRule {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string] $RuleName,
+
+        [Parameter()]
+        $ScriptAnalyzerFailures,
+
+        [Parameter()]
+        $TestResults
+    )
+
+    # Match in ScriptAnalyzer raw output lines
+    if ($ScriptAnalyzerFailures) {
+        if ($ScriptAnalyzerFailures | Where-Object { $_ -match [regex]::Escape($RuleName) } | Select-Object -First 1) {
+            return $true
+        }
+    }
+
+    # Match in Pester test failure messages
+    if ($TestResults) {
+        if ($TestResults | Where-Object { $_.Message -match [regex]::Escape($RuleName) } | Select-Object -First 1) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
 #region Run General Tests
 if ($TestGeneral)
 {
@@ -76,6 +106,18 @@ if ($TestGeneral)
 # Print any ScriptAnalyzer output
 $scriptAnalyzerFailures | Out-Host
 
+# If BOM rule appears, show a clear fix script
+$hasBomRuleFailure = Test-ContainsFailureRule -RuleName 'PSUseBOMForUnicodeEncodedFile' -ScriptAnalyzerFailures $scriptAnalyzerFailures -TestResults $testresults
+
+if ($hasBomRuleFailure) {
+    Write-Host "`n❌ To fix PSUseBOMForUnicodeEncodedFile → Run the following script with the affected file to fix the issue`n" -ForegroundColor Yellow
+    @'
+$affectedFilePath = '/Users/merill/GitHub/maester/powershell/public/maester/entra/Test-MtTenantCreationRestricted.ps1'
+$content = Get-Content $affectedFilePath -Raw; $content | Out-File $affectedFilePath -Encoding UTF8BOM
+
+'@ | Out-Host
+}
+
 #region Test Commands
 if ($TestFunctions)
 {
@@ -93,7 +135,7 @@ if ($TestFunctions)
         $result = Invoke-Pester -Configuration $config
 
         $totalRun += $result.TotalCount
-        $totalFailed += $result.FailedCount
+        $totalFailed += $result.FailedCount + $result.FailedContainersCount
         foreach ($test in $result.Tests) {
             if ($test.Result -notin 'Passed','Skipped') {
                 $failedTest = [pscustomobject]@{

@@ -1,34 +1,34 @@
-﻿<#
- .Synopsis
+﻿function Get-MtGraphScope {
+    <#
+    .Synopsis
     Returns the list of Graph scopes required to run Maester.
 
- .Description
+    .Description
     Use this cmdlet to connect to Microsoft Graph using Connect-MgGraph.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope)
 
     Connects to Microsoft Graph with the required scopes to run Maester.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -SendMail)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send email.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -SendTeamsMessage)
 
     Connects to Microsoft Graph with the required scopes to run Maester and send messages to a Teams Channel.
 
- .Example
+    .Example
     Connect-MgGraph -Scopes (Get-MtGraphScope -PrivilegedScopes)
 
     Connects to Microsoft Graph with the required scopes to run Maester for all tests, including those requiring read write APIs.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtGraphScope
-#>
-function Get-MtGraphScope {
+    #>
 
     [CmdletBinding()]
     param(
@@ -53,25 +53,31 @@ function Get-MtGraphScope {
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
         'DeviceManagementConfiguration.Read.All'
         'DeviceManagementManagedDevices.Read.All'
+        'DeviceManagementRBAC.Read.All'
+        'DeviceManagementServiceConfig.Read.All'
         'Directory.Read.All'
         'DirectoryRecommendations.Read.All'
         'IdentityRiskEvent.Read.All'
+        'OnPremDirectorySynchronization.Read.All'
+        'OrgSettings-AppsAndServices.Read.All'
+        'OrgSettings-Forms.Read.All'
         'Policy.Read.All'
         'Policy.Read.ConditionalAccess'
         'PrivilegedAccess.Read.AzureAD'
         'Reports.Read.All'
-        'RoleEligibilitySchedule.Read.Directory'
+        'ReportSettings.Read.All'
         'RoleManagement.Read.All'
         'SecurityIdentitiesSensors.Read.All'
-        'SecurityIdentitiesHealth.Read.All'        
+        'SecurityIdentitiesHealth.Read.All'
         'SharePointTenantSettings.Read.All'
+        'ThreatHunting.Read.All'
         'UserAuthenticationMethod.Read.All'
     )
 
     # Any changes made to these permission scopes should be reflected in the documentation.
     # /maester/website/docs/sections/privilegedPermissions.md
     $privilegedScopes = @(
-        'RoleEligibilitySchedule.ReadWrite.Directory' #Ref https://github.com/maester365/maester/issues/195#issuecomment-2170879665
+        'ReportSettings.ReadWrite.All'
     )
 
     if ($Privileged) {

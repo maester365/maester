@@ -1,32 +1,25 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaCloudGlobalAdmin {
+    <#
+    .SYNOPSIS
     Checks if Global Admins are cloud users
 
-.DESCRIPTION
+    .DESCRIPTION
     Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaCloudGlobalAdmin
 
     Returns true if all global admins are cloud users
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaCloudGlobalAdmin
-#>
-function Test-MtCisaCloudGlobalAdmin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if(!(Test-MtConnection Graph)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes -and "RoleManagement.ReadWrite.Directory" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
         return $null
     }
 

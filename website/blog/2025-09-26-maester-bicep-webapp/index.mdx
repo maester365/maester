@@ -1,0 +1,58 @@
+---
+title: New version of Maester on Azure Web App
+description: Launch announcement of new version of Maester on Azure Web App
+slug: maester-bicep-webapp
+authors: [brian, merill]
+tags: [release]
+hide_table_of_contents: false
+image: ./img/maester-webapp-header.png
+date: 2025-09-26
+---
+
+Today, we are thrilled to announce the release of the new version of Maester on Azure Web App. 🔥
+
+{/* truncate */}
+
+## New version of Maester on Azure Web App 🎉
+
+![Maester Bicep Web App](./img/maester-webapp-header.png)
+
+### What was it before?
+The setup allowed Maester to run on an Azure Web App, enabling you to perform Microsoft Graph security configuration checks on your Microsoft tenant directly from the Azure Web App, secured with Entra ID Authentication through an Azure Bicep deployment. At that time, it only supported Microsoft Graph security configuration tests. Many people asked me to update the deployment to include also the other tests that are part of Maester, because we want to utilize all the available tests that Maester has.
+
+### What has changed?
+- 🔥 Support for the latest Maester PowerShell module through the use of PowerShell 7.4 runtimes. 
+- 💪🏻 Support for Exchange Online security tests 
+- 🎉 Support for Security & Compliance security tests 
+- 📱Support for Microsoft Teams security tests 
+- 🤙🏻 Support for Azure configuration security tests
+
+### 📚 **Documentation**
+Follow the step-by-step guide to start using the Azure Bicep Deployment for Maester on Azure Web App:
+
+- [Setup Maester in Azure Web App using Azure Bicep](https://maester.dev/docs/monitoring/azure-web-app-bicep)
+
+## Contributors 🙏
+We have built this Azure Bicep Deployment: 👇
+
+<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+    {[
+        { username: 'merill', name: 'Merill Fernando' },
+        { username: 'brianveldman', name: 'Brian Veldman' },
+
+
+
+    ].map(contributor => (
+        <div key={contributor.username} style={{ margin: '10px', textAlign: 'center' }}>
+            <a href={`https://github.com/${contributor.username}`} target="_blank" rel="noopener noreferrer">
+                <img src={`https://github.com/${contributor.username}.png`} width="60px" style={{ borderRadius: '50%' }} alt={contributor.name} />
+                <br />
+                <sub>{contributor.name}</sub>
+            </a>
+        </div>
+    ))}
+</div>
+
+## What's Next?
+
+We are incredibly excited about the updated Maester Web App Deployment and have many ideas for new features and improvements. Feel free to share your ideas and contribute as well. 🙌

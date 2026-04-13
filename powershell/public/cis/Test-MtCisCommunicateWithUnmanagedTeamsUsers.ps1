@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
+    <#
+    .SYNOPSIS
     Ensure communication with unmanaged Teams users is disabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Communication with unmanaged Teams users is disabled
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisCommunicateWithUnmanagedTeamsUsers
 
     Returns true if communication with unmanaged Teams users is disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisCommunicateWithUnmanagedTeamsUsers
-#>
-function Test-MtCisCommunicateWithUnmanagedTeamsUsers {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users.')]

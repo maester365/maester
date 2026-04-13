@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP10 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to create Apps is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Controls if non-admin users may register custom-developed applications for use within this directory.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
+    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP10
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
-#>
-
-function Test-MtEidscaAP10 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,0 +1,70 @@
+---
+sidebar_class_name: hidden
+description: Checks if all Recovery Services Vaults have Soft Delete enabled
+id: Test-MtVaultSoftDelete
+title: Test-MtVaultSoftDelete
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtVaultSoftDelete.ps1
+---
+
+## SYNOPSIS
+
+Checks if all Recovery Services Vaults have Soft Delete enabled
+
+## SYNTAX
+
+```powershell
+Test-MtVaultSoftDelete [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This test ensures that all Recovery Services Vaults have Soft Delete enabled
+by evaluating the `enhancedSecurityState` property.
+Soft Delete protects backup
+data from accidental or malicious deletion and is a recommended security control.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtVaultSoftDelete
+```
+
+Returns true if all vaults have Soft Delete enabled.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtVaultSoftDelete](https://maester.dev/docs/commands/Test-MtVaultSoftDelete)

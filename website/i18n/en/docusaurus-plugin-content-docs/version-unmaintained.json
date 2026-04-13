@@ -1,0 +1,10 @@
+{
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "{versionLabel} (Superseded)",
+    "description": "The label used to tell the user they are viewing documentation for a superseded version."
+  },
+  "theme.docs.versions.unmaintainedVersionBannerText": {
+    "message": "⚠️ **Superseded Warning:** This documentation is for **{versionLabel}**. This version has been superseded and is no longer actively maintained. Please upgrade to the <a href='{latestVersionHref}'>{latestVersionLabel}</a> version or the latest preview <a href='{unreleasedVersionLabel}'>{unreleasedVersionLabel}</a>.",
+    "description": "The message shown in the banner for unmaintained/superseded documentation."
+  }
+}

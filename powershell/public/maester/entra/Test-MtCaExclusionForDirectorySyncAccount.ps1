@@ -1,20 +1,20 @@
-<#
- .Synopsis
+﻿function Test-MtCaExclusionForDirectorySyncAccount {
+    <#
+    .Synopsis
     Checks if all conditional access policies scoped to all cloud apps and all users exclude the directory synchronization accounts
 
- .Description
+    .Description
     The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
     These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
     Entra ID connect does not support multifactor authentication.
     Restrict access with these accounts to trusted networks.
 
- .Example
-  Test-MtCaExclusionForDirectorySyncAccount
+    .Example
+    Test-MtCaExclusionForDirectorySyncAccount
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
-#>
-function Test-MtCaExclusionForDirectorySyncAccount {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]

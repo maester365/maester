@@ -1,0 +1,70 @@
+---
+sidebar_class_name: hidden
+description: This test checks if you have any third party service principals that are open to all users.
+id: Test-MtServicePrincipalsForAllUsers
+title: Test-MtServicePrincipalsForAllUsers
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtServicePrincipalsForAllUsers.ps1
+---
+
+## SYNOPSIS
+
+This test checks if you have any third party service principals that are open to all users.
+It is recommended to set 'Assignment required?' to Yes for all Third Party apps.
+
+## SYNTAX
+
+```powershell
+Test-MtServicePrincipalsForAllUsers [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Open all app service principals below and set 'Assignment required?' to Yes.
+Assign users under 'Users and groups' to provide them with explicit access.
+If desired, use the audit logs per SPN to determine who was using the application before locking them down.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtServicePrincipalsForAllUsers
+```
+
+Returns true if no third party service principals are assigned to All Users, false if any are found.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtServicePrincipalsForAllUsers](https://maester.dev/docs/commands/Test-MtServicePrincipalsForAllUsers)

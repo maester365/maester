@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtSpExchangeAppAccessPolicy {
+    <#
+    .SYNOPSIS
     Check if service principals with Exchange permissions have application access policies configured.
 
-.DESCRIPTION
+    .DESCRIPTION
     Service principals with Exchange permissions can access all mailboxes by default. This test verifies that proper access policies are in place.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtSpExchangeAppAccessPolicy
 
     Returns true if all service principals with Exchange permissions have access policies configured
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtSpExchangeAppAccessPolicy
-#>
-function Test-MtSpExchangeAppAccessPolicy {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -59,7 +59,16 @@ function Test-MtSpExchangeAppAccessPolicy {
         }
 
         # Get application access policies
-        $appAccessPolicies = Get-ApplicationAccessPolicy
+        try {
+            $appAccessPolicies = Get-ApplicationAccessPolicy -ErrorAction Stop
+        } catch {
+            if ($_.Exception.Message -like "*couldn't be found*") {
+                Write-Verbose -Message 'Test-MtSpExchangeAppAccessPolicy: No application access policies were found.'
+                $appAccessPolicies = $null
+            } else {
+                throw
+            }
+        }
 
         # Prepare result table showing all apps with Exchange permissions
         $detailMarkdown = "### Applications with Exchange Permissions`n`n"

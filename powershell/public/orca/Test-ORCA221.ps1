@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA221{
+    <#
+    .SYNOPSIS
     Mailbox intelligence is enabled in anti-phishing policies.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA221
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA221
-#>
-function Test-ORCA221{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA221{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA221: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA221" -ErrorRecord $_ -AdditionalContext "Running ORCA221 test"
         throw
     } finally {
         if($obj.SkipInReport) {

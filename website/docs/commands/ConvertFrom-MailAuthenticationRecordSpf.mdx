@@ -29,7 +29,7 @@ Adapted from:
 
 ```
 record   : v=spf1 include:_spf-a.microsoft.com include:_spf-b.microsoft.com include:_spf-c.microsoft.com include:_spf-ssg-a.msft.net include:spf-a.hotmail.com
-        include:_spf1-meo.microsoft.com -all
+include:_spf1-meo.microsoft.com -all
 terms    : {SPFRecordTerm, SPFRecordTerm, SPFRecordTerm, SPFRecordTerm…}
 warnings :
 ```
@@ -73,7 +73,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 1.1.1.1
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

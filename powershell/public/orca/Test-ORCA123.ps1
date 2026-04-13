@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA123{
+    <#
+    .SYNOPSIS
     Unusual Characters Safety Tips is enabled.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA123
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA123
-#>
-function Test-ORCA123{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA123{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA123: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA123" -ErrorRecord $_ -AdditionalContext "Running ORCA123 test"
         throw
     } finally {
         if($obj.SkipInReport) {

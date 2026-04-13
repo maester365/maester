@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAP09 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Allow user consent on risk-based apps is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicates whether user consent for risky apps is allowed. For example, consent requests for newly registered multi-tenant apps that are not publisher verified and require non-basic permissions are considered risky.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
+    graph/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP09
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
-#>
-
-function Test-MtEidscaAP09 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

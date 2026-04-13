@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaCP04 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     If this option is set to enabled, then users request admin consent to any app that requires access to data they do not have the permission to grant. If this option is set to disabled, then users must contact their admin to request to consent in order to use the apps they need.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
+    graph/settings.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCP04
 
     Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
-#>
-
-function Test-MtEidscaCP04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

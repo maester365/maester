@@ -8,7 +8,7 @@ Test-MtCisaAppGroupOwnerConsent,https://github.com/cisagov/ScubaGear/blob/main/P
 Test-MtCisaAppRegistration,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad51v1
 Test-MtCisaAppUserConsent,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad52v1
 Test-MtCisaAssignmentNotification,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad77v1
-Test-MtCisaAuthenticatorContext,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v1
+Test-MtCisaAuthenticatorContext,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v2
 Test-MtCisaBlockHighRiskSignIn,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad23v1
 Test-MtCisaBlockHighRiskUser,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad21v1
 Test-MtCisaBlockLegacyAuth,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#1-legacy-authentication
@@ -77,7 +77,7 @@ Test-MtCisaAppGroupOwnerConsent,MS.AAD.5.4,https://github.com/cisagov/ScubaGear/
 Test-MtCisaAppRegistration,MS.AAD.5.1,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad51v1
 Test-MtCisaAppUserConsent,MS.AAD.5.2,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad52v1
 Test-MtCisaAssignmentNotification,MS.AAD.7.7,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad77v1
-Test-MtCisaAuthenticatorContext,MS.AAD.3.3,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v1
+Test-MtCisaAuthenticatorContext,MS.AAD.3.3,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad33v2
 Test-MtCisaBlockHighRiskSignIn,MS.AAD.2.3,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad23v1
 Test-MtCisaBlockHighRiskUser,MS.AAD.2.1,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad21v1
 Test-MtCisaBlockLegacyAuth,MS.AAD.1.1,https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#1-legacy-authentication

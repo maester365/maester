@@ -1,21 +1,21 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy that blocks legacy authentication.
+﻿function Test-MtCaBlockLegacyOtherAuthentication {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy that blocks legacy authentication.
 
- .Description
+    .Description
     Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
     conditional access policy that blocks legacy authentication.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
 
- .Example
-  Test-MtCaBlockLegacyOtherAuthentication
+    .Example
+    Test-MtCaBlockLegacyOtherAuthentication
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaBlockLegacyOtherAuthentication
-#>
-function Test-MtCaBlockLegacyOtherAuthentication {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -39,7 +39,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
 
         $result = $false
         foreach ($policy in $policies) {
-            if ( $policy.grantControls.buildInControls -contains 'block' `
+            if ( $policy.grantControls.builtInControls -contains 'block' `
                     -and "other" -in $policy.conditions.clientAppTypes `
                     -and $policy.conditions.applications.includeApplications -eq "All" `
                     -and $policy.conditions.users.includeUsers -eq "All" `

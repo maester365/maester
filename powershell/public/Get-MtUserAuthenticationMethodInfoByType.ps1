@@ -1,15 +1,16 @@
-﻿<#
-.SYNOPSIS
-  Returns DisplayName and IsMfa metadata about a specific user authentication method type
+﻿function Get-MtUserAuthenticationMethodInfoByType {
+    <#
+    .SYNOPSIS
+    Returns DisplayName and IsMfa metadata about a specific user authentication method type
 
-.DESCRIPTION
+    .DESCRIPTION
     The user authentication method returned by the /users/{id}/authentication/methods endpoint
     is missing key information such as the display name (as shown in the Portal) and if an auth method
     is a multi-factor authentication method or not.
 
     This cmdlet returns the DisplayName and IsMfa metadata for a specific user authentication method type.
 
-.EXAMPLE
+    .EXAMPLE
 
     $userId = 'john@contoso.com'
     $userAuthMethods = Invoke-MtGraphRequest -RelativeUri "users/$userId/authentication/methods"
@@ -17,10 +18,9 @@
 
     # Returns the DisplayName and IsMfa metadata for the authentication methods registered by the specified user.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtUserAuthenticationMethodInfoByType
-#>
-function Get-MtUserAuthenticationMethodInfoByType {
+    #>
 
     [CmdletBinding()]
     param(

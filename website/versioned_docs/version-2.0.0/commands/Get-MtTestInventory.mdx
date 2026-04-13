@@ -1,0 +1,216 @@
+---
+sidebar_class_name: hidden
+description: Discover Pester test inventory and associated tags.
+id: Get-MtTestInventory
+title: Get-MtTestInventory
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtTestInventory.ps1
+---
+
+## SYNOPSIS
+
+Discover Pester test inventory and associated tags.
+
+## SYNTAX
+
+```powershell
+Get-MtTestInventory [-Path <String>] [-ExcludePath <String[]>] [-ExcludeTag <String[]>] [-OutputType <String>]
+ [-ExportPath <String>] [-PassThru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Uses Pester discovery to enumerate all tests under the provided path and returns a list of objects containing:
+
+    TestName     - Name of the It test.
+    FilePath     - Full path to the test file.
+    Describe     - Name of the parent Describe block.
+    Tags         - Tags explicitly set on the test.
+    CombinedTags - Combination of Describe and Tags (unique, case-insensitive).
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+$TestInventory = Get-MtTestInventory -Path .\ -ExcludePath .\test-results
+```
+
+Get an inventory of tests in the current directory and exclude anything in the 'test-results' sub-directory.
+
+### EXAMPLE 2
+
+```powershell
+$TagInventory = Get-MtTestInventory
+$TagInventory['CIS']
+```
+
+Get test test inventory and show tests with the 'CIS' tag.
+
+### EXAMPLE 3
+
+```powershell
+$Tags = Get-MtTestInventory
+$Tags -notmatch 'AzureConfig|CIS|CISA|Maester|MT.\d{4,5}|ORCA'
+```
+
+Show all tags used that do not match the specified tag patterns.
+
+### EXAMPLE 4
+
+```powershell
+$TagInventory = Get-MtTestInventory
+$TagInventory.Keys -notmatch 'AzureConfig|CIS|CISA|Maester|MT.\d{4,5}|ORCA'
+```
+
+foreach ($i in $TagInventory.GetEnumerator()) \{
+    if ($i.Key -notmatch 'AzureConfig|CIS|CISA|Maester|MT.\d\{4,5\}|ORCA') \{
+        $i
+    \}
+\}
+
+Show all tags used that do not match the specified tag patterns, along with their test objects.
+
+## PARAMETERS
+
+### -Path
+
+Root path containing the test files.
+Defaults to the '..\tests' directory in the current location.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: (Resolve-Path -LiteralPath (Join-Path -Path $PSScriptRoot '..\..' 'tests')).Path
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludePath
+
+One or more paths to exclude (e.g.
+'test-results' directory).
+Accepts wildcard patterns and relative paths.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludeTag
+
+One or more tags to exclude from discovery.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputType
+
+Specify a desired output type for the test inventory:
+
+- Default: Returns the test inventory as objects.
+- JSON: Returns the test inventory as a JSON string.
+- CSV: Returns the test inventory as a CSV string.
+- TagsOnly: Returns only the unique tags found in the test inventory.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: Default
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExportPath
+
+Path for exported CSV or JSON file.
+Defaults to 'TestInventory' in the current directory.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: (Join-Path -Path $PWD -ChildPath 'TestInventory')
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PassThru
+
+When specified, the test inventory object is returned to the pipeline along with exporting to file.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [Ordered] (Default) - An ordered dictionary containing a list of tags and associated test inventory objects.
+
+### [String] - JSON string of test inventory (when OutputType is 'JSON').
+### [String] - CSV string of test inventory (when OutputType is 'CSV').
+### [String[]] - Array of unique tags (when OutputType is 'TagsOnly').
+## NOTES
+Requires Pester 5+.
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtTestInventory](https://maester.dev/docs/commands/Get-MtTestInventory)

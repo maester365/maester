@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcRecordExist {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo second level domains
 
-.DESCRIPTION
+    .DESCRIPTION
     A DMARC policy SHALL be published for every second-level domain.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcRecordExist
 
     Returns true if DMARC record exists for all 2LD
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcRecordExist
-#>
-function Test-MtCisaDmarcRecordExist {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -35,7 +35,7 @@ function Test-MtCisaDmarcRecordExist {
 
     $seen = @{}
     $dmarcRecords = @()
-    foreach($domain in $acceptedDomains){
+    foreach($domain in ($acceptedDomains | Sort-Object -Property DomainName -Unique)){
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
         $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
@@ -66,6 +66,9 @@ function Test-MtCisaDmarcRecordExist {
         }elseif($dmarcRecord.dmarcRecord -like "*not available"){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
+        }elseif($domainName -eq 'onmicrosoft.com'){
+            $dmarcRecord.pass = "Skipped"
+            $dmarcRecord.reason = 'Not applicable'
         }else{
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
         }

@@ -7,8 +7,8 @@ $cwd = Get-Location
 Set-Location -Path $repo\build\orca
 
 # Get orca remote repo
-$orca = "https://github.com/cammurray/orca.git"
-if (Test-Path ".\orca") {
+$orca = 'https://github.com/cammurray/orca.git'
+if (Test-Path '.\orca') {
     & git pull --depth 1 $orca
 } else {
     & git clone --depth 1 $orca
@@ -16,86 +16,86 @@ if (Test-Path ".\orca") {
 
 #region prereqs
 $prereqs = @(
-    @{type = "class";    name = "ORCACheck"},
-    @{type = "class";    name = "ORCACheckConfig"},
-    @{type = "class";    name = "ORCACheckConfigResult"},
-    @{type = "class";    name = "PolicyInfo"},
-    @{type = "enum";     name = "CheckType"},
-    @{type = "enum";     name = "ORCACHI"},
-    @{type = "enum";     name = "ORCAConfigLevel"},
-    @{type = "enum";     name = "ORCAResult"},
-    @{type = "enum";     name = "ORCAService"},
-    @{type = "enum";     name = "PolicyType"},
-    @{type = "enum";     name = "PresetPolicyLevel"},
-    @{type = "function"; name = "Add-IsPresetValue"},
-    @{type = "function"; name = "Get-ORCACollection"},
-    @{type = "function"; name = "Get-PolicyStateInt"},
-    @{type = "function"; name = "Get-PolicyStates"},
-    @{type = "function"; name = "Get-AnyPolicyState"}
+    @{type = 'class'; name = 'ORCACheck' },
+    @{type = 'class'; name = 'ORCACheckConfig' },
+    @{type = 'class'; name = 'ORCACheckConfigResult' },
+    @{type = 'class'; name = 'PolicyInfo' },
+    @{type = 'enum'; name = 'CheckType' },
+    @{type = 'enum'; name = 'ORCACHI' },
+    @{type = 'enum'; name = 'ORCAConfigLevel' },
+    @{type = 'enum'; name = 'ORCAResult' },
+    @{type = 'enum'; name = 'ORCAService' },
+    @{type = 'enum'; name = 'PolicyType' },
+    @{type = 'enum'; name = 'PresetPolicyLevel' },
+    @{type = 'function'; name = 'Add-IsPresetValue' },
+    @{type = 'function'; name = 'Get-ORCACollection' },
+    @{type = 'function'; name = 'Get-PolicyStateInt' },
+    @{type = 'function'; name = 'Get-PolicyStates' },
+    @{type = 'function'; name = 'Get-AnyPolicyState' }
 )
 
 $module = Get-Content .\orca\orca.psm1 -Raw
-$parse = [System.Management.Automation.Language.Parser]::ParseInput($module,[ref]$null,[ref]$null)
+$parse = [System.Management.Automation.Language.Parser]::ParseInput($module, [ref]$null, [ref]$null)
 
 $codeBlocks = @()
-foreach($prereq in $prereqs){
+foreach ($prereq in $prereqs) {
     $enum = $class = $function = $false
 
-    switch($prereq.type){
-        "enum" {$enum = $true}
-        "class" {$class = $true}
-        "function" {$function = $true}
+    switch ($prereq.type) {
+        'enum' { $enum = $true }
+        'class' { $class = $true }
+        'function' { $function = $true }
     }
 
-    if($enum -or $class){
+    if ($enum -or $class) {
         $codeBlock = $parse.Find({
-            $args | Where-Object {
-                $_.IsClass -eq $class -and
-                $_.IsEnum -eq $enum -and
-                $_.Name -eq $prereq.Name
-            }
-        },$true)
-    }elseif($function){
+                $args | Where-Object {
+                    $_.IsClass -eq $class -and
+                    $_.IsEnum -eq $enum -and
+                    $_.Name -eq $prereq.Name
+                }
+            }, $true)
+    } elseif ($function) {
         $codeBlock = $parse.FindAll({
-            $args | Where-Object{
-                $_.Name -eq $prereq.Name -and
-                $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
-                $_.Parent -isnot [System.Management.Automation.Language.FunctionMemberAst]
-            }
-        },$true)
+                $args | Where-Object {
+                    $_.Name -eq $prereq.Name -and
+                    $_ -is [System.Management.Automation.Language.FunctionDefinitionAst] -and
+                    $_.Parent -isnot [System.Management.Automation.Language.FunctionMemberAst]
+                }
+            }, $true)
     }
 
-    if($codeBlock.Name -eq "Get-ORCACollection"){
+    if ($codeBlock.Name -eq 'Get-ORCACollection') {
         $regex = "Get\-(?'Request'HostedConnectionFilterPolicy|HostedContentFilterPolicy|HostedContentFilterRule|HostedOutboundSpamFilterPolicy|HostedOutboundSpamFilterRule|ATPProtectionPolicyRule|ATPBuiltInProtectionRule|ProtectionAlert|EOPProtectionPolicyRule|QuarantinePolicy|AntiphishPolicy|AntiPhishRule|MalwareFilterPolicy|MalwareFilterRule|TransportRule|SafeAttachmentPolicy|SafeAttachmentRule|SafeLinksPolicy|SafeLinksRule|AtpPolicyForO365|AcceptedDomain|DkimSigningConfig|InboundConnector|ExternalInOutlook|ArcConfig)\r"
-        $regexMatches = [regex]::Matches($codeBlock.Extent.Text,$regex)
+        $regexMatches = [regex]::Matches($codeBlock.Extent.Text, $regex)
 
         $text = $codeBlock.Extent.Text
-        $regexMatches|ForEach-Object{
-            $text = $text -replace`
-                "$($_.Value.Trim())\r","Get-MtExo -Request $($_.Groups['Request'].Value)"
+        $regexMatches | ForEach-Object {
+            $text = $text -replace `
+                "$($_.Value.Trim())\r", "Get-MtExo -Request $($_.Groups['Request'].Value)"
         }
-    }elseif($codeBlock.Name -eq "Add-IsPresetValue"){
+    } elseif ($codeBlock.Name -eq 'Add-IsPresetValue') {
         $text = $codeBlock.Extent.Text
-        $text = $text -replace "-Value .IsPreset","-Value `$IsPreset -Force"
-    }elseif($function){
+        $text = $text -replace '-Value .IsPreset', "-Value `$IsPreset -Force"
+    } elseif ($function) {
         $text = $codeBlock.Extent.Text
-    }else{
+    } else {
         $codeBlocks += $codeBlock.Extent.Text
     }
 
-    if($function){
-        $function = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+    if ($function) {
+        $function = "# Generated by .\build\orca\Update-OrcaTests.ps1`n`n"
         $function += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
         $function += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]`n"
         $function += "param()`n`n"
         $function += $text
-        $function = $function -replace "Write\-Host","Write-Verbose"
+        $function = $function -replace 'Write\-Host', 'Write-Verbose'
         Set-Content -Path "$repo\powershell\internal\orca\$($prereq.name).ps1" -Value $function -Force
     }
 }
 Write-Verbose "Found $($codeBlocks.Count)/$($prereqs.Count) code blocks"
 
-$orcaClassContent = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+$orcaClassContent = "# Generated by .\build\orca\Update-OrcaTests.ps1`n`n"
 $orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
 $orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]`n"
 $orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPossibleIncorrectComparisonWithNull', '')]`n"
@@ -103,10 +103,10 @@ $orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoi
 $orcaClassContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]`n"
 $orcaClassContent += "param()`n`n"
 $orcaClassContent += $codeBlocks -join "`n`n"
-$orcaClassContent = $orcaClassContent -replace "Write\-Host","Write-Verbose"
+$orcaClassContent = $orcaClassContent -replace 'Write\-Host', 'Write-Verbose'
 Set-Content -Path $repo\powershell\internal\orca\orcaClass.psm1 -Value $orcaClassContent -Force
 
-$orcaPrereqContent = "# Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1`n`n"
+$orcaPrereqContent = "# Generated by .\build\orca\Update-OrcaTests.ps1`n`n"
 $orcaPrereqContent += "using module `".\orcaClass.psm1`"`n`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]`n"
@@ -114,29 +114,29 @@ $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSPos
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '')]`n"
 $orcaPrereqContent += "[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]`n"
 $orcaPrereqContent += "param()`n"
-$orcaPrereqContent = $orcaPrereqContent -replace "Write\-Host","Write-Verbose"
+$orcaPrereqContent = $orcaPrereqContent -replace 'Write\-Host', 'Write-Verbose'
 #endregion
 
 #region tests
 $exports = @()
 $testFiles = Get-ChildItem $repo\build\orca\orca\Checks\*.ps1
-foreach($file in $testFiles){
+foreach ($file in $testFiles) {
     $content = [pscustomobject]@{
         file        = $file.Name
         content     = Get-Content $file -Raw
-        name        = ""
-        pass        = ""
-        fail        = ""
-        func        = ""
-        control     = ""
-        area        = ""
-        description = ""
-        links       = ""
+        name        = ''
+        pass        = ''
+        fail        = ''
+        func        = ''
+        control     = ''
+        area        = ''
+        description = ''
+        links       = ''
     }
 
-    $content.content = $content.content -replace`
-        "using module `"..\\ORCA.psm1`"",`
-        ""
+    $content.content = $content.content -replace `
+        "using module `"..\\ORCA.psm1`"", `
+        ''
 
     $content.content = "$orcaPrereqContent`n`n" + $content.content
 
@@ -157,22 +157,22 @@ foreach($file in $testFiles){
     $content.func = $func.Groups['capture'].Value
     if ($func.Groups['capture'].Value -match '_') {
         $funcFilesContentList = New-Object System.Collections.ArrayList
-        foreach ($funcFile in ($testFiles.Where({$_.Name -ne $file.Name -and $_.Name -like "check-$($func.Groups['capture'].Value.Split('_')[0])*"}))) {
+        foreach ($funcFile in ($testFiles.Where({ $_.Name -ne $file.Name -and $_.Name -like "check-$($func.Groups['capture'].Value.Split('_')[0])*" }))) {
             $funcFileContent = Get-Content $funcFile -Raw
             $funcFileArea = [regex]::Match($funcFileContent, "this\.area=([\'\`"])(?'capture'.*)\1", $option)
             $funcFileName = [regex]::Match($funcFileContent, "this\.name=([\'\`"])(?'capture'.*)\1", $option)
             $funcFilePass = [regex]::Match($funcFileContent, "this\.passText=([\'\`"])(?'capture'.*)\1", $option)
             $funcFilesContentList.Add([PSCustomObject]@{
-                area = $funcFileArea.Groups['capture'].Value
-                name = $funcFileName.Groups['capture'].Value
-                pass = $funcFilePass.Groups['capture'].Value
-            }) | Out-Null
+                    area = $funcFileArea.Groups['capture'].Value
+                    name = $funcFileName.Groups['capture'].Value
+                    pass = $funcFilePass.Groups['capture'].Value
+                }) | Out-Null
         }
         switch ($false) {
             ($pass.Groups['capture'].Value -in $funcFilesContentList.pass) { $content.pass = $pass.Groups['capture'].Value; break; }
-            ($area.Groups['capture'].Value -in $funcFilesContentList.Where({$_.pass -eq $pass.Groups['capture'].Value}).area) { $content.pass = "$($pass.Groups['capture'].Value) in $($area.Groups['capture'].Value)"; break; }
+            ($area.Groups['capture'].Value -in $funcFilesContentList.Where({ $_.pass -eq $pass.Groups['capture'].Value }).area) { $content.pass = "$($pass.Groups['capture'].Value) in $($area.Groups['capture'].Value)"; break; }
             ($name.Groups['capture'].Value -in $funcFilesContentList.name) { $content.pass = $name.Groups['capture'].Value; break; }
-            Default {$content.pass = $pass.Groups['capture'].Value; break;}
+            default { $content.pass = $pass.Groups['capture'].Value; break; }
         }
     } else {
         $content.pass = $pass.Groups['capture'].Value
@@ -180,20 +180,20 @@ foreach($file in $testFiles){
     $content.pass = $content.pass -notmatch '\.$' ? "$($content.pass)." : $content.pass # Add punctuation to pass text if not present to stay consistent between tests
 
     # Confirm to Maester convention
-    $testId = $content.func -replace "ORCA","ORCA."
-    $testId = $testId -replace "_","."
+    $testId = $content.func -replace 'ORCA', 'ORCA.'
+    $testId = $testId -replace '_', '.'
 
     # Set fixed test id for ORCA.120 and replace ORCA.120.phish, ORCA.120.malware, ORCA.120.spam
     $mapping = @{
-        "ORCA.120.phish" = "ORCA.120.1"
-        "ORCA.120.malware" = "ORCA.120.2"
-        "ORCA.120.spam" = "ORCA.120.3"
+        'ORCA.120.phish'   = 'ORCA.120.1'
+        'ORCA.120.malware' = 'ORCA.120.2'
+        'ORCA.120.spam'    = 'ORCA.120.3'
     }
     if ($mapping.ContainsKey($testId)) {
         $testId = $mapping[$testId]
     }
     # IF testId is not in Maester format of (ORCA.n or ORCA.n.n) the last number is optional and can be any number of digits, display error and ask to update this code and abort
-    if ($testId -notmatch "^ORCA\.\d{1,3}(\.\d+)?$") {
+    if ($testId -notmatch '^ORCA\.\d{1,3}(\.\d+)?$') {
         Write-Error "Test ID '$testId' is not in the correct format (ORCA.nnn.n). Please update Update-OrcaTests.ps1 @ line 182 to use the correct format for this test."
         exit 1
     }
@@ -201,7 +201,7 @@ foreach($file in $testFiles){
     $testScript = @"
 # Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
 
-Describe "ORCA" -Tag "ORCA", "$($testId)", "EXO", "Security", "All" {
+Describe "ORCA" -Tag "ORCA", "$($testId)", "Exchange" {
     It "$($testId): $($content.pass)" {
         `$result = Test-$($content.func)
 
@@ -217,22 +217,22 @@ Describe "ORCA" -Tag "ORCA", "$($testId)", "EXO", "Security", "All" {
     #$testContents += $content
 
     $funcScript = @"
-<#
-.SYNOPSIS
-    $($content.pass)
-
-.DESCRIPTION
-    Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
-
-.EXAMPLE
-    Test-$($content.func)
-
-    Returns true or false
-
-.LINK
-    https://maester.dev/docs/commands/Test-$($content.func)
-#>
 function Test-$($content.func){
+    <#
+    .SYNOPSIS
+        $($content.pass)
+
+    .DESCRIPTION
+        Generated on $(Get-Date) by .\build\orca\Update-OrcaTests.ps1
+
+    .EXAMPLE
+        Test-$($content.func)
+
+        Returns true or false
+
+    .LINK
+        https://maester.dev/docs/commands/Test-$($content.func)
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -257,7 +257,7 @@ function Test-$($content.func){
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         `$obj.Run(`$Collection)
     } catch {
-        Write-Error "An error occurred during $($content.func): `$(`$_.Exception.Message)"
+        Write-OrcaError -TestId "$($content.func)" -ErrorRecord `$_ -AdditionalContext "Running $($content.func) test"
         throw
     } finally {
         if(`$obj.SkipInReport) {
@@ -326,7 +326,7 @@ function Test-$($content.func){
     $exports += "Test-$($content.func)"
 
     $description = [regex]::Match($content.content, "this\.Importance=([\'\`"])(?'capture'.*)\1", $option) # Capture between first identified apostrophe or quote and its last
-    $content.description = $description.Groups['capture'].Value -replace '<[^>]+>','' # Remove HTML tags
+    $content.description = $description.Groups['capture'].Value -replace '<[^>]+>', '' # Remove HTML tags
     $links = [regex]::Match($content.content, "this.Links.*@{(?'capture'[^}]*)}", $option)
     $content.links = $links.Groups['capture'].Value | ConvertFrom-StringData
 
@@ -340,9 +340,9 @@ $($content.fail)
 
 "@
 
-    $md += $($content.links.Keys|Sort-Object|ForEach-Object{
-        "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
-    })
+    $md += $($content.links.Keys | Sort-Object | ForEach-Object {
+            "`n* [$($_.Substring(1,$_.Length-2))]($(($content.links["$_"]).Substring(1,($content.links["$_"]).Length-2)))"
+        })
     # MD Files
     Set-Content -Path "$repo\powershell\public\orca\Test-$($content.func).md" -Value $md -Force
 }

@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA229{
+    <#
+    .SYNOPSIS
     No trusted domains in Anti-phishing policy.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA229
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA229
-#>
-function Test-ORCA229{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA229{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA229: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA229" -ErrorRecord $_ -AdditionalContext "Running ORCA229 test"
         throw
     } finally {
         if($obj.SkipInReport) {

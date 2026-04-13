@@ -1,0 +1,144 @@
+---
+sidebar_class_name: hidden
+description: Retrieves Maester applications from Azure AD/Entra ID.
+id: Get-MtMaesterApp
+title: Get-MtMaesterApp
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtMaesterApp.ps1
+---
+
+## SYNOPSIS
+
+Retrieves Maester applications from Azure AD/Entra ID.
+
+## SYNTAX
+
+### ById
+
+```powershell
+Get-MtMaesterApp -Id <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### ByApplicationId
+
+```powershell
+Get-MtMaesterApp -AppId <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### Default
+
+```powershell
+Get-MtMaesterApp [-Name <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Retrieves all applications in Azure AD/Entra ID that have been tagged as Maester applications.
+This includes applications created by New-MtMaesterApp or manually tagged with 'maester'.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtMaesterApp
+```
+
+Retrieves all Maester applications in the tenant.
+
+### EXAMPLE 2
+
+```powershell
+Get-MtMaesterApp -AppId "12345678-1234-1234-1234-123456789012"
+```
+
+Retrieves the specific Maester application with the given Application ID.
+
+### EXAMPLE 3
+
+```powershell
+Get-MtMaesterApp -Name "DevOps"
+```
+
+Retrieves all Maester applications that start with "DevOps" in their display name.
+
+## PARAMETERS
+
+### -Id
+
+The ID of the Maester app to update
+
+```yaml
+Type: String
+Parameter Sets: ById
+Aliases: ObjectId
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AppId
+
+If specified, retrieves only the Maester application with the specified Application (Client) ID.
+
+```yaml
+Type: String
+Parameter Sets: ByApplicationId
+Aliases: ClientId
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Name
+
+If specified, retrieves only Maester applications with display names containing the specified text.
+
+```yaml
+Type: String
+Parameter Sets: Default
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtMaesterApp](https://maester.dev/docs/commands/Get-MtMaesterApp)

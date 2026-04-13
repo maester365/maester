@@ -6,12 +6,15 @@
   "version": "0.2",
   "language": "en",
   "words": [
-    "Maester",
+    "Contoso",
+    "Delicensing",
     "Docusaurus",
     "Entra",
-    "Contoso",
+    "Maester",
+    "MOERA",
+    "passwordless",
     "SSPR",
-    "passwordless"
+    "XSPM"
   ],
   "ignoreWords": [
     "maester",

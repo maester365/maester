@@ -1,32 +1,25 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaGlobalAdminRatio {
+    <#
+    .SYNOPSIS
     Checks the ratio of global admins to privileged roles
 
-.DESCRIPTION
+    .DESCRIPTION
     Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaGlobalAdminRatio
 
     Returns true if global admin to privileged roles ration is 1 or less
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaGlobalAdminRatio
-#>
-function Test-MtCisaGlobalAdminRatio {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
 
     if(!(Test-MtConnection Graph)){
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
-        return $null
-    }
-
-    $scopes = (Get-MgContext).Scopes
-    $permissionMissing = "RoleEligibilitySchedule.ReadWrite.Directory" -notin $scopes -and "RoleManagement.ReadWrite.Directory" -notin $scopes
-    if($permissionMissing){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope RoleEligibilitySchedule.ReadWrite.Directory"
         return $null
     }
 

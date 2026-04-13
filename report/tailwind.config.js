@@ -15,6 +15,40 @@ export default {
     current: "currentColor",
     extend: {
       colors: {
+        // shadcn CSS variable colors
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
         // light mode
         tremor: {
           brand: {
@@ -56,23 +90,23 @@ export default {
             inverted: colors.blue[950],
           },
           background: {
-            muted: "#131A2B",
-            subtle: colors.gray[800],
-            DEFAULT: colors.gray[900],
-            emphasis: colors.gray[300],
+            muted: "#09090b",
+            subtle: colors.zinc[800],
+            DEFAULT: colors.zinc[900],
+            emphasis: colors.zinc[300],
           },
           border: {
-            DEFAULT: colors.gray[700],
+            DEFAULT: colors.zinc[800],
           },
           ring: {
-            DEFAULT: colors.gray[800],
+            DEFAULT: colors.zinc[800],
           },
           content: {
-            subtle: colors.gray[600],
-            DEFAULT: colors.gray[500],
-            emphasis: colors.gray[200],
-            strong: colors.gray[50],
-            inverted: colors.gray[950],
+            subtle: colors.zinc[600],
+            DEFAULT: colors.zinc[500],
+            emphasis: colors.zinc[200],
+            strong: colors.zinc[50],
+            inverted: colors.zinc[950],
           },
         },
       },
@@ -91,6 +125,9 @@ export default {
           "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
       },
       borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
         "tremor-small": "0.375rem",
         "tremor-default": "0.5rem",
         "tremor-full": "9999px",
@@ -135,6 +172,7 @@ export default {
   plugins: [
     require("@headlessui/tailwindcss"),
     require("@tailwindcss/typography"),
+    require("tailwindcss-animate"),
   ],
   darkMode: "class",
 };

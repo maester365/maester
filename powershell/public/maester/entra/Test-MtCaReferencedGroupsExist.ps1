@@ -1,20 +1,19 @@
-﻿<#
-  .Synopsis
-  Checks if any conditional access policies include or exclude groups that have been deleted.
+﻿function Test-MtCaReferencedGroupsExist {
+    <#
+    .Synopsis
+    Checks if any conditional access policies include or exclude groups that have been deleted.
 
-  .Description
-  Security Groups will be used to exclude and include users from Conditional Access Policies.
-  Assignments are still visible in the policy definition in Microsoft Graph API even the group is deleted.
-  This test checks if all groups used in Conditional Access Policies still exist and shows invalid or deleted items.
+    .Description
+    Security Groups will be used to exclude and include users from Conditional Access Policies.
+    Assignments are still visible in the policy definition in Microsoft Graph API even the group is deleted.
+    This test checks if all groups used in Conditional Access Policies still exist and shows invalid or deleted items.
 
-  .Example
-  Test-MtCaReferencedGroupsExist
+    .Example
+    Test-MtCaReferencedGroupsExist
 
-  .LINK
-  https://maester.dev/docs/commands/Test-MtCaReferencedGroupsExist
-#>
-
-function Test-MtCaReferencedGroupsExist {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCaReferencedGroupsExist
+    #>
   [CmdletBinding()]
   [OutputType([bool])]
   param ()
@@ -29,7 +28,6 @@ function Test-MtCaReferencedGroupsExist {
   }
 
   try {
-    $testDescription = 'Invalid or deleted security groups are referenced in Conditional Access policies.'
     # Get all policies (the state of policy does not have to be enabled)
     $Policies = Get-MtConditionalAccessPolicy
 
@@ -77,7 +75,7 @@ function Test-MtCaReferencedGroupsExist {
     $ImpactedCaGroups += "`n`nNote: Names are not available for deleted groups. If the group was deleted in the last 30 days it may be available under [Entra admin centre - Deleted groups](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/GroupsManagementMenuBlade/~/DeletedGroups/menuId/DeletedGroups).`n`n"
 
     $resultMarkdown = $ResultDescription + $ImpactedCaGroups
-    Add-MtTestResultDetail -Description $testDescription -Result $resultMarkdown
+    Add-MtTestResultDetail -Result $resultMarkdown
     return $result
 
   } catch {

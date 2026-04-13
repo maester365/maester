@@ -1,0 +1,13 @@
+diff --git a/node_modules/mdast-util-gfm-table/lib/index.js b/node_modules/mdast-util-gfm-table/lib/index.js
+index 11e5115..3544dcd 100644
+--- a/node_modules/mdast-util-gfm-table/lib/index.js
++++ b/node_modules/mdast-util-gfm-table/lib/index.js
+@@ -292,7 +292,7 @@ export function gfmTableToMarkdown(options) {
+     let value = defaultHandlers.inlineCode(node, parent, state)
+ 
+     if (state.stack.includes('tableCell')) {
+-      value = value.replace(/\|/g, '\\$&')
++      value = value.replace(/\\/g, '\\\\').replace(/\|/g, '\\$&')
+     }
+ 
+     return value

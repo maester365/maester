@@ -36,7 +36,7 @@ Here are all the new features and improvements in this release:
 
 ## 🌟 **New Tests**
 
-We've added a whole bunch of new tests to check your security configuration, growing from 194 to 286! 🎉 Check out the [test list](/docs/tests) for the full breakdown.
+We've added a whole bunch of new tests to check your security configuration, growing from 194 to 286! 🎉 Check out the [test list](../../docs/tests) for the full breakdown.
 
 ![New tests in Maester](img/maester-new-tests.png)
 ### ORCA
@@ -51,7 +51,7 @@ You can read more about this  in our previous blog post [Maester adds ORCA tests
 
 We have a number of app related tests that help you identify potential security issues with your Entra applications.
 
-Note: We don't run these new app related tests by default since they can take a long time to run. You will need to explicitly include them using `Invoke-Maester -Tag 'Full'`.
+Note: We don't run these new app related tests by default since they can take a long time to run. You will need to explicitly include them using `Invoke-Maester -IncludeLongRunning`.
 
 This is because it needs to query all applications and service principals in the tenant which can take many hours in large tenants.
 
@@ -93,7 +93,7 @@ Each test now includes a severity rating. This will help you prioritize the test
 
 You can also change the severity levels of the tests to suite your needs.
 
-Check the [Severity Levels documentation](/docs/severity-levels) for all the details including how you can add Severity to your custom tests.
+Check the [Severity Levels documentation](/docs/next/configuration/severity-levels) for all the details including how you can add Severity to your custom tests.
 
 ### 📊 **Maester Report Improvements**
 

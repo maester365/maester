@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisOutboundSpamFilterPolicy {
+    <#
+    .SYNOPSIS
     Checks if Exchange Online Spam Policies are set to notify administrators
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure Exchange Online Spam Policies are set to notify administrators
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisOutboundSpamFilterPolicy
 
     Returns true if Exchange Online Spam Policies are set to notify administrators
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisOutboundSpamFilterPolicy
-#>
-function Test-MtCisOutboundSpamFilterPolicy {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -32,7 +32,7 @@ function Test-MtCisOutboundSpamFilterPolicy {
         $policies = Get-MtExo -Request HostedOutboundSpamFilterPolicy
 
         # We grab the default policy as that is what CIS checks
-        $policy = $policies | Where-Object { $_.Name -eq 'Default' }
+        $policy = $policies | Where-Object { $_.IsDefault -eq $true }
 
         $OutboundSpamFilterPolicyCheckList = @()
 

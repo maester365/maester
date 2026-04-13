@@ -1,4 +1,21 @@
 {
+  "GlobalSettings": {
+    "EmergencyAccessAccounts": [
+      {
+        "Id": "12345678-1234-1234-1234-123456789012",
+        "Type": "User"
+      },
+      {
+        "UserPrincipalName": "breakglass@contoso.com",
+        "Type": "Group"
+      },
+      {
+        "UserPrincipalName": "emergency@contoso.com",
+        "Type": "User"
+      }
+    ],
+    "DataverseEnvironmentUrl": "org12345.crm.dynamics.com"
+  },
   "TestSettings": [
     {
       "Id": "CIS.M365.1.1.1",

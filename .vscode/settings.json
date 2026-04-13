@@ -1,14 +1,24 @@
 {
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
+  "files.trimTrailingWhitespace": true,
+  "files.encoding": "utf8",
+  "[powershell]": {
+    "files.encoding": "utf8bom",
+    "editor.defaultFormatter": "ms-vscode.powershell",
+    "editor.formatOnSave": true
+  },
   "powershell.codeFormatting.autoCorrectAliases": true,
   "powershell.codeFormatting.avoidSemicolonsAsLineTerminators": true,
   "powershell.codeFormatting.newLineAfterCloseBrace": false,
   "powershell.codeFormatting.trimWhitespaceAroundPipe": true,
   "powershell.codeFormatting.whitespaceBetweenParameters": true,
   "powershell.analyzeOpenDocumentsOnly": false,
-  "files.trimTrailingWhitespace": true,
-  "cSpell.words": [
-    "Contoso",
-    "Maester"
-  ]
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "eslint.format.enable": true,
+  "cSpell.words": ["Contoso", "Maester"]
 }

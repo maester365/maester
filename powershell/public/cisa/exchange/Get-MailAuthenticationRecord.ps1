@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MailAuthenticationRecord {
+    <#
+    .SYNOPSIS
     Obtains and converts the mail authentication records of a domain
 
-.DESCRIPTION
+    .DESCRIPTION
     Adapted from:
     - https://cloudbrothers.info/en/powershell-tip-resolve-spf/
     - https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Modules/Providers/ExportEXOProvider.psm1
@@ -11,15 +12,14 @@
     - DMARC https://datatracker.ietf.org/doc/html/rfc7489
     - DKIM https://datatracker.ietf.org/doc/html/rfc6376
 
-.EXAMPLE
+    .EXAMPLE
     Get-MailAuthenticationRecord -DomainName "microsoft.com"
 
     Returns an object containing the structured mail authentication objects
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MailAuthenticationRecord
-#>
-function Get-MailAuthenticationRecord {
+    #>
     [OutputType([pscustomobject])]
     [cmdletbinding()]
     param(
@@ -30,8 +30,8 @@ function Get-MailAuthenticationRecord {
         # DNS-server to use for lookup.
         [ipaddress]$DnsServerIpAddress,
 
-        # Selector-name for the DKIM record to retrieve.
-        [string]$DkimSelector = "selector1",
+        # DKIM DNS record Name to retrieve.
+        [string]$DkimDnsName,
 
         [ValidateSet("All", "DKIM", "DMARC", "MX", "SPF")]
         # Specify which records should be retrieved. Accepted values are 'All', 'DKIM', 'DMARC', 'MX' and/or 'SPF'.
@@ -76,6 +76,10 @@ function Get-MailAuthenticationRecord {
             DnsServerIpAddress = $DnsServerIpAddress
             QuickTimeout       = $QuickTimeout
             NoHostsFile        = $NoHostsFile
+        }
+        # Cannot splat $DnsServerIpAddress if it is $null as it will spread $null and prohibit use the default value '1.1.1.1' of get-dns functions
+        if ($DnsServerIpAddress) {
+            $splat.DnsServerIpAddress = $DnsServerIpAddress
         }
 
         if ($mx -or $all) {
@@ -124,7 +128,7 @@ function Get-MailAuthenticationRecord {
                 Write-Verbose "DKIM record exist in cache - Use Clear-MtDnsCache to reset"
                 $recordSet.dkimRecord = $mtDnsCache.dkimRecord
             } else {
-                $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @splat -DkimSelector $DkimSelector
+                $recordSet.dkimRecord = ConvertFrom-MailAuthenticationRecordDkim @splat -DkimDnsName $DkimDnsName
                 ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).dkimRecord = $recordSet.dkimRecord
             }
         }

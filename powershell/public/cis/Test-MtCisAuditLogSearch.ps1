@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisAuditLogSearch {
+    <#
+    .SYNOPSIS
     Checks if audit log search is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Microsoft 365 audit log search should be enabled
     CIS Microsoft 365 Foundations Benchmark v5.0.0
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisAuditLogSearch
 
     Returns true if audit log search is enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisAuditLogSearch
-#>
-function Test-MtCisAuditLogSearch {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -26,27 +26,25 @@ function Test-MtCisAuditLogSearch {
 
     try {
         Write-Verbose 'Get audit log search status'
-        $auditLogSearch = Get-AdminAuditLogConfig | Select-Object UnifiedAuditLogIngestionEnabled
+        $auditLogSearch = Get-AdminAuditLogConfig
 
-        Write-Verbose 'Check audit log search is enabled'
-        $result = $auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }
-
-        $testResult = ($result | Measure-Object).Count -eq 0
-
-        if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant has audit log search enabled:`n`n%TestResult%"
-        } else {
+        if ($auditLogSearch | Where-Object { $_.UnifiedAuditLogIngestionEnabled -ne 'True' }) {
+            $testResult = $false
             $testResultMarkdown = "Your tenant does not have audit log search enabled:`n`n%TestResult%"
+        } else {
+            $testResult = $true
+            $testResultMarkdown = "Well done. Your tenant has audit log search enabled:`n`n%TestResult%"
         }
 
-        $resultMd = "| Audit Log Search |`n"
-        $resultMd += "| --- |`n"
+        $resultMd = "| Audit Log | Status |`n"
+        $resultMd += "| --- | --- |`n"
         foreach ($item in $auditLogSearch) {
-            $itemResult = '❌ Fail'
-            if ($item.id -notin $result.id) {
-                $itemResult = '✅ Pass'
+            if ($item.UnifiedAuditLogIngestionEnabled) {
+                $itemResult = '✅ Enabled'
+            } else {
+                $itemResult = '❌ Disabled'
             }
-            $resultMd += "| $($itemResult) |`n"
+            $resultMd += "| $($item.Name) | $($itemResult) |`n"
         }
 
         $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultMd

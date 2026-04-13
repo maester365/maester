@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA108_1{
+    <#
+    .SYNOPSIS
     DNS Records have been set up to support DKIM.
 
-.DESCRIPTION
-    Generated on 04/16/2025 21:38:23 by .\build\orca\Update-OrcaTests.ps1
+    .DESCRIPTION
+    Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA108_1
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA108_1
-#>
-function Test-ORCA108_1{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,7 +38,7 @@ function Test-ORCA108_1{
     try { # Handle "SkipInReport" which has a continue statement that makes this function exit unexpectedly
         $obj.Run($Collection)
     } catch {
-        Write-Error "An error occurred during ORCA108_1: $($_.Exception.Message)"
+        Write-OrcaError -TestId "ORCA108_1" -ErrorRecord $_ -AdditionalContext "Running ORCA108_1 test"
         throw
     } finally {
         if($obj.SkipInReport) {

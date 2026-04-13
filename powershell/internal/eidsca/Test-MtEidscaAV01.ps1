@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtEidscaAV01 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Voice call - State is set to 'disabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Whether the Voice call is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAV01
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
-#>
-
-function Test-MtEidscaAV01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy securing security info registration.
+﻿function Test-MtCaSecureSecurityInfoRegistration {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy securing security info registration.
 
- .Description
+    .Description
     Security info registration conditional access policy can secure the registration of security info for users in the tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration
 
- .Example
-  Test-MtCaSecureSecurityInfoRegistration
+    .Example
+    Test-MtCaSecureSecurityInfoRegistration
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaSecureSecurityInfoRegistration
-#>
-function Test-MtCaSecureSecurityInfoRegistration {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -36,8 +36,8 @@ function Test-MtCaSecureSecurityInfoRegistration {
                 $policy.conditions.users.includeUsers -eq "All" -and
                 $policy.conditions.clientAppTypes -eq "all" -and
                 $policy.conditions.applications.includeUserActions -eq "urn:user:registersecurityinfo" -and
-                $policy.conditions.users.excludeRoles -eq "62e90394-69f5-4237-9190-012177145e10" -and
-                $policy.conditions.locations.excludeLocations -eq "AllTrusted"
+                $policy.conditions.locations.includeLocations -eq "All" -and
+                $null -ne $policy.conditions.locations.excludeLocations
             ) {
                 $result = $true
                 $CurrentResult = $true

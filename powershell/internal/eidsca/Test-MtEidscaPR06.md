@@ -5,7 +5,7 @@ How many failed sign-ins are allowed on an account before its first lockout. If 
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le '10'
+.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
 ```
 
 #### Related links

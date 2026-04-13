@@ -1,28 +1,28 @@
-﻿<#
- .Synopsis
+﻿function Disconnect-Maester {
+    <#
+    .Synopsis
     Helper method to sign out of the current Microsoft Graph session. Alternate for Disconnect-MgGraph.
 
- .Description
+    .Description
     Use this cmdlet to sign out of the current Microsoft Graph session.
 
     This cmdlet is a helper method for running the following command.
     ```
-    Disconnnect-MgGraph
+    Disconnect-MgGraph
     ```
 
- .Example
+    .Example
     Disconnect-MtGraph
 
- .Example
+    .Example
     Disconnect-Maester
 
- .Example
+    .Example
     Disconnect-MtMaester
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Disconnect-Maester
-#>
-function Disconnect-Maester {
+    #>
    [Alias("Disconnect-MtMaester", "Disconnect-MtGraph")]
    [CmdletBinding()]
    param()
@@ -32,9 +32,13 @@ function Disconnect-Maester {
       Disconnect-MgGraph
    }
 
-   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "All"){
+   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All"){
       Write-Verbose -Message "Disconnecting from Microsoft Azure."
-      Disconnect-AzAccount
+      try {
+         Disconnect-AzAccount -ErrorAction Stop | Out-Null
+      } catch {
+         Write-Verbose "Disconnect-AzAccount encountered an error: $($_.Exception.Message)"
+      }
    }
 
    if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){

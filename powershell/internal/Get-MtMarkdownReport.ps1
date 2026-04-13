@@ -1,17 +1,16 @@
-﻿<#
- .Synopsis
-  Generates a markdown report using the Maester test results format.
+﻿function Get-MtMarkdownReport {
+    <#
+    .Synopsis
+     Generates a markdown report using the Maester test results format.
 
- .Description
-    This markdown report can be used in GitHub actions to display the test results in a formatted way.
+    .Description
+       This markdown report can be used in GitHub actions to display the test results in a formatted way.
 
- .Example
-    $pesterResults = Invoke-Pester -PassThru
-    $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
-    Get-MtMarkdownReport $maesterResults
-#>
-
-function Get-MtMarkdownReport {
+    .Example
+       $pesterResults = Invoke-Pester -PassThru
+       $maesterResults = ConvertTo-MtMaesterResult -PesterResults $pesterResults
+       Get-MtMarkdownReport $maesterResults
+    #>
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
@@ -23,6 +22,7 @@ function Get-MtMarkdownReport {
         Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
         NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
         Skipped = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Skipped"/>'
+        Investigate = '<img src="https://maester.dev/img/test-result/pill-investigate.png" height="25" alt="Investigate"/>'
     }
 
     $StatusIconSm = @{
@@ -30,6 +30,7 @@ function Get-MtMarkdownReport {
         Failed = '❌' # '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
         NotRun = '❔' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
         Skipped = '🚫' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
+        Investigate = '🔍'
     }
 
     function GetTestSummary() {
@@ -57,7 +58,7 @@ function Get-MtMarkdownReport {
                 # Test author has provided details
                 $details += "#### Overview`n`n$($test.ResultDetail.TestDescription)`n`n"
                 $details += "#### Test Results`n`n$($test.ResultDetail.TestResult)`n`n"
-            } else {
+            } elseif (![string]::IsNullOrEmpty($test.ScriptBlock)) {
                 # Test author has not provided details, use default code in script
                 # make sure we do not execute the code in the script block!
                 $cleanedScriptBlock = $test.ScriptBlock.ToString() -replace '%\w+%', '' -replace '\$_', '€_' # or show me how I can make it not execute the $_ thing
@@ -101,6 +102,8 @@ function Get-MtMarkdownReport {
     $templateMarkdown = $templateMarkdown -replace '%TotalCount%', $MaesterResults.TotalCount
     $templateMarkdown = $templateMarkdown -replace '%PassedCount%', $MaesterResults.PassedCount
     $templateMarkdown = $templateMarkdown -replace '%FailedCount%', $MaesterResults.FailedCount
+    $templateMarkdown = $templateMarkdown -replace '%InvestigateCount%', $MaesterResults.InvestigateCount
+    $templateMarkdown = $templateMarkdown -replace '%SkippedCount%', $MaesterResults.SkippedCount
     $templateMarkdown = $templateMarkdown -replace '%NotRunCount%', $MaesterResults.NotRunCount
 
     $templateMarkdown = $templateMarkdown -replace '%TestSummary%', $textSummary

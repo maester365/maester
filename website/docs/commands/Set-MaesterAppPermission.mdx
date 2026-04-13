@@ -1,0 +1,96 @@
+---
+sidebar_class_name: hidden
+description: Internal helper function to set Graph API permissions for a Maester application.
+id: Set-MaesterAppPermission
+title: Set-MaesterAppPermission
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Set-MaesterAppPermission.ps1
+---
+
+## SYNOPSIS
+
+Internal helper function to set Graph API permissions for a Maester application.
+
+## SYNTAX
+
+```powershell
+Set-MaesterAppPermission [-AppId] <String> [-Scopes] <String[]> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function configures the required Graph API permissions (app roles) for a Maester application
+in Azure AD/Entra ID.
+It handles both creating new permissions and updating existing ones.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Set-MaesterAppPermission -AppId "12345678-1234-1234-1234-123456789012" -Scopes @("Directory.Read.All", "Policy.Read.All")
+```
+
+## PARAMETERS
+
+### -AppId
+
+The Application (Client) ID of the app to configure permissions for.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Scopes
+
+Array of Graph API permission scopes to configure for the application.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS

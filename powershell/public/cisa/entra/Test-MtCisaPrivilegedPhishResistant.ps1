@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaPrivilegedPhishResistant {
+    <#
+    .SYNOPSIS
     Checks if Conditional Access Policy requiring phishing resistant authentication methods for privileged roles is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Phishing-resistant MFA SHALL be required for highly privileged roles.
 
-.EXAMPLE
-    Test-MtCisaPhishResistant
+    .EXAMPLE
+    Test-MtCisaPrivilegedPhishResistant
 
     Returns true if at least one policy requires phishing resistant methods for the specific roles
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaPrivilegedPhishResistant
-#>
-function Test-MtCisaPrivilegedPhishResistant {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
