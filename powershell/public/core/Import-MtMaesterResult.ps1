@@ -100,7 +100,7 @@ function Import-MtMaesterResult {
         } else {
             Write-Verbose "Loaded $($allResults.Count) Maester result(s) in total."
         }
-        return $allResults.ToArray()
+        return , $allResults.ToArray()
     }
 }
 
