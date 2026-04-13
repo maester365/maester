@@ -21,6 +21,8 @@ function Test-MtMdeQuickScanTime {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeQuickScanTime..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

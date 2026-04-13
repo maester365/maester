@@ -20,6 +20,8 @@ function Test-MtMdeMappedDriveScanning {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeMappedDriveScanning..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

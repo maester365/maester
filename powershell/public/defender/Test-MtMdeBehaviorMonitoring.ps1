@@ -20,6 +20,8 @@ function Test-MtMdeBehaviorMonitoring {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeBehaviorMonitoring..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

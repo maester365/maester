@@ -20,6 +20,8 @@ function Test-MtMdeNetworkFileScanning {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeNetworkFileScanning..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

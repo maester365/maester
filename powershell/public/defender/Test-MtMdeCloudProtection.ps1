@@ -20,6 +20,8 @@ function Test-MtMdeCloudProtection {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeCloudProtection..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

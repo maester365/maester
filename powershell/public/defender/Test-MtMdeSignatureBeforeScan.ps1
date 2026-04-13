@@ -21,6 +21,8 @@ function Test-MtMdeSignatureBeforeScan {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeSignatureBeforeScan..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

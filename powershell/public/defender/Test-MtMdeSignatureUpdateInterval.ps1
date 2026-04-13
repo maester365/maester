@@ -21,6 +21,8 @@ function Test-MtMdeSignatureUpdateInterval {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeSignatureUpdateInterval..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

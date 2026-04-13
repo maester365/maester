@@ -20,6 +20,8 @@ function Test-MtMdeCatchupFullScan {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeCatchupFullScan..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

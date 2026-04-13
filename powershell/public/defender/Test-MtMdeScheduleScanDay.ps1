@@ -21,6 +21,8 @@ function Test-MtMdeScheduleScanDay {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeScheduleScanDay..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

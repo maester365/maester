@@ -21,6 +21,8 @@ function Test-MtMdeCloudExtendedTimeout {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-MtMdeCloudExtendedTimeout..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

@@ -16,7 +16,7 @@
     Returns a hashtable with ComplianceLogic and PolicyFiltering settings.
 
 .LINK
-    https://maester.dev/docs/tests/defender
+    https://maester.dev/docs/commands/Get-MtMdeConfig
 #>
 
 function Get-MtMdeConfig {
