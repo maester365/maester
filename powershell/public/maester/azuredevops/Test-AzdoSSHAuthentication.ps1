@@ -31,11 +31,11 @@ function Test-AzdoSSHAuthentication {
 
     $ApplicationPolicies = Get-ADOPSOrganizationPolicy -PolicyCategory 'ApplicationConnection' -Force
     $Policy = $ApplicationPolicies.policy | where-object -property name -eq 'Policy.DisallowSecureShell'
-    $result = $Policy.effectiveValue
+    $result = $Policy.value
     if ($result) {
-        $resultMarkdown = "Your tenant allows developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
-    } else {
         $resultMarkdown = "Your tenant does not allow developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
+    } else {
+        $resultMarkdown = "Your tenant allows developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
