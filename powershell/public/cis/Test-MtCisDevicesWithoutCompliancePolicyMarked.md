@@ -24,7 +24,7 @@ If a mature environment already has an existing device compliance CA policy and 
 3. Click **Compliance settings**.
 4. Ensure **Mark devices with no compliance policy assigned as** set to **Not compliant**
 
-#### PowerShell
+##### PowerShell
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "DeviceManagementConfiguration.ReadWrite.All"`
 2. Run the following commands:

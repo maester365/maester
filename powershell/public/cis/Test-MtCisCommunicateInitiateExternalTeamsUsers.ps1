@@ -32,17 +32,20 @@
         if ($AllowTeamsConsumerInbound -eq $false) {
             Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
             return $true
-        } else {
+        }
+        else {
             $ExternalAccessPolicy = Get-CsExternalAccessPolicy -Identity Global
             if ($ExternalAccessPolicy.EnableTeamsConsumerInbound -eq $false) {
                 Add-MtTestResultDetail -Result 'Well done. External unmanaged Teams users cannot initiate conversations.'
                 return $true
-            } else {
+            }
+            else {
                 Add-MtTestResultDetail -Result 'External unmanaged Teams users can initiate conversations.'
                 return $false
             }
         }
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

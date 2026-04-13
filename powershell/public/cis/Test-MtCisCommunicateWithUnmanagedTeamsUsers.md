@@ -14,7 +14,7 @@ Allowing users to communicate with unmanaged Teams users presents a potential se
 
 #### Impact
 
-Users will be unable to communicate with Teams users who are not managed by an organization. Organizations may choose create additional policies for specific groups needing to communicating with unmanaged external users.
+Users will be unable to communicate with Teams users who are not managed by an organization. Organizations may choose to create additional policies for specific groups needing to communicate with unmanaged external users.
 
 >Note: The settings that govern chats and meetings with external unmanaged Teams users aren't available in GCC, GCC High, or DOD deployments, or in private cloud environments
 

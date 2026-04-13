@@ -37,7 +37,7 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '10dae51f-b6af-4016-8d66-8c2
 3. Or, run the following command to set it to the "most restrictive":
 ```powershell
 # Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)
-Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bcdaa82404023b'
+Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'
 ```
 
 >Note: Either setting allows for a passing state.
