@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
   Generates Maester tests for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
@@ -46,9 +46,9 @@ function GetVersion($graphUri) {
 }
 
 function GetRecommendedValue($RecommendedValue) {
-    if($RecommendedValue -notlike "@('*,*')") {
+    if ($RecommendedValue -notlike "@('*,*')") {
         $isNumericComparison = $false
-        $compareOperators = @(">=","<=",">","<")
+        $compareOperators = @(">=", "<=", ">", "<")
         foreach ($compareOperator in $compareOperators) {
             if ($RecommendedValue.StartsWith($compareOperator)) {
                 $isNumericComparison = $true
@@ -68,7 +68,7 @@ function GetRecommendedValue($RecommendedValue) {
 }
 
 function GetRecommendedValueMarkdown($RecommendedValueMarkdown) {
-    if($RecommendedValueMarkdown -like "@('*,*')") {
+    if ($RecommendedValueMarkdown -like "@('*,*')") {
         $RecommendedValueMarkdown = $RecommendedValueMarkdown -replace "@\(", "" -replace "\)", ""
         return "$RecommendedValueMarkdown"
     } elseif ($RecommendedValueMarkdown.StartsWith(">") -or $RecommendedValueMarkdown.StartsWith("<")) {
@@ -141,8 +141,8 @@ function GetPageTitle($uri) {
     if ($isValidUri) {
         $result = Invoke-WebRequest -Uri $uri
         $output = $uri
-        if ($result.Content -match "<title>(?<title>.*)</title>") {
-            $title = $Matches['title']
+        if ($result.Content -match "(?s)<title>(?<title>.*?)</title>") {
+            $title = $Matches['title'].Trim() -replace '\s+', ' '
         }
     }
     return $title
@@ -280,10 +280,10 @@ mindmap
 }
 
 function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
-    if([string]::IsNullOrEmpty($uri)) { return '' }
-    if($lookupTitle) {
+    if ([string]::IsNullOrEmpty($uri)) { return '' }
+    if ($lookupTitle) {
         $pageTitle = GetPageTitle($uri)
-        if(![string]::IsNullOrEmpty($pageTitle)) {
+        if (![string]::IsNullOrEmpty($pageTitle)) {
             $title = $pageTitle
         }
     }
@@ -293,8 +293,8 @@ function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
 function GetPortalDeepLinkMarkdown($portalDeepLink) {
     $result = $portalDeepLink
     if (![string]::IsNullOrEmpty($portalDeepLink)) {
-        $domain = ($uri -as [System.URI]).Host
-        $result =  GetMarkdownLink -uri $portalDeepLink -title "[View in $domain]" # Set default markdown
+        $domain = ($portalDeepLink -as [System.URI]).Host
+        $result = GetMarkdownLink -uri $portalDeepLink -title "[View in $domain]" # Set default markdown
 
         if ($portalDeepLink -like "*entra.microsoft.com*" -or $portalDeepLink -like "*Microsoft_AAD_IAM*") {
             $result = GetMarkdownLink -uri $portalDeepLink -title "View in Microsoft Entra admin center"
@@ -313,6 +313,9 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $RecommendedValueMarkdown = GetRecommendedValueMarkdown($controlItem.RecommendedValue)
     $compareOperator = GetCompareOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
+
+    # Extract just the property path (before any pipeline) for use in docs/comments
+    $currentValueProperty = ($currentValue -split '\|')[0].Trim()
 
     $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
     $portalDeepLinkMarkdown = GetPortalDeepLinkMarkdown -portalDeepLink $controlItem.PortalDeepLink
@@ -339,7 +342,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         }
 
         # Map severity to Maester values
-        if($controlItem.Severity -eq 'Informational') {
+        if ($controlItem.Severity -eq 'Informational') {
             $controlItem.Severity = 'Info'
         }
 
@@ -367,6 +370,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%ValueType%', $compareOperator.valuetype
         $output = $output -replace '%RecommendedValue%', $recommendedValue
         $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
+        $output = $output -replace '%CurrentValueProperty%', $currentValueProperty
         $output = $output -replace '%CurrentValue%', $CurrentValue
         $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
@@ -382,12 +386,12 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     if (-not [string]::IsNullOrWhiteSpace($controlItem.SkipCondition) ) {
         $SkipCheck = "if ( $($controlItem.SkipCondition) ) {
             Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason '$($controlItem.SkipReason)'
-            return " + '$null' +"`
+            return " + '$null' + "`
     }"
         $output = $output -replace '%SkipCheck%', "$($SkipCheck)"
 
         # Extract variable name from the condition to build syntax for TestCases
-        $SkipConditionVariable = ($controlItem.SkipCondition  | Select-String -Pattern '\$([^\s]+)').Matches.Value
+        $SkipConditionVariable = ($controlItem.SkipCondition | Select-String -Pattern '\$([^\s]+)').Matches.Value
         $SkipConditionVariableName = $SkipConditionVariable -replace '[$()]', ''
         $output = $output -replace '%TestCases%', " -TestCases @{ $($SkipConditionVariableName) = $($SkipConditionVariable) }"
     } else {
@@ -424,8 +428,8 @@ function GeneratePublicFunction($folderPath, $controlIds) {
 
 # Start by getting the latest EIDSCA config
 $aadsc = Invoke-WebRequest -Uri $AadSecConfigUrl | ConvertFrom-Json
-$aadsc = ($aadsc | Where-Object {$_.CollectedBy -eq "Maester"}).ControlArea
-$Discovery = ($aadsc | Where-Object {$_.discovery -ne ""}).Discovery
+$aadsc = ($aadsc | Where-Object { $_.CollectedBy -eq "Maester" }).ControlArea
+$Discovery = ($aadsc | Where-Object { $_.discovery -ne "" }).Discovery
 
 # Remove previously generated files
 Get-ChildItem -Path $DocsPath -Filter "*.md" -Exclude "readme.md" | Remove-Item -Force
@@ -457,12 +461,12 @@ foreach ($control in $aadsc) {
         $exportedControls.Add($controlItem.CheckId)
         $docName = $controlItem.CheckId
 
-$testTemplate = @'
+        $testTemplate = @'
 Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+            .%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
         #>
         Test-MtEidscaControl -CheckId %CheckShortId% | Should -%ShouldOperator% %RecommendedValue%
     }
@@ -493,13 +497,20 @@ Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
 GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedControls
 
 $output = @'
-BeforeAll {
-<DiscoveryFromJson>}
+BeforeDiscovery {
+    try {
+<DiscoveryFromJson>    } catch {
+        $EntraIDPlan = "NotConnected"
+    }
+}
 
 '@
 
 # Replace placeholder with Discovery checks from definition in EIDSCA JSON
-$output = $output.Replace('<DiscoveryFromJson>',($Discovery | Out-String))
+# Indent each discovery line for proper formatting inside the try block
+$discoveryLines = ($Discovery | ForEach-Object { "        $_" }) -join [System.Environment]::NewLine
+$discoveryLines += [System.Environment]::NewLine
+$output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
 $output | Out-File $TestFilePath -Encoding utf8

@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA100{
+    <#
+    .SYNOPSIS
     Bulk Complaint Level threshold is between 4 and 6.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA100
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA100
-#>
-function Test-ORCA100{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

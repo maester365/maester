@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtUserAccessAdmin {
+    <#
+    .SYNOPSIS
     Checks if any Global Admins have User Access Control permissions at the Root Scope
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure that no one has permanent access to all subscriptions through the Root Scope.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtUserAccessAdmin
 
     Returns true if no User Access Control permissions are assigned at the root scope
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtUserAccessAdmin
-#>
-function Test-MtUserAccessAdmin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -33,6 +33,12 @@ function Test-MtUserAccessAdmin {
 
     try {
         $userAccessResult = Invoke-MtAzureRequest -RelativeUri 'providers/Microsoft.Authorization/roleAssignments' -Filter 'atScope()' -ApiVersion '2022-04-01'
+
+        if ($null -eq $userAccessResult) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+            return $null
+        }
+
         $userAccessAdmins = Get-ObjectProperty $userAccessResult 'value'
 
         # Get the count of role assignments

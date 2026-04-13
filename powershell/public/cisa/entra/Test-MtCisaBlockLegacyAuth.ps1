@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaBlockLegacyAuth {
+    <#
+    .SYNOPSIS
     Checks if Baseline Policies Legacy Authentication - MS.AAD.1.1v1 is set to 'blocked'
 
-.DESCRIPTION
+    .DESCRIPTION
     Legacy authentication SHALL be blocked.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaBlockLegacyAuth
 
     Returns true if one or more CA policies exist that block legacy authentication.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaBlockLegacyAuth
-#>
-function Test-MtCisaBlockLegacyAuth {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

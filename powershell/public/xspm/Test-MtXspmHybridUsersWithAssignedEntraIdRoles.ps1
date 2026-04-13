@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
+    <#
+    .SYNOPSIS
     Tests if hybrid users have been assigned eligible or permanent to Entra ID roles.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks if any hybrid users (synchronized from on-premises Active Directory) have been assigned eligible or permanent Entra ID roles, which can lead to privilege escalation by compromising the on-premises AD.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no hybrid users with assigned Entra ID roles are found, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmHybridUsersWithAssignedEntraIdRoles
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmHybridUsersWithAssignedEntraIdRoles
-#>
-
-function Test-MtXspmHybridUsersWithAssignedEntraIdRoles {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users and roles.')]
     [OutputType([bool])]

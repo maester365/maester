@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtOperationApprovalPolicies {
+    <#
+    .SYNOPSIS
     Check for the usage of Intune Multi Admin Approval Policies
 
-.DESCRIPTION
+    .DESCRIPTION
     At least one Intune Multi Admin Approval Policy should be configured
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtOperationApprovalPolicies
 
     Returns true if at least one Intune Multi Admin Approval Policy is configured, false if none is configured.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtOperationApprovalPolicies
-#>
-function Test-MtOperationApprovalPolicies {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]
@@ -29,7 +29,7 @@ function Test-MtOperationApprovalPolicies {
         Write-Verbose 'Retrieving Intune Multi Admin Approval Policies status...'
         $approvalPolicies = Invoke-MtGraphRequest -RelativeUri 'deviceManagement/operationApprovalPolicies' -ApiVersion beta
         $testResultMarkdown = ''
-        $hasPolicies = -not($approvalPolicies -is [array] -and $approvalPolicies.Count -eq 0)
+        $hasPolicies = @($approvalPolicies).Count -gt 0
         if ($hasPolicies) {
             $testResultMarkdown += "Well done. At least one Intune Multi Admin Approval Policy is configured.`n"
             $testResultMarkdown += "| Name | Type |`n"

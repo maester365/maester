@@ -1,12 +1,11 @@
-﻿<#
-.SYNOPSIS
-   Write progress to the console based on the current verbosity level.
+﻿function Write-MtProgress {
+    <#
+    .SYNOPSIS
+    Write progress to the console based on the current verbosity level.
 
-.DESCRIPTION
-   Show updates to the user on the current activity.
-#>
-
-function Write-MtProgress {
+    .DESCRIPTION
+    Show updates to the user on the current activity.
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Required for reporting with colors')]
     [CmdletBinding()]
     Param (

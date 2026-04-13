@@ -101,3 +101,33 @@ $assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-777
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
 ```
 </details>
+
+<details>
+  <summary>(Optional) Grant Dataverse permissions for Copilot Studio tests</summary>
+### (Optional) Grant Dataverse permissions for Copilot Studio
+
+Dataverse access is required for the Copilot Studio security tests (MT.1113–MT.1122) that evaluate Copilot Studio agent configurations.
+
+#### Create an Application User in Power Platform
+
+1. Go to the [Power Platform Admin Center](https://admin.powerplatform.microsoft.com) → select your environment → **Settings** → **Users + permissions** → **Application users**
+2. Click **New app user** → **Add an app** → select the app registration created above
+3. Select the correct **Business unit**
+4. Assign a security role with read access:
+   - **Basic User** for simplicity, or
+   - A **custom role** (e.g. `Maester Security Reader`) with Organization-level **Read** on: **Agent** (`bot`), **Agent component** (`botcomponent`), **User** (`systemuser`), and **Connection Reference** (`connectionreference`)
+5. Click **Create**
+
+#### Configure Maester
+
+Add the environment URL to `maester-config.json`:
+
+```json
+{
+  "GlobalSettings": {
+    "DataverseEnvironmentUrl": "https://org12345.crm.dynamics.com"
+  }
+}
+```
+
+</details>

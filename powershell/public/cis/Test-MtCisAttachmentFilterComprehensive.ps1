@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisAttachmentFilterComprehensive {
+    <#
+    .SYNOPSIS
     Checks if the common attachment types filter is comprehensive
 
-.DESCRIPTION
+    .DESCRIPTION
     The common attachment types filter should be comprehensive
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisAttachmentFilterComprehensive
 
     Returns true if the attachment types match the comprehensive list supplied by CIS
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisAttachmentFilterComprehensive
-#>
-function Test-MtCisAttachmentFilterComprehensive {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +35,7 @@ function Test-MtCisAttachmentFilterComprehensive {
             'cpl', 'crt', 'cs', 'csh', 'daa', 'dbf', 'dcr', 'deb',
             'desktopthemepackfile', 'dex', 'diagcab', 'dif', 'dir', 'dll', 'dmg',
             'doc', 'docm', 'dot', 'dotm', 'elf', 'eml', 'exe', 'fxp', 'gadget', 'gz',
-            'hlp', 'hta', 'htc', 'htm', 'htm', 'html', 'html', 'hwpx', 'ics', 'img',
+            'hlp', 'hta', 'htc', 'htm', 'html', 'hwpx', 'ics', 'img',
             'inf', 'ins', 'iqy', 'iso', 'isp', 'jar', 'jnlp', 'js', 'jse', 'kext',
             'ksh', 'lha', 'lib', 'library-ms', 'lnk', 'lzh', 'macho', 'mam', 'mda',
             'mdb', 'mde', 'mdt', 'mdw', 'mdz', 'mht', 'mhtml', 'mof', 'msc', 'msi',
@@ -49,7 +49,7 @@ function Test-MtCisAttachmentFilterComprehensive {
             'tar', 'theme', 'themepack', 'timer', 'uif', 'url', 'uue', 'vb', 'vbe',
             'vbs', 'vhd', 'vhdx', 'vxd', 'wbk', 'website', 'wim', 'wiz', 'ws', 'wsc',
             'wsf', 'wsh', 'xla', 'xlam', 'xlc', 'xll', 'xlm', 'xls', 'xlsb', 'xlsm',
-            'xlt', 'xltm', 'xlw', 'xml', 'xnk', 'xps', 'xsl', 'xz', 'z'
+            'xlt', 'xltm', 'xlw', 'xnk', 'xps', 'xsl', 'xz', 'z'
         )
 
         # Duplicate the array, so we are left with a list of extensions missing at the end

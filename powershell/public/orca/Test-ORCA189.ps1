@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA189{
+    <#
+    .SYNOPSIS
     Safe Attachments is not bypassed.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA189
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA189
-#>
-function Test-ORCA189{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -11,7 +11,7 @@ import PrivilegedPermissions from '../sections/privilegedPermissions.md';
 This guide will demonstrate how to get Maester running on an Azure Web App using Azure DevOps pipeline to produce the result and provide an Azure Bicep template for automated deployment.
 -  This setup will allow you to perform security configuration checks on your Microsoft tenant by accessing the Azure Web App, which is protected with Entra ID Authentication through the Bicep deployment🔥
 
-Including support for Microsoft Teams, Exchange Online and Security & Compliance 🚀 (certificate for authentication towards Security & Compliance)
+Including support for Microsoft Teams, Exchange Online and Security & Compliance 🚀
 
 ## Why Azure Web App & Azure DevOps & Azure Bicep?
 
@@ -667,9 +667,6 @@ variables:
   ## ISSP Configuration requirements (Optional)
   IncludeISSP: false
   OrganizationName: contoso.onmicrosoft.com
-  ### Requires Keyvault Secrets User over the RBAC-enabled keyvault containing the certificate for authentication towards IPPS
-  KeyVaultName: kv-maester-prod
-  CertificateName: maester
 
 schedules:
 - cron: "0 0,12 * * *"
@@ -726,16 +723,14 @@ jobs:
         if ($IncludeExchange) {
             Import-Module ExchangeOnlineManagement
             Write-verbose "Connecting to Exchange Online using Federated Credentials" -verbose
-            $outlookToken = Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com'
-            Connect-ExchangeOnline -AccessToken $outlookToken.Token -AppId $ClientId -Organization $TenantId -ShowBanner:$false
+            $outlookToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://outlook.office365.com' -AsSecureString).Token -AsPlainText)
+            Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ShowBanner:$false
 
             # Check if we need to connect to ISSP
             if ($IncludeISSP) {
-              Write-Verbose "Connecting to Security and Compliance PowerShell"  -Verbose
-              $Secret = Get-AzKeyVaultSecret -VaultName '$(KeyVaultName)' -name '$(CertificateName)' -AsPlainText -ErrorAction SilentlyContinue
-              $PrivateCertKVBytes = [System.Convert]::FromBase64String($Secret)
-              $Certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 -argumentlist $PrivateCertKVBytes, $null, "Exportable, PersistKeySet"
-              Connect-IPPSSession -AppId $ClientId -Certificate $Certificate -Organization '$(OrganizationName)'
+              Write-Verbose "Connecting to Security and Compliance PowerShell..."  -Verbose
+              $ISSPToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl 'https://ps.compliance.protection.outlook.com' -AsSecureString).Token -AsPlainText)
+              Connect-IPPSSession -AccessToken $ISSPToken -Organization '$(OrganizationName)'
             }
 
         } else {
@@ -746,9 +741,10 @@ jobs:
         if ($IncludeTeams) {
             Import-Module MicrosoftTeams
             Write-verbose "Connecting to Teams using Federated Credentials" -verbose
-            $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239'
+            $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239' -AsSecureString
             $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
-            $tokens = @($regularGraphToken, $teamsToken.Token)
+            $teamsTokenPlainText = ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText
+            $tokens = @($regularGraphToken, $teamsTokenPlainText)
             Connect-MicrosoftTeams -AccessTokens $tokens -Verbose
         } else {
             Write-Verbose 'Teams tests will be skipped.' -Verbose

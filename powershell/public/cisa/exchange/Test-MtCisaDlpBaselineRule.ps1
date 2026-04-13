@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDlpBaselineRule {
+    <#
+    .SYNOPSIS
     Checks state of baseline CISA rules for DLP in EXO
 
-.DESCRIPTION
+    .DESCRIPTION
     At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDlpBaselineRule
 
     Returns true if baseline rules are enforced
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDlpBaselineRule
-#>
-function Test-MtCisaDlpBaselineRule {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

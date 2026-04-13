@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAP06 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - User can join the tenant by email validation is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Controls whether users can join the tenant by email validation. To join, the user must have an email address in a domain which matches one of the verified domains in the tenant.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
+    graph/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP06
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowEmailVerifiedUsersToJoinOrganization -eq 'false'
-#>
-
-function Test-MtEidscaAP06 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAP06 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowEmailVerifiedUsersToJoinOrganization
+    $rawValue = $result.allowEmailVerifiedUsersToJoinOrganization
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAP06 {
 
     return $tenantValue
 }
+

@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisPasswordExpiry {
+    <#
+    .SYNOPSIS
     Checks if passwords are set to expire
 
-.DESCRIPTION
+    .DESCRIPTION
     Passwords should not be set to expire
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisPasswordExpiry
 
     Returns true if no passwords are set to expire
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisPasswordExpiry
-#>
-function Test-MtCisPasswordExpiry {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

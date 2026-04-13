@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaCR04 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Consent request duration (days) is set to 30
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Specifies the duration the request is active before it automatically expires if no decision is applied
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
+    graph/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR04
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.requestDurationInDays -le 30
-#>
-
-function Test-MtEidscaCR04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaCR04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [int]$tenantValue = $result.requestDurationInDays
+    $rawValue = $result.requestDurationInDays
+    [int]$tenantValue = $rawValue
     $testResult = $tenantValue -le 30
-    $tenantValueNotSet = $null -eq $tenantValue -and 30 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 30 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **30** for **policies/adminConsentRequestPolicy**"
@@ -42,3 +42,4 @@ function Test-MtEidscaCR04 {
 
     return $tenantValue
 }
+

@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCertificateConnectors {
+    <#
+    .SYNOPSIS
     Check Intune Certificate Connectors Health and Version
 
-.DESCRIPTION
+    .DESCRIPTION
     All Intune Certificate Connectors should be healthy and running supported versions.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCertificateConnectors
     Returns true if all Intune Certificate Connectors are healthy and running supported versions, false if any connector is unhealthy.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCertificateConnectors
-#>
-function Test-MtCertificateConnectors {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]

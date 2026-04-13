@@ -1,13 +1,13 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtXspmAuthenticationArtifactIcon {
+    <#
+    .SYNOPSIS
     Get the icon representation for a specific authentication artifact type.
-.EXAMPLE
+    .EXAMPLE
     PS C:\> Get-MtXspmAuthenticationArtifactIcon -ArtifactType 'PrimaryRefreshToken'
     Returns the icon for the Primary Refresh Token artifact.
-.INPUTS
+    .INPUTS
     System.String
-#>
-function Get-MtXspmAuthenticationArtifactIcon {
+    #>
     param (
         [Parameter(Mandatory = $true)]
         [object]$ArtifactType

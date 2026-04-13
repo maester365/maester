@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtHighRiskAppPermissions {
+    <#
+    .SYNOPSIS
     Check if any applications or service principals have high risk Graph permissions that can lead to direct or indirect paths
     to Global Admin and full tenant takeover. The permissions are based on the research published at https://github.com/emiliensocchi/azure-tiering/tree/main.
 
-.DESCRIPTION
+    .DESCRIPTION
     Applications that use Graph API permissions with a risk of having a direct or indirect path to Global Admin and full tenant takeover.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtHighRiskAppPermissions
 
     Returns true if no application has Tier-0 graph permissions
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtHighRiskAppPermissions
-#>
-function Test-MtHighRiskAppPermissions {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple permissions.')]
     [OutputType([bool])]

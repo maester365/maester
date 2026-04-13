@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAM03 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Require number matching for push notifications is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Defines if number matching is required for MFA notifications.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM03
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').featureSettings.numberMatchingRequiredState.state -eq 'enabled'
-#>
-
-function Test-MtEidscaAM03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaAM03 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.featureSettings.numberMatchingRequiredState.state
+    $rawValue = $result.featureSettings.numberMatchingRequiredState.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
@@ -42,3 +42,4 @@ function Test-MtEidscaAM03 {
 
     return $tenantValue
 }
+

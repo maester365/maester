@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA156{
+    <#
+    .SYNOPSIS
     Safe Links Policies are tracking when user clicks on safe links.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA156
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA156
-#>
-function Test-ORCA156{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

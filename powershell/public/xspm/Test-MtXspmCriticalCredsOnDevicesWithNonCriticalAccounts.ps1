@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts {
+    <#
+    .SYNOPSIS
     Test to find devices with critical and non-critical user credentials on the same device
 
-.DESCRIPTION
+    .DESCRIPTION
     Test to find devices with critical and non-critical user credentials on the same device
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no devices with critical and non-critical devices are found, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts
-#>
-
-function Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for devices with critical and non-critical user credentials on the same device.')]
     [OutputType([bool])]

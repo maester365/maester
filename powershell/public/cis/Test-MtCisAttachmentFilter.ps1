@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisAttachmentFilter {
+    <#
+    .SYNOPSIS
     Checks if the default common attachment types filter is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     The common attachment types filter should be enabled
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisAttachmentFilter
 
     Returns true if the common attachment types filter is enabled.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisAttachmentFilter
-#>
-function Test-MtCisAttachmentFilter {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

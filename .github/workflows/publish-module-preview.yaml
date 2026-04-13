@@ -20,18 +20,18 @@ permissions:
 
 jobs:
   build-report:
-    uses: ./.github/workflows/build-report.yaml
+    uses: ./.github/workflows/build-maester-report-template.yaml
 
   create-preview-release:
     needs: build-report
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: updated-report-template
           path: powershell/assets/
@@ -47,7 +47,7 @@ jobs:
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
       - name: Archive PowerShell build
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: maester-module
           path: |
@@ -68,7 +68,7 @@ jobs:
           Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           artifacts: "maester.zip"
           replacesArtifacts: true

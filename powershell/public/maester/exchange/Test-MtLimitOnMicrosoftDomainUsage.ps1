@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtLimitOnMicrosoftDomainUsage {
+    <#
+    .SYNOPSIS
     Ensure mailboxes do not use the .onmicrosoft.com domain as primary SMTP address
 
-.DESCRIPTION
+    .DESCRIPTION
     This test checks if any mailbox is using the .onmicrosoft.com domain as primary SMTP address.
     Usage of the .onmicrosoft.com domain has its limitation and receives throttling.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtLimitOnMicrosoftDomainUsage
 
     Returns true if no mailbox is using the .onmicrosoft.com domain as primary SMTP address
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtLimitOnMicrosoftDomainUsage
-#>
-function Test-MtLimitOnMicrosoftDomainUsage {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

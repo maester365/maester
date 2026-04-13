@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAuditLogRetention {
+    <#
+    .SYNOPSIS
     Checks state of purview
 
-.DESCRIPTION
+    .DESCRIPTION
     Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAuditLogRetention
 
     Returns true if audit log retention enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAuditLogRetention
-#>
-function Test-MtCisaAuditLogRetention {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

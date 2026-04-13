@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaPR01 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Password Protection - Mode is set to 'Enforce'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     If set to Enforce, users will be prevented from setting banned passwords and the attempt will be logged. If set to Audit, the attempt will only be logged.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
+    graph/settings.values -eq 'Enforce'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaPR01
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
-#>
-
-function Test-MtEidscaPR01 {
+    Returns the result of graph.microsoft.com/beta/settings.values -eq 'Enforce'
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaPR01 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'Enforce'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'Enforce' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'Enforce' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'Enforce'** for **settings**"
@@ -42,3 +42,4 @@ function Test-MtEidscaPR01 {
 
     return $tenantValue
 }
+

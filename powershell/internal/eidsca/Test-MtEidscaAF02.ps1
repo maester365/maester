@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAF02 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Allow self-service set up is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Allows users to register a FIDO key through the MySecurityInfo portal, even if enabled by Authentication Methods policy.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isSelfServiceRegistrationAllowed -eq 'true'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isSelfServiceRegistrationAllowed -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAF02
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').isSelfServiceRegistrationAllowed -eq 'true'
-#>
-
-function Test-MtEidscaAF02 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaAF02 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    [string]$tenantValue = $result.isSelfServiceRegistrationAllowed
+    $rawValue = $result.isSelfServiceRegistrationAllowed
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
@@ -42,3 +42,4 @@ function Test-MtEidscaAF02 {
 
     return $tenantValue
 }
+

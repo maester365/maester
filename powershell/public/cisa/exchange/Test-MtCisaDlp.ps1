@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDlp {
+    <#
+    .SYNOPSIS
     Checks state of DLP for EXO
 
-.DESCRIPTION
+    .DESCRIPTION
     A DLP solution SHALL be used.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDlp
 
     Returns true if
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDlp
-#>
-function Test-MtCisaDlp {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAM01 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - State is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Whether the Authenticator App is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAM01
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator').state -eq 'enabled'
-#>
-
-function Test-MtEidscaAM01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAM01 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAM01 {
 
     return $tenantValue
 }
+

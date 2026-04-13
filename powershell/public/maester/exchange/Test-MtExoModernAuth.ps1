@@ -1,21 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtExoModernAuth {
+    <#
+    .SYNOPSIS
     Checks if modern authentication for Exchange Online is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Modern authentication in Microsoft 365 enables authentication features like multifactor
     authentication (MFA) using smart cards, certificate-based authentication (CBA), and
     third-party SAML identity providers.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoModernAuth
 
     Returns true if modern authentication is enabled.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoModernAuth
-#>
-function Test-MtExoModernAuth {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
