@@ -1,0 +1,62 @@
+function Test-MtMdeNetworkFileScanning {
+    <#
+    .SYNOPSIS
+        Checks if scanning network files is enabled in Microsoft Defender Antivirus policies
+
+    .DESCRIPTION
+        Verify that scanning network files is enabled despite SMB load considerations.
+        Disabled network file scanning creates attack vectors through shared files.
+
+    .EXAMPLE
+        Test-MtMdeNetworkFileScanning
+
+        Returns true if all assigned Defender AV policies have network file scanning enabled.
+
+    .LINK
+        https://maester.dev/docs/commands/Test-MtMdeNetworkFileScanning
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    Write-Verbose "Running Test-MtMdeNetworkFileScanning..."
+
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $deviceCount = Get-MtMdeDeviceCount
+    if ($deviceCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No MDE-managed Windows devices found"
+        return $null
+    }
+
+    $policyConfig = Get-MdePolicyConfiguration
+    if ($policyConfig.TotalCount -eq 0) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "No assigned Microsoft Defender Antivirus policies found"
+        return $null
+    }
+
+    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+        -SettingId "device_vendor_msft_policy_config_defender_allowscanningnetworkfiles" `
+        -ComplianceCheck "Boolean" `
+        -ExpectedValue "_1"
+
+    $testResult = $compliance.IsCompliant
+
+    if ($testResult) {
+        $testResultMarkdown = "Well done. Scanning network files is enabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
+    } else {
+        $testResultMarkdown = "Scanning network files is not properly configured in all policies."
+        if ($compliance.NonCompliantPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        }
+        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+        }
+    }
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
+}

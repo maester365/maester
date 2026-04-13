@@ -106,6 +106,7 @@
                 $mainTestSetting.Severity = $customSetting.Severity
             }
         }
+
     } else {
         Write-Verbose "No custom config file found. Using main config only."
     }
