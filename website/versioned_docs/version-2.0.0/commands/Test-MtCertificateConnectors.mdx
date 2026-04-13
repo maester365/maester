@@ -1,0 +1,66 @@
+---
+sidebar_class_name: hidden
+description: Check Intune Certificate Connectors Health and Version
+id: Test-MtCertificateConnectors
+title: Test-MtCertificateConnectors
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCertificateConnectors.ps1
+---
+
+## SYNOPSIS
+
+Check Intune Certificate Connectors Health and Version
+
+## SYNTAX
+
+```powershell
+Test-MtCertificateConnectors [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+All Intune Certificate Connectors should be healthy and running supported versions.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCertificateConnectors
+Returns true if all Intune Certificate Connectors are healthy and running supported versions, false if any connector is unhealthy.
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCertificateConnectors](https://maester.dev/docs/commands/Test-MtCertificateConnectors)
