@@ -42,7 +42,7 @@ function Import-MtMaesterResult {
         https://maester.dev/docs/commands/Import-MtMaesterResult
     #>
     [CmdletBinding()]
-    [OutputType([psobject[]])]
+    [OutputType([object[]])]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias('FullName')]
