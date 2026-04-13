@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM02 {
+function Test-MtEidscaAM02 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP is set to 'false'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.isSoftwareOathEnabled
+    $rawValue = $result.isSoftwareOathEnabled
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

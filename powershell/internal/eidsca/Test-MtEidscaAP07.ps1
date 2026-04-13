@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP07 {
+function Test-MtEidscaAP07 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Guest user access is set to '2af84b1e-32c8-42b7-82bc-daa82404023b'
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.guestUserRoleId
+    $rawValue = $result.guestUserRoleId
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq '2af84b1e-32c8-42b7-82bc-daa82404023b'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and '2af84b1e-32c8-42b7-82bc-daa82404023b' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and '2af84b1e-32c8-42b7-82bc-daa82404023b' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'2af84b1e-32c8-42b7-82bc-daa82404023b'** for **policies/authorizationPolicy**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

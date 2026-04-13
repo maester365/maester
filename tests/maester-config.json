@@ -1350,6 +1350,11 @@
       "Title": "AI agents should not have orphaned ownership"
     },
     {
+      "Id": "MT.1123",
+      "Severity": "High",
+      "Title": "Ensure BitLocker full disk encryption is configured via Intune"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
