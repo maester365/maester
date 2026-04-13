@@ -1895,234 +1895,124 @@
       "Title": "Restrict Personal Access Token full scope"
     },
     {
-      "Id": "MDE.AV01",
+      "Id": "MT.1123",
       "Severity": "Medium",
       "Title": "Archive Scanning should be enabled."
     },
     {
-      "Id": "MDE.AV02",
+      "Id": "MT.1124",
       "Severity": "High",
       "Title": "Behavior Monitoring should be enabled."
     },
     {
-      "Id": "MDE.AV03",
+      "Id": "MT.1125",
       "Severity": "High",
       "Title": "Cloud Protection should be enabled."
     },
     {
-      "Id": "MDE.AV04",
+      "Id": "MT.1126",
       "Severity": "Medium",
       "Title": "Email Scanning should be enabled."
     },
     {
-      "Id": "MDE.AV05",
+      "Id": "MT.1127",
       "Severity": "Medium",
       "Title": "Script Scanning should be enabled."
     },
     {
-      "Id": "MDE.AV06",
+      "Id": "MT.1128",
       "Severity": "High",
       "Title": "Real-time Monitoring should be enabled."
     },
     {
-      "Id": "MDE.AV07",
+      "Id": "MT.1129",
       "Severity": "Medium",
       "Title": "Full Scan Removable Drives should be enabled."
     },
     {
-      "Id": "MDE.AV08",
+      "Id": "MT.1130",
       "Severity": "Low",
       "Title": "Full Scan Mapped Drives should be disabled for performance."
     },
     {
-      "Id": "MDE.AV09",
+      "Id": "MT.1131",
       "Severity": "Medium",
       "Title": "Scanning Network Files should be enabled."
     },
     {
-      "Id": "MDE.AV10",
+      "Id": "MT.1132",
       "Severity": "Low",
       "Title": "CPU Load Factor should be optimized (20-30%)."
     },
     {
-      "Id": "MDE.AV11",
+      "Id": "MT.1133",
       "Severity": "Medium",
       "Title": "Scan should be scheduled."
     },
     {
-      "Id": "MDE.AV12",
+      "Id": "MT.1134",
       "Severity": "Low",
       "Title": "Quick Scan Time configuration is not required."
     },
     {
-      "Id": "MDE.AV13",
+      "Id": "MT.1135",
       "Severity": "Medium",
       "Title": "Signatures should be checked before scan."
     },
     {
-      "Id": "MDE.AV14",
+      "Id": "MT.1136",
       "Severity": "High",
       "Title": "Cloud Block Level should be High or higher."
     },
     {
-      "Id": "MDE.AV15",
+      "Id": "MT.1137",
       "Severity": "Medium",
       "Title": "Cloud Extended Timeout should be 30-50 seconds."
     },
     {
-      "Id": "MDE.AV16",
+      "Id": "MT.1138",
       "Severity": "Medium",
       "Title": "Signature Update Interval should be 1-4 hours."
     },
     {
-      "Id": "MDE.AV17",
+      "Id": "MT.1139",
       "Severity": "High",
       "Title": "PUA Protection should be enabled."
     },
     {
-      "Id": "MDE.AV18",
+      "Id": "MT.1140",
       "Severity": "High",
       "Title": "Network Protection should be enabled."
     },
     {
-      "Id": "MDE.AV19",
+      "Id": "MT.1141",
       "Severity": "High",
       "Title": "Local Admin Merge should be disabled."
     },
     {
-      "Id": "MDE.AV20",
-      "Severity": "High",
-      "Title": "Tamper Protection should be enabled tenant-wide."
-    },
-    {
-      "Id": "MDE.AV21",
+      "Id": "MT.1142",
       "Severity": "Medium",
       "Title": "Real-Time Scan Direction should cover both directions."
     },
     {
-      "Id": "MDE.AV22",
+      "Id": "MT.1143",
       "Severity": "Low",
       "Title": "Cleaned Malware should be retained for at least 30 days."
     },
     {
-      "Id": "MDE.AV23",
+      "Id": "MT.1144",
       "Severity": "Low",
       "Title": "Catch-up Full Scan should be disabled."
     },
     {
-      "Id": "MDE.AV24",
+      "Id": "MT.1145",
       "Severity": "Low",
       "Title": "Catch-up Quick Scan should be disabled."
     },
     {
-      "Id": "MDE.AV25",
-      "Severity": "Medium",
-      "Title": "Remediation Action should be set to Quarantine."
-    },
-    {
-      "Id": "MDE.AV26",
+      "Id": "MT.1146",
       "Severity": "Medium",
       "Title": "Sample Submission should send safe samples automatically."
-    },
-    {
-      "Id": "MDE.GC01",
-      "Severity": "Low",
-      "Title": "Preview Features should be enabled organization-wide."
-    },
-    {
-      "Id": "MDE.GC02",
-      "Severity": "High",
-      "Title": "Tamper Protection should be enabled tenant-wide."
-    },
-    {
-      "Id": "MDE.GC03",
-      "Severity": "High",
-      "Title": "EDR in Block Mode should be enabled for Defender AV devices."
-    },
-    {
-      "Id": "MDE.GC04",
-      "Severity": "Medium",
-      "Title": "Automatically Resolve Alerts should be configured."
-    },
-    {
-      "Id": "MDE.GC05",
-      "Severity": "Medium",
-      "Title": "Allow or Block File capability should be enabled."
-    },
-    {
-      "Id": "MDE.GC06",
-      "Severity": "Low",
-      "Title": "Hide Duplicate Device Records should be enabled."
-    },
-    {
-      "Id": "MDE.GC07",
-      "Severity": "High",
-      "Title": "Custom Network Indicators should be enabled."
-    },
-    {
-      "Id": "MDE.GC08",
-      "Severity": "High",
-      "Title": "Web Content Filtering should be enabled (requires P2 license)."
-    },
-    {
-      "Id": "MDE.GC09",
-      "Severity": "Medium",
-      "Title": "Device Discovery should be enabled for Shadow IT visibility."
-    },
-    {
-      "Id": "MDE.GC10",
-      "Severity": "Medium",
-      "Title": "Download Quarantined Files should be enabled for forensics."
-    },
-    {
-      "Id": "MDE.GC11",
-      "Severity": "Medium",
-      "Title": "Streamlined Connectivity should be enabled (default)."
-    },
-    {
-      "Id": "MDE.GC12",
-      "Severity": "Medium",
-      "Title": "Apply Streamlined Connectivity to Intune/DFC should be enabled."
-    },
-    {
-      "Id": "MDE.GC13",
-      "Severity": "High",
-      "Title": "Isolation Exclusion Rules should be disabled unless required."
-    },
-    {
-      "Id": "MDE.GC14",
-      "Severity": "Low",
-      "Title": "Deception capabilities should be evaluated (optional honeypots)."
-    },
-    {
-      "Id": "MDE.GC15",
-      "Severity": "Medium",
-      "Title": "Microsoft Intune Connection should be enabled as MDM prerequisite."
-    },
-    {
-      "Id": "MDE.GC16",
-      "Severity": "Low",
-      "Title": "Authenticated Telemetry should be reviewed for privacy compliance."
-    },
-    {
-      "Id": "MDE.PD01",
-      "Severity": "Low",
-      "Title": "Policy naming should follow consistent convention (ROLE-v#)."
-    },
-    {
-      "Id": "MDE.PD02",
-      "Severity": "Medium",
-      "Title": "Exclusions should be in dedicated profiles."
-    },
-    {
-      "Id": "MDE.PD03",
-      "Severity": "Medium",
-      "Title": "Device profiles should be granular (Least Privilege)."
-    },
-    {
-      "Id": "MDE.PD04",
-      "Severity": "Medium",
-      "Title": "Staging buckets should be implemented (Pilot to Prod)."
     }
   ]
 }
