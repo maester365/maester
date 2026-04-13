@@ -25,7 +25,7 @@ This setting does not require an Azure Active Directory Premium P1 license.
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
+graph/settings.values -eq 'True'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ graph/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | sele
 Test-MtEidscaST09
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
 
 ## PARAMETERS
 

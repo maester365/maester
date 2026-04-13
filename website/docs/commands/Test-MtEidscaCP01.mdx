@@ -25,7 +25,7 @@ For example, a team owner in Microsoft Teams can allow an app to read all Teams 
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+graph/settings.values -eq 'False'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ graph/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | sel
 Test-MtEidscaCP01
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'False'
 
 ## PARAMETERS
 
