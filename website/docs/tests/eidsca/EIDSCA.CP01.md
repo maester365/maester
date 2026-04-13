@@ -24,7 +24,7 @@ Group and team owners can authorize applications, such as applications published
 |-|-|
 | **Recommendation** | CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |
 | **Configuration** | settings |
-| **Setting** | `values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value` |
+| **Setting** | `values` |
 | **Recommended Value** | 'False' |
 | **Default Value** | True |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |

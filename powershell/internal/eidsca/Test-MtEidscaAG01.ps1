@@ -23,9 +23,10 @@ function Test-MtEidscaAG01 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.policyMigrationState
+    $rawValue = $result.policyMigrationState
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -in @('migrationComplete', '')
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('migrationComplete', '') -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and @('migrationComplete', '') -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('migrationComplete', '')** for **policies/authenticationMethodsPolicy**"
@@ -38,3 +39,4 @@ function Test-MtEidscaAG01 {
 
     return $tenantValue
 }
+

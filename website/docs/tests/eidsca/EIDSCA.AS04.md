@@ -24,7 +24,7 @@ Determines if users can use this authentication method to sign in to Microsoft E
 |-|-|
 | **Recommendation** | Avoid to use SMS as primary sign in factor (instead of a password) and consider to implement a MFA or passwordless option also for your special user groups, such as front-line workers. |
 | **Configuration** | policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms') |
-| **Setting** | `includeTargets.isUsableForSignIn | select-object -unique` |
+| **Setting** | `includeTargets.isUsableForSignIn` |
 | **Recommended Value** | 'false' |
 | **Default Value** | true |
 | **Graph API Docs** | [phoneAuthenticationMethod resource type - Microsoft Graph v1.0 - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/phoneauthenticationmethod) |

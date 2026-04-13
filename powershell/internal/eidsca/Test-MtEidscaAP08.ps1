@@ -26,9 +26,10 @@ function Test-MtEidscaAP08 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'
+    $rawValue = $result.permissionGrantPolicyIdsAssignedToDefaultUserRole -clike 'ManagePermissionGrantsForSelf*'
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'ManagePermissionGrantsForSelf.microsoft-user-default-low'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'ManagePermissionGrantsForSelf.microsoft-user-default-low' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'ManagePermissionGrantsForSelf.microsoft-user-default-low'** for **policies/authorizationPolicy**"
@@ -41,3 +42,4 @@ function Test-MtEidscaAP08 {
 
     return $tenantValue
 }
+

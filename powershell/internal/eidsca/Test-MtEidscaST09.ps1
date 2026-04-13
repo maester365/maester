@@ -9,12 +9,12 @@ function Test-MtEidscaST09 {
 
     Queries settings
     and returns the result of
-    graph/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
+    graph/settings.values -eq 'True'
 
     .EXAMPLE
     Test-MtEidscaST09
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value -eq 'True'
+    Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -23,9 +23,10 @@ function Test-MtEidscaST09 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'AllowGuestsToAccessGroups' | select-object -expand value
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'True'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'True' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'True' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'True'** for **settings**"
@@ -38,3 +39,4 @@ function Test-MtEidscaST09 {
 
     return $tenantValue
 }
+

@@ -1,4 +1,4 @@
-﻿<#
+<#
  .Synopsis
   Generates Maester tests for the Entra ID Security Config Analyzer defined at https://github.com/Cloud-Architekt/AzureAD-Attack-Defense
 
@@ -293,7 +293,7 @@ function GetMarkdownLink($uri, $title, [switch]$lookupTitle) {
 function GetPortalDeepLinkMarkdown($portalDeepLink) {
     $result = $portalDeepLink
     if (![string]::IsNullOrEmpty($portalDeepLink)) {
-        $domain = ($uri -as [System.URI]).Host
+        $domain = ($portalDeepLink -as [System.URI]).Host
         $result = GetMarkdownLink -uri $portalDeepLink -title "[View in $domain]" # Set default markdown
 
         if ($portalDeepLink -like "*entra.microsoft.com*" -or $portalDeepLink -like "*Microsoft_AAD_IAM*") {
@@ -313,6 +313,9 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
     $RecommendedValueMarkdown = GetRecommendedValueMarkdown($controlItem.RecommendedValue)
     $compareOperator = GetCompareOperator($controlItem.RecommendedValue)
     $currentValue = $controlItem.CurrentValue
+
+    # Extract just the property path (before any pipeline) for use in docs/comments
+    $currentValueProperty = ($currentValue -split '\|')[0].Trim()
 
     $psFunctionName = GetEidscaPsFunctionName -checkId $controlItem.CheckId
     $portalDeepLinkMarkdown = GetPortalDeepLinkMarkdown -portalDeepLink $controlItem.PortalDeepLink
@@ -367,6 +370,7 @@ function UpdateTemplate($template, $control, $controlItem, $docName, $isDoc) {
         $output = $output -replace '%ValueType%', $compareOperator.valuetype
         $output = $output -replace '%RecommendedValue%', $recommendedValue
         $output = $output -replace '%RecommendedValueMarkdown%', $recommendedValueMarkdown
+        $output = $output -replace '%CurrentValueProperty%', $currentValueProperty
         $output = $output -replace '%CurrentValue%', $CurrentValue
         $output = $output -replace '%GraphEndPoint%', $control.GraphEndpoint
         $output = $output -replace '%GraphDocsUrl%', $graphDocsUrl
@@ -462,7 +466,7 @@ Describe "EIDSCA" -Tag "EIDSCA",  "%CheckId%" {
     It "%CheckId%: %ControlName% - %DisplayName%. See https://maester.dev/docs/tests/%DocName%"%TestCases% {
         <#
             Check if "https://graph.microsoft.com/%ApiVersion%/%RelativeUri%"
-            .%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+            .%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
         #>
         Test-MtEidscaControl -CheckId %CheckShortId% | Should -%ShouldOperator% %RecommendedValue%
     }
@@ -494,12 +498,19 @@ GeneratePublicFunction -folderPath $PublicFunctionPath -controlIds $exportedCont
 
 $output = @'
 BeforeDiscovery {
-<DiscoveryFromJson>}
+    try {
+<DiscoveryFromJson>    } catch {
+        $EntraIDPlan = "NotConnected"
+    }
+}
 
 '@
 
 # Replace placeholder with Discovery checks from definition in EIDSCA JSON
-$output = $output.Replace('<DiscoveryFromJson>', ($Discovery | Out-String))
+# Indent each discovery line for proper formatting inside the try block
+$discoveryLines = ($Discovery | ForEach-Object { "        $_" }) -join [System.Environment]::NewLine
+$discoveryLines += [System.Environment]::NewLine
+$output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
 $output | Out-File $TestFilePath -Encoding utf8

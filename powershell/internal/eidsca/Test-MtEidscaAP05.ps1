@@ -23,9 +23,10 @@ function Test-MtEidscaAP05 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowedToSignUpEmailBasedSubscriptions
+    $rawValue = $result.allowedToSignUpEmailBasedSubscriptions
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -38,3 +39,4 @@ function Test-MtEidscaAP05 {
 
     return $tenantValue
 }
+

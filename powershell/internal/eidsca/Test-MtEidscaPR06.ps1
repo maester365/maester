@@ -9,12 +9,12 @@ function Test-MtEidscaPR06 {
 
     Queries settings
     and returns the result of
-    graph/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
+    graph/settings.values -le 10
 
     .EXAMPLE
     Test-MtEidscaPR06
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutThreshold' | select-object -expand value -le 10
+    Returns the result of graph.microsoft.com/beta/settings.values -le 10
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -26,9 +26,10 @@ function Test-MtEidscaPR06 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [int]$tenantValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'LockoutThreshold' | select-object -expand value
+    [int]$tenantValue = $rawValue
     $testResult = $tenantValue -le 10
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 10 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 10 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is less than or equal to **10** for **settings**"
@@ -41,3 +42,4 @@ function Test-MtEidscaPR06 {
 
     return $tenantValue
 }
+

@@ -9,12 +9,12 @@ function Test-MtEidscaAS04 {
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')
     and returns the result of
-    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn | select-object -unique -eq 'false'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
 
     .EXAMPLE
     Test-MtEidscaAS04
 
-    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn | select-object -unique -eq 'false'
+    Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -26,9 +26,10 @@ function Test-MtEidscaAS04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')" -ApiVersion beta
 
-    [string]$tenantValue = $result.includeTargets.isUsableForSignIn | select-object -unique
+    $rawValue = $result.includeTargets.isUsableForSignIn | select-object -unique
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
@@ -41,3 +42,4 @@ function Test-MtEidscaAS04 {
 
     return $tenantValue
 }
+
