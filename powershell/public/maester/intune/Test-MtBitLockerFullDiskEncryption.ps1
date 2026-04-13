@@ -46,6 +46,7 @@
         # Query Endpoint Security Disk Encryption policies (server-side filter).
         # This template family can include non-BitLocker templates (e.g., Personal Data Encryption);
         # BitLocker-specific settings are evaluated per-policy below.
+        Write-Verbose "Querying Intune Endpoint Security Disk Encryption policies..."
         $diskEncryptionPolicies = @(Invoke-MtGraphRequest -RelativeUri "deviceManagement/configurationPolicies?`$filter=templateReference/templateFamily eq 'endpointSecurityDiskEncryption'&`$select=id,name,description,templateReference" -ApiVersion beta)
 
         if ($diskEncryptionPolicies.Count -eq 0) {
