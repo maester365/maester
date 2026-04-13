@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   build-report:
-    uses: ./.github/workflows/build-report.yaml
+    uses: ./.github/workflows/build-maester-report-template.yaml
 
   create-preview-release:
     needs: build-report
