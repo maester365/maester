@@ -33,14 +33,23 @@
         Investigate = '🔍'
     }
 
+    $SeverityIcon = @{
+        Critical = '🔴 Critical'
+        High     = '🟠 High'
+        Medium   = '🟡 Medium'
+        Low      = '🟢 Low'
+        Info     = 'ℹ️ Info'
+    }
+
     function GetTestSummary() {
         $summary = @'
-|Test|Status|
-|-|:-:|
+|Test|Severity|Status|
+|-|:-:|:-:|
 
 '@
         foreach ($test in $MaesterResults.Tests) {
-            $summary += "| $($test.Name) | $($StatusIcon[$test.Result]) |`n"
+            $severityText = if ($test.Severity -and $SeverityIcon.ContainsKey($test.Severity)) { $SeverityIcon[$test.Severity] } else { $test.Severity }
+            $summary += "| $($test.Name) | $severityText | $($StatusIcon[$test.Result]) |`n"
         }
         return $summary
     }
@@ -51,8 +60,8 @@
 
             $details += "### $($StatusIconSm[$test.Result]) $($test.Name)`n`n"
 
-            $details += $StatusIcon[$test.Result] -replace 'src', 'align="right" src'
-            $details += "`n`n"
+            $severityText = if ($test.Severity -and $SeverityIcon.ContainsKey($test.Severity)) { $SeverityIcon[$test.Severity] } else { $test.Severity }
+            $details += "**Severity:** $severityText &nbsp;&nbsp;&nbsp;&nbsp; **Status:** $($StatusIconSm[$test.Result]) $($test.Result)`n`n"
 
             if (![string]::IsNullOrEmpty($test.ResultDetail)) {
                 # Test author has provided details
