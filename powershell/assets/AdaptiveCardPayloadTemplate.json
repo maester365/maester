@@ -249,7 +249,7 @@
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "Not tested",
+                                            "text": "Not Run",
                                             "wrap": true,
                                             "isSubtle": true,
                                             "weight": "Lighter",

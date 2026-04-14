@@ -116,7 +116,7 @@
 
     # Add a hidden div that will show in the preview line of the message.
     $bodyElement = '<body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word">'
-    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $investigateCount, ⏭️ Skipped: $skippedCount, ⬇️ Not run: $notRunCount</div>")
+    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $investigateCount, ⏭️ Skipped: $skippedCount, ⬇️ Not Run: $notRunCount</div>")
     $StatusIcon = @{
         Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
