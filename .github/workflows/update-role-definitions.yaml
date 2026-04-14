@@ -29,8 +29,7 @@ jobs:
             [Microsoft permissions reference](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference).
 
             Updates:
-            - `powershell/internal/Get-MtRoleInfo.ps1` (role GUIDs and privileged flags)
-            - `powershell/public/Get-MtRoleMember.ps1` (ValidateSet for -Role parameter)
+            - `powershell/internal/Get-MtRoleInfo.ps1` (role hashtable with GUIDs and privileged flags)
 
             Please review any added/removed roles before merging.
           branch: auto/update-role-definitions
