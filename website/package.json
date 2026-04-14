@@ -29,7 +29,7 @@
     "clsx": "^2.1.1",
     "posthog-docusaurus": "^2.0.5",
     "prism-react-renderer": "^2.1.0",
-    "react": "^19.2.4",
+    "react": "^19.2.5",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
