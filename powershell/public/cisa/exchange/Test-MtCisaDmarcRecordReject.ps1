@@ -46,7 +46,7 @@
 
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
+        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
         $dmarcMatch = $domain.domainname -match $matchDomain
         if($dmarcMatch){
             $expandedDomains += [PSCustomObject]@{
