@@ -235,7 +235,7 @@ function Update-FileSection {
     $pattern = "(?s)($([regex]::Escape($BeginMarker)))(.*?)($([regex]::Escape($EndMarker)))"
     $replacement = "`$1`n$NewContent`n    `$3"
     $updatedContent = [regex]::Replace($content, $pattern, $replacement)
-    Set-Content -Path $FilePath -Value $updatedContent -NoNewline
+    Set-Content -Path $FilePath -Value $updatedContent -Encoding utf8BOM -NoNewline
 }
 
 #endregion
