@@ -58,7 +58,7 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
 
 ### Create Bitbucket repository variables
 
-- Open your `maester-tests` Open your maester-tests Bitbucket repository and go to Repository settings.
+- Open your `maester-tests` Bitbucket repository and go to Repository settings.
 - Select **Pipelines** > **Repository variables**.
 - Add the three secrets listed below. Make sure to check the checkbox (`[x]`) for each variable.
     ![Bitbucket Repository Variable](assets/bitbucket-repository-variables.png)
