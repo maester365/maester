@@ -54,6 +54,15 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "chore(deps): "
+    ignore:
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@tailwindcss/typography"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "tailwindcss-animate"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "autoprefixer"
+        update-types: ["version-update:semver-major"]
     groups:
       ui-components:
         patterns:
