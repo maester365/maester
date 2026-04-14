@@ -85,7 +85,7 @@
             }
 
             if ( $PolicyIncludesSyncUser -or $PolicyIncludesRole ) {
-                # Skip this policy, because directory synchronization accounts are explicitly included and therefor must not be excluded
+                # Skip this policy, because directory synchronization accounts are explicitly included and therefore must not be excluded
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - sync accounts explicitly included - $CurrentResult"
             } elseif ( $policy.conditions.users.includeUsers -notcontains 'All' ) {
