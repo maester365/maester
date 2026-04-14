@@ -41,6 +41,10 @@
         Info     = 'ℹ️ Info'
     }
 
+    function GetSeverityText($severity) {
+        if ($severity -and $SeverityIcon.ContainsKey($severity)) { return $SeverityIcon[$severity] } else { return $severity }
+    }
+
     function GetTestSummary() {
         $summary = @'
 |Test|Severity|Status|
@@ -48,7 +52,7 @@
 
 '@
         foreach ($test in $MaesterResults.Tests) {
-            $severityText = if ($test.Severity -and $SeverityIcon.ContainsKey($test.Severity)) { $SeverityIcon[$test.Severity] } else { $test.Severity }
+            $severityText = GetSeverityText $test.Severity
             $summary += "| $($test.Name) | $severityText | $($StatusIcon[$test.Result]) |`n"
         }
         return $summary
@@ -60,7 +64,7 @@
 
             $details += "### $($StatusIconSm[$test.Result]) $($test.Name)`n`n"
 
-            $severityText = if ($test.Severity -and $SeverityIcon.ContainsKey($test.Severity)) { $SeverityIcon[$test.Severity] } else { $test.Severity }
+            $severityText = GetSeverityText $test.Severity
             $details += "**Severity:** $severityText &nbsp;&nbsp;&nbsp;&nbsp; **Status:** $($StatusIconSm[$test.Result]) $($test.Result)`n`n"
 
             if (![string]::IsNullOrEmpty($test.ResultDetail)) {
