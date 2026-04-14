@@ -52,7 +52,8 @@
 
             # Check if all members are service principals (certificate-based sync, no CA exclusion needed)
             $userMembers = @($DirectorySynchronizationMembers | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.user' })
-            if ( $userMembers.Count -eq 0 ) {
+            $spMembers = @($DirectorySynchronizationMembers | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.servicePrincipal' })
+            if ( $userMembers.Count -eq 0 -and $spMembers.Count -gt 0 ) {
                 Add-MtTestResultDetail -Description $testDescription -Result 'Directory synchronization is configured with service principals only. CA exclusions are not required.'
                 return $true
             }
