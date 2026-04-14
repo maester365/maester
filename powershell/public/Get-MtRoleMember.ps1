@@ -36,6 +36,8 @@ function Get-MtRoleMember {
     .LINK
     https://maester.dev/docs/commands/Get-MtRoleMember
     #>
+
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'ArgumentCompleter requires the full script block signature, even when only wordToComplete is used.')]
     [CmdletBinding(DefaultParameterSetName = 'RoleName')]
     param(
         # The name of the role to get members for.
