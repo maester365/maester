@@ -44,7 +44,7 @@ function Get-MtRoleMember {
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
         [ArgumentCompleter({
                 param($commandName, $parameterName, $wordToComplete)
-                $script:MtRoles.Keys | Where-Object { $_ -like "$wordToComplete*" } |
+                $script:MtRoles.Keys | Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
                     Sort-Object | ForEach-Object {
                         [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
                     }
