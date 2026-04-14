@@ -10,7 +10,7 @@ sidebar_class_name: hidden
 ## Description
 
 - The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-- These accounts should be excluded from all conditional access policies scoped to all cloud apps.
+- These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
 - Entra ID Connect does not support multifactor authentication.
 - Restrict access with these accounts to trusted networks.
 

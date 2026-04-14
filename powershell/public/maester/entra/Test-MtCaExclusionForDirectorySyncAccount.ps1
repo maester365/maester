@@ -15,7 +15,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesSyncUser is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -26,7 +26,7 @@
     }
 
     try {
-        $testDescription = 'It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps.'
+        $testDescription = 'It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps and all users.'
         $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
 
         $DirectorySynchronizationAccountRoleTemplateId = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
@@ -72,11 +72,11 @@
                 continue
             }
 
-            $PolicyIncludesAllUsers = $false
+            $PolicyIncludesSyncUser = $false
             $PolicyIncludesRole = $false
             $DirectorySynchronizationAccounts | ForEach-Object {
-                if ( $_ -in $policy.conditions.users.includeUsers  ) {
-                    $PolicyIncludesAllUsers = $true
+                if ( $_ -in $policy.conditions.users.includeUsers ) {
+                    $PolicyIncludesSyncUser = $true
                 }
             }
 
@@ -84,12 +84,17 @@
                 $PolicyIncludesRole = $true
             }
 
-            if ( $PolicyIncludesAllUsers -or $PolicyIncludesRole ) {
-                # Skip this policy, because all directory synchronization accounts are included and therefor must not be excluded
+            if ( $PolicyIncludesSyncUser -or $PolicyIncludesRole ) {
+                # Skip this policy, because directory synchronization accounts are explicitly included and therefor must not be excluded
                 $CurrentResult = $true
-                Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
+                Write-Verbose "Skipping $($policy.displayName) - sync accounts explicitly included - $CurrentResult"
+            } elseif ( $policy.conditions.users.includeUsers -notcontains 'All' ) {
+                # Skip this policy, because it does not target all users and does not explicitly include sync accounts
+                $CurrentResult = $true
+                Write-Verbose "Skipping $($policy.displayName) because it's not scoped to all users - $CurrentResult"
             } else {
-                if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) {
+                $SyncAccountsExcludedByUser = @($DirectorySynchronizationAccounts | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
+                if ( ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) -or $SyncAccountsExcludedByUser ) {
                     # Directory synchronization accounts are excluded
                     $CurrentResult = $true
                 } else {
