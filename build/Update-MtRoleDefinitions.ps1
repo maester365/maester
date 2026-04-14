@@ -1,16 +1,15 @@
 ﻿<#
- .Synopsis
-  Updates the auto-generated Entra ID role definitions in the Maester PowerShell module.
+    .Synopsis
+    Updates the auto-generated Entra ID role definitions in the Maester PowerShell module.
 
- .DESCRIPTION
-  Downloads the Microsoft Entra built-in roles permissions reference page (public, no auth required),
-  parses role names, GUIDs, and privileged indicators, then updates two files:
-    - powershell/internal/Get-MtRoleInfo.ps1 (switch block with MtRoleDefinition objects)
-    - powershell/public/Get-MtRoleMember.ps1 (ValidateSet for the -Role parameter)
+    .DESCRIPTION
+    Downloads the Microsoft Entra built-in roles permissions reference page (public, no auth required),
+    parses role names, GUIDs, and privileged indicators, then updates:
+    - powershell/internal/Get-MtRoleInfo.ps1 ($script:MtRoles hashtable with MtRoleDefinition objects)
 
-  Includes safeguards against corrupted data, missing roles, and structural regressions.
+    Includes safeguards against corrupted data, missing roles, and structural regressions.
 
- .EXAMPLE
+    .EXAMPLE
     ./build/Update-MtRoleDefinitions.ps1
 #>
 
@@ -19,9 +18,6 @@
 param (
     # Path to Get-MtRoleInfo.ps1
     [string] $RoleInfoPath = "$PSScriptRoot/../powershell/internal/Get-MtRoleInfo.ps1",
-
-    # Path to Get-MtRoleMember.ps1
-    [string] $RoleMemberPath = "$PSScriptRoot/../powershell/public/Get-MtRoleMember.ps1",
 
     # URL to fetch role definitions from
     [string] $SourceUrl = 'https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference',
@@ -170,7 +166,7 @@ function Test-AllGuidsValid {
 function Get-ExistingRoles {
     <#
     .SYNOPSIS
-    Extracts existing role entries from the current Get-MtRoleInfo.ps1 switch block.
+    Extracts existing role entries from the current Get-MtRoleInfo.ps1 hashtable.
     Returns roles not found in the new data (system/implicit roles to preserve).
     #>
     [CmdletBinding()]
@@ -186,16 +182,15 @@ function Get-ExistingRoles {
     $preservedRoles = [System.Collections.Generic.List[hashtable]]::new()
     $newRoleNames = $NewRoles | ForEach-Object { $_.Name }
 
-    # Parse existing entries: 'RoleName' { [MtRoleDefinition]::new('guid', $true/$false); break }
-    # Also handle legacy format: 'RoleName' { 'guid'; break }
-    $entryPattern = '''([A-Za-z0-9]+)''\s*\{\s*(?:\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(true|false)\)|''([0-9a-f-]+)'')\s*;\s*break\s*\}'
+    # Parse existing hashtable entries: 'RoleName' = [MtRoleDefinition]::new('guid', $true/$false)
+    $entryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(true|false)\)'
     $existingEntries = [regex]::Matches($FileContent, $entryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
 
     foreach ($entry in $existingEntries) {
         $name = $entry.Groups[1].Value
         if ($name -in $newRoleNames) { continue }
 
-        $guid = if ($entry.Groups[2].Value) { $entry.Groups[2].Value } else { $entry.Groups[4].Value }
+        $guid = $entry.Groups[2].Value
         $isPriv = if ($entry.Groups[3].Value -eq 'true') { $true } else { $false }
 
         $preservedRoles.Add(@{
@@ -238,7 +233,7 @@ function Update-FileSection {
     }
 
     $pattern = "(?s)($([regex]::Escape($BeginMarker)))(.*?)($([regex]::Escape($EndMarker)))"
-    $replacement = "`$1`n$NewContent`n        `$3"
+    $replacement = "`$1`n$NewContent`n    `$3"
     $updatedContent = [regex]::Replace($content, $pattern, $replacement)
     Set-Content -Path $FilePath -Value $updatedContent -NoNewline
 }
@@ -305,9 +300,8 @@ if ($preservedRoles.Count -gt 0) {
 }
 
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
-$existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*\{") |
-    ForEach-Object { $_.Groups[1].Value } |
-        Where-Object { $_ -ne 'default' }
+$existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
+    ForEach-Object { $_.Groups[1].Value }
 if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Count * 0.2)) {
     throw "Too many existing roles ($($preservedRoles.Count) of $($existingNames.Count)) not found in public docs. Possible parsing issue."
 }
@@ -315,32 +309,21 @@ if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Co
 # Sort roles alphabetically
 $roles = $roles | Sort-Object { $_.Name }
 
-Write-Host 'Generating switch block entries...' -ForegroundColor Cyan
+Write-Host 'Generating hashtable entries...' -ForegroundColor Cyan
 
-# Generate Get-MtRoleInfo switch entries
-$switchEntries = $roles | ForEach-Object {
+# Generate Get-MtRoleInfo hashtable entries
+$hashtableEntries = $roles | ForEach-Object {
     $privStr = if ($_.IsPrivileged) { '$true' } else { '$false' }
-    "        '$($_.Name)' { [MtRoleDefinition]::new('$($_.Id)', $privStr); break }"
+    "    '$($_.Name)' = [MtRoleDefinition]::new('$($_.Id)', $privStr)"
 }
-$switchBlock = $switchEntries -join "`n"
-
-# Generate Get-MtRoleMember ValidateSet
-$validateSetNames = ($roles | ForEach-Object { "'$($_.Name)'" }) -join ', '
-$validateSetLine = "        [ValidateSet($validateSetNames)]"
+$hashtableBlock = $hashtableEntries -join "`n"
 
 # Update Get-MtRoleInfo.ps1
 Write-Host "Updating $RoleInfoPath..." -ForegroundColor Cyan
 Update-FileSection -FilePath $RoleInfoPath `
     -BeginMarker '# BEGIN AUTO-GENERATED ROLE DEFINITIONS' `
     -EndMarker '# END AUTO-GENERATED ROLE DEFINITIONS' `
-    -NewContent $switchBlock
-
-# Update Get-MtRoleMember.ps1
-Write-Host "Updating $RoleMemberPath..." -ForegroundColor Cyan
-Update-FileSection -FilePath $RoleMemberPath `
-    -BeginMarker '# BEGIN AUTO-GENERATED ROLE NAMES' `
-    -EndMarker '# END AUTO-GENERATED ROLE NAMES' `
-    -NewContent $validateSetLine
+    -NewContent $hashtableBlock
 
 # Summary
 $privilegedCount = ($roles | Where-Object { $_.IsPrivileged }).Count
