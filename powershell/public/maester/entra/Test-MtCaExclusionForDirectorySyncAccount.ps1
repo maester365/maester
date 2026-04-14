@@ -93,8 +93,8 @@
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) because it's not scoped to all users - $CurrentResult"
             } else {
-                $SyncAccountsExcludedByUser = @($DirectorySynchronizationAccounts | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
-                if ( ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) -or $SyncAccountsExcludedByUser ) {
+                $AllSyncAccountsExcludedByUser = @($DirectorySynchronizationAccounts | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
+                if ( ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) -or $AllSyncAccountsExcludedByUser ) {
                     # Directory synchronization accounts are excluded
                     $CurrentResult = $true
                 } else {
