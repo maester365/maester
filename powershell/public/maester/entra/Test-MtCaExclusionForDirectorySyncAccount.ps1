@@ -29,13 +29,35 @@
         $testDescription = 'It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps.'
         $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
 
-        $DirectorySynchronizationAccountRoleTemplateId = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
+        $DirectorySyncRoleTemplateIds = @(
+            'd29b2b05-8046-44ba-8758-1e26182fcf32', # DirectorySynchronizationAccounts
+            'a92aed5d-d78a-4d16-b381-09adb37eb3b0'  # OnPremisesDirectorySyncAccount
+        )
         try {
-            $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
-            $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Get-ObjectProperty -Property id
-            if ( $null -eq $DirectorySynchronizationAccounts ) {
+            $DirectorySynchronizationMembers = @()
+            foreach ($roleTemplateId in $DirectorySyncRoleTemplateIds) {
+                try {
+                    $roleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$roleTemplateId')" -Select id | Select-Object -ExpandProperty id
+                    $members = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$roleId/members" -Select id
+                    if ( $null -ne $members ) {
+                        $DirectorySynchronizationMembers += $members
+                    }
+                } catch {
+                    Write-Verbose "Role template $roleTemplateId not found or has no members."
+                }
+            }
+            if ( $DirectorySynchronizationMembers.Count -eq 0 ) {
                 throw 'Directory synchronization accounts not found'
             }
+
+            # Check if all members are service principals (certificate-based sync, no CA exclusion needed)
+            $userMembers = @($DirectorySynchronizationMembers | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.user' })
+            if ( $userMembers.Count -eq 0 ) {
+                Add-MtTestResultDetail -Description $testDescription -Result 'Directory synchronization is configured with service principals only. CA exclusions are not required.'
+                return $true
+            }
+
+            $DirectorySynchronizationAccounts = $userMembers | Get-ObjectProperty -Property id
         } catch {
             # Directory synchronization account role not found, this tenant does not have directory synchronization accounts
             Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefor this test is not applicable.'
@@ -80,7 +102,7 @@
                 }
             }
 
-            if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.includeRoles ) {
+            if ( $DirectorySyncRoleTemplateIds | Where-Object { $_ -in $policy.conditions.users.includeRoles } ) {
                 $PolicyIncludesRole = $true
             }
 
@@ -89,8 +111,12 @@
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
             } else {
-                if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) {
-                    # Directory synchronization accounts are excluded
+                if ( $DirectorySyncRoleTemplateIds | Where-Object { $_ -in $policy.conditions.users.excludeRoles } ) {
+                    # Directory synchronization accounts are excluded by role
+                    $CurrentResult = $true
+                } elseif ( $DirectorySynchronizationAccounts.Count -gt 0 -and
+                    ($DirectorySynchronizationAccounts | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0 ) {
+                    # All directory synchronization user accounts are individually excluded
                     $CurrentResult = $true
                 } else {
                     # Directory synchronization accounts are not excluded

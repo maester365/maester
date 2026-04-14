@@ -13,10 +13,12 @@ sidebar_class_name: hidden
 - These accounts should be excluded from all conditional access policies scoped to all cloud apps.
 - Entra ID Connect does not support multifactor authentication.
 - Restrict access with these accounts to trusted networks.
+- This test checks both the legacy `Directory Synchronization Accounts` role and the newer `On Premises Directory Sync Account` role.
+- If directory synchronization is configured using service principals only (certificate-based authentication), the test automatically passes as CA exclusions are not required.
 
 ## How to fix
 
-Exclude service accounts like the Microsoft Entra Connect Sync Account from conditional access policies that can block access such as requiring MFA.
+Exclude service accounts like the Microsoft Entra Connect Sync Account from conditional access policies that can block access such as requiring MFA. You can exclude them by role or by adding individual user accounts to the policy exclusion list.
 
 ## Learn more
 
