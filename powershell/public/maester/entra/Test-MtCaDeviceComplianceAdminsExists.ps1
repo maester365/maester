@@ -79,9 +79,9 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
         }
       }
 
-      if ( 'domainJoinedDevice' -in $policy.grantControls.builtInControls -and
-        'compliantDevice' -in $policy.grantControls.builtInControls -and
-        $policy.grantControls.operator -eq "OR" -and $PolicyIncludesAllRoles -and
+      if ( ( 'compliantDevice' -in $policy.grantControls.builtInControls -or
+        'domainJoinedDevice' -in $policy.grantControls.builtInControls ) -and
+        $PolicyIncludesAllRoles -and
         $policy.conditions.applications.includeApplications -eq "All"
       ) {
         Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayName)"
