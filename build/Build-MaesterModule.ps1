@@ -604,6 +604,23 @@ foreach ($Suite in $SuiteMap) {
         throw "Suite folder not found: $SuitePath"
     }
 
+    # Guardrail: fail fast if any non-*.Tests.ps1 script in a suite appears to
+    # contain Pester tests. This prevents silently dropping tests from output.
+    $SuitePs1Files = @(Get-ChildItem -Path $SuitePath -Recurse -File -Filter '*.ps1')
+    $NonConformingTestScripts = [System.Collections.Generic.List[string]]::new()
+    foreach ($CandidateFile in $SuitePs1Files) {
+        if ($CandidateFile.Name -notmatch '(?i)\.tests\.ps1$') {
+            $CandidateContent = Get-Content -Path $CandidateFile.FullName -Raw
+            if ($CandidateContent -match '(?m)^\s*Describe\s+|^\s*It\s+') {
+                $NonConformingTestScripts.Add($CandidateFile.FullName)
+            }
+        }
+    }
+    if ($NonConformingTestScripts.Count -gt 0) {
+        $ScriptList = $NonConformingTestScripts -join [Environment]::NewLine
+        throw "Found non-conforming suite test script(s) under '$SuitePath'. Rename these files to '*.Tests.ps1':$([Environment]::NewLine)$ScriptList"
+    }
+
     $SuiteFiles = @(
         Get-ChildItem -Path $SuitePath -Recurse -File |
             Where-Object { $_.Name -match '(?i)\.tests\.ps1$' } |
