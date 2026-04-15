@@ -5,9 +5,9 @@ import { List, ListItem, Card, Title, DonutChart } from "@tremor/react";
 export default function MtDonutChart(props) {
 
     function getPercentage(count) {
-        let total = (props.PassedCount || 0) + (props.FailedCount || 0) + (props.InvestigateCount || 0);
+        let total = (props.PassedCount || 0) + (props.FailedCount || 0) + (props.InvestigateCount || 0) + (props.SkippedCount || 0);
         let percent = Math.round(count / total * 100);
-        if(isNaN(percent)) percent = "0";
+        if (isNaN(percent)) percent = "0";
         return percent + "%";
     }
 
@@ -30,11 +30,15 @@ export default function MtDonutChart(props) {
                         {
                             name: 'Investigate',
                             count: props.InvestigateCount || 0,
+                        },
+                        {
+                            name: 'Skipped',
+                            count: props.SkippedCount || 0,
                         }
                     ]}
                     category="count"
                     index="name"
-                    colors={["green", "rose", "purple"]}
+                    colors={["green", "rose", "purple", "gray"]}
                     label={props.Result}
                 />
                 <List className="w-1/3">
@@ -59,6 +63,15 @@ export default function MtDonutChart(props) {
                                 <span className="truncate">Investigate</span>
                             </div>
                             <span>{getPercentage(props.InvestigateCount)}</span>
+                        </ListItem>
+                    )}
+                    {(props.SkippedCount > 0) && (
+                        <ListItem className="space-x-2">
+                            <div className="flex items-center space-x-2 truncate">
+                                <span className="h-2.5 w-2.5 rounded-sm flex-shrink-0 bg-gray-500" />
+                                <span className="truncate">Skipped</span>
+                            </div>
+                            <span>{getPercentage(props.SkippedCount)}</span>
                         </ListItem>
                     )}
                 </List>
