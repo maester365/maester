@@ -11528,7 +11528,7 @@
       "Duration": "00:00:00",
       "ResultDetail": {
         "TestTitle": "ORCA.110: Internal Sender notifications are disabled.",
-        "TestResult": "Well done! Internal Sender notifications are disabled.\n\n\n\n|Malware Policy|EnableInternalSenderAdminNotifications|Result|\n|-|-|-|\n|Default|False|✅ Pass|\n",
+        "TestResult": "Well done! Internal Sender notifications are disabled.\n\n\n\n|Malware Policy|EnableInternalSenderNotifications|Result|\n|-|-|-|\n|Default|False|✅ Pass|\n",
         "TestDescription": "Notifying internal senders about malware detected in email messages could have negative impact. An adversary with access to an already compromised mailbox may use this information to verify effectiveness of malware detection.\n\n#### Remediation action\nDisable notifying internal senders of malware detection.\n\n#### Related Links\n\n* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2) \n* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)\n",
         "SkippedReason": null,
         "Severity": "",
