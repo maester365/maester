@@ -13,6 +13,9 @@
 		PS C:\> Get-MtSafeMarkdown -Text $tenantName
 
 		Converts the content of $tenantName into something safe to use in markdown.
+
+	.LINK
+		https://maester.dev/docs/commands/Get-MtSafeMarkdown
 	#>
     [CmdletBinding()]
     [OutputType()]
@@ -23,5 +26,6 @@
         [string]
         $Text
     )
+    Write-Verbose "Escaping markdown text."
     $Text -replace "\[", "\[" -replace "\]", "\]"
 }
