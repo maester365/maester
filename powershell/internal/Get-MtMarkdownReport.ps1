@@ -18,19 +18,30 @@
         [psobject] $MaesterResults
     )
     $StatusIcon = @{
-        Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
-        Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
-        NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
-        Skipped = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Skipped"/>'
+        Passed      = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
+        Failed      = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
+        NotRun      = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+        Skipped     = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Skipped"/>'
         Investigate = '<img src="https://maester.dev/img/test-result/pill-investigate.png" height="25" alt="Investigate"/>'
+        Error       = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Error"/>'
     }
 
     $StatusIconSm = @{
-        Passed = '✅' # '<img src="https://maester.dev/img/test-result/icon-pass.png" alt="Passed icon" height="18" />'
-        Failed = '❌' # '<img src="https://maester.dev/img/test-result/icon-fail.png" alt="Failed icon" height="18" />'
-        NotRun = '❔' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
-        Skipped = '🚫' # '<img src="https://maester.dev/img/test-result/icon-notrun.png" alt="Not Run icon" height="18" />'
+        Passed      = '✅'
+        Failed      = '❌'
+        NotRun      = '❔'
+        Skipped     = '🚫'
         Investigate = '🔍'
+        Error       = '⚠️'
+    }
+
+    $ResultDisplayName = @{
+        Passed      = 'Passed'
+        Failed      = 'Failed'
+        NotRun      = 'Not Run'
+        Skipped     = 'Skipped'
+        Investigate = 'Investigate'
+        Error       = 'Error'
     }
 
     $SeverityIcon = @{
@@ -65,7 +76,8 @@
             $details += "### $($StatusIconSm[$test.Result]) $($test.Name)`n`n"
 
             $severityText = GetSeverityText $test.Severity
-            $details += "**Severity:** $severityText &nbsp;&nbsp;&nbsp;&nbsp; **Status:** $($StatusIconSm[$test.Result]) $($test.Result)`n`n"
+            $resultName = if ($ResultDisplayName.ContainsKey($test.Result)) { $ResultDisplayName[$test.Result] } else { $test.Result }
+            $details += "**Severity:** $severityText &nbsp;&nbsp;&nbsp;&nbsp; **Status:** $($StatusIconSm[$test.Result]) $resultName`n`n"
 
             if (![string]::IsNullOrEmpty($test.ResultDetail)) {
                 # Test author has provided details
