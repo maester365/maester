@@ -24,7 +24,7 @@ export default function MtBlocksArea(props) {
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [isModalOpen, closeModal]);
 
-    const testSummaryColors = ["emerald", "rose", "gray"];
+    const testSummaryColors = ["emerald", "rose", "gray", "purple"];
 
     // Map long names to short names
     const shortNameMap = {
@@ -49,7 +49,8 @@ export default function MtBlocksArea(props) {
         return [
             getPercentage(item.PassedCount, item.TotalCount),
             getPercentage(item.FailedCount, item.TotalCount),
-            getPercentage(item.SkippedCount, item.TotalCount)]
+            getPercentage(item.SkippedCount, item.TotalCount),
+            getPercentage(item.InvestigateCount, item.TotalCount)]
             ;
     }
 
@@ -60,6 +61,7 @@ export default function MtBlocksArea(props) {
         Passed: block.PassedCount,
         Failed: block.FailedCount,
         Skipped: block.SkippedCount,
+        Investigate: block.InvestigateCount
     })) || [];
 
     return (
@@ -80,8 +82,8 @@ export default function MtBlocksArea(props) {
                     data={formattedBlocks}
                     index="Name"
                     yAxisWidth={65}
-                    categories={["Passed", "Failed", "Skipped"]}
-                    colors={["emerald", "rose", "gray"]}
+                    categories={["Passed", "Failed", "Investigate", "Skipped"]}
+                    colors={["emerald", "rose", "purple", "gray"]}
                     showAnimation={true}
                     showLegend={false}
                 />
@@ -112,8 +114,8 @@ export default function MtBlocksArea(props) {
                             data={formattedBlocks}
                             index="Name"
                             yAxisWidth={65}
-                            categories={["Passed", "Failed", "Skipped"]}
-                            colors={["emerald", "rose", "gray"]}
+                            categories={["Passed", "Failed", "Investigate", "Skipped"]}
+                            colors={["emerald", "rose", "purple", "gray"]}
                             showAnimation={true}
                             showLegend={true}
                         />
