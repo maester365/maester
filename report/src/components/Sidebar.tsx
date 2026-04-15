@@ -179,7 +179,7 @@ export function Sidebar() {
         "flex h-16 items-center gap-3 border-b border-gray-200 dark:border-gray-800",
         isCollapsed ? "justify-center px-2" : "px-4"
       )}>
-        <Link to="/" aria-label="Home" className="flex items-center gap-3">
+        <Link to="/" aria-label="Home" className="flex items-center gap-3 overflow-hidden">
           <span className="sr-only">Maester Logo (go home)</span>
           <img
             src={maesterLogo}
