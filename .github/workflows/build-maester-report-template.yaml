@@ -1,4 +1,4 @@
-name: build-report
+name: build-maester-report-template
 
 on:
   workflow_call:
@@ -7,15 +7,9 @@ on:
         description: "Whether the report template was updated"
         value: ${{ jobs.build-report.outputs.report-updated }}
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "report/**"
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   build-report:
@@ -26,8 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -62,35 +54,9 @@ jobs:
             echo "ReportTemplate.html has been updated"
           fi
 
-      - name: Create PR for standalone runs
-        if: github.event_name != 'workflow_call' && steps.check-changes.outputs.changed == 'true'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          # Create a new branch for the PR
-          BRANCH_NAME="auto-update-report-template-$(date +%Y%m%d-%H%M%S)"
-          git checkout -b "$BRANCH_NAME"
-
-          # Add and commit changes
-          git add powershell/assets/ReportTemplate.html
-          git commit -m "Auto-update report template from /report build"
-
-          # Push the branch
-          git push origin "$BRANCH_NAME"
-
-          # Create a PR using GitHub CLI (gh is pre-installed on GitHub runners)
-          gh pr create \
-            --title "Auto-update report template" \
-            --body "This PR automatically updates the ReportTemplate.html file based on changes in the /report directory." \
-            --head "$BRANCH_NAME" \
-            --base main
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload report template as artifact
         if: steps.check-changes.outputs.changed == 'true'
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: updated-report-template
           path: powershell/assets/ReportTemplate.html

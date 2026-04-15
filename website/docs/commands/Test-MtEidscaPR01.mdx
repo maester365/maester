@@ -25,7 +25,7 @@ If set to Audit, the attempt will only be logged.
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
+graph/settings.values -eq 'Enforce'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ graph/settings.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode
 Test-MtEidscaPR01
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'BannedPasswordCheckOnPremisesMode' | select-object -expand value -eq 'Enforce'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'Enforce'
 
 ## PARAMETERS
 

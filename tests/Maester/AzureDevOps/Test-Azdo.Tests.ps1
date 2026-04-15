@@ -23,12 +23,12 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
         $result = Test-AzdoThirdPartyAccessViaOauth
-        $result | Should -Not -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $result | Should -Be $true -Because "Your tenant should restrict Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     }
 
     It "AZDO.1001: Identities can connect to your organization's Git repos through SSH. See https://aka.ms/vstspolicyssh" -Tag "AZDO.1001" {
         $result = Test-AzdoSSHAuthentication
-        $result | Should -Be $false -Because "Authentication towards your tenant should only be by Entra, do not allow developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
+        $result | Should -Be $true -Because "Authentication towards your tenant should only be by Entra, do not allow developers to connect to your Git repos through SSH on macOS, Linux, or Windows to connect with Azure DevOps"
     }
 
     It "AZDO.1002: Log Audit Events. See https://learn.microsoft.com/en-us/azure/devops/organizations/audit/azure-devops-auditing?view=azure-devops&tabs=preview-page#enable-and-disable-auditing" -Tag "AZDO.1002" {
@@ -53,7 +53,7 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
 
     It "AZDO.1006: External Users access. See https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access" -Tag "AZDO.1006" {
         $result = Test-AzdoExternalGuestAccess
-        $result | Should -Be $false -Because "External users should not be allowed access to your Azure DevOps organization"
+        $result | Should -Be $true -Because "External users should not be allowed access to your Azure DevOps organization"
     }
 
     It "AZDO.1007: Team and project administrator are allowed to invite new users. See https://aka.ms/azure-devops-invitations-policy" -Tag "AZDO.1007" {
@@ -181,28 +181,38 @@ Describe "Azure DevOps" -Tag "Azure DevOps" {
         $result | Should -Be $true -Because "SSH keys should be validated for expiration."
     }
 
-    It "AZDO.1032: Restrict creation of global Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy" -Tag "AZDO.1032" {
+    It "AZDO.1032: (Tenant) Restrict creation of global Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy" -Tag "AZDO.1032" {
         $result = Test-AzdoDisableGlobalPATCreation
-        $result | Should -Be $true -Because "Global Personal Access Tokens (PATs) should be restricted."
+        $result | Should -Be $true -Because "Global Personal Access Tokens (PATs) should be restricted at the tenant level."
     }
 
-    It "AZDO.1033: Enable automatic revocation of leaked Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens" -Tag "AZDO.1033" {
+    It "AZDO.1033: (Tenant) Enable automatic revocation of leaked Personal Access Tokens. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#automatic-revocation-of-leaked-tokens" -Tag "AZDO.1033" {
         $result = Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation
-        $result | Should -Be $true -Because "Leaked Personal Access Tokens (PATs) should be automatically revoked."
+        $result | Should -Be $true -Because "Leaked Personal Access Tokens (PATs) should be automatically revoked at the tenant level."
     }
 
-    It "AZDO.1034: Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy" -Tag "AZDO.1034" {
+    It "AZDO.1034: (Tenant) Restrict creation of new Azure DevOps organizations. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/azure-ad-tenant-policy-restrict-org-creation?view=azure-devops#turn-on-the-policy" -Tag "AZDO.1034" {
         $result = Test-AzdoOrganizationCreationRestriction
-        $result | Should -Be $true -Because "Organization creation should be restricted to maintain governance and control."
+        $result | Should -Be $true -Because "Organization creation should be restricted at the tenant level to maintain governance and control."
     }
 
-    It "AZDO.1035: Restrict Personal Access Token lifespan. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan" -Tag "AZDO.1035" {
+    It "AZDO.1035: (Tenant) Restrict Personal Access Token lifespan. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-personal-access-token-lifespan" -Tag "AZDO.1035" {
         $result = Test-AzdoRestrictPersonalAccessTokenLifespan
-        $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted lifespan with an expiration date."
+        $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted lifespan at the tenant level."
     }
 
-    It "AZDO.1036: Restrict Personal Access Token full scope. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy" -Tag "AZDO.1036" {
+    It "AZDO.1036: (Tenant) Restrict Personal Access Token full scope. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-full-scoped-pats-tenant-policy" -Tag "AZDO.1036" {
         $result = Test-AzdoRestrictFullScopePersonalAccessToken
-        $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted scope and not have full access to the organization."
+        $result | Should -Be $true -Because "Personal Access Tokens (PATs) should have a restricted scope at the tenant level."
+    }
+
+    It "AZDO.1037: (Organization) Restrict Personal Access Token creation. See https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops" -Tag "AZDO.1037" {
+        $result = Test-AzdoDisablePATCreation
+        $result | Should -Be $true -Because "Personal Access Token creation should be restricted at the organization level."
+    }
+
+    It "AZDO.1038: (Organization) Disallow extensions from accessing resources on the local network. See https://learn.microsoft.com/en-us/azure/devops/marketplace/allow-extensions-local-network?view=azure-devops" -Tag "AZDO.1038" {
+        $result = Test-AzdoAllowExtensionsLocalNetworkAccess
+        $result | Should -Be $false -Because "Extensions should not be allowed to access resources on the local network to prevent SSRF attacks."
     }
 }

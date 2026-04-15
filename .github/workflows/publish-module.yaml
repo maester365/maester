@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/build-validation.yaml
 
   build-report:
-    uses: ./.github/workflows/build-report.yaml
+    uses: ./.github/workflows/build-maester-report-template.yaml
 
   create-release:
     needs: [build-validation, build-report]

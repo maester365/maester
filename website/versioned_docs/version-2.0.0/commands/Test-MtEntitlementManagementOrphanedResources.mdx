@@ -1,0 +1,86 @@
+---
+sidebar_class_name: hidden
+description: Checks if catalogs contain unused resources without associated access packages
+id: Test-MtEntitlementManagementOrphanedResources
+title: Test-MtEntitlementManagementOrphanedResources
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEntitlementManagementOrphanedResources.ps1
+---
+
+## SYNOPSIS
+
+Checks if catalogs contain unused resources without associated access packages
+
+## SYNTAX
+
+```powershell
+Test-MtEntitlementManagementOrphanedResources [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+MT.1110 - No catalog should contain resources without any associated access packages
+
+This test identifies Microsoft Entra ID Governance access package catalogs that contain
+resources (groups, applications, SharePoint sites) that are not used in any access package.
+
+Unused catalog resources can indicate:
+- Resources added but never configured in packages
+- Leftover resources from deleted or modified access packages
+- Configuration drift or incomplete setup
+- Potential security and governance gaps
+- Wasted administrative effort maintaining unused resources
+
+The test validates that:
+- All catalog resources are used in at least one access package
+- Resources are properly linked to package role scopes
+- No orphaned resources exist in catalogs
+- Catalog resources serve their intended purpose
+
+Learn more:
+https://maester.dev/docs/tests/MT.1110
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtEntitlementManagementOrphanedResources
+```
+
+Returns $true if all catalog resources are used in access packages
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtEntitlementManagementOrphanedResources](https://maester.dev/docs/commands/Test-MtEntitlementManagementOrphanedResources)

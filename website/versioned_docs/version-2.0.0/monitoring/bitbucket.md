@@ -58,10 +58,10 @@ There are many ways to authenticate with Microsoft Entra. We currently have test
 
 ### Create Bitbucket repository variables
 
-- Open your `maester-tests` Open your maester-tests Bitbucket repository and go to Repository settings.
+- Open your `maester-tests` Bitbucket repository and go to Repository settings.
 - Select **Pipelines** > **Repository variables**.
 - Add the three secrets listed below. Make sure to check the checkbox (`[x]`) for each variable.
-    ![Bitbucket Repository Variable](assets\bitbucket-repository-variables.png)
+    ![Bitbucket Repository Variable](assets/bitbucket-repository-variables.png)
 - To look up these values you will need to use the Entra portal, open the application you created earlier and copy the following values from the **Overview** page:
   - Visibility: Visible, Key: **AZURE_TENANT_ID**, Value: The Directory (tenant) ID of the Entra tenant
   - Visibility: Visible, Key: **AZURE_CLIENT_ID**, Value: The Application (client) ID of the Entra application you created
