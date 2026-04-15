@@ -82,8 +82,7 @@ The Maester team will add new tests over time. To get the latest updates, use th
 ```powershell
 Update-Module Maester -Force
 Import-Module Maester
-cd ~/maester-tests
-Update-MaesterTests
+Update-MaesterTests -Path ~/maester-tests
 ```
 
 ## Use as GitHub action
