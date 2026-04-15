@@ -38,6 +38,7 @@ module.exports = [
     'commands/Get-MtMaesterApp',
     'commands/Get-MtRole',
     'commands/Get-MtRoleMember',
+    'commands/Get-MtSafeMarkdown',
     'commands/Get-MtSession',
     'commands/Get-MtTestInventory',
     'commands/Get-MtUser',
