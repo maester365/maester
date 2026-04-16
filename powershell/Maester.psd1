@@ -94,7 +94,7 @@
     'Invoke-Maester', 'Invoke-MtGraphRequest', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
     'Invoke-MtGraphSecurityQuery',
     'Get-MtMaesterApp', 'New-MtMaesterApp', 'Update-MtMaesterApp', 'Add-MtMaesterAppFederatedCredential',
-    'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
+    'Resolve-SPFRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
     'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
     'Test-MtServicePrincipalsForAllUsers', 'Test-MtAuthenticationPolicyReferencedObjectsExist',
     'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
