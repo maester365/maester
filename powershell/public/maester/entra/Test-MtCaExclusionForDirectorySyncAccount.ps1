@@ -61,7 +61,7 @@
             $DirectorySynchronizationAccounts = $userMembers | Get-ObjectProperty -Property id
         } catch {
             # Directory synchronization account role not found, this tenant does not have directory synchronization accounts
-            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefor this test is not applicable.'
+            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefore this test is not applicable.'
             return $true
         }
 
