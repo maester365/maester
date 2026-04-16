@@ -7,7 +7,7 @@
     External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
 
     .EXAMPLE
-    Test-MtCisaSpoSharingAllowedDomains
+    Test-MtCisaSpoSharingAllowedDomain
 
     Returns true if sharing uses restricted domains
 
@@ -18,31 +18,35 @@
     [OutputType([bool])]
     param()
 
-    $policy = Invoke-MtGraphRequest -RelativeUri "admin/sharepoint/settings" -ApiVersion "v1.0"
-
-    if($policy.sharingCapability -eq "disabled"){
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "SharePoint Online external sharing is disabled."
+    if (!(Test-MtConnection SharePoint)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
-    $resultPolicy = $policy.sharingAllowedDomainList
+    try {
+        $spoTenant = Get-MtSpo
 
-    $testResult = ($resultPolicy | Measure-Object).Count -gt 0
+        if ($spoTenant.SharingCapability -eq "Disabled") {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "SharePoint Online external sharing is disabled."
+            return $null
+        }
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing to specific domains.`n`n%TestResult%"
-    } else {
-        $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing to specific domains."
+        # SharingDomainRestrictionMode: 0 = None, 1 = AllowList, 2 = BlockList
+        $testResult = $spoTenant.SharingDomainRestrictionMode -eq 1
+
+        if ($testResult) {
+            $allowedDomains = $spoTenant.SharingAllowedDomainList -split ' ' | Where-Object { $_ -ne '' }
+            $domainList = ($allowedDomains | ForEach-Object { "* $_" }) -join "`n"
+            $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing to approved domains.`n`n$domainList"
+        } else {
+            $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing to approved domains.`n`n* Current restriction mode: ``$($spoTenant.SharingDomainRestrictionMode)``"
+        }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    $resultPolicy | ForEach-Object {
-        $result = "* $_`n"
-        $result | Out-Null
-    }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

@@ -108,15 +108,18 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, and SharePoint Online. Default is Graph.
+      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
-      [string]$GraphClientId
+      [string]$GraphClientId,
+
+      # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline. Create the app using Register-PnPEntraIDAppForInteractiveLogin.
+      [string]$SharePointClientId
    )
 
    $__MtSession.Connections = $Service
@@ -352,5 +355,47 @@
          }
       }
    } # end switch OrderedImport
+
+   # SharePoint Online via PnP — must run AFTER Graph to avoid Microsoft.Graph.Core DLL conflict
+   if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+      Write-Verbose 'Connecting to SharePoint Online via PnP'
+
+      if (-not $SharePointClientId) {
+         Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. Create a PnP app registration using Register-PnPEntraIDAppForInteractiveLogin.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
+      } else {
+         try {
+            # Resolve the SharePoint admin URL from the tenant's initial domain
+            $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+            $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
+            $tenantPrefix = ($initialDomain -split '\.')[0]
+            $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
+
+            Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+
+            Import-Module PnP.PowerShell -ErrorAction Stop
+
+            $pnpParams = @{
+               Url       = $spoAdminUrl
+               ClientId  = $SharePointClientId
+            }
+
+            if ($UseDeviceCode) {
+               $pnpParams['DeviceLogin'] = $true
+            }
+
+            if ($TenantId) {
+               $pnpParams['Tenant'] = $TenantId
+            }
+
+            Connect-PnPOnline @pnpParams
+
+         } catch [Management.Automation.CommandNotFoundException] {
+            Write-Host "`nThe PnP.PowerShell module is not installed. Please install the module using the following command.`nFor more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
+            Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+         } catch {
+            Write-Host "`nFailed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
+         }
+      }
+   }
 
 } # end function Connect-Maester
