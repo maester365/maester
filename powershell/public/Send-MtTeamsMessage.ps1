@@ -98,8 +98,12 @@
         "$currentVersion"
     }
 
-    $NotRunCount = $MaesterResults.SkippedCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $NotRunCount = "-" }
+    $NotRunCount = $MaesterResults.NotRunCount
+    if ([string]::IsNullOrEmpty($MaesterResults.NotRunCount)) { $NotRunCount = "-" }
+    $SkippedCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $SkippedCount = "-" }
+    $InvestigateCount = $MaesterResults.InvestigateCount
+    if ([string]::IsNullOrEmpty($MaesterResults.InvestigateCount)) { $InvestigateCount = "-" }
 
     $adaptiveCardData = @{
         title       = $Subject
@@ -111,7 +115,8 @@
             TotalCount       = $MaesterResults.TotalCount
             PassedCount      = $MaesterResults.PassedCount
             FailedCount      = $MaesterResults.FailedCount
-            InvestigateCount = $MaesterResults.InvestigateCount
+            InvestigateCount = $InvestigateCount
+            SkippedCount     = $SkippedCount
             NotRunCount      = $NotRunCount
             TestResultURL    = $TestResultsUri
         }
