@@ -88,6 +88,23 @@
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
+                    $null -ne $_.SharePoint
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>SharePoint Online</Label>
+                <ScriptBlock>
+                  if ($_.SharePoint) {
+                    "Connected`n" +
+                    "URL:          $($_.SharePoint.Url)`n" +
+                    "Tenant:       $($_.SharePoint.Tenant)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
                     $null -ne $_.Teams
                   </ScriptBlock>
                 </ItemSelectionCondition>

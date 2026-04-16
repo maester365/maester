@@ -18,27 +18,27 @@
     [OutputType([bool])]
     param()
 
-    $policy = Invoke-MtGraphRequest -RelativeUri "admin/sharepoint/settings" -ApiVersion "v1.0"
-
-    $resultPolicy = $policy | Where-Object {
-        $_.sharingCapability -in @("disabled","existingExternalUserSharingOnly")
+    if (!(Test-MtConnection SharePoint)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
+        return $null
     }
 
-    $testResult = ($resultPolicy | Measure-Object).Count -gt 0
+    try {
+        $spoTenant = Get-MtSpo
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing."
-    } else {
-        $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing.`n`n%TestResult%"
-        $policy | ForEach-Object {
-            $result = "* $($_.sharingCapability)`n"
-            $result | Out-Null
+        $testResult = $spoTenant.SharingCapability -in @("Disabled", "ExistingExternalUserSharingOnly")
+
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant restricts SharePoint Online sharing."
+        } else {
+            $testResultMarkdown = "Your tenant does not restrict SharePoint Online sharing.`n`n* Current setting: ``$($spoTenant.SharingCapability)``"
         }
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+
+        return $testResult
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-
-    $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-
-    Add-MtTestResultDetail -Result $testResultMarkdown
-
-    return $testResult
 }

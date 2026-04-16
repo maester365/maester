@@ -49,4 +49,14 @@
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
       Disconnect-MicrosoftTeams
    }
+
+   if($__MtSession.Connections -contains "SharePointOnline" -or $__MtSession.Connections -contains "All"){
+      Write-Verbose -Message "Disconnecting from SharePoint Online (PnP)."
+      try {
+         Disconnect-PnPOnline -ErrorAction Stop
+      } catch {
+         Write-Verbose "Disconnect-PnPOnline encountered an error: $($_.Exception.Message)"
+      }
+      $__MtSession.SpoCache = @{}
+   }
 }
