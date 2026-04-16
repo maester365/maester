@@ -35,45 +35,23 @@
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion    = '5.1'
 
-    # Name of the PowerShell host required by this module
-    # PowerShellHostName = ''
-
-    # Minimum version of the PowerShell host required by this module
-    # PowerShellHostVersion = ''
-
-    # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # DotNetFrameworkVersion = ''
-
-    # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # ClrVersion = ''
-
-    # Processor architecture (None, X86, Amd64) required by this module
-    # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
+    RequiredModules      = @(
+        @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.27.0'; }
+        @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; }
+    )
     <#
     Requires Pester 5.5.0 but that is not declared here due to potential conflicts with the version of Pester that is
     pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
     if necessary by Install-MaesterTests.
-#>
-
-    RequiredModules      = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.27.0'; }
-        @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
-
-    # Assemblies that must be loaded prior to importing this module
-    # RequiredAssemblies = @()
+    #>
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
     ScriptsToProcess     = @()
 
-    # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @()
-
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @('Maester.Format.ps1xml')
-
-    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = 'Add-MtTestResultDetail',
@@ -256,14 +234,8 @@
         'Disconnect-MtGraph', 'Disconnect-MtMaester'
     )
 
-    # DSC resources to export from this module
-    # DscResourcesToExport = @()
-
     # List of all modules packaged with this module
     # ModuleList = @()
-
-    # List of all files packaged with this module
-    # FileList = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData          = @{
@@ -288,9 +260,6 @@
             # Prerelease string of this module
             # Prerelease = ''
 
-            # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-            # RequireLicenseAcceptance = $false
-
             # External dependent modules of this module
             # ExternalModuleDependencies = @()
 
@@ -301,6 +270,4 @@
     # HelpInfo URI of this module
     HelpInfoURI          = 'https://maester.dev/docs/commands/'
 
-    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-    # DefaultCommandPrefix = ''
 }
