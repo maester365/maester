@@ -20,13 +20,12 @@ param (
     [string] $RoleInfoPath = "$PSScriptRoot/../powershell/internal/Get-MtRoleInfo.ps1",
 
     # URL to fetch role definitions from (raw Markdown from GitHub)
-    [string] $SourceUrl = 'https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/refs/heads/main/docs/identity/role-based-access-control/permissions-reference.md',
+    [string] $SourceUrl = 'https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/main/docs/identity/role-based-access-control/permissions-reference.md',
 
     # Minimum number of roles expected (safeguard against partial data)
     [int] $MinimumRoleCount = 80
 )
 
-Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 #region Helper functions
@@ -67,7 +66,7 @@ function Get-RoleDataFromMarkdown {
     foreach ($line in $lines) {
 
         <#
-        Just providing some context/clarity on how or data looks at this point:
+        Just providing some context/clarity on how our data looks at this point:
         $line looks like this at this point:
         > | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
         #>
@@ -309,7 +308,7 @@ if ($preservedRoles.Count -gt 0) {
 
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
 $existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
-    ForEach-Object { $_.Groups[1].Value }
+ForEach-Object { $_.Groups[1].Value }
 if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Count * 0.2)) {
     throw "Too many existing roles ($($preservedRoles.Count) of $($existingNames.Count)) not found in public docs. Possible parsing issue."
 }
