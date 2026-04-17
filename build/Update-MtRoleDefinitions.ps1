@@ -67,7 +67,7 @@ function Get-RoleDataFromMarkdown {
     foreach ($line in $lines) {
 
         <#
-        Just providing some context/clarity on how or data looks at this point:
+        Just providing some context/clarity on how our data looks at this point:
         $line looks like this at this point:
         > | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
         #>
