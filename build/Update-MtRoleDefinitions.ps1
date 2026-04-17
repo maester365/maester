@@ -3,7 +3,7 @@
     Updates the auto-generated Entra ID role definitions in the Maester PowerShell module.
 
     .DESCRIPTION
-    Downloads the Microsoft Entra built-in roles permissions reference page (public, no auth required),
+    Downloads the Microsoft Entra built-in roles permissions reference Markdown from GitHub (public, no auth required),
     parses role names, GUIDs, and privileged indicators, then updates:
     - powershell/internal/Get-MtRoleInfo.ps1 ($script:MtRoles hashtable with MtRoleDefinition objects)
 
@@ -19,8 +19,8 @@ param (
     # Path to Get-MtRoleInfo.ps1
     [string] $RoleInfoPath = "$PSScriptRoot/../powershell/internal/Get-MtRoleInfo.ps1",
 
-    # URL to fetch role definitions from
-    [string] $SourceUrl = 'https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference',
+    # URL to fetch role definitions from (raw Markdown from GitHub)
+    [string] $SourceUrl = 'https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/refs/heads/main/docs/identity/role-based-access-control/permissions-reference.md',
 
     # Minimum number of roles expected (safeguard against partial data)
     [int] $MinimumRoleCount = 80
@@ -31,56 +31,67 @@ $ErrorActionPreference = 'Stop'
 
 #region Helper functions
 
-function Get-RoleDataFromHtml {
+function Get-RoleDataFromMarkdown {
     <#
     .SYNOPSIS
-    Parses the permissions reference HTML page "All roles" table and extracts role definitions.
+    Parses the permissions reference Markdown "All roles" table and extracts role definitions.
     #>
     [CmdletBinding()]
     [OutputType([System.Collections.Generic.List[hashtable]])]
     param(
         [Parameter(Mandatory)]
-        [string] $Html
+        [string] $Markdown
     )
-
+    #region Parsing logic only grabbing the table data under "All roles"
     $roles = [System.Collections.Generic.List[hashtable]]::new()
     $guidPattern = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 
-    # Locate the "All roles" table — it's the first <table> after the h2 with id="all-roles"
-    $allRolesIdx = $Html.IndexOf('id="all-roles"')
-    if ($allRolesIdx -lt 0) {
-        throw "Could not find 'all-roles' section in the HTML page. Page structure may have changed."
+    # Extract just the "All roles" section via substring — avoids iterating the entire document
+    $sectionStart = [regex]::Match($Markdown, '(?m)^#+\s+All roles')
+    if (-not $sectionStart.Success) {
+        throw "Could not find 'All roles' section in the Markdown document. Document structure may have changed."
     }
 
-    $tableStart = $Html.IndexOf('<table', $allRolesIdx)
-    $tableEnd = $Html.IndexOf('</table>', $tableStart)
-    if ($tableStart -lt 0 -or $tableEnd -lt 0) {
-        throw 'Could not find the All Roles table in the HTML page.'
+    $contentAfterHeading = $Markdown.Substring($sectionStart.Index + $sectionStart.Length)
+    $nextHeading = [regex]::Match($contentAfterHeading, '(?m)^#+\s')
+    $sectionBody = if ($nextHeading.Success) {
+        $contentAfterHeading.Substring(0, $nextHeading.Index)
+    } else {
+        $contentAfterHeading
     }
 
-    $tableHtml = $Html.Substring($tableStart, $tableEnd - $tableStart + 8)
+    $lines = $($sectionBody -split '\r?\n').trim() | Where-Object { $_ -ne '' }
+    $lines = $lines | Where-Object { $_ -match $guidPattern }
+    #endregion Parsing logic only grabbing the table data under "All roles"
 
-    # Extract each <tr> row
-    $rowMatches = [regex]::Matches($tableHtml, '(?s)<tr>(.*?)</tr>')
+    foreach ($line in $lines) {
 
-    foreach ($rowMatch in $rowMatches) {
-        $row = $rowMatch.Groups[1].Value
-        $cells = [regex]::Matches($row, '(?s)<td[^>]*>(.*?)</td>')
-        if ($cells.Count -lt 3) { continue }
+        <#
+        Just providing some context/clarity on how or data looks at this point:
+        $line looks like this at this point:
+        > | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
+        #>
+        $entry = $line.Split("|")
+        # sample: [Agent ID Administrator](#agent-id-administrator)
+        $displayName = $entry[1]
+        # sample: Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md)
+        $roleDescription = $entry[2].Trim()
+        # sample: db506228-d27e-4b7d-95e5-295956d6615f
+        $roleGuid = $entry[3].Trim()
 
-        $nameCell = $cells[0].Groups[1].Value
-        $descCell = $cells[1].Groups[1].Value
-        $guidCell = $cells[2].Groups[1].Value
+        # Cleanup roleName and roleDescription from roleDescription we also need to extract if the role is privileged or not (if it contains the privileged label icon)
+        # Extract display name from Markdown link [Display Name](#anchor)
+        $displayNameMatch = [regex]::Match($displayName, '\[([^\]]+)\]')
+        if (-not $displayNameMatch.Success) {
+            continue
+        }
+        $displayName = $displayNameMatch.Groups[1].Value.Trim().Replace("[", " ").Replace("]", " ")
 
-        # Extract display name from the link text
-        $nameMatch = [regex]::Match($nameCell, '>([^<]+)</a>')
-        if (-not $nameMatch.Success) { continue }
-        $displayName = $nameMatch.Groups[1].Value.Trim()
+        # The description may contain the privileged label icon markdown if it's a privileged role, we want to check for that and also remove it from the description
+        $isPrivileged = $roleDescription -match 'Privileged label icon'
 
-        # Extract GUID from the third cell
-        $guidMatch = [regex]::Match($guidCell, $guidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-        if (-not $guidMatch.Success) { continue }
-        $roleGuid = $guidMatch.Value.ToLower()
+        # Leaving description here for now if we want it in the future we just need to split on new lines html
+        #$description = $roleDescription.Split('<br/>')[0].Trim()
 
         # Convert display name to PascalCase identifier (remove spaces, special characters)
         $roleName = $displayName -replace '[^a-zA-Z0-9 ]', ''
@@ -93,9 +104,6 @@ function Get-RoleDataFromHtml {
             }) -join ''
 
         if ([string]::IsNullOrWhiteSpace($roleName)) { continue }
-
-        # Check for privileged indicator — the img alt text "Privileged label icon."
-        $isPrivileged = $descCell -match 'Privileged label icon'
 
         $roles.Add(@{
                 Name         = $roleName
@@ -242,7 +250,7 @@ function Update-FileSection {
 
 #region Main execution
 
-Write-Host 'Fetching role definitions from Microsoft Learn...' -ForegroundColor Cyan
+Write-Host 'Fetching role definitions from GitHub...' -ForegroundColor Cyan
 try {
     $response = Invoke-WebRequest -Uri $SourceUrl -UseBasicParsing -ErrorAction Stop
 } catch {
@@ -253,13 +261,13 @@ if ($response.StatusCode -ne 200) {
     throw "Unexpected HTTP status code $($response.StatusCode) from $SourceUrl"
 }
 
-$html = $response.Content
-if ([string]::IsNullOrWhiteSpace($html) -or $html.Length -lt 10000) {
-    throw "Downloaded content appears empty or too short ($($html.Length) chars). Aborting."
+$markdown = $response.Content
+if ([string]::IsNullOrWhiteSpace($markdown) -or $markdown.Length -lt 10000) {
+    throw "Downloaded content appears empty or too short ($($markdown.Length) chars). Aborting."
 }
 
-Write-Host 'Parsing role definitions from HTML...' -ForegroundColor Cyan
-$roles = Get-RoleDataFromHtml -Html $html
+Write-Host 'Parsing role definitions from Markdown...' -ForegroundColor Cyan
+$roles = Get-RoleDataFromMarkdown -Markdown $markdown
 
 # Deduplicate by name (keep first occurrence)
 $seen = @{}
