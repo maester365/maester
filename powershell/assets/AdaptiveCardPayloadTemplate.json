@@ -117,6 +117,11 @@
                             "color": "attention",
                             "legend": "Failed",
                             "value": 99991
+                        },
+                        {
+                            "color": "categoricalPurple",
+                            "legend": "Investigate",
+                            "value": 99992
                         }
                     ]
                 },

@@ -74,7 +74,7 @@
         - Add a switch to send the card to a user instead of a channel
     #>
     if (!$TeamChannelWebhookUri) {
-      if (!(Test-MtContext -SendTeamsMessage)) { return }
+        if (!(Test-MtContext -SendTeamsMessage)) { return }
     } else {
         # Check if TeamChannelWebhookUri is a valid URL
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
@@ -98,13 +98,6 @@
         "$currentVersion"
     }
 
-    $NotRunCount = $MaesterResults.NotRunCount
-    if ([string]::IsNullOrEmpty($MaesterResults.NotRunCount)) { $NotRunCount = "-" }
-    $SkippedCount = $MaesterResults.SkippedCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $SkippedCount = "-" }
-    $InvestigateCount = $MaesterResults.InvestigateCount
-    if ([string]::IsNullOrEmpty($MaesterResults.InvestigateCount)) { $InvestigateCount = "-" }
-
     $adaptiveCardData = @{
         title       = $Subject
         description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
@@ -115,9 +108,9 @@
             TotalCount       = $MaesterResults.TotalCount
             PassedCount      = $MaesterResults.PassedCount
             FailedCount      = $MaesterResults.FailedCount
-            InvestigateCount = $InvestigateCount
-            SkippedCount     = $SkippedCount
-            NotRunCount      = $NotRunCount
+            InvestigateCount = $MaesterResults.InvestigateCount
+            SkippedCount     = $MaesterResults.SkippedCount
+            NotRunCount      = $MaesterResults.NotRunCount
             TestResultURL    = $TestResultsUri
         }
     }
@@ -155,12 +148,12 @@
             $currentValue
         })
 
-        # Set donut values
-        $adaptiveCardBody = $adaptiveCardBody.replace('99990',$adaptiveCardData.run.PassedCount)
-        $adaptiveCardBody = $adaptiveCardBody.replace('99991',$adaptiveCardData.run.FailedCount)
+    # Set donut values
+    $adaptiveCardBody = $adaptiveCardBody.replace('99990', $adaptiveCardData.run.PassedCount)
+    $adaptiveCardBody = $adaptiveCardBody.replace('99991', $adaptiveCardData.run.FailedCount)
+    $adaptiveCardBody = $adaptiveCardBody.replace('99992', $adaptiveCardData.run.InvestigateCount)
 
-    if (!$TeamChannelWebhookUri)
-    {
+    if (!$TeamChannelWebhookUri) {
         $attachmentGuid = New-Guid
 
         $params = @{
@@ -181,26 +174,25 @@
             )
         }
 
-      Write-Verbose -Message "Uri: $SendTeamsMessageUri"
+        Write-Verbose -Message "Uri: $SendTeamsMessageUri"
 
-      $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
+        $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
 
-      Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
-    }else
-    {
+        Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
+    } else {
         $params = @{
-            type     = "message"
+            type        = "message"
             attachments = @(
                 @{
-                    contentType  = "application/vnd.microsoft.card.adaptive"
-                    contentUrl   = $null
-                    content      = $null
+                    contentType = "application/vnd.microsoft.card.adaptive"
+                    contentUrl  = $null
+                    content     = $null
                 }
             )
         }
 
-      $params.attachments[0].content = ($adaptiveCardBody | convertFrom-Json)
-      Write-Verbose -Message "Posting message to Teams channel using webhook: $TeamChannelWebhookUri"
-      Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body ($params | ConvertTo-Json -Depth 25) -Uri $TeamChannelWebhookUri
+        $params.attachments[0].content = ($adaptiveCardBody | convertFrom-Json)
+        Write-Verbose -Message "Posting message to Teams channel using webhook: $TeamChannelWebhookUri"
+        Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body ($params | ConvertTo-Json -Depth 25) -Uri $TeamChannelWebhookUri
     }
 }
