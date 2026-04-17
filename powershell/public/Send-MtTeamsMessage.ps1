@@ -148,10 +148,14 @@
             $currentValue
         })
 
+    $passedCount = if ($null -ne $adaptiveCardData.run.PassedCount) { [int]$adaptiveCardData.run.PassedCount } else { 0 }
+    $failedCount = if ($null -ne $adaptiveCardData.run.FailedCount) { [int]$adaptiveCardData.run.FailedCount } else { 0 }
+    $investigateCount = if ($null -ne $adaptiveCardData.run.InvestigateCount) { [int]$adaptiveCardData.run.InvestigateCount } else { 0 }
+
     # Set donut values
-    $adaptiveCardBody = $adaptiveCardBody.replace('99990', $adaptiveCardData.run.PassedCount)
-    $adaptiveCardBody = $adaptiveCardBody.replace('99991', $adaptiveCardData.run.FailedCount)
-    $adaptiveCardBody = $adaptiveCardBody.replace('99992', $adaptiveCardData.run.InvestigateCount)
+    $adaptiveCardBody = $adaptiveCardBody.replace('99990', $passedCount.ToString())
+    $adaptiveCardBody = $adaptiveCardBody.replace('99991', $failedCount.ToString())
+    $adaptiveCardBody = $adaptiveCardBody.replace('99992', $investigateCount.ToString())
 
     if (!$TeamChannelWebhookUri) {
         $attachmentGuid = New-Guid
