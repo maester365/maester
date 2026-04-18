@@ -98,19 +98,26 @@
         "$currentVersion"
     }
 
+    $notRunCount = $MaesterResults.NotRunCount
+    if ([string]::IsNullOrEmpty($MaesterResults.NotRunCount)) { $notRunCount = "-" }
+    $skippedCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $skippedCount = "-" }
+    $investigateCount = $MaesterResults.investigateCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $investigateCount = "-" }
+
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
     $emailTemplate = $emailTemplate -replace "%ModuleVersion%", $ModuleVersion
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
     $emailTemplate = $emailTemplate -replace "%PassedCount%", $MaesterResults.PassedCount
     $emailTemplate = $emailTemplate -replace "%FailedCount%", $MaesterResults.FailedCount
-    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $MaesterResults.InvestigateCount
-    $emailTemplate = $emailTemplate -replace "%SkippedCount%", $MaesterResults.SkippedCount
-    $emailTemplate = $emailTemplate -replace "%NotRunCount%", $MaesterResults.NotRunCount
+    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $investigateCount
+    $emailTemplate = $emailTemplate -replace "%SkippedCount%", $skippedCount
+    $emailTemplate = $emailTemplate -replace "%NotRunCount%", $notRunCount
 
     # Add a hidden div that will show in the preview line of the message.
     $bodyElement = '<body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word">'
-    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($MaesterResults.InvestigateCount), ⏭️ Skipped: $($MaesterResults.SkippedCount), ⬇️ Not Run: $($MaesterResults.NotRunCount)</div>")
+    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($investigateCount), ⏭️ Skipped: $($skippedCount), ⬇️ Not Run: $($notRunCount)</div>")
     $StatusIcon = @{
         Passed      = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
         Failed      = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'

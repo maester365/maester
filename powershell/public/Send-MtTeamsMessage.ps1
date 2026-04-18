@@ -98,6 +98,12 @@
         "$currentVersion"
     }
 
+    $NotRunCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $NotRunCount = "-" }
+    $skippedCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $skippedCount = "-" }
+    $investigateCount = $MaesterResults.investigateCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $investigateCount = "-" }
     $adaptiveCardData = @{
         title       = $Subject
         description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
@@ -108,9 +114,9 @@
             TotalCount       = $MaesterResults.TotalCount
             PassedCount      = $MaesterResults.PassedCount
             FailedCount      = $MaesterResults.FailedCount
-            InvestigateCount = $MaesterResults.InvestigateCount
-            SkippedCount     = $MaesterResults.SkippedCount
-            NotRunCount      = $MaesterResults.NotRunCount
+            InvestigateCount = $investigateCount
+            SkippedCount     = $skippedCount
+            NotRunCount      = $NotRunCount
             TestResultURL    = $TestResultsUri
         }
     }
@@ -150,7 +156,7 @@
 
     $passedCount = if ($null -ne $adaptiveCardData.run.PassedCount) { [int]$adaptiveCardData.run.PassedCount } else { 0 }
     $failedCount = if ($null -ne $adaptiveCardData.run.FailedCount) { [int]$adaptiveCardData.run.FailedCount } else { 0 }
-    $investigateCount = if ($null -ne $adaptiveCardData.run.InvestigateCount) { [int]$adaptiveCardData.run.InvestigateCount } else { 0 }
+    $investigateCount = if ($null -ne $adaptiveCardData.run.InvestigateCount -or $adaptiveCardData.run.InvestigateCount -ne '-') { [int]$adaptiveCardData.run.InvestigateCount } else { 0 }
 
     # Set donut values
     $adaptiveCardBody = $adaptiveCardBody.replace('99990', $passedCount.ToString())
@@ -178,9 +184,8 @@
             )
         }
 
-        Write-Verbose -Message "Uri: $SendTeamsMessageUri"
-
         $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
+        Write-Verbose -Message "Uri: $SendTeamsMessageUri"
 
         Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
     } else {
