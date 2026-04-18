@@ -15,7 +15,6 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -26,21 +25,25 @@
     }
 
     try {
-        $testDescription = 'It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps.'
-        $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
+        $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName "DirectorySynchronizationAccounts"
+        $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName "OnPremisesDirectorySyncAccount"
 
-        $DirectorySynchronizationAccountRoleTemplateId = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
         try {
-            $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
-            $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Get-ObjectProperty -Property id
-            if ( $null -eq $DirectorySynchronizationAccounts ) {
-                throw 'Directory synchronization accounts not found'
+            $Members = Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+            if ( $null -eq $Members ) {
+                # Assumes if no accounts has any of those permissions that there is no directory/OnPremises synchronization accounts
+                Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Directory synchronization accounts not found, but directory synchronization is configured. This might be caused by missing permissions to read the directory synchronization accounts.'
+                throw 'Directory synchronization and/or on-premises directory synchronization accounts not found'
             }
         } catch {
-            # Directory synchronization account role not found, this tenant does not have directory synchronization accounts
-            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefor this test is not applicable.'
+            # Directory synchronization account role not found, this tenant does not have directory/OnPremises synchronization accounts
+            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory/OnPremises synchronization accounts and therefor this test is not applicable.'
             return $true
         }
+
+        $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
+        $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
@@ -72,24 +75,33 @@
                 continue
             }
 
-            $PolicyIncludesAllUsers = $false
+            $PolicyIncludesMember = $false
             $PolicyIncludesRole = $false
-            $DirectorySynchronizationAccounts | ForEach-Object {
-                if ( $_ -in $policy.conditions.users.includeUsers  ) {
-                    $PolicyIncludesAllUsers = $true
+            $memberIds = @($Members | ForEach-Object { $_.id })
+
+            foreach ($memberId in $memberIds) {
+                if ( $memberId -in $policy.conditions.users.includeUsers ) {
+                    $PolicyIncludesMember = $true
+                    break
                 }
             }
 
-            if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.includeRoles ) {
+            if ( $DirectorySynchronizationAccountsRole -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.includeRoles ) {
                 $PolicyIncludesRole = $true
             }
 
-            if ( $PolicyIncludesAllUsers -or $PolicyIncludesRole ) {
-                # Skip this policy, because all directory synchronization accounts are included and therefor must not be excluded
+            if ( $PolicyIncludesMember -or $PolicyIncludesRole ) {
+                # Skip this policy, because directory synchronization accounts are specifically included and therefor must not be excluded
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
             } else {
-                if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) {
+                # Check if excluded by role
+                $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
+
+                # Check if all members (users and service principals) are individually excluded
+                $excludedByMember = $memberIds.Count -gt 0 -and @($memberIds | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
+
+                if ( $excludedByRole -or $excludedByMember ) {
                     # Directory synchronization accounts are excluded
                     $CurrentResult = $true
                 } else {
