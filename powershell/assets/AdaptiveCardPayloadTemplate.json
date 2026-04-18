@@ -117,6 +117,11 @@
                             "color": "attention",
                             "legend": "Failed",
                             "value": 99991
+                        },
+                        {
+                            "color": "categoricalPurple",
+                            "legend": "Investigate",
+                            "value": 99992
                         }
                     ]
                 },
@@ -203,7 +208,53 @@
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "Not tested",
+                                            "text": "Investigate",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.InvestigateCount}",
+                                            "wrap": true,
+                                            "size": "Large",
+                                            "weight": "Bolder"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Skipped",
+                                            "wrap": true,
+                                            "isSubtle": true,
+                                            "weight": "Lighter",
+                                            "size": "Small",
+                                            "fontType": "Default",
+                                            "style": "columnHeader"
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "${$root.run.SkippedCount}",
+                                            "wrap": true,
+                                            "size": "Large",
+                                            "weight": "Bolder"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Not Run",
                                             "wrap": true,
                                             "isSubtle": true,
                                             "weight": "Lighter",
