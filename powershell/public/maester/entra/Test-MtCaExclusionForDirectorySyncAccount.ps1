@@ -73,7 +73,8 @@
 
             $PolicyIncludesAnyMember = $false
             $PolicyIncludesRole = $false
-            $memberIds = @($Members | ForEach-Object { $_.id })
+            #excluding service principals, because they cannot be excluded from policies and therefore do not have to be included in the policies to bypass them.
+            $memberIds = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' } | ForEach-Object { $_.id })
 
             foreach ($memberId in $memberIds) {
                 if ( $memberId -in $policy.conditions.users.includeUsers ) {
@@ -87,7 +88,7 @@
             }
 
             if ( $PolicyIncludesAnyMember -or $PolicyIncludesRole ) {
-                # Skip this policy, because directory synchronization accounts are specifically included and therefor must not be excluded
+                # Skip this policy, because directory synchronization accounts are specifically included and therefore must not be excluded
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
                 # Check if excluded by role
