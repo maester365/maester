@@ -24,26 +24,22 @@
         return $null
     }
 
+    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
+    $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
+
     try {
         $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName "DirectorySynchronizationAccounts"
         $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName "OnPremisesDirectorySyncAccount"
 
-        try {
-            $Members = Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
-            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
-            if ( $null -eq $Members ) {
-                # Assumes if no accounts has any of those permissions that there is no directory/OnPremises synchronization accounts
-                Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Directory synchronization accounts not found, but directory synchronization is configured. This might be caused by missing permissions to read the directory synchronization accounts.'
-                throw 'Directory synchronization and/or on-premises directory synchronization accounts not found'
-            }
-        } catch {
-            # Directory synchronization account role not found, this tenant does not have directory/OnPremises synchronization accounts
-            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory/OnPremises synchronization accounts and therefor this test is not applicable.'
+        $Members = @()
+        $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+        $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+        $Members = @($Members | Where-Object { $null -ne $_ })
+
+        if ( $Members.Count -eq 0 ) {
+            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefore this test is not applicable.'
             return $true
         }
-
-        $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
-        $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
 
@@ -75,13 +71,13 @@
                 continue
             }
 
-            $PolicyIncludesMember = $false
+            $PolicyIncludesAnyMember = $false
             $PolicyIncludesRole = $false
             $memberIds = @($Members | ForEach-Object { $_.id })
 
             foreach ($memberId in $memberIds) {
                 if ( $memberId -in $policy.conditions.users.includeUsers ) {
-                    $PolicyIncludesMember = $true
+                    $PolicyIncludesAnyMember = $true
                     break
                 }
             }
@@ -90,11 +86,10 @@
                 $PolicyIncludesRole = $true
             }
 
-            if ( $PolicyIncludesMember -or $PolicyIncludesRole ) {
+            if ( $PolicyIncludesAnyMember -or $PolicyIncludesRole ) {
                 # Skip this policy, because directory synchronization accounts are specifically included and therefor must not be excluded
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
-            } else {
                 # Check if excluded by role
                 $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
 
