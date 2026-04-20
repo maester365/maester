@@ -5,18 +5,38 @@ permissions:
   contents: read
 
 on:
-  # Runs whenever a new Maester module is published
-  release:
-    types: [published]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to push (leave empty to use the latest stable release, e.g. v0.4.0)"
+        required: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Only run on stable releases; always run on workflow_dispatch
+    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
     steps:
+      - name: Resolve release tag
+        id: resolve_tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "resolved_tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          elif [[ -n "${{ inputs.tag }}" ]]; then
+            echo "resolved_tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            LATEST_TAG=$(gh release list --repo "${{ github.repository }}" --json tagName,isPrerelease \
+              --jq '[.[] | select(.isPrerelease == false)] | first | .tagName')
+            echo "resolved_tag=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ steps.resolve_tag.outputs.resolved_tag }}
+
       - name: Publish to maester-tests
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@3fc9348237c8c6954ff88e58719af8a88af543f7
