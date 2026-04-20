@@ -162,6 +162,7 @@
     'Test-MtManagementGroupWriteRequirement', 'Test-MtDeviceRegistrationMfaConflict', 'Test-MtVaultSoftDelete',
     'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
     'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtEntraIDConnectSsso',
+    'Test-MtKrbtgtAzureADNotSynced',
     'Test-MtExoMoeraMailActivity', 'Test-MtExoDelicensingResiliency',
     'Test-MtLimitOnMicrosoftDomainUsage',
     'Test-MtXspmAppRegWithPrivilegedApiAndOwners',
