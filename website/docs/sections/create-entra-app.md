@@ -103,6 +103,53 @@ $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?a
 </details>
 
 <details>
+  <summary>(Optional) Grant permissions to SharePoint Online</summary>
+### (Optional) Grant permissions to SharePoint Online
+
+SharePoint Online tests require the **PnP.PowerShell** module and a dedicated PnP Entra ID app registration. The standard Maester app registration does not cover SharePoint tenant admin operations — PnP requires its own app with `Sites.FullControl.All` permissions.
+
+> The SharePoint Online permissions are necessary to support tests that validate [SharePoint Online configurations](https://maester.dev/docs/tests/cisa/spo), such as the CISA SharePoint baseline controls.
+
+#### Install PnP.PowerShell
+
+```powershell
+Install-Module PnP.PowerShell -Scope CurrentUser
+```
+
+#### Register the PnP Entra ID app
+
+PnP provides a built-in cmdlet to create the required app registration for interactive login:
+
+```powershell
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "Maester PnP" -Tenant [yourtenant].onmicrosoft.com -SharePointDelegatePermissions "AllSites.FullControl"
+```
+
+This will:
+- Create an Entra ID app registration with the required delegated permissions
+- Prompt you to authenticate and provide consent
+- Output the **Client ID** you will need for `Connect-Maester`
+
+> **Note:** `AllSites.FullControl` (delegated) is the minimum permission required by PnP for tenant admin cmdlets like `Get-PnPTenant`. There is no read-only equivalent.
+>
+> **Important:** After registering the app, open a **new PowerShell session** before running `Connect-Maester`, as the registration process loads PnP assemblies that can conflict with Microsoft Graph.
+
+#### Connect to SharePoint Online
+
+Use the Client ID from the previous step when connecting:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID from Register-PnPEntraIDAppForInteractiveLogin>"
+```
+
+For device code flow (e.g. non-interactive sessions):
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>" -UseDeviceCode
+```
+
+</details>
+
+<details>
   <summary>(Optional) Grant Dataverse permissions for Copilot Studio tests</summary>
 ### (Optional) Grant Dataverse permissions for Copilot Studio
 

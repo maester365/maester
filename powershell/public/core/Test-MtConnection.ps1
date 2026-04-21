@@ -35,7 +35,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'SharePoint', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -51,6 +51,7 @@
             Graph = $null
             ExchangeOnline = $null
             ExchangeOnlineProtection = $null
+            SharePoint = $null
             Teams = $null
             AllConnected = $false
         }
@@ -130,6 +131,20 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion Exchange Online Protection (EOP)
+
+        #region SharePoint
+        if ($Service -contains 'SharePoint' -or $Service -contains 'All') {
+            $IsConnected = $false
+            try {
+                $MtConnections.SharePoint = Get-PnPConnection
+                $IsConnected = $null -ne ($MtConnections.SharePoint)
+            } catch {
+                Write-Debug "SharePoint: $false"
+            }
+            Write-Verbose "SharePoint: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion SharePoint
 
         #region Teams
         if ($Service -contains 'Teams' -or $Service -contains 'All') {
