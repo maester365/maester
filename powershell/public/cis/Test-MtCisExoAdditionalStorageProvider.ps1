@@ -1,4 +1,5 @@
-﻿<#
+﻿function Test-MtCisExoAdditionalStorageProvider {
+<#
 .SYNOPSIS
     Checks if additional storage providers are restricted in Outlook on the web
 
@@ -17,7 +18,6 @@
 .LINK
     https://maester.dev/docs/commands/Test-MtCisExoAdditionalStorageProvider
 #>
-function Test-MtCisExoAdditionalStorageProvider {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
