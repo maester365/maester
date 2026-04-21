@@ -25,7 +25,7 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
     }
 
     It 'MT.1040: Ensure additional storage providers are restricted in Outlook on the web' -Tag 'MT.1040' {
-        $result = Test-MtExoAdditionalStorageProvider
+        $result = Test-MtCisExoAdditionalStorageProvider
 
         if ($null -ne $result) {
             $result | Should -Be $true -Because 'AdditionalStorageProvidersAvailable should be False'
