@@ -319,7 +319,7 @@ module.exports = [
     'commands/Test-MtEntraDeviceJoinRestricted',
     'commands/Test-MtEntraIDConnectSsso',
     'commands/Test-MtEntraIDConnectSyncSoftHardMatching',
-    'commands/Test-MtCisExoAdditionalStorageProvider',
+    'commands/Test-MtExoAdditionalStorageProvider',
     'commands/Test-MtExoDelicensingResiliency',
     'commands/Test-MtExoMailTip',
     'commands/Test-MtExoModernAuth',
