@@ -93,7 +93,7 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
     It "MT.1151: Ensure Managed Installer Rules are configured correctly" -Tag "MT.1151" {
         $result = Test-MtIntuneManagedInstallerRules
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "Managed Installer Rules are configured to enforce security."
+            $result | Should -Be $true -Because "'Trust apps from managed installer' is enabled in at least one App Control policy."
         }
     }
 }
