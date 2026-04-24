@@ -39,15 +39,11 @@ This section will guide you through the templates required to deploy Maester on 
 To be able to declare Microsoft Graph resources in a Bicep file, you need to enable the Bicep preview feature and specify the Microsoft Graph Bicep type versions, by configuring ```bicepconfig.json```
 
 ```json
-{
-    "experimentalFeaturesEnabled": {
-        "extensibility": true
-    },
-    // specify an alias for the version of the v1.0 dynamic types package you want to use
+  {
     "extensions": {
       "microsoftGraphV1": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:1.0.0"
     }
-}
+  }
 ```
 
 The ```main.bicepparam``` template defines our input parameters, such as the environment, customer, location, and app roles for the Managed Identity (MI).
