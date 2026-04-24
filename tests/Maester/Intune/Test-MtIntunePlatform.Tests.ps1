@@ -79,7 +79,7 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
     It "MT.1149: Ensure ASR Rules are configured correctly" -Tag "MT.1149" {
         $result = Test-MtIntuneASRRules
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "Attack Surface Reduction (ASR) Rules are configured to block threats."
+            $result | Should -Be $true -Because "Attack Surface Reduction (ASR) Rules are configured in Block or Audit mode."
         }
     }
 

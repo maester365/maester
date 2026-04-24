@@ -10,13 +10,14 @@ ASR rules reduce the attack surface of applications by preventing behaviors comm
 - **USB-based attacks** running untrusted unsigned processes
 - **Persistence** through WMI event subscriptions
 
-Each ASR rule can operate in one of three modes:
+Each ASR rule can operate in one of four modes:
 
 - **Block**: Actively prevents the behavior (recommended for production after testing)
 - **Audit**: Logs the event without blocking (recommended for initial rollout)
+- **Warn**: Warns the user before allowing the behavior to proceed
 - **Disabled**: Rule is not active
 
-The test passes if at least one ASR policy has at least one rule configured in **Block** or **Audit** mode. Policies with all rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
+The test passes if at least one ASR policy has at least one rule configured in **Block** or **Audit** mode. **Warn** is a supported ASR rule state, but it does not satisfy this control's pass criteria. Policies with all rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
 
 #### Remediation action:
 

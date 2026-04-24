@@ -105,7 +105,7 @@
                         $mode = 'Not configured'
                         if ($val -like '*_block') { $mode = 'Block'; $blockCount++; $hasActiveRules = $true }
                         elseif ($val -like '*_audit') { $mode = 'Audit'; $auditCount++; $hasActiveRules = $true }
-                        elseif ($val -like '*_warn') { $mode = 'Warn'; $hasActiveRules = $true }
+                        elseif ($val -like '*_warn') { $mode = 'Warn' }
                         elseif ($val -like '*_off') { $mode = 'Disabled'; $disabledCount++ }
 
                         Write-Verbose "  Rule: $friendlyName = $mode"
