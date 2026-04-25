@@ -10,21 +10,21 @@ on:
       - "report/**"
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: write
-  checks: write
-  actions: read
-  pull-requests: write
-  statuses: write
+permissions: {}
 
 jobs:
   build-report:
     uses: ./.github/workflows/build-maester-report-template.yaml
+    permissions:
+      contents: read
+      actions: read
 
   create-preview-release:
     needs: build-report
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
