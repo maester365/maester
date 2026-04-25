@@ -593,21 +593,42 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 13
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-P17 (Sisyphus)
+**Completed Date**: 2026-04-25
+**Validated Date**: 2026-04-25
+**Tests Completed**: 13/13
+**Tests Validated**: 13/13
+**Validated Against Live DC**: ✅ Yes
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-KRBTGT-01 | KrbtgtPasswordLastSet | KRBTGT password last set date | Returns datetime of last password change | 🔴 | Unassigned |
-| AD-KRBTGT-02 | KrbtgtLastLogon | KRBTGT last logon time | Returns datetime of last logon | 🔴 | Unassigned |
-| AD-KRBTGT-03 | KrbtgtNonStandardUacCount | KRBTGT non-standard UAC state | Returns count of non-standard UAC (should be 0) | 🔴 | Unassigned |
-| AD-DCOMP-01 | ComputerUnconstrainedDelegationCount | Computers with unconstrained delegation | Returns count (should be minimal) | 🔴 | Unassigned |
-| AD-DCOMP-02 | ComputerNonDcUnconstrainedDelegationCount | Non-DC computers with unconstrained delegation | Returns count (should be 0) | 🔴 | Unassigned |
-| AD-DCOMP-03 | ComputerNonDcConstrainedDelegationCount | Non-DC computers with constrained delegation | Returns count (should be minimal) | 🔴 | Unassigned |
-| AD-DCOMP-04 | ComputerOperatingSystemCount | Distinct computer OS environments | Returns count of unique OS types | 🔴 | Unassigned |
-| AD-DCOMP-05 | ComputerOperatingSystemDetails | Computer OS distribution | Returns breakdown of computers by OS | 🔴 | Unassigned |
-| AD-DCOMP-06 | ComputerStaleEnabledCount | Enabled computers not logged in 180 days | Returns count of stale enabled computers | 🔴 | Unassigned |
-| AD-DCOMP-07 | ComputerDnsHostNameCount | Computers with DNS host name | Returns count of computers with DNS registration | 🔴 | Unassigned |
-| AD-DCOMP-08 | ComputerDnsZoneCount | DNS zones used by computers | Returns count of unique DNS zones | 🔴 | Unassigned |
-| AD-DCOMP-09 | ComputerDnsZoneDetails | Computer DNS zone distribution | Returns breakdown of computers by DNS zone | 🔴 | Unassigned |
-| AD-MSA-01 | ManagedServiceAccountCount | Managed service accounts | Returns count of MSAs | 🔴 | Unassigned |
+| AD-KRBTGT-01 | KrbtgtPasswordLastSet | KRBTGT password last set date | Returns datetime of last password change | 🟢 | Session-P17 |
+| AD-KRBTGT-02 | KrbtgtLastLogon | KRBTGT last logon time | Returns datetime of last logon | 🟢 | Session-P17 |
+| AD-KRBTGT-03 | KrbtgtNonStandardUacCount | KRBTGT non-standard UAC state | Returns count of non-standard UAC (should be 0) | 🟢 | Session-P17 |
+| AD-DCOMP-01 | ComputerUnconstrainedDelegationCount | Computers with unconstrained delegation | Returns count (should be minimal) | 🟢 | Session-P17 |
+| AD-DCOMP-02 | ComputerNonDcUnconstrainedDelegationCount | Non-DC computers with unconstrained delegation | Returns count (should be 0) | 🟢 | Session-P17 |
+| AD-DCOMP-03 | ComputerNonDcConstrainedDelegationCount | Non-DC computers with constrained delegation | Returns count (should be minimal) | 🟢 | Session-P17 |
+| AD-DCOMP-04 | ComputerOperatingSystemCount | Distinct computer OS environments | Returns count of unique OS types | 🟢 | Session-P17 |
+| AD-DCOMP-05 | ComputerOperatingSystemDetails | Computer OS distribution | Returns breakdown of computers by OS | 🟢 | Session-P17 |
+| AD-DCOMP-06 | ComputerStaleEnabledCount | Enabled computers not logged in 180 days | Returns count of stale enabled computers | 🟢 | Session-P17 |
+| AD-DCOMP-07 | ComputerDnsHostNameCount | Computers with DNS host name | Returns count of computers with DNS registration | 🟢 | Session-P17 |
+| AD-DCOMP-08 | ComputerDnsZoneCount | DNS zones used by computers | Returns count of unique DNS zones | 🟢 | Session-P17 |
+| AD-DCOMP-09 | ComputerDnsZoneDetails | Computer DNS zone distribution | Returns breakdown of computers by DNS zone | 🟢 | Session-P17 |
+| AD-MSA-01 | ManagedServiceAccountCount | Managed service accounts | Returns count of MSAs | 🟢 | Session-P17 |
+
+**Validation Results**: All 13 tests passed validation against live DC (maester.test). Key findings:
+- KRBTGT account: Password last set 2026-04-25, UAC standard (514), never logged on
+- Unconstrained delegation: 1 DC has it (expected), 0 non-DC computers (PASS)
+- Stale computers: 11 enabled computers never logged on (91.67% stale rate)
+- DNS: Only 1 computer has DNS host name configured (6.67% coverage)
+- MSAs: 0 managed service accounts configured
+
+**Files Created**:
+- 13 PowerShell test functions in `powershell/public/ad/security/`
+- 13 Markdown documentation files
+- 13 Pester test files in `tests/Maester/ad/security/`
+- Updated `powershell/Maester.psd1` with new function exports
 
 ---
 

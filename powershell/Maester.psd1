@@ -359,7 +359,14 @@
     'Test-MtAdCertificateTemplatesCount', 'Test-MtAdEnrollmentTemplatesCount', 'Test-MtAdEnrollmentCaCertificateDetails',
     'Test-MtAdTrustedRootCaCount', 'Test-MtAdTrustedRootCaDetails', 'Test-MtAdIntermediateCaCount',
     'Test-MtAdIntermediateCaDetails', 'Test-MtAdCrlDistributionPointsCount', 'Test-MtAdNtAuthCertificatesCount',
-    'Test-MtAdKdsRootKeysCount', 'Test-MtAdSmtpSiteLinksCount', 'Test-MtAdIpSiteLinksCount'
+    'Test-MtAdKdsRootKeysCount', 'Test-MtAdSmtpSiteLinksCount', 'Test-MtAdIpSiteLinksCount',
+    # Phase 17: Domain State - Security Accounts
+    'Test-MtAdKrbtgtPasswordLastSet', 'Test-MtAdKrbtgtLastLogon', 'Test-MtAdKrbtgtNonStandardUacCount',
+    'Test-MtAdComputerUnconstrainedDelegationCount', 'Test-MtAdComputerNonDcUnconstrainedDelegationCount',
+    'Test-MtAdComputerNonDcConstrainedDelegationCount', 'Test-MtAdComputerOperatingSystemCount',
+    'Test-MtAdComputerOperatingSystemDetails', 'Test-MtAdComputerStaleEnabledCount',
+    'Test-MtAdComputerDnsHostNameCount', 'Test-MtAdComputerDnsZoneCount', 'Test-MtAdComputerDnsZoneDetails',
+    'Test-MtAdManagedServiceAccountCount'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
