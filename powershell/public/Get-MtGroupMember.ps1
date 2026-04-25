@@ -36,9 +36,14 @@
     }
   } catch {
     # Check status code via Response.StatusCode (Invoke-MgGraphRequest pattern used in this repo),
-    # then via the typed StatusCode property (.NET 5+/PS7), then fall back to message matching.
-    $is404 = ($_.Exception.Response.StatusCode -eq 404) -or
-             ($_.Exception.StatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
+    # including enum, string ('NotFound'), and integer (404) forms; then via the typed StatusCode
+    # property (.NET 5+/PS7); then fall back to message matching for older runtimes.
+    $responseStatusCode = $_.Exception.Response.StatusCode
+    $exceptionStatusCode = $_.Exception.StatusCode
+    $is404 = ($responseStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
+             ($responseStatusCode -eq 'NotFound') -or
+             ($responseStatusCode -eq 404) -or
+             ($exceptionStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
              ($_.Exception.Message -match 'NotFound|404')
     if ($is404) {
       Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
