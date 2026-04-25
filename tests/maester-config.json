@@ -950,11 +950,6 @@
       "Title": "Ensure MailTips are enabled for end users"
     },
     {
-      "Id": "MT.1040",
-      "Severity": "Medium",
-      "Title": "Ensure additional storage providers are restricted in Outlook on the web"
-    },
-    {
       "Id": "MT.1041",
       "Severity": "High",
       "Title": "Ensure users installing Outlook add-ins is not allowed"

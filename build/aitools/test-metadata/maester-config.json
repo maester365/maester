@@ -1008,11 +1008,6 @@
       "Severity": "Low"
     },
     {
-      "Id": "MT.1040",
-      "Title": "Ensure additional storage providers are restricted in Outlook on the web",
-      "Severity": "Medium"
-    },
-    {
       "Id": "MT.1041",
       "Title": "Ensure users installing Outlook add-ins is not allowed",
       "Severity": "High"

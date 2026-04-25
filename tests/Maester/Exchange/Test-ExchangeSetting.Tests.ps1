@@ -24,14 +24,6 @@ Describe 'Maester/Exchange' -Tag 'Maester', 'Exchange' {
         }
     }
 
-    It 'MT.1040: Ensure additional storage providers are restricted in Outlook on the web' -Tag 'MT.1040' {
-        $result = Test-MtExoAdditionalStorageProvider
-
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because 'AdditionalStorageProvidersAvailable should be False'
-        }
-    }
-
     It 'MT.1041: Ensure users installing Outlook add-ins is not allowed' -Tag 'MT.1041' {
         $result = Test-MtExoOutlookAddin
 
