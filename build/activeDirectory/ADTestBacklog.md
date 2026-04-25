@@ -638,19 +638,38 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 8
 **Dependencies**: None
 
-| Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
-|---------|-----------|-------------|---------------|--------|-------------|
+**Status**: 🟢 Complete
+**Completed By**: Session-P18 (Sisyphus)
+**Completed Date**: 2026-04-25
+**Validated Date**: 2026-04-25
+**Tests Completed**: 8/8
+**Tests Validated**: 8/8
+**Validated Against Live DC**: ✅ Yes
 
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-REPL-01 | DisabledReplicationConnectionCount | Disabled replication connections | Returns count of disabled connections (should be 0) | 🔴 | Unassigned |
-| AD-REPL-02 | NonAutoReplicationConnectionCount | Non-auto-generated replication connections | Returns count of manual connections | 🔴 | Unassigned |
-| AD-FEAT-01 | OptionalFeatureCount | Optional features count | Returns count of optional features | 🔴 | Unassigned |
-| AD-FEAT-02 | OptionalFeatureEnabledDetails | Enabled optional feature details | Returns list of features with enabled scopes | 🔴 | Unassigned |
-| AD-ROOTDSE-01 | SupportedSaslMechanismCount | Supported SASL mechanisms | Returns count (4 is default) | 🔴 | Unassigned |
-| AD-ROOTDSE-02 | SupportedSaslMechanismDetails | SASL mechanism details | Returns list of supported SASL mechanisms | 🔴 | Unassigned |
-| AD-ROOTDSE-03 | RootDseSynchronizedStatus | Root DSE synchronization status | Returns whether Root DSE is synchronized | 🔴 | Unassigned |
-| AD-DFSR-01 | DfsrSubscriptionCount | DCs in SYSVOL DFS-R subscription | Returns count of DCs in DFS-R | 🔴 | Unassigned |
+| AD-REPL-01 | DisabledReplicationConnectionCount | Disabled replication connections | Returns count of disabled connections (should be 0) | 🟢 | Session-P18 |
+| AD-REPL-02 | NonAutoReplicationConnectionCount | Non-auto-generated replication connections | Returns count of manual connections | 🟢 | Session-P18 |
+| AD-FEAT-01 | OptionalFeatureCount | Optional features count | Returns count of optional features | 🟢 | Session-P18 |
+| AD-FEAT-02 | OptionalFeatureEnabledDetails | Enabled optional feature details | Returns list of features with enabled scopes | 🟢 | Session-P18 |
+| AD-ROOTDSE-01 | SupportedSaslMechanismCount | Supported SASL mechanisms | Returns count (4 is default) | 🟢 | Session-P18 |
+| AD-ROOTDSE-02 | SupportedSaslMechanismDetails | SASL mechanism details | Returns list of supported SASL mechanisms | 🟢 | Session-P18 |
+| AD-ROOTDSE-03 | RootDseSynchronizedStatus | Root DSE synchronization status | Returns whether Root DSE is synchronized | 🟢 | Session-P18 |
+| AD-DFSR-01 | DfsrSubscriptionCount | DCs in SYSVOL DFS-R subscription | Returns count of DCs in DFS-R | 🟢 | Session-P18 |
+
+**Validation Results**: All 8 tests passed validation against live DC (maester.test). Key findings:
+- Replication connections: 0 total (expected in single-DC environment)
+- Optional features: 3 available (Recycle Bin, PAM, Database 32k Pages), 0 enabled
+- SASL mechanisms: 4 supported (GSSAPI, GSS-SPNEGO, EXTERNAL, DIGEST-MD5)
+- Root DSE: Synchronized (TRUE)
+- DFS-R subscriptions: 1 (100% coverage for single DC)
+
+**Files Created**:
+- 8 PowerShell test functions in `powershell/public/ad/replication/`
+- 8 Markdown documentation files
+- 8 Pester test files in `tests/Maester/ad/replication/`
+- Updated `powershell/Maester.psd1` with new function exports
+- Extended `powershell/public/Get-MtADDomainState.ps1` to collect replication connections and DFS-R subscriptions
 
 ---
 
@@ -744,10 +763,10 @@ Computer objects from the cache include these key properties:
 | Phase 15 | Domain State - DCs | 4 | 🟢 Complete |
 | Phase 16 | Domain State - Forest/Domain | 5 | 🟢 Complete |
 | Phase 17 | Domain State - Security Accounts | 13 | 🟢 Complete |
-| Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
+| Phase 18 | Domain State - Replication/Features | 8 | 🟢 Complete |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **267** | **76% Complete (202/267)** |
+| **TOTAL** | | **267** | **79% Complete (210/267)** |
 
 ---
 

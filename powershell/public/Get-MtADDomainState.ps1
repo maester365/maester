@@ -50,6 +50,26 @@ function Get-MtADDomainState {
                 CollectionTime    = Get-Date
             }
 
+            # Collect Replication Connection information
+            try {
+                $replicationConnections = Get-ADReplicationConnection -Filter * -Properties *
+                $domainState['ReplicationConnections'] = $replicationConnections
+            }
+            catch {
+                Write-Verbose "Could not collect Replication Connection data: $($_.Exception.Message)"
+                $domainState['ReplicationConnections'] = @()
+            }
+
+            # Collect DFS-R Subscription information (for SYSVOL replication)
+            try {
+                $dfsrSubscriptions = Get-ADObject -Filter { objectClass -eq "msDFSR-Subscription" } -Properties *
+                $domainState['DfsrSubscriptions'] = $dfsrSubscriptions
+            }
+            catch {
+                Write-Verbose "Could not collect DFS-R Subscription data: $($_.Exception.Message)"
+                $domainState['DfsrSubscriptions'] = @()
+            }
+
             # Collect Trust information
             try {
                 $trusts = Get-ADTrust -Filter * -Properties *

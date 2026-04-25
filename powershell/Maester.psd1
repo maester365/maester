@@ -366,7 +366,12 @@
     'Test-MtAdComputerNonDcConstrainedDelegationCount', 'Test-MtAdComputerOperatingSystemCount',
     'Test-MtAdComputerOperatingSystemDetails', 'Test-MtAdComputerStaleEnabledCount',
     'Test-MtAdComputerDnsHostNameCount', 'Test-MtAdComputerDnsZoneCount', 'Test-MtAdComputerDnsZoneDetails',
-    'Test-MtAdManagedServiceAccountCount'
+    'Test-MtAdManagedServiceAccountCount',
+    # Phase 18: Domain State - Replication and Features
+    'Test-MtAdDisabledReplicationConnectionCount', 'Test-MtAdNonAutoReplicationConnectionCount',
+    'Test-MtAdOptionalFeatureCount', 'Test-MtAdOptionalFeatureEnabledDetails',
+    'Test-MtAdSupportedSaslMechanismCount', 'Test-MtAdSupportedSaslMechanismDetails',
+    'Test-MtAdRootDseSynchronizedStatus', 'Test-MtAdDfsrSubscriptionCount'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
