@@ -107,9 +107,9 @@ foreach ($File in $PublicSourceFiles) {
     }
 
     # Find top-level function definitions only (not nested inside other functions
-    # and not class constructors/methods). Walk the full parent chain — any
-    # FunctionDefinitionAst or TypeDefinitionAst ancestor means this is nested
-    # or a class member, regardless of intermediate block types.
+    # and not nested anywhere inside a type definition). Walk the full parent chain — any
+    # FunctionDefinitionAst or TypeDefinitionAst ancestor means this function definition is nested,
+    # regardless of intermediate block types.
     $TopLevelFunctions = $Ast.FindAll({
             param ($Node)
             if ($Node -isnot [System.Management.Automation.Language.FunctionDefinitionAst]) {

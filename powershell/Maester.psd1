@@ -42,9 +42,10 @@
         @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; }
     )
     <#
-    Requires Pester 5.5.0 but that is not declared here due to potential conflicts with the version of Pester that is
-    pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
-    if necessary by Install-MaesterTests.
+    Pester is declared above, but the minimum required version (5.5.0) is not pinned in this manifest due to
+    potential conflicts with the version of Pester that is pre-installed with Windows. See
+    <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated if necessary by
+    Install-MaesterTests.
     #>
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
