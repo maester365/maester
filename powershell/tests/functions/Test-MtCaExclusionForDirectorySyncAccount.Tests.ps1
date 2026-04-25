@@ -284,7 +284,7 @@
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 # Hardcode GUIDs to avoid $script: variable resolution inside -ModuleName mock context
                 $p1 = New-CaPolicy -Id 'policy1' -DisplayName 'Excluded By DirSync Role' -ExcludeRoles @('d29b2b05-8046-44ba-8758-1e26182fcf32')
-                $p2 = New-CaPolicy -Id 'policy2' -DisplayName 'Excluded By OnPrem Role'  -ExcludeRoles @('a92aed5d-d78a-4d16-b381-09adb37eb3b0')
+                $p2 = New-CaPolicy -Id 'policy2' -DisplayName 'Excluded By OnPrem Role' -ExcludeRoles @('a92aed5d-d78a-4d16-b381-09adb37eb3b0')
                 return @($p1, $p2)
             }
         }
