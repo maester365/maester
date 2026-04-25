@@ -622,31 +622,68 @@ Computer objects from the cache include these key properties:
 6. **Validate all tests against the live domain controller** (see Validation Requirements below)
 7. Update status to "Complete" when finished
 
-## Commit and Push Guidelines
+## Commit and Push Guidelines (REQUIRED - DO NOT SKIP)
 
-**IMPORTANT**: After completing a phase, commit and push your changes to the repository:
+**⚠️ CRITICAL: COMMIT AND PUSH IS A REQUIRED STEP ⚠️**
+
+After completing a phase, you **MUST** commit and push your changes to the repository. A phase is **NOT COMPLETE** until changes are pushed.
+
+### Why This Matters
+- **Collaboration**: Other sessions need access to your changes
+- **Backup**: Prevents loss of work
+- **Consistency**: Ensures backlog reflects actual state
+- **History**: Maintains audit trail of changes
 
 ### Commit Steps:
-1. Stage only the relevant directories (tests, powershell, build):
+
+1. **Stage all relevant files** (do not use `git add .`):
    ```bash
-   git add tests/ powershell/ build/
+   git add powershell/public/ad/[category]/
+   git add tests/ad/[category]/
+   git add powershell/Maester.psd1
+   git add powershell/public/Get-MtADDomainState.ps1
+   git add build/activeDirectory/ADTestBacklog.md
    ```
 
-2. Commit with a descriptive message:
+2. **Verify what will be committed**:
    ```bash
-   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented"
+   git status
    ```
 
-3. Push to the remote repository:
+3. **Commit with descriptive message**:
+   ```bash
+   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented
+   
+   - Added Y test functions in powershell/public/ad/[category]/
+   - Added Y Pester test files in tests/ad/[category]/
+   - Added Y markdown documentation files
+   - Updated Maester.psd1 module manifest with new function exports
+   - Updated ADTestBacklog.md to mark Phase X complete"
+   ```
+
+4. **Push to the remote repository**:
    ```bash
    git push origin [branch-name]
    ```
 
-### Commit Checklist:
-- [ ] Only tests/*, powershell/*, and build/* directories are included
+5. **Verify push succeeded**:
+   ```bash
+   git log --oneline -3
+   git status  # Should show "nothing to commit, working tree clean"
+   ```
+
+### Commit Checklist (REQUIRED):
+- [ ] All new test function files are staged
+- [ ] All new Pester test files are staged
+- [ ] All new markdown documentation files are staged
+- [ ] Maester.psd1 module manifest is staged (if updated)
+- [ ] Get-MtADDomainState.ps1 is staged (if extended)
+- [ ] ADTestBacklog.md is staged with updated status
 - [ ] No temporary files, logs, or credentials are committed
 - [ ] Commit message clearly describes the phase and number of tests
+- [ ] Changes are committed locally
 - [ ] Changes are pushed to the correct branch
+- [ ] Push verified successful (`git log` shows your commit)
 
 ## Validation Requirements
 

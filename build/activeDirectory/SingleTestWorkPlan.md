@@ -417,6 +417,52 @@ Before marking a test complete, verify:
 
 ---
 
+## Phase Completion Requirements
+
+**⚠️ CRITICAL: After completing ALL tests in a phase, you MUST commit and push your changes ⚠️**
+
+### Final Commit Checklist
+
+- [ ] All test functions implemented (19 for Phase 4)
+- [ ] All Pester test files created
+- [ ] All markdown documentation written
+- [ ] Module manifest updated with new function exports
+- [ ] Backlog updated with all tests marked 🟢
+- [ ] **Changes staged** (`git add powershell/public/ad/[category]/ tests/ad/[category]/ powershell/Maester.psd1 build/activeDirectory/ADTestBacklog.md`)
+- [ ] **Changes committed** (`git commit -m "Complete Phase X: [Phase Name] - Y tests implemented"`)
+- [ ] **Changes pushed** (`git push origin [branch-name]`)
+- [ ] **Push verified** (`git log --oneline -3` shows your commit)
+
+### Commit Commands Template
+
+```bash
+# Stage all changes
+git add powershell/public/ad/[category]/
+git add tests/ad/[category]/
+git add powershell/Maester.psd1
+git add build/activeDirectory/ADTestBacklog.md
+
+# Commit with descriptive message
+git commit -m "Complete Phase X: [Phase Name] - Y tests implemented
+
+- Added Y test functions in powershell/public/ad/[category]/
+- Added Y Pester test files in tests/ad/[category]/
+- Added Y markdown documentation files
+- Updated Maester.psd1 module manifest with new function exports
+- Updated ADTestBacklog.md to mark Phase X complete"
+
+# Push to remote
+git push origin [branch-name]
+
+# Verify
+git log --oneline -3
+git status
+```
+
+**DO NOT CONSIDER A PHASE COMPLETE UNTIL CHANGES ARE COMMITTED AND PUSHED!**
+
+---
+
 ## Troubleshooting
 
 ### Issue: Function not found

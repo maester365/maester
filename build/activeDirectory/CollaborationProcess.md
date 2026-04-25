@@ -96,11 +96,38 @@ Before marking a phase complete, you MUST validate all tests against the live do
    - [ ] Markdown output is generated correctly
    - [ ] Results documented in AD-TEST-RESULTS.md
 
-### Step 5: Phase Completion
+### Step 5: Phase Completion (REQUIRED)
 
-After validation is complete:
+**⚠️ CRITICAL: DO NOT SKIP THIS STEP ⚠️**
 
-1. **Update phase status**:
+After validation is complete, you **MUST** commit and push your changes:
+
+1. **Stage all changes**:
+   ```bash
+   git add powershell/public/ad/[category]/
+   git add tests/ad/[category]/
+   git add powershell/Maester.psd1
+   git add powershell/public/Get-MtADDomainState.ps1
+   git add build/activeDirectory/ADTestBacklog.md
+   ```
+
+2. **Commit with descriptive message**:
+   ```bash
+   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented and validated"
+   ```
+
+3. **Push to remote repository**:
+   ```bash
+   git push origin [branch-name]
+   ```
+
+4. **Verify push succeeded**:
+   ```bash
+   git log --oneline -3
+   git status
+   ```
+
+5. **Update phase status in backlog**:
    ```markdown
    ## Phase X: [Phase Name]
    
@@ -109,17 +136,40 @@ After validation is complete:
    **Completed Date**: [YYYY-MM-DD]
    **Tests Completed**: [Total]/[Total]
    **Validated**: Yes - All tests executed successfully against live DC
+   **Committed**: Yes - Changes pushed to remote
    ```
 
-2. **Update summary statistics** at bottom of backlog
+6. **Update summary statistics** at bottom of backlog
 
-3. **Final commit**:
-   ```bash
-   git add build/activeDirectory/ADTestBacklog.md
-   git add AD-TEST-RESULTS.md
-   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented and validated"
-   git push origin main
-   ```
+---
+
+## Pre-Completion Checklist
+
+Before considering a phase complete, verify ALL of the following:
+
+### Code Changes
+- [ ] All test functions implemented and working
+- [ ] All Pester tests created with proper tags
+- [ ] All markdown documentation written
+- [ ] Module manifest updated with new functions
+- [ ] Get-MtADDomainState extended if needed (for new data sources)
+
+### Validation (REQUIRED)
+- [ ] All tests validated against live domain controller
+- [ ] Test results documented in AD-TEST-RESULTS.md
+- [ ] No errors during test execution
+
+### Git Commit (REQUIRED - DO NOT SKIP)
+- [ ] Changes staged (git add)
+- [ ] Changes committed with descriptive message (git commit)
+- [ ] Changes pushed to remote (git push)
+- [ ] Push verified successful
+
+### Backlog Update
+- [ ] Phase status updated to 🟢 Complete
+- [ ] All individual tests marked 🟢
+- [ ] Summary statistics updated
+- [ ] Completion date recorded
 
 ---
 
