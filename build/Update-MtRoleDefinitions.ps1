@@ -254,7 +254,10 @@ function Update-FileSection {
     $pattern = "(?s)($([regex]::Escape($BeginMarker)))(.*?)($([regex]::Escape($EndMarker)))"
     $replacement = "`$1`n$NewContent`n    `$3"
     $updatedContent = [regex]::Replace($content, $pattern, $replacement)
-    Set-Content -Path $FilePath -Value $updatedContent -Encoding utf8BOM -NoNewline
+    # Use [System.IO.File]::WriteAllText with explicit UTF-8-with-BOM encoder for PS 5.1/7 compatibility.
+    # Set-Content -Encoding utf8BOM is PS 7+ only and fails on Windows PowerShell 5.1.
+    $utf8Bom = [System.Text.UTF8Encoding]::new($true)
+    [System.IO.File]::WriteAllText((Resolve-Path $FilePath).ProviderPath, $updatedContent, $utf8Bom)
 }
 
 #endregion
