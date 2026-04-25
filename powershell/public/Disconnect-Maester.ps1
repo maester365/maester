@@ -1,4 +1,4 @@
-﻿function Disconnect-Maester {
+function Disconnect-Maester {
     <#
     .Synopsis
     Helper method to sign out of the current Microsoft Graph session. Alternate for Disconnect-MgGraph.
@@ -45,8 +45,14 @@
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
       Disconnect-ExchangeOnline
    }
-   if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
-      Write-Verbose -Message "Disconnecting from Microsoft Teams."
-      Disconnect-MicrosoftTeams
-   }
+    if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
+       Write-Verbose -Message "Disconnecting from Microsoft Teams."
+       Disconnect-MicrosoftTeams
+    }
+
+    if($__MtSession.Connections -contains "ActiveDirectory" -or $__MtSession.Connections -contains "All"){
+       Write-Verbose -Message "Clearing Active Directory connection data."
+       $__MtSession.ADConnection = $null
+       Clear-MtADCache
+    }
 }

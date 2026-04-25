@@ -77,7 +77,7 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = 'Add-MtTestResultDetail',
-    'Clear-MtDnsCache', 'Clear-MtExoCache', 'Clear-MtGraphCache',
+    'Clear-MtADCache', 'Clear-MtDnsCache', 'Clear-MtExoCache', 'Clear-MtGraphCache',
     'Compare-MtJsonObject', 'Compare-MtTestResult',
     'Connect-Maester',
     'Convert-MtResultsToFlatObject', 'ConvertFrom-MailAuthenticationRecordDkim',
@@ -88,6 +88,7 @@
     'Get-MtAzureManagementGroup', 'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
     'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
     'Get-MtExoThreatPolicyMalware',
+    'Get-MtADDacls', 'Get-MtADDomainState', 'Get-MtADGpoState',
     'Get-MtHtmlReport', 'Import-MtMaesterResult', 'Merge-MtMaesterResult', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession',
     'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
     'Install-MaesterTests',
@@ -241,7 +242,13 @@
     'Test-AzdoRestrictPersonalAccessTokenLifespan',
     'Test-AzdoSSHAuthentication',
     'Test-AzdoThirdPartyAccessViaOauth',
-    'Test-AzdoValidateSshKeyExpiration'
+    'Test-AzdoValidateSshKeyExpiration',
+    # Active Directory Computer Tests - Phase 1
+    'Test-MtAdComputerDisabledCount', 'Test-MtAdComputerDormantCount',
+    'Test-MtAdComputerCreatorSidCount', 'Test-MtAdComputerNonStandardGroup',
+    'Test-MtAdComputerSidHistoryCount', 'Test-MtAdComputerInDefaultContainer',
+    'Test-MtAdComputerOUCount', 'Test-MtAdComputerPerOUAverage',
+    'Test-MtAdComputerDelegationCount', 'Test-MtAdComputerDelegationDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
