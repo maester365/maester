@@ -38,10 +38,21 @@ function Test-MtKrbtgtAzureADNotSynced {
     Write-Verbose 'Checking whether krbtgt_AzureAD is synchronized from on-premises Active Directory...'
 
     try {
-        $Filter = "onPremisesSyncEnabled eq true and (contains(displayName,'krbtgt') or contains(onPremisesSamAccountName,'krbtgt'))"
-        Write-Verbose "Querying synchronized users with filter: $Filter"
+        $Select = 'id,displayName,userPrincipalName,mailNickname,onPremisesDistinguishedName,onPremisesSamAccountName'
+        $DisplayNameFilter = "onPremisesSyncEnabled eq true and startsWith(displayName,'krbtgt')"
+        $UserPrincipalNameFilter = "onPremisesSyncEnabled eq true and startsWith(userPrincipalName,'krbtgt')"
+        $MailNicknameFilter = "onPremisesSyncEnabled eq true and startsWith(mailNickname,'krbtgt')"
 
-        $SyncedUsers = Invoke-MtGraphRequest -RelativeUri 'users' -Filter $Filter -Select 'id,displayName,userPrincipalName,mailNickname,onPremisesDistinguishedName,onPremisesSamAccountName'
+        Write-Verbose "Querying synchronized users with filter: $DisplayNameFilter"
+        $DisplayNameMatches = @(Invoke-MtGraphRequest -RelativeUri 'users' -Filter $DisplayNameFilter -Select $Select)
+
+        Write-Verbose "Querying synchronized users with filter: $UserPrincipalNameFilter"
+        $UserPrincipalNameMatches = @(Invoke-MtGraphRequest -RelativeUri 'users' -Filter $UserPrincipalNameFilter -Select $Select)
+
+        Write-Verbose "Querying synchronized users with filter: $MailNicknameFilter"
+        $MailNicknameMatches = @(Invoke-MtGraphRequest -RelativeUri 'users' -Filter $MailNicknameFilter -Select $Select)
+
+        $SyncedUsers = @($DisplayNameMatches + $UserPrincipalNameMatches + $MailNicknameMatches | Sort-Object -Property id -Unique)
 
         $SyncedKrbtgtAzureAdAccounts = @(
             $SyncedUsers | Where-Object {
