@@ -256,7 +256,14 @@
     'Test-MtAdUserSpnServiceClassCount', 'Test-MtAdUserSpnServiceClassUsage',
     'Test-MtAdUserSpnUnknownCount', 'Test-MtAdUserSpnUnknownDetails',
     'Test-MtAdUserSpnNonFqdnHosts', 'Test-MtAdUserSpnDomainAdminCount',
-    'Test-MtAdUserSpnDomainAdminDetails'
+    'Test-MtAdUserSpnDomainAdminDetails',
+    # Active Directory Password Policy Tests - Phase 3
+    'Test-MtAdPasswordHistoryCount', 'Test-MtAdPasswordMaxAge',
+    'Test-MtAdPasswordMinLength', 'Test-MtAdPasswordComplexityRequired',
+    'Test-MtAdPasswordReversibleEncryption', 'Test-MtAdAccountLockoutDuration',
+    'Test-MtAdAccountLockoutThreshold', 'Test-MtAdFineGrainedPolicyCount',
+    'Test-MtAdFineGrainedPolicyValueCount', 'Test-MtAdFineGrainedPolicySettingCounts',
+    'Test-MtAdFineGrainedPolicyAppliesTo'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
