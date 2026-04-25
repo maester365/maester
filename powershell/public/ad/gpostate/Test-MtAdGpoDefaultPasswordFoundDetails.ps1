@@ -6,8 +6,7 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
 
     .DESCRIPTION
     This test retrieves Active Directory Group Policy state information using Get-MtADGpoState,
-    then analyzes each GPO report to return a markdown table listing GPOs whose reports
-    indicate a default password was found.
+    then returns a markdown table listing all GPO reports whose DefaultPasswordFound value is true.
 
     .EXAMPLE
     Test-MtAdGpoDefaultPasswordFoundDetails
@@ -28,68 +27,28 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
         return $null
     }
 
-    $gpoReports = $null
-    if ($null -ne $gpoState.GPOReports) {
-        $gpoReports = @($gpoState.GPOReports | Where-Object { $null -ne $_ })
-    }
-
-    if ($null -eq $gpoReports) {
-        $gpos = @($gpoState.GPOs | Where-Object { $null -ne $_ })
-        if ($null -eq $gpos) {
-            Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO objects from Get-MtADGpoState.'
-            return $false
-        }
-
-        $gpoReportsById = @{}
-        foreach ($gpo in $gpos) {
-            $gpoReportsById[[string]$gpo.Id] = [pscustomobject]@{
-                Name                    = [string]$gpo.DisplayName
-                HasApplyGroupPolicyAce = $false
-                DisabledLinks          = 0
-                Enforcement            = 0
-                HasVersionMismatch     = $false
-                CpasswordFound         = $false
-                DefaultPasswordFound  = $false
-            }
-        }
-
-        foreach ($gpo in $gpos) {
-            $guid = [string]$gpo.Id
-            $reportObj = $gpoReportsById[$guid]
-            if ($null -eq $reportObj) { continue }
-            try {
-                $xmlText = Get-GPOReport -Guid $guid -ReportType Xml -ErrorAction Stop
-                if ($xmlText -match '(?i)cpassword') {
-                    $reportObj.CpasswordFound = $true
-                    $reportObj.DefaultPasswordFound = $true
-                }
-                if ($xmlText -match '(?i)Apply\s+Group\s+Policy') { $reportObj.HasApplyGroupPolicyAce = $true }
-                if ($xmlText -match '(?i)version\s+mismatch') { $reportObj.HasVersionMismatch = $true }
-            }
-            catch {
-            }
-        }
-
-        $gpoReports = @($gpoReportsById.Values)
-    }
-
+    $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory GPO report data from Get-MtADGpoState.'
         return $false
     }
 
     $gpoReportsArray = @($gpoReports | Where-Object { $null -ne $_ })
-    $found = @($gpoReportsArray | Where-Object { [bool]$_.DefaultPasswordFound })
+    $found = $gpoReportsArray | Where-Object { [bool]$_.DefaultPasswordFound }
     $foundCount = @($found).Count
+
+    $testResult = $true
 
     $table = "| GPO Name | DefaultPasswordFound | CpasswordFound |`n"
     $table += '| --- | --- | --- |' + "`n"
 
     foreach ($report in ($found | Sort-Object -Property Name)) {
         $name = [string]$report.Name
-        $name = $name -replace '\|', '\\&#124;'
+        $name = $name -replace '\\|', '\\&#124;'
 
-        $table += "| $name | $([bool]$report.DefaultPasswordFound) | $([bool]$report.CpasswordFound) |`n"
+        $defaultPasswordFound = [bool]$report.DefaultPasswordFound
+        $cpasswordFound = [bool]$report.CpasswordFound
+        $table += "| $name | $defaultPasswordFound | $cpasswordFound |`n"
     }
 
     $recommendation = if ($foundCount -gt 0) {
@@ -102,7 +61,6 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
-    $testResult = $true
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
