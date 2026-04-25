@@ -31,11 +31,15 @@
   try {
     $group = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0
     if (-not $group) {
-      Write-Error "Group with ID '$GroupId' not found in tenant."
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This is expected for external partner groups assigned via GDAP."
       return $null
     }
   } catch {
-    Write-Error "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
+    if ($_.Exception.Message -match 'NotFound|404') {
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This is expected for external partner groups assigned via GDAP. Details: $($_.Exception.Message)"
+    } else {
+      Write-Warning "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
+    }
     return $null
   }
 
