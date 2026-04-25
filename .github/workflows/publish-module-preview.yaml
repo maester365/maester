@@ -10,9 +10,7 @@ on:
       - "report/**"
   workflow_dispatch:
 
-permissions:
-  contents: read
-  actions: read
+permissions: {}
 
 jobs:
   build-report:

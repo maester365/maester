@@ -3,9 +3,7 @@ name: publish-module-post-manual-version-update
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  actions: read
+permissions: {}
 
 jobs:
   build-validation:
