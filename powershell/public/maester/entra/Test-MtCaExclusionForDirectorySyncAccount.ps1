@@ -28,8 +28,8 @@
     $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
     try {
-        $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName "DirectorySynchronizationAccounts"
-        $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName "OnPremisesDirectorySyncAccount"
+        $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
+        $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
 
         $Members = @()
         $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
