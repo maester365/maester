@@ -83,8 +83,8 @@ function Get-RoleDataFromMarkdown {
 
         <#
         Just providing some context/clarity on how our data looks at this point:
-        $line looks like this at this point:
-        > | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
+        $line looks like this at this point (blockquote prefixes have already been stripped above):
+        | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
         #>
         $entry = $line.Split('|')
         if ($entry.Count -lt 4) { continue }
