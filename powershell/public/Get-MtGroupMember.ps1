@@ -31,11 +31,25 @@
   try {
     $group = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0
     if (-not $group) {
-      Write-Error "Group with ID '$GroupId' not found in tenant."
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted."
       return $null
     }
   } catch {
-    Write-Error "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
+    # Check status code via Response.StatusCode (Invoke-MgGraphRequest pattern used in this repo),
+    # including enum, string ('NotFound'), and integer (404) forms; then via the typed StatusCode
+    # property (.NET 5+/PS7); then fall back to message matching for older runtimes.
+    $responseStatusCode = $_.Exception.Response.StatusCode
+    $exceptionStatusCode = $_.Exception.StatusCode
+    $is404 = ($responseStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
+             ($responseStatusCode -eq 'NotFound') -or
+             ($responseStatusCode -eq 404) -or
+             ($exceptionStatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
+             ($_.Exception.Message -match 'NotFound|404')
+    if ($is404) {
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
+    } else {
+      Write-Warning "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
+    }
     return $null
   }
 
