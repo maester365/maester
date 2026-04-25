@@ -120,7 +120,9 @@ function Get-MtRoleMember {
     }
 
     if ($Role) {
-        $RoleId = $Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_) }
+        # Resolve role names to GUIDs via MtRoleDefinition.ToString(), then explicitly cast to [guid[]]
+        # to avoid relying on implicit coercion from MtRoleDefinition through the typed parameter variable.
+        $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
