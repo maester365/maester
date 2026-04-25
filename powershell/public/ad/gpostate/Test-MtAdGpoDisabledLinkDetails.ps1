@@ -106,12 +106,12 @@ function Test-MtAdGpoDisabledLinkDetails {
 
     foreach ($report in (@($disabled) | Sort-Object -Property Name)) {
         $name = [string]$report.Name
-        $name = $name -replace '\\|', '\\&#124;'
+        $name = $name -replace '\|', '\\&#124;'
 
         # Best-effort Id column: some scenarios may not have it on the report object.
         $id = ''
         if ($null -ne $report.Id) { $id = [string]$report.Id }
-        $id = $id -replace '\\|', '\\&#124;'
+        $id = $id -replace '\|', '\\&#124;'
 
         $disabledLinks = [int]$report.DisabledLinks
         $enforcement = [int]$report.Enforcement
