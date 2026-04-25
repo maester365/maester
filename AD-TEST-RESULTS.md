@@ -529,6 +529,71 @@ The domain controller is ready for:
 
 ## Connection Information
 
+## Phase 16: Domain State - Forest and Domain Test Results
+
+All 5 Phase 16 Domain State - Forest and Domain tests were executed successfully against the live domain controller:
+
+### Test Execution Summary
+
+| Test ID | Test Name | Status | Result |
+|---------|-----------|--------|--------|
+| AD-FORS-01 | UpnSuffixesCount | ✅ PASS | True |
+| AD-FORS-02 | UpnSuffixesDetails | ✅ PASS | True |
+| AD-FORS-03 | SpnSuffixesCount | ✅ PASS | True |
+| AD-FORS-04 | CrossForestReferencesCount | ✅ PASS | True |
+| AD-DOMS-01 | AllowedDnsSuffixesCount | ✅ PASS | True |
+
+**Summary:**
+- Total Tests: 5
+- Passed: 5
+- Failed: 0
+- Skipped: 0
+
+### Forest and Domain Configuration Summary
+
+| Property | Value |
+|----------|-------|
+| Forest Name | maester.test |
+| Root Domain | maester.test |
+| UPN Suffixes | 0 (none configured) |
+| SPN Suffixes | 0 (none configured) |
+| Cross-Forest References | 0 (single-forest environment) |
+| Allowed DNS Suffixes | 0 (none configured) |
+
+### Phase 16 Test Function Details
+
+#### AD-FORS-01: UpnSuffixesCount
+Retrieves the count of UPN (User Principal Name) suffixes configured in the forest. **Result: 0 UPN suffixes** (none configured - using default forest domain).
+
+#### AD-FORS-02: UpnSuffixesDetails
+Provides detailed information about configured UPN suffixes. **Result: Forest maester.test has 0 custom UPN suffixes configured**.
+
+#### AD-FORS-03: SpnSuffixesCount
+Retrieves the count of SPN (Service Principal Name) suffixes configured in the forest. **Result: 0 SPN suffixes** (none configured - using default forest domain).
+
+#### AD-FORS-04: CrossForestReferencesCount
+Retrieves the count of cross-forest references in the forest. **Result: 0 cross-forest references** (expected in single-forest environment).
+
+#### AD-DOMS-01: AllowedDnsSuffixesCount
+Retrieves the count of allowed DNS suffixes configured for the domain. **Result: 0 allowed DNS suffixes** (none configured - any DNS suffix allowed for domain join).
+
+### Security Assessment
+
+**Configuration Status:**
+- ✅ Forest and domain properly configured
+- ✅ No unnecessary UPN suffixes (using default)
+- ✅ No unnecessary SPN suffixes (using default)
+- ✅ No cross-forest references (single-forest environment)
+- ✅ Domain join restrictions not configured (flexible environment)
+
+**Recommendations:**
+- ℹ️ **UPN Suffixes**: No custom UPN suffixes configured. This is normal for single-domain environments. Consider adding UPN suffixes during mergers or for brand consistency.
+- ℹ️ **SPN Suffixes**: No custom SPN suffixes configured. This is normal for most environments.
+- ℹ️ **Cross-Forest References**: None found, as expected in a single-forest environment.
+- ⚠️ **Allowed DNS Suffixes**: No restrictions configured. Consider configuring allowed DNS suffixes in production environments to control which computers can join the domain.
+
+## Connection Information
+
 To connect to the domain controller:
 ```bash
 ssh -i ~/.ssh/test_key azureuser@20.125.96.137

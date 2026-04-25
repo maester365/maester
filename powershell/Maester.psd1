@@ -290,6 +290,10 @@
     # Phase 15: Domain State - Domain Controllers
     'Test-MtAdDcNonStandardLdapPortCount', 'Test-MtAdDcNonStandardLdapsPortCount',
     'Test-MtAdDcReadOnlyCount', 'Test-MtAdDcNonGlobalCatalogCount',
+    # Phase 16: Domain State - Forest and Domain
+    'Test-MtAdUpnSuffixesCount', 'Test-MtAdUpnSuffixesDetails',
+    'Test-MtAdSpnSuffixesCount', 'Test-MtAdCrossForestReferencesCount',
+    'Test-MtAdAllowedDnsSuffixesCount',
     # Phase 7: Group Policy
     'Test-MtAdGpoTotalCount', 'Test-MtAdGpoCreatedBefore2020Count',
     'Test-MtAdGpoChangedBefore2020Count', 'Test-MtAdGpoUnlinkedCount',
