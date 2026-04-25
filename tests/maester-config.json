@@ -1350,6 +1350,26 @@
       "Title": "Ensure BitLocker full disk encryption is configured via Intune"
     },
     {
+      "Id": "MT.1148",
+      "Severity": "High",
+      "Title": "Ensure LAPS Configuration Policy is properly set"
+    },
+    {
+      "Id": "MT.1149",
+      "Severity": "High",
+      "Title": "Ensure ASR Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1150",
+      "Severity": "High",
+      "Title": "Ensure App Control for Business is enabled"
+    },
+    {
+      "Id": "MT.1151",
+      "Severity": "Medium",
+      "Title": "Ensure Managed Installer Rules are configured correctly"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
