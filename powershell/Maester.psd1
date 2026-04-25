@@ -293,7 +293,19 @@
     'Test-MtAdGpoUnlinkedDetails', 'Test-MtAdGpoLinkedCount',
     'Test-MtAdGpoDisabledLinkCount', 'Test-MtAdGpoUnlinkedTargetCount',
     'Test-MtAdGpoEnforcedCount', 'Test-MtAdGpoBlockedInheritanceCount',
-    'Test-MtAdGpoLinkedOUCount'
+    'Test-MtAdGpoLinkedOUCount',
+    # Phase 8: Groups
+    'Test-MtAdGroupAdminCount', 'Test-MtAdGroupInContainerCount',
+    'Test-MtAdGroupStaleCount', 'Test-MtAdGroupWithManagerCount',
+    'Test-MtAdGroupSidHistoryCount', 'Test-MtAdGroupDistributionCount',
+    'Test-MtAdGroupSecurityCount', 'Test-MtAdGroupDomainLocalCount',
+    'Test-MtAdGroupGlobalCount', 'Test-MtAdGroupUniversalCount',
+    'Test-MtAdGroupMemberDistinctGroupCount', 'Test-MtAdGroupMemberAccountTypeCount',
+    'Test-MtAdGroupMemberAccountTypeDetails', 'Test-MtAdGroupMemberTrustCount',
+    'Test-MtAdGroupMemberTrustDetails', 'Test-MtAdGroupMemberForeignSidCount',
+    'Test-MtAdGroupMemberForeignSidDetails', 'Test-MtAdGroupEmptyNonPrivilegedCount',
+    'Test-MtAdGroupEmptyNonPrivilegedDetails', 'Test-MtAdGroupPrivilegedWithMembersCount',
+    'Test-MtAdGroupPrivilegedWithMembersDetails', 'Test-MtAdGroupChangeAveragePerYear'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

@@ -296,30 +296,36 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 22
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-H (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 22/22
+**Validated Against Live DC**: ✅ Yes
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-GRP-01 | GroupAdminCount | Groups with AdminCount set | Returns count of groups with AdminCount | 🔴 | Unassigned |
-| AD-GRP-02 | GroupInContainerCount | Groups in container objects | Returns count of groups in CN containers | 🔴 | Unassigned |
-| AD-GRP-03 | GroupStaleCount | Groups last changed before 2020 | Returns count of stale groups | 🔴 | Unassigned |
-| AD-GRP-04 | GroupWithManagerCount | Groups with manager set | Returns count of managed groups | 🔴 | Unassigned |
-| AD-GRP-05 | GroupSidHistoryCount | Groups with SID History | Returns count of groups with SID History | 🔴 | Unassigned |
-| AD-GRP-06 | GroupDistributionCount | Distribution groups | Returns count of distribution groups | 🔴 | Unassigned |
-| AD-GRP-07 | GroupSecurityCount | Security groups | Returns count of security groups | 🔴 | Unassigned |
-| AD-GRP-08 | GroupDomainLocalCount | Domain Local groups | Returns count of domain local groups | 🔴 | Unassigned |
-| AD-GRP-09 | GroupGlobalCount | Global groups | Returns count of global groups | 🔴 | Unassigned |
-| AD-GRP-10 | GroupUniversalCount | Universal groups | Returns count of universal groups | 🔴 | Unassigned |
-| AD-GMC-01 | GroupMemberDistinctGroupCount | Distinct groups with members | Returns count of groups with members | 🔴 | Unassigned |
-| AD-GMC-02 | GroupMemberAccountTypeCount | Types of group members | Returns count of member account types | 🔴 | Unassigned |
-| AD-GMC-03 | GroupMemberAccountTypeDetails | Member account type breakdown | Returns breakdown of member types | 🔴 | Unassigned |
-| AD-GMC-04 | GroupMemberTrustCount | Trust members in groups | Returns count of trust members | 🔴 | Unassigned |
-| AD-GMC-05 | GroupMemberTrustDetails | Trust member details | Returns breakdown of trust members by group | 🔴 | Unassigned |
-| AD-GMC-06 | GroupMemberForeignSidCount | Foreign SID principals | Returns count of foreign security principals | 🔴 | Unassigned |
-| AD-GMC-07 | GroupMemberForeignSidDetails | Foreign SID details | Returns breakdown by domain ID | 🔴 | Unassigned |
-| AD-GMC-08 | GroupEmptyNonPrivilegedCount | Empty non-privileged groups | Returns count of empty non-privileged groups | 🔴 | Unassigned |
-| AD-GMC-09 | GroupEmptyNonPrivilegedDetails | Empty non-privileged group details | Returns list of empty non-privileged groups | 🔴 | Unassigned |
-| AD-GMC-10 | GroupPrivilegedWithMembersCount | Privileged groups with members | Returns count of privileged groups with members | 🔴 | Unassigned |
-| AD-GMC-11 | GroupPrivilegedWithMembersDetails | Privileged group member details | Returns list of privileged groups with member counts | 🔴 | Unassigned |
-| AD-GCHG-01 | GroupChangeAveragePerYear | Average group additions per year | Returns average additions per year | 🔴 | Unassigned |
+| AD-GRP-01 | GroupAdminCount | Groups with AdminCount set | Returns count of groups with AdminCount | 🟢 | Session-H |
+| AD-GRP-02 | GroupInContainerCount | Groups in container objects | Returns count of groups in CN containers | 🟢 | Session-H |
+| AD-GRP-03 | GroupStaleCount | Groups last changed before 2020 | Returns count of stale groups | 🟢 | Session-H |
+| AD-GRP-04 | GroupWithManagerCount | Groups with manager set | Returns count of managed groups | 🟢 | Session-H |
+| AD-GRP-05 | GroupSidHistoryCount | Groups with SID History | Returns count of groups with SID History | 🟢 | Session-H |
+| AD-GRP-06 | GroupDistributionCount | Distribution groups | Returns count of distribution groups | 🟢 | Session-H |
+| AD-GRP-07 | GroupSecurityCount | Security groups | Returns count of security groups | 🟢 | Session-H |
+| AD-GRP-08 | GroupDomainLocalCount | Domain Local groups | Returns count of domain local groups | 🟢 | Session-H |
+| AD-GRP-09 | GroupGlobalCount | Global groups | Returns count of global groups | 🟢 | Session-H |
+| AD-GRP-10 | GroupUniversalCount | Universal groups | Returns count of universal groups | 🟢 | Session-H |
+| AD-GMC-01 | GroupMemberDistinctGroupCount | Distinct groups with members | Returns count of groups with members | 🟢 | Session-H |
+| AD-GMC-02 | GroupMemberAccountTypeCount | Types of group members | Returns count of member account types | 🟢 | Session-H |
+| AD-GMC-03 | GroupMemberAccountTypeDetails | Member account type breakdown | Returns breakdown of member types | 🟢 | Session-H |
+| AD-GMC-04 | GroupMemberTrustCount | Trust members in groups | Returns count of trust members | 🟢 | Session-H |
+| AD-GMC-05 | GroupMemberTrustDetails | Trust member details | Returns breakdown of trust members by group | 🟢 | Session-H |
+| AD-GMC-06 | GroupMemberForeignSidCount | Foreign SID principals | Returns count of foreign security principals | 🟢 | Session-H |
+| AD-GMC-07 | GroupMemberForeignSidDetails | Foreign SID details | Returns breakdown by domain ID | 🟢 | Session-H |
+| AD-GMC-08 | GroupEmptyNonPrivilegedCount | Empty non-privileged groups | Returns count of empty non-privileged groups | 🟢 | Session-H |
+| AD-GMC-09 | GroupEmptyNonPrivilegedDetails | Empty non-privileged group details | Returns list of empty non-privileged groups | 🟢 | Session-H |
+| AD-GMC-10 | GroupPrivilegedWithMembersCount | Privileged groups with members | Returns count of privileged groups with members | 🟢 | Session-H |
+| AD-GMC-11 | GroupPrivilegedWithMembersDetails | Privileged group member details | Returns list of privileged groups with member counts | 🟢 | Session-H |
+| AD-GCHG-01 | GroupChangeAveragePerYear | Average group additions per year | Returns average additions per year | 🟢 | Session-H |
 
 ---
 
@@ -630,7 +636,7 @@ Computer objects from the cache include these key properties:
 | Phase 5 | Domain & Forest | 12 | 🟢 Complete |
 | Phase 6 | Domain Controllers | 8 | 🟢 Complete |
 | Phase 7 | Group Policy | 11 | 🟢 Complete |
-| Phase 8 | Groups | 22 | 🔴 Not Started |
+| Phase 8 | Groups | 22 | 🟢 Complete |
 | Phase 9 | Users | 29 | 🔴 Not Started |
 | Phase 10 | Organizational Units | 5 | 🔴 Not Started |
 | Phase 11 | Sites and Subnets | 16 | 🔴 Not Started |
@@ -643,7 +649,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **31% Complete (84/268)** |
+| **TOTAL** | | **268** | **40% Complete (106/268)** |
 
 ---
 
