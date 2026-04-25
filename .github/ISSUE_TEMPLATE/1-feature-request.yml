@@ -1,0 +1,45 @@
+name: Maester feature request
+description: Suggest an idea for this project.
+title: "🙏 "
+labels:
+  - Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to suggest a feature! Please fill out the form below to help us understand your request.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature
+      description: A clear and concise description of the feature you'd like to see.
+      placeholder: I would like Maester to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-impact
+    attributes:
+      label: Impact and importance
+      description: How will this feature enhance the project and further its overall goals? Who will benefit from this feature (e.g. all users, the project team)?
+      placeholder: This feature would help all users by...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+      placeholder: I also considered...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
+    validations:
+      required: false

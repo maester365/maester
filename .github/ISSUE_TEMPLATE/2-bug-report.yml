@@ -1,0 +1,98 @@
+name: Maester bug report
+description: Create a bug report to help us fix it.
+title: "🪲 "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please fill out the form below to help us investigate and fix the issue.
+
+  - type: checkboxes
+    id: pre-submission-checklist
+    attributes:
+      label: Pre-submission checklist
+      description: Please confirm the following before submitting your report.
+      options:
+        - label: I can reproduce this issue using the latest released version of Maester.
+          required: true
+        - label: I have searched the existing issues and did not find a similar report.
+          required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: When I run... the following happens...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to reproduce
+      description: Step-by-step instructions to reproduce the behavior.
+      placeholder: |
+        1. Execute `<Command>` with `<Parameters>`...
+        2. See error at `...`
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: I expected...
+    validations:
+      required: true
+
+  - type: textarea
+    id: debug-output
+    attributes:
+      label: Debug output
+      description: |
+        Run the problematic command with `-Debug` and paste the resulting debug stream below.
+        ⚠️ **Be sure to remove any sensitive information before submitting.**
+      render: text
+      placeholder: Paste debug output here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: module-version
+    attributes:
+      label: Module version
+      description: Run `Get-Module -Name "Maester"` after cmdlet execution and paste the output below. If the module cannot be installed or imported, run `Get-Module -ListAvailable` instead.
+      render: text
+      placeholder: Paste Get-Module output here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment-data
+    attributes:
+      label: Environment data
+      description: Run `$PSVersionTable` and paste the output below. If running the Docker container image, indicate the image tag and Docker engine version instead.
+      render: text
+      placeholder: Paste $PSVersionTable output here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots or image links to help explain your problem. You can drag and drop images directly into this field.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false
