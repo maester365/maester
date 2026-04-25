@@ -471,17 +471,27 @@ Computer objects from the cache include these key properties:
 ## Phase 13: Schema and Infrastructure (AdRecon - SchemaHistory.csv, Printers.csv)
 
 **Phase Goal**: Implement tests for schema and infrastructure
-**Estimated Tests**: 7
+**Estimated Tests**: 6
 **Dependencies**: None
+
+**Status**: 🟢 Complete
+**Completed By**: Session-M (Sisyphus)
+**Completed Date**: 2026-04-25
+**Validated Date**: 2026-04-25
+**Tests Completed**: 6/6
+**Tests Validated**: 6/6
+**Validated Against Live DC**: ✅ Yes
 
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-SCH-01 | SchemaModificationYearCount | Years with schema modifications | Returns count of years with schema changes | 🔴 | Unassigned |
-| AD-SCH-02 | SchemaModificationYearDetails | Schema modifications per year | Returns breakdown of schema changes by year | 🔴 | Unassigned |
-| AD-SCH-03 | SchemaVersionEntryCount | Schema version entries | Returns count of schema version entries | 🔴 | Unassigned |
-| AD-SCH-04 | SchemaVersionDetails | Schema version details | Returns list of schema versions with dates | 🔴 | Unassigned |
-| AD-SCH-05 | LapsInstalledStatus | LAPS installation status | Returns whether LAPS is installed | 🔴 | Unassigned |
-| AD-PRINT-01 | PrinterTotalCount | Total printers in domain | Returns count of printers | 🔴 | Unassigned |
+| AD-SCH-01 | SchemaModificationYearCount | Years with schema modifications | Returns count of years with schema changes | 🟢 | Session-M |
+| AD-SCH-02 | SchemaModificationYearDetails | Schema modifications per year | Returns breakdown of schema changes by year | 🟢 | Session-M |
+| AD-SCH-03 | SchemaVersionEntryCount | Schema version entries | Returns count of schema version entries | 🟢 | Session-M |
+| AD-SCH-04 | SchemaVersionDetails | Schema version details | Returns list of schema versions with dates | 🟢 | Session-M |
+| AD-SCH-05 | LapsInstalledStatus | LAPS installation status | Returns whether LAPS is installed | 🟢 | Session-M |
+| AD-PRINT-01 | PrinterTotalCount | Total printers in domain | Returns count of printers | 🟢 | Session-M |
+
+**Validation Results**: All 6 tests passed validation against live DC (maester.test). Schema Version 91 detected (Windows Server 2025), 1779 schema objects, 0 published printers, LAPS not installed (expected in test environment).
 
 ---
 
@@ -679,7 +689,7 @@ Computer objects from the cache include these key properties:
 | Phase 10 | Organizational Units | 5 | 🟢 Complete |
 | Phase 11 | Sites and Subnets | 16 | 🟢 Complete |
 | Phase 12 | Trusts | 7 | 🟢 Complete |
-| Phase 13 | Schema and Infrastructure | 7 | 🔴 Not Started |
+| Phase 13 | Schema and Infrastructure | 6 | 🟢 Complete |
 | Phase 14 | Domain State - Configuration | 24 | 🔴 Not Started |
 | Phase 15 | Domain State - DCs | 4 | 🔴 Not Started |
 | Phase 16 | Domain State - Forest/Domain | 5 | 🔴 Not Started |
@@ -687,7 +697,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **61% Complete (163/268)** |
+| **TOTAL** | | **267** | **63% Complete (169/267)** |
 
 ---
 

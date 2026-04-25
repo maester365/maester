@@ -120,6 +120,43 @@ function Get-MtADDomainState {
                 $domainState['DNSRecords'] = @()
             }
 
+            # Collect Schema information
+            try {
+                $schemaContext = (Get-ADRootDSE).schemaNamingContext
+                $schemaObjects = Get-ADObject -SearchBase $schemaContext -Filter * -Properties whenCreated, objectClass
+                $domainState['SchemaObjects'] = $schemaObjects
+
+                # Get schema version information from the schema container
+                $schemaContainer = Get-ADObject -Identity $schemaContext -Properties objectVersion, whenCreated, whenChanged
+                $domainState['SchemaContainer'] = $schemaContainer
+            }
+            catch {
+                Write-Verbose "Could not collect Schema data: $($_.Exception.Message)"
+                $domainState['SchemaObjects'] = @()
+                $domainState['SchemaContainer'] = $null
+            }
+
+            # Collect Printer information (published printers in AD)
+            try {
+                $printers = Get-ADObject -Filter { objectClass -eq "printQueue" } -Properties *
+                $domainState['Printers'] = $printers
+            }
+            catch {
+                Write-Verbose "Could not collect Printer data: $($_.Exception.Message)"
+                $domainState['Printers'] = @()
+            }
+
+            # Check LAPS installation status
+            try {
+                # Check for LAPS schema extensions (ms-Mcs-AdmPwd attribute)
+                $lapsSchemaCheck = Get-ADObject -SearchBase $schemaContext -Filter { name -eq "ms-Mcs-AdmPwd" } -ErrorAction SilentlyContinue
+                $domainState['LapsInstalled'] = ($null -ne $lapsSchemaCheck)
+            }
+            catch {
+                Write-Verbose "Could not check LAPS installation status: $($_.Exception.Message)"
+                $domainState['LapsInstalled'] = $false
+            }
+
             $__MtSession.ADCache[$cacheKey] = $domainState
             $__MtSession.ADCollectionTime = Get-Date
 
