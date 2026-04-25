@@ -31,6 +31,40 @@ Describe 'Get-RoleDataFromMarkdown' {
         }
     }
 
+    Context 'Blockquote-formatted table (GFM > | ... | syntax)' {
+        It 'parses roles and IsPrivileged correctly when table rows use > prefix' {
+            $md = @'
+## All roles
+
+> [!div class="mx-tableFixed"]
+> | Role | Description | ID |
+> | --- | --- | --- |
+> | [Global Administrator](#global-administrator) | Can manage all aspects of Azure AD. [![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | 62e90394-69f5-4237-9190-012177145e10 |
+> | [Reports Reader](#reports-reader) | Can read sign-in and audit reports. | 4a5d8f65-41da-4de4-8968-e035b65339cf |
+'@
+            $result = Get-RoleDataFromMarkdown -Markdown $md
+            $result.Count | Should -Be 2
+            $privileged = @($result | Where-Object { $_.IsPrivileged })
+            $privileged.Count | Should -Be 1
+            $privileged[0].Name | Should -Be 'GlobalAdministrator'
+            ($result | Where-Object { $_.Name -eq 'ReportsReader' }).IsPrivileged | Should -BeFalse
+        }
+
+        It 'parses roles correctly when blockquote rows use up to 3 spaces of indentation' {
+            $md = @'
+## All roles
+
+   > | Role | Description | ID |
+   > | --- | --- | --- |
+   > | [Global Administrator](#global-administrator) | Description | 62e90394-69f5-4237-9190-012177145e10 |
+'@
+            # Wrap in @() to prevent PowerShell from unwrapping a single-item list to a bare hashtable
+            $result = @(Get-RoleDataFromMarkdown -Markdown $md)
+            $result.Count | Should -Be 1
+            $result[0].Name | Should -Be 'GlobalAdministrator'
+        }
+    }
+
     Context 'Missing All roles heading' {
         It 'throws an error mentioning All roles' {
             $md = @'
