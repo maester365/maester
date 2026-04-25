@@ -185,51 +185,60 @@ function Get-MtADDomainState {
                 # Get the domain DN for searching
                 $domainDN = $domainState.Domain.DistinguishedName
                 
-                # Define search bases - domain root and Domain Controllers OU
-                $searchBases = @(
-                    $domainDN,
-                    "OU=Domain Controllers,$domainDN"
-                )
+                # Use DirectorySearcher to get objects with their security descriptors
+                $searcher = New-Object System.DirectoryServices.DirectorySearcher
+                $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
+                $searcher.PageSize = 1000
+                $searcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl
                 
-                # Collect DACLs from OUs, Containers, and key objects
-                foreach ($searchBase in $searchBases) {
-                    try {
-                        # Search for OUs, Containers, and other objects with security descriptors
-                        $adObjects = Get-ADObject -SearchBase $searchBase -SearchScope Subtree `
-                            -Filter { (objectClass -eq "organizationalUnit") -or (objectClass -eq "container") -or (objectClass -eq "groupPolicyContainer") -or (objectClass -eq "domain") -or (objectClass -eq "computer") -or (objectClass -eq "user") -or (objectClass -eq "group") } `
-                            -Properties nTSecurityDescriptor, objectClass, objectCategory, distinguishedName, name, objectSid -ErrorAction SilentlyContinue
+                # Search filter for OUs, Containers, and other important objects
+                $searcher.Filter = "(|(objectClass=organizationalUnit)(objectClass=container)(objectClass=groupPolicyContainer)(objectClass=domainDNS)(objectClass=computer)(objectClass=user)(objectClass=group))"
+                
+                # Properties to load
+                $searcher.PropertiesToLoad.Add("distinguishedName") | Out-Null
+                $searcher.PropertiesToLoad.Add("objectClass") | Out-Null
+                $searcher.PropertiesToLoad.Add("name") | Out-Null
+                $searcher.PropertiesToLoad.Add("objectSid") | Out-Null
+                $searcher.PropertiesToLoad.Add("ntsecuritydescriptor") | Out-Null
+                
+                $results = $searcher.FindAll()
+                
+                foreach ($result in $results) {
+                    $objectDN = $result.Properties["distinguishedName"][0]
+                    $objectClass = $result.Properties["objectClass"]
+                    $objectName = $result.Properties["name"][0]
+                    $objectSid = if ($result.Properties["objectSid"]) { 
+                        (New-Object System.Security.Principal.SecurityIdentifier($result.Properties["objectSid"][0], 0)).Value 
+                    } else { $null }
+                    
+                    # Get the security descriptor
+                    $securityDescriptor = $result.Properties["ntsecuritydescriptor"][0]
+                    
+                    if ($securityDescriptor) {
+                        $sd = New-Object System.DirectoryServices.ActiveDirectorySecurity
+                        $sd.SetSecurityDescriptorBinaryForm($securityDescriptor)
                         
-                        foreach ($adObject in $adObjects) {
-                            if ($adObject.nTSecurityDescriptor) {
-                                $securityDescriptor = $adObject.nTSecurityDescriptor
-                                
-                                if ($securityDescriptor.DiscretionaryAcl) {
-                                    foreach ($ace in $securityDescriptor.DiscretionaryAcl) {
-                                        $daclEntry = [PSCustomObject]@{
-                                            ObjectDN = $adObject.DistinguishedName
-                                            ObjectClass = $adObject.ObjectClass
-                                            ObjectName = $adObject.Name
-                                            ObjectSid = if ($adObject.ObjectSid) { $adObject.ObjectSid.Value } else { $null }
-                                            IdentityReference = $ace.SecurityIdentifier.Value
-                                            AccessControlType = $ace.AceType.ToString()
-                                            ActiveDirectoryRights = $ace.ActiveDirectoryRights.ToString()
-                                            InheritanceType = $ace.AceFlags.ToString()
-                                            IsInherited = $ace.IsInherited
-                                            ObjectType = $ace.ObjectType.ToString()
-                                            InheritedObjectType = $ace.InheritedObjectType.ToString()
-                                            AceFlags = $ace.AceFlags
-                                        }
-                                        $daclEntries += $daclEntry
-                                    }
-                                }
+                        foreach ($ace in $sd.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])) {
+                            $daclEntry = [PSCustomObject]@{
+                                ObjectDN = $objectDN
+                                ObjectClass = $objectClass[$objectClass.Count - 1]
+                                ObjectName = $objectName
+                                ObjectSid = $objectSid
+                                IdentityReference = $ace.IdentityReference.Value
+                                AccessControlType = $ace.AccessControlType.ToString()
+                                ActiveDirectoryRights = $ace.ActiveDirectoryRights.ToString()
+                                InheritanceType = $ace.InheritanceType.ToString()
+                                IsInherited = $ace.IsInherited
+                                ObjectType = $ace.ObjectType.ToString()
+                                InheritedObjectType = $ace.InheritedObjectType.ToString()
+                                AceFlags = $ace.AceFlags
                             }
+                            $daclEntries += $daclEntry
                         }
-                    }
-                    catch {
-                        Write-Verbose "Could not collect DACL data from $searchBase : $($_.Exception.Message)"
                     }
                 }
                 
+                $searcher.Dispose()
                 $domainState['DaclEntries'] = $daclEntries
                 Write-Verbose "Collected $($daclEntries.Count) DACL entries from Active Directory"
             }

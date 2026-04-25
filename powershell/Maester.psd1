@@ -389,7 +389,16 @@
     'Test-MtAdDisabledReplicationConnectionCount', 'Test-MtAdNonAutoReplicationConnectionCount',
     'Test-MtAdOptionalFeatureCount', 'Test-MtAdOptionalFeatureEnabledDetails',
     'Test-MtAdSupportedSaslMechanismCount', 'Test-MtAdSupportedSaslMechanismDetails',
-    'Test-MtAdRootDseSynchronizedStatus', 'Test-MtAdDfsrSubscriptionCount'
+    'Test-MtAdRootDseSynchronizedStatus', 'Test-MtAdDfsrSubscriptionCount',
+    'Test-MtAdDaclConflictObjectCount', 'Test-MtAdDaclConflictObjectDetails',
+    'Test-MtAdDaclDenyAceCount', 'Test-MtAdDaclDenyAceDetails',
+    'Test-MtAdDaclDistinctIdentityCount', 'Test-MtAdDaclDistinctObjectCount',
+    'Test-MtAdDaclIdentityAceDistribution', 'Test-MtAdDaclInheritedObjectTypeCount',
+    'Test-MtAdDaclInheritedObjectTypeDetails', 'Test-MtAdDaclNonInheritedAceCount',
+    'Test-MtAdDaclOuObjectCount', 'Test-MtAdDaclPrivilegedAllowAceCount',
+    'Test-MtAdDaclPrivilegedAllowAceDetails', 'Test-MtAdDaclPrivilegedExtendedRightCount',
+    'Test-MtAdDaclPrivilegedExtendedRightDetails', 'Test-MtAdDaclPrivilegedExtendedRightIdentity',
+    'Test-MtAdDaclUnresolvedSidCount', 'Test-MtAdDaclUnresolvedSidDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
