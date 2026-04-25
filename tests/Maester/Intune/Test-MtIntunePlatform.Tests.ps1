@@ -69,28 +69,28 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
         }
     }
 
-    It "MT.1148: Ensure LAPS Configuration Policy is properly set" -Tag "MT.1148" {
+    It "MT.1148: Ensure LAPS Configuration Policy is properly set. See https://maester.dev/docs/tests/MT.1148" -Tag "MT.1148" {
         $result = Test-MtIntuneLAPSConfiguration
         if ($null -ne $result) {
             $result | Should -Be $true -Because "a LAPS Configuration policy is properly set in Intune."
         }
     }
 
-    It "MT.1149: Ensure ASR Rules are configured correctly" -Tag "MT.1149" {
+    It "MT.1149: Ensure ASR Rules are configured correctly. See https://maester.dev/docs/tests/MT.1149" -Tag "MT.1149" {
         $result = Test-MtIntuneASRRules
         if ($null -ne $result) {
             $result | Should -Be $true -Because "Attack Surface Reduction (ASR) Rules are configured in Block or Audit mode."
         }
     }
 
-    It "MT.1150: Ensure App Control for Business is enabled" -Tag "MT.1150" {
+    It "MT.1150: Ensure App Control for Business is enabled. See https://maester.dev/docs/tests/MT.1150" -Tag "MT.1150" {
         $result = Test-MtIntuneAppControl
         if ($null -ne $result) {
             $result | Should -Be $true -Because "App Control for Business is enabled in Intune."
         }
     }
 
-    It "MT.1151: Ensure Managed Installer Rules are configured correctly" -Tag "MT.1151" {
+    It "MT.1151: Ensure Managed Installer Rules are configured correctly. See https://maester.dev/docs/tests/MT.1151" -Tag "MT.1151" {
         $result = Test-MtIntuneManagedInstallerRules
         if ($null -ne $result) {
             $result | Should -Be $true -Because "'Trust apps from managed installer' is enabled in at least one App Control policy."

@@ -31,6 +31,11 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -119,7 +124,7 @@
         }
 
         if ($hasConfiguredPolicy) {
-            $testResultMarkdown += "`n**Result:** At least one App Control for Business policy is configured."
+            $testResultMarkdown += "`n**Result:** Well done. At least one App Control for Business policy is configured."
 
             # Warn about audit-only policies
             $auditOnly = @($policyResults | Where-Object { $_.AuditMode -eq 'Enabled (audit only)' })

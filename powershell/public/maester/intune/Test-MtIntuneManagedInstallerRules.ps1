@@ -36,6 +36,11 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -107,7 +112,7 @@
         }
 
         if ($hasManagedInstaller) {
-            $testResultMarkdown += "`n**Result:** At least one App Control policy has **Managed Installer** enabled."
+            $testResultMarkdown += "`n**Result:** Well done. At least one App Control policy has **Managed Installer** enabled."
             $testResultMarkdown += " Applications deployed through Intune/SCCM will be automatically trusted."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true

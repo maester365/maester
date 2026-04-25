@@ -30,6 +30,11 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -104,6 +109,7 @@
                         if ($val.EndsWith($suffix)) {
                             $policyDetail.BackupDirectory = $backupDirectoryLabels[$suffix]
                             if ($suffix -eq '_1') { $hasEntraBackup = $true }
+                            break
                         }
                     }
                     Write-Verbose "  BackupDirectory: $($policyDetail.BackupDirectory)"
@@ -139,8 +145,13 @@
                 }
 
                 if ($defId -eq $autoAccountMgmtId) {
-                    $val = $setting.settingInstance.choiceSettingValue.value
-                    $policyDetail.AutoAccountMgmt = if ($val -like '*_true') { 'Enabled' } else { 'Disabled' }
+                    # The Automatic Account Management toggle may be returned as a simpleSettingValue
+                    # (boolean true/false) or as a choiceSettingValue depending on how the policy was
+                    # authored. Handle both shapes to avoid silently reporting 'Disabled' when enabled.
+                    $simpleVal = $setting.settingInstance.simpleSettingValue.value
+                    $choiceVal = $setting.settingInstance.choiceSettingValue.value
+                    $val = if ($null -ne $simpleVal) { $simpleVal } else { $choiceVal }
+                    $policyDetail.AutoAccountMgmt = if ($val -eq $true -or $val -like '*_true') { 'Enabled' } else { 'Disabled' }
                     Write-Verbose "  AutoAccountMgmt: $($policyDetail.AutoAccountMgmt)"
                 }
             }
@@ -157,7 +168,7 @@
         }
 
         if ($hasEntraBackup) {
-            $testResultMarkdown += "`n**Result:** At least one LAPS policy backs up passwords to **Entra ID**."
+            $testResultMarkdown += "`n**Result:** Well done. At least one LAPS policy backs up passwords to **Entra ID**."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true
         } else {

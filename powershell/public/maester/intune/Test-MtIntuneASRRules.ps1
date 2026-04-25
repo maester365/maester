@@ -32,6 +32,11 @@
     [OutputType([bool])]
     param()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
     if (-not (Get-MtLicenseInformation -Product Intune)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
@@ -84,6 +89,7 @@
 
             $blockCount = 0
             $auditCount = 0
+            $warnCount = 0
             $disabledCount = 0
             $ruleDetails = [System.Collections.Generic.List[hashtable]]::new()
 
@@ -105,7 +111,7 @@
                         $mode = 'Not configured'
                         if ($val -like '*_block') { $mode = 'Block'; $blockCount++; $hasActiveRules = $true }
                         elseif ($val -like '*_audit') { $mode = 'Audit'; $auditCount++; $hasActiveRules = $true }
-                        elseif ($val -like '*_warn') { $mode = 'Warn' }
+                        elseif ($val -like '*_warn') { $mode = 'Warn'; $warnCount++ }
                         elseif ($val -like '*_off') { $mode = 'Disabled'; $disabledCount++ }
 
                         Write-Verbose "  Rule: $friendlyName = $mode"
@@ -118,6 +124,7 @@
                 Name         = $policy.name
                 BlockCount   = $blockCount
                 AuditCount   = $auditCount
+                WarnCount    = $warnCount
                 DisabledCount = $disabledCount
                 TotalRules   = $ruleDetails.Count
                 Rules        = $ruleDetails
@@ -129,7 +136,7 @@
 
         foreach ($p in $policyResults) {
             $testResultMarkdown += "### $($p.Name)`n"
-            $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.DisabledCount) Disabled`n`n"
+            $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.WarnCount) Warn, $($p.DisabledCount) Disabled`n`n"
             $testResultMarkdown += "| Rule | Mode |`n| --- | --- |`n"
             foreach ($r in $p.Rules) {
                 $testResultMarkdown += "| $($r.Name) | $($r.Mode) |`n"
@@ -138,7 +145,7 @@
         }
 
         if ($hasActiveRules) {
-            $testResultMarkdown += "**Result:** At least one ASR policy has rules in **Block** or **Audit** mode."
+            $testResultMarkdown += "**Result:** Well done. At least one ASR policy has rules in **Block** or **Audit** mode."
 
             # Warn about audit-only policies
             $auditOnly = @($policyResults | Where-Object { $_.BlockCount -eq 0 -and $_.AuditCount -gt 0 })
