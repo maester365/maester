@@ -31,12 +31,15 @@
   try {
     $group = Invoke-MtGraphRequest -RelativeUri "groups/$GroupId/" -ApiVersion v1.0
     if (-not $group) {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This is expected for external partner groups assigned via GDAP."
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted."
       return $null
     }
   } catch {
-    if ($_.Exception.Message -match 'NotFound|404') {
-      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This is expected for external partner groups assigned via GDAP. Details: $($_.Exception.Message)"
+    # Prefer checking the typed StatusCode property (.NET 5+/PS7); fall back to message matching for older runtimes.
+    $is404 = ($_.Exception.StatusCode -eq [System.Net.HttpStatusCode]::NotFound) -or
+             ($_.Exception.Message -match 'NotFound|404')
+    if ($is404) {
+      Write-Verbose "Group ($GroupId) was not found in the tenant and will be skipped. This may be an external partner group assigned via GDAP, or the group may have been deleted. Details: $($_.Exception.Message)"
     } else {
       Write-Warning "Error obtaining group ($GroupId) from Microsoft Graph. Confirm the group exists in your tenant. Details: $($_.Exception.Message)"
     }
