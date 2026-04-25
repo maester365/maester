@@ -640,6 +640,9 @@ Computer objects from the cache include these key properties:
 
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
+
+| Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
+|---------|-----------|-------------|---------------|--------|-------------|
 | AD-REPL-01 | DisabledReplicationConnectionCount | Disabled replication connections | Returns count of disabled connections (should be 0) | 🔴 | Unassigned |
 | AD-REPL-02 | NonAutoReplicationConnectionCount | Non-auto-generated replication connections | Returns count of manual connections | 🔴 | Unassigned |
 | AD-FEAT-01 | OptionalFeatureCount | Optional features count | Returns count of optional features | 🔴 | Unassigned |
@@ -740,7 +743,7 @@ Computer objects from the cache include these key properties:
 | Phase 14 | Domain State - Configuration | 24 | 🟢 Complete |
 | Phase 15 | Domain State - DCs | 4 | 🟢 Complete |
 | Phase 16 | Domain State - Forest/Domain | 5 | 🟢 Complete |
-| Phase 17 | Domain State - Security Accounts | 13 | 🔴 Not Started |
+| Phase 17 | Domain State - Security Accounts | 13 | 🟢 Complete |
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
