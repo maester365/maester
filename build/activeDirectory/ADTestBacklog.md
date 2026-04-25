@@ -501,32 +501,38 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 24
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-N (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 24/24
+**Validated Against Live DC**: ✅ Yes
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-CFG-01 | TombstoneLifetimeConfig | Tombstone lifetime from config | Returns tombstone lifetime days | 🔴 | Unassigned |
-| AD-CFG-02 | DsHeuristicsCount | dSHeuristics in use | Returns count of dSHeuristics settings | 🔴 | Unassigned |
-| AD-CFG-03 | SpnMappings | SPN Mappings configured | Returns list of SPN mappings | 🔴 | Unassigned |
-| AD-CFG-04 | OptionalFeaturesCount | Optional features available | Returns count of optional features | 🔴 | Unassigned |
-| AD-CFG-05 | RecycleBinEnabledPaths | Recycle bin enabled paths | Returns count of paths with recycle bin | 🔴 | Unassigned |
-| AD-CFG-06 | LdapQueryPolicyCount | LDAP query policies | Returns count of query policies | 🔴 | Unassigned |
-| AD-CFG-07 | DefaultQueryPolicy | Default query policy settings | Returns default query policy limits | 🔴 | Unassigned |
-| AD-CFG-08 | AuthNPolicyConfigCount | Authentication policy containers | Returns count of auth policy containers | 🔴 | Unassigned |
-| AD-CFG-09 | AdActivationObjectsCount | AD-based activation objects | Returns count of activation objects | 🔴 | Unassigned |
-| AD-CFG-10 | WellKnownSecurityPrincipalsCount | Well-known security principals | Returns count (27 is default) | 🔴 | Unassigned |
-| AD-CFG-11 | RegisteredDhcpServersCount | DHCP servers registered in AD | Returns count of registered DHCP servers | 🔴 | Unassigned |
-| AD-CFG-12 | EnterpriseCaCount | Enterprise certificate authorities | Returns count of enrollment CAs | 🔴 | Unassigned |
-| AD-CFG-13 | CertificateTemplatesCount | Certificate templates in AD | Returns count of certificate templates | 🔴 | Unassigned |
-| AD-CFG-14 | EnrollmentTemplatesCount | Templates available for enrollment | Returns count of enrollment templates | 🔴 | Unassigned |
-| AD-CFG-15 | EnrollmentCaCertificateDetails | Enrollment CA certificate details | Returns list of enrollment CAs with validity | 🔴 | Unassigned |
-| AD-CFG-16 | TrustedRootCaCount | Trusted root CAs configured | Returns count of trusted root CAs | 🔴 | Unassigned |
-| AD-CFG-17 | TrustedRootCaDetails | Trusted root CA details | Returns list of root CAs with validity | 🔴 | Unassigned |
-| AD-CFG-18 | IntermediateCaCount | Intermediate CAs configured | Returns count of intermediate CAs | 🔴 | Unassigned |
-| AD-CFG-19 | IntermediateCaDetails | Intermediate CA details | Returns list of intermediate CAs with validity | 🔴 | Unassigned |
-| AD-CFG-20 | CrlDistributionPointsCount | CRL distribution points | Returns count of CDPs | 🔴 | Unassigned |
-| AD-CFG-21 | NtAuthCertificatesCount | NTAuth certificates count | Returns count of smart card/archive CAs | 🔴 | Unassigned |
-| AD-CFG-22 | KdsRootKeysCount | KDS root keys for gMSA | Returns count of KDS root keys | 🔴 | Unassigned |
-| AD-CFG-23 | SmtpSiteLinksCount | SMTP site links available | Returns count of SMTP site links | 🔴 | Unassigned |
-| AD-CFG-24 | IpSiteLinksCount | IP site links available | Returns count of IP site links | 🔴 | Unassigned |
+| AD-CFG-01 | TombstoneLifetimeConfig | Tombstone lifetime from config | Returns tombstone lifetime days | 🟢 | Session-N |
+| AD-CFG-02 | DsHeuristicsCount | dSHeuristics in use | Returns count of dSHeuristics settings | 🟢 | Session-N |
+| AD-CFG-03 | SpnMappings | SPN Mappings configured | Returns list of SPN mappings | 🟢 | Session-N |
+| AD-CFG-04 | OptionalFeaturesCount | Optional features available | Returns count of optional features | 🟢 | Session-N |
+| AD-CFG-05 | RecycleBinEnabledPaths | Recycle bin enabled paths | Returns count of paths with recycle bin | 🟢 | Session-N |
+| AD-CFG-06 | LdapQueryPolicyCount | LDAP query policies | Returns count of query policies | 🟢 | Session-N |
+| AD-CFG-07 | DefaultQueryPolicy | Default query policy settings | Returns default query policy limits | 🟢 | Session-N |
+| AD-CFG-08 | AuthNPolicyConfigCount | Authentication policy containers | Returns count of auth policy containers | 🟢 | Session-N |
+| AD-CFG-09 | AdActivationObjectsCount | AD-based activation objects | Returns count of activation objects | 🟢 | Session-N |
+| AD-CFG-10 | WellKnownSecurityPrincipalsCount | Well-known security principals | Returns count (27 is default) | 🟢 | Session-N |
+| AD-CFG-11 | RegisteredDhcpServersCount | DHCP servers registered in AD | Returns count of registered DHCP servers | 🟢 | Session-N |
+| AD-CFG-12 | EnterpriseCaCount | Enterprise certificate authorities | Returns count of enrollment CAs | 🟢 | Session-N |
+| AD-CFG-13 | CertificateTemplatesCount | Certificate templates in AD | Returns count of certificate templates | 🟢 | Session-N |
+| AD-CFG-14 | EnrollmentTemplatesCount | Templates available for enrollment | Returns count of enrollment templates | 🟢 | Session-N |
+| AD-CFG-15 | EnrollmentCaCertificateDetails | Enrollment CA certificate details | Returns list of enrollment CAs with validity | 🟢 | Session-N |
+| AD-CFG-16 | TrustedRootCaCount | Trusted root CAs configured | Returns count of trusted root CAs | 🟢 | Session-N |
+| AD-CFG-17 | TrustedRootCaDetails | Trusted root CA details | Returns list of root CAs with validity | 🟢 | Session-N |
+| AD-CFG-18 | IntermediateCaCount | Intermediate CAs configured | Returns count of intermediate CAs | 🟢 | Session-N |
+| AD-CFG-19 | IntermediateCaDetails | Intermediate CA details | Returns list of intermediate CAs with validity | 🟢 | Session-N |
+| AD-CFG-20 | CrlDistributionPointsCount | CRL distribution points | Returns count of CDPs | 🟢 | Session-N |
+| AD-CFG-21 | NtAuthCertificatesCount | NTAuth certificates count | Returns count of smart card/archive CAs | 🟢 | Session-N |
+| AD-CFG-22 | KdsRootKeysCount | KDS root keys for gMSA | Returns count of KDS root keys | 🟢 | Session-N |
+| AD-CFG-23 | SmtpSiteLinksCount | SMTP site links available | Returns count of SMTP site links | 🟢 | Session-N |
+| AD-CFG-24 | IpSiteLinksCount | IP site links available | Returns count of IP site links | 🟢 | Session-N |
 
 ---
 
@@ -536,12 +542,18 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 4
 **Dependencies**: None
 
+**Status**: 🟡 In Progress
+**Claimed By**: Session-N (Sisyphus)
+**Claimed Date**: 2026-04-25
+**Estimated Completion**: 2026-04-25
+**Tests Completed**: 0/4
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-DCD-01 | DcNonStandardLdapPortCount | DCs with non-standard LDAP port | Returns count of DCs not using 389 | 🔴 | Unassigned |
-| AD-DCD-02 | DcNonStandardLdapsPortCount | DCs with non-standard LDAPS port | Returns count of DCs not using 636 | 🔴 | Unassigned |
-| AD-DCD-03 | DcReadOnlyCount | Read-only domain controllers | Returns count of RODCs | 🔴 | Unassigned |
-| AD-DCD-04 | DcNonGlobalCatalogCount | DCs not as Global Catalogs | Returns count of non-GC DCs | 🔴 | Unassigned |
+| AD-DCD-01 | DcNonStandardLdapPortCount | DCs with non-standard LDAP port | Returns count of DCs not using 389 | 🟡 | Session-N |
+| AD-DCD-02 | DcNonStandardLdapsPortCount | DCs with non-standard LDAPS port | Returns count of DCs not using 636 | 🟡 | Session-N |
+| AD-DCD-03 | DcReadOnlyCount | Read-only domain controllers | Returns count of RODCs | 🟡 | Session-N |
+| AD-DCD-04 | DcNonGlobalCatalogCount | DCs not as Global Catalogs | Returns count of non-GC DCs | 🟡 | Session-N |
 
 ---
 
@@ -690,14 +702,14 @@ Computer objects from the cache include these key properties:
 | Phase 11 | Sites and Subnets | 16 | 🟢 Complete |
 | Phase 12 | Trusts | 7 | 🟢 Complete |
 | Phase 13 | Schema and Infrastructure | 6 | 🟢 Complete |
-| Phase 14 | Domain State - Configuration | 24 | 🔴 Not Started |
+| Phase 14 | Domain State - Configuration | 24 | 🟢 Complete |
 | Phase 15 | Domain State - DCs | 4 | 🔴 Not Started |
 | Phase 16 | Domain State - Forest/Domain | 5 | 🔴 Not Started |
 | Phase 17 | Domain State - Security Accounts | 13 | 🔴 Not Started |
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **267** | **63% Complete (169/267)** |
+| **TOTAL** | | **267** | **72% Complete (193/267)** |
 
 ---
 

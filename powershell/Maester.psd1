@@ -343,7 +343,16 @@
     # Phase 13: Schema and Infrastructure
     'Test-MtAdSchemaModificationYearCount', 'Test-MtAdSchemaModificationYearDetails',
     'Test-MtAdSchemaVersionEntryCount', 'Test-MtAdSchemaVersionDetails',
-    'Test-MtAdLapsInstalledStatus', 'Test-MtAdPrinterTotalCount'
+    'Test-MtAdLapsInstalledStatus', 'Test-MtAdPrinterTotalCount',
+    # Phase 14: Domain State - Configuration
+    'Test-MtAdTombstoneLifetimeConfig', 'Test-MtAdDsHeuristicsCount', 'Test-MtAdSpnMappings',
+    'Test-MtAdOptionalFeaturesCount', 'Test-MtAdRecycleBinEnabledPaths', 'Test-MtAdLdapQueryPolicyCount',
+    'Test-MtAdDefaultQueryPolicy', 'Test-MtAdAuthNPolicyConfigCount', 'Test-MtAdAdActivationObjectsCount',
+    'Test-MtAdWellKnownSecurityPrincipalsCount', 'Test-MtAdRegisteredDhcpServersCount', 'Test-MtAdEnterpriseCaCount',
+    'Test-MtAdCertificateTemplatesCount', 'Test-MtAdEnrollmentTemplatesCount', 'Test-MtAdEnrollmentCaCertificateDetails',
+    'Test-MtAdTrustedRootCaCount', 'Test-MtAdTrustedRootCaDetails', 'Test-MtAdIntermediateCaCount',
+    'Test-MtAdIntermediateCaDetails', 'Test-MtAdCrlDistributionPointsCount', 'Test-MtAdNtAuthCertificatesCount',
+    'Test-MtAdKdsRootKeysCount', 'Test-MtAdSmtpSiteLinksCount', 'Test-MtAdIpSiteLinksCount'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
