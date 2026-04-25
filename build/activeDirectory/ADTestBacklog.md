@@ -135,10 +135,12 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 11
 **Dependencies**: None
 
-**Status**: 🟢 Complete
+**Status**: 🟢 Complete (Validated)
 **Completed By**: Session-C (Sisyphus)
 **Completed Date**: 2026-04-25
+**Validated Date**: 2026-04-25
 **Tests Completed**: 11/11
+**Validated Against Live DC**: ✅ Yes
 
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
@@ -153,6 +155,8 @@ Computer objects from the cache include these key properties:
 | AD-FGPP-02 | FineGrainedPolicyValueCount | Distinct values per FGPP | Returns count of distinct values across policies | 🟢 | Session-C |
 | AD-FGPP-03 | FineGrainedPolicySettingCounts | Settings distribution across policies | Returns breakdown of settings per policy | 🟢 | Session-C |
 | AD-FGPP-04 | FineGrainedPolicyAppliesTo | FGPP application targets | Returns what each policy applies to | 🟢 | Session-C |
+
+**Validation Results**: All 11 tests passed validation against live DC (maester.test). See [AD-TEST-RESULTS.md](../../AD-TEST-RESULTS.md) for detailed results.
 
 ---
 
