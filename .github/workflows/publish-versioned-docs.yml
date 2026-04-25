@@ -11,10 +11,7 @@ on:
     types: [published]
   workflow_dispatch:
 
-permissions:
-  contents: write
-  actions: read
-  pull-requests: read
+permissions: {}
 
 concurrency:
   group: docs-versioning-${{ github.event.release.tag_name }}
@@ -25,6 +22,9 @@ jobs:
     # This job only runs if a GitHub release was successfully published
     if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
       - name: ⬇️ Checkout Repository

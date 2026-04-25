@@ -5,6 +5,8 @@ on:
     - cron: "0 8 1 * *" # Monthly on the 1st at 08:00 UTC
   workflow_dispatch:
 
+permissions: {}
+
 concurrency:
   group: update-role-definitions
   cancel-in-progress: false
