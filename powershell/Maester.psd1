@@ -321,7 +321,11 @@
     'Test-MtAdUserBuiltInAdminEnabledDetails', 'Test-MtAdUserBuiltInAdminLastLogonDetails',
     'Test-MtAdUserBuiltInAdminPasswordAgeDetails', 'Test-MtAdUserHoneyPotCount',
     'Test-MtAdUserHoneyPotDetails', 'Test-MtAdUserDelegationConfiguredCount',
-    'Test-MtAdUserDelegationDetails'
+    'Test-MtAdUserDelegationDetails',
+    # Phase 10: Organizational Units
+    'Test-MtAdOuOverlappingNameCount', 'Test-MtAdOuAtDomainRootCount',
+    'Test-MtAdOuStaleCount', 'Test-MtAdOuEmptyCount',
+    'Test-MtAdOuEmptyDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

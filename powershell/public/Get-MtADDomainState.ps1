@@ -39,7 +39,7 @@ function Get-MtADDomainState {
                 Domain            = Get-ADDomain | Select-Object *
                 Forest            = Get-ADForest | Select-Object *
                 Computers         = Get-ADComputer -Filter * -Properties createTimeStamp, distinguishedName, enabled, isCriticalSystemObject, lastLogonDate, managedBy, modified, operatingSystem, passwordExpired, passwordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, SIDHistory, TrustedForDelegation, TrustedToAuthForDelegation, servicePrincipalName
-                Users             = Get-ADUser -Filter * -Properties adminCount, CannotChangePassword, createTimeStamp, DistinguishedName, Enabled, isCriticalSystemObject, LastBadPasswordAttempt, LastLogonDate, LockedOut, logonHours, LogonWorkstations, managedBy, modifyTimeStamp, PasswordExpired, PasswordLastSet, PasswordNeverExpires, PasswordNotRequired, SIDHistory, servicePrincipalName
+                Users             = Get-ADUser -Filter * -Properties adminCount, CannotChangePassword, createTimeStamp, DistinguishedName, DoesNotRequirePreAuth, Enabled, HomeDirectory, isCriticalSystemObject, LastBadPasswordAttempt, LastLogonDate, LockedOut, logonHours, LogonWorkstations, managedBy, Manager, modifyTimeStamp, Name, PasswordExpired, PasswordLastSet, PasswordNeverExpires, PasswordNotRequired, primaryGroupId, ProfilePath, SamAccountName, ScriptPath, SIDHistory, servicePrincipalName, TrustedForDelegation, TrustedToAuthForDelegation, UseDESKeyOnly, userAccountControl
                 Groups            = Get-ADGroup -Filter * -Properties adminCount, createTimeStamp, DistinguishedName, GroupCategory, GroupScope, isCriticalSystemObject, ManagedBy, modifyTimeStamp, SIDHistory
                 ServiceAccounts   = Get-ADServiceAccount -Filter *
                 DomainControllers = Get-ADDomainController -Filter *
@@ -47,6 +47,16 @@ function Get-MtADDomainState {
                 RootDSE           = Get-ADRootDSE | Select-Object *
                 OptionalFeatures  = Get-ADOptionalFeature -Filter * -Properties *
                 CollectionTime    = Get-Date
+            }
+
+            # Collect Organizational Units
+            try {
+                $organizationalUnits = Get-ADOrganizationalUnit -Filter * -Properties Name, DistinguishedName, whenCreated, whenChanged, modifyTimeStamp, createTimeStamp, ManagedBy, Description
+                $domainState['OrganizationalUnits'] = $organizationalUnits
+            }
+            catch {
+                Write-Verbose "Could not collect Organizational Unit data: $($_.Exception.Message)"
+                $domainState['OrganizationalUnits'] = @()
             }
 
             # Collect SMB configuration from each domain controller
