@@ -66,7 +66,7 @@ This section will guide you through the template required to deploy Maester on A
 - For instance, using your favorite IDE such as VS Code.
 - Alternatively, through Azure DevOps.
 
-To be able to declare Microsoft Graph resources in a Bicep file, you need to enable the Bicep preview feature and specify the Microsoft Graph Bicep type versions, by configuring ```bicepconfig.json```.
+To be able to declare Microsoft Graph resources in a Bicep file, you need to specify the Microsoft Graph Bicep type versions by configuring ```bicepconfig.json```.
 
 ```json
   {
