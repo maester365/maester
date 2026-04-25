@@ -126,7 +126,7 @@ Describe 'Test-KnownRolesPresent' {
                 @{ Name = 'GlobalAdministrator';   Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true;  DisplayName = 'Global Administrator' }
                 @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true;  DisplayName = 'Security Administrator' }
                 @{ Name = 'UserAdministrator';     Id = 'fe930be7-5e62-47db-91af-98c3a49a38b1'; IsPrivileged = $true;  DisplayName = 'User Administrator' }
-                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $false; DisplayName = 'Helpdesk Administrator' }
+                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true;  DisplayName = 'Helpdesk Administrator' }
                 @{ Name = 'ExchangeAdministrator'; Id = '29232cdf-9323-42fd-ade2-1d097af3e4de'; IsPrivileged = $false; DisplayName = 'Exchange Administrator' }
             ) | ForEach-Object { $roles.Add($_) }
 
@@ -142,7 +142,7 @@ Describe 'Test-KnownRolesPresent' {
                 @{ Name = 'GlobalAdministrator';   Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true;  DisplayName = 'Global Administrator' }
                 @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true;  DisplayName = 'Security Administrator' }
                 # UserAdministrator intentionally omitted
-                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $false; DisplayName = 'Helpdesk Administrator' }
+                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true;  DisplayName = 'Helpdesk Administrator' }
                 @{ Name = 'ExchangeAdministrator'; Id = '29232cdf-9323-42fd-ade2-1d097af3e4de'; IsPrivileged = $false; DisplayName = 'Exchange Administrator' }
             ) | ForEach-Object { $roles.Add($_) }
 
@@ -193,6 +193,26 @@ Describe 'Get-ExistingRoles' {
             $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
             @($preserved).Count | Should -Be 1
             $preserved[0].Name | Should -Be 'SystemRole'
+
+            Context 'Existing role has same GUID as a renamed new role' {
+                It 'does not preserve the old-name entry when its GUID is already covered by a new role' {
+                    # Simulates: old name 'OldRoleName' was renamed to 'NewRoleName' in public docs.
+                    # Both share the same GUID. The old entry should NOT be preserved, to avoid
+                    # two hashtable keys mapping to the same underlying Entra ID role.
+                    $fileContent = @"
+            'OldRoleName' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', `$false)
+            'SystemRole'  = [MtRoleDefinition]::new('aaaabbbb-cccc-dddd-eeee-ffffffffffff', `$false)
+        "@
+                    $newRoles = [System.Collections.Generic.List[hashtable]]::new()
+                    # New data contains the renamed role (same GUID, new name)
+                    $newRoles.Add(@{ Name = 'NewRoleName'; Id = '9f06204d-73c1-4d4c-880a-6edb90606fd8'; IsPrivileged = $false; DisplayName = 'New Role Name' })
+
+                    $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
+                    # Only SystemRole should be preserved; OldRoleName should be skipped (GUID already in new data)
+                    @($preserved).Count | Should -Be 1
+                    $preserved[0].Name | Should -Be 'SystemRole'
+                }
+            }
         }
     }
 }
