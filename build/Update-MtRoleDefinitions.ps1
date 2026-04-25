@@ -59,6 +59,9 @@ function Get-RoleDataFromMarkdown {
         $contentAfterHeading
     }
 
+    # Strip blockquote prefixes (the docs render the table inside '> | ... |' blockquote lines)
+    $sectionBody = [regex]::Replace($sectionBody, '(?m)^>\s?', '')
+
     # Validate that the section contains a Markdown table header separator row with at least 3 columns
     $allSectionLines = $($sectionBody -split '\r?\n') | Where-Object { $_ -ne '' }
     $separatorLine = $allSectionLines | Where-Object { $_ -match '^\s*\|[\s\-|]+\|\s*$' -and $_ -match '\-{3,}' } | Select-Object -First 1
