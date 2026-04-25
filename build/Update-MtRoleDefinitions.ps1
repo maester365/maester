@@ -59,6 +59,17 @@ function Get-RoleDataFromMarkdown {
         $contentAfterHeading
     }
 
+    # Validate that the section contains a Markdown table header separator row with at least 3 columns
+    $allSectionLines = $($sectionBody -split '\r?\n') | Where-Object { $_ -ne '' }
+    $separatorLine = $allSectionLines | Where-Object { $_ -match '^\s*\|[\s\-|]+\|\s*$' -and $_ -match '\-{3,}' } | Select-Object -First 1
+    if (-not $separatorLine) {
+        throw "Could not find a Markdown table header separator row in the 'All roles' section. Document structure may have changed."
+    }
+    $separatorColCount = ($separatorLine -split '\|' | Where-Object { $_ -match '\S' }).Count
+    if ($separatorColCount -lt 3) {
+        throw "Table header has only $separatorColCount column(s); expected at least 3 (Role, Description, ID). Document structure may have changed."
+    }
+
     $lines = $($sectionBody -split '\r?\n').trim() | Where-Object { $_ -ne '' }
     $lines = $lines | Where-Object { $_ -match $guidPattern }
     #endregion Parsing logic only grabbing the table data under "All roles"
@@ -70,13 +81,14 @@ function Get-RoleDataFromMarkdown {
         $line looks like this at this point:
         > | [Agent ID Administrator](#agent-id-administrator) | Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | db506228-d27e-4b7d-95e5-295956d6615f |
         #>
-        $entry = $line.Split("|")
+        $entry = $line.Split('|')
+        if ($entry.Count -lt 4) { continue }
         # sample: [Agent ID Administrator](#agent-id-administrator)
         $displayName = $entry[1]
         # sample: Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.<br/>[![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md)
         $roleDescription = $entry[2].Trim()
         # sample: db506228-d27e-4b7d-95e5-295956d6615f
-        $roleGuid = $entry[3].Trim()
+        $roleGuid = $entry[3].Trim().ToLower()
 
         # Cleanup roleName and roleDescription from roleDescription we also need to extract if the role is privileged or not (if it contains the privileged label icon)
         # Extract display name from Markdown link [Display Name](#anchor)
@@ -84,7 +96,7 @@ function Get-RoleDataFromMarkdown {
         if (-not $displayNameMatch.Success) {
             continue
         }
-        $displayName = $displayNameMatch.Groups[1].Value.Trim().Replace("[", " ").Replace("]", " ")
+        $displayName = $displayNameMatch.Groups[1].Value.Trim().Replace('[', ' ').Replace(']', ' ')
 
         # The description may contain the privileged label icon markdown if it's a privileged role, we want to check for that and also remove it from the description
         $isPrivileged = $roleDescription -match 'Privileged label icon'
@@ -308,9 +320,35 @@ if ($preservedRoles.Count -gt 0) {
 
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
 $existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
-ForEach-Object { $_.Groups[1].Value }
+    ForEach-Object { $_.Groups[1].Value }
 if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Count * 0.2)) {
     throw "Too many existing roles ($($preservedRoles.Count) of $($existingNames.Count)) not found in public docs. Possible parsing issue."
+}
+
+# Safeguard: max GUID change rate (no more than 10% of existing role->GUID pairs may change)
+$existingRoleGuids = @{}
+$guidEntryPattern = "'([A-Za-z0-9]+)'\s*=\s*\[MtRoleDefinition\]::new\('([0-9a-f-]+)'"
+[regex]::Matches($roleInfoContent, $guidEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+    ForEach-Object { $existingRoleGuids[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+$newRoleGuidMap = @{}
+foreach ($r in $roles) { $newRoleGuidMap[$r.Name] = $r.Id }
+$changedGuidCount = 0
+foreach ($kv in $existingRoleGuids.GetEnumerator()) {
+    if ($newRoleGuidMap.ContainsKey($kv.Key) -and $newRoleGuidMap[$kv.Key] -ne $kv.Value) {
+        $changedGuidCount++
+    }
+}
+$maxAllowedGuidChanges = [Math]::Max(1, [Math]::Floor($existingRoleGuids.Count * 0.10))
+if ($existingRoleGuids.Count -gt 0 -and $changedGuidCount -gt $maxAllowedGuidChanges) {
+    throw "GUID change rate too high: $changedGuidCount role(s) have different GUIDs than the existing file (max allowed: $maxAllowedGuidChanges / 10%). Possible document reorganization or source compromise."
+}
+
+# Safeguard: max privileged-flag change rate (no more than 10 roles may change privilege classification)
+$existingPrivCount = ([regex]::Matches($roleInfoContent, '\$true\)')).Count
+$newPrivCount = ($roles | Where-Object { $_.IsPrivileged }).Count
+$privChange = [Math]::Abs($newPrivCount - $existingPrivCount)
+if ($existingPrivCount -gt 0 -and $privChange -gt 10) {
+    throw "Privileged role count changed by $privChange (from $existingPrivCount to $newPrivCount). Expected change of at most 10. Possible privilege classification drift."
 }
 
 # Sort roles alphabetically

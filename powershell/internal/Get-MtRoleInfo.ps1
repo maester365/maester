@@ -181,5 +181,6 @@ function Get-MtRoleInfo {
         [string] $RoleName
     )
 
+    if ([string]::IsNullOrWhiteSpace($RoleName)) { return $null }
     return $script:MtRoles[$RoleName]
 }
