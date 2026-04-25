@@ -49,6 +49,25 @@ function Get-MtADDomainState {
                 CollectionTime    = Get-Date
             }
 
+            # Collect SMB configuration from each domain controller
+            $smbConfigurations = @()
+            foreach ($dc in $domainState.DomainControllers) {
+                try {
+                    $smbConfig = Invoke-Command -ComputerName $dc.Name -ScriptBlock {
+                        Get-SmbServerConfiguration -ErrorAction SilentlyContinue | Select-Object EnableSMB1Protocol, EnableSMB2Protocol, EnableSecuritySignature, RequireSecuritySignature, EnableSMB3_1_1Protocol
+                    } -ErrorAction SilentlyContinue
+                    if ($smbConfig) {
+                        $smbConfig | Add-Member -NotePropertyName 'DCName' -NotePropertyValue $dc.Name -Force
+                        $smbConfigurations += $smbConfig
+                    }
+                }
+                catch {
+                    Write-Verbose "Could not retrieve SMB configuration from $($dc.Name): $($_.Exception.Message)"
+                }
+            }
+            $domainState['SmbConfigurations'] = $smbConfigurations
+            }
+
             # Try to collect DNS data if the DnsServer module is available
             try {
                 $dnsZones = Get-DnsServerZone -ErrorAction Stop | Select-Object *

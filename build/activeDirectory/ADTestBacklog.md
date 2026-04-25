@@ -233,16 +233,25 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 8
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-F (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 8/8
+**Tests Validated**: 8/8
+**Validated Against Live DC**: ✅ Yes
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-DC-01 | DcSiteCoverageCount | Sites with active DCs | Returns count of sites with DCs | 🔴 | Unassigned |
-| AD-DC-02 | DcSmbv1EnabledCount | DCs with SMBv1 enabled | Returns count of DCs with SMBv1 (should be 0) | 🔴 | Unassigned |
-| AD-DC-03 | DcSmbv311EnabledCount | DCs with SMBv3.1.1 enabled | Returns count of DCs with SMBv3.1.1 | 🔴 | Unassigned |
-| AD-DC-04 | DcSmbSigningEnabledCount | DCs with SMB signing enabled | Returns count of DCs with SMB signing | 🔴 | Unassigned |
-| AD-DC-05 | DcAllFsmoRolesCount | DCs holding all 5 FSMO roles | Returns count of DCs with all FSMO roles | 🔴 | Unassigned |
-| AD-DC-06 | DcFsmoRoleHolderDetails | FSMO role holder details | Returns list of DCs holding all FSMO roles | 🔴 | Unassigned |
-| AD-DC-07 | DcOperatingSystemCount | Distinct DC operating systems | Returns count of unique OS environments | 🔴 | Unassigned |
-| AD-DC-08 | DcOperatingSystemDetails | DC OS distribution details | Returns breakdown of DCs by OS | 🔴 | Unassigned |
+| AD-DC-01 | DcSiteCoverageCount | Sites with active DCs | Returns count of sites with DCs | 🟢 | Session-F |
+| AD-DC-02 | DcSmbv1EnabledCount | DCs with SMBv1 enabled | Returns count of DCs with SMBv1 (should be 0) | 🟢 | Session-F |
+| AD-DC-03 | DcSmbv311EnabledCount | DCs with SMBv3.1.1 enabled | Returns count of DCs with SMBv3.1.1 | 🟢 | Session-F |
+| AD-DC-04 | DcSmbSigningEnabledCount | DCs with SMB signing enabled | Returns count of DCs with SMB signing | 🟢 | Session-F |
+| AD-DC-05 | DcAllFsmoRolesCount | DCs holding all 5 FSMO roles | Returns count of DCs with all FSMO roles | 🟢 | Session-F |
+| AD-DC-06 | DcFsmoRoleHolderDetails | FSMO role holder details | Returns list of DCs holding all FSMO roles | 🟢 | Session-F |
+| AD-DC-07 | DcOperatingSystemCount | Distinct DC operating systems | Returns count of unique OS environments | 🟢 | Session-F |
+| AD-DC-08 | DcOperatingSystemDetails | DC OS distribution details | Returns breakdown of DCs by OS | 🟢 | Session-F |
+
+**Validation Results**: All 8 tests validated against live DC (maester.test). See [AD-TEST-RESULTS.md](../../AD-TEST-RESULTS.md) for detailed results.
 
 ---
 
@@ -606,7 +615,7 @@ Computer objects from the cache include these key properties:
 | Phase 3 | Password Policies | 11 | 🟢 Complete |
 | Phase 4 | DNS Infrastructure | 19 | 🟢 Complete |
 | Phase 5 | Domain & Forest | 12 | 🟢 Complete |
-| Phase 6 | Domain Controllers | 8 | 🔴 Not Started |
+| Phase 6 | Domain Controllers | 8 | 🟢 Complete |
 | Phase 7 | Group Policy | 11 | 🔴 Not Started |
 | Phase 8 | Groups | 22 | 🔴 Not Started |
 | Phase 9 | Users | 29 | 🔴 Not Started |
@@ -621,7 +630,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **24% Complete (65/268)** |
+| **TOTAL** | | **268** | **27% Complete (73/268)** |
 
 ---
 

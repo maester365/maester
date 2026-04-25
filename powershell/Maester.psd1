@@ -281,7 +281,12 @@
     'Test-MtAdDomainNameStandardCompliance', 'Test-MtAdDomainNameNonStandardDetails',
     'Test-MtAdNetbiosNameStandardCompliance', 'Test-MtAdNetbiosNameNonStandardDetails',
     'Test-MtAdForestFunctionalLevel', 'Test-MtAdForestDomainCount',
-    'Test-MtAdTombstoneLifetime', 'Test-MtAdRecycleBinStatus'
+    'Test-MtAdTombstoneLifetime', 'Test-MtAdRecycleBinStatus',
+    # Phase 6: Domain Controllers
+    'Test-MtAdDcSiteCoverageCount', 'Test-MtAdDcSmbv1EnabledCount',
+    'Test-MtAdDcSmbv311EnabledCount', 'Test-MtAdDcSmbSigningEnabledCount',
+    'Test-MtAdDcAllFsmoRolesCount', 'Test-MtAdDcFsmoRoleHolderDetails',
+    'Test-MtAdDcOperatingSystemCount', 'Test-MtAdDcOperatingSystemDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
