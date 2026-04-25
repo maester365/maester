@@ -261,19 +261,24 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 11
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-G (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 11/11
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-GPO-01 | GpoTotalCount | Total GPOs in domain | Returns count of GPOs | 🔴 | Unassigned |
-| AD-GPO-02 | GpoCreatedBefore2020Count | GPOs created before 2020 | Returns count of old GPOs | 🔴 | Unassigned |
-| AD-GPO-03 | GpoChangedBefore2020Count | GPOs last changed before 2020 | Returns count of stale GPOs | 🔴 | Unassigned |
-| AD-GPO-04 | GpoUnlinkedCount | GPOs with no links | Returns count of unlinked GPOs | 🔴 | Unassigned |
-| AD-GPO-05 | GpoUnlinkedDetails | Details of unlinked GPOs | Returns list of unlinked GPOs | 🔴 | Unassigned |
-| AD-GPOL-01 | GpoLinkedCount | Distinct GPOs with links | Returns count of linked GPOs | 🔴 | Unassigned |
-| AD-GPOL-02 | GpoDisabledLinkCount | Disabled GPO links | Returns count of disabled links | 🔴 | Unassigned |
-| AD-GPOL-03 | GpoUnlinkedTargetCount | Targets without GPO links | Returns count of targets with no GPOs | 🔴 | Unassigned |
-| AD-GPOL-04 | GpoEnforcedCount | Enforced GPO links | Returns count of enforced GPOs | 🔴 | Unassigned |
-| AD-GPOL-05 | GpoBlockedInheritanceCount | Targets blocking inheritance | Returns count of targets with blocked inheritance | 🔴 | Unassigned |
-| AD-GPOL-06 | GpoLinkedOUCount | OUs with GPO links | Returns count of OUs with GPO links | 🔴 | Unassigned |
+| AD-GPO-01 | GpoTotalCount | Total GPOs in domain | Returns count of GPOs | 🟢 | Session-G |
+| AD-GPO-02 | GpoCreatedBefore2020Count | GPOs created before 2020 | Returns count of old GPOs | 🟢 | Session-G |
+| AD-GPO-03 | GpoChangedBefore2020Count | GPOs last changed before 2020 | Returns count of stale GPOs | 🟢 | Session-G |
+| AD-GPO-04 | GpoUnlinkedCount | GPOs with no links | Returns count of unlinked GPOs | 🟢 | Session-G |
+| AD-GPO-05 | GpoUnlinkedDetails | Details of unlinked GPOs | Returns list of unlinked GPOs | 🟢 | Session-G |
+| AD-GPOL-01 | GpoLinkedCount | Distinct GPOs with links | Returns count of linked GPOs | 🟢 | Session-G |
+| AD-GPOL-02 | GpoDisabledLinkCount | Disabled GPO links | Returns count of disabled links | 🟢 | Session-G |
+| AD-GPOL-03 | GpoUnlinkedTargetCount | Targets without GPO links | Returns count of targets with no GPOs | 🟢 | Session-G |
+| AD-GPOL-04 | GpoEnforcedCount | Enforced GPO links | Returns count of enforced GPOs | 🟢 | Session-G |
+| AD-GPOL-05 | GpoBlockedInheritanceCount | Targets blocking inheritance | Returns count of targets with blocked inheritance | 🟢 | Session-G |
+| AD-GPOL-06 | GpoLinkedOUCount | OUs with GPO links | Returns count of OUs with GPO links | 🟢 | Session-G |
 
 ---
 
@@ -616,7 +621,7 @@ Computer objects from the cache include these key properties:
 | Phase 4 | DNS Infrastructure | 19 | 🟢 Complete |
 | Phase 5 | Domain & Forest | 12 | 🟢 Complete |
 | Phase 6 | Domain Controllers | 8 | 🟢 Complete |
-| Phase 7 | Group Policy | 11 | 🔴 Not Started |
+| Phase 7 | Group Policy | 11 | 🟢 Complete |
 | Phase 8 | Groups | 22 | 🔴 Not Started |
 | Phase 9 | Users | 29 | 🔴 Not Started |
 | Phase 10 | Organizational Units | 5 | 🔴 Not Started |
@@ -630,7 +635,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **27% Complete (73/268)** |
+| **TOTAL** | | **268** | **31% Complete (84/268)** |
 
 ---
 

@@ -286,7 +286,14 @@
     'Test-MtAdDcSiteCoverageCount', 'Test-MtAdDcSmbv1EnabledCount',
     'Test-MtAdDcSmbv311EnabledCount', 'Test-MtAdDcSmbSigningEnabledCount',
     'Test-MtAdDcAllFsmoRolesCount', 'Test-MtAdDcFsmoRoleHolderDetails',
-    'Test-MtAdDcOperatingSystemCount', 'Test-MtAdDcOperatingSystemDetails'
+    'Test-MtAdDcOperatingSystemCount', 'Test-MtAdDcOperatingSystemDetails',
+    # Phase 7: Group Policy
+    'Test-MtAdGpoTotalCount', 'Test-MtAdGpoCreatedBefore2020Count',
+    'Test-MtAdGpoChangedBefore2020Count', 'Test-MtAdGpoUnlinkedCount',
+    'Test-MtAdGpoUnlinkedDetails', 'Test-MtAdGpoLinkedCount',
+    'Test-MtAdGpoDisabledLinkCount', 'Test-MtAdGpoUnlinkedTargetCount',
+    'Test-MtAdGpoEnforcedCount', 'Test-MtAdGpoBlockedInheritanceCount',
+    'Test-MtAdGpoLinkedOUCount'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
