@@ -325,7 +325,16 @@
     # Phase 10: Organizational Units
     'Test-MtAdOuOverlappingNameCount', 'Test-MtAdOuAtDomainRootCount',
     'Test-MtAdOuStaleCount', 'Test-MtAdOuEmptyCount',
-    'Test-MtAdOuEmptyDetails'
+    'Test-MtAdOuEmptyDetails',
+    # Phase 11: Sites and Subnets
+    'Test-MtAdSiteTotalCount', 'Test-MtAdSiteWithoutDcCount',
+    'Test-MtAdSiteWithoutDcDetails', 'Test-MtAdSiteWithoutSubnetCount',
+    'Test-MtAdSiteWithoutSubnetDetails', 'Test-MtAdSubnetTotalCount',
+    'Test-MtAdSubnetSiteAssociationCount', 'Test-MtAdSubnetCatchAllCount',
+    'Test-MtAdSubnetIpv6Count', 'Test-MtAdSubnetIpv6CatchAllCount',
+    'Test-MtAdSubnetNonInternalCount', 'Test-MtAdSubnetNonInternalDetails',
+    'Test-MtAdSubnetFirstOctetCount', 'Test-MtAdSubnetFirstTwoOctetsCount',
+    'Test-MtAdSubnetFirstThreeOctetsCount', 'Test-MtAdSubnetWithoutSiteCount'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

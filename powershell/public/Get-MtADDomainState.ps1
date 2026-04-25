@@ -44,6 +44,7 @@ function Get-MtADDomainState {
                 ServiceAccounts   = Get-ADServiceAccount -Filter *
                 DomainControllers = Get-ADDomainController -Filter *
                 ReplicationSites  = Get-ADReplicationSite -Filter *
+                Subnets           = Get-ADReplicationSubnet -Filter * -Properties *
                 RootDSE           = Get-ADRootDSE | Select-Object *
                 OptionalFeatures  = Get-ADOptionalFeature -Filter * -Properties *
                 CollectionTime    = Get-Date
