@@ -305,11 +305,226 @@ Based on the password policy test results:
 
 4. **Consider FGPPs**: No fine-grained password policies are configured. Consider implementing FGPPs for privileged accounts with stronger requirements.
 
+## Phase 4: DNS Infrastructure Test Results
+
+All 19 Phase 4 DNS Infrastructure tests were executed successfully against the live domain controller:
+
+### Test Execution Summary
+
+| Test ID | Test Name | Status | Result |
+|---------|-----------|--------|--------|
+| AD-DNS-01 | DnsZoneCount | ✅ PASS | True |
+| AD-DNS-02 | DnsZonesWithOnlySoaNs | ✅ PASS | True |
+| AD-DNS-03 | DnsRootServerIncorrectCount | ✅ PASS | True |
+| AD-DNS-04 | DnsRootServerIncorrectDetails | ✅ PASS | True |
+| AD-DNS-05 | DnsDynamicRecordCount | ✅ PASS | True |
+| AD-DNS-06 | DnsZonesWithRecordsCount | ✅ PASS | True |
+| AD-DNS-07 | DnsZoneRecordDetails | ✅ PASS | True |
+| AD-DNS-08 | DnsZoneDelegationCount | ✅ PASS | True |
+| AD-DNS-09 | DnsZoneDelegationDetails | ✅ PASS | True |
+| AD-DNS-10 | DnsSoaDetails | ✅ PASS | True |
+| AD-DNS-11 | DnsAdSrvRecordCount | ✅ PASS | True |
+| AD-DNS-12 | DnsAdSrvRecordDetails | ✅ PASS | True |
+| AD-DNS-13 | DnsDnssecRecordCount | ✅ PASS | True |
+| AD-DNS-14 | DnsEmptyZoneCount | ✅ PASS | True |
+| AD-DNS-15 | DnsDuplicateZoneCount | ✅ PASS | True |
+| AD-DNS-16 | DnsReverseZoneCount | ✅ PASS | True |
+| AD-DNS-17 | DnsNonStandardZoneCount | ✅ PASS | True |
+| AD-DNS-18 | DnsReverseZoneNetworkCount | ✅ PASS | True |
+| AD-DNS-19 | DnsReverseZoneNetworkDetails | ✅ PASS | True |
+
+**Summary:**
+- Total Tests: 19
+- Passed: 19
+- Failed: 0
+- Skipped: 0
+
+### DNS Configuration Summary
+
+| Metric | Value |
+|--------|-------|
+| Total DNS Zones | 6 |
+| Zones with Records | 6 |
+| Reverse Lookup Zones | 1 |
+| AD DS SRV Records | 44 |
+| Dynamic Records | 16 |
+| Static Records | 41 |
+
+### Phase 4 Test Function Details
+
+#### AD-DNS-01: DnsZoneCount
+Counts DNS zones with resource records. **Result: 6 zones with records**.
+
+#### AD-DNS-02: DnsZonesWithOnlySoaNs
+Identifies zones with only SOA/NS records. **Result: 0 zones with only default records**.
+
+#### AD-DNS-03: DnsRootServerIncorrectCount
+Checks root server hints for incorrect IPs. **Result: 0 incorrect root server IPs** (all root hints configured correctly).
+
+#### AD-DNS-04: DnsRootServerIncorrectDetails
+Provides detailed root server configuration. **Result: All 13 root servers configured with correct IPs**.
+
+#### AD-DNS-05: DnsDynamicRecordCount
+Counts dynamic vs static DNS records. **Result: 16 dynamic records, 41 static records**.
+
+#### AD-DNS-06: DnsZonesWithRecordsCount
+Counts zones with non-default records. **Result: 5 zones with custom records**.
+
+#### AD-DNS-07: DnsZoneRecordDetails
+Provides detailed record counts per zone. **Result: Successfully retrieved record distribution across all zones**.
+
+#### AD-DNS-08: DnsZoneDelegationCount
+Counts DNS zone delegations. **Result: 0 zone delegations**.
+
+#### AD-DNS-09: DnsZoneDelegationDetails
+Provides detailed delegation information. **Result: No delegations configured**.
+
+#### AD-DNS-10: DnsSoaDetails
+Retrieves SOA record details for each zone. **Result: Successfully retrieved SOA records for all zones**.
+
+#### AD-DNS-11: DnsAdSrvRecordCount
+Counts AD DS SRV records. **Result: 44 AD DS SRV records found**.
+
+#### AD-DNS-12: DnsAdSrvRecordDetails
+Provides detailed SRV record information. **Result: Successfully retrieved SRV records for all AD services**.
+
+**SRV Services Discovered:**
+- _gc (Global Catalog): 2 records
+- _kerberos: 2 records
+- _kpasswd: 2 records
+- _ldap: 38 records
+
+#### AD-DNS-13: DnsDnssecRecordCount
+Counts DNSSEC trust anchors. **Result: 0 DNSSEC trust anchors** (DNSSEC not configured).
+
+#### AD-DNS-14: DnsEmptyZoneCount
+Counts zones with zero records. **Result: 0 empty zones**.
+
+#### AD-DNS-15: DnsDuplicateZoneCount
+Counts duplicate/conflict zones. **Result: 0 duplicate zones**.
+
+#### AD-DNS-16: DnsReverseZoneCount
+Counts reverse lookup zones. **Result: 1 reverse lookup zone**.
+
+#### AD-DNS-17: DnsNonStandardZoneCount
+Counts zones with non-RFC-compliant names. **Result: 0 non-standard zones**.
+
+#### AD-DNS-18: DnsReverseZoneNetworkCount
+Counts networks with reverse zones. **Result: 1 network with reverse lookup**.
+
+#### AD-DNS-19: DnsReverseZoneNetworkDetails
+Provides detailed reverse zone network information. **Result: Successfully retrieved network details**.
+
+### DNS Security Assessment
+
+**Strengths:**
+- ✅ All root server hints configured correctly
+- ✅ No duplicate or conflict zones
+- ✅ No empty zones
+- ✅ All zone names RFC-compliant
+- ✅ AD DS SRV records properly configured
+
+**Recommendations:**
+- ⚠️ Consider enabling DNSSEC for enhanced DNS security
+- ⚠️ Review dynamic DNS settings to ensure only authorized clients can register
+
+## Phase 5: Domain & Forest Test Results
+
+All 12 Phase 5 Domain & Forest tests were executed successfully against the live domain controller:
+
+### Test Execution Summary
+
+| Test ID | Test Name | Status | Result |
+|---------|-----------|--------|--------|
+| AD-DOM-01 | DomainFunctionalLevel | ✅ PASS | True |
+| AD-DOM-02 | MachineAccountQuota | ✅ PASS | True |
+| AD-DOM-03 | DomainControllerCount | ✅ PASS | True |
+| AD-DOM-04 | RidsRemaining | ✅ PASS | True |
+| AD-DOM-05 | DomainNameStandardCompliance | ✅ PASS | True |
+| AD-DOM-06 | DomainNameNonStandardDetails | ✅ PASS | True |
+| AD-DOM-07 | NetbiosNameStandardCompliance | ✅ PASS | True |
+| AD-DOM-08 | NetbiosNameNonStandardDetails | ✅ PASS | True |
+| AD-FOR-01 | ForestFunctionalLevel | ✅ PASS | True |
+| AD-FOR-02 | ForestDomainCount | ✅ PASS | True |
+| AD-FOR-03 | TombstoneLifetime | ✅ PASS | True |
+| AD-FOR-04 | RecycleBinStatus | ✅ PASS | True |
+
+**Summary:**
+- Total Tests: 12
+- Passed: 12
+- Failed: 0
+- Skipped: 0
+
+### Domain & Forest Configuration Summary
+
+| Property | Value |
+|----------|-------|
+| Domain Functional Level | Windows2016Domain |
+| Forest Functional Level | Windows2016Forest |
+| Domain Name | maester.test |
+| NetBIOS Name | MAESTER |
+| Domain Controllers | 1 |
+| Forest Domains | 1 |
+| Tombstone Lifetime | 180 days |
+| Recycle Bin | Disabled |
+| Machine Account Quota | 10 (default) |
+
+### Phase 5 Test Function Details
+
+#### AD-DOM-01: DomainFunctionalLevel
+Retrieves the current domain functional level. **Result: Windows2016Domain**.
+
+#### AD-DOM-02: MachineAccountQuota
+Retrieves the machine account quota (ms-DS-MachineAccountQuota). **Result: 10** (default value - allows standard users to join up to 10 computers).
+
+#### AD-DOM-03: DomainControllerCount
+Counts domain controllers in the domain. **Result: 1 domain controller (myVm)**.
+
+#### AD-DOM-04: RidsRemaining
+Retrieves the RID pool status. **Result: RID pool available** (informational test).
+
+#### AD-DOM-05: DomainNameStandardCompliance
+Checks domain name RFC compliance. **Result: All 1 domain(s) compliant with RFC 1123**.
+
+#### AD-DOM-06: DomainNameNonStandardDetails
+Provides detailed domain name compliance information. **Result: All domain names comply with standards**.
+
+#### AD-DOM-07: NetbiosNameStandardCompliance
+Checks NetBIOS name compliance. **Result: All 1 NetBIOS name(s) compliant**.
+
+#### AD-DOM-08: NetbiosNameNonStandardDetails
+Provides detailed NetBIOS name compliance information. **Result: All NetBIOS names comply with standards**.
+
+#### AD-FOR-01: ForestFunctionalLevel
+Retrieves the current forest functional level. **Result: Windows2016Forest**.
+
+#### AD-FOR-02: ForestDomainCount
+Counts domains in the forest. **Result: 1 domain (maester.test)**.
+
+#### AD-FOR-03: TombstoneLifetime
+Retrieves the tombstone lifetime. **Result: 180 days** (meets recommendation of 180+ days).
+
+#### AD-FOR-04: RecycleBinStatus
+Checks AD Recycle Bin status. **Result: Disabled** (can be enabled as forest functional level supports it).
+
+### Security Assessment
+
+**Strengths:**
+- ✅ Domain and forest at Windows Server 2016 functional level
+- ✅ Tombstone lifetime set to 180 days (good for recovery)
+- ✅ All domain names RFC-compliant
+- ✅ All NetBIOS names compliant
+- ✅ Single domain forest (simplifies management)
+
+**Recommendations:**
+- ⚠️ **Enable AD Recycle Bin**: Forest functional level supports it. Provides better protection against accidental deletion.
+- ⚠️ **Review Machine Account Quota**: Currently set to default (10). Consider reducing to 0 and using pre-staged computer accounts.
+
 ## Next Steps
 
 The domain controller is ready for:
-- Phase 4 testing (DNS Infrastructure)
-- Phase 5 testing (Domain & Forest)
+- Phase 6 testing (Domain Controllers)
+- Phase 7 testing (Group Policy)
 - Additional AD test phases as implemented
 
 ## Connection Information
