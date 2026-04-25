@@ -66,7 +66,6 @@ function Get-MtADDomainState {
                 }
             }
             $domainState['SmbConfigurations'] = $smbConfigurations
-            }
 
             # Try to collect DNS data if the DnsServer module is available
             try {
