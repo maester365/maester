@@ -49,6 +49,38 @@ function Get-MtADDomainState {
                 CollectionTime    = Get-Date
             }
 
+            # Try to collect DNS data if the DnsServer module is available
+            try {
+                $dnsZones = Get-DnsServerZone -ErrorAction Stop | Select-Object *
+                $domainState['DNSZones'] = $dnsZones
+
+                # Collect DNS records for each zone (limit to essential record types for performance)
+                $dnsRecords = @()
+                foreach ($zone in $dnsZones | Where-Object { $_.ZoneType -eq 'Primary' -or $_.ZoneType -eq 'ActiveDirectory-Integrated' } | Select-Object -First 20) {
+                    try {
+                        $records = Get-DnsServerResourceRecord -ZoneName $zone.ZoneName -ErrorAction SilentlyContinue | Select-Object *
+                        foreach ($record in $records) {
+                            $record | Add-Member -NotePropertyName 'ZoneName' -NotePropertyValue $zone.ZoneName -Force
+                        }
+                        $dnsRecords += $records
+                    }
+                    catch {
+                        Write-Verbose "Could not retrieve records for zone $($zone.ZoneName): $($_.Exception.Message)"
+                    }
+                }
+                $domainState['DNSRecords'] = $dnsRecords
+            }
+            catch [Management.Automation.CommandNotFoundException] {
+                Write-Verbose "DnsServer module not available. DNS data will not be collected."
+                $domainState['DNSZones'] = @()
+                $domainState['DNSRecords'] = @()
+            }
+            catch {
+                Write-Verbose "Could not collect DNS data: $($_.Exception.Message)"
+                $domainState['DNSZones'] = @()
+                $domainState['DNSRecords'] = @()
+            }
+
             $__MtSession.ADCache[$cacheKey] = $domainState
             $__MtSession.ADCollectionTime = Get-Date
 
