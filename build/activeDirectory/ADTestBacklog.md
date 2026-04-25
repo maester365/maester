@@ -724,6 +724,12 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 18
 **Dependencies**: None
 
+**Status**: 🟡 In Progress
+**Claimed By**: Session-P20 (Sisyphus)
+**Claimed Date**: 2026-04-25
+**Estimated Completion**: 2026-04-25
+**Tests Completed**: 0/18
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
 | AD-DACL-01 | DaclDistinctObjectCount | Distinct objects with DACLs | Returns count of unique objects with DACLs | 🔴 | Unassigned |
