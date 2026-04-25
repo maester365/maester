@@ -334,7 +334,12 @@
     'Test-MtAdSubnetIpv6Count', 'Test-MtAdSubnetIpv6CatchAllCount',
     'Test-MtAdSubnetNonInternalCount', 'Test-MtAdSubnetNonInternalDetails',
     'Test-MtAdSubnetFirstOctetCount', 'Test-MtAdSubnetFirstTwoOctetsCount',
-    'Test-MtAdSubnetFirstThreeOctetsCount', 'Test-MtAdSubnetWithoutSiteCount'
+    'Test-MtAdSubnetFirstThreeOctetsCount', 'Test-MtAdSubnetWithoutSiteCount',
+    # Phase 12: Trusts
+    'Test-MtAdTrustTotalCount', 'Test-MtAdTrustInterForestCount',
+    'Test-MtAdTrustQuarantinedCount', 'Test-MtAdTrustNonQuarantinedDetails',
+    'Test-MtAdTrustDetails', 'Test-MtAdTrustStaleCount',
+    'Test-MtAdTrustStaleDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

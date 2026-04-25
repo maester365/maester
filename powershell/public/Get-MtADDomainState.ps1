@@ -50,6 +50,16 @@ function Get-MtADDomainState {
                 CollectionTime    = Get-Date
             }
 
+            # Collect Trust information
+            try {
+                $trusts = Get-ADTrust -Filter * -Properties *
+                $domainState['Trusts'] = $trusts
+            }
+            catch {
+                Write-Verbose "Could not collect Trust data: $($_.Exception.Message)"
+                $domainState['Trusts'] = @()
+            }
+
             # Collect Organizational Units
             try {
                 $organizationalUnits = Get-ADOrganizationalUnit -Filter * -Properties Name, DistinguishedName, whenCreated, whenChanged, modifyTimeStamp, createTimeStamp, ManagedBy, Description
