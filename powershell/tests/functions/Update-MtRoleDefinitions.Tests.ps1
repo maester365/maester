@@ -14,7 +14,7 @@ Describe 'Get-RoleDataFromMarkdown' {
 
     Context 'Valid table with 3 roles including 1 privileged' {
         It 'returns 3 entries with correct IsPrivileged flag' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | Description | ID |
@@ -22,7 +22,7 @@ Describe 'Get-RoleDataFromMarkdown' {
 | [Global Administrator](#global-administrator) | Can manage all aspects of Azure AD. [![Privileged label icon.](./media/permissions-reference/privileged-label.png)](privileged-roles-permissions.md) | 62e90394-69f5-4237-9190-012177145e10 |
 | [Reports Reader](#reports-reader) | Can read sign-in and audit reports. | 4a5d8f65-41da-4de4-8968-e035b65339cf |
 | [Search Administrator](#search-administrator) | Can create and manage all aspects of Microsoft Search settings. | 0964bb5e-9bdb-4d7b-ac29-58e794862a40 |
-"@
+'@
             $result = Get-RoleDataFromMarkdown -Markdown $md
             $result.Count | Should -Be 3
             $privileged = @($result | Where-Object { $_.IsPrivileged })
@@ -33,52 +33,52 @@ Describe 'Get-RoleDataFromMarkdown' {
 
     Context 'Missing All roles heading' {
         It 'throws an error mentioning All roles' {
-            $md = @"
+            $md = @'
 ## Other Section
 
 | Role | Description | ID |
 | --- | --- | --- |
 | [Some Role](#some-role) | Description | 62e90394-69f5-4237-9190-012177145e10 |
-"@
-            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage "*All roles*"
+'@
+            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage '*All roles*'
         }
     }
 
     Context 'Missing table header separator row' {
         It 'throws an error about the header separator' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | Description | ID |
 | [Global Administrator](#global-administrator) | Description | 62e90394-69f5-4237-9190-012177145e10 |
-"@
-            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage "*table header separator*"
+'@
+            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage '*table header separator*'
         }
     }
 
     Context 'Table header has fewer than 3 columns' {
         It 'throws an error about column count' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | ID |
 | --- | --- |
 | [Global Administrator](#global-administrator) | 62e90394-69f5-4237-9190-012177145e10 |
-"@
-            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage "*column*"
+'@
+            { Get-RoleDataFromMarkdown -Markdown $md } | Should -Throw -ExpectedMessage '*column*'
         }
     }
 
     Context 'Row missing pipe delimiters (too few columns)' {
         It 'skips the malformed row without a terminating error' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | Description | ID |
 | --- | --- | --- |
 | [Global Administrator](#global-administrator) | Description | 62e90394-69f5-4237-9190-012177145e10 |
 This is a prose line with a guid 11111111-1111-1111-1111-111111111111 but no pipes
-"@
+'@
             $result = @(Get-RoleDataFromMarkdown -Markdown $md)
             @($result).Count | Should -Be 1
             $result[0].Name | Should -Be 'GlobalAdministrator'
@@ -87,14 +87,14 @@ This is a prose line with a guid 11111111-1111-1111-1111-111111111111 but no pip
 
     Context 'Duplicate role names' {
         It 'is handled by the caller deduplication (both entries returned from parser)' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | Description | ID |
 | --- | --- | --- |
 | [Global Administrator](#global-administrator) | First | 62e90394-69f5-4237-9190-012177145e10 |
 | [Global Administrator](#global-administrator) | Duplicate | 62e90394-69f5-4237-9190-012177145e10 |
-"@
+'@
             # Parser returns duplicates; caller is responsible for dedup
             $result = Get-RoleDataFromMarkdown -Markdown $md
             $result.Count | Should -Be 2
@@ -103,13 +103,13 @@ This is a prose line with a guid 11111111-1111-1111-1111-111111111111 but no pip
 
     Context 'GUID normalization' {
         It 'normalizes parsed GUIDs to lowercase' {
-            $md = @"
+            $md = @'
 ## All roles
 
 | Role | Description | ID |
 | --- | --- | --- |
 | [Global Administrator](#global-administrator) | Description | 62e90394-69f5-4237-9190-012177145e10 |
-"@
+'@
             $result = @(Get-RoleDataFromMarkdown -Markdown $md)
             # GUIDs from the source document are already lowercase; .ToLower() is a no-op safeguard
             $result[0].Id | Should -Be '62e90394-69f5-4237-9190-012177145e10'
@@ -123,10 +123,10 @@ Describe 'Test-KnownRolesPresent' {
         It 'returns true' {
             $roles = [System.Collections.Generic.List[hashtable]]::new()
             @(
-                @{ Name = 'GlobalAdministrator';   Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true;  DisplayName = 'Global Administrator' }
-                @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true;  DisplayName = 'Security Administrator' }
-                @{ Name = 'UserAdministrator';     Id = 'fe930be7-5e62-47db-91af-98c3a49a38b1'; IsPrivileged = $true;  DisplayName = 'User Administrator' }
-                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true;  DisplayName = 'Helpdesk Administrator' }
+                @{ Name = 'GlobalAdministrator'; Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true; DisplayName = 'Global Administrator' }
+                @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true; DisplayName = 'Security Administrator' }
+                @{ Name = 'UserAdministrator'; Id = 'fe930be7-5e62-47db-91af-98c3a49a38b1'; IsPrivileged = $true; DisplayName = 'User Administrator' }
+                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true; DisplayName = 'Helpdesk Administrator' }
                 @{ Name = 'ExchangeAdministrator'; Id = '29232cdf-9323-42fd-ade2-1d097af3e4de'; IsPrivileged = $false; DisplayName = 'Exchange Administrator' }
             ) | ForEach-Object { $roles.Add($_) }
 
@@ -139,10 +139,10 @@ Describe 'Test-KnownRolesPresent' {
         It 'returns false and emits a warning' {
             $roles = [System.Collections.Generic.List[hashtable]]::new()
             @(
-                @{ Name = 'GlobalAdministrator';   Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true;  DisplayName = 'Global Administrator' }
-                @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true;  DisplayName = 'Security Administrator' }
+                @{ Name = 'GlobalAdministrator'; Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true; DisplayName = 'Global Administrator' }
+                @{ Name = 'SecurityAdministrator'; Id = '194ae4cb-b126-40b2-bd5b-6091b380977d'; IsPrivileged = $true; DisplayName = 'Security Administrator' }
                 # UserAdministrator intentionally omitted
-                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true;  DisplayName = 'Helpdesk Administrator' }
+                @{ Name = 'HelpdeskAdministrator'; Id = '729827e3-9c14-49f7-bb1b-9608f156bbb8'; IsPrivileged = $true; DisplayName = 'Helpdesk Administrator' }
                 @{ Name = 'ExchangeAdministrator'; Id = '29232cdf-9323-42fd-ade2-1d097af3e4de'; IsPrivileged = $false; DisplayName = 'Exchange Administrator' }
             ) | ForEach-Object { $roles.Add($_) }
 
@@ -169,7 +169,7 @@ Describe 'Test-AllGuidsValid' {
         It 'returns false and emits a warning' {
             $roles = [System.Collections.Generic.List[hashtable]]::new()
             $roles.Add(@{ Name = 'GoodRole'; Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $false; DisplayName = 'Good Role' })
-            $roles.Add(@{ Name = 'BadRole';  Id = 'not-a-valid-guid';                     IsPrivileged = $false; DisplayName = 'Bad Role' })
+            $roles.Add(@{ Name = 'BadRole'; Id = 'not-a-valid-guid'; IsPrivileged = $false; DisplayName = 'Bad Role' })
 
             $result = Test-AllGuidsValid -Roles $roles 3>&1
             ($result | Where-Object { $_ -is [bool] }) | Should -BeFalse
@@ -187,8 +187,8 @@ Describe 'Get-ExistingRoles' {
     'SystemRole' = [MtRoleDefinition]::new('aaaabbbb-cccc-dddd-eeee-ffffffffffff', `$false)
 "@
             $newRoles = [System.Collections.Generic.List[hashtable]]::new()
-            $newRoles.Add(@{ Name = 'GlobalAdministrator'; Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true;  DisplayName = 'Global Administrator' })
-            $newRoles.Add(@{ Name = 'ReportsReader';       Id = '4a5d8f65-41da-4de4-8968-e035b65339cf'; IsPrivileged = $false; DisplayName = 'Reports Reader' })
+            $newRoles.Add(@{ Name = 'GlobalAdministrator'; Id = '62e90394-69f5-4237-9190-012177145e10'; IsPrivileged = $true; DisplayName = 'Global Administrator' })
+            $newRoles.Add(@{ Name = 'ReportsReader'; Id = '4a5d8f65-41da-4de4-8968-e035b65339cf'; IsPrivileged = $false; DisplayName = 'Reports Reader' })
 
             $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
             @($preserved).Count | Should -Be 1
@@ -222,13 +222,13 @@ Describe 'Update-FileSection' {
     Context 'Marker present in file' {
         It 'replaces content between markers' {
             $tmpFile = [System.IO.Path]::GetTempFileName()
-            Set-Content -Path $tmpFile -Value @"
+            Set-Content -Path $tmpFile -Value @'
 before
 # BEGIN MARKER
 old content
 # END MARKER
 after
-"@
+'@
             Update-FileSection -FilePath $tmpFile `
                 -BeginMarker '# BEGIN MARKER' `
                 -EndMarker '# END MARKER' `
@@ -244,12 +244,12 @@ after
     Context 'Begin marker missing' {
         It 'throws an error containing the begin marker text' {
             $tmpFile = [System.IO.Path]::GetTempFileName()
-            Set-Content -Path $tmpFile -Value "no markers here"
+            Set-Content -Path $tmpFile -Value 'no markers here'
 
             { Update-FileSection -FilePath $tmpFile `
-                -BeginMarker '# BEGIN MARKER' `
-                -EndMarker '# END MARKER' `
-                -NewContent 'new content' } | Should -Throw -ExpectedMessage "*BEGIN MARKER*"
+                    -BeginMarker '# BEGIN MARKER' `
+                    -EndMarker '# END MARKER' `
+                    -NewContent 'new content' } | Should -Throw -ExpectedMessage '*BEGIN MARKER*'
 
             Remove-Item $tmpFile -Force
         }
