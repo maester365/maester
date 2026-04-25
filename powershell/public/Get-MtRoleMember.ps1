@@ -100,7 +100,11 @@ function Get-MtRoleMember {
         $groups = $assignments | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.group' }
         $groups | ForEach-Object {
             #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-            $assignments += Get-MtGroupMember -GroupId $_.id
+            # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
+            $groupMembers = Get-MtGroupMember -GroupId $_.id
+            if ($null -ne $groupMembers) {
+                $assignments += $groupMembers
+            }
         }
 
         # Append the type of assignment
