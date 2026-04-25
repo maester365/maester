@@ -59,8 +59,10 @@ function Get-RoleDataFromMarkdown {
         $contentAfterHeading
     }
 
-    # Strip blockquote prefixes (the docs render the table inside '> | ... |' blockquote lines)
-    $sectionBody = [regex]::Replace($sectionBody, '(?m)^>\s?', '')
+    # Strip blockquote prefixes only from table rows (lines where '>' precedes a '|').
+    # GFM allows up to 3 spaces of indentation before '>'; the lookahead (?=\s*\|) ensures
+    # non-table blockquote lines (e.g. '> [!div ...]' directives) are left intact.
+    $sectionBody = [regex]::Replace($sectionBody, '(?m)^ {0,3}>\s?(?=\s*\|)', '')
 
     # Validate that the section contains a Markdown table header separator row with at least 3 columns
     $allSectionLines = $($sectionBody -split '\r?\n') | Where-Object { $_ -ne '' }
