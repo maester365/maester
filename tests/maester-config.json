@@ -1350,6 +1350,11 @@
       "Title": "Ensure BitLocker full disk encryption is configured via Intune"
     },
     {
+      "Id": "MT.1147",
+      "Severity": "High",
+      "Title": "Do not sync krbtgt_AzureAD to Entra ID"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
