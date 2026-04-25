@@ -305,7 +305,23 @@
     'Test-MtAdGroupMemberTrustDetails', 'Test-MtAdGroupMemberForeignSidCount',
     'Test-MtAdGroupMemberForeignSidDetails', 'Test-MtAdGroupEmptyNonPrivilegedCount',
     'Test-MtAdGroupEmptyNonPrivilegedDetails', 'Test-MtAdGroupPrivilegedWithMembersCount',
-    'Test-MtAdGroupPrivilegedWithMembersDetails', 'Test-MtAdGroupChangeAveragePerYear'
+    'Test-MtAdGroupPrivilegedWithMembersDetails', 'Test-MtAdGroupChangeAveragePerYear',
+    # Phase 9: User Tests
+    'Test-MtAdUserDisabledCount', 'Test-MtAdUserDormantEnabledCount',
+    'Test-MtAdUserPasswordNeverExpiresCount', 'Test-MtAdUserReversibleEncryptionCount',
+    'Test-MtAdUserDelegationAllowedCount', 'Test-MtAdUserKerberosDesOnlyCount',
+    'Test-MtAdUserNoPreAuthCount', 'Test-MtAdUserNeverLoggedInCount',
+    'Test-MtAdUserPasswordNotRequiredCount', 'Test-MtAdUserWorkstationRestrictionCount',
+    'Test-MtAdUserAdminCountCount', 'Test-MtAdUserNonStandardPrimaryGroupCount',
+    'Test-MtAdUserSidHistoryCount', 'Test-MtAdUserSpnSetCount',
+    'Test-MtAdUserManagerSetCount', 'Test-MtAdUserHomeDirectoryCount',
+    'Test-MtAdUserProfilePathCount', 'Test-MtAdUserScriptPathCount',
+    'Test-MtAdUserInContainerCount', 'Test-MtAdUserKnownServiceAccountCount',
+    'Test-MtAdUserKnownServiceAccountDetails', 'Test-MtAdUserBuiltInAdminCount',
+    'Test-MtAdUserBuiltInAdminEnabledDetails', 'Test-MtAdUserBuiltInAdminLastLogonDetails',
+    'Test-MtAdUserBuiltInAdminPasswordAgeDetails', 'Test-MtAdUserHoneyPotCount',
+    'Test-MtAdUserHoneyPotDetails', 'Test-MtAdUserDelegationConfiguredCount',
+    'Test-MtAdUserDelegationDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

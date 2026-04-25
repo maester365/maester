@@ -335,37 +335,45 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 29
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-I (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 29/29
+**Validated Against Live DC**: ✅ Yes
+**Validation Date**: 2026-04-25
+**Validation Results**: See [AD-TEST-RESULTS-Phase9.md](./AD-TEST-RESULTS-Phase9.md)
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-USER-01 | UserDisabledCount | Disabled user objects | Returns count of disabled users | 🔴 | Unassigned |
-| AD-USER-02 | UserDormantEnabledCount | Enabled dormant users (>90 days) | Returns count of dormant enabled users | 🔴 | Unassigned |
-| AD-USER-03 | UserPasswordNeverExpiresCount | Enabled users with non-expiring passwords | Returns count (should be minimal) | 🔴 | Unassigned |
-| AD-USER-04 | UserReversibleEncryptionCount | Users with reversible encryption | Returns count (should be 0) | 🔴 | Unassigned |
-| AD-USER-05 | UserDelegationAllowedCount | Users allowed for delegation | Returns count of users with delegation | 🔴 | Unassigned |
-| AD-USER-06 | UserKerberosDesOnlyCount | Users using DES only | Returns count (should be 0) | 🔴 | Unassigned |
-| AD-USER-07 | UserNoPreAuthCount | Users not requiring pre-authentication | Returns count (should be 0) | 🔴 | Unassigned |
-| AD-USER-08 | UserNeverLoggedInCount | Enabled users never logged in | Returns count of never-logged-in users | 🔴 | Unassigned |
-| AD-USER-09 | UserPasswordNotRequiredCount | Users not requiring password | Returns count (should be 0) | 🔴 | Unassigned |
-| AD-USER-10 | UserWorkstationRestrictionCount | Users with workstation restrictions | Returns count of restricted users | 🔴 | Unassigned |
-| AD-USER-11 | UserAdminCountCount | Users with AdminCount set | Returns count of admin-count users | 🔴 | Unassigned |
-| AD-USER-12 | UserNonStandardPrimaryGroupCount | Users with non-standard primary group | Returns count of users not in group 513 | 🔴 | Unassigned |
-| AD-USER-13 | UserSidHistoryCount | Users with SID History | Returns count of users with SID History | 🔴 | Unassigned |
-| AD-USER-14 | UserSpnSetCount | Users with SPN configured | Returns count of users with SPNs | 🔴 | Unassigned |
-| AD-USER-15 | UserManagerSetCount | Users with manager attribute | Returns count of users with manager | 🔴 | Unassigned |
-| AD-USER-16 | UserHomeDirectoryCount | Users with home directory | Returns count of users with home directory | 🔴 | Unassigned |
-| AD-USER-17 | UserProfilePathCount | Users with profile path | Returns count of users with profile path | 🔴 | Unassigned |
-| AD-USER-18 | UserScriptPathCount | Users with logon script | Returns count of users with script path | 🔴 | Unassigned |
-| AD-USER-19 | UserInContainerCount | Users in container objects | Returns count of users in CN containers | 🔴 | Unassigned |
-| AD-USER-20 | UserKnownServiceAccountCount | Known service accounts identified | Returns count of known service accounts | 🔴 | Unassigned |
-| AD-USER-21 | UserKnownServiceAccountDetails | Known service account details | Returns list of known service accounts | 🔴 | Unassigned |
-| AD-USER-22 | UserBuiltInAdminCount | Built-in administrator accounts | Returns count of built-in admin accounts | 🔴 | Unassigned |
-| AD-USER-23 | UserBuiltInAdminEnabledDetails | Enabled built-in admin details | Returns list of enabled built-in admins | 🔴 | Unassigned |
-| AD-USER-24 | UserBuiltInAdminLastLogonDetails | Built-in admin last logon | Returns last logon for built-in admins | 🔴 | Unassigned |
-| AD-USER-25 | UserBuiltInAdminPasswordAgeDetails | Built-in admin password age | Returns password last set for built-in admins | 🔴 | Unassigned |
-| AD-USER-26 | UserHoneyPotCount | Honey pot users identified | Returns count of potential honey pot users | 🔴 | Unassigned |
-| AD-USER-27 | UserHoneyPotDetails | Honey pot user details | Returns list of potential honey pot users | 🔴 | Unassigned |
-| AD-USER-28 | UserDelegationConfiguredCount | Users with delegation configured | Returns count of users with delegation settings | 🔴 | Unassigned |
-| AD-USER-29 | UserDelegationDetails | User delegation details | Returns breakdown of user delegations | 🔴 | Unassigned |
+| AD-USER-01 | UserDisabledCount | Disabled user objects | Returns count of disabled users | 🟢 | Session-I |
+| AD-USER-02 | UserDormantEnabledCount | Enabled dormant users (>90 days) | Returns count of dormant enabled users | 🟢 | Session-I |
+| AD-USER-03 | UserPasswordNeverExpiresCount | Enabled users with non-expiring passwords | Returns count (should be minimal) | 🟢 | Session-I |
+| AD-USER-04 | UserReversibleEncryptionCount | Users with reversible encryption | Returns count (should be 0) | 🟢 | Session-I |
+| AD-USER-05 | UserDelegationAllowedCount | Users allowed for delegation | Returns count of users with delegation | 🟢 | Session-I |
+| AD-USER-06 | UserKerberosDesOnlyCount | Users using DES only | Returns count (should be 0) | 🟢 | Session-I |
+| AD-USER-07 | UserNoPreAuthCount | Users not requiring pre-authentication | Returns count (should be 0) | 🟢 | Session-I |
+| AD-USER-08 | UserNeverLoggedInCount | Enabled users never logged in | Returns count of never-logged-in users | 🟢 | Session-I |
+| AD-USER-09 | UserPasswordNotRequiredCount | Users not requiring password | Returns count (should be 0) | 🟢 | Session-I |
+| AD-USER-10 | UserWorkstationRestrictionCount | Users with workstation restrictions | Returns count of restricted users | 🟢 | Session-I |
+| AD-USER-11 | UserAdminCountCount | Users with AdminCount set | Returns count of admin-count users | 🟢 | Session-I |
+| AD-USER-12 | UserNonStandardPrimaryGroupCount | Users with non-standard primary group | Returns count of users not in group 513 | 🟢 | Session-I |
+| AD-USER-13 | UserSidHistoryCount | Users with SID History | Returns count of users with SID History | 🟢 | Session-I |
+| AD-USER-14 | UserSpnSetCount | Users with SPN configured | Returns count of users with SPNs | 🟢 | Session-I |
+| AD-USER-15 | UserManagerSetCount | Users with manager attribute | Returns count of users with manager | 🟢 | Session-I |
+| AD-USER-16 | UserHomeDirectoryCount | Users with home directory | Returns count of users with home directory | 🟢 | Session-I |
+| AD-USER-17 | UserProfilePathCount | Users with profile path | Returns count of users with profile path | 🟢 | Session-I |
+| AD-USER-18 | UserScriptPathCount | Users with logon script | Returns count of users with script path | 🟢 | Session-I |
+| AD-USER-19 | UserInContainerCount | Users in container objects | Returns count of users in CN containers | 🟢 | Session-I |
+| AD-USER-20 | UserKnownServiceAccountCount | Known service accounts identified | Returns count of known service accounts | 🟢 | Session-I |
+| AD-USER-21 | UserKnownServiceAccountDetails | Known service account details | Returns list of known service accounts | 🟢 | Session-I |
+| AD-USER-22 | UserBuiltInAdminCount | Built-in administrator accounts | Returns count of built-in admin accounts | 🟢 | Session-I |
+| AD-USER-23 | UserBuiltInAdminEnabledDetails | Enabled built-in admin details | Returns list of enabled built-in admins | 🟢 | Session-I |
+| AD-USER-24 | UserBuiltInAdminLastLogonDetails | Built-in admin last logon | Returns last logon for built-in admins | 🟢 | Session-I |
+| AD-USER-25 | UserBuiltInAdminPasswordAgeDetails | Built-in admin password age | Returns password last set for built-in admins | 🟢 | Session-I |
+| AD-USER-26 | UserHoneyPotCount | Honey pot users identified | Returns count of potential honey pot users | 🟢 | Session-I |
+| AD-USER-27 | UserHoneyPotDetails | Honey pot user details | Returns list of potential honey pot users | 🟢 | Session-I |
+| AD-USER-28 | UserDelegationConfiguredCount | Users with delegation configured | Returns count of users with delegation settings | 🟢 | Session-I |
+| AD-USER-29 | UserDelegationDetails | User delegation details | Returns breakdown of user delegations | 🟢 | Session-I |
 
 ---
 
@@ -637,7 +645,7 @@ Computer objects from the cache include these key properties:
 | Phase 6 | Domain Controllers | 8 | 🟢 Complete |
 | Phase 7 | Group Policy | 11 | 🟢 Complete |
 | Phase 8 | Groups | 22 | 🟢 Complete |
-| Phase 9 | Users | 29 | 🔴 Not Started |
+| Phase 9 | Users | 29 | 🟢 Complete |
 | Phase 10 | Organizational Units | 5 | 🔴 Not Started |
 | Phase 11 | Sites and Subnets | 16 | 🔴 Not Started |
 | Phase 12 | Trusts | 7 | 🔴 Not Started |
@@ -649,7 +657,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **40% Complete (106/268)** |
+| **TOTAL** | | **268** | **50% Complete (135/268)** |
 
 ---
 
