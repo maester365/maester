@@ -142,7 +142,7 @@
     'Test-MtExoSetScl',
     'Test-MtExoModernAuth',
     'Test-MtExoMailTip',
-    'Test-MtExoAdditionalStorageProvider',
+    'Test-MtCisExoAdditionalStorageProvider',
     'Test-MtExoOutlookAddin',
     'Test-MtEidscaControl', 'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions',
     'Test-MtManagedDeviceCleanupSettings', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',

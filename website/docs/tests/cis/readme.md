@@ -43,7 +43,7 @@ Obsolete below refers to a check which is no longer valid or required.
 | TBD (MT.1041) | 1.3.4 (L1) Ensure 'User owned apps and services' is restricted |
 | TBD | 1.3.5 (L1) Ensure internal phishing protection for Forms is enabled |
 | [Test-MtCisCustomerLockBox](/docs/commands/) | 1.3.6 (L2) Ensure the customer lockbox feature is enabled |
-| TBD (MT.1040) | 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' |
+| TBD | 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web' |
 | TBD | 1.3.8 (L2) Ensure that Sways cannot be shared with people outside of your organization |
 | [Test-MtCisSafeLink](/docs/commands/) | 2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled |
 | [Test-MtCisAttachmentFilter](/docs/commands/) | 2.1.2 (L1) Ensure the Common Attachment Types Filter is enabled |
