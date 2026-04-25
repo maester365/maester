@@ -287,6 +287,9 @@
     'Test-MtAdDcSmbv311EnabledCount', 'Test-MtAdDcSmbSigningEnabledCount',
     'Test-MtAdDcAllFsmoRolesCount', 'Test-MtAdDcFsmoRoleHolderDetails',
     'Test-MtAdDcOperatingSystemCount', 'Test-MtAdDcOperatingSystemDetails',
+    # Phase 15: Domain State - Domain Controllers
+    'Test-MtAdDcNonStandardLdapPortCount', 'Test-MtAdDcNonStandardLdapsPortCount',
+    'Test-MtAdDcReadOnlyCount', 'Test-MtAdDcNonGlobalCatalogCount',
     # Phase 7: Group Policy
     'Test-MtAdGpoTotalCount', 'Test-MtAdGpoCreatedBefore2020Count',
     'Test-MtAdGpoChangedBefore2020Count', 'Test-MtAdGpoUnlinkedCount',

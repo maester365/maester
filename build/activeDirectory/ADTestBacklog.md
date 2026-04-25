@@ -542,18 +542,22 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 4
 **Dependencies**: None
 
-**Status**: 🟡 In Progress
-**Claimed By**: Session-N (Sisyphus)
-**Claimed Date**: 2026-04-25
-**Estimated Completion**: 2026-04-25
-**Tests Completed**: 0/4
+**Status**: 🟢 Complete
+**Completed By**: Session-N (Sisyphus)
+**Completed Date**: 2026-04-25
+**Validated Date**: 2026-04-25
+**Tests Completed**: 4/4
+**Tests Validated**: 4/4
+**Validated Against Live DC**: ✅ Yes
 
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-DCD-01 | DcNonStandardLdapPortCount | DCs with non-standard LDAP port | Returns count of DCs not using 389 | 🟡 | Session-N |
-| AD-DCD-02 | DcNonStandardLdapsPortCount | DCs with non-standard LDAPS port | Returns count of DCs not using 636 | 🟡 | Session-N |
-| AD-DCD-03 | DcReadOnlyCount | Read-only domain controllers | Returns count of RODCs | 🟡 | Session-N |
-| AD-DCD-04 | DcNonGlobalCatalogCount | DCs not as Global Catalogs | Returns count of non-GC DCs | 🟡 | Session-N |
+| AD-DCD-01 | DcNonStandardLdapPortCount | DCs with non-standard LDAP port | Returns count of DCs not using 389 | 🟢 | Session-N |
+| AD-DCD-02 | DcNonStandardLdapsPortCount | DCs with non-standard LDAPS port | Returns count of DCs not using 636 | 🟢 | Session-N |
+| AD-DCD-03 | DcReadOnlyCount | Read-only domain controllers | Returns count of RODCs | 🟢 | Session-N |
+| AD-DCD-04 | DcNonGlobalCatalogCount | DCs not as Global Catalogs | Returns count of non-GC DCs | 🟢 | Session-N |
+
+**Validation Results**: All 4 tests passed validation against live DC (maester.test). The test environment has 1 DC (myVm) using standard ports (389/636), not an RODC, and configured as a Global Catalog. All functions executed successfully without errors.
 
 ---
 
@@ -703,13 +707,13 @@ Computer objects from the cache include these key properties:
 | Phase 12 | Trusts | 7 | 🟢 Complete |
 | Phase 13 | Schema and Infrastructure | 6 | 🟢 Complete |
 | Phase 14 | Domain State - Configuration | 24 | 🟢 Complete |
-| Phase 15 | Domain State - DCs | 4 | 🔴 Not Started |
+| Phase 15 | Domain State - DCs | 4 | 🟢 Complete |
 | Phase 16 | Domain State - Forest/Domain | 5 | 🔴 Not Started |
 | Phase 17 | Domain State - Security Accounts | 13 | 🔴 Not Started |
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **267** | **72% Complete (193/267)** |
+| **TOTAL** | | **267** | **74% Complete (197/267)** |
 
 ---
 
