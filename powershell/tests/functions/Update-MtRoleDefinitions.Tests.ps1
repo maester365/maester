@@ -193,26 +193,26 @@ Describe 'Get-ExistingRoles' {
             $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
             @($preserved).Count | Should -Be 1
             $preserved[0].Name | Should -Be 'SystemRole'
+        }
+    }
 
-            Context 'Existing role has same GUID as a renamed new role' {
-                It 'does not preserve the old-name entry when its GUID is already covered by a new role' {
-                    # Simulates: old name 'OldRoleName' was renamed to 'NewRoleName' in public docs.
-                    # Both share the same GUID. The old entry should NOT be preserved, to avoid
-                    # two hashtable keys mapping to the same underlying Entra ID role.
-                    $fileContent = @"
-            'OldRoleName' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', `$false)
-            'SystemRole'  = [MtRoleDefinition]::new('aaaabbbb-cccc-dddd-eeee-ffffffffffff', `$false)
-        "@
-                    $newRoles = [System.Collections.Generic.List[hashtable]]::new()
-                    # New data contains the renamed role (same GUID, new name)
-                    $newRoles.Add(@{ Name = 'NewRoleName'; Id = '9f06204d-73c1-4d4c-880a-6edb90606fd8'; IsPrivileged = $false; DisplayName = 'New Role Name' })
+    Context 'Existing role has same GUID as a renamed new role' {
+        It 'does not preserve the old-name entry when its GUID is already covered by a new role' {
+            # Simulates: old name 'OldRoleName' was renamed to 'NewRoleName' in public docs.
+            # Both share the same GUID. The old entry should NOT be preserved, to avoid
+            # two hashtable keys mapping to the same underlying Entra ID role.
+            $fileContent = @"
+    'OldRoleName' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', `$false)
+    'SystemRole'  = [MtRoleDefinition]::new('aaaabbbb-cccc-dddd-eeee-ffffffffffff', `$false)
+"@
+            $newRoles = [System.Collections.Generic.List[hashtable]]::new()
+            # New data contains the renamed role (same GUID, new name)
+            $newRoles.Add(@{ Name = 'NewRoleName'; Id = '9f06204d-73c1-4d4c-880a-6edb90606fd8'; IsPrivileged = $false; DisplayName = 'New Role Name' })
 
-                    $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
-                    # Only SystemRole should be preserved; OldRoleName should be skipped (GUID already in new data)
-                    @($preserved).Count | Should -Be 1
-                    $preserved[0].Name | Should -Be 'SystemRole'
-                }
-            }
+            $preserved = @(Get-ExistingRoles -FileContent $fileContent -NewRoles $newRoles)
+            # Only SystemRole should be preserved; OldRoleName should be skipped (GUID already in new data)
+            @($preserved).Count | Should -Be 1
+            $preserved[0].Name | Should -Be 'SystemRole'
         }
     }
 }

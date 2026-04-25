@@ -200,7 +200,7 @@ function Get-ExistingRoles {
 
     $preservedRoles = [System.Collections.Generic.List[hashtable]]::new()
     $newRoleNames = $NewRoles | ForEach-Object { $_.Name }
-        $newRoleGuids = $NewRoles | ForEach-Object { $_.Id }
+    $newRoleGuids = $NewRoles | ForEach-Object { $_.Id }
 
     # Parse existing hashtable entries: 'RoleName' = [MtRoleDefinition]::new('guid', $true/$false)
     $entryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(true|false)\)'
@@ -211,21 +211,21 @@ function Get-ExistingRoles {
         if ($name -in $newRoleNames) { continue }
 
         $guid = $entry.Groups[2].Value
-            $guid = $guid.ToLower()
-            # Skip if this GUID is already covered by a renamed role in the new data.
-            # Example: 'AzureADJoinedDeviceLocalAdministrator' was renamed to
-            # 'MicrosoftEntraJoinedDeviceLocalAdministrator' in the public docs.
-            # Preserving the old name would create two hashtable keys for the same GUID.
-            if ($guid -in $newRoleGuids) {
-                Write-Verbose "Skipping preserved role '$name' ($guid) - GUID is already present under a new name in the updated data."
-                continue
-            }
+        $guid = $guid.ToLower()
+        # Skip if this GUID is already covered by a renamed role in the new data.
+        # Example: 'AzureADJoinedDeviceLocalAdministrator' was renamed to
+        # 'MicrosoftEntraJoinedDeviceLocalAdministrator' in the public docs.
+        # Preserving the old name would create two hashtable keys for the same GUID.
+        if ($guid -in $newRoleGuids) {
+            Write-Verbose "Skipping preserved role '$name' ($guid) - GUID is already present under a new name in the updated data."
+            continue
+        }
 
-            $isPriv = if ($entry.Groups[3].Value -eq 'true') { $true } else { $false }
+        $isPriv = if ($entry.Groups[3].Value -eq 'true') { $true } else { $false }
 
         $preservedRoles.Add(@{
                 Name         = $name
-                    Id           = $guid
+                Id           = $guid
                 IsPrivileged = $isPriv
                 DisplayName  = $name
             })
