@@ -106,21 +106,26 @@ Computer objects from the cache include these key properties:
 **Estimated Tests**: 13
 **Dependencies**: None
 
+**Status**: 🟢 Complete
+**Completed By**: Session-B (Sisyphus)
+**Completed Date**: 2026-04-25
+**Tests Completed**: 13/13
+
 | Test ID | Test Name | Description | Pass Criteria | Status | Assigned To |
 |---------|-----------|-------------|---------------|--------|-------------|
-| AD-SPN-01 | ComputerSpnServiceClassCount | Distinct SPN service classes in use | Returns count of unique SPN service classes | 🔴 | Unassigned |
-| AD-SPN-02 | ComputerSpnServiceClassUsage | SPN service class usage breakdown | Returns list of service classes with counts | 🔴 | Unassigned |
-| AD-SPN-03 | ComputerSpnUnknownCount | Unidentified SPN service classes | Returns count of unknown SPN types | 🔴 | Unassigned |
-| AD-SPN-04 | ComputerSpnUnknownDetails | Details of unidentified SPNs | Returns list of unknown SPNs with counts | 🔴 | Unassigned |
-| AD-SPN-05 | ComputerSpnNonFqdnHosts | SPN hosts without FQDN | Returns count of hosts without FQDN | 🔴 | Unassigned |
-| AD-SPN-06 | UserSpnTotalCount | Total user SPNs in use | Returns count of user SPNs | 🔴 | Unassigned |
-| AD-SPN-07 | UserSpnServiceClassCount | Distinct user SPN service classes | Returns count of unique user SPN classes | 🔴 | Unassigned |
-| AD-SPN-08 | UserSpnServiceClassUsage | User SPN service class breakdown | Returns list of user SPN classes with counts | 🔴 | Unassigned |
-| AD-SPN-09 | UserSpnUnknownCount | Unidentified user SPN classes | Returns count of unknown user SPN types | 🔴 | Unassigned |
-| AD-SPN-10 | UserSpnUnknownDetails | Details of unidentified user SPNs | Returns list of unknown user SPNs with counts | 🔴 | Unassigned |
-| AD-SPN-11 | UserSpnNonFqdnHosts | User SPN hosts without FQDN | Returns count of user SPN hosts without FQDN | 🔴 | Unassigned |
-| AD-SPN-12 | UserSpnDomainAdminCount | SPNs associated with Domain Admin | Returns count of SPNs on domain admin account | 🔴 | Unassigned |
-| AD-SPN-13 | UserSpnDomainAdminDetails | Domain Admin SPN details | Returns list of SPNs on domain admin account | 🔴 | Unassigned |
+| AD-SPN-01 | ComputerSpnServiceClassCount | Distinct SPN service classes in use | Returns count of unique SPN service classes | 🟢 | Session-B |
+| AD-SPN-02 | ComputerSpnServiceClassUsage | SPN service class usage breakdown | Returns list of service classes with counts | 🟢 | Session-B |
+| AD-SPN-03 | ComputerSpnUnknownCount | Unidentified SPN service classes | Returns count of unknown SPN types | 🟢 | Session-B |
+| AD-SPN-04 | ComputerSpnUnknownDetails | Details of unidentified SPNs | Returns list of unknown SPNs with counts | 🟢 | Session-B |
+| AD-SPN-05 | ComputerSpnNonFqdnHosts | SPN hosts without FQDN | Returns count of hosts without FQDN | 🟢 | Session-B |
+| AD-SPN-06 | UserSpnTotalCount | Total user SPNs in use | Returns count of user SPNs | 🟢 | Session-B |
+| AD-SPN-07 | UserSpnServiceClassCount | Distinct user SPN service classes | Returns count of unique user SPN classes | 🟢 | Session-B |
+| AD-SPN-08 | UserSpnServiceClassUsage | User SPN service class breakdown | Returns list of user SPN classes with counts | 🟢 | Session-B |
+| AD-SPN-09 | UserSpnUnknownCount | Unidentified user SPN classes | Returns count of unknown user SPN types | 🟢 | Session-B |
+| AD-SPN-10 | UserSpnUnknownDetails | Details of unidentified user SPNs | Returns list of unknown user SPNs with counts | 🟢 | Session-B |
+| AD-SPN-11 | UserSpnNonFqdnHosts | User SPN hosts without FQDN | Returns count of user SPN hosts without FQDN | 🟢 | Session-B |
+| AD-SPN-12 | UserSpnDomainAdminCount | SPNs associated with Domain Admin | Returns count of SPNs on domain admin account | 🟢 | Session-B |
+| AD-SPN-13 | UserSpnDomainAdminDetails | Domain Admin SPN details | Returns list of SPNs on domain admin account | 🟢 | Session-B |
 
 ---
 
@@ -574,7 +579,7 @@ Computer objects from the cache include these key properties:
 | Phase | Category | Test Count | Status |
 |-------|----------|------------|--------|
 | Phase 1 | Computer Objects | 10 | 🟢 Complete |
-| Phase 2 | Service Principal Names | 13 | 🔴 Not Started |
+| Phase 2 | Service Principal Names | 13 | 🟢 Complete |
 | Phase 3 | Password Policies | 11 | 🔴 Not Started |
 | Phase 4 | DNS Infrastructure | 19 | 🔴 Not Started |
 | Phase 5 | Domain & Forest | 12 | 🔴 Not Started |
@@ -593,7 +598,7 @@ Computer objects from the cache include these key properties:
 | Phase 18 | Domain State - Replication/Features | 8 | 🔴 Not Started |
 | Phase 19 | GPO State | 26 | 🔴 Not Started |
 | Phase 20 | DACL Analysis | 18 | 🔴 Not Started |
-| **TOTAL** | | **268** | **4% Complete (10/268)** |
+| **TOTAL** | | **268** | **9% Complete (23/268)** |
 
 ---
 
@@ -603,12 +608,42 @@ Computer objects from the cache include these key properties:
 2. Review the [Single Test Implementation Work Plan](./SingleTestWorkPlan.md)
 3. Update this backlog to mark tests as "In Progress" with your name
 4. Follow the implementation pattern in the work plan
-5. Update status to "Complete" when finished
+5. **Validate all tests against the live domain controller** (see Validation Requirements below)
+6. Update status to "Complete" when finished
+
+## Validation Requirements
+
+**CRITICAL**: Before marking any phase as "Complete", all tests MUST be validated against the live domain controller:
+
+### Validation Steps:
+1. Connect to the domain controller:
+   ```bash
+   ssh -i ~/.ssh/test_key azureuser@20.125.96.137
+   ```
+2. Copy the updated Maester module to the DC:
+   ```bash
+   scp -r /home/azureuser/projects/maester/powershell/* azureuser@20.125.96.137:/tmp/
+   ```
+3. Run each test function against the live AD environment
+4. Verify tests return expected results without errors
+5. Document results in [AD-TEST-RESULTS.md](../../AD-TEST-RESULTS.md)
+
+### Validation Checklist:
+- [ ] All functions execute without errors
+- [ ] Functions return expected data types (boolean or null)
+- [ ] Markdown output is generated correctly
+- [ ] Connection handling works (returns null when not connected)
+- [ ] Results are documented in AD-TEST-RESULTS.md
+
+### Domain Controller Information:
+- **IP**: 20.125.96.137
+- **Domain**: maester.test
+- **Admin Password**: P@ssw0rd123!
 
 ## Collaboration Guidelines
 
 - Each session should work on a single phase at a time
 - Update the "Assigned To" column when starting work
 - Commit changes frequently with clear messages
-- Run tests before marking complete
+- **Validate tests against live DC before marking complete**
 - Document any assumptions made about pass/fail criteria

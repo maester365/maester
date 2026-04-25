@@ -248,7 +248,15 @@
     'Test-MtAdComputerCreatorSidCount', 'Test-MtAdComputerNonStandardGroup',
     'Test-MtAdComputerSidHistoryCount', 'Test-MtAdComputerInDefaultContainer',
     'Test-MtAdComputerOUCount', 'Test-MtAdComputerPerOUAverage',
-    'Test-MtAdComputerDelegationCount', 'Test-MtAdComputerDelegationDetails'
+    'Test-MtAdComputerDelegationCount', 'Test-MtAdComputerDelegationDetails',
+    # Active Directory SPN Tests - Phase 2
+    'Test-MtAdComputerSpnServiceClassCount', 'Test-MtAdComputerSpnServiceClassUsage',
+    'Test-MtAdComputerSpnUnknownCount', 'Test-MtAdComputerSpnUnknownDetails',
+    'Test-MtAdComputerSpnNonFqdnHosts', 'Test-MtAdUserSpnTotalCount',
+    'Test-MtAdUserSpnServiceClassCount', 'Test-MtAdUserSpnServiceClassUsage',
+    'Test-MtAdUserSpnUnknownCount', 'Test-MtAdUserSpnUnknownDetails',
+    'Test-MtAdUserSpnNonFqdnHosts', 'Test-MtAdUserSpnDomainAdminCount',
+    'Test-MtAdUserSpnDomainAdminDetails'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()

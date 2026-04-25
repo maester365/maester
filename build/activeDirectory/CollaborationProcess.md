@@ -67,9 +67,38 @@ For each test in your claimed phase:
    git commit -m "Implement AD-COMP-01: ComputerDisabledCount test"
    ```
 
-### Step 4: Phase Completion
+### Step 4: Phase Validation (REQUIRED)
 
-When all tests in your phase are complete:
+Before marking a phase complete, you MUST validate all tests against the live domain controller:
+
+1. **Copy module to DC**:
+   ```bash
+   scp -i ~/.ssh/test_key -r ./powershell/* azureuser@20.125.96.137:/tmp/
+   ```
+
+2. **Connect to DC and run validation**:
+   ```bash
+   ssh -i ~/.ssh/test_key azureuser@20.125.96.137
+   ```
+
+3. **Execute validation script**:
+   ```powershell
+   Import-Module ActiveDirectory
+   # Run each test function and verify results
+   Test-MtAd[TestName]
+   ```
+
+4. **Document results** in `AD-TEST-RESULTS.md`
+
+5. **Validation Checklist**:
+   - [ ] All functions execute without errors
+   - [ ] Functions return expected data types
+   - [ ] Markdown output is generated correctly
+   - [ ] Results documented in AD-TEST-RESULTS.md
+
+### Step 5: Phase Completion
+
+After validation is complete:
 
 1. **Update phase status**:
    ```markdown
@@ -79,6 +108,7 @@ When all tests in your phase are complete:
    **Completed By**: [Session ID/Name]
    **Completed Date**: [YYYY-MM-DD]
    **Tests Completed**: [Total]/[Total]
+   **Validated**: Yes - All tests executed successfully against live DC
    ```
 
 2. **Update summary statistics** at bottom of backlog
@@ -86,7 +116,8 @@ When all tests in your phase are complete:
 3. **Final commit**:
    ```bash
    git add build/activeDirectory/ADTestBacklog.md
-   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented"
+   git add AD-TEST-RESULTS.md
+   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented and validated"
    git push origin main
    ```
 
@@ -268,6 +299,13 @@ While phases can be worked in parallel, this order minimizes dependencies:
 ## Quality Gates
 
 Before marking a phase complete, verify:
+
+### Live Validation (REQUIRED)
+- [ ] All tests executed against live domain controller (20.125.96.137)
+- [ ] Test results documented in AD-TEST-RESULTS.md
+- [ ] No errors during test execution
+- [ ] Functions return expected data types
+- [ ] Markdown output renders correctly
 
 ### Code Quality
 - [ ] All functions follow naming convention
