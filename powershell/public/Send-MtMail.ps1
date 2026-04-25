@@ -103,7 +103,7 @@
     $skippedCount = $MaesterResults.SkippedCount
     if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $skippedCount = "-" }
     $investigateCount = $MaesterResults.investigateCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $investigateCount = "-" }
+    if ([string]::IsNullOrEmpty($MaesterResults.investigateCount)) { $investigateCount = "-" }
 
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
