@@ -613,8 +613,35 @@ Computer objects from the cache include these key properties:
 2. Review the [Single Test Implementation Work Plan](./SingleTestWorkPlan.md)
 3. Update this backlog to mark tests as "In Progress" with your name
 4. Follow the implementation pattern in the work plan
-5. **Validate all tests against the live domain controller** (see Validation Requirements below)
-6. Update status to "Complete" when finished
+5. **Commit and push changes** (see Commit and Push Guidelines below)
+6. **Validate all tests against the live domain controller** (see Validation Requirements below)
+7. Update status to "Complete" when finished
+
+## Commit and Push Guidelines
+
+**IMPORTANT**: After completing a phase, commit and push your changes to the repository:
+
+### Commit Steps:
+1. Stage only the relevant directories (tests, powershell, build):
+   ```bash
+   git add tests/ powershell/ build/
+   ```
+
+2. Commit with a descriptive message:
+   ```bash
+   git commit -m "Complete Phase X: [Phase Name] - Y tests implemented"
+   ```
+
+3. Push to the remote repository:
+   ```bash
+   git push origin [branch-name]
+   ```
+
+### Commit Checklist:
+- [ ] Only tests/*, powershell/*, and build/* directories are included
+- [ ] No temporary files, logs, or credentials are committed
+- [ ] Commit message clearly describes the phase and number of tests
+- [ ] Changes are pushed to the correct branch
 
 ## Validation Requirements
 
@@ -650,5 +677,6 @@ Computer objects from the cache include these key properties:
 - Each session should work on a single phase at a time
 - Update the "Assigned To" column when starting work
 - Commit changes frequently with clear messages
+- **Commit and push changes after completing a phase** (see Commit and Push Guidelines above)
 - **Validate tests against live DC before marking complete**
 - Document any assumptions made about pass/fail criteria
