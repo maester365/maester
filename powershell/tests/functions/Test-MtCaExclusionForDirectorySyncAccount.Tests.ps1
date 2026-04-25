@@ -4,61 +4,61 @@
         Mock -ModuleName Maester Add-MtTestResultDetail {}
 
         # Role template IDs returned by Get-MtRoleInfo
-        $script:DirSyncRoleId   = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
-        $script:OnPremRoleId    = 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'
+        $script:DirSyncRoleId = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
+        $script:OnPremRoleId = 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'
 
         # Sample sync account member IDs
         $script:syncUserId1 = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
         $script:syncUserId2 = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
-        $script:syncSpId    = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+        $script:syncSpId = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
 
         # Member objects as returned by Get-MtRoleMember
         $script:syncUser1 = [PSCustomObject]@{
-            id              = $script:syncUserId1
-            '@odata.type'   = '#microsoft.graph.user'
+            id            = $script:syncUserId1
+            '@odata.type' = '#microsoft.graph.user'
         }
         $script:syncUser2 = [PSCustomObject]@{
-            id              = $script:syncUserId2
-            '@odata.type'   = '#microsoft.graph.user'
+            id            = $script:syncUserId2
+            '@odata.type' = '#microsoft.graph.user'
         }
         $script:syncServicePrincipal = [PSCustomObject]@{
-            id              = $script:syncSpId
-            '@odata.type'   = '#microsoft.graph.servicePrincipal'
+            id            = $script:syncSpId
+            '@odata.type' = '#microsoft.graph.servicePrincipal'
         }
 
         # Helper: build a minimal enabled CA policy object
         function New-CaPolicy {
             param(
-                [string]   $Id                  = 'policy1',
-                [string]   $DisplayName          = 'Test Policy',
-                [string[]] $IncludeApplications  = @('All'),
-                [string[]] $IncludeUsers          = @('All'),
-                [string[]] $IncludeRoles          = @(),
-                [string[]] $ExcludeUsers          = @(),
-                [string[]] $ExcludeRoles          = @(),
+                [string]   $Id = 'policy1',
+                [string]   $DisplayName = 'Test Policy',
+                [string[]] $IncludeApplications = @('All'),
+                [string[]] $IncludeUsers = @('All'),
+                [string[]] $IncludeRoles = @(),
+                [string[]] $ExcludeUsers = @(),
+                [string[]] $ExcludeRoles = @(),
                 [string]   $IncludeGuestsOrExternalUsers = $null,
-                [string[]] $ClientAppTypes        = @('all'),
-                [string[]] $BuiltInControls       = @()
+                [string[]] $ClientAppTypes = @('all'),
+                [string[]] $BuiltInControls = @()
             )
             [PSCustomObject]@{
-                id             = $Id
-                displayName    = $DisplayName
-                state          = 'enabled'
-                conditions     = [PSCustomObject]@{
-                    applications = [PSCustomObject]@{
+                id            = $Id
+                displayName   = $DisplayName
+                state         = 'enabled'
+                conditions    = [PSCustomObject]@{
+                    applications   = [PSCustomObject]@{
                         includeApplications = $IncludeApplications
                     }
-                    users = [PSCustomObject]@{
-                        includeUsers                  = $IncludeUsers
-                        includeRoles                  = $IncludeRoles
-                        excludeUsers                  = $ExcludeUsers
-                        excludeRoles                  = $ExcludeRoles
-                        includeGroups                 = @()
-                        includeGuestsOrExternalUsers  = $IncludeGuestsOrExternalUsers
+                    users          = [PSCustomObject]@{
+                        includeUsers                 = $IncludeUsers
+                        includeRoles                 = $IncludeRoles
+                        excludeUsers                 = $ExcludeUsers
+                        excludeRoles                 = $ExcludeRoles
+                        includeGroups                = @()
+                        includeGuestsOrExternalUsers = $IncludeGuestsOrExternalUsers
                     }
                     clientAppTypes = $ClientAppTypes
                 }
-                grantControls  = [PSCustomObject]@{
+                grantControls = [PSCustomObject]@{
                     builtInControls = $BuiltInControls
                 }
             }
@@ -69,7 +69,7 @@
             param($RoleName)
             switch ($RoleName) {
                 'DirectorySynchronizationAccounts' { return $script:DirSyncRoleId }
-                'OnPremisesDirectorySyncAccount'   { return $script:OnPremRoleId }
+                'OnPremisesDirectorySyncAccount' { return $script:OnPremRoleId }
             }
         }
     }
@@ -266,7 +266,7 @@
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncUser1 }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 return @(
-                    New-CaPolicy -Id 'policy-pass' -DisplayName 'Policy With Exclusion'   -ExcludeRoles @($script:DirSyncRoleId),
+                    New-CaPolicy -Id 'policy-pass' -DisplayName 'Policy With Exclusion' -ExcludeRoles @($script:DirSyncRoleId),
                     New-CaPolicy -Id 'policy-fail' -DisplayName 'Policy Without Exclusion' -ExcludeUsers @() -ExcludeRoles @()
                 )
             }
@@ -277,14 +277,14 @@
         }
     }
 
-    Context 'Multiple policies — all pass' {
+    Context 'Multiple policies — all pass (each excluded by a different sync role)' {
 
         BeforeEach {
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncUser1 }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 return @(
-                    New-CaPolicy -Id 'policy1' -DisplayName 'Excluded By Role' -ExcludeRoles @($script:DirSyncRoleId),
-                    New-CaPolicy -Id 'policy2' -DisplayName 'Excluded By User' -ExcludeUsers @($script:syncUserId1)
+                    New-CaPolicy -Id 'policy1' -DisplayName 'Excluded By DirSync Role' -ExcludeRoles @($script:DirSyncRoleId),
+                    New-CaPolicy -Id 'policy2' -DisplayName 'Excluded By OnPrem Role'  -ExcludeRoles @($script:OnPremRoleId)
                 )
             }
         }

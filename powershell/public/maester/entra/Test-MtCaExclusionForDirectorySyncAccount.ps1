@@ -92,6 +92,11 @@
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
                 continue
+            } elseif ( $memberIds.Count -eq 0 ) {
+                # All members are service principals; they are not subject to CA policies and therefore this policy can be skipped
+                $CurrentResult = $true
+                Write-Verbose "Skipping $($policy.displayName) — only service principal members - $CurrentResult"
+                continue
             } else {
                 # Check if excluded by role
                 $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
