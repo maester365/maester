@@ -38,7 +38,6 @@ $script:MtRoles = @{
     'AuthenticationExtensibilityAdministrator' = [MtRoleDefinition]::new('25a516ed-2fa0-40ea-a2d0-12923a21473a', $true)
     'AuthenticationExtensibilityPasswordAdministrator' = [MtRoleDefinition]::new('0b00bede-4072-4d22-b441-e7df02a1ef63', $true)
     'AuthenticationPolicyAdministrator' = [MtRoleDefinition]::new('0526716b-113d-4c15-b2c8-68e3c22b9f80', $false)
-    'AzureADJoinedDeviceLocalAdministrator' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', $false)
     'AzureDevOpsAdministrator' = [MtRoleDefinition]::new('e3973bdf-4987-49ae-837a-ba8e231c7286', $false)
     'AzureInformationProtectionAdministrator' = [MtRoleDefinition]::new('7495fdc4-34c4-4d15-a289-98788ce399fd', $false)
     'B2CIEFKeysetAdministrator' = [MtRoleDefinition]::new('aaf43236-0c0d-4d5f-883a-6955382ac081', $true)
