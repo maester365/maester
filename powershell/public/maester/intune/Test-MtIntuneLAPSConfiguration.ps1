@@ -161,10 +161,10 @@
 
         # Build result markdown
         $testResultMarkdown = "Found $($lapsPolicies.Count) Windows LAPS policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Backup Directory | Complexity | Length | Post-Auth Actions | Auto Account Mgmt |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- |`n"
+        $testResultMarkdown += "| Policy | Backup Directory | Complexity | Length | Post-Auth Actions | Post-Auth Delay | Auto Account Mgmt |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- | --- |`n"
         foreach ($p in $policyResults) {
-            $testResultMarkdown += "| $($p.Name) | $($p.BackupDirectory) | $($p.PasswordComplexity) | $($p.PasswordLength) | $($p.PostAuthActions) | $($p.AutoAccountMgmt) |`n"
+            $testResultMarkdown += "| $($p.Name) | $($p.BackupDirectory) | $($p.PasswordComplexity) | $($p.PasswordLength) | $($p.PostAuthActions) | $($p.PostAuthDelay) | $($p.AutoAccountMgmt) |`n"
         }
 
         if ($hasEntraBackup) {

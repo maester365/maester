@@ -10,9 +10,10 @@
     ASR rules reduce the attack surface of applications by preventing behaviors commonly abused by malware,
     such as Office macros spawning child processes, credential theft from LSASS, or execution of obfuscated scripts.
 
-    Each ASR rule can be set to one of three modes:
+    Each ASR rule can be set to one of four modes:
     - Block: Actively prevents the behavior (recommended for production)
     - Audit: Logs the event without blocking (recommended for testing)
+    - Warn: Warns the user before allowing the behavior
     - Disabled/Not configured: Rule is inactive
 
     This test queries Endpoint Security ASR policies filtered by templateFamily 'endpointSecurityAttackSurfaceReduction'
