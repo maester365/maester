@@ -1,4 +1,4 @@
-function Test-MtAdRecycleBinStatus {
+﻿function Test-MtAdRecycleBinStatus {
     <#
     .SYNOPSIS
     Retrieves the Active Directory Recycle Bin status.
@@ -79,3 +79,4 @@ function Test-MtAdRecycleBinStatus {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Connect-Maester {
+﻿function Connect-Maester {
    <#
 .SYNOPSIS
    Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
@@ -374,3 +374,4 @@ function Connect-Maester {
     }
 
 } # end function Connect-Maester
+

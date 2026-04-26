@@ -1,4 +1,4 @@
-function Test-MtAdPasswordHistoryCount {
+﻿function Test-MtAdPasswordHistoryCount {
     <#
     .SYNOPSIS
     Checks the password history count configured in the default domain password policy.
@@ -66,3 +66,4 @@ function Test-MtAdPasswordHistoryCount {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoEnterpriseDcCount {
+﻿function Test-MtAdGpoNoEnterpriseDcCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Enterprise Domain Controllers.
@@ -113,3 +113,4 @@ function Test-MtAdGpoNoEnterpriseDcCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

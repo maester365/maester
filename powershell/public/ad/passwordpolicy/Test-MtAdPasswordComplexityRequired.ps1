@@ -1,4 +1,4 @@
-function Test-MtAdPasswordComplexityRequired {
+﻿function Test-MtAdPasswordComplexityRequired {
     <#
     .SYNOPSIS
     Checks whether password complexity is required in the default domain password policy.
@@ -68,3 +68,4 @@ function Test-MtAdPasswordComplexityRequired {
 
     return $testResult
 }
+

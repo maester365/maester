@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnUnknownDetails {
+﻿function Test-MtAdComputerSpnUnknownDetails {
     <#
     .SYNOPSIS
     Provides detailed information about unidentified SPN service classes on computer accounts.
@@ -66,7 +66,7 @@ function Test-MtAdComputerSpnUnknownDetails {
     $computers = $adState.Computers
 
     # Extract unknown SPNs from computer objects
-    $unknownSpnData = $computers | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $unknownSpnData = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $computer = $_
         $computer.servicePrincipalName | ForEach-Object {
             if ($_ -match "^([^/]+)") {
@@ -124,3 +124,6 @@ function Test-MtAdComputerSpnUnknownDetails {
 
     return $testResult
 }
+
+
+

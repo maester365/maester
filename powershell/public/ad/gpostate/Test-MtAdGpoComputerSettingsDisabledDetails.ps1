@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoComputerSettingsDisabledDetails {
     <#
     .SYNOPSIS
@@ -94,3 +94,4 @@ Review these GPOs to ensure computer-side policy delivery is intentionally disab
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

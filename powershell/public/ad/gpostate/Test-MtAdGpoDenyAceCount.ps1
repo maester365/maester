@@ -1,4 +1,4 @@
-function Test-MtAdGpoDenyAceCount {
+﻿function Test-MtAdGpoDenyAceCount {
     <#
     .SYNOPSIS
     Counts GPO reports that include a Deny ACE.
@@ -114,3 +114,4 @@ function Test-MtAdGpoDenyAceCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

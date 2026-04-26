@@ -1,4 +1,4 @@
-function Test-MtAdDcNonGlobalCatalogCount {
+﻿function Test-MtAdDcNonGlobalCatalogCount {
     <#
     .SYNOPSIS
     Counts domain controllers that are not configured as Global Catalogs.
@@ -74,3 +74,4 @@ function Test-MtAdDcNonGlobalCatalogCount {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdLapsInstalledStatus {
+﻿function Test-MtAdLapsInstalledStatus {
     <#
     .SYNOPSIS
     Checks whether Local Administrator Password Solution (LAPS) is installed in Active Directory.
@@ -69,3 +69,4 @@ function Test-MtAdLapsInstalledStatus {
 
     return $testResult
 }
+

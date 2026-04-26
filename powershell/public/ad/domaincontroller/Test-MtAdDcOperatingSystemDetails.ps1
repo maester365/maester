@@ -1,4 +1,4 @@
-function Test-MtAdDcOperatingSystemDetails {
+﻿function Test-MtAdDcOperatingSystemDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of operating systems on domain controllers.
@@ -70,3 +70,4 @@ function Test-MtAdDcOperatingSystemDetails {
 
     return $testResult
 }
+

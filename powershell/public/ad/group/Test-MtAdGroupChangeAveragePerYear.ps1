@@ -52,7 +52,6 @@ function Test-MtAdGroupChangeAveragePerYear {
     # Analyze group modifications
     $recentlyModified = @()
     $thisYear = $now.Year
-    $lastYear = $thisYear - 1
 
     $modificationsByYear = @{}
     $creationsByYear = @{}
@@ -92,7 +91,6 @@ function Test-MtAdGroupChangeAveragePerYear {
 
     # Calculate averages
     $totalGroups = ($groups | Measure-Object).Count
-    $totalCreations = ($creationsByYear.Values | Measure-Object -Sum).Sum
     $totalModifications = ($modificationsByYear.Values | Measure-Object -Sum).Sum
     $averageChangesPerYear = [Math]::Round($totalModifications / $yearsActive, 1)
 
@@ -144,3 +142,4 @@ function Test-MtAdGroupChangeAveragePerYear {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdPasswordMinLength {
+﻿function Test-MtAdPasswordMinLength {
     <#
     .SYNOPSIS
     Checks the minimum password length configured in the default domain password policy.
@@ -65,3 +65,4 @@ function Test-MtAdPasswordMinLength {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoDomainComputersCount {
+﻿function Test-MtAdGpoNoDomainComputersCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Domain Computers.
@@ -113,3 +113,4 @@ function Test-MtAdGpoNoDomainComputersCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdFineGrainedPolicyAppliesTo {
+﻿function Test-MtAdFineGrainedPolicyAppliesTo {
     <#
     .SYNOPSIS
     Shows which users and groups each fine-grained password policy applies to.
@@ -96,3 +96,4 @@ function Test-MtAdFineGrainedPolicyAppliesTo {
 
     return $testResult
 }
+

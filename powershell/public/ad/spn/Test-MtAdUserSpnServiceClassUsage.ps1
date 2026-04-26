@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnServiceClassUsage {
+﻿function Test-MtAdUserSpnServiceClassUsage {
     <#
     .SYNOPSIS
     Provides a breakdown of SPN service class usage across user accounts.
@@ -33,7 +33,7 @@ function Test-MtAdUserSpnServiceClassUsage {
     $users = $adState.Users
 
     # Extract all SPNs from user objects with their service classes
-    $spnData = $users | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $spnData = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $user = $_
         $user.servicePrincipalName | ForEach-Object {
             if ($_ -match "^([^/]+)") {
@@ -51,7 +51,7 @@ function Test-MtAdUserSpnServiceClassUsage {
 
     $serviceClassCount = ($serviceClassGroups | Measure-Object).Count
     $totalSpnCount = ($spnData | Measure-Object).Count
-    $usersWithSpns = ($users | Where-Object { $_.servicePrincipalName -ne $null } | Measure-Object).Count
+    $usersWithSpns = ($users | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
 
     # Test passes if we successfully retrieved SPN data
     $testResult = $true
@@ -85,3 +85,5 @@ function Test-MtAdUserSpnServiceClassUsage {
 
     return $testResult
 }
+
+

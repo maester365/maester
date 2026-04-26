@@ -38,9 +38,8 @@ function Test-MtAdNetbiosNameNonStandardDetails {
         $netbiosNames += $domain.NetBIOSName
     }
 
-    # NetBIOS name pattern and invalid characters
-    $validNetbiosPattern = '^[A-Za-z0-9!@#$%^&''()\-_\.+\{\}~]{1,15}$'
-    $invalidChars = @('\', '/', ':', '*', '?', '"', '<', '>', '|')
+    # NetBIOS name invalid characters
+    $invalidChars = @('\\', '/', ':', '*', '?', '"', '<', '>', '|')
 
     $nonCompliantDetails = @()
     foreach ($name in $netbiosNames) {
@@ -103,3 +102,4 @@ function Test-MtAdNetbiosNameNonStandardDetails {
 
     return $testResult
 }
+

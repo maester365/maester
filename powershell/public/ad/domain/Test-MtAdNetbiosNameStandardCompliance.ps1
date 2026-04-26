@@ -1,4 +1,4 @@
-function Test-MtAdNetbiosNameStandardCompliance {
+﻿function Test-MtAdNetbiosNameStandardCompliance {
     <#
     .SYNOPSIS
     Checks if NetBIOS names comply with naming standards.
@@ -31,8 +31,7 @@ function Test-MtAdNetbiosNameStandardCompliance {
     }
 
     $domain = $adState.Domain
-    $forest = $adState.Forest
-
+    
     # Collect NetBIOS names from domain and forest
     $netbiosNames = @()
     if ($domain.NetBIOSName) {
@@ -78,3 +77,4 @@ function Test-MtAdNetbiosNameStandardCompliance {
 
     return $testResult
 }
+

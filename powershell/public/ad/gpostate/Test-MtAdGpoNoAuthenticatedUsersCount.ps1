@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoAuthenticatedUsersCount {
+﻿function Test-MtAdGpoNoAuthenticatedUsersCount {
     <#
     .SYNOPSIS
     Counts GPO reports that do not include Authenticated Users.
@@ -114,3 +114,4 @@ function Test-MtAdGpoNoAuthenticatedUsersCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

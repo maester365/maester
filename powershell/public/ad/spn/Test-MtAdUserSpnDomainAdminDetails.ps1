@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnDomainAdminDetails {
+﻿function Test-MtAdUserSpnDomainAdminDetails {
     <#
     .SYNOPSIS
     Provides detailed information about SPNs configured on domain administrator accounts.
@@ -43,7 +43,7 @@ function Test-MtAdUserSpnDomainAdminDetails {
     }
 
     # Extract detailed SPN information from domain admin accounts
-    $adminSpnDetails = $domainAdmins | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $adminSpnDetails = $domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $admin = $_
         $admin.servicePrincipalName | ForEach-Object {
             # Parse SPN to extract components
@@ -67,7 +67,7 @@ function Test-MtAdUserSpnDomainAdminDetails {
     }
 
     $totalAdminSpns = ($adminSpnDetails | Measure-Object).Count
-    $adminsWithSpns = ($domainAdmins | Where-Object { $_.servicePrincipalName -ne $null } | Measure-Object).Count
+    $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
     # Test passes if we successfully retrieved SPN data
@@ -114,3 +114,6 @@ function Test-MtAdUserSpnDomainAdminDetails {
 
     return $testResult
 }
+
+
+

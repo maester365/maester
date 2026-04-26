@@ -1,4 +1,4 @@
-function Add-MtTestResultDetail {
+﻿function Add-MtTestResultDetail {
     <#
     .SYNOPSIS
     Add detailed information about a test so that it can be displayed in the test results report.
@@ -226,3 +226,4 @@ function Add-MtTestResultDetail {
         Set-ItResult -Skipped -Because $SkippedReason
     }
 }
+

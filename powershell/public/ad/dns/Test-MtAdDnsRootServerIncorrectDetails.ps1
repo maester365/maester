@@ -1,4 +1,4 @@
-function Test-MtAdDnsRootServerIncorrectDetails {
+﻿function Test-MtAdDnsRootServerIncorrectDetails {
     <#
     .SYNOPSIS
     Provides detailed information about root DNS servers with incorrect IP addresses.
@@ -125,3 +125,4 @@ function Test-MtAdDnsRootServerIncorrectDetails {
 
     return $testResult
 }
+

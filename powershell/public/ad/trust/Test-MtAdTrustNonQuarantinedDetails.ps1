@@ -1,4 +1,4 @@
-function Test-MtAdTrustNonQuarantinedDetails {
+﻿function Test-MtAdTrustNonQuarantinedDetails {
     <#
     .SYNOPSIS
     Lists details of non-quarantined trusts in Active Directory.
@@ -80,3 +80,4 @@ function Test-MtAdTrustNonQuarantinedDetails {
 
     return $testResult
 }
+

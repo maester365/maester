@@ -1,4 +1,4 @@
-function Test-MtAdPasswordReversibleEncryption {
+﻿function Test-MtAdPasswordReversibleEncryption {
     <#
     .SYNOPSIS
     Checks whether reversible encryption is enabled for passwords in the default domain password policy.
@@ -68,3 +68,4 @@ function Test-MtAdPasswordReversibleEncryption {
 
     return $testResult
 }
+

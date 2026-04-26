@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnDomainAdminCount {
+﻿function Test-MtAdUserSpnDomainAdminCount {
     <#
     .SYNOPSIS
     Counts SPNs configured on domain administrator accounts.
@@ -43,7 +43,7 @@ function Test-MtAdUserSpnDomainAdminCount {
     }
 
     # Extract SPNs from domain admin accounts
-    $adminSpns = $domainAdmins | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $adminSpns = $domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $admin = $_
         $admin.servicePrincipalName | ForEach-Object {
             [PSCustomObject]@{
@@ -55,7 +55,7 @@ function Test-MtAdUserSpnDomainAdminCount {
     }
 
     $totalAdminSpns = ($adminSpns | Measure-Object).Count
-    $adminsWithSpns = ($domainAdmins | Where-Object { $_.servicePrincipalName -ne $null } | Measure-Object).Count
+    $adminsWithSpns = ($domainAdmins | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalDomainAdmins = ($domainAdmins | Measure-Object).Count
 
     # Test passes if we successfully retrieved SPN data
@@ -98,3 +98,6 @@ function Test-MtAdUserSpnDomainAdminCount {
 
     return $testResult
 }
+
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnUnknownCount {
+﻿function Test-MtAdComputerSpnUnknownCount {
     <#
     .SYNOPSIS
     Counts unidentified SPN service classes on computer accounts.
@@ -66,7 +66,7 @@ function Test-MtAdComputerSpnUnknownCount {
     $computers = $adState.Computers
 
     # Extract all SPNs from computer objects
-    $allSpns = $computers | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
+    $allSpns = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
 
     # Parse SPNs to extract service classes
     $serviceClasses = $allSpns | ForEach-Object {
@@ -109,3 +109,5 @@ function Test-MtAdComputerSpnUnknownCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdDcSmbSigningEnabledCount {
+﻿function Test-MtAdDcSmbSigningEnabledCount {
     <#
     .SYNOPSIS
     Counts domain controllers with SMB signing enabled.
@@ -30,8 +30,7 @@ function Test-MtAdDcSmbSigningEnabledCount {
     }
 
     $smbConfigs = $adState.SmbConfigurations
-    $dcCount = ($adState.DomainControllers | Measure-Object).Count
-
+    
     # Check if SMB configuration data was collected
     if ($smbConfigs.Count -eq 0) {
         $testResultMarkdown = "Unable to retrieve SMB configuration from domain controllers. This may require administrative privileges on the DCs."
@@ -71,3 +70,5 @@ function Test-MtAdDcSmbSigningEnabledCount {
 
     return $testResult
 }
+
+

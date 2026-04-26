@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoDefaultPasswordFoundDetails {
     <#
     .SYNOPSIS
@@ -64,3 +64,4 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdFineGrainedPolicyCount {
+﻿function Test-MtAdFineGrainedPolicyCount {
     <#
     .SYNOPSIS
     Counts the number of fine-grained password policies configured in the domain.
@@ -67,3 +67,4 @@ function Test-MtAdFineGrainedPolicyCount {
 
     return $testResult
 }
+

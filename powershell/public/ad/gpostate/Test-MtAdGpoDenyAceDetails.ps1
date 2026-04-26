@@ -1,4 +1,4 @@
-function Test-MtAdGpoDenyAceDetails {
+﻿function Test-MtAdGpoDenyAceDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports that include a Deny ACE.
@@ -104,3 +104,4 @@ function Test-MtAdGpoDenyAceDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

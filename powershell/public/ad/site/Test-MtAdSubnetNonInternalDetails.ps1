@@ -1,4 +1,4 @@
-function Test-MtAdSubnetNonInternalDetails {
+﻿function Test-MtAdSubnetNonInternalDetails {
     <#
     .SYNOPSIS
     Lists the non-RFC1918 (public IP) subnets in Active Directory.
@@ -108,3 +108,4 @@ function Test-MtAdSubnetNonInternalDetails {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnServiceClassCount {
+﻿function Test-MtAdComputerSpnServiceClassCount {
     <#
     .SYNOPSIS
     Counts the distinct SPN service classes in use by computer accounts.
@@ -33,7 +33,7 @@ function Test-MtAdComputerSpnServiceClassCount {
     $computers = $adState.Computers
 
     # Extract all SPNs from computer objects
-    $allSpns = $computers | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
+    $allSpns = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
 
     # Parse SPNs to extract service classes
     $serviceClasses = $allSpns | ForEach-Object {
@@ -56,7 +56,7 @@ function Test-MtAdComputerSpnServiceClassCount {
         $result += "| Distinct Service Classes | $serviceClassCount |`n"
 
         if ($serviceClassCount -gt 0) {
-            $result += "| Computers with SPNs | $(($computers | Where-Object { $_.servicePrincipalName -ne $null } | Measure-Object).Count) |`n"
+            $result += "| Computers with SPNs | $(($computers | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count) |`n"
         }
 
         $testResultMarkdown = "Active Directory computer SPNs have been analyzed. $serviceClassCount distinct service classes found across $totalSpnCount SPNs.`n`n%TestResult%"
@@ -69,3 +69,5 @@ function Test-MtAdComputerSpnServiceClassCount {
 
     return $testResult
 }
+
+

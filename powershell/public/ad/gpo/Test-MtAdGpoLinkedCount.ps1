@@ -47,9 +47,9 @@ function Test-MtAdGpoLinkedCount {
             }
 
             $pattern = '\[\s*LDAP://[^\]]*?\{(?<guid>[0-9a-fA-F-]{36})\}[^\]]*?;\s*(?<status>\d)\s*\]'
-            $matches = [regex]::Matches([string]$gPLinkValue, $pattern)
+            $regexMatches = [regex]::Matches([string]$gPLinkValue, $pattern)
 
-            foreach ($match in $matches) {
+            foreach ($match in $regexMatches) {
                 $guid = $match.Groups['guid'].Value
                 $status = [int]$match.Groups['status'].Value
 
@@ -78,3 +78,4 @@ function Test-MtAdGpoLinkedCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdSiteWithoutDcDetails {
+﻿function Test-MtAdSiteWithoutDcDetails {
     <#
     .SYNOPSIS
     Lists the Active Directory sites without domain controllers.
@@ -74,3 +74,4 @@ function Test-MtAdSiteWithoutDcDetails {
 
     return $testResult
 }
+

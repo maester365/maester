@@ -40,8 +40,8 @@ function Test-MtAdDnsDynamicRecordCount {
 
     # Count dynamic vs static records
     # Dynamic records have a timestamp (not static)
-    $dynamicRecords = $dnsRecords | Where-Object { $_.Timestamp -ne $null }
-    $staticRecords = $dnsRecords | Where-Object { $_.Timestamp -eq $null }
+    $dynamicRecords = $dnsRecords | Where-Object { $null -ne $_.Timestamp }
+    $staticRecords = $dnsRecords | Where-Object { $null -eq $_.Timestamp }
 
     $dynamicCount = ($dynamicRecords | Measure-Object).Count
     $staticCount = ($staticRecords | Measure-Object).Count
@@ -75,3 +75,5 @@ function Test-MtAdDnsDynamicRecordCount {
 
     return $testResult
 }
+
+

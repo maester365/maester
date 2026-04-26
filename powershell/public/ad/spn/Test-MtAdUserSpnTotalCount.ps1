@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnTotalCount {
+﻿function Test-MtAdUserSpnTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of SPNs configured on user accounts.
@@ -34,10 +34,10 @@ function Test-MtAdUserSpnTotalCount {
     $users = $adState.Users
 
     # Extract all SPNs from user objects
-    $allSpns = $users | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
+    $allSpns = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
 
     $totalSpnCount = ($allSpns | Measure-Object).Count
-    $usersWithSpns = ($users | Where-Object { $_.servicePrincipalName -ne $null } | Measure-Object).Count
+    $usersWithSpns = ($users | Where-Object { $null -ne $_.servicePrincipalName } | Measure-Object).Count
     $totalUsers = ($users | Measure-Object).Count
 
     # Test passes if we successfully retrieved SPN data
@@ -66,3 +66,5 @@ function Test-MtAdUserSpnTotalCount {
 
     return $testResult
 }
+
+

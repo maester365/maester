@@ -1,4 +1,4 @@
-function Test-MtAdDcNonStandardLdapPortCount {
+﻿function Test-MtAdDcNonStandardLdapPortCount {
     <#
     .SYNOPSIS
     Counts domain controllers using non-standard LDAP ports.
@@ -63,3 +63,4 @@ function Test-MtAdDcNonStandardLdapPortCount {
 
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnServiceClassUsage {
+﻿function Test-MtAdComputerSpnServiceClassUsage {
     <#
     .SYNOPSIS
     Provides a breakdown of SPN service class usage across computer accounts.
@@ -33,7 +33,7 @@ function Test-MtAdComputerSpnServiceClassUsage {
     $computers = $adState.Computers
 
     # Extract all SPNs from computer objects with their service classes
-    $spnData = $computers | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $spnData = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $computer = $_
         $computer.servicePrincipalName | ForEach-Object {
             if ($_ -match "^([^/]+)") {
@@ -83,3 +83,5 @@ function Test-MtAdComputerSpnServiceClassUsage {
 
     return $testResult
 }
+
+

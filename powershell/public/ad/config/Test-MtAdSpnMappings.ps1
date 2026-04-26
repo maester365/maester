@@ -41,8 +41,8 @@ function Test-MtAdSpnMappings {
         $result += "**SPN Mappings:**`n"
         if ($spnMappingsCount -gt 0) {
             foreach ($mapping in $spnMappingsSafe) {
-                $escaped = if ($null -eq $mapping) { '' } else { ($mapping -replace "`r", '' -replace "`n", ' ') }
-                $result += "- `$escaped`n"
+                $escapedMapping = if ($null -eq $mapping) { '' } else { ($mapping -replace "`r", '' -replace "`n", ' ') }
+                $result += "- $escapedMapping`n"
             }
         }
         else {
@@ -59,3 +59,4 @@ function Test-MtAdSpnMappings {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

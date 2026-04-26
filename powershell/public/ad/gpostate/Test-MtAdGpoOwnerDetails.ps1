@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoOwnerDetails {
     <#
     .SYNOPSIS
@@ -77,3 +77,4 @@ function Test-MtAdGpoOwnerDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

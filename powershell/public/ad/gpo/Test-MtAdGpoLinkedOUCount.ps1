@@ -30,8 +30,6 @@ function Test-MtAdGpoLinkedOUCount {
         return $null
     }
 
-    $gpoLinks = $gpoState.GPOLinks
-
     # Get all OUs in the domain
     try {
         $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gPLink
@@ -74,3 +72,5 @@ function Test-MtAdGpoLinkedOUCount {
 
     return $testResult
 }
+
+

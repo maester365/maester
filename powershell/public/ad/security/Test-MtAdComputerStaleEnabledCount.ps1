@@ -39,12 +39,12 @@ function Test-MtAdComputerStaleEnabledCount {
     # Find enabled computers that haven't logged on in 180+ days
     $staleEnabledComputers = $computers | Where-Object {
         $_.Enabled -eq $true -and
-        ($_.lastLogonDate -eq $null -or $_.lastLogonDate -lt $staleThreshold)
+        ($null -eq $_.lastLogonDate -or $_.lastLogonDate -lt $staleThreshold)
     }
 
     $staleCount = ($staleEnabledComputers | Measure-Object).Count
     $totalEnabled = ($computers | Where-Object { $_.Enabled -eq $true } | Measure-Object).Count
-    $neverLoggedOn = ($staleEnabledComputers | Where-Object { $_.lastLogonDate -eq $null } | Measure-Object).Count
+    $neverLoggedOn = ($staleEnabledComputers | Where-Object { $null -eq $_.lastLogonDate } | Measure-Object).Count
     $notLoggedIn180Days = $staleCount - $neverLoggedOn
 
     $testResult = $true
@@ -84,3 +84,5 @@ function Test-MtAdComputerStaleEnabledCount {
 
     return $testResult
 }
+
+

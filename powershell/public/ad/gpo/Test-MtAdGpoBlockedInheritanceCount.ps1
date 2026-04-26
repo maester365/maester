@@ -1,4 +1,4 @@
-function Test-MtAdGpoBlockedInheritanceCount {
+﻿function Test-MtAdGpoBlockedInheritanceCount {
     <#
     .SYNOPSIS
     Counts targets blocking GPO inheritance.
@@ -109,3 +109,4 @@ function Test-MtAdGpoBlockedInheritanceCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

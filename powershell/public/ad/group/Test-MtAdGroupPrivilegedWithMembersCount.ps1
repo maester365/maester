@@ -1,4 +1,4 @@
-function Test-MtAdGroupPrivilegedWithMembersCount {
+﻿function Test-MtAdGroupPrivilegedWithMembersCount {
     <#
     .SYNOPSIS
     Counts privileged groups that have members in Active Directory.
@@ -36,8 +36,7 @@ function Test-MtAdGroupPrivilegedWithMembersCount {
     }
 
     $groups = $adState.Groups
-    $domainSid = $adState.Domain.DomainSID.Value
-
+    
     # Well-known privileged group RIDs
     $privilegedRIDs = @{
         '512' = 'Domain Admins'
@@ -122,3 +121,4 @@ function Test-MtAdGroupPrivilegedWithMembersCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

@@ -1,4 +1,4 @@
-function Test-MtAdDnsZoneDelegationDetails {
+﻿function Test-MtAdDnsZoneDelegationDetails {
     <#
     .SYNOPSIS
     Provides detailed information about DNS zone delegations.
@@ -81,3 +81,4 @@ function Test-MtAdDnsZoneDelegationDetails {
 
     return $testResult
 }
+

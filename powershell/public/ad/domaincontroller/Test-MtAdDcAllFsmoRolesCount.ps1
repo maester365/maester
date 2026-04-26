@@ -1,4 +1,4 @@
-function Test-MtAdDcAllFsmoRolesCount {
+﻿function Test-MtAdDcAllFsmoRolesCount {
     <#
     .SYNOPSIS
     Counts domain controllers that hold all 5 FSMO roles.
@@ -81,3 +81,4 @@ function Test-MtAdDcAllFsmoRolesCount {
 
     return $testResult
 }
+

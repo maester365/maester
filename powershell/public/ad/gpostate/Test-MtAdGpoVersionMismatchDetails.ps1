@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoVersionMismatchDetails {
     <#
     .SYNOPSIS
@@ -61,3 +61,4 @@ function Test-MtAdGpoVersionMismatchDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+

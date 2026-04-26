@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnUnknownDetails {
+﻿function Test-MtAdUserSpnUnknownDetails {
     <#
     .SYNOPSIS
     Provides detailed information about unidentified SPN service classes on user accounts.
@@ -66,7 +66,7 @@ function Test-MtAdUserSpnUnknownDetails {
     $users = $adState.Users
 
     # Extract unknown SPNs from user objects
-    $unknownSpnData = $users | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $unknownSpnData = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $user = $_
         $user.servicePrincipalName | ForEach-Object {
             if ($_ -match "^([^/]+)") {
@@ -124,3 +124,5 @@ function Test-MtAdUserSpnUnknownDetails {
 
     return $testResult
 }
+
+

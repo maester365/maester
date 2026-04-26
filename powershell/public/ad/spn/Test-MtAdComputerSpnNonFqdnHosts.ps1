@@ -31,10 +31,9 @@ function Test-MtAdComputerSpnNonFqdnHosts {
     }
 
     $computers = $adState.Computers
-    $domainName = $adState.Domain.DNSRoot
 
     # Extract SPNs and check for FQDN
-    $spnData = $computers | Where-Object { $_.servicePrincipalName -ne $null } | ForEach-Object {
+    $spnData = $computers | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object {
         $computer = $_
         $computer.servicePrincipalName | ForEach-Object {
             # Parse SPN: serviceclass/host:port
@@ -105,3 +104,7 @@ function Test-MtAdComputerSpnNonFqdnHosts {
 
     return $testResult
 }
+
+
+
+

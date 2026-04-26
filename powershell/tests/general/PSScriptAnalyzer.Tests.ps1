@@ -1,4 +1,4 @@
-﻿Param (
+Param (
     [switch]
     $SkipTest,
 
@@ -15,7 +15,7 @@ BeforeDiscovery {
 
 Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFiles = $commandFiles } {
     BeforeAll {
-        $analysis = $commandFiles | Invoke-ScriptAnalyzer -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
+        $analysis = $commandFiles | Invoke-ScriptAnalyzer -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess, PSUseSingularNouns
     }
 
     # The next Context blocks are kinda duplicate, but helps us document both

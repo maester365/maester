@@ -1,4 +1,4 @@
-function Test-MtAdManagedServiceAccountCount {
+﻿function Test-MtAdManagedServiceAccountCount {
     <#
     .SYNOPSIS
     Counts managed service accounts (MSAs) in the domain.
@@ -65,7 +65,7 @@ function Test-MtAdManagedServiceAccountCount {
 
         foreach ($msa in $serviceAccounts | Select-Object -First 20) {
             $type = if ($groupMSAs -contains $msa) { 'gMSA' } elseif ($standaloneMSAs -contains $msa) { 'MSA' } else { 'Unknown' }
-            $enabled = if ($msa.Enabled -ne $null) { $msa.Enabled } else { 'N/A' }
+            $enabled = if ($null -ne $msa.Enabled) { $msa.Enabled } else { 'N/A' }
             $result += "| $($msa.Name) | $type | $enabled |`n"
         }
 
@@ -84,3 +84,5 @@ function Test-MtAdManagedServiceAccountCount {
 
     return $testResult
 }
+
+
