@@ -600,4 +600,4 @@ ssh -i ~/.ssh/test_key azureuser@20.125.96.137
 ```
 
 Domain: **maester.test**  
-Administrator Password: **P@ssw0rd123!** (Safe Mode password, also used for DSRM)
+Administrator Password: **[REDACTED]** (Safe Mode password, also used for DSRM)
