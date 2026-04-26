@@ -17,7 +17,8 @@
     - TrustAppsFromManagedInstaller: Whether apps deployed via Intune/SCCM are automatically trusted
     - TrustAppsWithGoodReputation: Whether ISG (Intelligent Security Graph) reputation is used
 
-    The test passes if at least one App Control for Business policy exists with built-in controls configured.
+    The test passes if at least one App Control for Business policy exists with built-in controls configured
+    or a custom policy uploaded.
 
     .EXAMPLE
     Test-MtIntuneAppControl
