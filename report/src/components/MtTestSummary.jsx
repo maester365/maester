@@ -33,8 +33,21 @@ export default function MtTestSummary(props) {
         return props.selectedStatus.includes(status);
     }
 
-    const cardClass = (status) =>
-        `cursor-pointer transition-opacity ${props.onStatusChange && !isActive(status) ? "opacity-50 hover:opacity-100" : ""}`;
+    const cardClass = (status) => {
+        if (!props.onStatusChange) return "";
+        if (isActive(status)) {
+            return "cursor-pointer transition-colors ring-2 ring-slate-300 dark:ring-slate-600";
+        }
+        return "cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50";
+    };
+
+    function getCardProps(status) {
+        if (!props.onStatusChange) return {};
+        return {
+            className: cardClass(status),
+            onClick: () => handleCardClick(status),
+        };
+    }
 
     const pctPassed = getPercentage(props.PassedCount);
     const pctFailed = getPercentage(props.FailedCount);
@@ -61,7 +74,7 @@ export default function MtTestSummary(props) {
 
     return (
         <Grid numItemsSm={2} numItemsLg={visibleCards} className="gap-6 mb-6">
-            <Card className={cardClass(null)} onClick={() => handleCardClick(null)}>
+            <Card {...getCardProps(null)}>
                 <Flex alignItems="start">
                     <Text>Total tests</Text>
                 </Flex>
@@ -76,7 +89,7 @@ export default function MtTestSummary(props) {
                     showLabels={false}
                 />
             </Card>
-            <Card className={cardClass('Passed')} onClick={() => handleCardClick('Passed')}>
+            <Card {...getCardProps('Passed')}>
                 <Flex alignItems="start">
                     <Text>Passed</Text>
                     <Icon icon={CheckCircleIcon} color="emerald" size="md" className="ml-2 w-4 h-4" />
@@ -86,7 +99,7 @@ export default function MtTestSummary(props) {
                 </Flex>
                 <ProgressBar value={pctPassed} color="emerald" className="mt-3" showAnimation={true} />
             </Card>
-            <Card className={cardClass('Failed')} onClick={() => handleCardClick('Failed')}>
+            <Card {...getCardProps('Failed')}>
                 <Flex alignItems="start">
                     <Text>Failed</Text>
                     <Icon icon={ExclamationTriangleIcon} color="rose" size="md" className="ml-2 w-4 h-4" />
@@ -97,7 +110,7 @@ export default function MtTestSummary(props) {
                 <ProgressBar value={pctFailed} color="rose" className="mt-3" showAnimation={true} />
             </Card>
             {props.InvestigateCount > 0 && (
-                <Card className={cardClass('Investigate')} onClick={() => handleCardClick('Investigate')}>
+                <Card {...getCardProps('Investigate')}>
                     <Flex alignItems="start">
                         <Text>Investigate</Text>
                         <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="md" className="ml-2 w-4 h-4" />
@@ -109,7 +122,7 @@ export default function MtTestSummary(props) {
                 </Card>
             )}
             {props.ErrorCount > 0 && (
-                <Card className={cardClass('Error')} onClick={() => handleCardClick('Error')}>
+                <Card {...getCardProps('Error')}>
                     <Flex alignItems="start">
                         <Text>Error</Text>
                         <Icon icon={ExclamationCircleIcon} color="orange" size="md" className="ml-2 w-4 h-4" />

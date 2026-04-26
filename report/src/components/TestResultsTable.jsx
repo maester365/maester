@@ -8,10 +8,12 @@ import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/reac
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
 
 export default function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = [
-    props.selectedStatus ?? ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'],
-    props.onStatusChange ?? (() => { }),
-  ];
+  const defaultSelectedStatus = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
+  const [internalSelectedStatus, setInternalSelectedStatus] = useState(
+    props.selectedStatus ?? defaultSelectedStatus
+  );
+  const selectedStatus = props.selectedStatus ?? internalSelectedStatus;
+  const setSelectedStatus = props.onStatusChange ?? setInternalSelectedStatus;
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
