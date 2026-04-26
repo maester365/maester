@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserProfilePathCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user profile path count"
 
     $users = $adState.Users
     $usersWithProfilePath = $users | Where-Object {
@@ -49,6 +52,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users with Profile Path | $profilePathCount |`n"
         $result += "| Profile Path Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $profilePathCount out of $totalCount users ($percentage%) have the ProfilePath attribute populated.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -57,6 +61,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserProfilePathCount"
 
     return $testResult
 }

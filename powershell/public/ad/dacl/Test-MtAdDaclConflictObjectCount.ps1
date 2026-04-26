@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclConflictObjectCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    Write-Verbose "Filtering/counting dacl conflict object count"
 
     $daclEntries = @($adState.DaclEntries)
     $conflictEntries = @($daclEntries | Where-Object { $_.ObjectDN -match 'CNF' })
@@ -43,11 +46,13 @@
     $result += "| --- | --- |`n"
     $result += "| Conflict Objects In DACL Data | $conflictObjectCount |`n"
     $result += "| DACL Entries On Conflict Objects | $conflictAceCount |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL data has been reviewed for conflict objects. $conflictObjectCount conflict object(s) with CNF markers were identified in the DACL dataset.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclConflictObjectCount"
     return $testResult
 }
 

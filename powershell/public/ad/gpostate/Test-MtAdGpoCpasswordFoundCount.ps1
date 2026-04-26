@@ -21,11 +21,14 @@ function Test-MtAdGpoCpasswordFoundCount {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoCpasswordFoundCount"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo cpassword found count"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -45,11 +48,13 @@ function Test-MtAdGpoCpasswordFoundCount {
     $result += "| Total GPOs | $totalCount |`n"
     $result += "| GPOs with cpassword | $cpasswordCount |`n"
     $result += "| cpassword ratio | $cpasswordPercentage% |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory GPOs have been analyzed for cpassword usage. $cpasswordCount out of $totalCount GPO(s) contain a cpassword.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoCpasswordFoundCount"
     return $testResult
 }
 

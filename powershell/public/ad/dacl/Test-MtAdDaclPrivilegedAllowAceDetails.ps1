@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclPrivilegedAllowAceDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl privileged allow ace details"
 
     $privilegedRights = @('GenericAll', 'WriteDacl', 'WriteOwner', 'ExtendedRight')
     $getPrivilegedRights = {
@@ -112,11 +115,13 @@
     if ($objectBreakdown.Count -eq 0) {
         $table += "| No privileged allow ACEs found |  | 0 | 0 |  |  |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test groups privileged allow ACEs by object and summarizes the rights observed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceDetails"
     return $testResult
 }
 

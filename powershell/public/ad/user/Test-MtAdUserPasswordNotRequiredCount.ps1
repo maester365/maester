@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserPasswordNotRequiredCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user password not required count"
 
     $users = @($adState.Users)
     $passwordNotRequiredUsers = @($users | Where-Object { $_.PasswordNotRequired -eq $true })
@@ -46,6 +49,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Users with Password Not Required | $passwordNotRequiredCount |`n"
         $result += "| Password Not Required Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $passwordNotRequiredCount out of $totalCount users ($percentage%) do not require a password.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -54,6 +58,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserPasswordNotRequiredCount"
 
     return $testResult
 }

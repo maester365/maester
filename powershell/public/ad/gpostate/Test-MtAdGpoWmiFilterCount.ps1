@@ -21,12 +21,15 @@ function Test-MtAdGpoWmiFilterCount {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoWmiFilterCount"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo wmi filter count"
 
     $gpos = $gpoState.GPOs
     if ($null -eq $gpos) {
@@ -52,11 +55,13 @@ function Test-MtAdGpoWmiFilterCount {
     $result += "| Total GPOs (state) | $totalCount |`n"
     $result += "| GPOs with WMI Filter | $wmiFilterCount |`n"
     $result += "| WMI Filter ratio | $wmiPercentage% |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory GPOs have been analyzed for WMI filters. $wmiFilterCount out of $totalCount GPO(s) have a WMI filter configured.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoWmiFilterCount"
     return $testResult
 }
 

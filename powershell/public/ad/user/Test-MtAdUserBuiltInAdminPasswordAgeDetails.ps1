@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserBuiltInAdminPasswordAgeDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user built in admin password age details"
 
     $users = $adState.Users
 
@@ -46,11 +49,13 @@
     } else {
         $result += "| No built-in administrator style accounts found | - | - | - | - | - |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Built-in administrator style account password age data was retrieved from Active Directory.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserBuiltInAdminPasswordAgeDetails"
 
     return $testResult
 }

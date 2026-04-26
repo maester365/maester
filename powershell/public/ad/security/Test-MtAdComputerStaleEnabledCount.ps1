@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerStaleEnabledCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer stale enabled count"
 
     $computers = $adState.Computers
     $staleThreshold = (Get-Date).AddDays(-180)
@@ -76,11 +79,13 @@
             $result += "| ... and $($staleCount - 10) more | | |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Stale enabled computer accounts have been identified. These should be reviewed and disabled if no longer needed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerStaleEnabledCount"
 
     return $testResult
 }

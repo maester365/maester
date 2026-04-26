@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserWorkstationRestrictionCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user workstation restriction count"
 
     $users = @($adState.Users)
     $restrictedUsers = @($users | Where-Object {
@@ -48,6 +51,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Users with Workstation Restrictions | $restrictedCount |`n"
         $result += "| Restriction Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $restrictedCount out of $totalCount users ($percentage%) have workstation logon restrictions configured.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -56,6 +60,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserWorkstationRestrictionCount"
 
     return $testResult
 }

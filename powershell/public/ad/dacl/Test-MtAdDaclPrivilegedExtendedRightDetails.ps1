@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclPrivilegedExtendedRightDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl privileged extended right details"
 
     $daclEntries = @($adState.DaclEntries)
     $extendedRightEntries = @(
@@ -81,11 +84,13 @@
     if ($breakdown.Count -eq 0) {
         $table += "| No ExtendedRight allow ACEs found | 0 | 0 | 0 |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test groups ExtendedRight allow ACEs by ObjectType GUID.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightDetails"
     return $testResult
 }
 

@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserBuiltInAdminEnabledDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user built in admin enabled details"
 
     $users = $adState.Users
 
@@ -48,11 +51,13 @@
     } else {
         $result += "No enabled built-in administrator style accounts were found.`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Enabled built-in administrator style Active Directory user details were retrieved.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserBuiltInAdminEnabledDetails"
 
     return $testResult
 }

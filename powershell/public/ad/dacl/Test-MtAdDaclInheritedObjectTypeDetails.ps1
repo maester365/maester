@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclInheritedObjectTypeDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl inherited object type details"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
@@ -62,10 +65,12 @@
     }
 
     $testResult = $true
+    Write-Verbose "Counts computed"
     $testResultMarkdown = "Active Directory DACL inheritance targets were grouped by inherited object type. $($groups.Count) inherited object type GUID group(s) were identified.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeDetails"
     return $testResult
 }
 

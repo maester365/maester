@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclPrivilegedExtendedRightCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl privileged extended right count"
 
     $daclEntries = @($adState.DaclEntries)
     $extendedRightEntries = @(
@@ -54,11 +57,13 @@
     $result += "| Distinct ObjectType values | $(@($normalizedObjectTypes | Sort-Object -Unique).Count) |`n"
     $result += "| Distinct identities with ExtendedRight | $(@($extendedRightEntries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } | Select-Object -ExpandProperty IdentityReference -Unique).Count) |`n"
     $result += "| Distinct objects with ExtendedRight | $(@($extendedRightEntries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } | Select-Object -ExpandProperty ObjectDN -Unique).Count) |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test counts allow ACEs that grant the ExtendedRight permission.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightCount"
     return $testResult
 }
 

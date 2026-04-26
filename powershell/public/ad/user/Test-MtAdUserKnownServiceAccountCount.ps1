@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserKnownServiceAccountCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user known service account count"
 
     $users = $adState.Users
     $serviceAccountPattern = '(?i)(^svc[_-]|^service[_-]|[_-]svc$|[_-]service$|^sa[_-]|[_-]sa$|^sqlsvc[_-]?|^appsvc[_-]?)'
@@ -56,6 +59,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users Matching Known Service Account Patterns | $serviceAccountCount |`n"
         $result += "| Service Account Pattern Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $serviceAccountCount out of $totalCount users ($percentage%) match common service account naming patterns.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -64,6 +68,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserKnownServiceAccountCount"
 
     return $testResult
 }

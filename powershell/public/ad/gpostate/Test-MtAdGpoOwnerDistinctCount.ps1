@@ -21,11 +21,14 @@ function Test-MtAdGpoOwnerDistinctCount {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoOwnerDistinctCount"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo owner distinct count"
 
     $gpos = $gpoState.GPOs
     if ($null -eq $gpos) {
@@ -49,11 +52,13 @@ function Test-MtAdGpoOwnerDistinctCount {
     $result = "| Metric | Value |`n"
     $result += "| --- | --- |`n"
     $result += "| Distinct GPO owner count | $distinctOwnerCount |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory GPO owners have been analyzed. There are $distinctOwnerCount distinct owner(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoOwnerDistinctCount"
     return $testResult
 }
 

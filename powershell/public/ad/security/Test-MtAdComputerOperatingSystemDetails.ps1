@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerOperatingSystemDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer operating system details"
 
     $computers = $adState.Computers
 
@@ -68,11 +71,13 @@
             $result += "| ... and $($osDetails.Count - 15) more combinations | | |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Detailed operating system distribution has been analyzed. Review for unsupported or end-of-life systems.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerOperatingSystemDetails"
 
     return $testResult
 }

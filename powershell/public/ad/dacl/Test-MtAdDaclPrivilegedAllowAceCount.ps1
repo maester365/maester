@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclPrivilegedAllowAceCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl privileged allow ace count"
 
     $privilegedRights = @('GenericAll', 'WriteDacl', 'WriteOwner', 'ExtendedRight')
     $getPrivilegedRights = {
@@ -72,11 +75,13 @@
         $rightCount = @($privilegedAllowEntries | Where-Object { $_.MatchedRights -contains $right }).Count
         $result += "| ACEs containing $right | $rightCount |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test counts allow ACEs that grant high-impact Active Directory rights.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceCount"
     return $testResult
 }
 

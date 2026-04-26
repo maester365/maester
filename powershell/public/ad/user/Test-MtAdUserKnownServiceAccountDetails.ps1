@@ -19,11 +19,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserKnownServiceAccountDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user known service account details"
 
     $users = $adState.Users
 
@@ -90,11 +93,13 @@
     } else {
         $result += "No users matched the configured service account naming patterns.`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory users were reviewed for known service account naming patterns.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserKnownServiceAccountDetails"
 
     return $testResult
 }

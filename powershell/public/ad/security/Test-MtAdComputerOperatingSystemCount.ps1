@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerOperatingSystemCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer operating system count"
 
     $computers = $adState.Computers
 
@@ -62,11 +65,13 @@
             $result += "| $($group.Name) | $($group.Count) | $percentage% |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Domain computer operating system diversity has been analyzed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerOperatingSystemCount"
 
     return $testResult
 }

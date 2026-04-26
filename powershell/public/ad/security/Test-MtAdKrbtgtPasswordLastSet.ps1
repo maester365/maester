@@ -25,12 +25,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdKrbtgtPasswordLastSet"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting krbtgt password last set"
 
     $users = $adState.Users
     $krbtgt = $users | Where-Object { $_.SamAccountName -eq 'krbtgt' } | Select-Object -First 1
@@ -53,11 +56,13 @@
         $result += "| Days Since Change | $([Math]::Round($daysSinceChange.TotalDays, 0)) |`n"
     }
     $result += "| Account Enabled | $($krbtgt.Enabled) |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "KRBTGT account password information retrieved. This account is used for Kerberos ticket encryption.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdKrbtgtPasswordLastSet"
 
     return $testResult
 }

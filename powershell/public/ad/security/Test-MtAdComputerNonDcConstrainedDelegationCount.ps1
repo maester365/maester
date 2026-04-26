@@ -27,12 +27,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerNonDcConstrainedDelegationCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer non dc constrained delegation count"
 
     $computers = $adState.Computers
     $domainControllers = $adState.DomainControllers
@@ -74,11 +77,13 @@
             $result += "| ... and $($nonDcConstrainedCount - 10) more | |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Non-DC computers with constrained delegation have been identified. These should be reviewed to ensure they are necessary and properly configured.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerNonDcConstrainedDelegationCount"
 
     return $testResult
 }

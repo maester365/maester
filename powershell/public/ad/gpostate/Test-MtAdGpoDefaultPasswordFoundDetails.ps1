@@ -21,11 +21,14 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoDefaultPasswordFoundDetails"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo default password found details"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -57,11 +60,13 @@ function Test-MtAdGpoDefaultPasswordFoundDetails {
     else {
         '✅ No GPOs with default password were found.'
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoDefaultPasswordFoundDetails"
     return $testResult
 }
 

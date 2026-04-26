@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclDistinctIdentityCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl distinct identity count"
 
     $daclEntries = @($adState.DaclEntries)
     $totalAceCount = ($daclEntries | Measure-Object).Count
@@ -61,11 +64,13 @@
         $result += "| Identity with most ACEs | $largestIdentityName |`n"
         $result += "| ACEs for most represented identity | $($largestIdentityGroup.Count) |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test summarizes how many unique identities are present across collected DACL ACEs.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclDistinctIdentityCount"
     return $testResult
 }
 

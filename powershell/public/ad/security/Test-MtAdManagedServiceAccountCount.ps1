@@ -28,12 +28,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdManagedServiceAccountCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting managed service account count"
 
     $serviceAccounts = $adState.ServiceAccounts
 
@@ -76,11 +79,13 @@
         $result += "`n**No managed service accounts found.**`n`n"
         $result += "Consider using gMSAs for services instead of traditional service accounts for improved security.`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Managed service accounts provide automatic password management and improved security for service accounts.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdManagedServiceAccountCount"
 
     return $testResult
 }

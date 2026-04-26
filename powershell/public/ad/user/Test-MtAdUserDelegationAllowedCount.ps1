@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserDelegationAllowedCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user delegation allowed count"
 
     $users = @($adState.Users)
     $delegatedUsers = @($users | Where-Object {
@@ -51,6 +54,7 @@
         $result += "| Trusted for Delegation | $unconstrainedCount |`n"
         $result += "| Trusted to Auth for Delegation | $protocolTransitionCount |`n"
         $result += "| Delegation Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $delegatedCount out of $totalCount users ($percentage%) are configured for Kerberos delegation.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -59,6 +63,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserDelegationAllowedCount"
 
     return $testResult
 }

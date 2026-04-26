@@ -21,11 +21,14 @@ function Test-MtAdGpoDisabledLinkDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoDisabledLinkDetails"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo disabled link details"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -57,11 +60,13 @@ function Test-MtAdGpoDisabledLinkDetails {
     else {
         '✅ No GPOs with disabled link configuration were found.'
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoDisabledLinkDetails"
     return $testResult
 }
 

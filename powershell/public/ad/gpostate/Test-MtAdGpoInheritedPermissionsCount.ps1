@@ -20,9 +20,11 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoInheritedPermissionsCount"
     $gpoState = $null
     try {
         $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     }
     catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -33,6 +35,7 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo inherited permissions count"
 
     $gpoReports = $null
     if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
@@ -107,11 +110,13 @@
     else {
         $recommendation = "⚠️ GPO reports were found using inherited permissions ($inheritedPermissionsCount). Review and explicitly define GPO permissions where appropriate."
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoInheritedPermissionsCount"
     return $testResult
 }
 

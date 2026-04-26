@@ -30,12 +30,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdKrbtgtNonStandardUacCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting krbtgt non standard uac count"
 
     $users = $adState.Users
     $krbtgt = $users | Where-Object { $_.SamAccountName -eq 'krbtgt' } | Select-Object -First 1
@@ -87,11 +90,13 @@
     $result += "| Standard UAC Value | $standardUac |`n"
     $result += "| UAC Is Standard | $(if ($isStandard) { 'Yes' } else { 'No - REVIEW REQUIRED' }) |`n"
     $result += "| UAC Flags | $($uacFlags -join ', ') |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "KRBTGT account UAC settings analyzed. Standard UAC should be 514 (disabled normal account).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdKrbtgtNonStandardUacCount"
 
     return $testResult
 }

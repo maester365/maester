@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerDnsHostNameCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer dns host name count"
 
     $computers = $adState.Computers
 
@@ -69,11 +72,13 @@
             $result += "| ... and $($withoutDnsCount - 10) more | |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "DNS host name configuration has been analyzed. DNS host names are required for proper Kerberos authentication.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerDnsHostNameCount"
 
     return $testResult
 }

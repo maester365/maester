@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclInheritedObjectTypeCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl inherited object type count"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
@@ -53,11 +56,13 @@
     $result += "| Total DACL Entries | $($daclEntries.Count) |`n"
     $result += "| ACEs with Specific InheritedObjectType | $($filteredEntries.Count) |`n"
     $result += "| Distinct InheritedObjectType GUIDs | $distinctInheritedObjectTypeCount |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL inheritance targets were analyzed. $distinctInheritedObjectTypeCount distinct inherited object type GUID(s) were referenced across $($filteredEntries.Count) ACE(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeCount"
     return $testResult
 }
 

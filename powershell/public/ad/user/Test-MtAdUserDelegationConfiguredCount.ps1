@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserDelegationConfiguredCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user delegation configured count"
 
     $users = $adState.Users
 
@@ -44,11 +47,13 @@
     $result += "| TrustedForDelegation Enabled | $unconstrainedCount |`n"
     $result += "| TrustedToAuthForDelegation Enabled | $protocolTransitionCount |`n"
     $result += "| Both Delegation Flags Enabled | $bothCount |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory users were reviewed for delegation configuration.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserDelegationConfiguredCount"
 
     return $testResult
 }

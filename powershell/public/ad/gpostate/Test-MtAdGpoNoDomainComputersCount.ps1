@@ -19,9 +19,11 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoNoDomainComputersCount"
     $gpoState = $null
     try {
         $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     }
     catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -32,6 +34,7 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo no domain computers count"
 
     $gpoReports = $null
     if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
@@ -106,11 +109,13 @@
     else {
         $recommendation = "⚠️ GPO reports were found missing Domain Computers ($noDomainComputersCount)."
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $resultTable
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoNoDomainComputersCount"
     return $testResult
 }
 

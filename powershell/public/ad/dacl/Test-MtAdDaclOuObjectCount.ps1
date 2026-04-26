@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclOuObjectCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    Write-Verbose "Filtering/counting dacl ou object count"
 
     $daclEntries = @($adState.DaclEntries)
     $ouDaclEntries = @($daclEntries | Where-Object { $_.ObjectClass -eq 'organizationalUnit' })
@@ -44,11 +47,13 @@
     $result += "| Total DACL Entries | $totalDaclEntryCount |`n"
     $result += "| OU DACL Entries | $ouDaclEntryCount |`n"
     $result += "| Distinct OU Objects With DACL Entries | $distinctOuObjectCount |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL data has been filtered to Organizational Unit objects. $ouDaclEntryCount DACL entr$(if ($ouDaclEntryCount -eq 1) { 'y' } else { 'ies' }) were found across $distinctOuObjectCount OU object(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclOuObjectCount"
     return $testResult
 }
 

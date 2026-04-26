@@ -27,11 +27,14 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoUserSettingsDisabledDetails"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo user settings disabled details"
 
     $gpos = $gpoState.GPOs
     if ($null -eq $gpos) {
@@ -86,11 +89,13 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     else {
         '✅ No GPOs with user settings disabled were found.'
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoUserSettingsDisabledDetails"
     return $testResult
 }
 

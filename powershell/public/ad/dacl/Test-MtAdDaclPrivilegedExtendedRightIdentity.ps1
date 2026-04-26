@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclPrivilegedExtendedRightIdentity"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl privileged extended right identity"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
@@ -104,10 +107,12 @@
     }
 
     $testResult = $true
+    Write-Verbose "Counts computed"
     $testResultMarkdown = "Active Directory DACL entries were analyzed for privileged extended rights. $($identityGroups.Count) identity reference(s) have at least one privileged extended right ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightIdentity"
     return $testResult
 }
 

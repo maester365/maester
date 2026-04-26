@@ -27,11 +27,14 @@ function Test-MtAdGpoSettingsDisabledCount {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoSettingsDisabledCount"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo settings disabled count"
 
     $gpos = $gpoState.GPOs
     if ($null -eq $gpos) {
@@ -74,11 +77,13 @@ function Test-MtAdGpoSettingsDisabledCount {
     $result += "| Total GPOs (state) | $totalCount |`n"
     $result += "| GPOs with disabled settings | $disabledCount |`n"
     $result += "| Disabled ratio | $disabledPercentage% |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory GPOs have been analyzed for disabled settings. $disabledCount out of $totalCount GPO(s) have disabled settings (GpoStatus 0, 1, or 2).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoSettingsDisabledCount"
     return $testResult
 }
 

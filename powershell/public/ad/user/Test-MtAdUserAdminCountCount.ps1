@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserAdminCountCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user admin count count"
 
     $users = $adState.Users
     $usersWithAdminCount = $users | Where-Object {
@@ -49,6 +52,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users with AdminCount = 1 | $adminCount |`n"
         $result += "| AdminCount Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $adminCount out of $totalCount users ($percentage%) have AdminCount set to 1.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -57,6 +61,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserAdminCountCount"
 
     return $testResult
 }

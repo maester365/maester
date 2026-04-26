@@ -19,11 +19,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserReversibleEncryptionCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user reversible encryption count"
 
     $users = @($adState.Users)
     $reversibleEncryptionUsers = @($users | Where-Object {
@@ -55,6 +58,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Users with Reversible Encryption | $reversibleEncryptionCount |`n"
         $result += "| Reversible Encryption Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $reversibleEncryptionCount out of $totalCount users ($percentage%) are configured for reversible password encryption behavior.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -63,6 +67,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserReversibleEncryptionCount"
 
     return $testResult
 }

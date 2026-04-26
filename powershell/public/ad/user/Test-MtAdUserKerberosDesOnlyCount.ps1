@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserKerberosDesOnlyCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user kerberos des only count"
 
     $users = @($adState.Users)
     $desOnlyUsers = @($users | Where-Object {
@@ -49,6 +52,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Users with DES-Only Kerberos | $desOnlyCount |`n"
         $result += "| DES-Only Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $desOnlyCount out of $totalCount users ($percentage%) are configured to use DES-only Kerberos encryption.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -57,6 +61,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserKerberosDesOnlyCount"
 
     return $testResult
 }

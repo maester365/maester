@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserDormantEnabledCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user dormant enabled count"
 
     $thresholdDays = 90
     $thresholdDate = (Get-Date).AddDays(-$thresholdDays)
@@ -51,6 +54,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Dormant Enabled Users (>90 days) | $dormantCount |`n"
         $result += "| Dormant Percentage (of enabled) | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $dormantCount out of $enabledCount enabled users ($percentage%) have not logged on in more than $thresholdDays days.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -59,6 +63,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserDormantEnabledCount"
 
     return $testResult
 }

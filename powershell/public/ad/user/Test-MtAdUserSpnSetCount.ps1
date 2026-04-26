@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserSpnSetCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user spn set count"
 
     $users = $adState.Users
     $usersWithSpn = $users | Where-Object {
@@ -50,6 +53,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users with SPNs Configured | $spnCount |`n"
         $result += "| SPN Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $spnCount out of $totalCount users ($percentage%) have one or more SPNs configured.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -58,6 +62,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserSpnSetCount"
 
     return $testResult
 }

@@ -21,11 +21,14 @@ function Test-MtAdGpoWmiFilterDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoWmiFilterDetails"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo wmi filter details"
 
     $gpos = $gpoState.GPOs
     if ($null -eq $gpos) {
@@ -67,11 +70,13 @@ function Test-MtAdGpoWmiFilterDetails {
     else {
         '✅ No GPOs with WMI filter configuration were found.'
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoWmiFilterDetails"
     return $testResult
 }
 

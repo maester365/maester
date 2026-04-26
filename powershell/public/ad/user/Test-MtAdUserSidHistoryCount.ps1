@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserSidHistoryCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user sid history count"
 
     $users = $adState.Users
     $usersWithSidHistory = $users | Where-Object {
@@ -50,6 +53,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users with SID History | $sidHistoryCount |`n"
         $result += "| SID History Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $sidHistoryCount out of $totalCount users ($percentage%) have SID History set.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -58,6 +62,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserSidHistoryCount"
 
     return $testResult
 }

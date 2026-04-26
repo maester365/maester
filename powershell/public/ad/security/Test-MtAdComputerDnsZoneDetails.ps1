@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerDnsZoneDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer dns zone details"
 
     $computers = $adState.Computers
 
@@ -93,11 +96,13 @@
             $result += "| ... and $($withoutDnsCount - 10) more | |`n"
         }
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Detailed DNS zone distribution has been analyzed.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerDnsZoneDetails"
 
     return $testResult
 }

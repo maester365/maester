@@ -26,12 +26,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerUnconstrainedDelegationCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting computer unconstrained delegation count"
 
     $computers = $adState.Computers
     $domainControllers = $adState.DomainControllers
@@ -61,11 +64,13 @@
         $percentage = [Math]::Round(($unconstrainedCount / $totalComputers) * 100, 2)
         $result += "| Percentage with Unconstrained Delegation | $percentage% |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Computers with unconstrained delegation have been identified. This configuration allows services to impersonate users to any service.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdComputerUnconstrainedDelegationCount"
 
     return $testResult
 }

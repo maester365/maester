@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserNoPreAuthCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user no pre auth count"
 
     $users = @($adState.Users)
     $noPreAuthUsers = @($users | Where-Object {
@@ -49,6 +52,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Users Without Pre-Authentication | $noPreAuthCount |`n"
         $result += "| No Pre-Authentication Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $noPreAuthCount out of $totalCount users ($percentage%) do not require Kerberos pre-authentication.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -57,6 +61,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserNoPreAuthCount"
 
     return $testResult
 }

@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserScriptPathCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user script path count"
 
     $users = $adState.Users
     $usersWithScriptPath = $users | Where-Object {
@@ -49,6 +52,7 @@
         $result += "| Total Users | $totalCount |`n"
         $result += "| Users with Script Path | $scriptPathCount |`n"
         $result += "| Script Path Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $scriptPathCount out of $totalCount users ($percentage%) have the ScriptPath attribute populated.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -57,6 +61,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserScriptPathCount"
 
     return $testResult
 }

@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserInContainerCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user in container count"
 
     $users = $adState.Users
     $usersInContainers = $users | Where-Object {
@@ -56,6 +59,7 @@
         $result += "| Users in CN=Users | $defaultUsersContainerCount |`n"
         $result += "| Users in Container Paths | $containerCount |`n"
         $result += "| Container Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $containerCount out of $totalCount users ($percentage%) are located in container paths such as CN=Users instead of OUs.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -64,6 +68,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserInContainerCount"
 
     return $testResult
 }

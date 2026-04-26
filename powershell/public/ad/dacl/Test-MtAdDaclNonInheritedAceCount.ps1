@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclNonInheritedAceCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl non inherited ace count"
 
     if (-not ($adState.ContainsKey('DaclEntries'))) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
@@ -44,11 +47,13 @@
     $result += '| --- | --- |`n'
     $result += "| Total DACL Entries | $($daclEntries.Count) |`n"
     $result += "| Non-Inherited ACEs | $($nonInheritedEntries.Count) |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL inheritance was analyzed. $($nonInheritedEntries.Count) ACE(s) are explicitly assigned and not inherited.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclNonInheritedAceCount"
     return $testResult
 }
 

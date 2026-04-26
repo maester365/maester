@@ -19,9 +19,11 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoDenyAceDetails"
     $gpoState = $null
     try {
         $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     }
     catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
@@ -32,6 +34,7 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo deny ace details"
 
     $gpoReports = $null
     if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
@@ -97,11 +100,13 @@
     else {
         "⚠️ GPO reports include a Deny ACE ($denyAceCount)."
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "$recommendation`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoDenyAceDetails"
     return $testResult
 }
 

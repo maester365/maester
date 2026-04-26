@@ -22,11 +22,14 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoNoApplyGroupPolicyAceDetails"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo no apply group policy ace details"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -47,10 +50,12 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     }
 
     $testResult = $true
+    Write-Verbose "Counts computed"
     $testResultMarkdown = "GPO apply permissions were analyzed. $($noApplyAceReports.Count) GPO(s) are missing the required ACE.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $table
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceDetails"
     return $testResult
 }
 

@@ -21,11 +21,14 @@ function Test-MtAdGpoVersionMismatchCount {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoVersionMismatchCount"
     $gpoState = Get-MtADGpoState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting gpo version mismatch count"
 
     $gpoReports = $gpoState.GPOReports
     if ($null -eq $gpoReports) {
@@ -45,11 +48,13 @@ function Test-MtAdGpoVersionMismatchCount {
     $result += "| Total GPOs | $totalCount |`n"
     $result += "| GPOs with version mismatch | $mismatchCount |`n"
     $result += "| Mismatch ratio | $mismatchPercentage% |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory GPOs have been analyzed for version mismatches. $mismatchCount out of $totalCount GPO(s) indicate a version mismatch.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdGpoVersionMismatchCount"
     return $testResult
 }
 

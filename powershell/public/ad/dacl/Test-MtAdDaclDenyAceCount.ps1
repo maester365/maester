@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclDenyAceCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    Write-Verbose "Filtering/counting dacl deny ace count"
 
     $daclEntries = @($adState.DaclEntries)
     $totalDaclEntryCount = ($daclEntries | Measure-Object).Count
@@ -44,11 +47,13 @@
     $result += "| Total DACL Entries | $totalDaclEntryCount |`n"
     $result += "| Deny ACEs | $denyAceCount |`n"
     $result += "| Objects With Deny ACEs | $affectedObjects |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL data has been reviewed for deny authorizations. $denyAceCount deny ACE(s) were identified across $affectedObjects object(s).`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclDenyAceCount"
     return $testResult
 }
 

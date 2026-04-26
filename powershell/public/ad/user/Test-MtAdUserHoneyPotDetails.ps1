@@ -18,11 +18,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserHoneyPotDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user honey pot details"
 
     $users = $adState.Users
 
@@ -81,11 +84,13 @@
     } else {
         $result += "No potential honey pot users were identified using the configured naming rules.`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Potential honey pot style Active Directory users were reviewed in detail.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserHoneyPotDetails"
 
     return $testResult
 }

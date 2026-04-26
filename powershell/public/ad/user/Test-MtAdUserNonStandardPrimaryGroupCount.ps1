@@ -22,11 +22,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserNonStandardPrimaryGroupCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user non standard primary group count"
 
     $users = $adState.Users
     $usersWithNonStandardPrimaryGroup = $users | Where-Object {
@@ -50,6 +53,7 @@
         $result += "| Users with PrimaryGroupId = 513 | $($totalCount - $nonStandardPrimaryGroupCount) |`n"
         $result += "| Users with Non-Standard Primary Group | $nonStandardPrimaryGroupCount |`n"
         $result += "| Non-Standard Primary Group Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory users have been analyzed. $nonStandardPrimaryGroupCount out of $totalCount users ($percentage%) have a primaryGroupId other than 513 (Domain Users).`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -58,6 +62,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserNonStandardPrimaryGroupCount"
 
     return $testResult
 }

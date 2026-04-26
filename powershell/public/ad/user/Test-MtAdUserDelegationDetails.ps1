@@ -19,11 +19,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserDelegationDetails"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user delegation details"
 
     $users = $adState.Users
 
@@ -72,11 +75,13 @@
     } else {
         $result += "No users with delegation-related settings were identified.`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Delegation-enabled Active Directory user details were retrieved.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserDelegationDetails"
 
     return $testResult
 }

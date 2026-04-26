@@ -19,11 +19,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUserDisabledCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Not connected to Active Directory."
         return $null
     }
+    Write-Verbose "Filtering/counting user disabled count"
 
     $users = @($adState.Users)
     $disabledUsers = @($users | Where-Object { $_.Enabled -eq $false })
@@ -46,6 +49,7 @@
         $result += "| Enabled Users | $enabledCount |`n"
         $result += "| Disabled Users | $disabledCount |`n"
         $result += "| Disabled Percentage | $percentage% |`n`n"
+    Write-Verbose "Counts computed"
 
         $testResultMarkdown = "Active Directory user objects have been analyzed. $disabledCount out of $totalCount users ($percentage%) are disabled.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
@@ -54,6 +58,7 @@
     }
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdUserDisabledCount"
 
     return $testResult
 }

@@ -21,11 +21,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclDistinctObjectCount"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Active Directory.'
         return $null
     }
+    Write-Verbose "Filtering/counting dacl distinct object count"
 
     $daclEntries = @($adState.DaclEntries)
     $distinctObjects = @(
@@ -50,11 +53,13 @@
     $result += "| Total DACL Entries | $daclEntryCount |`n"
     $result += "| Distinct Objects With DACL Entries | $distinctObjectCount |`n"
     $result += "| Average ACEs Per Object | $averageAcePerObject |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "Active Directory DACL data has been analyzed. $distinctObjectCount distinct object(s) have one or more DACL entries available for review.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclDistinctObjectCount"
     return $testResult
 }
 

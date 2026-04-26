@@ -25,12 +25,15 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdKrbtgtLastLogon"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
 
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting krbtgt last logon"
 
     $users = $adState.Users
     $krbtgt = $users | Where-Object { $_.SamAccountName -eq 'krbtgt' } | Select-Object -First 1
@@ -49,11 +52,13 @@
     $result += "| Last Logon Date | $(if ($lastLogon) { $lastLogon.ToString('yyyy-MM-dd HH:mm:ss') } else { 'Never' }) |`n"
     $result += "| Account Enabled | $($krbtgt.Enabled) |`n"
     $result += "| Password Last Set | $(if ($krbtgt.PasswordLastSet) { $krbtgt.PasswordLastSet.ToString('yyyy-MM-dd HH:mm:ss') } else { 'Never' }) |`n"
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "KRBTGT account last logon information retrieved. This service account should not have interactive logons.`n`n%TestResult%"
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdKrbtgtLastLogon"
 
     return $testResult
 }

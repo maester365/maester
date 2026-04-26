@@ -20,11 +20,14 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclIdentityAceDistribution"
     $adState = Get-MtADDomainState
+    Write-Verbose "Retrieved AD state"
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
         return $null
     }
+    Write-Verbose "Filtering/counting dacl identity ace distribution"
 
     $daclEntries = @($adState.DaclEntries)
     $identityDistribution = @(
@@ -67,10 +70,12 @@
     if ($identityDistribution.Count -eq 0) {
         $table += "| No identities found | 0 | 0 | 0 | 0 |`n"
     }
+    Write-Verbose "Counts computed"
 
     $testResultMarkdown = "This informational test shows how DACL ACEs are distributed across identities.`n`n$summary`n$table"
 
     Add-MtTestResultDetail -Result $testResultMarkdown
+    Write-Verbose "Completed Test-MtAdDaclIdentityAceDistribution"
     return $testResult
 }
 
