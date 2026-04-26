@@ -12,7 +12,7 @@
     RootModule           = 'Maester.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '0.1.0'
+    ModuleVersion        = '2.0.0'
 
     # Supported PSEditions
     CompatiblePSEditions = 'Core', 'Desktop'
@@ -35,370 +35,155 @@
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion    = '5.1'
 
-    # Name of the PowerShell host required by this module
-    # PowerShellHostName = ''
-
-    # Minimum version of the PowerShell host required by this module
-    # PowerShellHostVersion = ''
-
-    # Minimum version of Microsoft .NET Framework required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # DotNetFrameworkVersion = ''
-
-    # Minimum version of the common language runtime (CLR) required by this module. This prerequisite is valid for the PowerShell Desktop edition only.
-    # ClrVersion = ''
-
-    # Processor architecture (None, X86, Amd64) required by this module
-    # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
+    RequiredModules      = @(
+        @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.27.0'; }
+        @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; }
+    )
     <#
-    Requires Pester 5.5.0 but that is not declared here due to potential conflicts with the version of Pester that is
-    pre-installed with Windows. See <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated
-    if necessary by Install-MaesterTests.
-#>
-
-    RequiredModules      = @( @{ModuleName = 'Microsoft.Graph.Authentication'; GUID = '883916f2-9184-46ee-b1f8-b6a2fb784cee'; ModuleVersion = '2.27.0'; }
-        @{ModuleName = 'Pester'; GUID = 'a699dea5-2c73-4616-a270-1f7abb777e71'; ModuleVersion = '0.0.0'; } )
-
-    # Assemblies that must be loaded prior to importing this module
-    # RequiredAssemblies = @()
+    Pester is declared above, but the minimum required version (5.5.0) is not pinned in this manifest due to
+    potential conflicts with the version of Pester that is pre-installed with Windows. See
+    <https://pester.dev/docs/introduction/installation/#windows>. Pester will be updated if necessary by
+    Install-MaesterTests.
+    #>
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
     ScriptsToProcess     = @()
 
-    # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @()
-
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @('Maester.Format.ps1xml')
 
-    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-    # NestedModules = @()
-
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport    = 'Add-MtTestResultDetail',
-    'Clear-MtADCache', 'Clear-MtDnsCache', 'Clear-MtExoCache', 'Clear-MtGraphCache',
-    'Compare-MtJsonObject', 'Compare-MtTestResult',
-    'Connect-Maester',
-    'Convert-MtResultsToFlatObject', 'ConvertFrom-MailAuthenticationRecordDkim',
-    'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordMx',
-    'ConvertFrom-MailAuthenticationRecordSpf',
-    'Disconnect-Maester',
-    'Get-MtTestInventory',
-    'Get-MtAzureManagementGroup', 'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
-    'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtGraphScope', 'Get-MtGroupMember',
-    'Get-MtExoThreatPolicyMalware',
-    'Get-MtADDacls', 'Get-MtADDomainState', 'Get-MtADGpoState',
-    'Get-MtHtmlReport', 'Import-MtMaesterResult', 'Merge-MtMaesterResult', 'Get-MtLicenseInformation', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession',
-    'Get-MtUser', 'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType',
-    'Install-MaesterTests',
-    'Invoke-Maester', 'Invoke-MtGraphRequest', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
-    'Invoke-MtGraphSecurityQuery',
-    'Get-MtMaesterApp', 'New-MtMaesterApp', 'Update-MtMaesterApp', 'Add-MtMaesterAppFederatedCredential',
-    'Resolve-SpfRecord', 'Send-MtMail', 'Send-MtTeamsMessage',
-    'Test-MtAppManagementPolicyEnabled', 'Test-MtAppRegistrationsWithSecrets', 'Test-MtSpExchangeAppAccessPolicy',
-    'Test-MtServicePrincipalsForAllUsers', 'Test-MtAuthenticationPolicyReferencedObjectsExist',
-    'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
-    'Test-MtCaBlockLegacyOtherAuthentication', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
-    'Test-MtCaDeviceCodeFlow', 'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaDeviceComplianceExists',
-    'Test-MtCaEmergencyAccessExists', 'Test-MtCaEnforceNonPersistentBrowserSession', 'Test-MtCaEnforceSignInFrequency',
-    'Test-MtCaExclusionForDirectorySyncAccount', 'Test-MtCaGap', 'Test-MtCaGroupsRestricted',
-    'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers',
-    'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 'Test-MtCaMisconfiguredIDProtection',
-    'Test-MtCaReferencedGroupsExist', 'Test-MtCaReferencedObjectsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
-    'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCis365PublicGroup', 'Test-MtCisAdminConsentWorkflowEnabled',
-    'Test-MtCisAuditLogSearch', 'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive',
-    'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin', 'Test-MtCisCreateTenantDisallowed',
-    'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisCommunicateInitiateExternalTeamsUsers', 'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCustomerLockBox', 'Test-MtCisDevicesWithoutCompliancePolicyMarked',
-    'Test-MtCisDkim', 'Test-MtCisEnsureGuestAccessRestricted', 'Test-MtCisEnsureGuestUserDynamicGroup', 'Test-MtCisEnsureUserConsentToAppsDisallowed', 'Test-MtCisFormsPhishingProtectionEnabled',
-    'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy', 'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
-    'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
-    'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
-    'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps', 'Test-MtCisThirdPartyApplicationsDisallowed', 'Test-MtCisThirdPartyFileSharing',
-    'Test-MtCisThirdPartyStorageServicesRestricted', 'Test-MtCisUserOwnedAppsRestricted', 'Test-MtCisWeakAuthenticationMethodsDisabled', 'Test-MtCisZAP',
-    'Test-MtCisaDkim', 'Test-MtCisaActivationNotification', 'Test-MtCisaAntiSpamAllowList',
-    'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent', 'Test-MtCisaAppGroupOwnerConsent',
-    'Test-MtCisaAppRegistration', 'Test-MtCisaAppUserConsent', 'Test-MtCisaAssignmentNotification',
-    'Test-MtCisaAttachmentFileType', 'Test-MtCisaAttachmentFilter', 'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium',
-    'Test-MtCisaAuditLogRetention', 'Test-MtCisaAuthenticatorContext', 'Test-MtCisaAutoExternalForwarding',
-    'Test-MtCisaBlockExecutable', 'Test-MtCisaBlockHighRiskSignIn', 'Test-MtCisaBlockHighRiskUser',
-    'Test-MtCisaBlockLegacyAuth', 'Test-MtCisaCalendarSharing', 'Test-MtCisaCloudGlobalAdmin',
-    'Test-MtCisaContactSharing', 'Test-MtCisaCrossTenantInboundDefault', 'Test-MtCisaDiagnosticSettings',
-    'Test-MtCisaDlp', 'Test-MtCisaDlpAlternate', 'Test-MtCisaDlpBaselineRule', 'Test-MtCisaDlpPii',
-    'Test-MtCisaDmarcAggregateCisa', 'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject',
-    'Test-MtCisaDmarcReport', 'Test-MtCisaEmailFilterAlternative', 'Test-MtCisaExoAlert',
-    'Test-MtCisaExoAlertSiem', 'Test-MtCisaExternalSenderWarning', 'Test-MtCisaGlobalAdminCount',
-    'Test-MtCisaGlobalAdminRatio', 'Test-MtCisaGuestInvitation', 'Test-MtCisaGuestUserAccess',
-    'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxAuditing',
-    'Test-MtCisaMailboxIntelligence', 'Test-MtCisaMalwareAction', 'Test-MtCisaMalwareZap', 'Test-MtCisaManagedDevice',
-    'Test-MtCisaManagedDeviceRegistration', 'Test-MtCisaMethodsMigration', 'Test-MtCisaMfa', 'Test-MtCisaNotifyHighRisk',
-    'Test-MtCisaPasswordExpiration', 'Test-MtCisaPermanentRoleAssignment', 'Test-MtCisaPhishResistant',
-    'Test-MtCisaPrivilegedPhishResistant', 'Test-MtCisaRequireActivationApproval', 'Test-MtCisaSafeLink',
-    'Test-MtCisaSafeLinkClickTracking', 'Test-MtCisaSafeLinkDownloadScan', 'Test-MtCisaSmtpAuthentication',
-    'Test-MtCisaSpamAction', 'Test-MtCisaSpamAlternative', 'Test-MtCisaSpamBypass', 'Test-MtCisaSpamFilter',
-    'Test-MtCisaSpfDirective', 'Test-MtCisaSpfRestriction', 'Test-MtCisaSpoSharing',
-    'Test-MtCisaSpoSharingAllowedDomain', 'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor',
-    'Test-MtConditionalAccessWhatIf', 'Test-MtConnection', 'Test-MtDeviceComplianceSettings',
-    'Test-MtExoRejectDirectSend',
-    'Test-MtExoSetScl',
-    'Test-MtExoModernAuth',
-    'Test-MtExoMailTip',
-    'Test-MtExoAdditionalStorageProvider',
-    'Test-MtExoOutlookAddin',
-    'Test-MtEidscaControl', 'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions',
-    'Test-MtManagedDeviceCleanupSettings', 'Test-MtPimAlertsExists', 'Test-MtPrivPermanentDirectoryRole',
-    'Test-MtTeamsRestrictParticipantGiveRequestControl', 'Test-MtUserAccessAdmin',
-    'Test-ORCA100', 'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103', 'Test-ORCA104', 'Test-ORCA105',
-    'Test-ORCA106', 'Test-ORCA107', 'Test-ORCA108', 'Test-ORCA108_1', 'Test-ORCA109', 'Test-ORCA110',
-    'Test-ORCA111', 'Test-ORCA112', 'Test-ORCA113', 'Test-ORCA114', 'Test-ORCA115', 'Test-ORCA116',
-    'Test-ORCA118_1', 'Test-ORCA118_2', 'Test-ORCA118_3', 'Test-ORCA118_4', 'Test-ORCA119', 'Test-ORCA120_malware',
-    'Test-ORCA120_phish', 'Test-ORCA120_spam', 'Test-ORCA121', 'Test-ORCA123', 'Test-ORCA124', 'Test-ORCA139',
-    'Test-ORCA140', 'Test-ORCA141', 'Test-ORCA142', 'Test-ORCA143', 'Test-ORCA156', 'Test-ORCA158',
-    'Test-ORCA179', 'Test-ORCA180', 'Test-ORCA189', 'Test-ORCA189_2', 'Test-ORCA205', 'Test-ORCA220',
-    'Test-ORCA221', 'Test-ORCA222', 'Test-ORCA223', 'Test-ORCA224', 'Test-ORCA225', 'Test-ORCA226',
-    'Test-ORCA227', 'Test-ORCA228', 'Test-ORCA229', 'Test-ORCA230', 'Test-ORCA231', 'Test-ORCA232',
-    'Test-ORCA233', 'Test-ORCA233_1', 'Test-ORCA234', 'Test-ORCA235', 'Test-ORCA236', 'Test-ORCA237',
-    'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240', 'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243',
-    'Test-ORCA244', 'Update-MaesterTests', 'Test-MtAppRegistrationOwnersWithoutMFA',
-    'Test-MtManagementGroupWriteRequirement', 'Test-MtDeviceRegistrationMfaConflict', 'Test-MtVaultSoftDelete',
-    'Test-MtTenantCreationRestricted', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtSecurityGroupCreationRestricted',
-    'Test-MtCaApprovedClientApp', 'Test-MtCaAzureDevOps', 'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtEntraIDConnectSsso',
-    'Test-MtExoMoeraMailActivity', 'Test-MtExoDelicensingResiliency',
-    'Test-MtLimitOnMicrosoftDomainUsage',
-    'Test-MtXspmAppRegWithPrivilegedApiAndOwners',
-    'Test-MtXspmAppRegWithPrivilegedRolesAndOwners',
-    'Test-MtXspmAppRegWithPrivilegedUnusedPermissions',
-    'Test-MtXspmExposedCredentialsForPrivilegedUsers',
-    'Test-MtXspmHybridUsersWithAssignedEntraIdRoles',
-    'Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity',
-    'Test-MtXspmPrivilegedUsersLinkedToIdentity',
-    'Test-MtXspmPendingApprovalCriticalAssetManagement',
-    'Test-MtOperationApprovalPolicies',
-    'Test-MtDeviceRegistrationLocalAdminsGlobalAdmin',
-    'Test-MtDeviceRegistrationLocalAdminsRegisteringUser',
-    'Test-MtAndroidEnterpriseConnection',
-    'Test-MtAppleAutomatedDeviceEnrollmentToken',
-    'Test-MtApplePushNotificationCertificate',
-    'Test-MtAppleVolumePurchaseProgramToken',
-    'Test-MtCertificateConnectors', 'Test-MtFeatureUpdatePolicy',
-    'Test-MtIntuneDiagnosticSettings', 'Test-MtIntuneRbacGroupsProtected',
-    'Test-MtBitLockerFullDiskEncryption',
-    'Test-MtMdmAuthority', 'Test-MtMobileThreatDefenseConnectors',
-    'Test-MtTenantCustomization', 'Test-MtWindowsDataProcessor',
-    'Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts',
-    'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
-    'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
-    'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
-    'Test-MtAIAgentBroadSharing',
-    'Test-MtAIAgentNoAuthentication',
-    'Test-MtAIAgentRiskyHttpConfig',
-    'Test-MtAIAgentEmailExfiltration',
-    'Test-MtAIAgentDormant',
-    'Test-MtAIAgentAuthorAuthentication',
-    'Test-MtAIAgentHardCodedCredentials',
-    'Test-MtAIAgentMcpTools',
-    'Test-MtAIAgentMissingInstructions',
-    'Test-MtAIAgentOrphaned',
-    'Test-MtEntitlementManagementDeletedGroups',
-    'Test-MtEntitlementManagementInactivePolicies',
-    'Test-MtEntitlementManagementOrphanedResources',
-    'Test-MtEntitlementManagementValidApprovers',
-    'Test-MtEntitlementManagementValidResourceRoles',
-    'Test-AzdoAllowExtensionsLocalNetworkAccess',
-    'Test-AzdoAllowRequestAccessToken',
-    'Test-AzdoAllowTeamAdminsInvitationsAccessToken',
-    'Test-AzdoArtifactsExternalPackageProtectionToken',
-    'Test-AzdoAuditStream',
-    'Test-AzdoDisableGlobalPATCreation',
-    'Test-AzdoDisablePATCreation',
-    'Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation',
-    'Test-AzdoEnforceAADConditionalAccess',
-    'Test-AzdoExternalGuestAccess',
-    'Test-AzdoFeedbackCollection',
-    'Test-AzdoLogAuditEvent',
-    'Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject',
-    'Test-AzdoOrganizationBadgesArePrivate',
-    'Test-AzdoOrganizationCreationClassicBuildPipeline',
-    'Test-AzdoOrganizationCreationClassicReleasePipeline',
-    'Test-AzdoOrganizationCreationRestriction',
-    'Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline',
-    'Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline',
-    'Test-AzdoOrganizationLimitVariablesAtQueueTime',
-    'Test-AzdoOrganizationOwner',
-    'Test-AzdoOrganizationProtectAccessToRepository',
-    'Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo',
-    'Test-AzdoOrganizationRepositorySettingsGravatarImage',
-    'Test-AzdoOrganizationStageChooser',
-    'Test-AzdoOrganizationStorageUsage',
-    'Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask',
-    'Test-AzdoOrganizationTaskRestrictionsDisableNode6Task',
-    'Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation',
-    'Test-AzdoOrganizationTriggerPullRequestGitHubRepository',
-    'Test-AzdoProjectCollectionAdministrator',
-    'Test-AzdoPublicProject',
-    'Test-AzdoResourceUsageProject',
-    'Test-AzdoResourceUsageWorkItemTag',
-    'Test-AzdoRestrictFullScopePersonalAccessToken',
-    'Test-AzdoRestrictPersonalAccessTokenLifespan',
-    'Test-AzdoSSHAuthentication',
-    'Test-AzdoThirdPartyAccessViaOauth',
-    'Test-AzdoValidateSshKeyExpiration',
-    # Active Directory Computer Tests - Phase 1
-    'Test-MtAdComputerDisabledCount', 'Test-MtAdComputerDormantCount',
-    'Test-MtAdComputerCreatorSidCount', 'Test-MtAdComputerNonStandardGroup',
-    'Test-MtAdComputerSidHistoryCount', 'Test-MtAdComputerInDefaultContainer',
-    'Test-MtAdComputerOUCount', 'Test-MtAdComputerPerOUAverage',
-    'Test-MtAdComputerDelegationCount', 'Test-MtAdComputerDelegationDetails',
-    # Active Directory SPN Tests - Phase 2
-    'Test-MtAdComputerSpnServiceClassCount', 'Test-MtAdComputerSpnServiceClassUsage',
-    'Test-MtAdComputerSpnUnknownCount', 'Test-MtAdComputerSpnUnknownDetails',
-    'Test-MtAdComputerSpnNonFqdnHosts', 'Test-MtAdUserSpnTotalCount',
-    'Test-MtAdUserSpnServiceClassCount', 'Test-MtAdUserSpnServiceClassUsage',
-    'Test-MtAdUserSpnUnknownCount', 'Test-MtAdUserSpnUnknownDetails',
-    'Test-MtAdUserSpnNonFqdnHosts', 'Test-MtAdUserSpnDomainAdminCount',
-    'Test-MtAdUserSpnDomainAdminDetails',
-    # Active Directory Password Policy Tests - Phase 3
-    'Test-MtAdPasswordHistoryCount', 'Test-MtAdPasswordMaxAge',
-    'Test-MtAdPasswordMinLength', 'Test-MtAdPasswordComplexityRequired',
-    'Test-MtAdPasswordReversibleEncryption', 'Test-MtAdAccountLockoutDuration',
-    'Test-MtAdAccountLockoutThreshold',     'Test-MtAdFineGrainedPolicyCount',
-    'Test-MtAdFineGrainedPolicyValueCount', 'Test-MtAdFineGrainedPolicySettingCounts',
-    'Test-MtAdFineGrainedPolicyAppliesTo',
-    # DNS Infrastructure Tests
-    'Test-MtAdDnsZoneCount', 'Test-MtAdDnsZonesWithOnlySoaNs',
-    'Test-MtAdDnsRootServerIncorrectCount', 'Test-MtAdDnsRootServerIncorrectDetails',
-    'Test-MtAdDnsDynamicRecordCount', 'Test-MtAdDnsZonesWithRecordsCount',
-    'Test-MtAdDnsZoneRecordDetails', 'Test-MtAdDnsZoneDelegationCount',
-    'Test-MtAdDnsZoneDelegationDetails', 'Test-MtAdDnsSoaDetails',
-    'Test-MtAdDnsAdSrvRecordCount', 'Test-MtAdDnsAdSrvRecordDetails',
-    'Test-MtAdDnsDnssecRecordCount', 'Test-MtAdDnsEmptyZoneCount',
-    'Test-MtAdDnsDuplicateZoneCount', 'Test-MtAdDnsReverseZoneCount',
-    'Test-MtAdDnsNonStandardZoneCount', 'Test-MtAdDnsReverseZoneNetworkCount',
-    'Test-MtAdDnsReverseZoneNetworkDetails',
-    # Phase 5: Domain & Forest Information
-    'Test-MtAdDomainFunctionalLevel', 'Test-MtAdMachineAccountQuota',
-    'Test-MtAdDomainControllerCount', 'Test-MtAdRidsRemaining',
-    'Test-MtAdDomainNameStandardCompliance', 'Test-MtAdDomainNameNonStandardDetails',
-    'Test-MtAdNetbiosNameStandardCompliance', 'Test-MtAdNetbiosNameNonStandardDetails',
-    'Test-MtAdForestFunctionalLevel', 'Test-MtAdForestDomainCount',
-    'Test-MtAdTombstoneLifetime', 'Test-MtAdRecycleBinStatus',
-    # Phase 6: Domain Controllers
-    'Test-MtAdDcSiteCoverageCount', 'Test-MtAdDcSmbv1EnabledCount',
-    'Test-MtAdDcSmbv311EnabledCount', 'Test-MtAdDcSmbSigningEnabledCount',
-    'Test-MtAdDcAllFsmoRolesCount', 'Test-MtAdDcFsmoRoleHolderDetails',
-    'Test-MtAdDcOperatingSystemCount', 'Test-MtAdDcOperatingSystemDetails',
-    # Phase 15: Domain State - Domain Controllers
-    'Test-MtAdDcNonStandardLdapPortCount', 'Test-MtAdDcNonStandardLdapsPortCount',
-    'Test-MtAdDcReadOnlyCount', 'Test-MtAdDcNonGlobalCatalogCount',
-    # Phase 16: Domain State - Forest and Domain
-    'Test-MtAdUpnSuffixesCount', 'Test-MtAdUpnSuffixesDetails',
-    'Test-MtAdSpnSuffixesCount', 'Test-MtAdCrossForestReferencesCount',
-    'Test-MtAdAllowedDnsSuffixesCount',
-     # Phase 7: Group Policy
-     'Test-MtAdGpoTotalCount', 'Test-MtAdGpoCreatedBefore2020Count',
-     'Test-MtAdGpoChangedBefore2020Count', 'Test-MtAdGpoUnlinkedCount',
-     'Test-MtAdGpoUnlinkedDetails', 'Test-MtAdGpoLinkedCount',
-     'Test-MtAdGpoDisabledLinkCount', 'Test-MtAdGpoUnlinkedTargetCount',
-     'Test-MtAdGpoEnforcedCount', 'Test-MtAdGpoBlockedInheritanceCount',
-     'Test-MtAdGpoLinkedOUCount',
-     # Phase 7b: Group Policy State
-     'Test-MtAdGpoAllSettingsDisabledDetails', 'Test-MtAdGpoComputerSettingsDisabledDetails',
-     'Test-MtAdGpoDisabledLinkDetails',
-     'Test-MtAdGpoDenyAceCount', 'Test-MtAdGpoDenyAceDetails',
-     'Test-MtAdGpoEnforcementCount', 'Test-MtAdGpoInheritedPermissionsCount',
-     'Test-MtAdGpoNoApplyGroupPolicyAceCount', 'Test-MtAdGpoNoApplyGroupPolicyAceDetails',
-     'Test-MtAdGpoNoAuthenticatedUsersCount', 'Test-MtAdGpoNoAuthenticatedUsersDetails',
-     'Test-MtAdGpoNoDomainComputersCount', 'Test-MtAdGpoNoEnterpriseDcCount',
-     'Test-MtAdGpoNoPermissionsCount', 'Test-MtAdGpoNoPermissionsDetails',
-     'Test-MtAdGpoOwnerDetails', 'Test-MtAdGpoOwnerDistinctCount',
-     'Test-MtAdGpoSettingsDisabledCount', 'Test-MtAdGpoStateTotalCount',
-     'Test-MtAdGpoUserSettingsDisabledDetails',
-     'Test-MtAdGpoWmiFilterCount', 'Test-MtAdGpoWmiFilterDetails',
-     'Test-MtAdGpoCpasswordFoundCount', 'Test-MtAdGpoCpasswordFoundDetails',
-     'Test-MtAdGpoDefaultPasswordFoundCount', 'Test-MtAdGpoDefaultPasswordFoundDetails',
-     # Duplicate export to match duplicate filenames in public folder
-     'Test-MtAdGpoDisabledLinkCount',
-     'Test-MtAdGpoVersionMismatchCount', 'Test-MtAdGpoVersionMismatchDetails',
-     # Phase 8: Groups
-     'Test-MtAdGroupAdminCount', 'Test-MtAdGroupInContainerCount',
-     'Test-MtAdGroupStaleCount', 'Test-MtAdGroupWithManagerCount',
-     'Test-MtAdGroupSidHistoryCount', 'Test-MtAdGroupDistributionCount',
-    'Test-MtAdGroupSecurityCount', 'Test-MtAdGroupDomainLocalCount',
-    'Test-MtAdGroupGlobalCount', 'Test-MtAdGroupUniversalCount',
-    'Test-MtAdGroupMemberDistinctGroupCount', 'Test-MtAdGroupMemberAccountTypeCount',
-    'Test-MtAdGroupMemberAccountTypeDetails', 'Test-MtAdGroupMemberTrustCount',
-    'Test-MtAdGroupMemberTrustDetails', 'Test-MtAdGroupMemberForeignSidCount',
-    'Test-MtAdGroupMemberForeignSidDetails', 'Test-MtAdGroupEmptyNonPrivilegedCount',
-    'Test-MtAdGroupEmptyNonPrivilegedDetails', 'Test-MtAdGroupPrivilegedWithMembersCount',
-    'Test-MtAdGroupPrivilegedWithMembersDetails', 'Test-MtAdGroupChangeAveragePerYear',
-    # Phase 9: User Tests
-    'Test-MtAdUserDisabledCount', 'Test-MtAdUserDormantEnabledCount',
-    'Test-MtAdUserPasswordNeverExpiresCount', 'Test-MtAdUserReversibleEncryptionCount',
-    'Test-MtAdUserDelegationAllowedCount', 'Test-MtAdUserKerberosDesOnlyCount',
-    'Test-MtAdUserNoPreAuthCount', 'Test-MtAdUserNeverLoggedInCount',
-    'Test-MtAdUserPasswordNotRequiredCount', 'Test-MtAdUserWorkstationRestrictionCount',
-    'Test-MtAdUserAdminCountCount', 'Test-MtAdUserNonStandardPrimaryGroupCount',
-    'Test-MtAdUserSidHistoryCount', 'Test-MtAdUserSpnSetCount',
-    'Test-MtAdUserManagerSetCount', 'Test-MtAdUserHomeDirectoryCount',
-    'Test-MtAdUserProfilePathCount', 'Test-MtAdUserScriptPathCount',
-    'Test-MtAdUserInContainerCount', 'Test-MtAdUserKnownServiceAccountCount',
-    'Test-MtAdUserKnownServiceAccountDetails', 'Test-MtAdUserBuiltInAdminCount',
-    'Test-MtAdUserBuiltInAdminEnabledDetails', 'Test-MtAdUserBuiltInAdminLastLogonDetails',
-    'Test-MtAdUserBuiltInAdminPasswordAgeDetails', 'Test-MtAdUserHoneyPotCount',
-    'Test-MtAdUserHoneyPotDetails', 'Test-MtAdUserDelegationConfiguredCount',
-    'Test-MtAdUserDelegationDetails',
-    # Phase 10: Organizational Units
-    'Test-MtAdOuOverlappingNameCount', 'Test-MtAdOuAtDomainRootCount',
-    'Test-MtAdOuStaleCount', 'Test-MtAdOuEmptyCount',
-    'Test-MtAdOuEmptyDetails',
-    # Phase 11: Sites and Subnets
-    'Test-MtAdSiteTotalCount', 'Test-MtAdSiteWithoutDcCount',
-    'Test-MtAdSiteWithoutDcDetails', 'Test-MtAdSiteWithoutSubnetCount',
-    'Test-MtAdSiteWithoutSubnetDetails', 'Test-MtAdSubnetTotalCount',
-    'Test-MtAdSubnetSiteAssociationCount', 'Test-MtAdSubnetCatchAllCount',
-    'Test-MtAdSubnetIpv6Count', 'Test-MtAdSubnetIpv6CatchAllCount',
-    'Test-MtAdSubnetNonInternalCount', 'Test-MtAdSubnetNonInternalDetails',
-    'Test-MtAdSubnetFirstOctetCount', 'Test-MtAdSubnetFirstTwoOctetsCount',
-    'Test-MtAdSubnetFirstThreeOctetsCount', 'Test-MtAdSubnetWithoutSiteCount',
-    # Phase 12: Trusts
-    'Test-MtAdTrustTotalCount', 'Test-MtAdTrustInterForestCount',
-    'Test-MtAdTrustQuarantinedCount', 'Test-MtAdTrustNonQuarantinedDetails',
-    'Test-MtAdTrustDetails', 'Test-MtAdTrustStaleCount',
-    'Test-MtAdTrustStaleDetails',
-    # Phase 13: Schema and Infrastructure
-    'Test-MtAdSchemaModificationYearCount', 'Test-MtAdSchemaModificationYearDetails',
-    'Test-MtAdSchemaVersionEntryCount', 'Test-MtAdSchemaVersionDetails',
-    'Test-MtAdLapsInstalledStatus', 'Test-MtAdPrinterTotalCount',
-    # Phase 14: Domain State - Configuration
-    'Test-MtAdTombstoneLifetimeConfig', 'Test-MtAdDsHeuristicsCount', 'Test-MtAdSpnMappings',
-    'Test-MtAdOptionalFeaturesCount', 'Test-MtAdRecycleBinEnabledPaths', 'Test-MtAdLdapQueryPolicyCount',
-    'Test-MtAdDefaultQueryPolicy', 'Test-MtAdAuthNPolicyConfigCount', 'Test-MtAdAdActivationObjectsCount',
-    'Test-MtAdWellKnownSecurityPrincipalsCount', 'Test-MtAdRegisteredDhcpServersCount', 'Test-MtAdEnterpriseCaCount',
-    'Test-MtAdCertificateTemplatesCount', 'Test-MtAdEnrollmentTemplatesCount', 'Test-MtAdEnrollmentCaCertificateDetails',
-    'Test-MtAdTrustedRootCaCount', 'Test-MtAdTrustedRootCaDetails', 'Test-MtAdIntermediateCaCount',
-    'Test-MtAdIntermediateCaDetails', 'Test-MtAdCrlDistributionPointsCount', 'Test-MtAdNtAuthCertificatesCount',
-    'Test-MtAdKdsRootKeysCount', 'Test-MtAdSmtpSiteLinksCount', 'Test-MtAdIpSiteLinksCount',
-    # Phase 17: Domain State - Security Accounts
-    'Test-MtAdKrbtgtPasswordLastSet', 'Test-MtAdKrbtgtLastLogon', 'Test-MtAdKrbtgtNonStandardUacCount',
-    'Test-MtAdComputerUnconstrainedDelegationCount', 'Test-MtAdComputerNonDcUnconstrainedDelegationCount',
-    'Test-MtAdComputerNonDcConstrainedDelegationCount', 'Test-MtAdComputerOperatingSystemCount',
-    'Test-MtAdComputerOperatingSystemDetails', 'Test-MtAdComputerStaleEnabledCount',
-    'Test-MtAdComputerDnsHostNameCount', 'Test-MtAdComputerDnsZoneCount', 'Test-MtAdComputerDnsZoneDetails',
-    'Test-MtAdManagedServiceAccountCount',
-    # Phase 18: Domain State - Replication and Features
-    'Test-MtAdDisabledReplicationConnectionCount', 'Test-MtAdNonAutoReplicationConnectionCount',
-    'Test-MtAdOptionalFeatureCount', 'Test-MtAdOptionalFeatureEnabledDetails',
-    'Test-MtAdSupportedSaslMechanismCount', 'Test-MtAdSupportedSaslMechanismDetails',
-    'Test-MtAdRootDseSynchronizedStatus', 'Test-MtAdDfsrSubscriptionCount',
-    'Test-MtAdDaclConflictObjectCount', 'Test-MtAdDaclConflictObjectDetails',
-    'Test-MtAdDaclDenyAceCount', 'Test-MtAdDaclDenyAceDetails',
-    'Test-MtAdDaclDistinctIdentityCount', 'Test-MtAdDaclDistinctObjectCount',
-    'Test-MtAdDaclIdentityAceDistribution', 'Test-MtAdDaclInheritedObjectTypeCount',
-    'Test-MtAdDaclInheritedObjectTypeDetails', 'Test-MtAdDaclNonInheritedAceCount',
-    'Test-MtAdDaclOuObjectCount', 'Test-MtAdDaclPrivilegedAllowAceCount',
-    'Test-MtAdDaclPrivilegedAllowAceDetails', 'Test-MtAdDaclPrivilegedExtendedRightCount',
-    'Test-MtAdDaclPrivilegedExtendedRightDetails', 'Test-MtAdDaclPrivilegedExtendedRightIdentity',
-    'Test-MtAdDaclUnresolvedSidCount', 'Test-MtAdDaclUnresolvedSidDetails'
+    FunctionsToExport    = @(
+        'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Clear-MtADCache', 'Clear-MtDnsCache',
+        'Clear-MtExoCache', 'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester',
+        'Convert-MtResultsToFlatObject', 'ConvertFrom-MailAuthenticationRecordDkim',
+        'ConvertFrom-MailAuthenticationRecordDmarc', 'ConvertFrom-MailAuthenticationRecordMx',
+        'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester', 'Get-MailAuthenticationRecord',
+        'Get-MtADDacls', 'Get-MtADDomainState', 'Get-MtADGpoState', 'Get-MtAdminPortalUrl',
+        'Get-MtAuthenticationMethodPolicyConfig', 'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy',
+        'Get-MtExo', 'Get-MtExoThreatPolicyMalware', 'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport',
+        'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRole', 'Get-MtRoleMember', 'Get-MtSafeMarkdown',
+        'Get-MtSession', 'Get-MtTestInventory', 'Get-MtUser', 'Get-MtUserAuthenticationMethod',
+        'Get-MtUserAuthenticationMethodInfoByType', 'Import-MtMaesterResult', 'Install-MaesterTests', 'Invoke-Maester',
+        'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest', 'Invoke-MtGraphRequest',
+        'Invoke-MtGraphSecurityQuery', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'Resolve-SPFRecord', 'Send-MtMail',
+        'Send-MtTeamsMessage', 'Test-AzdoAllowExtensionsLocalNetworkAccess', 'Test-AzdoAllowRequestAccessToken',
+        'Test-AzdoAllowTeamAdminsInvitationsAccessToken', 'Test-AzdoArtifactsExternalPackageProtectionToken',
+        'Test-AzdoAuditStream', 'Test-AzdoDisableGlobalPATCreation', 'Test-AzdoDisablePATCreation',
+        'Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation', 'Test-AzdoEnforceAADConditionalAccess',
+        'Test-AzdoExternalGuestAccess', 'Test-AzdoFeedbackCollection', 'Test-AzdoLogAuditEvent',
+        'Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject', 'Test-AzdoOrganizationBadgesArePrivate',
+        'Test-AzdoOrganizationCreationClassicBuildPipeline', 'Test-AzdoOrganizationCreationClassicReleasePipeline',
+        'Test-AzdoOrganizationCreationRestriction',
+        'Test-AzdoOrganizationLimitJobAuthorizationScopeNonReleasePipeline',
+        'Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline',
+        'Test-AzdoOrganizationLimitVariablesAtQueueTime', 'Test-AzdoOrganizationOwner',
+        'Test-AzdoOrganizationProtectAccessToRepository',
+        'Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo',
+        'Test-AzdoOrganizationRepositorySettingsGravatarImage', 'Test-AzdoOrganizationStageChooser',
+        'Test-AzdoOrganizationStorageUsage', 'Test-AzdoOrganizationTaskRestrictionsDisableMarketplaceTask',
+        'Test-AzdoOrganizationTaskRestrictionsDisableNode6Task',
+        'Test-AzdoOrganizationTaskRestrictionsShellTaskArgumentValidation',
+        'Test-AzdoOrganizationTriggerPullRequestGitHubRepository', 'Test-AzdoProjectCollectionAdministrator',
+        'Test-AzdoPublicProject', 'Test-AzdoResourceUsageProject', 'Test-AzdoResourceUsageWorkItemTag',
+        'Test-AzdoRestrictFullScopePersonalAccessToken', 'Test-AzdoRestrictPersonalAccessTokenLifespan',
+        'Test-AzdoSSHAuthentication', 'Test-AzdoThirdPartyAccessViaOauth', 'Test-AzdoValidateSshKeyExpiration',
+        'Test-MtAIAgentAuthorAuthentication', 'Test-MtAIAgentBroadSharing', 'Test-MtAIAgentDormant',
+        'Test-MtAIAgentEmailExfiltration', 'Test-MtAIAgentHardCodedCredentials', 'Test-MtAIAgentMcpTools',
+        'Test-MtAIAgentMissingInstructions', 'Test-MtAIAgentNoAuthentication', 'Test-MtAIAgentOrphaned',
+        'Test-MtAIAgentRiskyHttpConfig', 'Test-MtAndroidEnterpriseConnection',
+        'Test-MtAppleAutomatedDeviceEnrollmentToken', 'Test-MtApplePushNotificationCertificate',
+        'Test-MtAppleVolumePurchaseProgramToken', 'Test-MtAppManagementPolicyEnabled',
+        'Test-MtAppRegistrationOwnersWithoutMFA', 'Test-MtAppRegistrationsWithSecrets',
+        'Test-MtAuthenticationPolicyReferencedObjectsExist', 'Test-MtBitLockerFullDiskEncryption',
+        'Test-MtCaAllAppsExists', 'Test-MtCaApplicationEnforcedRestriction', 'Test-MtCaApprovedClientApp',
+        'Test-MtCaAzureDevOps', 'Test-MtCaBlockLegacyExchangeActiveSyncAuthentication',
+        'Test-MtCaBlockLegacyOtherAuthentication', 'Test-MtCaBlockUnknownOrUnsupportedDevicePlatform',
+        'Test-MtCaDeviceCodeFlow', 'Test-MtCaDeviceComplianceAdminsExists', 'Test-MtCaDeviceComplianceExists',
+        'Test-MtCaEmergencyAccessExists', 'Test-MtCaEnforceNonPersistentBrowserSession',
+        'Test-MtCaEnforceSignInFrequency', 'Test-MtCaExclusionForDirectorySyncAccount', 'Test-MtCaGap',
+        'Test-MtCaGroupsRestricted', 'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin',
+        'Test-MtCaMfaForAdminManagement', 'Test-MtCaMfaForAllUsers', 'Test-MtCaMfaForGuest',
+        'Test-MtCaMfaForRiskySignIn', 'Test-MtCaMisconfiguredIDProtection', 'Test-MtCaReferencedGroupsExist',
+        'Test-MtCaReferencedObjectsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
+        'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication',
+        'Test-MtCertificateConnectors', 'Test-MtCis365PublicGroup', 'Test-MtCisaActivationNotification',
+        'Test-MtCisaAntiSpamAllowList', 'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent',
+        'Test-MtCisaAppGroupOwnerConsent', 'Test-MtCisaAppRegistration', 'Test-MtCisaAppUserConsent',
+        'Test-MtCisaAssignmentNotification', 'Test-MtCisaAttachmentFileType', 'Test-MtCisaAttachmentFilter',
+        'Test-MtCisaAuditLog', 'Test-MtCisaAuditLogPremium', 'Test-MtCisaAuditLogRetention',
+        'Test-MtCisaAuthenticatorContext', 'Test-MtCisaAutoExternalForwarding', 'Test-MtCisaBlockExecutable',
+        'Test-MtCisaBlockHighRiskSignIn', 'Test-MtCisaBlockHighRiskUser', 'Test-MtCisaBlockLegacyAuth',
+        'Test-MtCisaCalendarSharing', 'Test-MtCisaCloudGlobalAdmin', 'Test-MtCisaContactSharing',
+        'Test-MtCisaCrossTenantInboundDefault', 'Test-MtCisaDiagnosticSettings', 'Test-MtCisaDkim', 'Test-MtCisaDlp',
+        'Test-MtCisaDlpAlternate', 'Test-MtCisaDlpBaselineRule', 'Test-MtCisaDlpPii', 'Test-MtCisaDmarcAggregateCisa',
+        'Test-MtCisaDmarcRecordExist', 'Test-MtCisaDmarcRecordReject', 'Test-MtCisaDmarcReport',
+        'Test-MtCisAdminConsentWorkflowEnabled', 'Test-MtCisaEmailFilterAlternative', 'Test-MtCisaExoAlert',
+        'Test-MtCisaExoAlertSiem', 'Test-MtCisaExternalSenderWarning', 'Test-MtCisaGlobalAdminCount',
+        'Test-MtCisaGlobalAdminRatio', 'Test-MtCisaGuestInvitation', 'Test-MtCisaGuestUserAccess',
+        'Test-MtCisaImpersonation', 'Test-MtCisaImpersonationTip', 'Test-MtCisaMailboxAuditing',
+        'Test-MtCisaMailboxIntelligence', 'Test-MtCisaMalwareAction', 'Test-MtCisaMalwareZap',
+        'Test-MtCisaManagedDevice', 'Test-MtCisaManagedDeviceRegistration', 'Test-MtCisaMethodsMigration',
+        'Test-MtCisaMfa', 'Test-MtCisaNotifyHighRisk', 'Test-MtCisaPasswordExpiration',
+        'Test-MtCisaPermanentRoleAssignment', 'Test-MtCisaPhishResistant', 'Test-MtCisaPrivilegedPhishResistant',
+        'Test-MtCisaRequireActivationApproval', 'Test-MtCisaSafeLink', 'Test-MtCisaSafeLinkClickTracking',
+        'Test-MtCisaSafeLinkDownloadScan', 'Test-MtCisaSmtpAuthentication', 'Test-MtCisaSpamAction',
+        'Test-MtCisaSpamAlternative', 'Test-MtCisaSpamBypass', 'Test-MtCisaSpamFilter', 'Test-MtCisaSpfDirective',
+        'Test-MtCisaSpfRestriction', 'Test-MtCisaSpoSharing', 'Test-MtCisaSpoSharingAllowedDomain',
+        'Test-MtCisAttachmentFilter', 'Test-MtCisAttachmentFilterComprehensive', 'Test-MtCisAuditLogSearch',
+        'Test-MtCisaUnmanagedRoleAssignment', 'Test-MtCisaWeakFactor', 'Test-MtCisCalendarSharing',
+        'Test-MtCisCloudAdmin', 'Test-MtCisCommunicateInitiateExternalTeamsUsers',
+        'Test-MtCisCommunicateWithUnmanagedTeamsUsers', 'Test-MtCisConnectionFilterSafeList',
+        'Test-MtCisCreateTenantDisallowed', 'Test-MtCisCustomerLockBox',
+        'Test-MtCisDevicesWithoutCompliancePolicyMarked', 'Test-MtCisDkim', 'Test-MtCisEnsureGuestAccessRestricted',
+        'Test-MtCisEnsureGuestUserDynamicGroup', 'Test-MtCisEnsureUserConsentToAppsDisallowed',
+        'Test-MtCisExoAdditionalStorageProvider', 'Test-MtCisFormsPhishingProtectionEnabled',
+        'Test-MtCisGlobalAdminCount', 'Test-MtCisHostedConnectionFilterPolicy',
+        'Test-MtCisInternalMalwareNotification', 'Test-MtCisOutboundSpamFilterPolicy', 'Test-MtCisPasswordExpiry',
+        'Test-MtCisSafeAntiPhishingPolicy', 'Test-MtCisSafeAttachment', 'Test-MtCisSafeAttachmentsAtpPolicy',
+        'Test-MtCisSafeLink', 'Test-MtCisSharedMailboxSignIn', 'Test-MtCisTeamsLobbyBypass',
+        'Test-MtCisTeamsReportSecurityConcerns', 'Test-MtCisThirdPartyAndCustomApps',
+        'Test-MtCisThirdPartyApplicationsDisallowed', 'Test-MtCisThirdPartyFileSharing',
+        'Test-MtCisThirdPartyStorageServicesRestricted', 'Test-MtCisUserOwnedAppsRestricted',
+        'Test-MtCisWeakAuthenticationMethodsDisabled', 'Test-MtCisZAP', 'Test-MtConditionalAccessWhatIf',
+        'Test-MtConnection', 'Test-MtDeviceComplianceSettings', 'Test-MtDeviceRegistrationLocalAdminsGlobalAdmin',
+        'Test-MtDeviceRegistrationLocalAdminsRegisteringUser', 'Test-MtDeviceRegistrationMfaConflict',
+        'Test-MtEidscaControl', 'Test-MtEntitlementManagementDeletedGroups',
+        'Test-MtEntitlementManagementInactivePolicies', 'Test-MtEntitlementManagementOrphanedResources',
+        'Test-MtEntitlementManagementValidApprovers', 'Test-MtEntitlementManagementValidResourceRoles',
+        'Test-MtEntraDeviceJoinRestricted', 'Test-MtEntraIDConnectSsso', 'Test-MtEntraIDConnectSyncSoftHardMatching',
+        'Test-MtExoDelicensingResiliency', 'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity',
+        'Test-MtExoOutlookAddin', 'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy',
+        'Test-MtGroupCreationRestricted', 'Test-MtHighRiskAppPermissions', 'Test-MtIntuneDiagnosticSettings',
+        'Test-MtIntuneRbacGroupsProtected', 'Test-MtLimitOnMicrosoftDomainUsage',
+        'Test-MtManagedDeviceCleanupSettings', 'Test-MtManagementGroupWriteRequirement', 'Test-MtMdmAuthority',
+        'Test-MtMobileThreatDefenseConnectors', 'Test-MtOperationApprovalPolicies', 'Test-MtPimAlertsExists',
+        'Test-MtPrivPermanentDirectoryRole', 'Test-MtSecurityGroupCreationRestricted',
+        'Test-MtServicePrincipalsForAllUsers', 'Test-MtSpExchangeAppAccessPolicy',
+        'Test-MtTeamsRestrictParticipantGiveRequestControl', 'Test-MtTenantCreationRestricted',
+        'Test-MtTenantCustomization', 'Test-MtUserAccessAdmin', 'Test-MtVaultSoftDelete',
+        'Test-MtWindowsDataProcessor', 'Test-MtXspmAppRegWithPrivilegedApiAndOwners',
+        'Test-MtXspmAppRegWithPrivilegedRolesAndOwners', 'Test-MtXspmAppRegWithPrivilegedUnusedPermissions',
+        'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
+        'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
+        'Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts',
+        'Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity', 'Test-MtXspmExposedCredentialsForPrivilegedUsers',
+        'Test-MtXspmHybridUsersWithAssignedEntraIdRoles', 'Test-MtXspmPendingApprovalCriticalAssetManagement',
+        'Test-MtXspmPrivilegedUsersLinkedToIdentity', 'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
+        'Test-ORCA100', 'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103', 'Test-ORCA104', 'Test-ORCA105', 'Test-ORCA106',
+        'Test-ORCA107', 'Test-ORCA108', 'Test-ORCA108_1', 'Test-ORCA109', 'Test-ORCA110', 'Test-ORCA111',
+        'Test-ORCA112', 'Test-ORCA113', 'Test-ORCA114', 'Test-ORCA115', 'Test-ORCA116', 'Test-ORCA118_1',
+        'Test-ORCA118_2', 'Test-ORCA118_3', 'Test-ORCA118_4', 'Test-ORCA119', 'Test-ORCA120_malware',
+        'Test-ORCA120_phish', 'Test-ORCA120_spam', 'Test-ORCA121', 'Test-ORCA123', 'Test-ORCA124', 'Test-ORCA139',
+        'Test-ORCA140', 'Test-ORCA141', 'Test-ORCA142', 'Test-ORCA143', 'Test-ORCA156', 'Test-ORCA158', 'Test-ORCA179',
+        'Test-ORCA180', 'Test-ORCA189', 'Test-ORCA189_2', 'Test-ORCA205', 'Test-ORCA220', 'Test-ORCA221',
+        'Test-ORCA222', 'Test-ORCA223', 'Test-ORCA224', 'Test-ORCA225', 'Test-ORCA226', 'Test-ORCA227', 'Test-ORCA228',
+        'Test-ORCA229', 'Test-ORCA230', 'Test-ORCA231', 'Test-ORCA232', 'Test-ORCA233', 'Test-ORCA233_1',
+        'Test-ORCA234', 'Test-ORCA235', 'Test-ORCA236', 'Test-ORCA237', 'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240',
+        'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243', 'Test-ORCA244', 'Update-MaesterTests', 'Update-MtMaesterApp'
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport      = @()
@@ -413,14 +198,8 @@
         'Disconnect-MtGraph', 'Disconnect-MtMaester'
     )
 
-    # DSC resources to export from this module
-    # DscResourcesToExport = @()
-
     # List of all modules packaged with this module
     # ModuleList = @()
-
-    # List of all files packaged with this module
-    # FileList = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData          = @{
@@ -445,9 +224,6 @@
             # Prerelease string of this module
             # Prerelease = ''
 
-            # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-            # RequireLicenseAcceptance = $false
-
             # External dependent modules of this module
             # ExternalModuleDependencies = @()
 
@@ -458,6 +234,4 @@
     # HelpInfo URI of this module
     HelpInfoURI          = 'https://maester.dev/docs/commands/'
 
-    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-    # DefaultCommandPrefix = ''
 }
