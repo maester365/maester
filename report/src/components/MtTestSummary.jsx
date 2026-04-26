@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MtTestSummary(props) {
 
@@ -41,13 +41,35 @@ export default function MtTestSummary(props) {
         return "cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50";
     };
 
+    const statusLabels = {
+        null: 'Total tests',
+        Passed: 'Passed',
+        Failed: 'Failed',
+        Investigate: 'Investigate',
+        Error: 'Error',
+    };
+
     function getCardProps(status) {
         if (!props.onStatusChange) return {};
+        const label = statusLabels[status] ?? String(status);
+        const pressed = isActive(status);
         return {
             className: cardClass(status),
             onClick: () => handleCardClick(status),
+            role: "button",
+            tabIndex: 0,
+            onKeyDown: (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick(status);
+                }
+            },
+            'aria-label': label,
+            'aria-pressed': pressed,
         };
     }
+
+    const adjustedTotal = Math.max(0, (props.TotalCount || 0) - (props.SkippedCount || 0) - (props.NotRunCount || 0));
 
     const pctPassed = getPercentage(props.PassedCount);
     const pctFailed = getPercentage(props.FailedCount);
@@ -63,9 +85,8 @@ export default function MtTestSummary(props) {
     const testSummaryColors = ["emerald", "rose", "purple", "orange"];
 
     function getPercentage(count) {
-        const total = props.TotalCount - (props.SkippedCount || 0) - (props.NotRunCount || 0) || 0;
-        if (total === 0) return 0;
-        return Math.round(((count || 0) / total) * 100);
+        if (adjustedTotal === 0) return 0;
+        return Math.round(((count || 0) / adjustedTotal) * 100);
     }
 
     let visibleCards = 3;
@@ -79,7 +100,7 @@ export default function MtTestSummary(props) {
                     <Text>Total tests</Text>
                 </Flex>
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                    <Metric>{props.TotalCount - (props.SkippedCount || 0) - (props.NotRunCount || 0)}</Metric>
+                    <Metric>{adjustedTotal}</Metric>
                 </Flex>
                 <CategoryBar
                     showAnimation={true}

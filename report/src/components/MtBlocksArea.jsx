@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, AreaChart, ListItem, Card, Title, CategoryBar } from "@tremor/react";
+import { AreaChart, Card, Title } from "@tremor/react";
 import { Maximize2, X } from "lucide-react";
 
 export default function MtBlocksArea(props) {
@@ -23,8 +23,6 @@ export default function MtBlocksArea(props) {
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [isModalOpen, closeModal]);
-
-    const testSummaryColors = ["emerald", "rose", "purple"];
 
     // Map long names to short names
     const shortNameMap = {
