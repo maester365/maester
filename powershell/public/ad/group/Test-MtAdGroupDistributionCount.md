@@ -1,6 +1,6 @@
-# Test-MtAdGroupDistributionCount
+#### Test-MtAdGroupDistributionCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Distribution groups are email-only groups used for Exchange and email distribution lists. Understanding their count and proportion helps:
 
@@ -11,7 +11,7 @@ Distribution groups are email-only groups used for Exchange and email distributi
 
 Distribution groups cannot be used for access control—they are purely for email functionality.
 
-## Security Recommendation
+#### Security Recommendation
 
 Regularly review distribution groups to:
 1. Identify and remove stale or unused distribution lists
@@ -19,7 +19,7 @@ Regularly review distribution groups to:
 3. Verify that distribution groups are not being used inappropriately for security purposes
 4. Consider converting distribution groups to Office 365 Groups where appropriate for modern collaboration
 
-## How the Test Works
+#### How the Test Works
 
 This test examines all group objects and identifies those where:
 - The `GroupCategory` property equals "Distribution"
@@ -27,7 +27,7 @@ This test examines all group objects and identifies those where:
 
 The test provides counts and percentages to understand the distribution of group types in your environment.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupSecurityCount` - Counts security groups used for access control
 - `Test-MtAdGroupDomainLocalCount` - Counts domain local scope groups

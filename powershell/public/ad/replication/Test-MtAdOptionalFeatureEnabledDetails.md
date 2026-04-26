@@ -1,6 +1,6 @@
-# Test-MtAdOptionalFeatureEnabledDetails
+#### Test-MtAdOptionalFeatureEnabledDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding which Active Directory optional features are enabled and their scope is crucial for security management:
 
@@ -10,7 +10,7 @@ Understanding which Active Directory optional features are enabled and their sco
 
 Enabled optional features represent additional capabilities that can enhance security but also increase the attack surface if not properly managed.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Enable Recycle Bin at the forest level if not already enabled
 - Document all enabled optional features and their scope
@@ -18,7 +18,7 @@ Enabled optional features represent additional capabilities that can enhance sec
 - Understand the implications of each enabled feature
 - Monitor for unauthorized enabling of optional features
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves detailed information about enabled optional features:
 - Total optional features available
@@ -26,7 +26,7 @@ This test retrieves detailed information about enabled optional features:
 - Feature names and their enabled scope counts
 - Detailed breakdown of each enabled feature
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOptionalFeatureCount` - Counts total available optional features
 - `Test-MtAdRecycleBinStatus` - Specifically checks Recycle Bin status

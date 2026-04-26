@@ -1,6 +1,6 @@
-# Test-MtAdTrustDetails
+#### Test-MtAdTrustDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Comprehensive trust documentation is essential for security operations:
 
@@ -16,7 +16,7 @@ Trust details reveal critical security properties including:
 - **SID Filtering**: Whether the trust is quarantined
 - **Selective Authentication**: Whether authentication is restricted
 
-## Security Recommendation
+#### Security Recommendation
 
 **Configuration Best Practices:**
 
@@ -32,7 +32,7 @@ Trust details reveal critical security properties including:
 - `Direction`: Bidirectional trusts have higher risk
 - `IntraForest`: External trusts (`$false`) need extra scrutiny
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all trust properties and displays:
 
@@ -43,7 +43,7 @@ This test retrieves all trust properties and displays:
 - Quarantine (SID filtering) status
 - Selective authentication status
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustTotalCount` - Overall trust count
 - `Test-MtAdTrustInterForestCount` - External trust identification

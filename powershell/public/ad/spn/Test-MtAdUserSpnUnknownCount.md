@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnUnknownCount
+#### Test-MtAdUserSpnUnknownCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Unknown SPN service classes on user accounts require immediate attention because:
 
@@ -11,7 +11,7 @@ Unknown SPN service classes on user accounts require immediate attention because
 
 User accounts are preferred targets for Kerberoasting, making unknown SPNs on these accounts particularly concerning.
 
-## Security Recommendation
+#### Security Recommendation
 
 Investigate all unknown SPNs on user accounts:
 - Determine the service owner and business justification
@@ -20,11 +20,11 @@ Investigate all unknown SPNs on user accounts:
 - Remove unauthorized SPNs immediately
 - Document approved custom SPNs
 
-## How the Test Works
+#### How the Test Works
 
 This test compares discovered user SPN service classes against a database of known SPNs and flags any unrecognized service classes for investigation.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnUnknownDetails` - Detailed information about unknown user SPNs
 - `Test-MtAdComputerSpnUnknownCount` - Unknown SPNs on computer accounts

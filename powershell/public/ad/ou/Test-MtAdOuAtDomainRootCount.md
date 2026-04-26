@@ -1,6 +1,6 @@
-# Test-MtAdOuAtDomainRootCount
+#### Test-MtAdOuAtDomainRootCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The structure of Organizational Units at the domain root level reveals important information about your Active Directory organization and management approach:
 
@@ -11,7 +11,7 @@ The structure of Organizational Units at the domain root level reveals important
 
 A well-designed OU hierarchy typically has fewer root-level OUs with meaningful nested structures beneath them, rather than many OUs all at the root level.
 
-## Security Recommendation
+#### Security Recommendation
 
 Consider implementing a hierarchical OU structure that:
 - Minimizes the number of OUs at the domain root (typically 5-10 major containers)
@@ -19,14 +19,14 @@ Consider implementing a hierarchical OU structure that:
 - Makes the directory easier to navigate and manage
 - Supports your Group Policy and delegation strategy
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Organizational Units from Active Directory and:
 - Identifies the domain's distinguished name
 - Counts OUs that are direct children of the domain root
 - Lists all root-level OUs with their distinguished names
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOuOverlappingNameCount` - Identifies OUs with duplicate names
 - `Test-MtAdOuEmptyCount` - Finds OUs that contain no objects

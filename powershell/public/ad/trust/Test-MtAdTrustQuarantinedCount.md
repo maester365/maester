@@ -1,6 +1,6 @@
-# Test-MtAdTrustQuarantinedCount
+#### Test-MtAdTrustQuarantinedCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 SID filtering (quarantined trusts) is a critical security control for inter-forest trusts:
 
@@ -11,7 +11,7 @@ SID filtering (quarantined trusts) is a critical security control for inter-fore
 
 Without SID filtering, an attacker who compromises a domain in a trusting forest could inject SIDs from the trusted forest's privileged groups (like Domain Admins or Enterprise Admins) into their own account, effectively gaining privileged access across the trust boundary.
 
-## Security Recommendation
+#### Security Recommendation
 
 - **Enable SID Filtering**: Enable SID filtering (quarantine) on ALL inter-forest trusts
 - **Audit Regularly**: Regularly verify that external trusts remain quarantined
@@ -19,7 +19,7 @@ Without SID filtering, an attacker who compromises a domain in a trusting forest
 - **Use Forest Trusts**: When possible, use forest trusts instead of external trusts as they provide better security controls
 - **Monitor Changes**: Alert on any changes to trust quarantine status
 
-## How the Test Works
+#### How the Test Works
 
 This test checks the `Quarantined` property of each trust object. When `Quarantined` is `$true`, SID filtering is enabled. The test returns:
 
@@ -27,7 +27,7 @@ This test checks the `Quarantined` property of each trust object. When `Quaranti
 - Count of quarantined trusts (SID filtering enabled)
 - Count of non-quarantined trusts (SID filtering disabled)
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustNonQuarantinedDetails` - Lists specific trusts without SID filtering
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined

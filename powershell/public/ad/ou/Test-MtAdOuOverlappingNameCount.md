@@ -1,6 +1,6 @@
-# Test-MtAdOuOverlappingNameCount
+#### Test-MtAdOuOverlappingNameCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Organizational Units with overlapping (duplicate) names can create administrative confusion and operational risks in Active Directory:
 
@@ -11,14 +11,14 @@ Organizational Units with overlapping (duplicate) names can create administrativ
 
 While Active Directory technically allows duplicate OU names (as long as they're in different locations), this practice should be minimized to reduce operational risk.
 
-## Security Recommendation
+#### Security Recommendation
 
 Review OUs with duplicate names and consider renaming them to be more descriptive and unique. Use naming conventions that incorporate location, function, or department to make OU names unambiguous. For example:
 
 - Instead of multiple "Users" OUs, use "NYC-Users", "LA-Users", "London-Users"
 - Instead of multiple "Servers" OUs, use "Production-Servers", "Test-Servers", "Dev-Servers"
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Organizational Units from Active Directory and:
 - Groups OUs by their Name property
@@ -26,7 +26,7 @@ This test retrieves all Organizational Units from Active Directory and:
 - Counts the number of duplicate name groups
 - Lists all OUs that share names with other OUs
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOuAtDomainRootCount` - Analyzes OU structure at the domain root level
 - `Test-MtAdOuEmptyCount` - Identifies OUs that contain no objects

@@ -1,6 +1,6 @@
-# Test-MtAdOptionalFeatureCount
+#### Test-MtAdOptionalFeatureCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Active Directory optional features extend the base functionality of AD and can significantly impact security capabilities:
 
@@ -10,7 +10,7 @@ Active Directory optional features extend the base functionality of AD and can s
 
 Knowing which optional features are available helps administrators understand the full capabilities of their Active Directory environment and identify opportunities to enhance security.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Enable the Active Directory Recycle Bin if not already enabled
 - Consider PAM for privileged access scenarios
@@ -18,13 +18,13 @@ Knowing which optional features are available helps administrators understand th
 - Keep domain and forest functional levels current to access newer features
 - Document enabled optional features and their configuration
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Active Directory optional features and counts:
 - Total number of optional features available
 - List of feature names
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOptionalFeatureEnabledDetails` - Provides detailed information about enabled features
 - `Test-MtAdRecycleBinStatus` - Checks if the Recycle Bin is enabled

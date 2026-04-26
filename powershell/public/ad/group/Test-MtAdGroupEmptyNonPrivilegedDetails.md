@@ -1,6 +1,6 @@
-# Test-MtAdGroupEmptyNonPrivilegedDetails
+#### Test-MtAdGroupEmptyNonPrivilegedDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed visibility into empty non-privileged groups enables effective cleanup:
 
@@ -10,7 +10,7 @@ Detailed visibility into empty non-privileged groups enables effective cleanup:
 - **Cleanup planning**: Provides data needed for maintenance windows
 - **Audit trail**: Documents what was empty before cleanup
 
-## Security Recommendation
+#### Security Recommendation
 
 Before removing empty groups:
 - Verify groups are not referenced by applications or scripts
@@ -20,7 +20,7 @@ Before removing empty groups:
 - Communicate with application owners about group dependencies
 - Maintain a log of cleaned groups for compliance purposes
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies all Active Directory groups that:
 1. Have no members
@@ -33,7 +33,7 @@ It then lists these groups with their:
 - Creation date
 - Last modification date
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupEmptyNonPrivilegedCount` - Counts empty non-privileged groups
 - `Test-MtAdGroupPrivilegedWithMembersDetails` - Reviews privileged group memberships

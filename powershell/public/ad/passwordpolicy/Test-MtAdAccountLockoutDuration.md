@@ -1,6 +1,6 @@
-# Test-MtAdAccountLockoutDuration
+#### Test-MtAdAccountLockoutDuration
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Account lockout duration is a critical control for preventing brute-force attacks while maintaining usability:
 
@@ -10,7 +10,7 @@ Account lockout duration is a critical control for preventing brute-force attack
 
 A lockout duration of at least 30 minutes provides adequate protection against automated attacks while minimizing help desk calls. Setting it to 0 (until administrator unlocks) provides maximum security but requires administrative overhead.
 
-## Security Recommendation
+#### Security Recommendation
 
 Configure the account lockout duration to at least **30 minutes** for automatic unlock, or set to **0** for manual unlock only (maximum security).
 
@@ -20,13 +20,13 @@ To configure this setting:
 3. Edit: Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Account Lockout Policy
 4. Set **Account lockout duration** to **30 minutes or more** (or 0 for manual unlock)
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and extracts the `LockoutDuration` value. The test reports:
 - Current lockout duration in minutes (or "until administrator unlocks" if 0)
 - Recommended minimum (30 minutes)
 - Whether the configuration meets security best practices
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdAccountLockoutThreshold` - Checks the number of failed attempts before lockout

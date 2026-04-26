@@ -1,6 +1,6 @@
-# Test-MtAdComputerSpnUnknownCount
+#### Test-MtAdComputerSpnUnknownCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Unidentified SPN service classes can represent security risks:
 
@@ -11,7 +11,7 @@ Unidentified SPN service classes can represent security risks:
 
 Identifying unknown SPNs allows security teams to investigate and validate whether these services are legitimate and properly secured.
 
-## Security Recommendation
+#### Security Recommendation
 
 When unknown SPN service classes are identified:
 - Investigate each unknown service class to determine its purpose
@@ -20,11 +20,11 @@ When unknown SPN service classes are identified:
 - Remove SPNs for unauthorized or decommissioned services
 - Document any custom or third-party SPNs for future reference
 
-## How the Test Works
+#### How the Test Works
 
 This test compares discovered SPN service classes against a database of known SPNs (including standard Windows services, common enterprise applications, and database systems). Service classes not in the known list are flagged as unknown.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerSpnUnknownDetails` - Provides detailed information about unknown SPNs
 - `Test-MtAdComputerSpnServiceClassCount` - Counts all distinct service classes

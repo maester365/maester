@@ -1,6 +1,6 @@
-# Test-MtAdSiteWithoutDcCount
+#### Test-MtAdSiteWithoutDcCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Sites without domain controllers may indicate:
 
@@ -11,7 +11,7 @@ Sites without domain controllers may indicate:
 
 Sites without DCs should be carefully evaluated to ensure they represent intentional design decisions rather than configuration gaps.
 
-## Security Recommendation
+#### Security Recommendation
 
 For sites without domain controllers:
 - Consider deploying RODCs (Read-Only Domain Controllers) in branch offices
@@ -19,11 +19,11 @@ For sites without domain controllers:
 - Document the business justification for sites without local DCs
 - Monitor authentication traffic from these sites
 
-## How the Test Works
+#### How the Test Works
 
 This test compares the list of sites with domain controllers against all sites in the domain to identify sites that have no DC presence.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSiteWithoutDcDetails` - Lists the specific sites without DCs
 - `Test-MtAdSiteTotalCount` - Counts total sites in the domain

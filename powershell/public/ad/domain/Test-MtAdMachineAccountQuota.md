@@ -1,6 +1,6 @@
-# Test-MtAdMachineAccountQuota
+#### Test-MtAdMachineAccountQuota
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The machine account quota (ms-DS-MachineAccountQuota) attribute controls how many computer accounts a standard (non-administrative) user can join to the domain. The default value of 10 can create security risks:
 
@@ -8,7 +8,7 @@ The machine account quota (ms-DS-MachineAccountQuota) attribute controls how man
 - **Lateral Movement**: Joined computers can be used as pivot points for further attacks
 - **Resource Exhaustion**: Excessive computer accounts can clutter the directory and complicate management
 
-## Security Recommendation
+#### Security Recommendation
 
 Consider reducing the machine account quota to 0 and using alternative methods for computer joins:
 
@@ -22,11 +22,11 @@ To modify the quota:
 Set-ADDomain -Identity "yourdomain.com" -Replace @{"ms-DS-MachineAccountQuota"="0"}
 ```
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the current machine account quota value from Active Directory. The test is informational and helps you assess whether the default value poses a risk in your environment.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDomainFunctionalLevel` - Retrieves the domain functional level
 - `Test-MtAdDomainControllerCount` - Counts domain controllers

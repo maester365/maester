@@ -1,6 +1,6 @@
-# Test-MtAdTrustInterForestCount
+#### Test-MtAdTrustInterForestCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Inter-forest trusts (external trusts) connect different Active Directory forests and pose unique security risks:
 
@@ -11,7 +11,7 @@ Inter-forest trusts (external trusts) connect different Active Directory forests
 
 Intra-forest trusts (within the same forest) generally have stronger security guarantees because they share a common schema and configuration.
 
-## Security Recommendation
+#### Security Recommendation
 
 - **Minimize External Trusts**: Only create inter-forest trusts when absolutely necessary
 - **Enable SID Filtering**: Always enable SID filtering (quarantine) on external trusts
@@ -20,7 +20,7 @@ Intra-forest trusts (within the same forest) generally have stronger security gu
 - **Monitor Closely**: Enable enhanced logging for authentication events across external trusts
 - **Documentation**: Maintain detailed documentation of why each external trust exists
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes all trust objects and identifies those where `IntraForest` is `$false`. The test returns:
 
@@ -28,7 +28,7 @@ This test analyzes all trust objects and identifies those where `IntraForest` is
 - Count of inter-forest trusts
 - Count of intra-forest trusts
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustQuarantinedCount` - Checks if external trusts have SID filtering enabled
 - `Test-MtAdTrustNonQuarantinedDetails` - Lists external trusts without SID filtering

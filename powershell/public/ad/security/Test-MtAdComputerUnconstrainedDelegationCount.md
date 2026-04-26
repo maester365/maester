@@ -1,6 +1,6 @@
-# Test-MtAdComputerUnconstrainedDelegationCount
+#### Test-MtAdComputerUnconstrainedDelegationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
 
@@ -10,7 +10,7 @@ Unconstrained delegation is one of the most dangerous configurations in Active D
 - **Privilege Escalation**: Can be used to escalate from standard user to domain admin
 - **Ticket Theft**: Attackers can harvest TGTs from memory on these computers
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Eliminate unconstrained delegation**:
    - Replace with constrained delegation or resource-based constrained delegation
@@ -27,13 +27,13 @@ Unconstrained delegation is one of the most dangerous configurations in Active D
    - **Resource-Based Constrained Delegation**: More flexible and secure approach
    - **Protocol Transition**: When combined with constrained delegation
 
-## How the Test Works
+#### How the Test Works
 
 This test counts computers with the `TrustedForDelegation` flag enabled and categorizes them by:
 - Domain Controllers vs. non-DC computers
 - Total count and percentage
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Focuses on non-DC computers (critical risk)
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation

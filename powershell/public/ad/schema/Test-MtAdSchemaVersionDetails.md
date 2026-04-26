@@ -1,6 +1,6 @@
-# Test-MtAdSchemaVersionDetails
+#### Test-MtAdSchemaVersionDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Comprehensive schema information provides the foundation for understanding your Active Directory infrastructure. The schema defines:
 
@@ -14,7 +14,7 @@ Understanding schema details helps with:
 - **Documentation**: Maintaining accurate AD documentation
 - **Security**: Detecting unauthorized schema modifications
 
-## Security Recommendation
+#### Security Recommendation
 
 Protect your schema with these practices:
 - **Schema Admins group**: Keep membership minimal and monitored
@@ -23,7 +23,7 @@ Protect your schema with these practices:
 - **Backup**: Regularly backup the schema NC (naming context)
 - **Monitoring**: Alert on any schema modifications
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves detailed information from the schema container including:
 - Schema version number
@@ -32,7 +32,7 @@ This test retrieves detailed information from the schema container including:
 - Distribution of object classes
 - Total schema object count
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSchemaVersionEntryCount` - Shows schema version number
 - `Test-MtAdSchemaModificationYearCount` - Shows modification timeline

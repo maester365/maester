@@ -1,6 +1,6 @@
-# Test-MtAdDcOperatingSystemCount
+#### Test-MtAdDcOperatingSystemCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Knowing the operating systems running on your domain controllers is important for:
 
@@ -12,7 +12,7 @@ Knowing the operating systems running on your domain controllers is important fo
 
 Running outdated operating systems on domain controllers poses security risks as they may not receive security patches.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Standardize on a supported Windows Server version for all DCs
 - Plan to upgrade DCs running end-of-life operating systems
@@ -27,11 +27,11 @@ Current Windows Server support status:
 - Windows Server 2012: Extended support ended October 2023
 - Earlier versions: Not supported
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the OperatingSystem attribute from all domain controllers and counts the unique OS versions in use.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcOperatingSystemDetails` - Detailed OS distribution breakdown
 - `Test-MtAdDomainControllerCount` - Total DC count

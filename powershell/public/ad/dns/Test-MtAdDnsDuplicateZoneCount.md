@@ -1,6 +1,6 @@
-# Test-MtAdDnsDuplicateZoneCount
+#### Test-MtAdDnsDuplicateZoneCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Duplicate or conflict DNS zones (indicated by CNF: or InProgress- prefixes) indicate:
 
@@ -11,17 +11,17 @@ Duplicate or conflict DNS zones (indicated by CNF: or InProgress- prefixes) indi
 
 These zones should be investigated and resolved to ensure consistent DNS behavior.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Investigate all duplicate/conflict zones immediately
 - Resolve replication conflicts following Microsoft guidance
 - Verify zone consistency across all DNS servers
 - Monitor for future conflict creation
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies zones with names containing " CNF:" or "..InProgress-" prefixes, which indicate replication conflicts or incomplete operations.
 
-## Related Tests
+#### Related Tests
 
 - None currently

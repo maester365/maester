@@ -1,6 +1,6 @@
-# Test-MtAdKrbtgtLastLogon
+#### Test-MtAdKrbtgtLastLogon
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The KRBTGT account is a service account that should never have interactive logons. It exists solely for the KDC service to use internally for Kerberos ticket operations. Any logon activity for this account may indicate:
 
@@ -14,7 +14,7 @@ The KRBTGT account should:
 - Never have interactive logons
 - Only be used internally by the KDC service
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Never enable the KRBTGT account**:
    - Standard UAC should be 514 (disabled, normal account)
@@ -28,14 +28,14 @@ The KRBTGT account should:
    - Monitor for UAC changes
    - Alert on any modifications to the KRBTGT account
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the KRBTGT account and checks:
 - Last logon timestamp (should be null/never)
 - Account enabled status (should be disabled)
 - Password last set date
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdKrbtgtPasswordLastSet` - Checks KRBTGT password age
 - `Test-MtAdKrbtgtNonStandardUacCount` - Validates KRBTGT UAC settings

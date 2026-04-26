@@ -1,6 +1,6 @@
-# Test-MtAdManagedServiceAccountCount
+#### Test-MtAdManagedServiceAccountCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provide significant security improvements over traditional service accounts by automating password management and simplifying service principal name (SPN) management.
 
@@ -15,7 +15,7 @@ Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provi
 - **Standalone MSA**: For use on a single computer (legacy, largely replaced by gMSA)
 - **Group MSA (gMSA)**: Can be used across multiple computers, preferred solution
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Use gMSAs Where Possible**:
    - Replace traditional service accounts with gMSAs
@@ -33,20 +33,20 @@ Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provi
    - Document gMSA usage and permissions
    - Regular audit of gMSA deployments
 
-## How the Test Works
+#### How the Test Works
 
 This test counts managed service accounts in Active Directory and categorizes them by:
 - Total MSAs and gMSAs
 - Group vs. standalone MSAs
 - Account details and status
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserKnownServiceAccountCount` - Traditional service account identification
 - `Test-MtAdKdsRootKeysCount` - KDS root key requirement for gMSAs
 - `Test-MtAdUserPasswordNeverExpiresCount` - Traditional accounts with non-expiring passwords
 
-## References
+#### References
 
 - [Microsoft: Group Managed Service Accounts Overview](https://docs.microsoft.com/en-us/windows-server/security/group-managed-service-accounts/group-managed-service-accounts-overview)
 - [Microsoft: Getting Started with gMSAs](https://docs.microsoft.com/en-us/windows-server/security/group-managed-service-accounts/getting-started-with-group-managed-service-accounts)

@@ -1,6 +1,6 @@
-# Test-MtAdTrustStaleDetails
+#### Test-MtAdTrustStaleDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Identifying specific stale trusts enables targeted remediation:
 
@@ -16,7 +16,7 @@ Stale trusts often accumulate over time as:
 - Network restructuring leaves orphaned connections
 - Test environments are removed without cleanup
 
-## Security Recommendation
+#### Security Recommendation
 
 **Investigation Process:**
 
@@ -28,13 +28,13 @@ Stale trusts often accumulate over time as:
 
 **Sample Investigation Commands:**
 ```powershell
-# Test if the trust can be validated
+#### Test if the trust can be validated
 Test-ADTrust -Target <TrustName>
 
-# Check when the trust was created
+#### Check when the trust was created
 Get-ADTrust -Filter {Target -eq "<TrustName>"} -Properties Created
 
-# View detailed trust information
+#### View detailed trust information
 Get-ADTrust -Filter {Target -eq "<TrustName>"} -Properties *
 ```
 
@@ -44,7 +44,7 @@ Get-ADTrust -Filter {Target -eq "<TrustName>"} -Properties *
 - Document removal in change management system
 - Monitor for any authentication failures after removal
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies trusts where `LastValidated` is more than 60 days old and displays:
 
@@ -56,7 +56,7 @@ This test identifies trusts where `LastValidated` is more than 60 days old and d
 
 Results are sorted by last validation date (oldest first).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustStaleCount` - Count of stale trusts
 - `Test-MtAdTrustTotalCount` - Overall trust count

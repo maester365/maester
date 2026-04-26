@@ -1,6 +1,6 @@
-# Test-MtAdPasswordReversibleEncryption
+#### Test-MtAdPasswordReversibleEncryption
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Reversible encryption for passwords is one of the most dangerous settings in Active Directory:
 
@@ -10,7 +10,7 @@ Reversible encryption for passwords is one of the most dangerous settings in Act
 
 **This setting should never be enabled** in a production environment. If legacy applications require it, consider alternative authentication methods or application modernization.
 
-## Security Recommendation
+#### Security Recommendation
 
 **Disable reversible encryption immediately** unless you have a documented, approved exception for a specific legacy application.
 
@@ -26,14 +26,14 @@ If you find this enabled:
 - Plan migration to modern authentication methods
 - Disable the setting and reset all affected passwords
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and checks the `ReversibleEncryptionEnabled` property. The test reports:
 - Whether reversible encryption is currently enabled or disabled
 - Recommended setting (Disabled)
 - Critical security warning if enabled
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdPasswordComplexityRequired` - Checks password complexity requirements
 - `Test-MtAdPasswordMinLength` - Checks minimum password length

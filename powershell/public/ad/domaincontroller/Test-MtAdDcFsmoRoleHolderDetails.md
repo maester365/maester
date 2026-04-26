@@ -1,6 +1,6 @@
-# Test-MtAdDcFsmoRoleHolderDetails
+#### Test-MtAdDcFsmoRoleHolderDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding FSMO (Flexible Single Master Operations) role distribution is critical for:
 
@@ -16,7 +16,7 @@ The 5 FSMO roles are:
 4. **RID Master** (domain-wide): Allocates relative IDs for security identifiers
 5. **Infrastructure Master** (domain-wide): Handles cross-domain object references
 
-## Security Recommendation
+#### Security Recommendation
 
 - Document your FSMO role holders and keep the documentation updated
 - Ensure FSMO role holders are highly available DCs
@@ -24,14 +24,14 @@ The 5 FSMO roles are:
 - Monitor for unexpected FSMO role transfers
 - Test FSMO role seizure procedures periodically
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the current FSMO role holders from the domain and forest objects, then displays:
 - Which DC holds each FSMO role
 - How many roles each DC holds
 - Total number of unique FSMO role holders
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcAllFsmoRolesCount` - Identifies DCs holding all 5 roles
 - `Test-MtAdDomainControllerCount` - Total DC count

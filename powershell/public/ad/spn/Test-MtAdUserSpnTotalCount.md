@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnTotalCount
+#### Test-MtAdUserSpnTotalCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 User accounts with Service Principal Names (SPNs) are high-value targets for attackers because:
 
@@ -11,7 +11,7 @@ User accounts with Service Principal Names (SPNs) are high-value targets for att
 
 Understanding the scope of user SPNs helps assess your Kerberoasting attack surface.
 
-## Security Recommendation
+#### Security Recommendation
 
 Minimize user accounts with SPNs:
 - Use Group Managed Service Accounts (gMSAs) instead of user accounts for services
@@ -20,11 +20,11 @@ Minimize user accounts with SPNs:
 - Consider using Managed Service Accounts (MSAs) where possible
 - Remove SPNs from accounts that no longer need them
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all user objects from Active Directory, extracts their SPNs, and counts the total number of SPNs configured on user accounts.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnServiceClassCount` - Counts distinct service classes on users
 - `Test-MtAdUserSpnDomainAdminCount` - Identifies SPNs on domain admin accounts

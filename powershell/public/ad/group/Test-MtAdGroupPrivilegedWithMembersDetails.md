@@ -1,6 +1,6 @@
-# Test-MtAdGroupPrivilegedWithMembersDetails
+#### Test-MtAdGroupPrivilegedWithMembersDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding which privileged accounts have access is fundamental to Active Directory security:
 
@@ -19,7 +19,7 @@ Well-known privileged groups:
 - **Print Operators (RID 550)**: Can manage print services
 - **Backup Operators (RID 551)**: Can bypass file security for backup
 
-## Security Recommendation
+#### Security Recommendation
 
 Review privileged group membership regularly:
 - Document all members and their justifications
@@ -30,7 +30,7 @@ Review privileged group membership regularly:
 - Implement time-bound access for privileged roles
 - Monitor for new privileged group additions
 
-## How the Test Works
+#### How the Test Works
 
 This test lists all privileged groups (those with adminCount = 1 or well-known RIDs) and provides:
 - Group name and RID
@@ -38,7 +38,7 @@ This test lists all privileged groups (those with adminCount = 1 or well-known R
 - Categorization by well-known vs. AdminSDHolder protected groups
 - Total members across all privileged groups
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupPrivilegedWithMembersCount` - Counts privileged groups with members
 - `Test-MtAdGroupMemberForeignSidDetails` - Reviews foreign security principals in groups

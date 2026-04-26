@@ -1,6 +1,6 @@
-# Test-MtAdKrbtgtNonStandardUacCount
+#### Test-MtAdKrbtgtNonStandardUacCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The KRBTGT account must have specific User Account Control (UAC) settings to maintain security. The standard UAC value for KRBTGT is 514, which represents:
 
@@ -14,7 +14,7 @@ The KRBTGT account must have specific User Account Control (UAC) settings to mai
 - **Password Flags**: DONT_EXPIRE_PASSWORD could prevent required rotations
 - **Tampering Indicator**: Non-standard UAC may suggest malicious modification
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Maintain standard UAC (514)**:
    - Account must remain disabled
@@ -30,14 +30,14 @@ The KRBTGT account must have specific User Account Control (UAC) settings to mai
    - Implement alerts for KRBTGT account modifications
    - Include UAC changes in security monitoring
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the KRBTGT account and:
 - Compares current UAC against standard value (514)
 - Decodes and displays all UAC flags
 - Reports any non-standard configurations
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdKrbtgtPasswordLastSet` - Checks KRBTGT password age
 - `Test-MtAdKrbtgtLastLogon` - Verifies no interactive logons

@@ -1,6 +1,6 @@
-# Test-MtAdGpoLinkedOUCount
+#### Test-MtAdGpoLinkedOUCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the distribution of GPO links across Organizational Units is important for several security reasons:
 
@@ -9,7 +9,7 @@ Understanding the distribution of GPO links across Organizational Units is impor
 - **Security Gaps**: OUs without GPO links may rely solely on domain-level policies, potentially missing OU-specific security controls
 - **Policy Management**: Provides visibility into how broadly GPOs are deployed across the directory structure
 
-## Security Recommendation
+#### Security Recommendation
 
 Review OUs without GPO links to ensure:
 
@@ -18,7 +18,7 @@ Review OUs without GPO links to ensure:
 - Critical security settings are not being missed
 - Consider creating OU-specific policies for organizational units with unique security requirements
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Organizational Units from Active Directory and counts:
 - Total number of OUs in the domain
@@ -27,7 +27,7 @@ This test retrieves all Organizational Units from Active Directory and counts:
 
 The gPLink attribute is checked to determine if any GPOs are linked to each OU.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGpoLinkedCount` - Counts distinct GPOs with links
 - `Test-MtAdGpoUnlinkedTargetCount` - Counts targets without GPO links

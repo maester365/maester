@@ -1,6 +1,6 @@
-# Test-MtAdDcNonStandardLdapsPortCount
+#### Test-MtAdDcNonStandardLdapsPortCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Domain controllers typically use the standard LDAPS port (636) for secure directory services communication. Non-standard LDAPS ports may indicate:
 
@@ -15,14 +15,14 @@ Using non-standard LDAPS ports can cause issues with:
 - Applications hardcoded to use port 636
 - Network security monitoring and compliance auditing
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Use standard ports where possible**: Port 636 is the industry standard for LDAPS and should be used unless there's a specific requirement
 2. **Document security exceptions**: Any non-standard ports should be documented with security justification
 3. **Ensure proper certificate configuration**: Non-standard LDAPS ports must have valid SSL/TLS certificates configured
 4. **Audit regularly**: Review non-standard port usage during security audits to detect unauthorized changes
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all domain controllers and checks their configured LDAPS (SSL) port. The standard LDAPS port is 636. The test reports:
 
@@ -31,7 +31,7 @@ This test retrieves all domain controllers and checks their configured LDAPS (SS
 - Number of DCs using non-standard LDAPS ports
 - Names of DCs with non-standard ports and the specific ports they use
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcNonStandardLdapPortCount` - Checks for non-standard LDAP ports
 - `Test-MtAdDcReadOnlyCount` - Analyzes RODC deployment

@@ -1,6 +1,6 @@
-# Test-MtAdSubnetSiteAssociationCount
+#### Test-MtAdSubnetSiteAssociationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Sites with subnet associations are essential for:
 
@@ -11,18 +11,18 @@ Sites with subnet associations are essential for:
 
 Sites without subnets cannot participate in site-aware operations.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Ensure all production sites have appropriate subnets assigned
 - Review site-subnet associations during network changes
 - Document the rationale for any sites intentionally without subnets
 - Validate that subnet boundaries match physical network segments
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes subnet-to-site associations to count how many sites have at least one subnet assigned.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSiteWithoutSubnetCount` - Counts sites without subnets
 - `Test-MtAdSubnetTotalCount` - Counts total subnets

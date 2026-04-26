@@ -1,6 +1,6 @@
-# Test-MtAdGroupMemberForeignSidDetails
+#### Test-MtAdGroupMemberForeignSidDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Foreign security principals (FSPs) represent security principals from trusted external domains or forests. Understanding their distribution is important because:
 
@@ -9,7 +9,7 @@ Foreign security principals (FSPs) represent security principals from trusted ex
 - **Access control**: Reveals who has access to resources from outside the domain
 - **Cleanup opportunities**: May highlight groups that can be cleaned up after domain migrations
 
-## Security Recommendation
+#### Security Recommendation
 
 Regularly review foreign security principals:
 - Remove memberships from domains that are no longer trusted
@@ -18,11 +18,11 @@ Regularly review foreign security principals:
 - Consider converting external access to local accounts where appropriate
 - Monitor for unexpected foreign principal additions
 
-## How the Test Works
+#### How the Test Works
 
 This test examines all group memberships in Active Directory and identifies security principals with SIDs that don't match the local domain SID. It groups these foreign principals by their domain SID and counts how many exist from each external domain.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupMemberForeignSidCount` - Counts total foreign security principals
 - `Test-MtAdGroupPrivilegedWithMembersDetails` - Reviews privileged group memberships

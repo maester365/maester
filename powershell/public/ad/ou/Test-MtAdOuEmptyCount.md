@@ -1,6 +1,6 @@
-# Test-MtAdOuEmptyCount
+#### Test-MtAdOuEmptyCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Empty Organizational Units (OUs that contain no users, groups, or computers) represent directory clutter that can:
 
@@ -11,7 +11,7 @@ Empty Organizational Units (OUs that contain no users, groups, or computers) rep
 
 While empty OUs don't pose a direct security risk, they indicate opportunities for directory cleanup and maintenance. Regular cleanup of empty OUs helps maintain an organized, efficient directory structure.
 
-## Security Recommendation
+#### Security Recommendation
 
 Periodically review and clean up empty Organizational Units:
 - Identify OUs that serve no current purpose
@@ -22,7 +22,7 @@ Periodically review and clean up empty Organizational Units:
 
 Consider establishing a regular cleanup schedule (quarterly or annually) to keep the directory organized.
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Organizational Units from Active Directory and:
 - Checks each OU for the presence of user objects
@@ -31,7 +31,7 @@ This test retrieves all Organizational Units from Active Directory and:
 - Counts OUs that contain none of these object types
 - Reports the percentage of OUs that are empty
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOuEmptyDetails` - Provides detailed list of all empty OUs
 - `Test-MtAdOuStaleCount` - Identifies OUs not modified since before 2020

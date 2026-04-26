@@ -1,6 +1,6 @@
-# Test-MtAdComputerOperatingSystemCount
+#### Test-MtAdComputerOperatingSystemCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the distribution of operating systems in your Active Directory environment is crucial for security management. High OS diversity can indicate:
 
@@ -15,7 +15,7 @@ Understanding the distribution of operating systems in your Active Directory env
 - Mixed Windows and Linux environments
 - Workstations running outdated client OS versions
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Standardize Operating Systems**:
    - Minimize OS diversity where possible
@@ -32,14 +32,14 @@ Understanding the distribution of operating systems in your Active Directory env
    - Prioritize critical and high-severity patches
    - Test patches on representative OS versions
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes computer objects in Active Directory and:
 - Counts distinct operating systems
 - Shows distribution percentages
 - Identifies computers without OS data
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerOperatingSystemDetails` - Detailed OS and service pack information
 - `Test-MtAdComputerStaleEnabledCount` - Identifies stale computer accounts

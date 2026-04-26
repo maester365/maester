@@ -1,6 +1,6 @@
-# Test-MtAdGroupEmptyNonPrivilegedCount
+#### Test-MtAdGroupEmptyNonPrivilegedCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Empty groups that are not privileged (no adminCount) represent directory clutter that should be addressed:
 
@@ -10,7 +10,7 @@ Empty groups that are not privileged (no adminCount) represent directory clutter
 - **Operational efficiency**: Simplifies group management and reduces confusion
 - **Potential risks**: Empty groups could be populated unexpectedly
 
-## Security Recommendation
+#### Security Recommendation
 
 Implement a regular cleanup process:
 - Review empty non-privileged groups quarterly
@@ -19,7 +19,7 @@ Implement a regular cleanup process:
 - Consider automated cleanup for groups empty for extended periods
 - Maintain an exceptions list for groups required by applications
 
-## How the Test Works
+#### How the Test Works
 
 This test iterates through all Active Directory groups, checks their membership count, and identifies groups that:
 1. Have no members
@@ -27,7 +27,7 @@ This test iterates through all Active Directory groups, checks their membership 
 
 The test categorizes groups by their status (empty privileged, empty non-privileged, with members).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupEmptyNonPrivilegedDetails` - Lists specific empty non-privileged groups
 - `Test-MtAdGroupPrivilegedWithMembersCount` - Reviews privileged groups with members

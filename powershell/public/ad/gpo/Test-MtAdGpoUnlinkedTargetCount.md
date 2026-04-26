@@ -1,12 +1,12 @@
-# Test-MtAdGpoUnlinkedTargetCount
+#### Test-MtAdGpoUnlinkedTargetCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Active Directory targets (OUs, the domain root, and sites) without any Group Policy links may indicate incomplete security policy coverage.
 
 When a target has no GPO links, security and configuration baselines may not be applied consistently—creating gaps that attackers or misconfigurations can exploit.
 
-## Security Recommendation
+#### Security Recommendation
 
 Investigate any unlinked targets and remediate the policy coverage gap:
 
@@ -17,7 +17,7 @@ Investigate any unlinked targets and remediate the policy coverage gap:
 
 Unlinked targets can represent missing or outdated configurations, so treat results as potential security configuration gaps.
 
-## How the Test Works
+#### How the Test Works
 
 This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 
@@ -26,7 +26,7 @@ This test uses `Get-MtADGpoState` (and its cached `GPOLinks`/AD data) and:
 3. Identifies site link objects from `Get-MtADGpoState` (`$gpoState.SiteContainers`).
 4. Counts each target whose `gPLink` value contains no GPO GUID references (i.e., no GPO links).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGpoUnlinkedCount` - Identifies GPOs that are not linked to any location
 - `Test-MtAdGpoLinkedCount` - Counts distinct GPOs that are actively linked

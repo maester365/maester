@@ -1,6 +1,6 @@
-# Test-MtAdGroupMemberForeignSidCount
+#### Test-MtAdGroupMemberForeignSidCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Foreign SIDs represent security identifiers from domains other than the current domain:
 
@@ -9,7 +9,7 @@ Foreign SIDs represent security identifiers from domains other than the current 
 - **Cross-Forest Access**: Forest trusts may introduce SIDs from entirely different forests
 - **Security Auditing**: Foreign SIDs should be tracked as they bypass some local security checks
 
-## Security Recommendation
+#### Security Recommendation
 
 Monitor and audit foreign SIDs carefully:
 - Review SID history from domain migrations for continued necessity
@@ -17,7 +17,7 @@ Monitor and audit foreign SIDs carefully:
 - Be cautious of foreign SIDs in highly privileged groups
 - Document all foreign SID sources for compliance and security reviews
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes group membership for foreign SIDs by:
 - Comparing member SIDs against the current domain SID
@@ -27,7 +27,7 @@ This test analyzes group membership for foreign SIDs by:
 
 For performance reasons, the test analyzes the first 50 groups.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupMemberTrustCount` - Count of trust members overall
 - `Test-MtAdGroupMemberTrustDetails` - Detailed view by group

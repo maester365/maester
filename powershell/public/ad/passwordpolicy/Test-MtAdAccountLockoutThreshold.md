@@ -1,6 +1,6 @@
-# Test-MtAdAccountLockoutThreshold
+#### Test-MtAdAccountLockoutThreshold
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Account lockout threshold is one of the most important defenses against brute-force attacks:
 
@@ -10,7 +10,7 @@ Account lockout threshold is one of the most important defenses against brute-fo
 
 A threshold of 5 or fewer failed attempts provides strong protection while allowing for the occasional user mistake. Setting it to 0 (never lock out) removes this critical protection entirely.
 
-## Security Recommendation
+#### Security Recommendation
 
 Configure the account lockout threshold to **5 or fewer failed attempts**. Never disable account lockout (threshold = 0) as this removes critical protection against brute-force attacks.
 
@@ -24,13 +24,13 @@ To configure this setting:
 - Account lockout duration (recommend: 30 minutes)
 - Reset account lockout counter after (recommend: 30 minutes)
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and extracts the `LockoutThreshold` value. The test reports:
 - Current lockout threshold (number of failed attempts)
 - Recommended maximum (5 attempts)
 - Critical warning if lockout is disabled
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdAccountLockoutDuration` - Checks how long accounts remain locked

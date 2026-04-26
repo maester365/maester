@@ -1,6 +1,6 @@
-# Test-MtAdSiteWithoutDcDetails
+#### Test-MtAdSiteWithoutDcDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding which specific sites lack domain controllers is essential for:
 
@@ -11,7 +11,7 @@ Understanding which specific sites lack domain controllers is essential for:
 
 Each site without a DC represents a potential single point of failure for authentication in that location.
 
-## Security Recommendation
+#### Security Recommendation
 
 For each site without a DC:
 1. Verify if the site represents an active physical location
@@ -20,11 +20,11 @@ For each site without a DC:
 4. Document the rationale for not having a local DC
 5. Monitor authentication latency from these sites
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all sites and domain controllers, then identifies and lists specific sites that have no associated domain controllers.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSiteWithoutDcCount` - Counts sites without DCs
 - `Test-MtAdSiteTotalCount` - Counts total sites in the domain

@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnDomainAdminDetails
+#### Test-MtAdUserSpnDomainAdminDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed visibility into domain admin SPNs is critical for security incident response:
 
@@ -11,7 +11,7 @@ Detailed visibility into domain admin SPNs is critical for security incident res
 
 Any SPN on a domain admin account is a critical finding requiring immediate action.
 
-## Security Recommendation
+#### Security Recommendation
 
 **Immediate actions required:**
 1. Remove ALL SPNs from domain administrator accounts
@@ -21,11 +21,11 @@ Any SPN on a domain admin account is a critical finding requiring immediate acti
 5. Implement monitoring for SPN changes to privileged accounts
 6. Consider this a potential security incident requiring investigation
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies domain administrator accounts and provides detailed information about any SPNs configured on them, including service class, host, FQDN status, and full SPN value for remediation.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnDomainAdminCount` - Counts SPNs on domain admins
 - `Test-MtAdUserSpnTotalCount` - Overall user SPN analysis

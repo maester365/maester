@@ -1,6 +1,6 @@
-# Test-MtAdTrustNonQuarantinedDetails
+#### Test-MtAdTrustNonQuarantinedDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Non-quarantined trusts (those without SID filtering) are a significant security risk:
 
@@ -11,7 +11,7 @@ Non-quarantined trusts (those without SID filtering) are a significant security 
 
 This test specifically identifies which trusts lack SID filtering, enabling targeted remediation.
 
-## Security Recommendation
+#### Security Recommendation
 
 **Immediate Actions:**
 - Review each non-quarantined trust to determine if SID filtering can be enabled
@@ -29,7 +29,7 @@ This test specifically identifies which trusts lack SID filtering, enabling targ
 Set-ADTrust -Target <TrustName> -Quarantine $true
 ```
 
-## How the Test Works
+#### How the Test Works
 
 This test filters trust objects where `Quarantined` is `$false` and displays:
 
@@ -38,7 +38,7 @@ This test filters trust objects where `Quarantined` is `$false` and displays:
 - Whether it's an intra-forest or inter-forest trust
 - Trust type (External, Forest, or Kerberos)
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustQuarantinedCount` - Count of quarantined vs non-quarantined trusts
 - `Test-MtAdTrustInterForestCount` - Identifies external trusts that should be quarantined

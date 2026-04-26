@@ -1,6 +1,6 @@
-# Test-MtAdComputerOperatingSystemDetails
+#### Test-MtAdComputerOperatingSystemDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed knowledge of operating system versions and service pack levels is essential for effective vulnerability management and security compliance. This information helps identify:
 
@@ -15,7 +15,7 @@ Detailed knowledge of operating system versions and service pack levels is essen
 - Service pack levels may be mandated
 - Documentation of OS landscape is often required
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Maintain Current Service Packs**:
    - Apply latest service packs and cumulative updates
@@ -32,7 +32,7 @@ Detailed knowledge of operating system versions and service pack levels is essen
    - Implement configuration management
    - Regular compliance scanning
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed analysis including:
 - Operating system names and versions
@@ -40,7 +40,7 @@ This test provides detailed analysis including:
 - Distribution counts and percentages
 - Identification of systems without OS information
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerOperatingSystemCount` - Summary OS count
 - `Test-MtAdComputerStaleEnabledCount` - Stale computer identification

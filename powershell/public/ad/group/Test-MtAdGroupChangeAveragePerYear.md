@@ -1,6 +1,6 @@
-# Test-MtAdGroupChangeAveragePerYear
+#### Test-MtAdGroupChangeAveragePerYear
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the rate of group membership changes provides insights into:
 
@@ -10,7 +10,7 @@ Understanding the rate of group membership changes provides insights into:
 - **Change management**: Identify periods of high activity
 - **Lifecycle management**: Understand group creation and modification patterns
 
-## Security Recommendation
+#### Security Recommendation
 
 Monitor group membership changes for security anomalies:
 - Establish baselines for normal change rates
@@ -20,7 +20,7 @@ Monitor group membership changes for security anomalies:
 - Implement approval workflows for privileged group changes
 - Document business reasons for high-volume change periods
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes group metadata to calculate:
 - Total groups in the directory
@@ -31,7 +31,7 @@ This test analyzes group metadata to calculate:
 
 The analysis helps identify trends and patterns in group management activity.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupPrivilegedWithMembersDetails` - Reviews current privileged group state
 - `Test-MtAdGroupEmptyNonPrivilegedDetails` - Identifies potentially stale groups

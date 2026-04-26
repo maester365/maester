@@ -1,6 +1,6 @@
-# Test-MtAdUpnSuffixesDetails
+#### Test-MtAdUpnSuffixesDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed visibility into UPN (User Principal Name) suffix configuration is essential for maintaining a secure and well-managed Active Directory environment. UPN suffixes directly impact:
 
@@ -9,7 +9,7 @@ Detailed visibility into UPN (User Principal Name) suffix configuration is essen
 - **Security Boundaries**: Understanding configured UPN suffixes helps identify potential authentication attack surfaces
 - **Operational Continuity**: During domain migrations or consolidations, UPN suffix management ensures user authentication continuity
 
-## Security Recommendation
+#### Security Recommendation
 
 Based on the UPN suffix details retrieved:
 
@@ -18,11 +18,11 @@ Based on the UPN suffix details retrieved:
 3. **Document Changes**: Maintain documentation of why each UPN suffix exists and which business unit owns it
 4. **Monitor for Unauthorized Additions**: Unexpected UPN suffixes could indicate compromise or unauthorized administrative activity
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the complete list of UPN suffixes configured at the forest level. It displays each suffix individually, allowing administrators to review the complete authentication namespace configuration. The test uses `Get-ADForest` to access the `UPNSuffixes` property.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUpnSuffixesCount` - Provides a count of configured UPN suffixes
 - `Test-MtAdSpnSuffixesCount` - Checks SPN suffix configuration

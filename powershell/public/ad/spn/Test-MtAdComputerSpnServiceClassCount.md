@@ -1,6 +1,6 @@
-# Test-MtAdComputerSpnServiceClassCount
+#### Test-MtAdComputerSpnServiceClassCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Service Principal Names (SPNs) are critical for Kerberos authentication in Active Directory. Understanding the distribution of SPN service classes helps security teams:
 
@@ -11,7 +11,7 @@ Service Principal Names (SPNs) are critical for Kerberos authentication in Activ
 
 Common SPN service classes include HOST, HTTP, LDAP, MSSQLSvc, and CIFS. Unexpected service classes may warrant investigation.
 
-## Security Recommendation
+#### Security Recommendation
 
 Regularly audit SPN configurations to ensure:
 - Only authorized services have SPNs registered
@@ -19,11 +19,11 @@ Regularly audit SPN configurations to ensure:
 - Unused or legacy service SPNs are removed
 - Sensitive SPNs (like those for database services) are properly secured
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all computer objects from Active Directory, extracts their SPNs, and counts the distinct service classes. An SPN has the format `serviceclass/host:port`, and this test focuses on the service class portion.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerSpnServiceClassUsage` - Shows usage breakdown of each service class
 - `Test-MtAdComputerSpnUnknownCount` - Identifies unrecognized SPN service classes

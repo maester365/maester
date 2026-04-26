@@ -1,6 +1,6 @@
-# Test-MtAdComputerDnsHostNameCount
+#### Test-MtAdComputerDnsHostNameCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 DNS host names (the `dNSHostName` attribute) are essential for proper Active Directory functionality, particularly for Kerberos authentication and service principal name (SPN) registration.
 
@@ -16,7 +16,7 @@ DNS host names (the `dNSHostName` attribute) are essential for proper Active Dir
 - Configuration errors during domain join
 - Incomplete computer account setup
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Ensure Proper Configuration**:
    - All computers should have valid DNS host names
@@ -33,7 +33,7 @@ DNS host names (the `dNSHostName` attribute) are essential for proper Active Dir
    - Delete stale computer accounts without DNS names
    - Investigate provisioning process if widespread issue
 
-## How the Test Works
+#### How the Test Works
 
 This test counts computers with and without the `dNSHostName` attribute populated and reports:
 - Total computers
@@ -41,7 +41,7 @@ This test counts computers with and without the `dNSHostName` attribute populate
 - Computers without DNS host names
 - Percentage coverage
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDnsZoneCount` - DNS zone distribution
 - `Test-MtAdComputerDnsZoneDetails` - Detailed DNS zone analysis

@@ -1,6 +1,6 @@
-# Test-MtAdGroupGlobalCount
+#### Test-MtAdGroupGlobalCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Global groups are the most commonly used group type for organizing users in Active Directory:
 
@@ -11,7 +11,7 @@ Global groups are the most commonly used group type for organizing users in Acti
 
 A high number of global groups typically indicates well-organized user role management.
 
-## Security Recommendation
+#### Security Recommendation
 
 Optimize global group usage:
 1. Use global groups to organize users by role, department, or business function
@@ -20,7 +20,7 @@ Optimize global group usage:
 4. Avoid assigning permissions directly to global groups—use them as user containers
 5. Implement a naming convention that reflects the group's purpose (e.g., "G-Department-Finance")
 
-## How the Test Works
+#### How the Test Works
 
 This test examines all group objects and identifies those where:
 - The `GroupScope` property equals "Global"
@@ -29,7 +29,7 @@ This test examines all group objects and identifies those where:
 
 The test provides counts and percentages to understand the distribution of group scopes in your environment.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupDistributionCount` - Counts distribution groups (email-only)
 - `Test-MtAdGroupSecurityCount` - Counts security groups by category

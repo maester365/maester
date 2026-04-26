@@ -1,6 +1,6 @@
-# Test-MtAdSubnetNonInternalDetails
+#### Test-MtAdSubnetNonInternalDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed information about public IP subnet usage helps:
 
@@ -11,7 +11,7 @@ Detailed information about public IP subnet usage helps:
 
 Each public IP subnet should be reviewed for proper isolation and business justification.
 
-## Security Recommendation
+#### Security Recommendation
 
 For each public IP subnet:
 1. Verify if the use is intentional and justified
@@ -20,11 +20,11 @@ For each public IP subnet:
 4. Plan migration to private ranges if appropriate
 5. Review firewall and NAT configurations
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all subnets, identifies those using public IP ranges, and lists them with their site associations and descriptions.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSubnetNonInternalCount` - Counts public IP subnets
 - `Test-MtAdSubnetTotalCount` - Counts total subnets

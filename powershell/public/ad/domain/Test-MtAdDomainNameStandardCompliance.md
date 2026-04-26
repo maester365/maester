@@ -1,6 +1,6 @@
-# Test-MtAdDomainNameStandardCompliance
+#### Test-MtAdDomainNameStandardCompliance
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Domain names that don't comply with RFC 1123 and RFC 952 standards can cause various problems:
 
@@ -15,18 +15,18 @@ RFC standards require domain names to:
 - Not exceed 63 characters per label
 - Not end with a hyphen
 
-## Security Recommendation
+#### Security Recommendation
 
 - **Avoid Non-Standard Characters**: Don't use underscores, spaces, or special characters in domain names
 - **Keep Labels Short**: Each domain label should be 63 characters or less
 - **Plan Renames Carefully**: Domain rename is complex; plan during initial deployment
 - **Document Exceptions**: If non-compliant names exist, document the business justification
 
-## How the Test Works
+#### How the Test Works
 
 This test checks all domain names in the forest against RFC 1123 naming standards. It splits each domain into labels (separated by dots) and validates each label against the standard naming pattern.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDomainNameNonStandardDetails` - Lists details of non-compliant domain names
 - `Test-MtAdNetbiosNameStandardCompliance` - Checks NetBIOS name compliance

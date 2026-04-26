@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnServiceClassCount
+#### Test-MtAdUserSpnServiceClassCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the service classes of SPNs on user accounts helps security teams:
 
@@ -11,7 +11,7 @@ Understanding the service classes of SPNs on user accounts helps security teams:
 
 User accounts with database or application service SPNs are particularly sensitive.
 
-## Security Recommendation
+#### Security Recommendation
 
 Review service classes on user accounts:
 - Database services (MSSQLSvc, oracle, postgres) should use gMSAs
@@ -19,11 +19,11 @@ Review service classes on user accounts:
 - Legacy service classes may indicate outdated applications
 - Document all user accounts with SPNs and their purposes
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all user objects with SPNs, extracts the service class from each SPN, and counts the distinct service classes in use.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnServiceClassUsage` - Detailed breakdown of service class usage
 - `Test-MtAdUserSpnTotalCount` - Total count of user SPNs

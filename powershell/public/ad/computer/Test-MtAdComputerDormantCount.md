@@ -1,6 +1,6 @@
-# Test-MtAdComputerDormantCount
+#### Test-MtAdComputerDormantCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Dormant (stale) computer accounts—enabled accounts that haven't authenticated in 90+ days—pose significant security risks:
 
@@ -9,7 +9,7 @@ Dormant (stale) computer accounts—enabled accounts that haven't authenticated 
 - **Lateral movement**: Compromised dormant accounts can be used to move laterally within the network
 - **Compliance issues**: Many security frameworks require identification and remediation of stale accounts
 
-## Security Recommendation
+#### Security Recommendation
 
 Establish a process to:
 1. Identify dormant computers (this test)
@@ -17,7 +17,7 @@ Establish a process to:
 3. Disable accounts for systems that are truly decommissioned
 4. Delete disabled accounts after a verification period
 
-## How the Test Works
+#### How the Test Works
 
 This test examines all enabled computer accounts and identifies those where:
 - The `lastLogonDate` property is more than 90 days old
@@ -25,7 +25,7 @@ This test examines all enabled computer accounts and identifies those where:
 
 The 90-day threshold is a common security baseline, though your organization may adjust this based on your specific requirements (e.g., seasonal systems, remote workstations).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDisabledCount` - Counts already-disabled computer accounts
 - `Test-MtAdComputerInDefaultContainer` - Identifies computers that may be unmanaged

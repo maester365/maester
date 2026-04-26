@@ -1,6 +1,6 @@
-# Test-MtAdComputerNonDcUnconstrainedDelegationCount
+#### Test-MtAdComputerNonDcUnconstrainedDelegationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Non-domain controller computers with unconstrained delegation represent a **CRITICAL** security vulnerability. While domain controllers may have legitimate reasons for unconstrained delegation in certain legacy scenarios, regular computers should **NEVER** have this configuration.
 
@@ -12,7 +12,7 @@ Non-domain controller computers with unconstrained delegation represent a **CRIT
 
 **The target count for this test should ALWAYS be ZERO.**
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Immediate Action Required**:
    - Identify all non-DC computers with unconstrained delegation
@@ -29,7 +29,7 @@ Non-domain controller computers with unconstrained delegation represent a **CRIT
    - Alert on any new unconstrained delegation configurations
    - Review applications requiring delegation
 
-## How the Test Works
+#### How the Test Works
 
 This test specifically identifies non-DC computers with the `TrustedForDelegation` flag enabled and reports:
 - Count of affected computers
@@ -38,7 +38,7 @@ This test specifically identifies non-DC computers with the `TrustedForDelegatio
 
 **Pass Criteria**: Zero non-DC computers with unconstrained delegation
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation count
 - `Test-MtAdComputerNonDcConstrainedDelegationCount` - Reviews constrained delegation on non-DCs

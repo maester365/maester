@@ -1,6 +1,6 @@
-# Test-MtAdDnsZoneDelegationDetails
+#### Test-MtAdDnsZoneDelegationDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed information about DNS delegations is essential for:
 
@@ -9,7 +9,7 @@ Detailed information about DNS delegations is essential for:
 - **Incident response**: Quickly identifying affected delegations during incidents
 - **Compliance documentation**: Maintaining records of DNS infrastructure
 
-## Security Recommendation
+#### Security Recommendation
 
 Review delegation details regularly and:
 - Verify all target name servers are authorized
@@ -17,13 +17,13 @@ Review delegation details regularly and:
 - Document the purpose and owner of each delegation
 - Implement monitoring for delegation changes
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed information about each zone delegation, including:
 - Parent zone name
 - Delegated subdomain
 - Target name server
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsZoneDelegationCount` - Counts zone delegations

@@ -1,6 +1,6 @@
-# Test-MtAdDnsRootServerIncorrectDetails
+#### Test-MtAdDnsRootServerIncorrectDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed information about incorrect root server configurations is essential for:
 
@@ -9,7 +9,7 @@ Detailed information about incorrect root server configurations is essential for
 - **Security incident response**: Unexpected changes may indicate compromise or attack
 - **Compliance documentation**: Detailed records support audit requirements
 
-## Security Recommendation
+#### Security Recommendation
 
 When incorrect root server IPs are detected:
 1. Document all discrepancies
@@ -17,13 +17,13 @@ When incorrect root server IPs are detected:
 3. Investigate the cause of the discrepancy
 4. Implement monitoring to detect future unauthorized changes
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed information about each root server that has an incorrect IP address, including:
 - Configured IP address
 - Expected (correct) IP address
 - Status of all root servers
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsRootServerIncorrectCount` - Counts root servers with incorrect IPs

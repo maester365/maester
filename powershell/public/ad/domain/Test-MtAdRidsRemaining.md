@@ -1,6 +1,6 @@
-# Test-MtAdRidsRemaining
+#### Test-MtAdRidsRemaining
 
-## Why This Test Matters
+#### Why This Test Matters
 
 RIDs (Relative Identifiers) are essential for creating unique Security Identifiers (SIDs) for every user, group, and computer in Active Directory. Each domain has a finite pool of approximately 1 billion RIDs:
 
@@ -8,7 +8,7 @@ RIDs (Relative Identifiers) are essential for creating unique Security Identifie
 - **Business Impact**: New users, groups, or computers could not be created
 - **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
 
-## Security Recommendation
+#### Security Recommendation
 
 Monitor RID consumption regularly:
 
@@ -24,11 +24,11 @@ If RID consumption is unexpectedly high:
 2. Review computer join policies and scripts
 3. Consider implementing stricter controls on account creation
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the RID available pool from Active Directory and calculates the remaining RIDs. The RID pool is a 64-bit value where the high 32 bits represent the total pool and the low 32 bits represent used RIDs.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDomainControllerCount` - Counts domain controllers (RID masters)
 - `Test-MtAdMachineAccountQuota` - Checks machine account creation limits

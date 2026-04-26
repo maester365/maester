@@ -1,6 +1,6 @@
-# Test-MtAdPrinterTotalCount
+#### Test-MtAdPrinterTotalCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Published printers in Active Directory provide visibility into your organization's printing infrastructure. While printers themselves may not seem like a security concern, they present several security considerations:
 
@@ -16,7 +16,7 @@ Understanding your printer publishing configuration helps:
 - **Documentation**: Maintain accurate inventory of printing resources
 - **Compliance**: Some regulations require tracking of printing infrastructure
 
-## Security Recommendation
+#### Security Recommendation
 
 Secure your printing infrastructure:
 - **Minimize publishing**: Only publish printers that need to be discoverable
@@ -25,11 +25,11 @@ Secure your printing infrastructure:
 - **Secure printing**: Implement pull printing or secure release solutions
 - **Regular audits**: Periodically review published printers for unauthorized additions
 
-## How the Test Works
+#### How the Test Works
 
 This test queries Active Directory for printQueue objects to count published printers and provide details about printer publishing in the domain.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOuEmptyCount` - Identify empty OUs that may contain legacy printer objects
 - `Test-MtAdGroupDistributionCount` - Review groups that may control printer access

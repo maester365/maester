@@ -1,6 +1,6 @@
-# Test-MtAdDnsDnssecRecordCount
+#### Test-MtAdDnsDnssecRecordCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 DNSSEC (DNS Security Extensions) provides authentication of DNS data through digital signatures. Trust anchors are the starting points for DNSSEC validation:
 
@@ -9,17 +9,17 @@ DNSSEC (DNS Security Extensions) provides authentication of DNS data through dig
 - **Compliance**: Some regulations require DNSSEC deployment
 - **Trust establishment**: Trust anchors enable validation chains
 
-## Security Recommendation
+#### Security Recommendation
 
 - Deploy DNSSEC for all externally-facing DNS zones
 - Maintain secure trust anchor distribution
 - Monitor for DNSSEC validation failures
 - Keep DNSSEC keys properly managed and rotated
 
-## How the Test Works
+#### How the Test Works
 
 This test counts DNSSEC trust anchor records configured in the TrustAnchors zone.
 
-## Related Tests
+#### Related Tests
 
 - None currently

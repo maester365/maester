@@ -1,6 +1,6 @@
-# Test-MtAdAllowedDnsSuffixesCount
+#### Test-MtAdAllowedDnsSuffixesCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Allowed DNS suffixes control which DNS domain names can be used when joining computers to an Active Directory domain. This configuration is important for:
 
@@ -9,7 +9,7 @@ Allowed DNS suffixes control which DNS domain names can be used when joining com
 - **DNS Hygiene**: Prevents DNS namespace pollution from computers with non-standard or unexpected DNS suffixes
 - **Compliance**: Some security frameworks require control over which DNS namespaces can participate in the domain
 
-## Security Recommendation
+#### Security Recommendation
 
 Consider configuring allowed DNS suffixes to enhance security:
 
@@ -20,11 +20,11 @@ Consider configuring allowed DNS suffixes to enhance security:
 
 **Note:** By default, no allowed DNS suffixes are configured, which permits computers with any DNS suffix to join the domain. While this provides flexibility, it may not meet strict security requirements.
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the allowed DNS suffixes configuration from the domain using `Get-ADDomain`. It counts the number of configured allowed DNS suffixes and reports the current configuration status. The test helps administrators understand whether domain join restrictions based on DNS suffix are in place.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDomainNameStandardCompliance` - Checks domain name RFC compliance
 - `Test-MtAdNetbiosNameStandardCompliance` - Checks NetBIOS name compliance

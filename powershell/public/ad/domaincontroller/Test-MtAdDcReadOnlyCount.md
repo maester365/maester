@@ -1,6 +1,6 @@
-# Test-MtAdDcReadOnlyCount
+#### Test-MtAdDcReadOnlyCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Read-Only Domain Controllers (RODCs) are a critical security feature introduced in Windows Server 2008 designed specifically for deployment in locations where physical security cannot be guaranteed, such as branch offices. RODCs provide several security benefits:
 
@@ -14,7 +14,7 @@ Understanding your RODC deployment helps ensure:
 - Proper credential caching policies
 - Compliance with security standards for branch office infrastructure
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Deploy RODCs in branch offices**: Use RODCs instead of writable DCs in locations with limited physical security
 2. **Configure credential caching**: Limit cached credentials to only those needed for local operations
@@ -22,7 +22,7 @@ Understanding your RODC deployment helps ensure:
 4. **Plan for RODC compromise**: Have procedures in place for quickly resetting passwords if an RODC is compromised
 5. **Review RODC placement**: Ensure all RODCs are justified and necessary
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all domain controllers and identifies which are configured as Read-Only Domain Controllers. The test reports:
 
@@ -31,7 +31,7 @@ This test retrieves all domain controllers and identifies which are configured a
 - Number of read-only domain controllers (RODCs)
 - Names and sites of RODCs (if any exist)
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcNonGlobalCatalogCount` - Checks Global Catalog configuration
 - `Test-MtAdDcSiteCoverageCount` - Analyzes DC distribution across sites

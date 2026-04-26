@@ -1,6 +1,6 @@
-# Test-MtAdLapsInstalledStatus
+#### Test-MtAdLapsInstalledStatus
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The Local Administrator Password Solution (LAPS) is a critical security tool that:
 
@@ -16,7 +16,7 @@ Without LAPS, organizations commonly face these risks:
 - **Credential stuffing**: Shared passwords reused across multiple systems
 - **Compliance failures**: Many frameworks require unique local admin passwords
 
-## Security Recommendation
+#### Security Recommendation
 
 Deploy LAPS across your entire domain:
 
@@ -26,11 +26,11 @@ Deploy LAPS across your entire domain:
 4. **Monitoring**: Alert on password retrieval events
 5. **Legacy LAPS**: Consider upgrading to Windows LAPS (built into Windows 11/Server 2022)
 
-## How the Test Works
+#### How the Test Works
 
 This test checks for the presence of LAPS schema attributes (ms-Mcs-AdmPwd) to determine if LAPS has been installed and configured in the Active Directory environment.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Check for delegation risks
 - `Test-MtAdUserPasswordNeverExpiresCount` - Identify password policy gaps

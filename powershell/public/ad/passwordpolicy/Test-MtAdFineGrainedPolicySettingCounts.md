@@ -1,6 +1,6 @@
-# Test-MtAdFineGrainedPolicySettingCounts
+#### Test-MtAdFineGrainedPolicySettingCounts
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Having a detailed breakdown of fine-grained password policy settings allows you to:
 
@@ -11,7 +11,7 @@ Having a detailed breakdown of fine-grained password policy settings allows you 
 
 This detailed view complements the value count by showing the actual settings rather than just the number of variations.
 
-## Security Recommendation
+#### Security Recommendation
 
 When reviewing fine-grained password policy settings, ensure:
 
@@ -27,7 +27,7 @@ To review and modify policy settings:
 3. Double-click each policy to review settings
 4. Adjust as needed to meet security requirements
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all fine-grained password policies using `Get-ADFineGrainedPasswordPolicy` and creates a table showing key settings for each policy:
 - Policy name
@@ -37,7 +37,7 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 - Complexity enabled (Yes/No)
 - Lockout threshold
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdFineGrainedPolicyCount` - Counts the number of FGPPs
 - `Test-MtAdFineGrainedPolicyValueCount` - Shows distinct values across policies

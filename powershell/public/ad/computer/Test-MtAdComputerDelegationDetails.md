@@ -1,6 +1,6 @@
-# Test-MtAdComputerDelegationDetails
+#### Test-MtAdComputerDelegationDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed visibility into Kerberos delegation configurations is essential for security because:
 
@@ -11,7 +11,7 @@ Detailed visibility into Kerberos delegation configurations is essential for sec
 
 Computers with unconstrained delegation should be treated as high-value targets requiring enhanced monitoring and protection.
 
-## Security Recommendation
+#### Security Recommendation
 
 For each computer with delegation enabled:
 
@@ -22,14 +22,14 @@ For each computer with delegation enabled:
 5. **Document exceptions**: Maintain a registry of systems requiring delegation with business justifications
 6. **Regular review**: Quarterly review of delegation configurations
 
-## How the Test Works
+#### How the Test Works
 
 This test provides a detailed breakdown of:
 - Computers with unconstrained delegation (highest risk)
 - Computers with constrained delegation and protocol transition
 - Per-computer details including name, enabled status, and distinguished name
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDelegationCount` - Provides summary counts of delegation
 - `Test-MtAdComputerDormantCount` - Identifies stale accounts that may have delegation

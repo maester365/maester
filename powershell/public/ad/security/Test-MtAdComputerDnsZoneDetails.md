@@ -1,6 +1,6 @@
-# Test-MtAdComputerDnsZoneDetails
+#### Test-MtAdComputerDnsZoneDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed analysis of DNS zone distribution provides visibility into Active Directory topology and helps identify potential configuration issues or security concerns related to DNS.
 
@@ -16,7 +16,7 @@ Detailed analysis of DNS zone distribution provides visibility into Active Direc
 - Orphaned computer accounts
 - DNS registration failures
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Zone Assignment Review**:
    - Verify computers are in appropriate DNS zones
@@ -33,7 +33,7 @@ Detailed analysis of DNS zone distribution provides visibility into Active Direc
    - Delete stale computer accounts
    - Fix DNS registration issues
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed analysis:
 - Breakdown of computers by DNS zone
@@ -41,7 +41,7 @@ This test provides detailed analysis:
 - List of computers without DNS host names
 - Distribution statistics
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDnsZoneCount` - DNS zone count summary
 - `Test-MtAdComputerDnsHostNameCount` - DNS host name coverage

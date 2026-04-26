@@ -1,6 +1,6 @@
-# Test-MtAdDcAllFsmoRolesCount
+#### Test-MtAdDcAllFsmoRolesCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 FSMO (Flexible Single Master Operations) roles are critical directory services operations that can only be performed by one domain controller at a time:
 
@@ -16,7 +16,7 @@ Concentrating all 5 FSMO roles on a single DC creates a single point of failure.
 - **Disaster recovery**: All critical roles are in one location
 - **Maintenance**: Updates to the FSMO holder require careful planning
 
-## Security Recommendation
+#### Security Recommendation
 
 Consider distributing FSMO roles across multiple domain controllers for redundancy:
 
@@ -25,14 +25,14 @@ Consider distributing FSMO roles across multiple domain controllers for redundan
 - Ensure at least one FSMO role holder is in a different physical location
 - Document FSMO role locations and transfer procedures
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies which domain controllers hold FSMO roles and counts how many DCs hold all 5 roles. It displays:
 - Current FSMO role holders
 - Number of unique DCs holding roles
 - Whether any single DC holds all roles
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcFsmoRoleHolderDetails` - Detailed FSMO role distribution
 - `Test-MtAdDomainControllerCount` - Total DC count

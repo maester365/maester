@@ -1,6 +1,6 @@
-# Test-MtAdDnsReverseZoneNetworkCount
+#### Test-MtAdDnsReverseZoneNetworkCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding how many distinct networks have reverse lookup zones helps:
 
@@ -11,18 +11,18 @@ Understanding how many distinct networks have reverse lookup zones helps:
 
 Each reverse zone represents a network segment that can be resolved from IP to hostname.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Maintain reverse zones for all production networks
 - Ensure consistent coverage across the organization
 - Document any networks intentionally without reverse zones
 - Monitor for unauthorized reverse zone creation
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes reverse lookup zone names to extract and count unique network addresses.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsReverseZoneCount` - Counts reverse lookup zones
 - `Test-MtAdDnsReverseZoneNetworkDetails` - Provides detailed network information

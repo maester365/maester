@@ -1,6 +1,6 @@
-# Test-MtAdDnsAdSrvRecordDetails
+#### Test-MtAdDnsAdSrvRecordDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed SRV record information is critical for:
 
@@ -11,7 +11,7 @@ Detailed SRV record information is critical for:
 
 SRV records contain priority and weight values that control client behavior. Understanding these values helps ensure optimal and secure service location.
 
-## Security Recommendation
+#### Security Recommendation
 
 Review SRV record details regularly:
 - Verify target hosts are authorized domain controllers
@@ -19,13 +19,13 @@ Review SRV record details regularly:
 - Monitor for unauthorized SRV record additions
 - Ensure SRV records are protected from modification
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed information about each AD DS SRV record, including:
 - Service and protocol
 - Target host and port
 - Priority and weight values
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsAdSrvRecordCount` - Counts AD DS SRV records

@@ -1,6 +1,6 @@
-# Test-MtAdDnsZoneDelegationCount
+#### Test-MtAdDnsZoneDelegationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 DNS zone delegations transfer authority for a subdomain to different name servers. Monitoring delegations is important because:
 
@@ -9,17 +9,17 @@ DNS zone delegations transfer authority for a subdomain to different name server
 - **Configuration complexity**: Each delegation adds management overhead
 - **Potential hijacking**: Unauthorized delegations could redirect traffic
 
-## Security Recommendation
+#### Security Recommendation
 
 - Audit all zone delegations regularly
 - Verify delegated servers are under your organization's control
 - Document the purpose of each delegation
 - Monitor for unauthorized delegation changes
 
-## How the Test Works
+#### How the Test Works
 
 This test counts NS records that represent delegations (where the record name is not "@"), indicating authority delegation to another server.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsZoneDelegationDetails` - Provides detailed delegation information

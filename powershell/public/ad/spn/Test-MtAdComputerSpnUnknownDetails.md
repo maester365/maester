@@ -1,6 +1,6 @@
-# Test-MtAdComputerSpnUnknownDetails
+#### Test-MtAdComputerSpnUnknownDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Detailed information about unknown SPNs enables security teams to:
 
@@ -11,7 +11,7 @@ Detailed information about unknown SPNs enables security teams to:
 
 This granular visibility is essential for maintaining SPN hygiene and security.
 
-## Security Recommendation
+#### Security Recommendation
 
 For each unknown SPN service class discovered:
 1. Identify the service owner or application team
@@ -20,11 +20,11 @@ For each unknown SPN service class discovered:
 4. Document approved custom SPNs in your security baseline
 5. Remove or correct unauthorized SPNs
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes all computer SPNs, compares service classes against a known database, and provides a detailed breakdown of unknown service classes including which computers have them and how many instances exist.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerSpnUnknownCount` - Counts unknown service classes
 - `Test-MtAdUserSpnUnknownDetails` - Details of unknown user account SPNs

@@ -1,6 +1,6 @@
-# Test-MtAdTrustStaleCount
+#### Test-MtAdTrustStaleCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Stale trusts (those not validated for extended periods) indicate potential issues:
 
@@ -12,7 +12,7 @@ Stale trusts (those not validated for extended periods) indicate potential issue
 
 Trust validation occurs when the trusting domain attempts to verify the trust relationship with the trusted domain. If this hasn't happened in 60+ days, it suggests the trust is not actively used.
 
-## Security Recommendation
+#### Security Recommendation
 
 **Immediate Actions:**
 - Review all stale trusts to determine if they are still needed
@@ -35,7 +35,7 @@ Test-ADTrust -Target <TrustName>
 Remove-ADTrust -Target <TrustName>
 ```
 
-## How the Test Works
+#### How the Test Works
 
 This test checks the `LastValidated` property of each trust. Trusts are considered stale if:
 - `LastValidated` is not null
@@ -47,7 +47,7 @@ The test returns:
 - Count of trusts with unknown validation status
 - Count of valid trusts
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTrustStaleDetails` - Lists specific stale trusts with details
 - `Test-MtAdTrustTotalCount` - Overall trust count

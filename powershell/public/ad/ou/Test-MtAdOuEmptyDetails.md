@@ -1,6 +1,6 @@
-# Test-MtAdOuEmptyDetails
+#### Test-MtAdOuEmptyDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding which specific Organizational Units are empty is essential for directory maintenance and cleanup efforts. This detailed view helps administrators:
 
@@ -11,7 +11,7 @@ Understanding which specific Organizational Units are empty is essential for dir
 
 The detailed list enables targeted cleanup efforts rather than broad, unfocused maintenance activities.
 
-## Security Recommendation
+#### Security Recommendation
 
 Use this detailed information to conduct a systematic review of empty OUs:
 
@@ -23,14 +23,14 @@ Use this detailed information to conduct a systematic review of empty OUs:
 
 Establish a process where new OUs are documented at creation time to prevent future accumulation of empty, undocumented containers.
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Organizational Units from Active Directory and:
 - Identifies OUs with no user, group, or computer objects
 - Lists each empty OU with its name, creation date, and distinguished name
 - Provides a complete inventory of empty containers for cleanup planning
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdOuEmptyCount` - Provides count summary of empty OUs
 - `Test-MtAdOuStaleCount` - Identifies OUs not modified since before 2020

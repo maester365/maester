@@ -1,6 +1,6 @@
-# Test-MtAdComputerDnsZoneCount
+#### Test-MtAdComputerDnsZoneCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding DNS zone distribution across domain computers helps identify network topology, disjoint namespace configurations, and potential DNS-related security issues.
 
@@ -16,7 +16,7 @@ Understanding DNS zone distribution across domain computers helps identify netwo
 - Disjoint namespaces require special configuration
 - External DNS zones for perimeter networks
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Validate Zone Configuration**:
    - Ensure all DNS zones are intentional and documented
@@ -33,14 +33,14 @@ Understanding DNS zone distribution across domain computers helps identify netwo
    - Maintain network topology diagrams
    - Review during security audits
 
-## How the Test Works
+#### How the Test Works
 
 This test extracts DNS zones from computer `dNSHostName` attributes and:
 - Counts unique DNS zones
 - Lists all zones in use
 - Identifies computers without DNS host names
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDnsHostNameCount` - DNS host name coverage
 - `Test-MtAdComputerDnsZoneDetails` - Detailed zone breakdown

@@ -1,6 +1,6 @@
-# Test-MtAdGroupMemberTrustCount
+#### Test-MtAdGroupMemberTrustCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Trust members represent security principals from external domains that have been granted access within the local domain:
 
@@ -9,7 +9,7 @@ Trust members represent security principals from external domains that have been
 - **Security Boundaries**: Understanding where external access is granted helps maintain security boundaries
 - **Audit Trail**: Trust members should be regularly reviewed for continued necessity
 
-## Security Recommendation
+#### Security Recommendation
 
 Regularly audit trust members:
 - Verify that trust relationships are still required and properly maintained
@@ -17,7 +17,7 @@ Regularly audit trust members:
 - Document the business justification for cross-domain access
 - Monitor for trust members in privileged groups (Domain Admins, etc.)
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies trust members by:
 - Detecting foreignSecurityPrincipal object class
@@ -26,7 +26,7 @@ This test identifies trust members by:
 
 For performance reasons, the test analyzes the first 50 groups.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupMemberTrustDetails` - Detailed breakdown by group
 - `Test-MtAdGroupMemberForeignSidCount` - Counts foreign SIDs specifically

@@ -1,6 +1,6 @@
-# Test-MtAdGroupMemberTrustDetails
+#### Test-MtAdGroupMemberTrustDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding which specific groups contain trust members is critical for security management:
 
@@ -9,7 +9,7 @@ Understanding which specific groups contain trust members is critical for securi
 - **Trust Management**: Groups with many trust members may indicate over-reliance on external access
 - **Compliance**: Some compliance frameworks require documentation of cross-domain access
 
-## Security Recommendation
+#### Security Recommendation
 
 Perform detailed review of groups containing trust members:
 - Prioritize review of privileged groups with external members
@@ -17,7 +17,7 @@ Perform detailed review of groups containing trust members:
 - Establish processes to periodically validate continued need for external access
 - Consider creating domain-local groups specifically for external access to maintain clear boundaries
 
-## How the Test Works
+#### How the Test Works
 
 This test provides detailed analysis of trust membership:
 - Identifies which groups contain trust members
@@ -26,7 +26,7 @@ This test provides detailed analysis of trust membership:
 
 For performance reasons, the test analyzes the first 50 groups and limits display to 10 members per group.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupMemberTrustCount` - Overall count of trust members
 - `Test-MtAdGroupMemberForeignSidCount` - Analysis of foreign SIDs

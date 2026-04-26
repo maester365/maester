@@ -1,6 +1,6 @@
-# Test-MtAdDnsAdSrvRecordCount
+#### Test-MtAdDnsAdSrvRecordCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 SRV records are essential for Active Directory service location. They enable clients to find:
 
@@ -15,17 +15,17 @@ Missing or incorrect SRV records can prevent:
 - Group Policy application
 - Service discovery
 
-## Security Recommendation
+#### Security Recommendation
 
 - Monitor SRV record counts for unexpected changes
 - Verify SRV records point to authorized domain controllers only
 - Protect DNS zones containing SRV records from unauthorized modification
 - Regularly test service location from client perspectives
 
-## How the Test Works
+#### How the Test Works
 
 This test counts SRV records used by Active Directory Domain Services, including _ldap, _gc, _kerberos, and _kpasswd service records.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDnsAdSrvRecordDetails` - Provides detailed SRV record information

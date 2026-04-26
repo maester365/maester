@@ -1,6 +1,6 @@
-# Test-MtAdFineGrainedPolicyValueCount
+#### Test-MtAdFineGrainedPolicyValueCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the variation in fine-grained password policy settings helps you:
 
@@ -11,7 +11,7 @@ Understanding the variation in fine-grained password policy settings helps you:
 
 Having multiple distinct values indicates you're using FGPPs to differentiate security requirements. Having identical values across all policies may indicate unnecessary duplication.
 
-## Security Recommendation
+#### Security Recommendation
 
 Review your fine-grained password policies to ensure:
 - **Privileged accounts** have the strongest policies (longest passwords, shortest max age)
@@ -25,7 +25,7 @@ To review policy values:
 3. Review each policy's settings
 4. Ensure policies are appropriately differentiated
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all fine-grained password policies using `Get-ADFineGrainedPasswordPolicy` and counts distinct values for key settings:
 - Minimum password length
@@ -36,7 +36,7 @@ This test retrieves all fine-grained password policies using `Get-ADFineGrainedP
 
 The test reports the variety of settings across all policies.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdFineGrainedPolicyCount` - Counts the number of FGPPs
 - `Test-MtAdFineGrainedPolicyAppliesTo` - Shows which users/groups each policy applies to

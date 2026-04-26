@@ -1,6 +1,6 @@
-# Test-MtAdComputerDelegationCount
+#### Test-MtAdComputerDelegationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Kerberos delegation allows a service to impersonate users when accessing other resources. While necessary for some applications, delegation—especially unconstrained delegation—creates significant security risks:
 
@@ -9,7 +9,7 @@ Kerberos delegation allows a service to impersonate users when accessing other r
 - **Protocol transition**: Allows S4U2Self/S4U2Proxy operations that can be exploited
 - **Lateral movement**: Attackers can abuse delegation for privilege escalation and lateral movement
 
-## Security Recommendation
+#### Security Recommendation
 
 - **Minimize unconstrained delegation**: Use it only when absolutely necessary, and never on tier 0 systems
 - **Prefer constrained delegation**: Limit services to only those they need to access
@@ -18,13 +18,13 @@ Kerberos delegation allows a service to impersonate users when accessing other r
 - **Remove unused delegation**: Disable delegation on systems that no longer require it
 - **Consider Group Managed Service Accounts (gMSA)**: These provide better security for service accounts
 
-## How the Test Works
+#### How the Test Works
 
 This test counts computers with different delegation configurations:
 - `TrustedForDelegation` (unconstrained delegation)
 - `TrustedToAuthForDelegation` (constrained delegation with protocol transition)
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDelegationDetails` - Provides detailed breakdown of delegation per computer
 - `Test-MtAdComputerDormantCount` - Identifies stale accounts that may have delegation enabled

@@ -1,6 +1,6 @@
-# Test-MtAdSupportedSaslMechanismDetails
+#### Test-MtAdSupportedSaslMechanismDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the SASL (Simple Authentication and Security Layer) mechanisms supported by Active Directory is crucial for authentication security:
 
@@ -15,7 +15,7 @@ Common mechanisms and their security levels:
 - **EXTERNAL**: TLS client certificate authentication
 - **DIGEST-MD5**: Less secure, often disabled in hardened environments
 
-## Security Recommendation
+#### Security Recommendation
 
 - Use Kerberos (GSSAPI) as the primary authentication mechanism
 - Disable DIGEST-MD5 if not explicitly required
@@ -23,13 +23,13 @@ Common mechanisms and their security levels:
 - Monitor authentication logs for mechanism usage patterns
 - Document which mechanisms are required for your environment
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves detailed information about each supported SASL mechanism:
 - Mechanism name
 - Description of the mechanism
 - Security level assessment
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSupportedSaslMechanismCount` - Counts total supported mechanisms

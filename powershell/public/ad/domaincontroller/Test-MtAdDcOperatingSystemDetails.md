@@ -1,6 +1,6 @@
-# Test-MtAdDcOperatingSystemDetails
+#### Test-MtAdDcOperatingSystemDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the operating system distribution across your domain controllers helps with:
 
@@ -12,7 +12,7 @@ Understanding the operating system distribution across your domain controllers h
 
 Domain controllers running end-of-life operating systems are a critical security risk as they no longer receive security updates, making them vulnerable to known exploits.
 
-## Security Recommendation
+#### Security Recommendation
 
 **Upgrade domain controllers running end-of-life operating systems immediately.**
 
@@ -27,14 +27,14 @@ Upgrade process:
 3. Demote old DCs
 4. Remove from domain
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the OperatingSystem attribute from all domain controllers and groups them by OS version, showing:
 - Count of DCs per OS version
 - Percentage distribution
 - Names of DCs running each OS
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDcOperatingSystemCount` - Count of unique OS versions
 - `Test-MtAdDomainControllerCount` - Total DC count

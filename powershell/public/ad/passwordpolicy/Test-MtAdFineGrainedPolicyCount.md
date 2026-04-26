@@ -1,6 +1,6 @@
-# Test-MtAdFineGrainedPolicyCount
+#### Test-MtAdFineGrainedPolicyCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Fine-grained password policies (FGPP) provide critical flexibility for security-conscious organizations:
 
@@ -13,7 +13,7 @@ Without FGPPs, all users in the domain are subject to the same password policy, 
 - Too weak a policy for privileged accounts, or
 - Too restrictive a policy for regular users, leading to workarounds
 
-## Security Recommendation
+#### Security Recommendation
 
 Consider implementing fine-grained password policies for:
 - **Domain Admins and privileged accounts**: Stronger requirements (longer passwords, shorter max age)
@@ -26,13 +26,13 @@ To create a fine-grained password policy:
 3. Right-click and select **New** > **Password Settings**
 4. Configure policy settings and apply to appropriate users/groups
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all fine-grained password policies using `Get-ADFineGrainedPasswordPolicy` and counts them. The test reports:
 - Number of FGPPs configured
 - Whether FGPPs are being used for granular policy control
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdFineGrainedPolicyAppliesTo` - Shows which users/groups each policy applies to
 - `Test-MtAdPasswordHistoryCount` - Checks the default domain password history

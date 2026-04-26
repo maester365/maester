@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnDomainAdminCount
+#### Test-MtAdUserSpnDomainAdminCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Domain administrator accounts with SPNs represent the **highest possible Kerberoasting risk**:
 
@@ -11,7 +11,7 @@ Domain administrator accounts with SPNs represent the **highest possible Kerbero
 
 **Zero domain admin accounts should have SPNs configured.**
 
-## Security Recommendation
+#### Security Recommendation
 
 If domain admin accounts have SPNs:
 - **Immediate action**: Remove all SPNs from domain admin accounts
@@ -20,11 +20,11 @@ If domain admin accounts have SPNs:
 - **Audit**: Review who has domain admin privileges
 - **Monitor**: Implement alerts for SPN changes to privileged accounts
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies domain administrator accounts (using the well-known RID 500) and checks if they have any SPNs configured. Any SPNs found on these accounts are flagged as critical security risks.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnDomainAdminDetails` - Detailed SPN information for domain admins
 - `Test-MtAdUserSpnTotalCount` - Overall user SPN count

@@ -1,6 +1,6 @@
-# Test-MtAdSubnetTotalCount
+#### Test-MtAdSubnetTotalCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Subnets are the foundation of Active Directory site assignment:
 
@@ -11,18 +11,18 @@ Subnets are the foundation of Active Directory site assignment:
 
 Understanding the number and distribution of subnets helps ensure proper client site assignment across the organization.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Maintain accurate subnet definitions that reflect the physical network
 - Review subnet assignments during network changes
 - Remove obsolete subnets to prevent misconfiguration
 - Ensure all IP ranges in use are properly defined
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Active Directory subnets using `Get-ADReplicationSubnet` and counts the total number of subnets configured.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSubnetSiteAssociationCount` - Counts sites with subnet associations
 - `Test-MtAdSubnetWithoutSiteCount` - Identifies orphaned subnets

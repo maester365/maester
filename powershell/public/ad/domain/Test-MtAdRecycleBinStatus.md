@@ -1,6 +1,6 @@
-# Test-MtAdRecycleBinStatus
+#### Test-MtAdRecycleBinStatus
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The Active Directory Recycle Bin provides significant advantages over traditional tombstone reanimation:
 
@@ -13,7 +13,7 @@ The Active Directory Recycle Bin provides significant advantages over traditiona
 - Forest functional level of Windows Server 2008 R2 or higher
 - Must be explicitly enabled (not enabled by default)
 
-## Security Recommendation
+#### Security Recommendation
 
 **Enable the Recycle Bin** if your forest functional level supports it:
 
@@ -27,11 +27,11 @@ Enable-ADOptionalFeature -Identity "Recycle Bin Feature" -Scope ForestOrConfigur
 - **Tombstone Lifetime**: Objects are retained for the tombstone lifetime period
 - **Planning**: Ensure adequate disk space and backup strategies
 
-## How the Test Works
+#### How the Test Works
 
 This test checks the optional features in Active Directory to determine if the Recycle Bin Feature is enabled and reports its status.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdTombstoneLifetime` - Retrieves the tombstone lifetime (affects Recycle Bin retention)
 - `Test-MtAdForestFunctionalLevel` - Retrieves the forest functional level (required for Recycle Bin)

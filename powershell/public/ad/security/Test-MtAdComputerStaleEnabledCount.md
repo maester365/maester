@@ -1,6 +1,6 @@
-# Test-MtAdComputerStaleEnabledCount
+#### Test-MtAdComputerStaleEnabledCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Stale enabled computer accounts represent a significant security risk in Active Directory. These are computer accounts that remain enabled but have not authenticated to the domain for an extended period (typically 180 days or more).
 
@@ -17,7 +17,7 @@ Stale enabled computer accounts represent a significant security risk in Active 
 - Test systems that are no longer in use
 - Hardware refreshes where old accounts remain
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Regular Review Process**:
    - Quarterly review of stale enabled computers
@@ -34,7 +34,7 @@ Stale enabled computer accounts represent a significant security risk in Active 
    - Use computer account lifecycle management
    - Regular audits of computer account creation
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies enabled computers that:
 - Have never logged on, OR
@@ -42,7 +42,7 @@ This test identifies enabled computers that:
 
 Provides counts and lists affected computers.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerDormantCount` - Dormant computer identification
 - `Test-MtAdComputerDisabledCount` - Disabled computer analysis

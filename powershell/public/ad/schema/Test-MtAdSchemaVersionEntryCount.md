@@ -1,6 +1,6 @@
-# Test-MtAdSchemaVersionEntryCount
+#### Test-MtAdSchemaVersionEntryCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 The Active Directory schema version indicates the functional level and capabilities of your directory. Different schema versions correspond to different Windows Server releases:
 
@@ -21,18 +21,18 @@ Knowing your schema version is important for:
 - **Upgrade planning**: Determining if schema updates are needed
 - **Security**: Newer schema versions support enhanced security features
 
-## Security Recommendation
+#### Security Recommendation
 
 Keep your schema version current with your domain functional level:
 - **Regular updates**: Update schema when upgrading domain controllers
 - **Feature enablement**: Newer schemas enable security features like Authentication Policies
 - **Application support**: Modern applications may require newer schema versions
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves the objectVersion attribute from the schema container to determine the current schema version and maps it to the corresponding Windows Server version.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSchemaVersionDetails` - Provides comprehensive schema details
 - `Test-MtAdSchemaModificationYearCount` - Shows schema modification timeline

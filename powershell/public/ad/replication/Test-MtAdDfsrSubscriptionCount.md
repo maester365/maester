@@ -1,6 +1,6 @@
-# Test-MtAdDfsrSubscriptionCount
+#### Test-MtAdDfsrSubscriptionCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 DFS-R (Distributed File System Replication) is the modern, recommended technology for replicating SYSVOL content between domain controllers:
 
@@ -11,7 +11,7 @@ DFS-R (Distributed File System Replication) is the modern, recommended technolog
 
 Microsoft recommends migrating from FRS to DFS-R for all domains. A count of DFS-R subscriptions compared to DC count shows migration coverage.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Migrate all domains from FRS to DFS-R if not already done
 - Ensure all domain controllers have DFS-R subscriptions
@@ -19,7 +19,7 @@ Microsoft recommends migrating from FRS to DFS-R for all domains. A count of DFS
 - Document any DCs without DFS-R subscriptions
 - Plan migration for any remaining FRS-based SYSVOL replication
 
-## How the Test Works
+#### How the Test Works
 
 This test counts DFS-R subscription objects and reports:
 - Total DFS-R subscription count
@@ -27,6 +27,6 @@ This test counts DFS-R subscription objects and reports:
 - Coverage percentage (subscriptions vs. DCs)
 - Details of subscription objects
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDisabledReplicationConnectionCount` - Checks AD replication connection health

@@ -1,6 +1,6 @@
-# Test-MtAdComputerNonDcConstrainedDelegationCount
+#### Test-MtAdComputerNonDcConstrainedDelegationCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
 
@@ -10,7 +10,7 @@ Constrained delegation (also known as "protocol transition" or S4U2Proxy) is saf
 - **Attack Surface**: Each computer with constrained delegation expands the attack surface
 - **Legacy Protocol**: Some implementations may fall back to less secure methods
 
-## Security Recommendation
+#### Security Recommendation
 
 1. **Minimize Usage**:
    - Use only where absolutely necessary
@@ -27,13 +27,13 @@ Constrained delegation (also known as "protocol transition" or S4U2Proxy) is saf
    - **Group Managed Service Accounts (gMSA)**: Automatic password management
    - **Managed Identity**: For cloud and hybrid scenarios
 
-## How the Test Works
+#### How the Test Works
 
 This test counts non-DC computers with the `TrustedToAuthForDelegation` flag enabled, which indicates:
 - Constrained delegation is configured
 - Protocol transition may be enabled
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerUnconstrainedDelegationCount` - Overall unconstrained delegation
 - `Test-MtAdComputerNonDcUnconstrainedDelegationCount` - Critical non-DC unconstrained delegation

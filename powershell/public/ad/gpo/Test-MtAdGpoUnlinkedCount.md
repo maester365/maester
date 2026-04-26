@@ -1,6 +1,6 @@
-# Test-MtAdGpoUnlinkedCount
+#### Test-MtAdGpoUnlinkedCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but are not linked to any OU, domain, or site. While they may look harmless, they can still create operational and security risk:
 
@@ -8,7 +8,7 @@ Unlinked (or orphaned) Group Policy Objects (GPOs) exist in Active Directory but
 - **Accidental exposure**: An unlinked GPO can be mistakenly linked later, suddenly applying unknown settings to users or computers.
 - **Harder incident investigation**: Policy behavior becomes harder to reason about when unused GPOs remain in the environment.
 
-## Security Recommendation
+#### Security Recommendation
 
 After verification, **remove unlinked GPOs** to reduce risk and simplify policy management:
 
@@ -17,7 +17,7 @@ After verification, **remove unlinked GPOs** to reduce risk and simplify policy 
 - If you are confident it is unused, remove it (or archive it) and ensure backups/restore requirements are met.
 - Restrict who can create/link GPOs to prevent accidental re-introduction.
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves Active Directory Group Policy state data using `Get-MtADGpoState` and:
 
@@ -25,7 +25,7 @@ This test retrieves Active Directory Group Policy state data using `Get-MtADGpoS
 2. Extracts GPO link references from the collected `GPOLinks` (via `gPLink`).
 3. Counts GPOs whose IDs are not referenced by any collected `gPLink` entry.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGpoTotalCount` - Counts the total number of GPOs
 - `Test-MtAdGpoLinkedCount` - Identifies GPOs that are actively linked

@@ -1,6 +1,6 @@
-# Test-MtAdSubnetIpv6CatchAllCount
+#### Test-MtAdSubnetIpv6CatchAllCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Overly broad IPv6 subnets can cause similar issues to IPv4 catch-all subnets:
 
@@ -11,18 +11,18 @@ Overly broad IPv6 subnets can cause similar issues to IPv4 catch-all subnets:
 
 IPv6 /48 prefixes or larger are considered catch-all ranges.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Use appropriately-sized IPv6 subnets (typically /64 for client networks)
 - Align IPv6 subnet boundaries with physical locations
 - Document IPv6 subnet allocation scheme
 - Review IPv6 subnet definitions regularly
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies IPv6 subnets with overly broad prefixes (/48 or smaller).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSubnetIpv6Count` - Counts IPv6 subnets
 - `Test-MtAdSubnetCatchAllCount` - Identifies IPv4 catch-all subnets

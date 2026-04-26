@@ -1,6 +1,6 @@
-# Test-MtAdComputerInDefaultContainer
+#### Test-MtAdComputerInDefaultContainer
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Computers located in the default `CN=Computers` container represent a security and management concern:
 
@@ -9,7 +9,7 @@ Computers located in the default `CN=Computers` container represent a security a
 - **Provisioning issues**: Indicates the domain join process hasn't been customized or automated provisioning is failing
 - **Shadow IT**: May represent unauthorized systems joined to the domain
 
-## Security Recommendation
+#### Security Recommendation
 
 - Move all computers from the default Computers container into appropriate OUs based on:
   - Geographic location
@@ -19,11 +19,11 @@ Computers located in the default `CN=Computers` container represent a security a
 - Use redircmp.exe to redirect new computer accounts to a specific OU
 - Regularly audit the default container for new additions
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies enabled computer accounts where the Distinguished Name contains `CN=Computers,` indicating they are in the default Computers container rather than a proper organizational unit.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerOUCount` - Shows the distribution of computers across OUs
 - `Test-MtAdComputerPerOUAverage` - Analyzes OU structure effectiveness

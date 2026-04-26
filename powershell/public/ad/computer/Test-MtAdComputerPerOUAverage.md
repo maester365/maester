@@ -1,6 +1,6 @@
-# Test-MtAdComputerPerOUAverage
+#### Test-MtAdComputerPerOUAverage
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Understanding the distribution density of computers across OUs helps identify:
 
@@ -11,7 +11,7 @@ Understanding the distribution density of computers across OUs helps identify:
 
 The average, minimum, and maximum computers per OU provide metrics for assessing organizational efficiency.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Aim for a balanced OU structure that:
   - Supports your Group Policy design (each OU should have a clear policy purpose)
@@ -21,7 +21,7 @@ The average, minimum, and maximum computers per OU provide metrics for assessing
 - Consider consolidating OUs with very few computers if they serve similar purposes
 - Document the OU design rationale for future administrators
 
-## How the Test Works
+#### How the Test Works
 
 This test groups all enabled computers by their parent container and calculates:
 - Average computers per OU
@@ -29,7 +29,7 @@ This test groups all enabled computers by their parent container and calculates:
 - Maximum computers in any OU
 - Distribution across the top containers
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdComputerOUCount` - Counts the total number of OUs with computers
 - `Test-MtAdComputerInDefaultContainer` - Identifies potential OU structure gaps

@@ -1,6 +1,6 @@
-# Test-MtAdNetbiosNameStandardCompliance
+#### Test-MtAdNetbiosNameStandardCompliance
 
-## Why This Test Matters
+#### Why This Test Matters
 
 NetBIOS names are still used in many Windows networking scenarios, even though DNS is the primary name resolution method. Non-compliant NetBIOS names can cause:
 
@@ -14,18 +14,18 @@ Valid NetBIOS names should:
 - Contain only alphanumeric characters and: !@#$%^&'()_-.+{}~
 - Not contain: \ / : * ? " < > |
 
-## Security Recommendation
+#### Security Recommendation
 
 - **Use Simple Names**: Stick to alphanumeric characters for maximum compatibility
 - **Keep Short**: Stay well under the 15-character limit
 - **Avoid Special Characters**: Even allowed special characters can cause issues
 - **Document Requirements**: If special characters are needed, document the business case
 
-## How the Test Works
+#### How the Test Works
 
 This test validates NetBIOS names against standard naming conventions, checking for valid characters and length requirements.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdNetbiosNameNonStandardDetails` - Lists non-compliant NetBIOS names
 - `Test-MtAdDomainNameStandardCompliance` - Checks domain name compliance

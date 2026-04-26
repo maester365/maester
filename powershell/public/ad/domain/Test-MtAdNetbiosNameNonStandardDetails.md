@@ -1,6 +1,6 @@
-# Test-MtAdNetbiosNameNonStandardDetails
+#### Test-MtAdNetbiosNameNonStandardDetails
 
-## Why This Test Matters
+#### Why This Test Matters
 
 This test provides detailed information about NetBIOS naming violations, helping you:
 
@@ -9,7 +9,7 @@ This test provides detailed information about NetBIOS naming violations, helping
 - **Document Exceptions**: Record non-compliant names and their specific issues
 - **Prevent Problems**: Address issues before they cause application failures
 
-## Security Recommendation
+#### Security Recommendation
 
 When non-compliant NetBIOS names are identified:
 
@@ -18,11 +18,11 @@ When non-compliant NetBIOS names are identified:
 3. **Document Workarounds**: If names can't be changed, document mitigation strategies
 4. **Enforce Standards**: Implement naming policies for future domains
 
-## How the Test Works
+#### How the Test Works
 
 This test checks each NetBIOS name for length compliance (1-15 characters) and invalid characters (\ / : * ? " < > |), providing detailed issue descriptions.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdNetbiosNameStandardCompliance` - Counts non-compliant NetBIOS names
 - `Test-MtAdDomainNameNonStandardDetails` - Lists non-compliant domain names

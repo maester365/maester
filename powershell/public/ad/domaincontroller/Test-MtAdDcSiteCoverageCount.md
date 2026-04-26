@@ -1,6 +1,6 @@
-# Test-MtAdDcSiteCoverageCount
+#### Test-MtAdDcSiteCoverageCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Active Directory sites are used to define the physical topology of your network and optimize authentication traffic. Understanding site coverage helps ensure:
 
@@ -14,15 +14,15 @@ Sites without domain controllers may indicate:
 - Misconfigured site topology
 - Missing DCs in satellite offices
 
-## Security Recommendation
+#### Security Recommendation
 
 Review your site topology regularly to ensure all locations have adequate DC coverage. Consider placing at least one DC in each major geographic location to ensure authentication resilience.
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all domain controllers and counts the unique sites that contain at least one DC. It compares this to the total number of sites in the domain.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdDomainControllerCount` - Total count of domain controllers
 - `Test-MtAdDcOperatingSystemDetails` - DC OS distribution information

@@ -1,6 +1,6 @@
-# Test-MtAdGroupPrivilegedWithMembersCount
+#### Test-MtAdGroupPrivilegedWithMembersCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Privileged groups with members require continuous monitoring as they provide administrative access:
 
@@ -19,7 +19,7 @@ Well-known privileged groups include:
 - **Print Operators (RID 550)**: Can manage print queues
 - **Backup Operators (RID 551)**: Can bypass file system security for backup
 
-## Security Recommendation
+#### Security Recommendation
 
 Implement strict controls for privileged groups:
 - Minimize membership in Domain Admins and Enterprise Admins
@@ -29,7 +29,7 @@ Implement strict controls for privileged groups:
 - Conduct regular access reviews of privileged group membership
 - Document business justifications for all privileged access
 
-## How the Test Works
+#### How the Test Works
 
 This test identifies privileged groups (those with adminCount = 1 or well-known RIDs) and counts:
 - Total privileged groups
@@ -37,7 +37,7 @@ This test identifies privileged groups (those with adminCount = 1 or well-known 
 - Privileged groups without members
 - Well-known privileged groups with members
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupPrivilegedWithMembersDetails` - Lists privileged groups with member details
 - `Test-MtAdGroupEmptyNonPrivilegedCount` - Reviews non-privileged empty groups

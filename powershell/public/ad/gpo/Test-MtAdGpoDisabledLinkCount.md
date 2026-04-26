@@ -1,6 +1,6 @@
-# Test-MtAdGpoDisabledLinkCount
+#### Test-MtAdGpoDisabledLinkCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Disabled GPO links represent a potential security and operational concern in Active Directory environments:
 
@@ -9,7 +9,7 @@ Disabled GPO links represent a potential security and operational concern in Act
 - **Audit Challenges**: Disabled links create confusion during security audits about which policies are actually enforced
 - **Compliance Risks**: Unintentionally disabled links can result in non-compliance with security baselines
 
-## Security Recommendation
+#### Security Recommendation
 
 Regularly review disabled GPO links and either:
 
@@ -18,7 +18,7 @@ Regularly review disabled GPO links and either:
 - Document the justification for intentionally disabled links
 - Ensure critical security policies are not inadvertently disabled
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves GPO link information from Active Directory and counts:
 - Total number of GPO links
@@ -28,7 +28,7 @@ This test retrieves GPO link information from Active Directory and counts:
 
 The gPLink attribute is parsed to determine the state of each link.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGpoEnforcedCount` - Counts enforced GPO links
 - `Test-MtAdGpoLinkedCount` - Counts distinct GPOs with links

@@ -1,6 +1,6 @@
-# Test-MtAdDisabledReplicationConnectionCount
+#### Test-MtAdDisabledReplicationConnectionCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Disabled replication connections in Active Directory can indicate several security and operational concerns:
 
@@ -11,7 +11,7 @@ Disabled replication connections in Active Directory can indicate several securi
 
 Replication connections should normally be enabled to ensure consistent directory data across all domain controllers.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Regularly review disabled replication connections
 - Investigate and resolve the root cause of disabled connections
@@ -19,7 +19,7 @@ Replication connections should normally be enabled to ensure consistent director
 - Monitor for unexpected changes to replication connection status
 - Document any intentionally disabled connections with business justification
 
-## How the Test Works
+#### How the Test Works
 
 This test retrieves all Active Directory replication connections and counts:
 - Total replication connections
@@ -27,6 +27,6 @@ This test retrieves all Active Directory replication connections and counts:
 - Enabled connections
 - Percentage of disabled connections
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdNonAutoReplicationConnectionCount` - Identifies manually created replication connections

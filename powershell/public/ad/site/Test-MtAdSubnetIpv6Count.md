@@ -1,6 +1,6 @@
-# Test-MtAdSubnetIpv6Count
+#### Test-MtAdSubnetIpv6Count
 
-## Why This Test Matters
+#### Why This Test Matters
 
 IPv6 subnet configuration is important for:
 
@@ -11,18 +11,18 @@ IPv6 subnet configuration is important for:
 
 Understanding IPv6 subnet deployment helps assess the organization's IPv6 readiness.
 
-## Security Recommendation
+#### Security Recommendation
 
 - Define IPv6 subnets for all locations where IPv6 is deployed
 - Ensure IPv6 subnets mirror IPv4 site topology
 - Document IPv6 addressing scheme
 - Plan for IPv6-only client support
 
-## How the Test Works
+#### How the Test Works
 
 This test counts subnets that use IPv6 address format (containing colons).
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdSubnetIpv6CatchAllCount` - Identifies overly broad IPv6 subnets
 - `Test-MtAdSubnetTotalCount` - Counts total subnets

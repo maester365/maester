@@ -1,6 +1,6 @@
-# Test-MtAdGroupSecurityCount
+#### Test-MtAdGroupSecurityCount
 
-## Why This Test Matters
+#### Why This Test Matters
 
 Security groups are the foundation of access control in Active Directory. Understanding their count and distribution is critical for:
 
@@ -11,7 +11,7 @@ Security groups are the foundation of access control in Active Directory. Unders
 
 Security groups can be assigned permissions to resources, unlike distribution groups.
 
-## Security Recommendation
+#### Security Recommendation
 
 Establish governance around security groups:
 1. Implement a naming convention for security groups to improve manageability
@@ -20,7 +20,7 @@ Establish governance around security groups:
 4. Remove unused or stale security groups to reduce attack surface
 5. Consider implementing privileged access management for highly sensitive groups
 
-## How the Test Works
+#### How the Test Works
 
 This test examines all group objects and identifies those where:
 - The `GroupCategory` property equals "Security"
@@ -28,7 +28,7 @@ This test examines all group objects and identifies those where:
 
 The test provides counts and percentages to understand the proportion of security groups versus distribution groups.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdGroupDistributionCount` - Counts distribution groups (email-only)
 - `Test-MtAdGroupDomainLocalCount` - Counts domain local scope groups

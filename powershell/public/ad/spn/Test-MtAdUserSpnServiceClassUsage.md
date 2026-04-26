@@ -1,6 +1,6 @@
-# Test-MtAdUserSpnServiceClassUsage
+#### Test-MtAdUserSpnServiceClassUsage
 
-## Why This Test Matters
+#### Why This Test Matters
 
 A detailed breakdown of SPN service classes on user accounts enables:
 
@@ -11,7 +11,7 @@ A detailed breakdown of SPN service classes on user accounts enables:
 
 Database and application services on user accounts pose the highest Kerberoasting risk.
 
-## Security Recommendation
+#### Security Recommendation
 
 Based on service class usage:
 - Prioritize migrating database services (MSSQLSvc, oracle) to gMSAs
@@ -19,11 +19,11 @@ Based on service class usage:
 - Investigate custom or unknown service classes
 - Document legitimate service accounts and their purposes
 
-## How the Test Works
+#### How the Test Works
 
 This test analyzes all user SPNs, groups them by service class, and provides a count and percentage for each service class, helping you understand your user service account landscape.
 
-## Related Tests
+#### Related Tests
 
 - `Test-MtAdUserSpnServiceClassCount` - Counts distinct service classes
 - `Test-MtAdUserSpnUnknownCount` - Identifies unrecognized service classes
