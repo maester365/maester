@@ -109,7 +109,7 @@
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
       # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO. Default is Graph.
-      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -334,23 +334,44 @@
          }
       }
 
-      'MicrosoftTeams' {
-         if ($Service -contains 'Teams' -or $Service -contains 'All') {
-            Write-Verbose 'Connecting to Microsoft Teams'
-            try {
-               if ($UseDeviceCode) {
-                  Connect-MicrosoftTeams -UseDeviceAuthentication
-               } elseif ($TeamsEnvironmentName) {
-                  Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName > $null
-               } else {
-                  Connect-MicrosoftTeams > $null
-               }
-            } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
-               Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
-            }
-         }
-      }
-   } # end switch OrderedImport
+       'MicrosoftTeams' {
+          if ($Service -contains 'Teams' -or $Service -contains 'All') {
+             Write-Verbose 'Connecting to Microsoft Teams'
+             try {
+                if ($UseDeviceCode) {
+                   Connect-MicrosoftTeams -UseDeviceAuthentication
+                } elseif ($TeamsEnvironmentName) {
+                   Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName > $null
+                } else {
+                   Connect-MicrosoftTeams > $null
+                }
+             } catch [Management.Automation.CommandNotFoundException] {
+                Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
+                Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
+             }
+          }
+       }
+    } # end switch OrderedImport
+
+    # Active Directory connection validation (separate from OrderedImport as it has no module conflicts)
+    if ($Service -contains 'ActiveDirectory' -or $Service -contains 'All') {
+       Write-Verbose 'Validating Active Directory connectivity'
+       try {
+          $adRootDSE = Get-ADRootDSE -ErrorAction Stop
+          $__MtSession.ADConnection = @{
+             Connected                  = $true
+             DefaultNamingContext       = $adRootDSE.defaultNamingContext
+             ConfigurationNamingContext = $adRootDSE.configurationNamingContext
+             SchemaNamingContext        = $adRootDSE.schemaNamingContext
+             DomainController           = $adRootDSE.dnsHostName
+          }
+          Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
+       } catch [Management.Automation.CommandNotFoundException] {
+          Write-Host "`nThe Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine." -ForegroundColor Red
+       } catch {
+          Write-Host "`nFailed to connect to Active Directory: $($_.Exception.Message)" -ForegroundColor Red
+       }
+    }
 
 } # end function Connect-Maester
+

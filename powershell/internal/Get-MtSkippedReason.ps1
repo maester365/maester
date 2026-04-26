@@ -1,4 +1,4 @@
-﻿function Get-MtSkippedReason {
+function Get-MtSkippedReason {
     <#
     .SYNOPSIS
     Returns the description for why a test was skipped.
@@ -14,6 +14,7 @@
         "NotConnectedSecurityCompliance" { "Not connected to Security & Compliance. See [Connecting to Security & Compliance](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break}
         "NotConnectedTeams" { "Not connected to Teams. See [Connecting to Teams](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break}
         "NotConnectedGraph" { "Not connected to Graph. See [Connect-Maester](https://maester.dev/docs/commands/Connect-Maester#examples)"; break}
+        "NotConnectedActiveDirectory" { "Not connected to Active Directory. This test requires the ActiveDirectory module and access to a domain controller."; break}
         "NotDotGovDomain" { "This test is only for federal, executive branch, departments and agencies. To override use [Test-MtCisaDmarcAggregateCisa -Force](https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa)"; break}
         "NotLicensedEntraIDP1" { "This test is for tenants that are licensed for Entra ID P1. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break}
         "NotLicensedEntraIDP2" { "This test is for tenants that are licensed for Entra ID P2. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break}

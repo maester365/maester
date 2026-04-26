@@ -77,7 +77,7 @@
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
-            'NotLicensedCustomerLockbox','NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps'
+            'NotLicensedCustomerLockbox','NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory'
         )]
         [string] $SkippedBecause,
 
@@ -226,3 +226,4 @@
         Set-ItResult -Skipped -Because $SkippedReason
     }
 }
+

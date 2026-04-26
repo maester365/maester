@@ -1,0 +1,116 @@
+﻿function Test-MtAdUserSpnUnknownCount {
+    <#
+    .SYNOPSIS
+    Counts unidentified SPN service classes on user accounts.
+
+    .DESCRIPTION
+    This test retrieves all Service Principal Names (SPNs) configured on user objects
+    and identifies service classes that are not in the known SPN database. Unknown SPNs
+    on user accounts may indicate custom applications, misconfigurations, or potentially
+    malicious services.
+
+    .EXAMPLE
+    Test-MtAdUserSpnUnknownCount
+
+    Returns $true if SPN data is accessible, $false otherwise.
+    The test result includes the count of unidentified service classes on users.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtAdUserSpnUnknownCount
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    # Known SPN service classes
+    $knownSpns = @(
+        'HOST', 'HTTP', 'HTTPS', 'LDAP', 'GC', 'DNS', 'CIFS', 'RPC', 'SMB',
+        'MSSQLSvc', 'SQLAgent', 'MSOLAPSvc', 'MSOLAPSvc.3', 'MSOLAPDisco.3',
+        'exchangeAB', 'exchangeMDB', 'exchangeRFR', 'SMTP', 'SMTPSVC', 'POP', 'POP3', 'IMAP', 'IMAP4',
+        'TERMSRV', 'TERMSERV', 'WSMAN', 'RestrictedKrbHost', 'nfs', 'iSCSITarget',
+        'MSClusterVirtualServer', 'MSServerCluster', 'MSServerClusterMgmtAPI',
+        'Hyper-V Replica Service', 'Microsoft Virtual Console Service', 'Microsoft Virtual System Migration Service',
+        'VMMSvc', 'SCVMM', 'CmRcService',
+        'FIMService', 'PCNSCLNT', 'AgpmServer', 'AdtServer',
+        'MSOMHSvc', 'MSOMSdkSvc', 'LiveState Recovery Agent 6.x',
+        'E3514235-4B06-11D1-AB04-00C04FC2DCD2', 'E3514235-4B06-11D1-AB04-00C04FC2DCD2-ADAM',
+        'Dfsr-12F9A27C-BF97-4787-9364-D31B6C55EB04', 'NtFrs-88f5d2bd-b646-11d2-a6d3-00c04fc9b232',
+        'kadmin', 'krbsvr400', 'oracle', 'postgres', 'mongod', 'mongos',
+        'ftp', 'vnc', 'sip', 'xmpp', 'ipp', 'cvs', 'afpserver', 'pcast', 'xgrid',
+        'hdb', 'hbase', 'hdfs', 'hive', 'impala', 'kafka', 'mapred', 'oozie',
+        'solr', 'spark', 'yarn', 'zookeeper', 'sentry', 'flume', 'hue', 'boostfs',
+        'SAP', 'SAPService', 'SAS', 'BOBJCentralMS', 'BOCMS', 'BOSSO', 'BICMS',
+        'Cognos', 'DynamicsNAV', 'NAV2016', 'MSCRMAsyncService', 'MSCRMSandboxService',
+        'M-Files', 'ImDmsSvc', 'SeapineLicenseSvr', 'PVSSoap', 'Norskale',
+        'aradminsvc', 'CESREMOTE', 'CAXOsoftEngine', 'CAARCserveRHAEngine',
+        'FileRepService', 'VProRecovery', 'Backup Exec System Recovery Agent 6.x',
+        'LiveState Recovery Agent 6.x', 'SoftGrid', 'vssrvc', 'vmrc',
+        'OA60', 'EDVR', 'iem', 'magfs', 'tapinego', 'tnetdgines',
+        'CUSESSIONKEYSVR', 'ckp_pdp', 'secshd', 'informatica',
+        'jboss', 'fcsvr', 'gateway', 'httpfs', 'JournalNode Server',
+        'kafka_mirror_maker', 'kudu', 'mr2', 'Storm', 'Zeppelin',
+        'PIAFServer', 'PIServer', 'AFServer', 'PowerBIReportServer',
+        'AcronisAgent', 'NPPolicyEvaluator', 'NPRepository4(DEFAULT)', 'NPRepository4(*)',
+        'Agent VProRecovery Norton Ghost 12.0', 'UPM_SPN_7DC3CE86',
+        '{14E52635-0A95-4a5c-BDB1-E0D0C703B6C8}', '{54094C05-F977-4987-BFC9-E8B90E088973}'
+    )
+
+    # Get AD domain state data (uses cached data if available)
+    $adState = Get-MtADDomainState
+
+    # If unable to retrieve AD data, skip the test
+    if ($null -eq $adState) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
+        return $null
+    }
+
+    $users = $adState.Users
+
+    # Extract all SPNs from user objects
+    $allSpns = $users | Where-Object { $null -ne $_.servicePrincipalName } | ForEach-Object { $_.servicePrincipalName } | ForEach-Object { $_ }
+
+    # Parse SPNs to extract service classes
+    $serviceClasses = $allSpns | ForEach-Object {
+        if ($_ -match "^([^/]+)") {
+            $matches[1]
+        }
+    } | Select-Object -Unique
+
+    # Find unknown service classes
+    $unknownServiceClasses = $serviceClasses | Where-Object { $knownSpns -notcontains $_ }
+
+    $unknownCount = ($unknownServiceClasses | Measure-Object).Count
+    $totalServiceClasses = ($serviceClasses | Measure-Object).Count
+    $totalSpnCount = ($allSpns | Measure-Object).Count
+
+    # Test passes if we successfully retrieved SPN data
+    $testResult = $true
+
+    # Generate markdown results
+    if ($testResult) {
+        $result = "| Metric | Value |`n"
+        $result += "| --- | --- |`n"
+        $result += "| Total User SPNs | $totalSpnCount |`n"
+        $result += "| Total Service Classes | $totalServiceClasses |`n"
+        $result += "| Unknown Service Classes | $unknownCount |`n"
+
+        if ($unknownCount -gt 0 -and $totalServiceClasses -gt 0) {
+            $percentage = [Math]::Round(($unknownCount / $totalServiceClasses) * 100, 2)
+            $result += "| Unknown Percentage | $percentage% |`n"
+            $result += "| Unknown Classes | $($unknownServiceClasses -join ', ') |`n"
+        }
+
+        $testResultMarkdown = "Active Directory user SPN analysis found $unknownCount unknown service classes out of $totalServiceClasses total.`n`n%TestResult%"
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+    } else {
+        $testResultMarkdown = "Unable to retrieve Active Directory user SPN data. Ensure you have appropriate permissions and the Active Directory module is installed."
+    }
+
+    Add-MtTestResultDetail -Result $testResultMarkdown
+
+    return $testResult
+}
+
+
+
+
