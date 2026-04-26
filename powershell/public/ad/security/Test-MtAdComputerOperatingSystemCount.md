@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-Understanding the distribution of operating systems in your Active Directory environment is crucial for security management. High OS diversity can indicate:
+- Understanding the distribution of operating systems in your Active Directory environment is crucial for security management. High OS diversity can indicate:
 
 **Security Implications:**
 - **Legacy Systems**: Older operating systems may no longer receive security updates

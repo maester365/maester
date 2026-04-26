@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-The KRBTGT account must have specific User Account Control (UAC) settings to maintain security. The standard UAC value for KRBTGT is 514, which represents:
+- The KRBTGT account must have specific User Account Control (UAC) settings to maintain security. The standard UAC value for KRBTGT is 514, which represents:
 
 - **NORMAL_ACCOUNT (0x0200 = 512)**: Standard user account
 - **ACCOUNTDISABLE (0x0002 = 2)**: Account is disabled

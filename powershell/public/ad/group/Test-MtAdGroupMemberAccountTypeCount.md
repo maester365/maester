@@ -2,8 +2,7 @@
 
 #### Why This Test Matters
 
-Understanding the types of objects that can be group members helps assess Active Directory security posture:
-
+- Understanding the types of objects that can be group members helps assess Active Directory security posture:
 - **Security Principal Types**: Groups can contain users, groups, computers, and foreign security principals
 - **Nested Groups**: Groups containing other groups create inheritance chains that can be complex to audit
 - **Computer Membership**: Computers in groups may indicate service accounts or special access requirements
@@ -11,14 +10,14 @@ Understanding the types of objects that can be group members helps assess Active
 
 #### Security Recommendation
 
-Monitor group membership composition:
+- Monitor group membership composition:
 - Nested group membership can create unexpected access paths
 - Foreign security principals indicate cross-domain access that should be regularly reviewed
 - Computer accounts in sensitive groups may indicate misconfigurations
 
 #### How the Test Works
 
-This test analyzes group membership across Active Directory and:
+- This test analyzes group membership across Active Directory and:
 - Identifies distinct object classes among group members
 - Counts unique account types (user, group, computer, foreignSecurityPrincipal)
 - Provides visibility into membership composition

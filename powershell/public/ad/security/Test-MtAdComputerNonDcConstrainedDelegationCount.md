@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
+- Constrained delegation (also known as "protocol transition" or S4U2Proxy) is safer than unconstrained delegation but still carries security risks. It allows a service to impersonate a user to specific services only, rather than any service in the domain.
 
 **Security Considerations:**
 - **Limited Scope**: Safer than unconstrained but still enables impersonation

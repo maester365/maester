@@ -4,9 +4,9 @@
 
 Account lockout threshold is one of the most important defenses against brute-force attacks:
 
-- **Prevents automated attacks**: Limits the number of passwords an attacker can try
-- **Detects attacks**: Lockout events can trigger alerts for security monitoring
-- **Protects weak passwords**: Even users with weaker passwords get some protection
+* **Prevents automated attacks**: Limits the number of passwords an attacker can try
+* **Detects attacks**: Lockout events can trigger alerts for security monitoring
+* **Protects weak passwords**: Even users with weaker passwords get some protection
 
 A threshold of 5 or fewer failed attempts provides strong protection while allowing for the occasional user mistake. Setting it to 0 (never lock out) removes this critical protection entirely.
 
@@ -21,12 +21,11 @@ To configure this setting:
 4. Set **Account lockout threshold** to **5 or fewer invalid logon attempts**
 
 **Note**: When you set the lockout threshold, Windows will suggest appropriate values for:
-- Account lockout duration (recommend: 30 minutes)
-- Reset account lockout counter after (recommend: 30 minutes)
+* Account lockout duration (recommend: 30 minutes)
+* Reset account lockout counter after (recommend: 30 minutes)
 
 #### How the Test Works
 
-This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and extracts the `LockoutThreshold` value. The test reports:
 - Current lockout threshold (number of failed attempts)
 - Recommended maximum (5 attempts)
 - Critical warning if lockout is disabled

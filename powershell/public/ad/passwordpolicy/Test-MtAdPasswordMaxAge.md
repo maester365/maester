@@ -23,9 +23,10 @@ To configure this setting:
 #### How the Test Works
 
 This test retrieves the default domain password policy using `Get-ADDefaultDomainPasswordPolicy` and extracts the `MaxPasswordAge` value. The test reports:
-- Current maximum password age in days
-- Recommended maximum (90 days)
-- Whether the configuration meets security best practices
+
+* Current maximum password age in days
+* Recommended maximum (90 days)
+* Whether the configuration meets security best practices
 
 #### Related Tests
 

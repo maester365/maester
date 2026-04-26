@@ -4,10 +4,10 @@
 
 Fine-grained password policies (FGPP) provide critical flexibility for security-conscious organizations:
 
-- **Privileged account protection**: Apply stricter password policies to administrators and service accounts
-- **Risk-based policies**: Different policies for different risk levels (e.g., IT admins vs. regular users)
-- **Compliance flexibility**: Meet varying compliance requirements for different user populations
-- **Service account security**: Enforce stronger policies for accounts that cannot use MFA
+* **Privileged account protection**: Apply stricter password policies to administrators and service accounts
+* **Risk-based policies**: Different policies for different risk levels (e.g., IT admins vs. regular users)
+* **Compliance flexibility**: Meet varying compliance requirements for different user populations
+* **Service account security**: Enforce stronger policies for accounts that cannot use MFA
 
 Without FGPPs, all users in the domain are subject to the same password policy, which often results in either:
 - Too weak a policy for privileged accounts, or
@@ -29,8 +29,8 @@ To create a fine-grained password policy:
 #### How the Test Works
 
 This test retrieves all fine-grained password policies using `Get-ADFineGrainedPasswordPolicy` and counts them. The test reports:
-- Number of FGPPs configured
-- Whether FGPPs are being used for granular policy control
+* Number of FGPPs configured
+* Whether FGPPs are being used for granular policy control
 
 #### Related Tests
 

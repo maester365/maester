@@ -4,20 +4,20 @@
 
 RIDs (Relative Identifiers) are essential for creating unique Security Identifiers (SIDs) for every user, group, and computer in Active Directory. Each domain has a finite pool of approximately 1 billion RIDs:
 
-- **SID Exhaustion**: Running out of RIDs would prevent creation of any new security principals
-- **Business Impact**: New users, groups, or computers could not be created
-- **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
+ * **SID Exhaustion**: Running out of RIDs would prevent creation of any new security principals
+ * **Business Impact**: New users, groups, or computers could not be created
+ * **Recovery Complexity**: RID pool exhaustion requires complex forest recovery procedures
 
 #### Security Recommendation
 
 Monitor RID consumption regularly:
 
-- **Normal Usage**: Most domains use only a small fraction of available RIDs over their lifetime
-- **High Consumption**: Rapid RID consumption may indicate:
-  - Excessive computer account creation/deletion cycles
-  - Automated provisioning scripts creating many accounts
-  - Security issues like computer account flooding attacks
-- **Threshold Alerting**: Set alerts when RID usage exceeds 50% (very conservative) or 75%
+ * **Normal Usage**: Most domains use only a small fraction of available RIDs over their lifetime
+ * **High Consumption**: Rapid RID consumption may indicate:
+  * Excessive computer account creation/deletion cycles
+  * Automated provisioning scripts creating many accounts
+  * Security issues like computer account flooding attacks
+ * **Threshold Alerting**: Set alerts when RID usage exceeds 50% (very conservative) or 75%
 
 If RID consumption is unexpectedly high:
 1. Investigate the source of high account creation

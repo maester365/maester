@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
+- Unconstrained delegation is one of the most dangerous configurations in Active Directory. When enabled on a computer, it allows services on that computer to impersonate authenticated users to ANY service on ANY computer in the domain.
 
 **Security Risks:**
 - **Complete Impersonation**: Attackers can impersonate any user who authenticates to the computer

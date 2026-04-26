@@ -4,10 +4,10 @@
 
 Detailed visibility into UPN (User Principal Name) suffix configuration is essential for maintaining a secure and well-managed Active Directory environment. UPN suffixes directly impact:
 
-- **User Authentication**: Users log on with UPN format (user@domain.com), making suffix configuration critical for daily operations
-- **Multi-Domain Environments**: Organizations with multiple domains or brands rely on UPN suffixes for seamless authentication
-- **Security Boundaries**: Understanding configured UPN suffixes helps identify potential authentication attack surfaces
-- **Operational Continuity**: During domain migrations or consolidations, UPN suffix management ensures user authentication continuity
+ * **User Authentication**: Users log on with UPN format (user@domain.com), making suffix configuration critical for daily operations
+ * **Multi-Domain Environments**: Organizations with multiple domains or brands rely on UPN suffixes for seamless authentication
+ * **Security Boundaries**: Understanding configured UPN suffixes helps identify potential authentication attack surfaces
+ * **Operational Continuity**: During domain migrations or consolidations, UPN suffix management ensures user authentication continuity
 
 #### Security Recommendation
 

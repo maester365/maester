@@ -2,12 +2,11 @@
 
 #### Why This Test Matters
 
-Active Directory supports two primary types of directory objects for storing other objects: Organizational Units (OUs) and Containers (CNs). While both can hold groups, they serve different purposes:
-
+- Active Directory supports two primary types of directory objects for storing other objects: Organizational Units (OUs) and Containers (CNs). While both can hold groups, they serve different purposes:
 - **OUs (OU=)**: Designed for delegation, Group Policy application, and logical organization
 - **Containers (CN=)**: System containers with limited flexibility (like CN=Users, CN=Computers)
 
-Storing groups in containers instead of OUs creates several issues:
+- Storing groups in containers instead of OUs creates several issues:
 
 - **Delegation limitations**: Cannot easily delegate management of container contents
 - **No Group Policy**: Cannot link Group Policy Objects to containers
@@ -23,7 +22,7 @@ Storing groups in containers instead of OUs creates several issues:
 
 #### How the Test Works
 
-This test retrieves all group objects from Active Directory and analyzes their DistinguishedName property:
+- This test retrieves all group objects from Active Directory and analyzes their DistinguishedName property:
 - Counts groups with DNs starting with "CN=" (in containers)
 - Counts groups with DNs containing "OU=" (in Organizational Units)
 - Calculates the percentage of groups in containers

@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-The KRBTGT account is the most critical service account in Active Directory. It is used by the Key Distribution Center (KDC) service to encrypt and sign all Kerberos tickets within the domain. If this account is compromised, an attacker can forge Kerberos tickets (Golden Tickets) that grant unlimited access to any resource in the domain.
+- The KRBTGT account is the most critical service account in Active Directory. It is used by the Key Distribution Center (KDC) service to encrypt and sign all Kerberos tickets within the domain. If this account is compromised, an attacker can forge Kerberos tickets (Golden Tickets) that grant unlimited access to any resource in the domain.
 
 **Security Risks:**
 - **Golden Ticket Attacks**: Compromised KRBTGT password allows attackers to forge TGTs for any user

@@ -2,8 +2,7 @@
 
 #### Why This Test Matters
 
-Trust members represent security principals from external domains that have been granted access within the local domain:
-
+- Trust members represent security principals from external domains that have been granted access within the local domain:
 - **Cross-Domain Access**: Trust members can access resources in the local domain
 - **Trust Validation**: External members require the trust relationship to remain valid
 - **Security Boundaries**: Understanding where external access is granted helps maintain security boundaries

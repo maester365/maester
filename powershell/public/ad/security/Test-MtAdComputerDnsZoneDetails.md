@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-Detailed analysis of DNS zone distribution provides visibility into Active Directory topology and helps identify potential configuration issues or security concerns related to DNS.
+- Detailed analysis of DNS zone distribution provides visibility into Active Directory topology and helps identify potential configuration issues or security concerns related to DNS.
 
 **Security and Operational Value:**
 - **Topology Mapping**: Understand how computers are distributed across DNS domains

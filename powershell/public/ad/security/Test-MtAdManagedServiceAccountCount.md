@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provide significant security improvements over traditional service accounts by automating password management and simplifying service principal name (SPN) management.
+- Managed Service Accounts (MSAs) and Group Managed Service Accounts (gMSAs) provide significant security improvements over traditional service accounts by automating password management and simplifying service principal name (SPN) management.
 
 **Security Benefits:**
 - **Automatic Password Rotation**: Passwords change automatically (every 30 days for gMSAs)

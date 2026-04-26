@@ -2,7 +2,7 @@
 
 #### Why This Test Matters
 
-DNS host names (the `dNSHostName` attribute) are essential for proper Active Directory functionality, particularly for Kerberos authentication and service principal name (SPN) registration.
+- DNS host names (the `dNSHostName` attribute) are essential for proper Active Directory functionality, particularly for Kerberos authentication and service principal name (SPN) registration.
 
 **Security Implications:**
 - **Kerberos Authentication**: Required for proper Kerberos ticket requests

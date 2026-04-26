@@ -2,15 +2,14 @@
 
 #### Why This Test Matters
 
-SID History is an attribute used during Active Directory domain migrations to maintain access to resources in the source domain. While essential during migration periods, persistent SID History on groups can indicate:
-
+- SID History is an attribute used during Active Directory domain migrations to maintain access to resources in the source domain:
+- Groups with SID History are important to monitor because persistent SID History on groups can indicate:
 - **Incomplete migrations**: Groups that were migrated but never fully transitioned
 - **Security risks**: SIDs from untrusted or decommissioned domains may grant unintended access
 - **Directory bloat**: Unnecessary data that complicates troubleshooting and auditing
 - **Audit complexity**: Makes it difficult to determine effective permissions
 - **Trust dependencies**: Hidden dependencies on domains that may no longer exist
-
-Groups with SID History are particularly concerning because they often control access to resources, and the SID History may grant access to users or groups from the source domain.
+- Groups with SID History are particularly concerning because they often control access to resources, and the SID History may grant access to users or groups from the source domain.
 
 #### Security Recommendation
 
@@ -22,7 +21,7 @@ Groups with SID History are particularly concerning because they often control a
 
 #### How the Test Works
 
-This test retrieves all group objects from Active Directory and:
+- This test retrieves all group objects from Active Directory and:
 - Checks the SIDHistory attribute for each group
 - Counts groups where SIDHistory is populated with one or more SIDs
 - Calculates the percentage of groups with SID History

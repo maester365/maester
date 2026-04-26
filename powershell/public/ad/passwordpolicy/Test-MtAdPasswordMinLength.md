@@ -13,9 +13,10 @@ A minimum of 14 characters aligns with current NIST guidelines and provides sign
 #### Security Recommendation
 
 Configure the minimum password length to at least **14 characters** (NIST SP 800-63B recommendation). Consider:
-- Using passphrases instead of complex passwords
-- Combining length with complexity for maximum security
-- Educating users on creating memorable long passwords
+
+* Using passphrases instead of complex passwords
+* Combining length with complexity for maximum security
+* Educating users on creating memorable long passwords
 
 To configure this setting:
 1. Open **Group Policy Management**
