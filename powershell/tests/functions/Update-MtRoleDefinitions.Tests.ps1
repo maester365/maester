@@ -251,6 +251,45 @@ Describe 'Get-ExistingRoles' {
     }
 }
 
+Describe 'Get-RoleAliases' {
+
+    Context 'Existing role has same GUID as a renamed new role' {
+        It 'returns an alias from the old role name to the new role name' {
+            $fileContent = @"
+    'OldRoleName' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', `$false)
+    'SystemRole'  = [MtRoleDefinition]::new('aaaabbbb-cccc-dddd-eeee-ffffffffffff', `$false)
+"@
+            $newRoles = [System.Collections.Generic.List[hashtable]]::new()
+            $newRoles.Add(@{ Name = 'NewRoleName'; Id = '9f06204d-73c1-4d4c-880a-6edb90606fd8'; IsPrivileged = $false; DisplayName = 'New Role Name' })
+
+            $aliases = @(Get-RoleAliases -FileContent $fileContent -NewRoles $newRoles)
+
+            @($aliases).Count | Should -Be 1
+            $aliases[0].Name | Should -Be 'OldRoleName'
+            $aliases[0].CanonicalName | Should -Be 'NewRoleName'
+        }
+    }
+
+    Context 'Existing alias points at a role renamed again' {
+        It 'retargets the alias to the latest canonical role name by GUID' {
+            $fileContent = @"
+    'CurrentRoleName' = [MtRoleDefinition]::new('9f06204d-73c1-4d4c-880a-6edb90606fd8', `$false)
+`$script:MtRoleAliases = @{
+    'OldRoleName' = 'CurrentRoleName'
+}
+"@
+            $newRoles = [System.Collections.Generic.List[hashtable]]::new()
+            $newRoles.Add(@{ Name = 'NewRoleName'; Id = '9f06204d-73c1-4d4c-880a-6edb90606fd8'; IsPrivileged = $false; DisplayName = 'New Role Name' })
+
+            $aliases = @(Get-RoleAliases -FileContent $fileContent -NewRoles $newRoles)
+
+            @($aliases).Count | Should -Be 2
+            ($aliases | Where-Object { $_.Name -eq 'OldRoleName' }).CanonicalName | Should -Be 'NewRoleName'
+            ($aliases | Where-Object { $_.Name -eq 'CurrentRoleName' }).CanonicalName | Should -Be 'NewRoleName'
+        }
+    }
+}
+
 Describe 'Update-FileSection' {
 
     Context 'Marker present in file' {
@@ -318,6 +357,18 @@ Describe 'Get-MtRoleInfo type contract' {
         It 'returns null for an unrecognized role name' {
             $result = Get-MtRoleInfo -RoleName 'ThisRoleDoesNotExist99'
             $result | Should -BeNullOrEmpty
+        }
+    }
+
+    Context 'Renamed role alias' {
+        It 'resolves the legacy Azure AD joined device role name to the current Microsoft Entra role definition' {
+            $legacy = Get-MtRoleInfo -RoleName 'AzureADJoinedDeviceLocalAdministrator'
+            $current = Get-MtRoleInfo -RoleName 'MicrosoftEntraJoinedDeviceLocalAdministrator'
+
+            $legacy | Should -Not -BeNullOrEmpty
+            $current | Should -Not -BeNullOrEmpty
+            $legacy.ToString() | Should -Be $current.ToString()
+            $legacy.IsPrivileged | Should -Be $current.IsPrivileged
         }
     }
 }

@@ -44,13 +44,16 @@ function Get-MtRoleMember {
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
         [ArgumentCompleter({
                 param($commandName, $parameterName, $wordToComplete)
-                $script:MtRoles.Keys | Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
+                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
+                $roleNames |
+                    Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
                     Sort-Object | ForEach-Object {
                         [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
                     }
             })]
         [ValidateScript({
-                if ($_ -in $script:MtRoles.Keys) { return $true }
+                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
+                if ($_ -in $roleNames) { return $true }
                 throw "Unknown role '$_'. Use tab-completion to see valid role names."
             })]
         [string[]]$Role,
