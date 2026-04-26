@@ -148,11 +148,11 @@
         if ($hasActiveRules) {
             $testResultMarkdown += "**Result:** Well done. At least one ASR policy has rules in **Block** or **Audit** mode."
 
-            # Warn about audit-only policies
+            # Warn about policies with audit coverage but no block-mode rules
             $auditOnly = @($policyResults | Where-Object { $_.BlockCount -eq 0 -and $_.AuditCount -gt 0 })
             if ($auditOnly.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($auditOnly.Count) policy/policies have rules in **Audit mode only**. "
-                $testResultMarkdown += "Consider transitioning tested rules to **Block** mode for active protection."
+                $testResultMarkdown += "`n`n> **Note:** $($auditOnly.Count) policy/policies have no rules in **Block** mode and at least one rule in **Audit** mode. "
+                $testResultMarkdown += "Consider transitioning tested Audit rules to **Block** mode for active protection."
             }
 
             Add-MtTestResultDetail -Result $testResultMarkdown
