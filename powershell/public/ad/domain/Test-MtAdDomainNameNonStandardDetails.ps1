@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDomainNameNonStandardDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -47,9 +48,9 @@
         }
         if ($nonCompliantLabels.Count -gt 0) {
             $nonCompliantDomainDetails += [PSCustomObject]@{
-                DomainName = $domain
+                DomainName         = $domain
                 NonCompliantLabels = $nonCompliantLabels -join ', '
-                Issue = "Label(s) don't comply with RFC 1123"
+                Issue              = "Label(s) don't comply with RFC 1123"
             }
         }
     }

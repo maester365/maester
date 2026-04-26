@@ -23,6 +23,7 @@ function Test-MtAdGpoAllSettingsDisabledDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoAllSettingsDisabledDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -81,8 +82,7 @@ function Test-MtAdGpoAllSettingsDisabledDetails {
 
     $recommendation = if ($allDisabledCount -gt 0) {
         "GPOs with all settings disabled were returned ($allDisabledCount). Review whether these GPOs should be re-enabled or removed."
-    }
-    else {
+    } else {
         '✅ No GPOs with all settings disabled were found.'
     }
 

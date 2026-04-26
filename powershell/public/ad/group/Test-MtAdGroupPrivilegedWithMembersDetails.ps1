@@ -25,6 +25,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGroupPrivilegedWithMembersDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -63,17 +64,16 @@
                 $memberCount = ($members | Measure-Object).Count
 
                 $privilegedGroups += [PSCustomObject]@{
-                    Name = $group.Name
-                    RID = $rid
-                    IsWellKnown = $isWellKnown
+                    Name          = $group.Name
+                    RID           = $rid
+                    IsWellKnown   = $isWellKnown
                     WellKnownName = if ($isWellKnown) { $privilegedRIDs[$rid] } else { 'N/A' }
-                    MemberCount = $memberCount
-                    GroupScope = $group.GroupScope
+                    MemberCount   = $memberCount
+                    GroupScope    = $group.GroupScope
                     GroupCategory = $group.GroupCategory
-                    AdminCount = $group.adminCount
+                    AdminCount    = $group.adminCount
                 }
-            }
-            catch {
+            } catch {
                 Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
             }
         }

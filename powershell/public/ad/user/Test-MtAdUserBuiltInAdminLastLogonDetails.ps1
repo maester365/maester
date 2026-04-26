@@ -14,6 +14,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserBuiltInAdminLastLogonDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

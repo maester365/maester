@@ -19,6 +19,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGroupMemberAccountTypeDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -50,8 +51,7 @@
                     $allMembers += $member
                 }
             }
-        }
-        catch {
+        } catch {
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }

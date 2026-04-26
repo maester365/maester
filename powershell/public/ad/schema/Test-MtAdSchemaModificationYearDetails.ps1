@@ -18,6 +18,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdSchemaModificationYearDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,9 +36,9 @@
 
     # Group schema objects by year and count modifications per year
     $modificationsByYear = $schemaObjects | Where-Object { $_.whenCreated } |
-        Group-Object { $_.whenCreated.Year } |
-        Select-Object Name, Count |
-        Sort-Object Name
+    Group-Object { $_.whenCreated.Year } |
+    Select-Object Name, Count |
+    Sort-Object Name
 
     $yearCount = ($modificationsByYear | Measure-Object).Count
 

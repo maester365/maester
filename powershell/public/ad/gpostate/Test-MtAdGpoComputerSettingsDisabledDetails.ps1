@@ -23,6 +23,7 @@ function Test-MtAdGpoComputerSettingsDisabledDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoComputerSettingsDisabledDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -83,8 +84,7 @@ function Test-MtAdGpoComputerSettingsDisabledDetails {
     $recommendation = if ($computerDisabledCount -gt 0) {
         "GPOs with computer settings disabled were returned ($computerDisabledCount).`
 Review these GPOs to ensure computer-side policy delivery is intentionally disabled."
-    }
-    else {
+    } else {
         '✅ No GPOs with computer settings disabled were found.'
     }
 

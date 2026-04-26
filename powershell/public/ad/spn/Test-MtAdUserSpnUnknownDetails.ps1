@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserSpnUnknownDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -74,8 +75,8 @@
                 if ($knownSpns -notcontains $serviceClass) {
                     [PSCustomObject]@{
                         ServiceClass = $serviceClass
-                        User = $user.SamAccountName
-                        SPN = $_
+                        User         = $user.SamAccountName
+                        SPN          = $_
                     }
                 }
             }

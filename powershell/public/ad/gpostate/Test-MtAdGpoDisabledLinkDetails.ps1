@@ -17,6 +17,7 @@ function Test-MtAdGpoDisabledLinkDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoDisabledLinkDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -53,8 +54,7 @@ function Test-MtAdGpoDisabledLinkDetails {
 
     $recommendation = if ($disabledCount -gt 0) {
         "GPO disabled link details were returned ($disabledCount). Review these GPO links to ensure they are still intended."
-    }
-    else {
+    } else {
         '✅ No GPOs with disabled link configuration were found.'
     }
 

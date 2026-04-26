@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdNetbiosNameNonStandardDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -62,8 +63,8 @@
         if ($issues.Count -gt 0) {
             $nonCompliantDetails += [PSCustomObject]@{
                 NetBIOSName = $name
-                Length = $name.Length
-                Issues = $issues -join '; '
+                Length      = $name.Length
+                Issues      = $issues -join '; '
             }
         }
     }

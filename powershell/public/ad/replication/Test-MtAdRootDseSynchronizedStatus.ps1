@@ -25,6 +25,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdRootDseSynchronizedStatus
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

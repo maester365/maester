@@ -18,6 +18,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdLapsInstalledStatus
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

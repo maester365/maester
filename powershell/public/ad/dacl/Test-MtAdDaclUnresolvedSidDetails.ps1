@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclUnresolvedSidDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -41,8 +42,8 @@
 
     $objectGroups = @(
         $unresolvedEntries |
-            Group-Object -Property ObjectDN |
-            Sort-Object @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false }
+        Group-Object -Property ObjectDN |
+        Sort-Object @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false }
     )
 
     $result = '| ObjectDN | Distinct Unresolved SID Count | Unresolved SIDs |`n'
@@ -58,9 +59,9 @@
 
         $sidList = @(
             $group.Group |
-                ForEach-Object { [string]$_.IdentityReference } |
-                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-                Sort-Object -Unique
+            ForEach-Object { [string]$_.IdentityReference } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+            Sort-Object -Unique
         )
 
         $sidListJoined = ($sidList | ForEach-Object { $_ -replace '\|', '\\&#124;' }) -join ', '

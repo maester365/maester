@@ -17,6 +17,7 @@ function Test-MtAdGpoVersionMismatchDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoVersionMismatchDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -50,8 +51,7 @@ function Test-MtAdGpoVersionMismatchDetails {
 
     $recommendation = if ($mismatchCount -gt 0) {
         "GPO version mismatch details were returned ($mismatchCount). Review these GPOs to ensure their versions are consistent."
-    }
-    else {
+    } else {
         '✅ No GPO version mismatches were found.'
     }
 

@@ -27,6 +27,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdSupportedSaslMechanismDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

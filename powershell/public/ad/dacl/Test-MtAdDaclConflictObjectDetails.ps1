@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclConflictObjectDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -49,8 +50,7 @@
             $objectClass = if ($null -ne $sample.ObjectClass) { ([string]$sample.ObjectClass) -replace '\|', '\\&#124;' } else { '' }
             $result += "| $objectDn | $objectClass | $($group.Count) |`n"
         }
-    }
-    else {
+    } else {
         $result += "**No conflict objects were identified in the collected DACL data.**`n"
     }
 

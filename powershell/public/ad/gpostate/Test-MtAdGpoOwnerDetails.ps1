@@ -17,6 +17,7 @@ function Test-MtAdGpoOwnerDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoOwnerDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -36,16 +37,16 @@ function Test-MtAdGpoOwnerDetails {
     $gposArray = @($gpos | Where-Object { $null -ne $_ })
 
     $rows = $gposArray |
-        ForEach-Object {
-            $ownerValue = $_.Owner
-            if ([string]::IsNullOrWhiteSpace([string]$ownerValue)) { return $null }
-            [PSCustomObject]@{
-                Owner       = [string]$ownerValue
-                DisplayName = [string]$_.DisplayName
-            }
-        } |
-        Where-Object { $null -ne $_ } |
-        Group-Object -Property Owner
+    ForEach-Object {
+        $ownerValue = $_.Owner
+        if ([string]::IsNullOrWhiteSpace([string]$ownerValue)) { return $null }
+        [PSCustomObject]@{
+            Owner       = [string]$ownerValue
+            DisplayName = [string]$_.DisplayName
+        }
+    } |
+    Where-Object { $null -ne $_ } |
+    Group-Object -Property Owner
 
     $ownerGroups = @($rows)
     $ownerGroupCount = $ownerGroups.Count
@@ -66,8 +67,7 @@ function Test-MtAdGpoOwnerDetails {
 
     $recommendation = if ($ownerGroupCount -gt 0) {
         "GPO owner details were returned for $ownerGroupCount distinct owner(s)."
-    }
-    else {
+    } else {
         '✅ No GPO owner values were found.'
     }
 

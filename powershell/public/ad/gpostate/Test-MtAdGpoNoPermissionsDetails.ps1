@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoNoPermissionsDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -23,8 +24,7 @@
     $gpoState = $null
     try {
         $gpoState = Get-MtADGpoState
-    }
-    catch {
+    } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
@@ -37,11 +37,9 @@
     $gpoReports = $null
     if ($gpoState.PSObject.Properties.Name -contains 'GPOReports') {
         $gpoReports = $gpoState.GPOReports
-    }
-    elseif ($gpoState.PSObject.Properties.Name -contains 'GpoReports') {
+    } elseif ($gpoState.PSObject.Properties.Name -contains 'GpoReports') {
         $gpoReports = $gpoState.GpoReports
-    }
-    else {
+    } else {
         $gpoReports = @()
         foreach ($gpo in @($gpoState.GPOs)) {
             foreach ($prop in @('GpoReports', 'GPOReports', 'GpoReport', 'GPOReport')) {
@@ -49,8 +47,7 @@
                     $value = $gpo.$prop
                     if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string])) {
                         $gpoReports += @($value)
-                    }
-                    else {
+                    } else {
                         $gpoReports += $value
                     }
                 }
@@ -94,8 +91,7 @@
 
     $recommendation = if ($testResult) {
         '✅ No GPO reports were found with missing permissions.'
-    }
-    else {
+    } else {
         "⚠️ GPO reports were found with missing permissions ($noPermissionsCount)."
     }
 

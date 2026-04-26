@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGroupEmptyNonPrivilegedDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -38,16 +39,15 @@
 
             if ($memberCount -eq 0 -and $group.adminCount -ne 1) {
                 $emptyNonPrivilegedGroups += [PSCustomObject]@{
-                    Name = $group.Name
+                    Name              = $group.Name
                     DistinguishedName = $group.DistinguishedName
-                    GroupCategory = $group.GroupCategory
-                    GroupScope = $group.GroupScope
-                    Created = $group.createTimeStamp
-                    Modified = $group.modifyTimeStamp
+                    GroupCategory     = $group.GroupCategory
+                    GroupScope        = $group.GroupScope
+                    Created           = $group.createTimeStamp
+                    Modified          = $group.modifyTimeStamp
                 }
             }
-        }
-        catch {
+        } catch {
             Write-Verbose "Could not check members for group $($group.Name): $($_.Exception.Message)"
         }
     }

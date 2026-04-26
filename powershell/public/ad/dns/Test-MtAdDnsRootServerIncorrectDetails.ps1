@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDnsRootServerIncorrectDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -71,9 +72,9 @@
 
         if ($expectedIp -and $configuredIp -ne $expectedIp) {
             $incorrectRootServers += [PSCustomObject]@{
-                Name = $serverName
+                Name         = $serverName
                 ConfiguredIP = $configuredIp
-                ExpectedIP = $expectedIp
+                ExpectedIP   = $expectedIp
             }
         }
     }

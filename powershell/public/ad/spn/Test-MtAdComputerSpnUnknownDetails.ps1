@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdComputerSpnUnknownDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -74,8 +75,8 @@
                 if ($knownSpns -notcontains $serviceClass) {
                     [PSCustomObject]@{
                         ServiceClass = $serviceClass
-                        Computer = $computer.Name
-                        SPN = $_
+                        Computer     = $computer.Name
+                        SPN          = $_
                     }
                 }
             }
