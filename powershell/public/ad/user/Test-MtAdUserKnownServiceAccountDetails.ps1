@@ -15,6 +15,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserKnownServiceAccountDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()

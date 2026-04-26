@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclPrivilegedExtendedRightDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -34,13 +35,12 @@
         foreach ($entry in $daclEntries) {
             if ($entry.AccessControlType -like 'AccessAllowed*' -and [string]$entry.ActiveDirectoryRights -match '(^|,\s*)ExtendedRight(,|$)') {
                 [PSCustomObject]@{
-                    ObjectType = if ([string]::IsNullOrWhiteSpace($entry.ObjectType) -or $entry.ObjectType -eq '00000000-0000-0000-0000-000000000000') {
+                    ObjectType        = if ([string]::IsNullOrWhiteSpace($entry.ObjectType) -or $entry.ObjectType -eq '00000000-0000-0000-0000-000000000000') {
                         'All / Not specified'
-                    }
-                    else {
+                    } else {
                         [string]$entry.ObjectType
                     }
-                    ObjectDN = $entry.ObjectDN
+                    ObjectDN          = $entry.ObjectDN
                     IdentityReference = $entry.IdentityReference
                 }
             }
@@ -49,25 +49,25 @@
 
     $breakdown = @(
         $extendedRightEntries |
-            Group-Object ObjectType |
-            Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
-            ForEach-Object {
-                $entriesForType = @($_.Group)
-                [PSCustomObject]@{
-                    ObjectType = $_.Name
-                    AceCount = $_.Count
-                    DistinctObjectCount = @(
-                        $entriesForType |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } |
-                            Select-Object -ExpandProperty ObjectDN -Unique
-                    ).Count
-                    DistinctIdentityCount = @(
-                        $entriesForType |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } |
-                            Select-Object -ExpandProperty IdentityReference -Unique
-                    ).Count
-                }
+        Group-Object ObjectType |
+        Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
+        ForEach-Object {
+            $entriesForType = @($_.Group)
+            [PSCustomObject]@{
+                ObjectType            = $_.Name
+                AceCount              = $_.Count
+                DistinctObjectCount   = @(
+                    $entriesForType |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_.ObjectDN) } |
+                    Select-Object -ExpandProperty ObjectDN -Unique
+                ).Count
+                DistinctIdentityCount = @(
+                    $entriesForType |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } |
+                    Select-Object -ExpandProperty IdentityReference -Unique
+                ).Count
             }
+        }
     )
 
     $testResult = $true

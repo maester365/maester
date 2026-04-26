@@ -31,6 +31,7 @@
     .LINK
     https://maester.dev/docs/commands/Get-MtADDacls
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using Details')]
     [CmdletBinding()]
     param(
         [string[]]$DnBase,
@@ -75,17 +76,14 @@
             $__MtSession.ADCollectionTime = Get-Date
 
             Write-Verbose "Successfully collected $($dacls.Count) ACL entries"
-        }
-        catch [Management.Automation.CommandNotFoundException] {
+        } catch [Management.Automation.CommandNotFoundException] {
             Write-Error "The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine."
             return $null
-        }
-        catch {
+        } catch {
             Write-Error "Failed to collect AD ACLs: $($_.Exception.Message)"
             return $null
         }
-    }
-    else {
+    } else {
         Write-Verbose 'Using cached AD ACL data'
     }
 

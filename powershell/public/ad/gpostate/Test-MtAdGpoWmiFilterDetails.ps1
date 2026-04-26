@@ -17,6 +17,7 @@ function Test-MtAdGpoWmiFilterDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoWmiFilterDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -66,8 +67,7 @@ function Test-MtAdGpoWmiFilterDetails {
 
     $recommendation = if ($wmiFilteredCount -gt 0) {
         "GPO WMI filter details were returned ($wmiFilteredCount). Review these filters to ensure they are still intended."
-    }
-    else {
+    } else {
         '✅ No GPOs with WMI filter configuration were found.'
     }
     Write-Verbose "Counts computed"

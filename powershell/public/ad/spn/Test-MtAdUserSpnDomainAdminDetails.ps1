@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserSpnDomainAdminDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -53,14 +54,14 @@
                 $port = $matches[3]
 
                 [PSCustomObject]@{
-                    SPN = $_
+                    SPN          = $_
                     ServiceClass = $serviceClass
-                    Host = $hostPart
-                    Port = $port
-                    IsFqdn = $hostPart -like "*.*"
+                    Host         = $hostPart
+                    Port         = $port
+                    IsFqdn       = $hostPart -like "*.*"
                     AdminAccount = $admin.SamAccountName
-                    AdminSID = $admin.SID
-                    Enabled = $admin.Enabled
+                    AdminSID     = $admin.SID
+                    Enabled      = $admin.Enabled
                 }
             }
         }

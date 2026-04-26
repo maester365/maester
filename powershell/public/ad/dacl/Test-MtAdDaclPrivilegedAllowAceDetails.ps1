@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclPrivilegedAllowAceDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -52,11 +53,11 @@
             $matchedRights = @(& $getPrivilegedRights $entry.ActiveDirectoryRights)
             if ($matchedRights.Count -gt 0) {
                 [PSCustomObject]@{
-                    ObjectDN = $entry.ObjectDN
-                    ObjectClass = $entry.ObjectClass
-                    ObjectName = $entry.ObjectName
+                    ObjectDN          = $entry.ObjectDN
+                    ObjectClass       = $entry.ObjectClass
+                    ObjectName        = $entry.ObjectName
                     IdentityReference = $entry.IdentityReference
-                    MatchedRights = $matchedRights
+                    MatchedRights     = $matchedRights
                 }
             }
         }
@@ -64,28 +65,28 @@
 
     $objectBreakdown = @(
         $privilegedAllowEntries |
-            Group-Object ObjectDN |
-            Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
-            ForEach-Object {
-                $entriesForObject = @($_.Group)
-                $firstEntry = $entriesForObject | Select-Object -First 1
-                [PSCustomObject]@{
-                    ObjectName = $firstEntry.ObjectName
-                    ObjectClass = $firstEntry.ObjectClass
-                    ObjectDN = if ([string]::IsNullOrWhiteSpace($_.Name)) { '[Unknown ObjectDN]' } else { $_.Name }
-                    AceCount = $_.Count
-                    IdentityCount = @(
+        Group-Object ObjectDN |
+        Sort-Object -Property @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false } |
+        ForEach-Object {
+            $entriesForObject = @($_.Group)
+            $firstEntry = $entriesForObject | Select-Object -First 1
+            [PSCustomObject]@{
+                ObjectName    = $firstEntry.ObjectName
+                ObjectClass   = $firstEntry.ObjectClass
+                ObjectDN      = if ([string]::IsNullOrWhiteSpace($_.Name)) { '[Unknown ObjectDN]' } else { $_.Name }
+                AceCount      = $_.Count
+                IdentityCount = @(
+                    $entriesForObject |
+                    Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } |
+                    Select-Object -ExpandProperty IdentityReference -Unique
+                ).Count
+                Rights        = (@(
                         $entriesForObject |
-                            Where-Object { -not [string]::IsNullOrWhiteSpace($_.IdentityReference) } |
-                            Select-Object -ExpandProperty IdentityReference -Unique
-                    ).Count
-                    Rights = (@(
-                        $entriesForObject |
-                            ForEach-Object { $_.MatchedRights } |
-                            Sort-Object -Unique
+                        ForEach-Object { $_.MatchedRights } |
+                        Sort-Object -Unique
                     ) -join ', ')
-                }
             }
+        }
     )
 
     $testResult = $true

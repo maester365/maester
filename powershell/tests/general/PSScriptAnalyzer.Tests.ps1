@@ -15,7 +15,7 @@ BeforeDiscovery {
 
 Describe 'Invoking PSScriptAnalyzer against commandbase' -ForEach @{ commandFiles = $commandFiles } {
     BeforeAll {
-        $analysis = $commandFiles | Invoke-ScriptAnalyzer -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess, PSUseSingularNouns
+        $analysis = $commandFiles | Invoke-ScriptAnalyzer -ExcludeRule PSAvoidTrailingWhitespace, PSShouldProcess
     }
 
     # The next Context blocks are kinda duplicate, but helps us document both

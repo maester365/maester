@@ -15,6 +15,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserDelegationDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -42,14 +43,14 @@
             }
 
             [PSCustomObject]@{
-                SamAccountName    = $_.SamAccountName
-                Name              = $_.Name
-                Enabled           = $_.Enabled
-                DelegationType    = $delegationType
-                TrustedForDelegation = $_.TrustedForDelegation
+                SamAccountName             = $_.SamAccountName
+                Name                       = $_.Name
+                Enabled                    = $_.Enabled
+                DelegationType             = $delegationType
+                TrustedForDelegation       = $_.TrustedForDelegation
                 TrustedToAuthForDelegation = $_.TrustedToAuthForDelegation
-                HasSpn            = @($_.ServicePrincipalName).Count -gt 0
-                DistinguishedName = $_.DistinguishedName
+                HasSpn                     = @($_.ServicePrincipalName).Count -gt 0
+                DistinguishedName          = $_.DistinguishedName
             }
         } | Sort-Object SamAccountName)
 

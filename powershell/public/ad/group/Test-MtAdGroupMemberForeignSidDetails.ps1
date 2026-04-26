@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGroupMemberForeignSidDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -53,8 +54,8 @@
                         if (-not $foreignSidsByDomain.ContainsKey($foreignDomainSid)) {
                             $foreignSidsByDomain[$foreignDomainSid] = @{
                                 DomainSid = $foreignDomainSid
-                                Count = 0
-                                Groups = @()
+                                Count     = 0
+                                Groups    = @()
                             }
                         }
 
@@ -66,8 +67,7 @@
                     }
                 }
             }
-        }
-        catch {
+        } catch {
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }

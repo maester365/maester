@@ -17,6 +17,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoCpasswordFoundDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -56,8 +57,7 @@ function Test-MtAdGpoCpasswordFoundDetails {
 
     $recommendation = if ($foundCount -gt 0) {
         "GPO cpassword details were returned ($foundCount). Review these GPOs to ensure Group Policy Preferences passwords are handled securely."
-    }
-    else {
+    } else {
         '✅ No GPOs with cpassword were found.'
     }
     Write-Verbose "Counts computed"

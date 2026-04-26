@@ -15,6 +15,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdSpnMappings
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -44,15 +45,13 @@
                 $escapedMapping = if ($null -eq $mapping) { '' } else { ($mapping -replace "`r", '' -replace "`n", ' ') }
                 $result += "- $escapedMapping`n"
             }
-        }
-        else {
+        } else {
             $result += "- (none)`n"
         }
 
         $testResultMarkdown = "Active Directory SPN mappings have been retrieved.`n`n%TestResult%"
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
-    }
-    else {
+    } else {
         $testResultMarkdown = "Unable to retrieve Active Directory configuration. Ensure you have appropriate permissions and the Active Directory module is installed."
     }
 

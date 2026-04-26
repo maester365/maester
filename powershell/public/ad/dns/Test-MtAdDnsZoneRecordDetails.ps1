@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDnsZoneRecordDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -49,8 +50,8 @@
         $recordTypes = $zoneRecords | Group-Object RecordType | Sort-Object Count -Descending
 
         $zoneRecordCounts += [PSCustomObject]@{
-            ZoneName = $zone.ZoneName
-            ZoneType = $zone.ZoneType
+            ZoneName    = $zone.ZoneName
+            ZoneType    = $zone.ZoneType
             RecordCount = $recordCount
             RecordTypes = $recordTypes
         }

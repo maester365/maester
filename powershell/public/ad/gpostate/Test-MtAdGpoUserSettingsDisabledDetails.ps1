@@ -23,6 +23,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGpoUserSettingsDisabledDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -85,8 +86,7 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
 
     $recommendation = if ($userDisabledCount -gt 0) {
         "GPOs with user settings disabled were returned ($userDisabledCount).`nReview these GPOs to ensure user-side policy delivery is intentionally disabled."
-    }
-    else {
+    } else {
         '✅ No GPOs with user settings disabled were found.'
     }
     Write-Verbose "Counts computed"

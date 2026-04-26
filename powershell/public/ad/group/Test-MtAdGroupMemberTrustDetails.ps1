@@ -19,6 +19,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdGroupMemberTrustDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -53,15 +54,14 @@
 
                 if ($member.objectClass -eq 'foreignSecurityPrincipal') {
                     $isTrustMember = $true
-                }
-                elseif ($member.SID.Value -and -not $member.SID.Value.StartsWith($domainSid)) {
+                } elseif ($member.SID.Value -and -not $member.SID.Value.StartsWith($domainSid)) {
                     $isTrustMember = $true
                 }
 
                 if ($isTrustMember) {
                     $groupTrustMembers += [PSCustomObject]@{
-                        SID = $member.SID.Value
-                        Name = $member.Name
+                        SID         = $member.SID.Value
+                        Name        = $member.Name
                         ObjectClass = $member.objectClass
                     }
                     $totalTrustMembers++
@@ -71,8 +71,7 @@
             if ($groupTrustMembers.Count -gt 0) {
                 $groupsWithTrustMembers[$group.Name] = $groupTrustMembers
             }
-        }
-        catch {
+        } catch {
             Write-Verbose "Could not retrieve members for group $($group.Name): $($_.Exception.Message)"
         }
     }

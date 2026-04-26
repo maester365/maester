@@ -22,6 +22,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdComputerDelegationDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using Details')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -40,11 +41,11 @@
     # Get computers with delegation
     $computersWithUnconstrained = $computers | Where-Object {
         $_.TrustedForDelegation -eq $true
-    } | Select-Object Name, DistinguishedName, Enabled, @{N='DelegationType';E={'Unconstrained'}}
+    } | Select-Object Name, DistinguishedName, Enabled, @{N = 'DelegationType'; E = { 'Unconstrained' } }
 
     $computersWithConstrained = $computers | Where-Object {
         $_.TrustedToAuthForDelegation -eq $true
-    } | Select-Object Name, DistinguishedName, Enabled, @{N='DelegationType';E={'Constrained/Protocol Transition'}}
+    } | Select-Object Name, DistinguishedName, Enabled, @{N = 'DelegationType'; E = { 'Constrained/Protocol Transition' } }
 
     $allDelegationComputers = @($computersWithUnconstrained) + @($computersWithConstrained)
 

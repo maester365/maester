@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDcFsmoRoleHolderDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,10 +36,10 @@
 
     # Get all FSMO role holders
     $fsmoRoles = @{
-        'Schema Master' = $forest.SchemaMaster
-        'Domain Naming Master' = $forest.DomainNamingMaster
-        'PDC Emulator' = $domain.PDCEmulator
-        'RID Master' = $domain.RIDMaster
+        'Schema Master'         = $forest.SchemaMaster
+        'Domain Naming Master'  = $forest.DomainNamingMaster
+        'PDC Emulator'          = $domain.PDCEmulator
+        'RID Master'            = $domain.RIDMaster
         'Infrastructure Master' = $domain.InfrastructureMaster
     }
 

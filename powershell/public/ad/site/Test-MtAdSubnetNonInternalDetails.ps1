@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdSubnetNonInternalDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -54,11 +55,9 @@
 
             if ($firstOctet -eq 10) {
                 $isPrivate = $true
-            }
-            elseif ($firstOctet -eq 172 -and $secondOctet -ge 16 -and $secondOctet -le 31) {
+            } elseif ($firstOctet -eq 172 -and $secondOctet -ge 16 -and $secondOctet -le 31) {
                 $isPrivate = $true
-            }
-            elseif ($firstOctet -eq 192 -and $secondOctet -eq 168) {
+            } elseif ($firstOctet -eq 192 -and $secondOctet -eq 168) {
                 $isPrivate = $true
             }
 

@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclDenyAceDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -53,8 +54,7 @@
             $identityReference = if ($null -ne $sample.IdentityReference) { ([string]$sample.IdentityReference) -replace '\|', '\\&#124;' } else { '' }
             $result += "| $objectName | $objectClass | $objectDn | $identityReference | $($group.Count) |`n"
         }
-    }
-    else {
+    } else {
         $result += "**No deny ACEs were identified in the collected DACL data.**`n"
     }
     Write-Verbose "Counts computed"

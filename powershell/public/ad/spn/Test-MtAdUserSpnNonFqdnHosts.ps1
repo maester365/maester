@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdUserSpnNonFqdnHosts
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -46,12 +47,12 @@
                 $isFqdn = $hostPart -like "*.*"
 
                 [PSCustomObject]@{
-                    SPN = $_
+                    SPN          = $_
                     ServiceClass = $serviceClass
-                    Host = $hostPart
-                    Port = $port
-                    IsFqdn = $isFqdn
-                    User = $user.SamAccountName
+                    Host         = $hostPart
+                    Port         = $port
+                    IsFqdn       = $isFqdn
+                    User         = $user.SamAccountName
                 }
             }
         }

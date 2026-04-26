@@ -14,6 +14,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdEnrollmentCaCertificateDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using Details')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -48,8 +49,7 @@
                         $validFrom = $cert.NotBefore
                         $validTo = $cert.NotAfter
                         $parsed = $true
-                    }
-                    elseif ($rawCert -is [string]) {
+                    } elseif ($rawCert -is [string]) {
                         # Attempt to interpret a base64-encoded DER certificate
                         $bytes = $null
                         try {
@@ -75,7 +75,7 @@
             $validToText = if ($null -ne $validTo) { $validTo.ToString('yyyy-MM-dd') } else { 'N/A' }
 
             $rows += [pscustomobject]@{
-                'CA Name'             = $caName
+                'CA Name'                = $caName
                 'Certificate Valid From' = $validFromText
                 'Certificate Valid To'   = $validToText
                 'Certificate Parsed'     = $status

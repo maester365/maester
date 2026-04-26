@@ -17,6 +17,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDnsReverseZoneNetworkDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -55,11 +56,11 @@
         $networkWithCidr = "$networkAddress.0/$cidr"
 
         $networks += [PSCustomObject]@{
-            NetworkAddress = $networkAddress
-            CIDR = $cidr
+            NetworkAddress  = $networkAddress
+            CIDR            = $cidr
             NetworkWithCidr = $networkWithCidr
-            ZoneName = $zone.ZoneName
-            ZoneType = $zone.ZoneType
+            ZoneName        = $zone.ZoneName
+            ZoneType        = $zone.ZoneType
         }
     }
 

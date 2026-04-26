@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdDaclInheritedObjectTypeDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -45,8 +46,8 @@
 
     $groups = @(
         $filteredEntries |
-            Group-Object -Property InheritedObjectType |
-            Sort-Object @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false }
+        Group-Object -Property InheritedObjectType |
+        Sort-Object @{ Expression = 'Count'; Descending = $true }, @{ Expression = 'Name'; Descending = $false }
     )
 
     $result = '| InheritedObjectType | ACE Count | Distinct ObjectDN Count |`n'
@@ -58,7 +59,7 @@
 
         $distinctObjectCount = @(
             $group.Group |
-                Group-Object -Property ObjectDN
+            Group-Object -Property ObjectDN
         ).Count
 
         $result += "| $inheritedObjectType | $($group.Count) | $distinctObjectCount |`n"

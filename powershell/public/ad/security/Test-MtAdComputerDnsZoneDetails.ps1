@@ -22,6 +22,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdComputerDnsZoneDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using plural')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -45,12 +46,12 @@
             $zone = $dnsName.Substring($dnsName.IndexOf('.') + 1)
             [PSCustomObject]@{
                 Computer = $_
-                Zone = $zone
+                Zone     = $zone
             }
         } else {
             [PSCustomObject]@{
                 Computer = $_
-                Zone = "(No Zone)"
+                Zone     = "(No Zone)"
             }
         }
     } | Group-Object -Property Zone
