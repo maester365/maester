@@ -176,7 +176,8 @@ function Test-MtAdGpoUnlinkedTargetCount {
     $result += "| Total Unlinked Targets | $totalUnlinkedTargets |`n"
     if ($sampleText) {
         # Avoid breaking markdown tables when DNs contain pipes
-        $safeSampleText = $sampleText -replace '\\|', '\\&#124;'
+        # Use [regex]::Escape to properly escape the pipe character for regex replacement
+        $safeSampleText = $sampleText -replace '\|', '&#124;'
         $result += "| Sample Unlinked Targets | $safeSampleText |`n"
     }
 

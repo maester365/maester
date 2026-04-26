@@ -27,7 +27,7 @@ function Test-MtAdDaclUnresolvedSidCount {
         return $null
     }
 
-    if (-not ($adState.PSObject.Properties.Name -contains 'DaclEntries')) {
+    if (-not ($adState.ContainsKey('DaclEntries'))) {
         Add-MtTestResultDetail -Result 'Unable to retrieve Active Directory DACL entries from Get-MtADDomainState.'
         return $false
     }

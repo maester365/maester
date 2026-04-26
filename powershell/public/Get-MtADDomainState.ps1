@@ -207,33 +207,48 @@ function Get-MtADDomainState {
                     $objectDN = $result.Properties["distinguishedName"][0]
                     $objectClass = $result.Properties["objectClass"]
                     $objectName = $result.Properties["name"][0]
-                    $objectSid = if ($result.Properties["objectSid"]) { 
-                        (New-Object System.Security.Principal.SecurityIdentifier($result.Properties["objectSid"][0], 0)).Value 
-                    } else { $null }
                     
-                    # Get the security descriptor
-                    $securityDescriptor = $result.Properties["ntsecuritydescriptor"][0]
+                    # Safely get objectSid
+                    $objectSid = $null
+                    try {
+                        $sidProp = $result.Properties["objectSid"]
+                        if ($sidProp -and $sidProp.Count -gt 0) {
+                            $objectSid = (New-Object System.Security.Principal.SecurityIdentifier($sidProp[0], 0)).Value
+                        }
+                    } catch {
+                        $objectSid = $null
+                    }
                     
-                    if ($securityDescriptor) {
-                        $sd = New-Object System.DirectoryServices.ActiveDirectorySecurity
-                        $sd.SetSecurityDescriptorBinaryForm($securityDescriptor)
+                    # Get the security descriptor - it's returned as a ResultPropertyValueCollection
+                    $sdProperty = $result.Properties["ntsecuritydescriptor"]
+                    if ($sdProperty -and $sdProperty.Count -gt 0) {
+                        $securityDescriptor = $sdProperty[0]
                         
-                        foreach ($ace in $sd.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])) {
-                            $daclEntry = [PSCustomObject]@{
-                                ObjectDN = $objectDN
-                                ObjectClass = $objectClass[$objectClass.Count - 1]
-                                ObjectName = $objectName
-                                ObjectSid = $objectSid
-                                IdentityReference = $ace.IdentityReference.Value
-                                AccessControlType = $ace.AccessControlType.ToString()
-                                ActiveDirectoryRights = $ace.ActiveDirectoryRights.ToString()
-                                InheritanceType = $ace.InheritanceType.ToString()
-                                IsInherited = $ace.IsInherited
-                                ObjectType = $ace.ObjectType.ToString()
-                                InheritedObjectType = $ace.InheritedObjectType.ToString()
-                                AceFlags = $ace.AceFlags
+                        if ($securityDescriptor -and $securityDescriptor.Length -gt 0) {
+                            try {
+                                $sd = New-Object System.DirectoryServices.ActiveDirectorySecurity
+                                $sd.SetSecurityDescriptorBinaryForm($securityDescriptor)
+                                
+                                foreach ($ace in $sd.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])) {
+                                    $daclEntry = [PSCustomObject]@{
+                                        ObjectDN = $objectDN
+                                        ObjectClass = $objectClass[$objectClass.Count - 1]
+                                        ObjectName = $objectName
+                                        ObjectSid = $objectSid
+                                        IdentityReference = $ace.IdentityReference.Value
+                                        AccessControlType = $ace.AccessControlType.ToString()
+                                        ActiveDirectoryRights = $ace.ActiveDirectoryRights.ToString()
+                                        InheritanceType = $ace.InheritanceType.ToString()
+                                        IsInherited = $ace.IsInherited
+                                        ObjectType = $ace.ObjectType.ToString()
+                                        InheritedObjectType = $ace.InheritedObjectType.ToString()
+                                        AceFlags = $ace.AceFlags
+                                    }
+                                    $daclEntries += $daclEntry
+                                }
+                            } catch {
+                                Write-Verbose "Error processing DACL for $objectDN : $($_.Exception.Message)"
                             }
-                            $daclEntries += $daclEntry
                         }
                     }
                 }
