@@ -239,6 +239,83 @@ function Get-ExistingRoles {
     return $preservedRoles
 }
 
+function Get-RoleAliases {
+    <#
+    .SYNOPSIS
+    Extracts backward-compatibility aliases for roles renamed by Microsoft.
+    #>
+    [CmdletBinding()]
+    [OutputType([System.Collections.Generic.List[hashtable]])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $FileContent,
+
+        [Parameter(Mandatory)]
+        [System.Collections.Generic.List[hashtable]] $NewRoles
+    )
+
+    $aliasesByName = @{}
+    $newRoleNames = $NewRoles | ForEach-Object { $_.Name }
+    $newRoleByGuid = @{}
+    foreach ($role in $NewRoles) {
+        if (-not $newRoleByGuid.ContainsKey($role.Id)) {
+            $newRoleByGuid[$role.Id] = $role.Name
+        }
+    }
+
+    # Parse existing hashtable entries: 'RoleName' = [MtRoleDefinition]::new('guid', $true/$false)
+    $entryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(true|false)\)'
+    $existingEntries = [regex]::Matches($FileContent, $entryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    $existingRoleGuidMap = @{}
+
+    foreach ($entry in $existingEntries) {
+        $name = $entry.Groups[1].Value
+        $guid = $entry.Groups[2].Value.ToLower()
+        $existingRoleGuidMap[$name] = $guid
+
+        if ($name -in $newRoleNames) { continue }
+        if (-not $newRoleByGuid.ContainsKey($guid)) { continue }
+
+        $aliasesByName[$name] = @{
+            Name          = $name
+            CanonicalName = $newRoleByGuid[$guid]
+        }
+    }
+
+    # Preserve existing aliases across future updates. If the target role is renamed again,
+    # retarget the alias through the previous target's role template ID.
+    $aliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
+    $existingAliases = [regex]::Matches($FileContent, $aliasPattern)
+    foreach ($alias in $existingAliases) {
+        $name = $alias.Groups[1].Value
+        $canonicalName = $alias.Groups[2].Value
+
+        if ($name -in $newRoleNames) { continue }
+
+        if ($canonicalName -in $newRoleNames) {
+            $aliasesByName[$name] = @{
+                Name          = $name
+                CanonicalName = $canonicalName
+            }
+            continue
+        }
+
+        if ($existingRoleGuidMap.ContainsKey($canonicalName)) {
+            $canonicalGuid = $existingRoleGuidMap[$canonicalName]
+            if ($newRoleByGuid.ContainsKey($canonicalGuid)) {
+                $aliasesByName[$name] = @{
+                    Name          = $name
+                    CanonicalName = $newRoleByGuid[$canonicalGuid]
+                }
+            }
+        }
+    }
+
+    $roleAliases = [System.Collections.Generic.List[hashtable]]::new()
+    $aliasesByName.Values | Sort-Object { $_.Name } | ForEach-Object { $roleAliases.Add($_) }
+    return $roleAliases
+}
+
 function Update-FileSection {
     <#
     .SYNOPSIS
@@ -267,8 +344,10 @@ function Update-FileSection {
         throw "End marker '$EndMarker' not found in $FilePath"
     }
 
+    $newLine = if ($content -match "`r`n") { "`r`n" } else { "`n" }
+    $normalizedNewContent = $NewContent -replace '\r?\n', $newLine
     $pattern = "(?s)($([regex]::Escape($BeginMarker)))(.*?)($([regex]::Escape($EndMarker)))"
-    $replacement = "`$1`n$NewContent`n    `$3"
+    $replacement = "`$1$newLine$normalizedNewContent$newLine    `$3"
     $updatedContent = [regex]::Replace($content, $pattern, $replacement)
     # Use [System.IO.File]::WriteAllText with explicit UTF-8-with-BOM encoder for PS 5.1/7 compatibility.
     # Set-Content -Encoding utf8BOM is PS 7+ only and fails on Windows PowerShell 5.1.
@@ -329,12 +408,16 @@ if (-not (Test-KnownRolesPresent -Roles $roles)) {
 
 # Merge: preserve existing roles not found in the public docs (system/implicit roles)
 $roleInfoContent = Get-Content -Path $RoleInfoPath -Raw
-$preservedRoles = Get-ExistingRoles -FileContent $roleInfoContent -NewRoles $roles
+$preservedRoles = @(Get-ExistingRoles -FileContent $roleInfoContent -NewRoles $roles)
+$roleAliases = @(Get-RoleAliases -FileContent $roleInfoContent -NewRoles $roles)
 if ($preservedRoles.Count -gt 0) {
     Write-Host "Preserving $($preservedRoles.Count) existing roles not in public docs: $($preservedRoles.Name -join ', ')" -ForegroundColor Yellow
     foreach ($preserved in $preservedRoles) {
         $roles.Add($preserved)
     }
+}
+if ($roleAliases.Count -gt 0) {
+    Write-Host "Adding $($roleAliases.Count) compatibility aliases for renamed roles: $($roleAliases.Name -join ', ')" -ForegroundColor Yellow
 }
 
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
@@ -382,12 +465,24 @@ $hashtableEntries = $roles | ForEach-Object {
 }
 $hashtableBlock = $hashtableEntries -join "`n"
 
+$aliasEntries = $roleAliases | ForEach-Object {
+    "    '$($_.Name)' = '$($_.CanonicalName)'"
+}
+$aliasBlock = $aliasEntries -join "`n"
+if ([string]::IsNullOrWhiteSpace($aliasBlock)) {
+    $aliasBlock = '    # No role aliases currently generated.'
+}
+
 # Update Get-MtRoleInfo.ps1
 Write-Host "Updating $RoleInfoPath..." -ForegroundColor Cyan
 Update-FileSection -FilePath $RoleInfoPath `
     -BeginMarker '# BEGIN AUTO-GENERATED ROLE DEFINITIONS' `
     -EndMarker '# END AUTO-GENERATED ROLE DEFINITIONS' `
     -NewContent $hashtableBlock
+Update-FileSection -FilePath $RoleInfoPath `
+    -BeginMarker '# BEGIN AUTO-GENERATED ROLE ALIASES' `
+    -EndMarker '# END AUTO-GENERATED ROLE ALIASES' `
+    -NewContent $aliasBlock
 
 # Summary
 $privilegedCount = ($roles | Where-Object { $_.IsPrivileged }).Count
@@ -398,6 +493,9 @@ Write-Host "  Privileged:  $privilegedCount"
 Write-Host "  Standard:    $($roles.Count - $privilegedCount)"
 if ($preservedRoles.Count -gt 0) {
     Write-Host "  Preserved:   $($preservedRoles.Count) (system/implicit roles not in public docs)"
+}
+if ($roleAliases.Count -gt 0) {
+    Write-Host "  Aliases:     $($roleAliases.Count) (renamed roles kept for compatibility)"
 }
 
 # Report new roles (roles in new data that weren't in the old file)
