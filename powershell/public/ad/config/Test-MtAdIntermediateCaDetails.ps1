@@ -16,6 +16,7 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtAdIntermediateCaDetails
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Clarity in using Details')]
     [CmdletBinding()]
     [OutputType([bool])]
     param()
