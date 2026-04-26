@@ -1,4 +1,4 @@
-function Test-MtAdSchemaVersionEntryCount {
+﻿function Test-MtAdSchemaVersionEntryCount {
     <#
     .SYNOPSIS
     Counts the number of schema version entries in Active Directory.
@@ -84,3 +84,5 @@ function Test-MtAdSchemaVersionEntryCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoSettingsDisabledCount {
     <#
     .SYNOPSIS
@@ -81,3 +81,5 @@ function Test-MtAdGpoSettingsDisabledCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

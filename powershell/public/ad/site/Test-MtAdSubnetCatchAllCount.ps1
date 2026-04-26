@@ -1,4 +1,4 @@
-function Test-MtAdSubnetCatchAllCount {
+﻿function Test-MtAdSubnetCatchAllCount {
     <#
     .SYNOPSIS
     Counts the number of catch-all subnets (overly broad RFC1918 ranges).
@@ -80,3 +80,5 @@ function Test-MtAdSubnetCatchAllCount {
 
     return $testResult
 }
+
+

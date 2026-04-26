@@ -1,4 +1,4 @@
-function Test-MtAdComputerSpnNonFqdnHosts {
+﻿function Test-MtAdComputerSpnNonFqdnHosts {
     <#
     .SYNOPSIS
     Counts computer SPNs with hosts that do not use fully qualified domain names (FQDN).
@@ -104,6 +104,8 @@ function Test-MtAdComputerSpnNonFqdnHosts {
 
     return $testResult
 }
+
+
 
 
 

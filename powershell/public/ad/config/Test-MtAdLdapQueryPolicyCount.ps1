@@ -1,4 +1,4 @@
-function Test-MtAdLdapQueryPolicyCount {
+﻿function Test-MtAdLdapQueryPolicyCount {
     <#
     .SYNOPSIS
     Counts Active Directory LDAP query policies.
@@ -48,3 +48,5 @@ function Test-MtAdLdapQueryPolicyCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

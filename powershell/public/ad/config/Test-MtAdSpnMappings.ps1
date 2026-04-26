@@ -1,4 +1,4 @@
-function Test-MtAdSpnMappings {
+﻿function Test-MtAdSpnMappings {
     <#
     .SYNOPSIS
     Returns Active Directory SPN mappings from configuration.
@@ -59,4 +59,6 @@ function Test-MtAdSpnMappings {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+
 

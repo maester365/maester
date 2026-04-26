@@ -1,4 +1,4 @@
-function Test-MtAdKrbtgtPasswordLastSet {
+﻿function Test-MtAdKrbtgtPasswordLastSet {
     <#
     .SYNOPSIS
     Checks when the KRBTGT account password was last set.
@@ -61,3 +61,5 @@ function Test-MtAdKrbtgtPasswordLastSet {
 
     return $testResult
 }
+
+

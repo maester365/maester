@@ -1,4 +1,4 @@
-function Test-MtAdGroupGlobalCount {
+﻿function Test-MtAdGroupGlobalCount {
     <#
     .SYNOPSIS
     Counts the number of global groups in Active Directory.
@@ -66,3 +66,5 @@ function Test-MtAdGroupGlobalCount {
 
     return $testResult
 }
+
+

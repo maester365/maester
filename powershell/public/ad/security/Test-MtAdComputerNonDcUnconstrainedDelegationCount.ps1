@@ -1,4 +1,4 @@
-function Test-MtAdComputerNonDcUnconstrainedDelegationCount {
+﻿function Test-MtAdComputerNonDcUnconstrainedDelegationCount {
     <#
     .SYNOPSIS
     Counts non-domain controller computers with unconstrained delegation.
@@ -75,3 +75,5 @@ function Test-MtAdComputerNonDcUnconstrainedDelegationCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdDaclDistinctIdentityCount {
+﻿function Test-MtAdDaclDistinctIdentityCount {
     <#
     .SYNOPSIS
     Counts distinct identities referenced by DACL ACEs.
@@ -68,3 +68,5 @@ function Test-MtAdDaclDistinctIdentityCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdPrinterTotalCount {
+﻿function Test-MtAdPrinterTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of printers published in Active Directory.
@@ -79,3 +79,5 @@ function Test-MtAdPrinterTotalCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdDnsAdSrvRecordDetails {
+﻿function Test-MtAdDnsAdSrvRecordDetails {
     <#
     .SYNOPSIS
     Provides detailed information about Active Directory Domain Services SRV records.
@@ -89,3 +89,5 @@ function Test-MtAdDnsAdSrvRecordDetails {
 
     return $testResult
 }
+
+

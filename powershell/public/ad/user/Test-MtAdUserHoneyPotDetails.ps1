@@ -1,4 +1,4 @@
-function Test-MtAdUserHoneyPotDetails {
+﻿function Test-MtAdUserHoneyPotDetails {
     <#
     .SYNOPSIS
     Returns details for potential honey pot style user accounts.
@@ -89,3 +89,5 @@ function Test-MtAdUserHoneyPotDetails {
 
     return $testResult
 }
+
+

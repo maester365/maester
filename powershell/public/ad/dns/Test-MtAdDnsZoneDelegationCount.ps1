@@ -1,4 +1,4 @@
-function Test-MtAdDnsZoneDelegationCount {
+﻿function Test-MtAdDnsZoneDelegationCount {
     <#
     .SYNOPSIS
     Counts the number of DNS zone delegations in Active Directory.
@@ -69,3 +69,5 @@ function Test-MtAdDnsZoneDelegationCount {
 
     return $testResult
 }
+
+

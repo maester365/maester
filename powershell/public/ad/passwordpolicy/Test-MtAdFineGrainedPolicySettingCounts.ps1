@@ -1,4 +1,4 @@
-function Test-MtAdFineGrainedPolicySettingCounts {
+﻿function Test-MtAdFineGrainedPolicySettingCounts {
     <#
     .SYNOPSIS
     Provides a detailed breakdown of settings across all fine-grained password policies.
@@ -78,3 +78,5 @@ function Test-MtAdFineGrainedPolicySettingCounts {
 
     return $testResult
 }
+
+

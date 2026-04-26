@@ -1,4 +1,4 @@
-function Test-MtAdUserSidHistoryCount {
+﻿function Test-MtAdUserSidHistoryCount {
     <#
     .SYNOPSIS
     Counts users with SID History set in Active Directory.
@@ -61,3 +61,5 @@ function Test-MtAdUserSidHistoryCount {
 
     return $testResult
 }
+
+

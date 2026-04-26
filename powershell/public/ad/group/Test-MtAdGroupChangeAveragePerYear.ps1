@@ -1,4 +1,4 @@
-function Test-MtAdGroupChangeAveragePerYear {
+﻿function Test-MtAdGroupChangeAveragePerYear {
     <#
     .SYNOPSIS
     Calculates the average group membership changes per year in Active Directory.
@@ -142,4 +142,6 @@ function Test-MtAdGroupChangeAveragePerYear {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+
 

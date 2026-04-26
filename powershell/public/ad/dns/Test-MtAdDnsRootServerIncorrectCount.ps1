@@ -1,4 +1,4 @@
-function Test-MtAdDnsRootServerIncorrectCount {
+﻿function Test-MtAdDnsRootServerIncorrectCount {
     <#
     .SYNOPSIS
     Counts root DNS servers with incorrect IP addresses.
@@ -111,3 +111,5 @@ function Test-MtAdDnsRootServerIncorrectCount {
 
     return $testResult
 }
+
+

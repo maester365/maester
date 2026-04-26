@@ -1,4 +1,4 @@
-function Test-MtAdDnsZonesWithOnlySoaNs {
+﻿function Test-MtAdDnsZonesWithOnlySoaNs {
     <#
     .SYNOPSIS
     Counts DNS zones that contain only SOA and NS records.
@@ -89,3 +89,5 @@ function Test-MtAdDnsZonesWithOnlySoaNs {
 
     return $testResult
 }
+
+

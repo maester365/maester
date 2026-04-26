@@ -1,4 +1,4 @@
-function Test-MtAdDnsZonesWithRecordsCount {
+﻿function Test-MtAdDnsZonesWithRecordsCount {
     <#
     .SYNOPSIS
     Counts DNS zones that contain non-default records.
@@ -101,3 +101,5 @@ function Test-MtAdDnsZonesWithRecordsCount {
 
     return $testResult
 }
+
+

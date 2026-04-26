@@ -1,4 +1,4 @@
-function Test-MtAdGroupPrivilegedWithMembersDetails {
+﻿function Test-MtAdGroupPrivilegedWithMembersDetails {
     <#
     .SYNOPSIS
     Details of privileged groups with their member counts in Active Directory.
@@ -133,3 +133,5 @@ function Test-MtAdGroupPrivilegedWithMembersDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdUserNoPreAuthCount {
+﻿function Test-MtAdUserNoPreAuthCount {
     <#
     .SYNOPSIS
     Counts user accounts that do not require Kerberos pre-authentication.
@@ -60,3 +60,5 @@ function Test-MtAdUserNoPreAuthCount {
 
     return $testResult
 }
+
+

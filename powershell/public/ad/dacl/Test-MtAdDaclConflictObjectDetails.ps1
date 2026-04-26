@@ -1,4 +1,4 @@
-function Test-MtAdDaclConflictObjectDetails {
+﻿function Test-MtAdDaclConflictObjectDetails {
     <#
     .SYNOPSIS
     Returns detailed information for conflict objects represented in DACL data.
@@ -60,3 +60,5 @@ function Test-MtAdDaclConflictObjectDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

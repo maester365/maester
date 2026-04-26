@@ -1,4 +1,4 @@
-function Test-MtAdComputerDnsZoneCount {
+﻿function Test-MtAdComputerDnsZoneCount {
     <#
     .SYNOPSIS
     Counts unique DNS zones used by domain computers.
@@ -79,3 +79,5 @@ function Test-MtAdComputerDnsZoneCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     <#
     .SYNOPSIS
@@ -53,3 +53,5 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

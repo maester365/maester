@@ -1,4 +1,4 @@
-function Test-MtAdEnrollmentCaCertificateDetails {
+﻿function Test-MtAdEnrollmentCaCertificateDetails {
     <#
     .SYNOPSIS
     Returns Enterprise CA certificate validity details for AD enrollment.
@@ -103,3 +103,5 @@ function Test-MtAdEnrollmentCaCertificateDetails {
 
     return $testResult
 }
+
+

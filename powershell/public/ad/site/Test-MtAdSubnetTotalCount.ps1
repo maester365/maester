@@ -1,4 +1,4 @@
-function Test-MtAdSubnetTotalCount {
+﻿function Test-MtAdSubnetTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Active Directory subnets.
@@ -52,3 +52,5 @@ function Test-MtAdSubnetTotalCount {
 
     return $testResult
 }
+
+

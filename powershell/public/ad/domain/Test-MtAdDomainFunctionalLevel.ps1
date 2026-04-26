@@ -1,4 +1,4 @@
-function Test-MtAdDomainFunctionalLevel {
+﻿function Test-MtAdDomainFunctionalLevel {
     <#
     .SYNOPSIS
     Retrieves the current domain functional level.
@@ -54,3 +54,5 @@ function Test-MtAdDomainFunctionalLevel {
 
     return $testResult
 }
+
+

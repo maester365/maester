@@ -1,4 +1,4 @@
-function Test-MtAdComputerStaleEnabledCount {
+﻿function Test-MtAdComputerStaleEnabledCount {
     <#
     .SYNOPSIS
     Counts enabled computers that have not logged on for 180 days or more.
@@ -84,5 +84,7 @@ function Test-MtAdComputerStaleEnabledCount {
 
     return $testResult
 }
+
+
 
 

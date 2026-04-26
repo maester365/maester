@@ -1,4 +1,4 @@
-function Test-MtAdComputerUnconstrainedDelegationCount {
+﻿function Test-MtAdComputerUnconstrainedDelegationCount {
     <#
     .SYNOPSIS
     Counts computers with unconstrained delegation configured.
@@ -69,3 +69,5 @@ function Test-MtAdComputerUnconstrainedDelegationCount {
 
     return $testResult
 }
+
+

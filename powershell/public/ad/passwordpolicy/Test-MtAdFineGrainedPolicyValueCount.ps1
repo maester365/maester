@@ -1,4 +1,4 @@
-function Test-MtAdFineGrainedPolicyValueCount {
+﻿function Test-MtAdFineGrainedPolicyValueCount {
     <#
     .SYNOPSIS
     Analyzes distinct values across all fine-grained password policies.
@@ -80,3 +80,5 @@ function Test-MtAdFineGrainedPolicyValueCount {
 
     return $testResult
 }
+
+

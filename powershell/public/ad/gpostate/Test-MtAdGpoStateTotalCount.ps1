@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoStateTotalCount {
     <#
     .SYNOPSIS
@@ -48,3 +48,5 @@ function Test-MtAdGpoStateTotalCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

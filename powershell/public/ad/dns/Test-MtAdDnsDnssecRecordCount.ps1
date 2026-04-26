@@ -1,4 +1,4 @@
-function Test-MtAdDnsDnssecRecordCount {
+﻿function Test-MtAdDnsDnssecRecordCount {
     <#
     .SYNOPSIS
     Counts DNSSEC (DNS Security Extensions) trust anchor records.
@@ -75,3 +75,5 @@ function Test-MtAdDnsDnssecRecordCount {
 
     return $testResult
 }
+
+

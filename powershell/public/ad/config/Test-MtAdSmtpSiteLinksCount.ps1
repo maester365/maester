@@ -1,4 +1,4 @@
-function Test-MtAdSmtpSiteLinksCount {
+﻿function Test-MtAdSmtpSiteLinksCount {
     <#
     .SYNOPSIS
     Counts the number of SMTP site links in Active Directory.
@@ -53,3 +53,5 @@ function Test-MtAdSmtpSiteLinksCount {
 
     return $testResult
 }
+
+

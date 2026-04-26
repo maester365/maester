@@ -1,4 +1,4 @@
-function Test-MtAdTrustStaleCount {
+﻿function Test-MtAdTrustStaleCount {
     <#
     .SYNOPSIS
     Counts the number of stale trusts in Active Directory (trusts not validated for >60 days).
@@ -73,3 +73,5 @@ function Test-MtAdTrustStaleCount {
 
     return $testResult
 }
+
+

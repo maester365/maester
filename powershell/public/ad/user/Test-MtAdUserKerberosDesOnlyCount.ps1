@@ -1,4 +1,4 @@
-function Test-MtAdUserKerberosDesOnlyCount {
+﻿function Test-MtAdUserKerberosDesOnlyCount {
     <#
     .SYNOPSIS
     Counts user accounts configured to use DES-only Kerberos encryption.
@@ -60,3 +60,5 @@ function Test-MtAdUserKerberosDesOnlyCount {
 
     return $testResult
 }
+
+

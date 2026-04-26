@@ -1,4 +1,4 @@
-function Test-MtAdUserBuiltInAdminPasswordAgeDetails {
+﻿function Test-MtAdUserBuiltInAdminPasswordAgeDetails {
     <#
     .SYNOPSIS
     Returns password age details for built-in administrator style accounts.
@@ -54,3 +54,5 @@ function Test-MtAdUserBuiltInAdminPasswordAgeDetails {
 
     return $testResult
 }
+
+

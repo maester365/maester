@@ -1,4 +1,4 @@
-function Test-MtAdDnsReverseZoneCount {
+﻿function Test-MtAdDnsReverseZoneCount {
     <#
     .SYNOPSIS
     Counts reverse lookup DNS zones.
@@ -74,3 +74,5 @@ function Test-MtAdDnsReverseZoneCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdUserDisabledCount {
+﻿function Test-MtAdUserDisabledCount {
     <#
     .SYNOPSIS
     Counts the number of disabled user objects in Active Directory.
@@ -57,3 +57,5 @@ function Test-MtAdUserDisabledCount {
 
     return $testResult
 }
+
+

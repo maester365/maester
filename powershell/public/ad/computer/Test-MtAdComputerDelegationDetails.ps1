@@ -1,4 +1,4 @@
-function Test-MtAdComputerDelegationDetails {
+﻿function Test-MtAdComputerDelegationDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of delegation configuration per computer.
@@ -103,3 +103,5 @@ function Test-MtAdComputerDelegationDetails {
 
     return $testResult
 }
+
+

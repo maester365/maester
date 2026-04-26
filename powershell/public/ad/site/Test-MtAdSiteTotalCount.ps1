@@ -1,4 +1,4 @@
-function Test-MtAdSiteTotalCount {
+﻿function Test-MtAdSiteTotalCount {
     <#
     .SYNOPSIS
     Counts the total number of Active Directory sites.
@@ -57,3 +57,5 @@ function Test-MtAdSiteTotalCount {
 
     return $testResult
 }
+
+

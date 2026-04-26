@@ -1,4 +1,4 @@
-function Get-MtADDacls {
+﻿function Get-MtADDacls {
     <#
     .SYNOPSIS
     Collects Active Directory ACLs (Access Control Lists).
@@ -91,3 +91,5 @@ function Get-MtADDacls {
 
     return $__MtSession.ADCache[$cacheKey]
 }
+
+

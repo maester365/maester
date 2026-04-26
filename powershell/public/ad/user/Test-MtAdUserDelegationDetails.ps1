@@ -1,4 +1,4 @@
-function Test-MtAdUserDelegationDetails {
+﻿function Test-MtAdUserDelegationDetails {
     <#
     .SYNOPSIS
     Returns delegation details for users with delegation configured.
@@ -80,3 +80,5 @@ function Test-MtAdUserDelegationDetails {
 
     return $testResult
 }
+
+

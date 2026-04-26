@@ -1,4 +1,4 @@
-function Test-MtAdSubnetFirstThreeOctetsCount {
+﻿function Test-MtAdSubnetFirstThreeOctetsCount {
     <#
     .SYNOPSIS
     Counts the distinct first three octets (/24 networks) used in IPv4 subnets.
@@ -66,3 +66,5 @@ function Test-MtAdSubnetFirstThreeOctetsCount {
 
     return $testResult
 }
+
+

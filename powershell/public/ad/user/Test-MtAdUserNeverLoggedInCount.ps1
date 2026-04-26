@@ -1,4 +1,4 @@
-function Test-MtAdUserNeverLoggedInCount {
+﻿function Test-MtAdUserNeverLoggedInCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts that have never logged on.
@@ -58,3 +58,5 @@ function Test-MtAdUserNeverLoggedInCount {
 
     return $testResult
 }
+
+

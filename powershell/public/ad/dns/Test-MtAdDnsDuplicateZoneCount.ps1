@@ -1,4 +1,4 @@
-function Test-MtAdDnsDuplicateZoneCount {
+﻿function Test-MtAdDnsDuplicateZoneCount {
     <#
     .SYNOPSIS
     Counts duplicate or conflict DNS zones.
@@ -79,3 +79,5 @@ function Test-MtAdDnsDuplicateZoneCount {
 
     return $testResult
 }
+
+

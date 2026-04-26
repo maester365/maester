@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberTrustCount {
+﻿function Test-MtAdGroupMemberTrustCount {
     <#
     .SYNOPSIS
     Counts the trust members in Active Directory groups.
@@ -109,3 +109,5 @@ function Test-MtAdGroupMemberTrustCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdUserManagerSetCount {
+﻿function Test-MtAdUserManagerSetCount {
     <#
     .SYNOPSIS
     Counts users with the manager attribute set in Active Directory.
@@ -60,3 +60,5 @@ function Test-MtAdUserManagerSetCount {
 
     return $testResult
 }
+
+

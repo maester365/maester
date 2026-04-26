@@ -1,4 +1,4 @@
-function Test-MtAdDnsSoaDetails {
+﻿function Test-MtAdDnsSoaDetails {
     <#
     .SYNOPSIS
     Provides SOA (Start of Authority) record details for each DNS zone.
@@ -83,3 +83,5 @@ function Test-MtAdDnsSoaDetails {
 
     return $testResult
 }
+
+

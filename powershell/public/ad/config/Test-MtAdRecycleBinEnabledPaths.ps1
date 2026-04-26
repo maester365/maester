@@ -1,4 +1,4 @@
-function Test-MtAdRecycleBinEnabledPaths {
+﻿function Test-MtAdRecycleBinEnabledPaths {
     <#
     .SYNOPSIS
     Counts Active Directory paths where the Recycle Bin is enabled.
@@ -63,3 +63,5 @@ function Test-MtAdRecycleBinEnabledPaths {
 
     return $testResult
 }
+
+

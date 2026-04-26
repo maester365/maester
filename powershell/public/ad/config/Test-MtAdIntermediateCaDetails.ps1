@@ -1,4 +1,4 @@
-function Test-MtAdIntermediateCaDetails {
+﻿function Test-MtAdIntermediateCaDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about intermediate certificate authorities.
@@ -61,3 +61,5 @@ function Test-MtAdIntermediateCaDetails {
 
     return $testResult
 }
+
+

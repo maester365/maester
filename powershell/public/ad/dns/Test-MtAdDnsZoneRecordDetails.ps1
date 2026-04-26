@@ -1,4 +1,4 @@
-function Test-MtAdDnsZoneRecordDetails {
+﻿function Test-MtAdDnsZoneRecordDetails {
     <#
     .SYNOPSIS
     Provides detailed record count information for each DNS zone.
@@ -93,3 +93,5 @@ function Test-MtAdDnsZoneRecordDetails {
 
     return $testResult
 }
+
+

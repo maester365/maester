@@ -1,4 +1,4 @@
-function Test-MtAdKrbtgtNonStandardUacCount {
+﻿function Test-MtAdKrbtgtNonStandardUacCount {
     <#
     .SYNOPSIS
     Checks if the KRBTGT account has non-standard User Account Control (UAC) settings.
@@ -95,3 +95,5 @@ function Test-MtAdKrbtgtNonStandardUacCount {
 
     return $testResult
 }
+
+

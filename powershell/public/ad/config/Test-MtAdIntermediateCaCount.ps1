@@ -1,4 +1,4 @@
-function Test-MtAdIntermediateCaCount {
+﻿function Test-MtAdIntermediateCaCount {
     <#
     .SYNOPSIS
     Counts the intermediate certificate authorities configured in Active Directory.
@@ -52,3 +52,5 @@ function Test-MtAdIntermediateCaCount {
 
     return $testResult
 }
+
+

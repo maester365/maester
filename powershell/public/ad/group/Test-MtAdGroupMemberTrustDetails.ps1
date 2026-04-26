@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberTrustDetails {
+﻿function Test-MtAdGroupMemberTrustDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of trust members by group in Active Directory.
@@ -126,3 +126,5 @@ function Test-MtAdGroupMemberTrustDetails {
 
     return $testResult
 }
+
+

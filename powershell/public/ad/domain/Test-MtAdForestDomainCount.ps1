@@ -1,4 +1,4 @@
-function Test-MtAdForestDomainCount {
+﻿function Test-MtAdForestDomainCount {
     <#
     .SYNOPSIS
     Counts the number of domains in the forest.
@@ -62,3 +62,5 @@ function Test-MtAdForestDomainCount {
 
     return $testResult
 }
+
+

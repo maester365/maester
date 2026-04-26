@@ -1,4 +1,4 @@
-function Test-MtAdUpnSuffixesCount {
+﻿function Test-MtAdUpnSuffixesCount {
     <#
     .SYNOPSIS
     Retrieves the count of UPN (User Principal Name) suffixes configured in the forest.
@@ -61,3 +61,5 @@ function Test-MtAdUpnSuffixesCount {
 
     return $testResult
 }
+
+

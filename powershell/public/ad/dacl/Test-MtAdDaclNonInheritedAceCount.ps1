@@ -1,4 +1,4 @@
-function Test-MtAdDaclNonInheritedAceCount {
+﻿function Test-MtAdDaclNonInheritedAceCount {
     <#
     .SYNOPSIS
     Counts non-inherited ACEs in Active Directory DACLs.
@@ -51,3 +51,5 @@ function Test-MtAdDaclNonInheritedAceCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

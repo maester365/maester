@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoDefaultPasswordFoundCount {
     <#
     .SYNOPSIS
@@ -52,3 +52,5 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

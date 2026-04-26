@@ -1,4 +1,4 @@
-function Test-MtAdUserPasswordNotRequiredCount {
+﻿function Test-MtAdUserPasswordNotRequiredCount {
     <#
     .SYNOPSIS
     Counts user accounts where a password is not required.
@@ -57,3 +57,5 @@ function Test-MtAdUserPasswordNotRequiredCount {
 
     return $testResult
 }
+
+

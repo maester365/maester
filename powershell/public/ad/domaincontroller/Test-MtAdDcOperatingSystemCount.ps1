@@ -1,4 +1,4 @@
-function Test-MtAdDcOperatingSystemCount {
+﻿function Test-MtAdDcOperatingSystemCount {
     <#
     .SYNOPSIS
     Counts the distinct operating systems running on domain controllers.
@@ -56,3 +56,5 @@ function Test-MtAdDcOperatingSystemCount {
 
     return $testResult
 }
+
+

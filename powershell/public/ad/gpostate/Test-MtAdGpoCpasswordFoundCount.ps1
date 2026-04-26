@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoCpasswordFoundCount {
     <#
     .SYNOPSIS
@@ -52,3 +52,5 @@ function Test-MtAdGpoCpasswordFoundCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

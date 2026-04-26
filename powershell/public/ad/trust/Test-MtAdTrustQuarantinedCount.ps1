@@ -1,4 +1,4 @@
-function Test-MtAdTrustQuarantinedCount {
+﻿function Test-MtAdTrustQuarantinedCount {
     <#
     .SYNOPSIS
     Counts the number of quarantined trusts in Active Directory.
@@ -62,3 +62,5 @@ function Test-MtAdTrustQuarantinedCount {
 
     return $testResult
 }
+
+

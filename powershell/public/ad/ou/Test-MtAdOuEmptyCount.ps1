@@ -1,4 +1,4 @@
-function Test-MtAdOuEmptyCount {
+﻿function Test-MtAdOuEmptyCount {
     <#
     .SYNOPSIS
     Counts the number of empty Organizational Units (OUs without users, groups, or computers) in Active Directory.
@@ -91,3 +91,5 @@ function Test-MtAdOuEmptyCount {
 
     return $testResult
 }
+
+

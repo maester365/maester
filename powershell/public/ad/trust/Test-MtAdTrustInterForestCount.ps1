@@ -1,4 +1,4 @@
-function Test-MtAdTrustInterForestCount {
+﻿function Test-MtAdTrustInterForestCount {
     <#
     .SYNOPSIS
     Counts the number of inter-forest trusts in Active Directory.
@@ -59,3 +59,5 @@ function Test-MtAdTrustInterForestCount {
 
     return $testResult
 }
+
+

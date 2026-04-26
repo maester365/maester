@@ -1,4 +1,4 @@
-function Test-MtAdUserDormantEnabledCount {
+﻿function Test-MtAdUserDormantEnabledCount {
     <#
     .SYNOPSIS
     Counts enabled user accounts that have been dormant for more than 90 days.
@@ -62,3 +62,5 @@ function Test-MtAdUserDormantEnabledCount {
 
     return $testResult
 }
+
+

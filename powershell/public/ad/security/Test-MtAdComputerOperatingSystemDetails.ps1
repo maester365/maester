@@ -1,4 +1,4 @@
-function Test-MtAdComputerOperatingSystemDetails {
+﻿function Test-MtAdComputerOperatingSystemDetails {
     <#
     .SYNOPSIS
     Provides detailed breakdown of computers by operating system and service pack.
@@ -76,3 +76,5 @@ function Test-MtAdComputerOperatingSystemDetails {
 
     return $testResult
 }
+
+

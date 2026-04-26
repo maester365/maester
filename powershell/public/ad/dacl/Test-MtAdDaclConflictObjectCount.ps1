@@ -1,4 +1,4 @@
-function Test-MtAdDaclConflictObjectCount {
+﻿function Test-MtAdDaclConflictObjectCount {
     <#
     .SYNOPSIS
     Counts conflict objects represented in DACL data.
@@ -50,3 +50,5 @@ function Test-MtAdDaclConflictObjectCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

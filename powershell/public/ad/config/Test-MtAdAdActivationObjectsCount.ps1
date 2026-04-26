@@ -1,4 +1,4 @@
-function Test-MtAdAdActivationObjectsCount {
+﻿function Test-MtAdAdActivationObjectsCount {
     <#
     .SYNOPSIS
     Counts Active Directory activation objects from configuration.
@@ -48,3 +48,5 @@ function Test-MtAdAdActivationObjectsCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

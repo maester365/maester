@@ -1,4 +1,4 @@
-function Test-MtAdGpoCreatedBefore2020Count {
+﻿function Test-MtAdGpoCreatedBefore2020Count {
     <#
     .SYNOPSIS
     Counts the number of Group Policy Objects (GPOs) created before 2020 in Active Directory.
@@ -58,3 +58,5 @@ function Test-MtAdGpoCreatedBefore2020Count {
 
     return $testResult
 }
+
+

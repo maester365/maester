@@ -1,4 +1,4 @@
-function Test-MtAdSubnetNonInternalCount {
+﻿function Test-MtAdSubnetNonInternalCount {
     <#
     .SYNOPSIS
     Counts the number of non-RFC1918 (public IP) subnets in Active Directory.
@@ -102,3 +102,5 @@ function Test-MtAdSubnetNonInternalCount {
 
     return $testResult
 }
+
+

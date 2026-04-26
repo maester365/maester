@@ -1,4 +1,4 @@
-function Test-MtAdDefaultQueryPolicy {
+﻿function Test-MtAdDefaultQueryPolicy {
     <#
     .SYNOPSIS
     Returns default LDAP query policy limits from Active Directory.
@@ -67,3 +67,5 @@ function Test-MtAdDefaultQueryPolicy {
 
     return $testResult
 }
+
+

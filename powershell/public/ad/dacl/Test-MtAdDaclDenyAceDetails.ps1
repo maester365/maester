@@ -1,4 +1,4 @@
-function Test-MtAdDaclDenyAceDetails {
+﻿function Test-MtAdDaclDenyAceDetails {
     <#
     .SYNOPSIS
     Returns a breakdown of deny authorization ACEs by object and identity.
@@ -61,3 +61,5 @@ function Test-MtAdDaclDenyAceDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

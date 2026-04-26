@@ -1,4 +1,4 @@
-function Test-MtAdComputerPerOUAverage {
+﻿function Test-MtAdComputerPerOUAverage {
     <#
     .SYNOPSIS
     Calculates the average number of computers per organizational unit.
@@ -102,3 +102,5 @@ function Test-MtAdComputerPerOUAverage {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdCertificateTemplatesCount {
+﻿function Test-MtAdCertificateTemplatesCount {
     <#
     .SYNOPSIS
     Counts the number of certificate templates published in Active Directory.
@@ -49,3 +49,5 @@ function Test-MtAdCertificateTemplatesCount {
 
     return $testResult
 }
+
+

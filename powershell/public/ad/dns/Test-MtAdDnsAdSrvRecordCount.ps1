@@ -1,4 +1,4 @@
-function Test-MtAdDnsAdSrvRecordCount {
+﻿function Test-MtAdDnsAdSrvRecordCount {
     <#
     .SYNOPSIS
     Counts Active Directory Domain Services SRV records.
@@ -89,3 +89,5 @@ function Test-MtAdDnsAdSrvRecordCount {
 
     return $testResult
 }
+
+

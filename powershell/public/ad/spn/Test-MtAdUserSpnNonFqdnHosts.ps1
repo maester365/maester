@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnNonFqdnHosts {
+﻿function Test-MtAdUserSpnNonFqdnHosts {
     <#
     .SYNOPSIS
     Counts user SPNs with hosts that do not use fully qualified domain names (FQDN).
@@ -104,6 +104,8 @@ function Test-MtAdUserSpnNonFqdnHosts {
 
     return $testResult
 }
+
+
 
 
 

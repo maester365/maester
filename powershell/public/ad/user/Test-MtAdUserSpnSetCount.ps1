@@ -1,4 +1,4 @@
-function Test-MtAdUserSpnSetCount {
+﻿function Test-MtAdUserSpnSetCount {
     <#
     .SYNOPSIS
     Counts users with SPNs configured in Active Directory.
@@ -61,3 +61,5 @@ function Test-MtAdUserSpnSetCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoWmiFilterCount {
     <#
     .SYNOPSIS
@@ -59,3 +59,5 @@ function Test-MtAdGpoWmiFilterCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

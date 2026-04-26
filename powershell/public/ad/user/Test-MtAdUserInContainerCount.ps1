@@ -1,4 +1,4 @@
-function Test-MtAdUserInContainerCount {
+﻿function Test-MtAdUserInContainerCount {
     <#
     .SYNOPSIS
     Counts users located in container objects instead of OUs.
@@ -67,3 +67,5 @@ function Test-MtAdUserInContainerCount {
 
     return $testResult
 }
+
+

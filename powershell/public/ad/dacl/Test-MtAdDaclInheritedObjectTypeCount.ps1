@@ -1,4 +1,4 @@
-function Test-MtAdDaclInheritedObjectTypeCount {
+﻿function Test-MtAdDaclInheritedObjectTypeCount {
     <#
     .SYNOPSIS
     Counts inherited object types referenced by Active Directory DACL entries.
@@ -60,3 +60,5 @@ function Test-MtAdDaclInheritedObjectTypeCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

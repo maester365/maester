@@ -1,4 +1,4 @@
-function Test-MtAdSubnetWithoutSiteCount {
+﻿function Test-MtAdSubnetWithoutSiteCount {
     <#
     .SYNOPSIS
     Counts the number of subnets without site associations.
@@ -68,3 +68,5 @@ function Test-MtAdSubnetWithoutSiteCount {
 
     return $testResult
 }
+
+

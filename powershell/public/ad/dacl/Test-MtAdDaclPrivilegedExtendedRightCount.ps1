@@ -1,4 +1,4 @@
-function Test-MtAdDaclPrivilegedExtendedRightCount {
+﻿function Test-MtAdDaclPrivilegedExtendedRightCount {
     <#
     .SYNOPSIS
     Counts allow ACEs that grant the ExtendedRight permission.
@@ -61,3 +61,5 @@ function Test-MtAdDaclPrivilegedExtendedRightCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

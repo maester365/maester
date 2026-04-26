@@ -1,4 +1,4 @@
-function Test-MtAdSubnetSiteAssociationCount {
+﻿function Test-MtAdSubnetSiteAssociationCount {
     <#
     .SYNOPSIS
     Counts the number of sites that have subnet associations.
@@ -65,3 +65,5 @@ function Test-MtAdSubnetSiteAssociationCount {
 
     return $testResult
 }
+
+

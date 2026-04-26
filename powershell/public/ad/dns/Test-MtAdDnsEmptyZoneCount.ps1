@@ -1,4 +1,4 @@
-function Test-MtAdDnsEmptyZoneCount {
+﻿function Test-MtAdDnsEmptyZoneCount {
     <#
     .SYNOPSIS
     Counts DNS zones that contain zero records.
@@ -84,3 +84,5 @@ function Test-MtAdDnsEmptyZoneCount {
 
     return $testResult
 }
+
+

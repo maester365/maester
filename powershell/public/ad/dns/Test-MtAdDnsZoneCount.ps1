@@ -1,4 +1,4 @@
-function Test-MtAdDnsZoneCount {
+﻿function Test-MtAdDnsZoneCount {
     <#
     .SYNOPSIS
     Counts the number of DNS zones with records in Active Directory.
@@ -65,3 +65,5 @@ function Test-MtAdDnsZoneCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerInDefaultContainer {
+﻿function Test-MtAdComputerInDefaultContainer {
     <#
     .SYNOPSIS
     Counts computers located in the default Computers container.
@@ -75,3 +75,5 @@ function Test-MtAdComputerInDefaultContainer {
 
     return $testResult
 }
+
+

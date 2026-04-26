@@ -1,4 +1,4 @@
-function Test-MtAdRidsRemaining {
+﻿function Test-MtAdRidsRemaining {
     <#
     .SYNOPSIS
     Retrieves the number of remaining RIDs (Relative Identifiers) in the domain.
@@ -77,3 +77,5 @@ function Test-MtAdRidsRemaining {
 
     return $testResult
 }
+
+

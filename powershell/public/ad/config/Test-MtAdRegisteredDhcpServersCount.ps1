@@ -1,4 +1,4 @@
-function Test-MtAdRegisteredDhcpServersCount {
+﻿function Test-MtAdRegisteredDhcpServersCount {
     <#
     .SYNOPSIS
     Counts the number of DHCP servers registered in Active Directory.
@@ -49,3 +49,5 @@ function Test-MtAdRegisteredDhcpServersCount {
 
     return $testResult
 }
+
+

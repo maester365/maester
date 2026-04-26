@@ -1,4 +1,4 @@
-function Test-MtAdGpoLinkedOUCount {
+﻿function Test-MtAdGpoLinkedOUCount {
     <#
     .SYNOPSIS
     Counts the number of Organizational Units with GPO links in Active Directory.
@@ -72,5 +72,7 @@ function Test-MtAdGpoLinkedOUCount {
 
     return $testResult
 }
+
+
 
 

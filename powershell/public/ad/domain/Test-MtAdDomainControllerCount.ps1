@@ -1,4 +1,4 @@
-function Test-MtAdDomainControllerCount {
+﻿function Test-MtAdDomainControllerCount {
     <#
     .SYNOPSIS
     Counts the number of domain controllers in the domain.
@@ -58,3 +58,5 @@ function Test-MtAdDomainControllerCount {
 
     return $testResult
 }
+
+

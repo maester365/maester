@@ -1,4 +1,4 @@
-function Test-MtAdComputerOperatingSystemCount {
+﻿function Test-MtAdComputerOperatingSystemCount {
     <#
     .SYNOPSIS
     Counts the number of distinct operating systems in use by domain computers.
@@ -70,3 +70,5 @@ function Test-MtAdComputerOperatingSystemCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerDnsHostNameCount {
+﻿function Test-MtAdComputerDnsHostNameCount {
     <#
     .SYNOPSIS
     Counts computers with DNS host name configured.
@@ -77,3 +77,5 @@ function Test-MtAdComputerDnsHostNameCount {
 
     return $testResult
 }
+
+

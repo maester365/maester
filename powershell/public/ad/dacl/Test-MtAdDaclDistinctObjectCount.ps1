@@ -1,4 +1,4 @@
-function Test-MtAdDaclDistinctObjectCount {
+﻿function Test-MtAdDaclDistinctObjectCount {
     <#
     .SYNOPSIS
     Counts distinct Active Directory objects that have DACL entries.
@@ -57,3 +57,5 @@ function Test-MtAdDaclDistinctObjectCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

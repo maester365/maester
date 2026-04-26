@@ -1,4 +1,4 @@
-function Test-MtAdDisabledReplicationConnectionCount {
+﻿function Test-MtAdDisabledReplicationConnectionCount {
     <#
     .SYNOPSIS
     Checks for disabled Active Directory replication connections.
@@ -58,3 +58,5 @@ function Test-MtAdDisabledReplicationConnectionCount {
 
     return $testResult
 }
+
+

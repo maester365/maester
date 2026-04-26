@@ -1,4 +1,4 @@
-function Test-MtAdDaclIdentityAceDistribution {
+﻿function Test-MtAdDaclIdentityAceDistribution {
     <#
     .SYNOPSIS
     Returns the ACE distribution per identity in collected DACL data.
@@ -73,3 +73,5 @@ function Test-MtAdDaclIdentityAceDistribution {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

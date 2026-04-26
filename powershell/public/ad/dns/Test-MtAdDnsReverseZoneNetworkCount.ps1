@@ -1,4 +1,4 @@
-function Test-MtAdDnsReverseZoneNetworkCount {
+﻿function Test-MtAdDnsReverseZoneNetworkCount {
     <#
     .SYNOPSIS
     Counts distinct networks with reverse lookup zones.
@@ -78,3 +78,5 @@ function Test-MtAdDnsReverseZoneNetworkCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdSupportedSaslMechanismDetails {
+﻿function Test-MtAdSupportedSaslMechanismDetails {
     <#
     .SYNOPSIS
     Retrieves detailed information about supported SASL mechanisms.
@@ -72,3 +72,5 @@ function Test-MtAdSupportedSaslMechanismDetails {
 
     return $testResult
 }
+
+

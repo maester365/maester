@@ -1,4 +1,4 @@
-function Test-MtAdComputerDelegationCount {
+﻿function Test-MtAdComputerDelegationCount {
     <#
     .SYNOPSIS
     Counts computers with delegation configured.
@@ -81,3 +81,5 @@ function Test-MtAdComputerDelegationCount {
 
     return $testResult
 }
+
+

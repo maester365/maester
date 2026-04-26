@@ -1,4 +1,4 @@
-function Test-MtAdEnrollmentTemplatesCount {
+﻿function Test-MtAdEnrollmentTemplatesCount {
     <#
     .SYNOPSIS
     Counts the number of certificate templates available for enrollment.
@@ -49,3 +49,5 @@ function Test-MtAdEnrollmentTemplatesCount {
 
     return $testResult
 }
+
+

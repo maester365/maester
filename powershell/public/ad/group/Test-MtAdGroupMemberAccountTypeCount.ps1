@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberAccountTypeCount {
+﻿function Test-MtAdGroupMemberAccountTypeCount {
     <#
     .SYNOPSIS
     Counts the distinct account types of members across Active Directory groups.
@@ -85,3 +85,5 @@ function Test-MtAdGroupMemberAccountTypeCount {
 
     return $testResult
 }
+
+

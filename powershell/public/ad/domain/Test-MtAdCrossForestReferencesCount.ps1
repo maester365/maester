@@ -1,4 +1,4 @@
-function Test-MtAdCrossForestReferencesCount {
+﻿function Test-MtAdCrossForestReferencesCount {
     <#
     .SYNOPSIS
     Retrieves the count of cross-forest references configured in the forest.
@@ -63,3 +63,5 @@ function Test-MtAdCrossForestReferencesCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdGpoDisabledLinkCount {
+﻿function Test-MtAdGpoDisabledLinkCount {
     <#
     .SYNOPSIS
     Counts the number of disabled GPO links in Active Directory.
@@ -86,3 +86,5 @@ function Test-MtAdGpoDisabledLinkCount {
 
     return $testResult
 }
+
+

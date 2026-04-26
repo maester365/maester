@@ -1,4 +1,4 @@
-function Test-MtAdKrbtgtLastLogon {
+﻿function Test-MtAdKrbtgtLastLogon {
     <#
     .SYNOPSIS
     Checks the KRBTGT account last logon time.
@@ -57,3 +57,5 @@ function Test-MtAdKrbtgtLastLogon {
 
     return $testResult
 }
+
+

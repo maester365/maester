@@ -1,4 +1,4 @@
-function Test-MtAdUserProfilePathCount {
+﻿function Test-MtAdUserProfilePathCount {
     <#
     .SYNOPSIS
     Counts users with a profile path configured in Active Directory.
@@ -60,3 +60,5 @@ function Test-MtAdUserProfilePathCount {
 
     return $testResult
 }
+
+

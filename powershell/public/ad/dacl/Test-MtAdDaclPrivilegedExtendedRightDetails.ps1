@@ -1,4 +1,4 @@
-function Test-MtAdDaclPrivilegedExtendedRightDetails {
+﻿function Test-MtAdDaclPrivilegedExtendedRightDetails {
     <#
     .SYNOPSIS
     Returns a breakdown of ExtendedRight allow ACEs by ObjectType.
@@ -88,3 +88,5 @@ function Test-MtAdDaclPrivilegedExtendedRightDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

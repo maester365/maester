@@ -1,4 +1,4 @@
-function Test-MtAdSiteWithoutSubnetCount {
+﻿function Test-MtAdSiteWithoutSubnetCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory sites without subnet associations.
@@ -75,3 +75,5 @@ function Test-MtAdSiteWithoutSubnetCount {
 
     return $testResult
 }
+
+

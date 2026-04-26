@@ -1,4 +1,4 @@
-function Test-MtAdDnsDynamicRecordCount {
+﻿function Test-MtAdDnsDynamicRecordCount {
     <#
     .SYNOPSIS
     Counts the number of dynamic DNS records in Active Directory.
@@ -75,5 +75,7 @@ function Test-MtAdDnsDynamicRecordCount {
 
     return $testResult
 }
+
+
 
 

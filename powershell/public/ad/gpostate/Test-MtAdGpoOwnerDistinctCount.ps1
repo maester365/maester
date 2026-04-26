@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoOwnerDistinctCount {
     <#
     .SYNOPSIS
@@ -56,3 +56,5 @@ function Test-MtAdGpoOwnerDistinctCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

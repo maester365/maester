@@ -1,4 +1,4 @@
-function Test-MtAdDcSiteCoverageCount {
+﻿function Test-MtAdDcSiteCoverageCount {
     <#
     .SYNOPSIS
     Counts the number of Active Directory sites with domain controllers.
@@ -62,3 +62,5 @@ function Test-MtAdDcSiteCoverageCount {
 
     return $testResult
 }
+
+

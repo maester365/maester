@@ -1,4 +1,4 @@
-function Test-MtAdComputerDormantCount {
+﻿function Test-MtAdComputerDormantCount {
     <#
     .SYNOPSIS
     Counts the number of dormant computer objects in Active Directory.
@@ -73,3 +73,5 @@ function Test-MtAdComputerDormantCount {
 
     return $testResult
 }
+
+

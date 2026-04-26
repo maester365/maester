@@ -1,4 +1,4 @@
-<# <!-- OMO_INTERNAL_INITIATOR --> #>
+﻿<# <!-- OMO_INTERNAL_INITIATOR --> #>
 function Test-MtAdGpoEnforcementCount {
     <#
     .SYNOPSIS
@@ -52,3 +52,5 @@ function Test-MtAdGpoEnforcementCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

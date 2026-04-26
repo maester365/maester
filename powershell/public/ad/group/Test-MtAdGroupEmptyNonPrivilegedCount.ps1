@@ -1,4 +1,4 @@
-function Test-MtAdGroupEmptyNonPrivilegedCount {
+﻿function Test-MtAdGroupEmptyNonPrivilegedCount {
     <#
     .SYNOPSIS
     Counts empty non-privileged groups in Active Directory.
@@ -80,3 +80,5 @@ function Test-MtAdGroupEmptyNonPrivilegedCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

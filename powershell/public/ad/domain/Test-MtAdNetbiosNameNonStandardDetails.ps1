@@ -1,4 +1,4 @@
-function Test-MtAdNetbiosNameNonStandardDetails {
+﻿function Test-MtAdNetbiosNameNonStandardDetails {
     <#
     .SYNOPSIS
     Lists details of NetBIOS names that don't comply with naming standards.
@@ -102,4 +102,6 @@ function Test-MtAdNetbiosNameNonStandardDetails {
 
     return $testResult
 }
+
+
 

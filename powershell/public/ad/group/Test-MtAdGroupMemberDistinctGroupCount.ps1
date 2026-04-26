@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberDistinctGroupCount {
+﻿function Test-MtAdGroupMemberDistinctGroupCount {
     <#
     .SYNOPSIS
     Counts the distinct groups that have members in Active Directory.
@@ -85,3 +85,5 @@ function Test-MtAdGroupMemberDistinctGroupCount {
 
     return $testResult
 }
+
+

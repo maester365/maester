@@ -1,4 +1,4 @@
-function Test-MtAdDaclOuObjectCount {
+﻿function Test-MtAdDaclOuObjectCount {
     <#
     .SYNOPSIS
     Counts DACL entries on Organizational Unit objects.
@@ -51,3 +51,5 @@ function Test-MtAdDaclOuObjectCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdComputerSidHistoryCount {
+﻿function Test-MtAdComputerSidHistoryCount {
     <#
     .SYNOPSIS
     Counts computers with SID History set.
@@ -71,3 +71,5 @@ function Test-MtAdComputerSidHistoryCount {
 
     return $testResult
 }
+
+

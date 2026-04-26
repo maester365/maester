@@ -1,4 +1,4 @@
-function Test-MtAdGroupWithManagerCount {
+﻿function Test-MtAdGroupWithManagerCount {
     <#
     .SYNOPSIS
     Counts groups that have a manager assigned via the ManagedBy attribute.
@@ -72,3 +72,5 @@ function Test-MtAdGroupWithManagerCount {
 
     return $testResult
 }
+
+

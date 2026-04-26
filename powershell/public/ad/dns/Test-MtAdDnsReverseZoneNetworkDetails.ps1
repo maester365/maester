@@ -1,4 +1,4 @@
-function Test-MtAdDnsReverseZoneNetworkDetails {
+﻿function Test-MtAdDnsReverseZoneNetworkDetails {
     <#
     .SYNOPSIS
     Provides detailed information about networks with reverse lookup zones.
@@ -94,3 +94,5 @@ function Test-MtAdDnsReverseZoneNetworkDetails {
 
     return $testResult
 }
+
+

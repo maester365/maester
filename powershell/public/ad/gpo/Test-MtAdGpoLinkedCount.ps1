@@ -1,4 +1,4 @@
-function Test-MtAdGpoLinkedCount {
+﻿function Test-MtAdGpoLinkedCount {
     <#
     .SYNOPSIS
     Counts distinct GPOs that have at least one enabled link (active GPOs).
@@ -78,4 +78,6 @@ function Test-MtAdGpoLinkedCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+
 

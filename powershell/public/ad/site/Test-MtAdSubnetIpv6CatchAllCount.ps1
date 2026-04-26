@@ -1,4 +1,4 @@
-function Test-MtAdSubnetIpv6CatchAllCount {
+﻿function Test-MtAdSubnetIpv6CatchAllCount {
     <#
     .SYNOPSIS
     Counts the number of IPv6 catch-all subnets in Active Directory.
@@ -84,3 +84,5 @@ function Test-MtAdSubnetIpv6CatchAllCount {
 
     return $testResult
 }
+
+

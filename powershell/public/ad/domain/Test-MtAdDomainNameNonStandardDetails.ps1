@@ -1,4 +1,4 @@
-function Test-MtAdDomainNameNonStandardDetails {
+﻿function Test-MtAdDomainNameNonStandardDetails {
     <#
     .SYNOPSIS
     Lists details of domain names that don't comply with RFC standards.
@@ -88,3 +88,5 @@ function Test-MtAdDomainNameNonStandardDetails {
 
     return $testResult
 }
+
+

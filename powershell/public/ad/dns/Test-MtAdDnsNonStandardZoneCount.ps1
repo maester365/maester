@@ -1,4 +1,4 @@
-function Test-MtAdDnsNonStandardZoneCount {
+﻿function Test-MtAdDnsNonStandardZoneCount {
     <#
     .SYNOPSIS
     Counts DNS zones with non-standard names.
@@ -85,3 +85,5 @@ function Test-MtAdDnsNonStandardZoneCount {
 
     return $testResult
 }
+
+

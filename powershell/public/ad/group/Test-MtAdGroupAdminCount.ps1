@@ -1,4 +1,4 @@
-function Test-MtAdGroupAdminCount {
+﻿function Test-MtAdGroupAdminCount {
     <#
     .SYNOPSIS
     Counts groups with AdminCount set in Active Directory.
@@ -68,3 +68,5 @@ function Test-MtAdGroupAdminCount {
 
     return $testResult
 }
+
+

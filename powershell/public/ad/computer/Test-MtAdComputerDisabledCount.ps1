@@ -1,4 +1,4 @@
-function Test-MtAdComputerDisabledCount {
+﻿function Test-MtAdComputerDisabledCount {
     <#
     .SYNOPSIS
     Counts the number of disabled computer objects in Active Directory.
@@ -66,3 +66,5 @@ function Test-MtAdComputerDisabledCount {
 
     return $testResult
 }
+
+

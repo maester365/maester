@@ -1,4 +1,4 @@
-function Test-MtAdKdsRootKeysCount {
+﻿function Test-MtAdKdsRootKeysCount {
     <#
     .SYNOPSIS
     Counts the number of KDS root keys used for gMSA in Active Directory.
@@ -52,3 +52,5 @@ function Test-MtAdKdsRootKeysCount {
 
     return $testResult
 }
+
+

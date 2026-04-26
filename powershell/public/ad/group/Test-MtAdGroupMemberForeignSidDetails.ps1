@@ -1,4 +1,4 @@
-function Test-MtAdGroupMemberForeignSidDetails {
+﻿function Test-MtAdGroupMemberForeignSidDetails {
     <#
     .SYNOPSIS
     Details of foreign security principals by their domain of origin.
@@ -109,3 +109,5 @@ function Test-MtAdGroupMemberForeignSidDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

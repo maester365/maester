@@ -1,4 +1,4 @@
-function Test-MtAdDaclDenyAceCount {
+﻿function Test-MtAdDaclDenyAceCount {
     <#
     .SYNOPSIS
     Counts deny authorization ACEs in collected DACL data.
@@ -51,3 +51,5 @@ function Test-MtAdDaclDenyAceCount {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

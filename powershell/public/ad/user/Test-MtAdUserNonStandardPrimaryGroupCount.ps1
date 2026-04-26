@@ -1,4 +1,4 @@
-function Test-MtAdUserNonStandardPrimaryGroupCount {
+﻿function Test-MtAdUserNonStandardPrimaryGroupCount {
     <#
     .SYNOPSIS
     Counts users with a non-standard primary group in Active Directory.
@@ -61,3 +61,5 @@ function Test-MtAdUserNonStandardPrimaryGroupCount {
 
     return $testResult
 }
+
+

@@ -1,4 +1,4 @@
-function Test-MtAdSpnSuffixesCount {
+﻿function Test-MtAdSpnSuffixesCount {
     <#
     .SYNOPSIS
     Retrieves the count of SPN (Service Principal Name) suffixes configured in the forest.
@@ -61,3 +61,5 @@ function Test-MtAdSpnSuffixesCount {
 
     return $testResult
 }
+
+

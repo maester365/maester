@@ -1,4 +1,4 @@
-function Test-MtAdUserBuiltInAdminEnabledDetails {
+﻿function Test-MtAdUserBuiltInAdminEnabledDetails {
     <#
     .SYNOPSIS
     Returns enabled built-in administrator style user details.
@@ -56,3 +56,5 @@ function Test-MtAdUserBuiltInAdminEnabledDetails {
 
     return $testResult
 }
+
+

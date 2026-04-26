@@ -1,4 +1,4 @@
-function Test-MtAdTombstoneLifetimeConfig {
+﻿function Test-MtAdTombstoneLifetimeConfig {
     <#
     .SYNOPSIS
     Returns the Active Directory tombstone lifetime configuration.
@@ -46,3 +46,5 @@ function Test-MtAdTombstoneLifetimeConfig {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
+
+

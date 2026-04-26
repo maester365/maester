@@ -1,4 +1,4 @@
-function Test-MtAdMachineAccountQuota {
+﻿function Test-MtAdMachineAccountQuota {
     <#
     .SYNOPSIS
     Retrieves the ms-DS-MachineAccountQuota value for the domain.
@@ -72,3 +72,5 @@ function Test-MtAdMachineAccountQuota {
 
     return $testResult
 }
+
+

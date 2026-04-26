@@ -1,4 +1,4 @@
-function Test-MtAdGroupInContainerCount {
+﻿function Test-MtAdGroupInContainerCount {
     <#
     .SYNOPSIS
     Counts groups located in container objects (CN=) instead of Organizational Units (OU=).
@@ -70,3 +70,5 @@ function Test-MtAdGroupInContainerCount {
 
     return $testResult
 }
+
+

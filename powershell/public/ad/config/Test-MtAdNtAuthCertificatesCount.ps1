@@ -1,4 +1,4 @@
-function Test-MtAdNtAuthCertificatesCount {
+﻿function Test-MtAdNtAuthCertificatesCount {
     <#
     .SYNOPSIS
     Counts the NTAuth certificates configured in Active Directory.
@@ -52,3 +52,5 @@ function Test-MtAdNtAuthCertificatesCount {
 
     return $testResult
 }
+
+
