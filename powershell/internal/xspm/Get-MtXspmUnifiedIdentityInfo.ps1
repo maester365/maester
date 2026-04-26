@@ -270,7 +270,7 @@
             | extend CriticalityLevel = toint(parse_json(XspmCriticalAssetDetails)['criticalityLevel'])
             | project-away XspmGraphNodeId, XspmGraphNodeId1, ServicePrincipalId1, ServicePrincipalId2, XspmGraphNodeId1, XspmGraphNodeId2, TargetNodeId, XspmGraphOAuthAppNodeId, XspmGraphOAuthAppNodeId1
             | sort by ServicePrincipalName asc
-            | project Timestamp, TimeGenerated, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy, AccountStatus
+            | project Timestamp, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy, AccountStatus
             | extend Classification = case(
                 AssignedEntraRoles has 'ControlPlane' or ApiPermissions has 'ControlPlane', 'ControlPlane',
                 AssignedEntraRoles has 'ManagementPlane' or ApiPermissions has 'ManagementPlane', 'ManagementPlane',

@@ -106,9 +106,10 @@ foreach ($File in $PublicSourceFiles) {
         Write-Warning "Parse errors in '$($File.Name)': $($ParseErrors[0].Message)"
     }
 
-    # Find top-level function definitions only (not nested inside other functions).
-    # Walk the full parent chain — any FunctionDefinitionAst ancestor means this
-    # function is nested, regardless of intermediate block types.
+    # Find top-level function definitions only (not nested inside other functions
+    # and not nested anywhere inside a type definition). Walk the full parent chain — any
+    # FunctionDefinitionAst or TypeDefinitionAst ancestor means this function definition is nested,
+    # regardless of intermediate block types.
     $TopLevelFunctions = $Ast.FindAll({
             param ($Node)
             if ($Node -isnot [System.Management.Automation.Language.FunctionDefinitionAst]) {
@@ -117,6 +118,9 @@ foreach ($File in $PublicSourceFiles) {
             $Parent = $Node.Parent
             while ($Parent) {
                 if ($Parent -is [System.Management.Automation.Language.FunctionDefinitionAst]) {
+                    return $false
+                }
+                if ($Parent -is [System.Management.Automation.Language.TypeDefinitionAst]) {
                     return $false
                 }
                 $Parent = $Parent.Parent

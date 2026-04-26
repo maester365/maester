@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint .",
     "postinstall": "patch-package"
   },
   "dependencies": {
@@ -37,12 +36,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.5.0",
-    "eslint": "^10.2.0",
     "patch-package": "^8.0.1",
-    "postcss": "^8.5.10",
-    "shadcn": "^4.3.1",
     "tailwindcss": "~3.4.17",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vite": "^8.0.9",
     "vite-plugin-singlefile": "^2.3.3"
   },

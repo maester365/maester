@@ -55,7 +55,7 @@
     FormatsToProcess     = @('Maester.Format.ps1xml')
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport    = @(
+        FunctionsToExport    = @(
         'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Clear-MtADCache', 'Clear-MtDnsCache',
         'Clear-MtExoCache', 'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester',
         'Convert-MtResultsToFlatObject', 'ConvertFrom-MailAuthenticationRecordDkim',

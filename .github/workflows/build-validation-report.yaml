@@ -4,12 +4,14 @@ on:
     workflows: ["build-validation"] # runs after build-validation workflow
     types:
       - completed
-permissions:
-  contents: read
-  actions: read
-  checks: write
+permissions: {}
+
 jobs:
   report:
+    permissions:
+      contents: read
+      actions: read
+      checks: write
     runs-on: ubuntu-latest
     steps:
       # fail-on-error is set to false so that PRs which don't touch the path-filtered

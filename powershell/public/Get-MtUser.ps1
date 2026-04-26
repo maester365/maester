@@ -135,23 +135,38 @@
                 # Handling Emergency Access Groups
                 Write-Verbose "Emergency access group: $EmergencyAccessGroups"
                 foreach ( $EmergencyAccessGroup in $EmergencyAccessGroups ) {
-                    # Disable paging to avoid timeout of large groups which are excluded. Fix for https://github.com/maester365/maester/issues/1227
+                    # Skip null or empty group IDs that can occur when CA policies have no group exclusions
+                    if ([string]::IsNullOrEmpty($EmergencyAccessGroup)) {
+                        Write-Verbose "Skipping null or empty emergency access group ID."
+                        continue
+                    }
+                    # Fetch only the first page to avoid timeout on large groups. Fix for https://github.com/maester365/maester/issues/1227
+                    # -DisablePaging causes Invoke-MtGraphRequest to return the raw Graph response wrapper
+                    # ({ value: [...], @odata.context: '...', ... }) rather than the unwrapped member objects.
+                    # Extract the members array from the value property before counting or iterating.
                     try {
-                        $TmpUsers = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable -DisablePaging
-                        if ( $TmpUsers.ContainsKey('userType') ) {
-                            Write-Verbose "Setting userType to $UserType for $(($TmpUsers | Measure-Object).count) users that are member of EmergencyAccess."
-                            $TmpUsers | ForEach-Object {
-                                $_.userType = "EmergencyAccess"
-                                $Users.Add($_) | Out-Null
+                        $RawResponse = Invoke-MtGraphRequest -RelativeUri "groups/$EmergencyAccessGroup/members" -Select id, userPrincipalName, userType -OutputType Hashtable -DisablePaging
+                        $TmpUsers = if ($null -ne $RawResponse -and $RawResponse.ContainsKey('value')) { @($RawResponse['value']) } else { @() }
+                        # Reject groups that are too large to be emergency access groups. If the first page already has
+                        # many members it is likely a broad corporate group rather than an emergency access group.
+                        # See https://github.com/maester365/maester/issues/1227
+                        $MemberCount = $TmpUsers.Count
+                        if ($MemberCount -gt 20) {
+                            Write-Warning "Get-MtUser: Skipping group '$EmergencyAccessGroup' — it has $MemberCount members, which is too many to be an emergency access group. Emergency access groups should have only 1–2 members. Review your Conditional Access policy exclusions to confirm the correct group is being excluded."
+                            continue
+                        }
+                        Write-Verbose "Setting userType to EmergencyAccess for $MemberCount users that are members of group '$EmergencyAccessGroup'."
+                        $TmpUsers | ForEach-Object {
+                            $_.userType = "EmergencyAccess"
+                            $Users.Add($_) | Out-Null
 
-                                if ($Users.Count -ge $Count) {
-                                    Write-Verbose "Found $Count $UserType users."
-                                    break
-                                }
+                            if ($Users.Count -ge $Count) {
+                                Write-Verbose "Found $Count $UserType users."
+                                break
                             }
                         }
                     } catch {
-                        Write-Warning -Message "Unable to retrieve group with GUID: ${EmergencyAccessUser}"
+                        Write-Warning -Message "Unable to retrieve members for group with GUID: ${EmergencyAccessGroup}. Error: $_"
                     }
                 }
             }
