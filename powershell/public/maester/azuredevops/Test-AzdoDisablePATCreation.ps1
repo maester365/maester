@@ -22,6 +22,8 @@ function Test-AzdoDisablePATCreation {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoDisablePATCreation"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

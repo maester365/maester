@@ -22,6 +22,8 @@ function Test-AzdoResourceUsageProject {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoResourceUsageProject"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

@@ -26,6 +26,8 @@ function Test-AzdoOrganizationStorageUsage {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationStorageUsage"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

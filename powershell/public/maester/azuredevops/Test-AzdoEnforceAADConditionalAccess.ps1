@@ -23,6 +23,8 @@ function Test-AzdoEnforceAADConditionalAccess {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoEnforceAADConditionalAccess"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

@@ -25,6 +25,8 @@ function Test-AzdoLogAuditEvent {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoLogAuditEvent"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

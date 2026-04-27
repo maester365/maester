@@ -22,6 +22,8 @@ function Test-AzdoOrganizationLimitVariablesAtQueueTime {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationLimitVariablesAtQueueTime"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

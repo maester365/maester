@@ -26,6 +26,8 @@ function Test-AzdoAllowTeamAdminsInvitationsAccessToken {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoAllowTeamAdminsInvitationsAccessToken"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

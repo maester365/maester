@@ -23,6 +23,8 @@ function Test-AzdoOrganizationTaskRestrictionsDisableNode6Task {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationTaskRestrictionsDisableNode6Task"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

@@ -27,6 +27,8 @@ function Test-AzdoOrganizationCreationRestriction {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationCreationRestriction"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

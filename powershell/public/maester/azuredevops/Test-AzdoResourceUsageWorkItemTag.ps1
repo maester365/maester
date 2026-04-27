@@ -22,6 +22,8 @@ function Test-AzdoResourceUsageWorkItemTag {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoResourceUsageWorkItemTag"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

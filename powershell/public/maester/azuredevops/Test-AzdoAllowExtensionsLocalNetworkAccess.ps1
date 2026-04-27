@@ -22,6 +22,8 @@ function Test-AzdoAllowExtensionsLocalNetworkAccess {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoAllowExtensionsLocalNetworkAccess"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

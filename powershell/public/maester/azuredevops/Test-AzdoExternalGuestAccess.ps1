@@ -22,6 +22,8 @@ function Test-AzdoExternalGuestAccess {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoExternalGuestAccess"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

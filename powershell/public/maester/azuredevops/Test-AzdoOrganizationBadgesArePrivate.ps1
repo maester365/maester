@@ -23,6 +23,8 @@ function Test-AzdoOrganizationBadgesArePrivate {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationBadgesArePrivate"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

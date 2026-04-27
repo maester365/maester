@@ -24,6 +24,8 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoRestrictPersonalAccessTokenLifespan"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

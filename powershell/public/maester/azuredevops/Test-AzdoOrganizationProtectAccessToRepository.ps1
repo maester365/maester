@@ -23,6 +23,8 @@ function Test-AzdoOrganizationProtectAccessToRepository {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationProtectAccessToRepository"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

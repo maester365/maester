@@ -23,6 +23,8 @@ function Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationAutomaticEnrollmentAdvancedSecurityNewProject"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

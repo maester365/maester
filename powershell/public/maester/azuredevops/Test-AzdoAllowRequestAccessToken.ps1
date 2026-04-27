@@ -25,6 +25,8 @@ function Test-AzdoAllowRequestAccessToken {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoAllowRequestAccessToken"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

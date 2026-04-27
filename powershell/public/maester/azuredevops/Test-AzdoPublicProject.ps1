@@ -23,6 +23,8 @@ function Test-AzdoPublicProject {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoPublicProject"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

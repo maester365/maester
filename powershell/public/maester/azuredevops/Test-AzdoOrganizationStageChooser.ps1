@@ -23,6 +23,8 @@ function Test-AzdoOrganizationStageChooser {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationStageChooser"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

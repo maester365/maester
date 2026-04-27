@@ -22,6 +22,8 @@ function Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationLimitJobAuthorizationScopeReleasePipeline"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

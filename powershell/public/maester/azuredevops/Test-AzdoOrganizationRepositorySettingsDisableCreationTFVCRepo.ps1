@@ -22,6 +22,8 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

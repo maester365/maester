@@ -24,6 +24,8 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoRestrictFullScopePersonalAccessToken"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

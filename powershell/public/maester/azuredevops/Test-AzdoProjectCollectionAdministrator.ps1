@@ -22,6 +22,8 @@ function Test-AzdoProjectCollectionAdministrator {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoProjectCollectionAdministrator"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

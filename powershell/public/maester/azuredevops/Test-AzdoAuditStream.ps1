@@ -26,6 +26,8 @@ function Test-AzdoAuditStream {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoAuditStream"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

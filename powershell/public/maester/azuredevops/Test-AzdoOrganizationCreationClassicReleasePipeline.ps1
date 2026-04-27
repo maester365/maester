@@ -22,6 +22,8 @@ function Test-AzdoOrganizationCreationClassicReleasePipeline {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoOrganizationCreationClassicReleasePipeline"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null

@@ -24,6 +24,8 @@ function Test-AzdoThirdPartyAccessViaOauth {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Running Test-AzdoThirdPartyAccessViaOauth"
+
     if (-not (Test-MtConnection AzureDevOps)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
