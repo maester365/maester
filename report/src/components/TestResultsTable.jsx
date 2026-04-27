@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from "react";
-import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput, Grid, Button } from "@tremor/react";
+import { useState, useEffect, useCallback, lazy, Suspense, useMemo } from "react";
+import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput } from "@tremor/react";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getLinkedTestResultId, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
+import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
@@ -74,7 +74,7 @@ export default function TestResultsTable(props) {
 
     return (selectedStatus.length === 0 || selectedStatus.includes(item.Result)) &&
       (selectedBlock.length === 0 || selectedBlock.includes(item.Block)) &&
-      (selectedTag.length === 0 || item.Tag.some(tag => selectedTag.includes(tag))) &&
+      (selectedTag.length === 0 || (item.Tag || []).some(tag => selectedTag.includes(tag))) &&
       matchesSeverity &&
       matchesSearch;
   }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity]);
@@ -209,7 +209,7 @@ export default function TestResultsTable(props) {
 
     window.requestAnimationFrame(() => {
       document.getElementById(linkedAnchorId)?.scrollIntoView({
-        behavior: "smooth",
+        behavior: getPreferredScrollBehavior(),
         block: "center",
       });
       handleOpenSheet(linkedTestResult);

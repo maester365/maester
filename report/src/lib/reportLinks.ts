@@ -25,12 +25,16 @@ export function getTestResultAnchorHash(anchorId: string) {
   return `#${encodeURIComponent(anchorId)}`
 }
 
+export function getPreferredScrollBehavior(): ScrollBehavior {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+}
+
 export function getLinkedTestResultId(location: ReportLocation) {
   if (location.hash.length > 1) {
     return safeDecodeURIComponent(location.hash.slice(1))
   }
 
-  const path = location.pathname.replace(/^\/+/, "")
+  const path = location.pathname.replace(/^\/+|\/+$/g, "")
 
   if (!path || knownReportPaths.has(path) || path.startsWith("view/")) {
     return undefined
@@ -42,6 +46,6 @@ export function getLinkedTestResultId(location: ReportLocation) {
 export function scrollReportToTop() {
   document.getElementById(reportMainElementId)?.scrollTo({
     top: 0,
-    behavior: "smooth",
+    behavior: getPreferredScrollBehavior(),
   })
 }
