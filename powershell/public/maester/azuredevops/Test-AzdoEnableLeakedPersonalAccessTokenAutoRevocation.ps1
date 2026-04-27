@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -48,9 +48,9 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         else {
             $resultMarkdown = "Your tenant does not have leaked Personal Access Token auto-revocation enabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }

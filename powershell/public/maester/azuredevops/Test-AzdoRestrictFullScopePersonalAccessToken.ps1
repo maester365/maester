@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -44,9 +44,9 @@ function Test-AzdoRestrictFullScopePersonalAccessToken {
         else {
             $resultMarkdown = "Your tenant does not have Personal Access Token full scope restrictions enabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }
