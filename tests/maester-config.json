@@ -1350,6 +1350,31 @@
       "Title": "Ensure BitLocker full disk encryption is configured via Intune"
     },
     {
+      "Id": "MT.1152",
+      "Severity": "High",
+      "Title": "Unified audit log ingestion is enabled for AI activity"
+    },
+    {
+      "Id": "MT.1153",
+      "Severity": "Medium",
+      "Title": "Sensitivity labels are published for files used by Microsoft 365 Copilot"
+    },
+    {
+      "Id": "MT.1154",
+      "Severity": "Medium",
+      "Title": "Insider Risk Management policy for Risky AI usage is enabled"
+    },
+    {
+      "Id": "MT.1155",
+      "Severity": "High",
+      "Title": "DLP policy is configured for the Microsoft 365 Copilot location"
+    },
+    {
+      "Id": "MT.1156",
+      "Severity": "Medium",
+      "Title": "Retention policy is configured for the Microsoft Copilot location"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
