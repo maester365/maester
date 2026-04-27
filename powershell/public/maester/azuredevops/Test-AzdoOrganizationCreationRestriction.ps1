@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -47,9 +47,9 @@ function Test-AzdoOrganizationCreationRestriction {
         else {
             $resultMarkdown = "Your tenant does not have organization creation restricted."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -50,9 +50,9 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
         else {
             $resultMarkdown = "Your tenant does not have Personal Access Token lifespan restrictions enabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }

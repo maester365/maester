@@ -7,7 +7,7 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'All'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -18,7 +18,7 @@
     Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a Boolean value.
 
     .EXAMPLE
-    Test-MtConnection -Details
+    Test-MtConnection -Service All -Details
 
     Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
 
@@ -181,9 +181,7 @@
         }
         #endregion AzureDevOps
 
-        if ($IsConnected) {
-            $MtConnections.AllConnected = $true
-        }
+        $MtConnections.AllConnected = $ConnectionState
 
     }
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -48,7 +48,7 @@ function Test-AzdoDisableGlobalPATCreation {
         else {
             $resultMarkdown = "Your tenant does not have Global Personal Access Token creation disabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
         return $result
     }
