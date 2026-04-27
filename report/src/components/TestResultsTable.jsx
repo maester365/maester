@@ -279,10 +279,7 @@ export default function TestResultsTable(props) {
             >
               {severities.map((severity) => (
                 <MultiSelectItem key={severity} value={severity}>
-                  {severity !== "None" ?
-                    <SeverityBadge Severity={severity} /> :
-                    "None"
-                  }
+                  {severity}
                 </MultiSelectItem>
               ))}
             </MultiSelect>
@@ -295,7 +292,7 @@ export default function TestResultsTable(props) {
             >
               {status.map((item) => (
                 <MultiSelectItem key={item} value={item}>
-                  <StatusLabel Result={item} />
+                  {item}
                 </MultiSelectItem>
               ))}
             </MultiSelect>
