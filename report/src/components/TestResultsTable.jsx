@@ -3,12 +3,24 @@ import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, Tab
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getLinkedTestResultId, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
+const defaultSelectedStatus = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
+
+function testMatchesSearch(item, searchQuery) {
+  if (!searchQuery) return true;
+
+  const normalizedSearchQuery = searchQuery.toLowerCase();
+  return (item.Id && item.Id.toLowerCase().includes(normalizedSearchQuery)) ||
+    (item.Title && item.Title.toLowerCase().includes(normalizedSearchQuery));
+}
 
 export default function TestResultsTable(props) {
-  const defaultSelectedStatus = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
+  const location = useLocation();
+  const navigate = useNavigate();
   const [internalSelectedStatus, setInternalSelectedStatus] = useState(
     props.selectedStatus ?? defaultSelectedStatus
   );
@@ -22,12 +34,31 @@ export default function TestResultsTable(props) {
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedItem, setSelectedItem] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [linkedAnchorId, setLinkedAnchorId] = useState(null);
   const testResults = props.TestResults;
+  const linkedTestResultId = useMemo(() => getLinkedTestResultId(location), [location]);
+  const linkedTestResult = useMemo(() => {
+    if (!linkedTestResultId) return null;
+    return testResults.Tests.find((item) => getTestResultAnchorId(item) === linkedTestResultId) ?? null;
+  }, [linkedTestResultId, testResults.Tests]);
 
   const handleOpenSheet = useCallback((item) => {
     setSelectedItem(item);
     setIsSheetOpen(true);
   }, []);
+
+  const handleOpenLinkedSheet = useCallback((item) => {
+    const anchorId = getTestResultAnchorId(item);
+
+    if (anchorId) {
+      navigate({
+        pathname: "/",
+        hash: getTestResultAnchorHash(anchorId),
+      });
+    }
+
+    handleOpenSheet(item);
+  }, [handleOpenSheet, navigate]);
 
   const handleCloseSheet = useCallback(() => {
     setIsSheetOpen(false);
@@ -35,9 +66,7 @@ export default function TestResultsTable(props) {
   }, []);
 
   const isStatusSelected = useCallback((item) => {
-    const matchesSearch = !searchQuery ||
-      (item.Id && item.Id.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (item.Title && item.Title.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch = testMatchesSearch(item, searchQuery);
 
     const matchesSeverity = selectedSeverity.length === 0 ||
       selectedSeverity.includes(item.Severity) ||
@@ -49,6 +78,55 @@ export default function TestResultsTable(props) {
       matchesSeverity &&
       matchesSearch;
   }, [searchQuery, selectedStatus, selectedBlock, selectedTag, selectedSeverity]);
+
+  useEffect(() => {
+    if (!linkedTestResult || props.isPrintView) return;
+
+    const anchorId = getTestResultAnchorId(linkedTestResult);
+    if (!anchorId) return;
+
+    setLinkedAnchorId(anchorId);
+
+    if (!location.hash) {
+      navigate({
+        pathname: "/",
+        hash: getTestResultAnchorHash(anchorId),
+      }, { replace: true });
+    }
+
+    if (linkedTestResult.Result && selectedStatus.length > 0 && !selectedStatus.includes(linkedTestResult.Result)) {
+      setSelectedStatus([...selectedStatus, linkedTestResult.Result]);
+    }
+
+    if (selectedBlock.length > 0 && !selectedBlock.includes(linkedTestResult.Block)) {
+      setSelectedBlock([]);
+    }
+
+    const linkedTags = linkedTestResult.Tag || [];
+    if (selectedTag.length > 0 && !linkedTags.some((tag) => selectedTag.includes(tag))) {
+      setSelectedTag([]);
+    }
+
+    const linkedSeverity = linkedTestResult.Severity || "None";
+    if (selectedSeverity.length > 0 && !selectedSeverity.includes(linkedSeverity)) {
+      setSelectedSeverity([]);
+    }
+
+    if (searchQuery && !testMatchesSearch(linkedTestResult, searchQuery)) {
+      setSearchQuery("");
+    }
+  }, [
+    linkedTestResult,
+    location.hash,
+    navigate,
+    props.isPrintView,
+    searchQuery,
+    selectedBlock,
+    selectedSeverity,
+    selectedStatus,
+    selectedTag,
+    setSelectedStatus,
+  ]);
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -116,6 +194,24 @@ export default function TestResultsTable(props) {
     }
   }, [selectedItem, filteredSortedData]);
 
+  useEffect(() => {
+    if (!linkedAnchorId || !linkedTestResult || props.isPrintView) return;
+
+    const linkedResultIsVisible = filteredSortedData.some(
+      (item) => getTestResultAnchorId(item) === linkedAnchorId
+    );
+
+    if (!linkedResultIsVisible) return;
+
+    window.requestAnimationFrame(() => {
+      document.getElementById(linkedAnchorId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      handleOpenSheet(linkedTestResult);
+    });
+  }, [filteredSortedData, handleOpenSheet, linkedAnchorId, linkedTestResult, props.isPrintView]);
+
   const handleNavigateToNext = useCallback(() => {
     if (currentFilteredIndex === -1 || currentFilteredIndex >= filteredSortedData.length - 1) {
       return;
@@ -162,6 +258,7 @@ export default function TestResultsTable(props) {
             <TextInput
               icon={MagnifyingGlassIcon}
               placeholder="Search by ID or Title..."
+              value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-1/3"
             />
@@ -249,8 +346,9 @@ export default function TestResultsTable(props) {
 
             return (<TableRow
               key={`${item.Index}-${item.Id || index}`}
-              className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer"
-              onClick={() => !props.isPrintView && handleOpenSheet(item)}
+              id={getTestResultAnchorId(item)}
+              className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer scroll-mt-4"
+              onClick={() => !props.isPrintView && handleOpenLinkedSheet(item)}
             >
               <TableCell className="text-xs text-zinc-600 dark:text-zinc-300 whitespace-nowrap max-w-[12rem]">
                 {props.isPrintView ? (

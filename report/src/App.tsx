@@ -14,6 +14,7 @@ import ConfigPage from "@/pages/ConfigPage"
 import ExcelPage from "@/pages/ExcelPage"
 import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
+import { reportMainElementId } from "@/lib/reportLinks"
 
 // Component to scroll to top on route change
 function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null> }) {
@@ -40,7 +41,7 @@ function App() {
             <Sidebar />
             <div className="flex flex-1 flex-col overflow-hidden">
               <Breadcrumb />
-              <main ref={mainRef} className="flex-1 overflow-auto">
+              <main id={reportMainElementId} ref={mainRef} className="flex-1 overflow-auto">
                 <ScrollToTop mainRef={mainRef} />
                 <div className="p-6">
                   <Routes>
@@ -51,6 +52,7 @@ function App() {
                     <Route path="/view/excel" element={<ExcelPage />} />
                     <Route path="/view/markdown" element={<MarkdownPage />} />
                     <Route path="/view/print" element={<PrintPage />} />
+                    <Route path="/:testResultAnchor" element={<HomePage />} />
                   </Routes>
                 </div>
               </main>
