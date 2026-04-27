@@ -16,11 +16,14 @@ import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
 import { reportMainElementId } from "@/lib/reportLinks"
 
-// Component to scroll to top on route change
+// Component to scroll to top on route change.
+// Skipped when a hash is present because the deep-link scroll will position
+// the viewport to the correct row instead.
 function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null> }) {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useEffect(() => {
+    if (hash) return
     if (mainRef.current) {
       mainRef.current.scrollTo(0, 0)
     }

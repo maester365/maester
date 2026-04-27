@@ -203,6 +203,10 @@ export default function TestResultsTable(props) {
 
     if (!linkedResultIsVisible) return;
 
+    // Consume the anchor immediately so that subsequent user-driven filter or
+    // sort changes do not re-scroll and re-open the flyout.
+    setLinkedAnchorId(null);
+
     window.requestAnimationFrame(() => {
       document.getElementById(linkedAnchorId)?.scrollIntoView({
         behavior: "smooth",

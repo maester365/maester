@@ -16,7 +16,9 @@ function safeDecodeURIComponent(value: string) {
 
 export function getTestResultAnchorId(testResult: { Id?: unknown } | null | undefined) {
   const id = typeof testResult?.Id === "string" ? testResult.Id.trim() : ""
-  return id || undefined
+  // HTML id values must not contain whitespace; replace any interior spaces so
+  // getElementById and URL fragments remain reliable for non-standard test IDs.
+  return id ? id.replace(/\s+/g, "-") : undefined
 }
 
 export function getTestResultAnchorHash(anchorId: string) {
