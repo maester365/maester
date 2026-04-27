@@ -8,7 +8,12 @@ import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/reac
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
 
 export default function TestResultsTable(props) {
-  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped', 'Investigate', 'Error']);
+  const defaultSelectedStatus = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
+  const [internalSelectedStatus, setInternalSelectedStatus] = useState(
+    props.selectedStatus ?? defaultSelectedStatus
+  );
+  const selectedStatus = props.selectedStatus ?? internalSelectedStatus;
+  const setSelectedStatus = props.onStatusChange ?? setInternalSelectedStatus;
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
@@ -152,78 +157,78 @@ export default function TestResultsTable(props) {
     <Card>
       {/* First row: Search, Status, Severity in one row */}
       {!props.isPrintView && (
-      <>
-      <Flex justifyContent="between" className="gap-2 mb-2">
-        <TextInput
-          icon={MagnifyingGlassIcon}
-          placeholder="Search by ID or Title..."
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-1/3"
-        />
+        <>
+          <Flex justifyContent="between" className="gap-2 mb-2">
+            <TextInput
+              icon={MagnifyingGlassIcon}
+              placeholder="Search by ID or Title..."
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-1/3"
+            />
 
-        <MultiSelect
-          value={selectedSeverity}
-          onValueChange={setSelectedSeverity}
-          placeholder="Severity"
-          className="w-1/3"
-        >
-          {severities.map((severity) => (
-            <MultiSelectItem key={severity} value={severity}>
-              {severity !== "None" ?
-                <SeverityBadge Severity={severity} /> :
-                "None"
-              }
-            </MultiSelectItem>
-          ))}
-        </MultiSelect>
+            <MultiSelect
+              value={selectedSeverity}
+              onValueChange={setSelectedSeverity}
+              placeholder="Severity"
+              className="w-1/3"
+            >
+              {severities.map((severity) => (
+                <MultiSelectItem key={severity} value={severity}>
+                  {severity !== "None" ?
+                    <SeverityBadge Severity={severity} /> :
+                    "None"
+                  }
+                </MultiSelectItem>
+              ))}
+            </MultiSelect>
 
-        <MultiSelect
-          value={selectedStatus}
-          onValueChange={setSelectedStatus}
-          placeholder="Status"
-          className="w-1/3"
-        >
-          {status.map((item) => (
-            <MultiSelectItem key={item} value={item}>
-              <StatusLabel Result={item} />
-            </MultiSelectItem>
-          ))}
-        </MultiSelect>
-      </Flex>
+            <MultiSelect
+              value={selectedStatus}
+              onValueChange={setSelectedStatus}
+              placeholder="Status"
+              className="w-1/3"
+            >
+              {status.map((item) => (
+                <MultiSelectItem key={item} value={item}>
+                  <StatusLabel Result={item} />
+                </MultiSelectItem>
+              ))}
+            </MultiSelect>
+          </Flex>
 
-      {/* Second row: Category and Tag in one row */}
-      <Flex justifyContent="between" className="gap-2 mb-4">
-        <MultiSelect
-          value={selectedBlock}
-          onValueChange={setSelectedBlock}
-          placeholder="Category"
-          className="w-1/2"
-        >
-          {testResults.Blocks
-            .sort((a, b) => a.Name > b.Name ? 1 : -1)
-            .map((item) => (
-              <MultiSelectItem key={item.Name} value={item.Name}>
-                {item.Name}
-              </MultiSelectItem>
-            ))}
-        </MultiSelect>
+          {/* Second row: Category and Tag in one row */}
+          <Flex justifyContent="between" className="gap-2 mb-4">
+            <MultiSelect
+              value={selectedBlock}
+              onValueChange={setSelectedBlock}
+              placeholder="Category"
+              className="w-1/2"
+            >
+              {testResults.Blocks
+                .sort((a, b) => a.Name > b.Name ? 1 : -1)
+                .map((item) => (
+                  <MultiSelectItem key={item.Name} value={item.Name}>
+                    {item.Name}
+                  </MultiSelectItem>
+                ))}
+            </MultiSelect>
 
-        <MultiSelect
-          value={selectedTag}
-          onValueChange={setSelectedTag}
-          placeholder="Tag"
-          className="w-1/2"
-        >
-          {uniqueTags
-            .sort((a, b) => a > b ? 1 : -1)
-            .map((tag) => (
-              <MultiSelectItem key={tag} value={tag}>
-                {tag}
-              </MultiSelectItem>
-            ))}
-        </MultiSelect>
-      </Flex>
-      </>
+            <MultiSelect
+              value={selectedTag}
+              onValueChange={setSelectedTag}
+              placeholder="Tag"
+              className="w-1/2"
+            >
+              {uniqueTags
+                .sort((a, b) => a > b ? 1 : -1)
+                .map((tag) => (
+                  <MultiSelectItem key={tag} value={tag}>
+                    {tag}
+                  </MultiSelectItem>
+                ))}
+            </MultiSelect>
+          </Flex>
+        </>
       )}
 
       <Table className="mt-2 w-full">

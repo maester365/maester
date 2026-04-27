@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Text, AreaChart, ListItem, Card, Title, CategoryBar } from "@tremor/react";
+import { AreaChart, Card, Title } from "@tremor/react";
 import { Maximize2, X } from "lucide-react";
 
 export default function MtBlocksArea(props) {
@@ -23,8 +23,6 @@ export default function MtBlocksArea(props) {
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [isModalOpen, closeModal]);
-
-    const testSummaryColors = ["emerald", "rose", "gray"];
 
     // Map long names to short names
     const shortNameMap = {
@@ -49,7 +47,7 @@ export default function MtBlocksArea(props) {
         return [
             getPercentage(item.PassedCount, item.TotalCount),
             getPercentage(item.FailedCount, item.TotalCount),
-            getPercentage(item.SkippedCount, item.TotalCount)]
+            getPercentage(item.InvestigateCount, item.TotalCount)]
             ;
     }
 
@@ -59,7 +57,7 @@ export default function MtBlocksArea(props) {
         Name: formatCategoryName(block.Name),
         Passed: block.PassedCount,
         Failed: block.FailedCount,
-        Skipped: block.SkippedCount,
+        Investigate: block.InvestigateCount
     })) || [];
 
     return (
@@ -80,8 +78,8 @@ export default function MtBlocksArea(props) {
                     data={formattedBlocks}
                     index="Name"
                     yAxisWidth={65}
-                    categories={["Passed", "Failed", "Skipped"]}
-                    colors={["emerald", "rose", "gray"]}
+                    categories={["Passed", "Failed", "Investigate"]}
+                    colors={["emerald", "rose", "purple"]}
                     showAnimation={true}
                     showLegend={false}
                 />
@@ -112,8 +110,8 @@ export default function MtBlocksArea(props) {
                             data={formattedBlocks}
                             index="Name"
                             yAxisWidth={65}
-                            categories={["Passed", "Failed", "Skipped"]}
-                            colors={["emerald", "rose", "gray"]}
+                            categories={["Passed", "Failed", "Investigate"]}
+                            colors={["emerald", "rose", "purple"]}
                             showAnimation={true}
                             showLegend={true}
                         />
