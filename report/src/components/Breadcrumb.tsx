@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useSidebar } from "./Sidebar"
 import { ThemeToggle } from "./ThemeToggle"
 import { useTenant } from "@/context/TenantContext"
+import { scrollReportToTop } from "@/lib/reportLinks"
 
 interface BreadcrumbItem {
   label: string
@@ -64,6 +65,7 @@ export function Breadcrumb() {
                 {item.href ? (
                   <Link
                     to={item.href}
+                    onClick={item.href === "/" ? scrollReportToTop : undefined}
                     className="text-sm tracking-tight text-gray-500 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-100"
                   >
                     {item.label}
