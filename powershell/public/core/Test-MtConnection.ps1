@@ -7,7 +7,7 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'All'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'All'.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -35,7 +35,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -48,6 +48,7 @@
         $MtConnections = [PSCustomObject]@{
             PSTypeName  = 'Maester.Connections'
             Azure = $null
+            AzureDevOps = $null
             Graph = $null
             ExchangeOnline = $null
             ExchangeOnlineProtection = $null
@@ -145,6 +146,40 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion Teams
+
+        #region AzureDevOps
+        if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.AzureDevOpsConnection) {
+                # Use cached probe result to avoid re-running the connection check on every test.
+                if ($__MtSession.AzureDevOpsConnection -is [string] -and $__MtSession.AzureDevOpsConnection -eq 'NotConnected') {
+                    $IsConnected = $false
+                } else {
+                    $MtConnections.AzureDevOps = $__MtSession.AzureDevOpsConnection
+                    $IsConnected = $true
+                }
+            } else {
+                try {
+                    if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction Stop)) {
+                        $connection = Get-ADOPSConnection
+                        if ($null -ne $connection -and $null -ne $connection['Organization']) {
+                            $MtConnections.AzureDevOps = $connection
+                            $__MtSession.AzureDevOpsConnection = $connection
+                            $IsConnected = $true
+                        }
+                    }
+                } catch {
+                    Write-Debug "AzureDevOps: $false"
+                }
+                if (-not $IsConnected) {
+                    # Cache negative result so subsequent calls skip the probe.
+                    $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                }
+            }
+            Write-Verbose "AzureDevOps: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion AzureDevOps
 
         if ($IsConnected) {
             $MtConnections.AllConnected = $true

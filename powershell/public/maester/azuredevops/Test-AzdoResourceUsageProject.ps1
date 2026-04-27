@@ -22,9 +22,8 @@ function Test-AzdoResourceUsageProject {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
