@@ -1,25 +1,4 @@
-BeforeAll {
-    $script:ADOPSConnected = $false
-    try {
-        if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction Stop)) {
-            $connection = Get-ADOPSConnection
-            if ($null -ne $connection['Organization']) {
-                $script:ADOPSConnected = $true
-            }
-        }
-    } catch {
-        Write-Verbose "ADOPS module is not installed or not connected to Azure DevOps"
-        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
-    }
-}
-
-Describe "Azure DevOps" -Tag "Azure DevOps" {
-
-    BeforeEach {
-        if (-not $script:ADOPSConnected) {
-            Set-ItResult -Skipped -Because "ADOPS module is not installed or not connected to Azure DevOps"
-        }
-    }
+Describe "Azure DevOps" -Tag "AZDO" {
 
     It "AZDO.1000: Azure DevOps OAuth apps can access resources in your organization through OAuth. See https://aka.ms/vstspolicyoauth" -Tag "AZDO.1000" {
         $result = Test-AzdoThirdPartyAccessViaOauth
