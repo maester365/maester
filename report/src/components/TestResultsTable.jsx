@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, lazy, Suspense, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from "react";
 import { Flex, Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody, MultiSelect, MultiSelectItem, TextInput } from "@tremor/react";
 import StatusLabel from "./StatusLabel";
 import SeverityBadge from "./SeverityBadge";
@@ -35,6 +35,7 @@ export default function TestResultsTable(props) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [linkedAnchorId, setLinkedAnchorId] = useState(null);
+  const lastRelaxedLinkedAnchorId = useRef(null);
   const testResults = props.TestResults;
   const linkedTestResultId = useMemo(() => getLinkedTestResultId(location), [location]);
   const linkedTestResult = useMemo(() => {
@@ -84,6 +85,9 @@ export default function TestResultsTable(props) {
 
     const anchorId = getTestResultAnchorId(linkedTestResult);
     if (!anchorId) return;
+    if (lastRelaxedLinkedAnchorId.current === anchorId) return;
+
+    lastRelaxedLinkedAnchorId.current = anchorId;
 
     setLinkedAnchorId(anchorId);
 
