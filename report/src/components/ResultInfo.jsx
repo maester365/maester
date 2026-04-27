@@ -67,7 +67,7 @@ export default function ResultInfo({ Item, isPrintView }) {
   }
 
   return (
-    <div className="grid grid-cols-1" id={Item.Id}>
+    <div className="grid grid-cols-1" id={isPrintView ? Item.Id : undefined}>
       <div className="text-right flex justify-end space-x-2 items-center">
         {Item.Severity && (
           <div title="Severity" className="flex items-center">
