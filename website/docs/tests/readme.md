@@ -21,7 +21,11 @@ These tests validate tenant security config and are based on the [Entra ID Secur
 
 ## [🦅 CISA Tests](/docs/tests/cisa)
 
-The tests in this section verifies that a Microsoft 365 tenant’s configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
+The tests in this section verifies that a Microsoft 365 tenant's configuration conforms to the policies described in the Secure Cloud Business Applications ([SCuBA](https://cisa.gov/scuba)) Security Configuration Baseline [documents](https://github.com/cisagov/ScubaGear/blob/main/baselines/README.md).
+
+## [🛡️ Defender for Endpoint Tests](/docs/tests/defender)
+
+The tests in this section verify that your Microsoft Defender for Endpoint (MDE) antivirus configuration follows security best practices, validating Intune Settings Catalog policies for Microsoft Defender Antivirus.
 
 ## [🌀 CIS Tests](/docs/tests/cis)
 

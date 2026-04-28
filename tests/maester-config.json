@@ -1897,17 +1897,7 @@
     {
       "Id": "AZDO.1036",
       "Severity": "High",
-      "Title": "(Tenant) Restrict Personal Access Token full scope"
-    },
-    {
-      "Id": "AZDO.1037",
-      "Severity": "High",
-      "Title": "(Organization) Restrict Personal Access Token creation"
-    },
-    {
-      "Id": "AZDO.1038",
-      "Severity": "Medium",
-      "Title": "(Organization) Disallow extensions from accessing resources on the local network"
+      "Title": "Restrict Personal Access Token full scope"
     }
   ]
 }
