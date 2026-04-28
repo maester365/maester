@@ -13,7 +13,7 @@ Verifies that local admin merge is disabled to prevent local administrators from
 
 ## How to fix
 
-Navigate to Intune > Devices > Configuration > Settings Catalog > Microsoft Defender Antivirus. Ensure 'Disable Local Admin Merge' is set to 'Disable Local Admin Merge'.
+Navigate to Intune > Devices > Configuration > Settings Catalog > Microsoft Defender Antivirus. Ensure 'Disable Local Admin Merge' is set to 'Enabled'.
 
 ## Learn more
 * [Microsoft Defender for Endpoint documentation](https://learn.microsoft.com/en-us/defender-endpoint/)
