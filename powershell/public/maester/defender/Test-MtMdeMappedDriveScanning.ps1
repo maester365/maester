@@ -53,28 +53,28 @@
     }
 
     try {
-    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
-        -ComplianceLogic $ComplianceLogic `
-        -SettingId "device_vendor_msft_policy_config_defender_allowfullscanonmappednetworkdrives" `
-        -ComplianceCheck "Boolean" `
-        -ExpectedValue "_0"
+        $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+            -ComplianceLogic $ComplianceLogic `
+            -SettingId "device_vendor_msft_policy_config_defender_allowfullscanonmappednetworkdrives" `
+            -ComplianceCheck "Boolean" `
+            -ExpectedValue "_0"
 
-    $testResult = $compliance.IsCompliant
+        $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Full scan on mapped network drives is correctly disabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
-    } else {
-        $testResultMarkdown = "Full scan on mapped network drives should be disabled for performance in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Full scan on mapped network drives is correctly disabled in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
+        } else {
+            $testResultMarkdown = "Full scan on mapped network drives should be disabled for performance in all policies."
+            if ($compliance.NonCompliantPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+            }
+            if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+            }
         }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+        return $testResult
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

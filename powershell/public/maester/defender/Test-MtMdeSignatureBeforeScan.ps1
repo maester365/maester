@@ -54,28 +54,28 @@
     }
 
     try {
-    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
-        -ComplianceLogic $ComplianceLogic `
-        -SettingId "device_vendor_msft_policy_config_defender_checkforsignaturesbeforerunningscan" `
-        -ComplianceCheck "Boolean" `
-        -ExpectedValue "_1"
+        $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+            -ComplianceLogic $ComplianceLogic `
+            -SettingId "device_vendor_msft_policy_config_defender_checkforsignaturesbeforerunningscan" `
+            -ComplianceCheck "Boolean" `
+            -ExpectedValue "_1"
 
-    $testResult = $compliance.IsCompliant
+        $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Check for signatures before running scan is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
-    } else {
-        $testResultMarkdown = "Check for signatures before running scan is not properly configured in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Check for signatures before running scan is correctly configured in all $($policyConfig.TotalCount) assigned Defender Antivirus policies."
+        } else {
+            $testResultMarkdown = "Check for signatures before running scan is not properly configured in all policies."
+            if ($compliance.NonCompliantPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+            }
+            if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+            }
         }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+        return $testResult
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

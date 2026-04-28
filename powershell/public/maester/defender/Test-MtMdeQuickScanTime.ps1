@@ -54,27 +54,27 @@
     }
 
     try {
-    $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
-        -ComplianceLogic $ComplianceLogic `
-        -SettingId "device_vendor_msft_policy_config_defender_schedulequickscantime" `
-        -ComplianceCheck "NotRequired"
+        $compliance = Test-MdePolicyCompliance -PolicyConfiguration $policyConfig `
+            -ComplianceLogic $ComplianceLogic `
+            -SettingId "device_vendor_msft_policy_config_defender_schedulequickscantime" `
+            -ComplianceCheck "NotRequired"
 
-    $testResult = $compliance.IsCompliant
+        $testResult = $compliance.IsCompliant
 
-    if ($testResult) {
-        $testResultMarkdown = "Well done. Quick scan time configuration is not required and all $($policyConfig.TotalCount) assigned Defender Antivirus policies are compliant."
-    } else {
-        $testResultMarkdown = "Quick scan time configuration is not properly configured in all policies."
-        if ($compliance.NonCompliantPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Quick scan time configuration is not required and all $($policyConfig.TotalCount) assigned Defender Antivirus policies are compliant."
+        } else {
+            $testResultMarkdown = "Quick scan time configuration is not properly configured in all policies."
+            if ($compliance.NonCompliantPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nNon-compliant policies: $($compliance.NonCompliantPolicies -join ', ')"
+            }
+            if ($compliance.NotConfiguredPolicies.Count -gt 0) {
+                $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
+            }
         }
-        if ($compliance.NotConfiguredPolicies.Count -gt 0) {
-            $testResultMarkdown += "`n`nPolicies without this setting configured: $($compliance.NotConfiguredPolicies -join ', ')"
-        }
-    }
-    Add-MtTestResultDetail -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
 
-    return $testResult
+        return $testResult
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
