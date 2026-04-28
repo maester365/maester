@@ -14,6 +14,12 @@
         Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
 
 
+    .PARAMETER ComplianceLogic
+        Specify compliance logic: AllPolicies or AnyPolicy
+
+    .PARAMETER PolicyFiltering
+        Specify policy filtering: All, IncludeUnassigned, or OnlyAssigned
+
     .EXAMPLE
         Test-MtMdeScheduleScanDay
 
