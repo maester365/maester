@@ -1355,6 +1355,126 @@
       "Title": "Do not sync krbtgt_AzureAD to Entra ID"
     },
     {
+      "Id": "MT.1148",
+      "Severity": "High",
+      "Title": "Archive Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1149",
+      "Severity": "High",
+      "Title": "Behavior Monitoring should be enabled"
+    },
+    {
+      "Id": "MT.1150",
+      "Severity": "High",
+      "Title": "Cloud Protection should be enabled"
+    },
+    {
+      "Id": "MT.1151",
+      "Severity": "High",
+      "Title": "Email Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1152",
+      "Severity": "High",
+      "Title": "Script Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1153",
+      "Severity": "High",
+      "Title": "Real-time Monitoring should be enabled"
+    },
+    {
+      "Id": "MT.1154",
+      "Severity": "High",
+      "Title": "Full Scan Removable Drives should be enabled"
+    },
+    {
+      "Id": "MT.1155",
+      "Severity": "High",
+      "Title": "Full Scan Mapped Drives should be disabled for performance"
+    },
+    {
+      "Id": "MT.1156",
+      "Severity": "High",
+      "Title": "Scanning Network Files should be enabled"
+    },
+    {
+      "Id": "MT.1157",
+      "Severity": "High",
+      "Title": "CPU Load Factor should be optimized (20-30%)"
+    },
+    {
+      "Id": "MT.1158",
+      "Severity": "High",
+      "Title": "Scan should be scheduled"
+    },
+    {
+      "Id": "MT.1159",
+      "Severity": "High",
+      "Title": "Quick Scan Time configuration is not required"
+    },
+    {
+      "Id": "MT.1160",
+      "Severity": "High",
+      "Title": "Signatures should be checked before scan"
+    },
+    {
+      "Id": "MT.1161",
+      "Severity": "High",
+      "Title": "Cloud Block Level should be High or higher"
+    },
+    {
+      "Id": "MT.1162",
+      "Severity": "High",
+      "Title": "Cloud Extended Timeout should be 30-50 seconds"
+    },
+    {
+      "Id": "MT.1163",
+      "Severity": "High",
+      "Title": "Signature Update Interval should be 1-4 hours"
+    },
+    {
+      "Id": "MT.1164",
+      "Severity": "High",
+      "Title": "PUA Protection should be enabled"
+    },
+    {
+      "Id": "MT.1165",
+      "Severity": "High",
+      "Title": "Network Protection should be enabled"
+    },
+    {
+      "Id": "MT.1166",
+      "Severity": "High",
+      "Title": "Local Admin Merge should be disabled"
+    },
+    {
+      "Id": "MT.1167",
+      "Severity": "High",
+      "Title": "Real-Time Scan Direction should cover both directions"
+    },
+    {
+      "Id": "MT.1168",
+      "Severity": "High",
+      "Title": "Cleaned Malware should be retained for at least 30 days"
+    },
+    {
+      "Id": "MT.1169",
+      "Severity": "High",
+      "Title": "Catch-up Full Scan should be disabled"
+    },
+    {
+      "Id": "MT.1170",
+      "Severity": "High",
+      "Title": "Catch-up Quick Scan should be disabled"
+    },
+    {
+      "Id": "MT.1171",
+      "Severity": "High",
+      "Title": "Sample Submission should send safe samples automatically"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."

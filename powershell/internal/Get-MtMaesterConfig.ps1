@@ -1,4 +1,4 @@
-﻿function Get-MtMaesterConfig {
+function Get-MtMaesterConfig {
     <#
     .SYNOPSIS
     Reads the Maester config from (usually from the root of the ./tests directory)
