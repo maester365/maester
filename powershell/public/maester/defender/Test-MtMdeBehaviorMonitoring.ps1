@@ -6,6 +6,12 @@
     .DESCRIPTION
         Verify that behavior monitoring is enabled - prerequisite for EDR capabilities.
         Disabled behavior monitoring reduces ability to detect zero-day threats and advanced persistent threats.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeBehaviorMonitoring

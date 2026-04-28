@@ -7,6 +7,12 @@
         Verifies that the quick scan time setting does not need to be configured
         in Microsoft Defender Antivirus policies. Quick scans are replaced by
         real-time protection, so this setting is not required for compliance.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeQuickScanTime

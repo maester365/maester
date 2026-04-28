@@ -6,6 +6,12 @@
     .DESCRIPTION
         Verify that cloud protection is enabled for real-time threat intelligence.
         Disabled cloud protection reduces real-time threat detection and response capabilities.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeCloudProtection

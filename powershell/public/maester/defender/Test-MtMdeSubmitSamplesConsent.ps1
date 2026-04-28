@@ -7,6 +7,12 @@
         Verify that sample submission consent is configured to send safe samples
         automatically. Restricted sample submission reduces threat intelligence
         and protection quality.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeSubmitSamplesConsent

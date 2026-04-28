@@ -6,6 +6,12 @@
     .DESCRIPTION
         Verify that catch-up full scan is disabled to avoid additional system load.
         Enabled catchup scans may cause performance issues on mobile devices.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeCatchupFullScan

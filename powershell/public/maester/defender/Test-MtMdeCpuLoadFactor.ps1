@@ -7,6 +7,12 @@
         Tests that all assigned Microsoft Defender Antivirus policies have the
         average CPU load factor configured within the recommended range of 20-30%.
         Inappropriate CPU load settings may impact system performance or scan effectiveness.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeCpuLoadFactor

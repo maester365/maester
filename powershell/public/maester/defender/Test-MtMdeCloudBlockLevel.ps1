@@ -7,6 +7,12 @@
         Tests that all assigned Microsoft Defender Antivirus policies have the
         cloud block level set to at least High. A low cloud block level reduces
         proactive threat blocking capabilities.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeCloudBlockLevel

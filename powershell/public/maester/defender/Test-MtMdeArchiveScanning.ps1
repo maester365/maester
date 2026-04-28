@@ -6,6 +6,12 @@
     .DESCRIPTION
         Verify that archive scanning is enabled to detect malware in compressed files.
         Disabled archive scanning allows malware to hide in compressed files (ZIP, RAR, etc.)
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeArchiveScanning

@@ -6,6 +6,12 @@
     .DESCRIPTION
         Verify that script scanning is enabled to block malicious scripts.
         Disabled script scanning allows malicious PowerShell, JavaScript, and VBScript execution.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeScriptScanning

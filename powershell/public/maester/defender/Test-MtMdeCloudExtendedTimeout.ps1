@@ -7,6 +7,12 @@
         Tests that all assigned Microsoft Defender Antivirus policies have the
         cloud extended timeout configured within the recommended range of 30-50 seconds.
         Insufficient cloud timeout may prevent thorough analysis of suspicious files.
+    .PARAMETER ComplianceLogic
+        Determines how policy compliance is evaluated. 'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one. Default: 'AllPolicies'.
+
+    .PARAMETER PolicyFiltering
+        Determines which Defender Antivirus policies are evaluated. 'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
 
     .EXAMPLE
         Test-MtMdeCloudExtendedTimeout
