@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCP01 {
+function Test-MtEidscaCP01 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Group owner consent for apps accessing data is set to 'False'
@@ -9,12 +9,12 @@
 
     Queries settings
     and returns the result of
-    graph/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+    graph/settings.values -eq 'False'
 
     .EXAMPLE
     Test-MtEidscaCP01
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+    Returns the result of graph.microsoft.com/beta/settings.values -eq 'False'
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'False'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'False' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'False' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'False'** for **settings**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

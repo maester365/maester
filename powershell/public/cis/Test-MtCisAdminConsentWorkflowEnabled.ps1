@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if the admin consent workflow is enabled
-
-.DESCRIPTION
-    The admin consent workflow should be enabled.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisAdminConsentWorkflowEnabled
-
-    Returns true if admin consent workflow is enabled
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisAdminConsentWorkflowEnabled
-#>
-function Test-MtCisAdminConsentWorkflowEnabled {
+﻿function Test-MtCisAdminConsentWorkflowEnabled {
+    <#
+    .SYNOPSIS
+        Checks if the admin consent workflow is enabled
+    
+    .DESCRIPTION
+        The admin consent workflow should be enabled.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisAdminConsentWorkflowEnabled
+    
+        Returns true if admin consent workflow is enabled
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisAdminConsentWorkflowEnabled
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +35,8 @@ function Test-MtCisAdminConsentWorkflowEnabled {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -44,7 +45,8 @@ function Test-MtCisAdminConsentWorkflowEnabled {
 
         if ($checkAdminConsentWorkflowEnabled) {
             $checkAdminConsentWorkflowEnabledResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkAdminConsentWorkflowEnabledResult = '❌ Fail'
         }
 
@@ -54,7 +56,8 @@ function Test-MtCisAdminConsentWorkflowEnabled {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

@@ -1,0 +1,119 @@
+---
+sidebar_class_name: hidden
+description: Imports Maester test result JSON files from disk into PowerShell objects.
+id: Import-MtMaesterResult
+title: Import-MtMaesterResult
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Import-MtMaesterResult.ps1
+---
+
+## SYNOPSIS
+
+Imports Maester test result JSON files from disk into PowerShell objects.
+
+## SYNTAX
+
+```powershell
+Import-MtMaesterResult [-Path] <String[]> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Loads one or more Maester test result JSON files and returns them as an array
+of single-tenant MaesterResults objects.
+This is the standard way to load
+previously saved results for use with Merge-MtMaesterResult, Compare-MtTestResult,
+or any future command that operates on result objects.
+
+If a loaded JSON file contains a multi-tenant merged format (i.e.
+a "Tenants"
+array from a prior Merge-MtMaesterResult call), each tenant is automatically
+expanded into a separate result object.
+
+Accepts file paths, glob patterns, or directory paths.
+When a directory is
+provided, it auto-discovers TestResults-*.json files inside it.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+# Load a single result file
+Import-MtMaesterResult -Path ./production.json
+```
+
+### EXAMPLE 2
+
+```powershell
+# Load all JSON files matching a glob
+Import-MtMaesterResult -Path ./results/*.json
+```
+
+### EXAMPLE 3
+
+```powershell
+# Load from a directory (auto-discovers TestResults-*.json)
+Import-MtMaesterResult -Path ./test-results/
+```
+
+### EXAMPLE 4
+
+```powershell
+# Pipe into Merge for a multi-tenant report
+Import-MtMaesterResult -Path *.json | Merge-MtMaesterResult | Get-MtHtmlReport | Out-File report.html
+```
+
+## PARAMETERS
+
+### -Path
+
+One or more paths to JSON result files, glob patterns, or directories.
+- File path:  ./production.json
+- Glob:       ./results/*.json
+- Directory:  ./results/  (discovers TestResults-*.json inside)
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases: FullName
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Object[]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Import-MtMaesterResult](https://maester.dev/docs/commands/Import-MtMaesterResult)

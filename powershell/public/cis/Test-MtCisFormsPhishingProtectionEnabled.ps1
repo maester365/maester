@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if the internal phishing protection for Microsoft Forms is enabled.
-
-.DESCRIPTION
-    The internal phishing protection for Microsoft Forms should be enabled.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisFormsPhishingProtectionEnabled
-
-    Returns true if the internal phishing protection for Microsoft Forms is enabled.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisFormsPhishingProtectionEnabled
-#>
-function Test-MtCisFormsPhishingProtectionEnabled {
+﻿function Test-MtCisFormsPhishingProtectionEnabled {
+    <#
+    .SYNOPSIS
+        Checks if the internal phishing protection for Microsoft Forms is enabled.
+    
+    .DESCRIPTION
+        The internal phishing protection for Microsoft Forms should be enabled.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisFormsPhishingProtectionEnabled
+    
+        Returns true if the internal phishing protection for Microsoft Forms is enabled.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisFormsPhishingProtectionEnabled
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -26,7 +26,7 @@ function Test-MtCisFormsPhishingProtectionEnabled {
 
     $scopes = (Get-MgContext).Scopes
     $permissionMissing = "OrgSettings-Forms.Read.All" -notin $scopes
-    if($permissionMissing){
+    if ($permissionMissing) {
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Missing Scope OrgSettings-Forms.Read.All"
         return $null
     }
@@ -42,7 +42,8 @@ function Test-MtCisFormsPhishingProtectionEnabled {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -51,7 +52,8 @@ function Test-MtCisFormsPhishingProtectionEnabled {
 
         if ($CheckIsInOrgFormsPhishingScanEnabled) {
             $CheckIsInOrgFormsPhishingScanEnabledResult = '✅ Pass'
-        } else {
+        }
+        else {
             $CheckIsInOrgFormsPhishingScanEnabledResult = '❌ Fail'
         }
 
@@ -61,7 +63,8 @@ function Test-MtCisFormsPhishingProtectionEnabled {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

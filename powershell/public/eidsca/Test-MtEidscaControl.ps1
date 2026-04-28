@@ -1,19 +1,19 @@
-﻿function Test-MtEidscaControl {
-    <#
-    .SYNOPSIS
+<#
+.SYNOPSIS
     Tests your environment for compliance with the specified EIDSCA control
 
-    .DESCRIPTION
+.DESCRIPTION
     Validates your environment against the specified EIDSCA control by comparing MS Graph result with the recommended value.
 
-    .EXAMPLE
+.EXAMPLE
     Test-MtEidscaControl -CheckId AP01
 
     Returns the result of the EIDSCA AP01 control check
 
-    .LINK
+.LINK
     https://maester.dev/docs/commands/Test-MtEidscaControl
-    #>
+#>
+function Test-MtEidscaControl {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -27,3 +27,4 @@
     Write-Verbose -Message "Invoking EIDSCA control check $CheckId."
     & "Test-MtEidsca$CheckId"
 }
+

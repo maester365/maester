@@ -34,13 +34,15 @@
     $blockOther = $result | Where-Object {
         $_.grantControls.builtInControls -contains "block" -and
         $_.conditions.clientAppTypes -contains "other" -and
-        $_.conditions.users.includeUsers -contains "All"
+        $_.conditions.users.includeUsers -contains "All" -and
+        $_.conditions.applications.includeApplications -contains "All"
     }
 
     $blockExchangeActiveSync = $result | Where-Object {
         $_.grantControls.builtInControls -contains "block" -and
         $_.conditions.clientAppTypes -contains "exchangeActiveSync" -and
-        $_.conditions.users.includeUsers -contains "All"
+        $_.conditions.users.includeUsers -contains "All" -and
+        $_.conditions.applications.includeApplications -contains "All"
     }
 
     if (($blockOther | Measure-Object).Count -ge 1 -and ($blockExchangeActiveSync | Measure-Object).Count -ge 1) {
@@ -52,7 +54,7 @@
     if ($testResult) {
         $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant lacks sufficient conditional access policies that block legacy authentication."
+        $testResultMarkdown = "Your tenant lacks sufficient conditional access policies that block legacy authentication for all cloud apps."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $blockPolicies
 

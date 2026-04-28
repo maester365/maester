@@ -1,0 +1,70 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoEnforceAADConditionalAccess
+title: Test-AzdoEnforceAADConditionalAccess
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoEnforceAADConditionalAccess.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoEnforceAADConditionalAccess [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks the status of when you sign in to the web portal of a Microsoft Entra ID-backed organization,
+Microsoft Entra ID always performs validation for any Conditional Access Policies (CAPs) set by tenant administrators.
+
+https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-conditional-access?view=azure-devops&tabs=preview-page
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoEnforceAADConditionalAccess
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoEnforceAADConditionalAccess](https://maester.dev/docs/commands/Test-AzdoEnforceAADConditionalAccess)

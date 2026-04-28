@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAV01 {
+function Test-MtEidscaAV01 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Voice call - State is set to 'disabled'
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'disabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'disabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'disabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

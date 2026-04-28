@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if devices without a compliance policy assigned are marked "not compliant".
-
-.DESCRIPTION
-    Devices without a compliance policy assigned should be marked "not compliant".
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisDevicesWithoutCompliancePolicyMarked
-
-    Returns true if devices without a compliance policy assigned are marked "not compliant".
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked
-#>
-function Test-MtCisDevicesWithoutCompliancePolicyMarked {
+﻿function Test-MtCisDevicesWithoutCompliancePolicyMarked {
+    <#
+    .SYNOPSIS
+        Checks if devices without a compliance policy assigned are marked "not compliant".
+    
+    .DESCRIPTION
+        Devices without a compliance policy assigned should be marked "not compliant".
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisDevicesWithoutCompliancePolicyMarked
+    
+        Returns true if devices without a compliance policy assigned are marked "not compliant".
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +35,8 @@ function Test-MtCisDevicesWithoutCompliancePolicyMarked {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -44,7 +45,8 @@ function Test-MtCisDevicesWithoutCompliancePolicyMarked {
 
         if ($checkSecureByDefault) {
             $checkSecureByDefaultResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkSecureByDefaultResult = '❌ Fail'
         }
 
@@ -53,7 +55,8 @@ function Test-MtCisDevicesWithoutCompliancePolicyMarked {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

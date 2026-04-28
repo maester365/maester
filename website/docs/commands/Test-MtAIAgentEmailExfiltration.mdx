@@ -1,0 +1,71 @@
+---
+sidebar_class_name: hidden
+description: Tests if AI agents can send email with AI-controlled inputs.
+id: Test-MtAIAgentEmailExfiltration
+title: Test-MtAIAgentEmailExfiltration
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAIAgentEmailExfiltration.ps1
+---
+
+## SYNOPSIS
+
+Tests if AI agents can send email with AI-controlled inputs.
+
+## SYNTAX
+
+```powershell
+Test-MtAIAgentEmailExfiltration [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks all Copilot Studio agents for email-sending tools (such as Office 365
+Outlook or SendMail connectors) where the recipient, subject, or body may be
+controlled by AI-generated content.
+This presents a risk of data exfiltration
+via email to attacker-controlled addresses.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAIAgentEmailExfiltration
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no email exfiltration risk is found, $false if any
+
+### agent has email-sending capabilities with dynamic inputs, $null if data is
+### unavailable.
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAIAgentEmailExfiltration](https://maester.dev/docs/commands/Test-MtAIAgentEmailExfiltration)

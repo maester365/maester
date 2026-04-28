@@ -1,0 +1,72 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoDisableGlobalPATCreation
+title: Test-AzdoDisableGlobalPATCreation
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoDisableGlobalPATCreation.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoDisableGlobalPATCreation [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks if global Personal Access Token creation is restricted.
+
+Requires Azure DevOps organization backed by a Microsoft Entra tenant and
+Azure DevOps Administrator permissions.
+
+https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#restrict-creation-of-global-pats-tenant-policy
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoDisableGlobalPATCreation
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoDisableGlobalPATCreation](https://maester.dev/docs/commands/Test-AzdoDisableGlobalPATCreation)

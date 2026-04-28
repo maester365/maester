@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if guest user access is restricted.
-
-.DESCRIPTION
-    Guest user access should be restricted to only necessary resources.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisEnsureGuestAccessRestricted
-
-    Returns true if guest user access is restricted.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisEnsureGuestAccessRestricted
-#>
-function Test-MtCisEnsureGuestAccessRestricted {
+﻿function Test-MtCisEnsureGuestAccessRestricted {
+    <#
+    .SYNOPSIS
+        Checks if guest user access is restricted.
+    
+    .DESCRIPTION
+        Guest user access should be restricted to only necessary resources.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisEnsureGuestAccessRestricted
+    
+        Returns true if guest user access is restricted.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisEnsureGuestAccessRestricted
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -32,13 +32,15 @@ function Test-MtCisEnsureGuestAccessRestricted {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations."
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations."
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

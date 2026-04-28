@@ -5,7 +5,7 @@ CISA SCuBA 2.18: Guest users SHOULD have limited access to Entra ID (Azure AD) d
 #### Test script
 ```
 https://graph.microsoft.com/beta/settings
-.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
+.values -eq 'false'
 ```
 
 #### Related links

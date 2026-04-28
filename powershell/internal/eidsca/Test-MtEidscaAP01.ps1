@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP01 {
+function Test-MtEidscaAP01 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Enabled Self service password reset for administrators is set to 'false'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowedToUseSSPR
+    $rawValue = $result.allowedToUseSSPR
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

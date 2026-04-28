@@ -1,0 +1,72 @@
+---
+sidebar_class_name: hidden
+description: Returns a boolean depending on the configuration.
+id: Test-AzdoAllowTeamAdminsInvitationsAccessToken
+title: Test-AzdoAllowTeamAdminsInvitationsAccessToken
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-AzdoAllowTeamAdminsInvitationsAccessToken.ps1
+---
+
+## SYNOPSIS
+
+Returns a boolean depending on the configuration.
+
+## SYNTAX
+
+```powershell
+Test-AzdoAllowTeamAdminsInvitationsAccessToken [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+By default, all administrators can invite new users to their Azure DevOps organization.
+Disabling this policy prevents Team and Project Administrators from inviting new users or adding Entra groups.
+However, Project Collection Administrators (PCAs) can still add new users and Entra groups to the organization regardless of the policy status.
+Additionally, if a user is already a member of the organization, Project and Team Administrators can add that user to specific projects.
+
+https://aka.ms/azure-devops-invitations-policy
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-AzdoAllowTeamAdminsInvitationsAccessToken
+```
+
+Returns a boolean depending on the configuration.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-AzdoAllowTeamAdminsInvitationsAccessToken](https://maester.dev/docs/commands/Test-AzdoAllowTeamAdminsInvitationsAccessToken)

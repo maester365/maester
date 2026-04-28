@@ -67,7 +67,7 @@ export default function ResultInfo({ Item, isPrintView }) {
   }
 
   return (
-    <div className="grid grid-cols-1" id={Item.Id}>
+    <div className="grid grid-cols-1" id={isPrintView ? Item.Id : undefined}>
       <div className="text-right flex justify-end space-x-2 items-center">
         {Item.Severity && (
           <div title="Severity" className="flex items-center">
@@ -90,11 +90,15 @@ export default function ResultInfo({ Item, isPrintView }) {
         <div className="flex flex-row items-center">
           <Title>Test result</Title><StatusLabelSm Result={Item.Result} />
         </div>
-        <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestResult()}</Markdown>
+        <div className="prose max-w-fit dark:prose-invert">
+          <Markdown remarkPlugins={[remarkGfm]}>{getTestResult()}</Markdown>
+        </div>
       </Card>
       <Card className="mt-4 bg-slate-50">
         <Title>Test details</Title>
-        <Markdown className="prose max-w-fit dark:prose-invert" remarkPlugins={[remarkGfm]}>{getTestDetails()}</Markdown>
+        <div className="prose max-w-fit dark:prose-invert">
+          <Markdown remarkPlugins={[remarkGfm]}>{getTestDetails()}</Markdown>
+        </div>
       </Card>
 
       {isPrintView ? (

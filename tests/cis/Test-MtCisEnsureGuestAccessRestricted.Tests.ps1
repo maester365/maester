@@ -1,4 +1,4 @@
-Describe "CIS" -Tag "CIS.M365.5.1.6.2", "L1", "CIS E3 Level 1", "CIS E3", "CIS E5 Level 1", "CIS E5", "CIS", "Security", "CIS M365 v5.0.0" {
+Describe "CIS" -Tag "CIS.M365.5.1.6.2", "L1", "CIS E3 Level 1", "CIS E3", "CIS E5 Level 1", "CIS E5", "CIS", "Security", "CIS M365 v6.0.1" {
     It "CIS.M365.5.1.6.2: Ensure that guest user access is restricted" {
 
         $result = Test-MtCisEnsureGuestAccessRestricted

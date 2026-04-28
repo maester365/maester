@@ -24,7 +24,7 @@ If this option is set to enabled, then users request admin consent to any app th
 |-|-|
 | **Recommendation** | CISA SCuBA 2.7: Non-Admin Users SHALL Be Prevented From Providing Consent To Third-Party Applications. |
 | **Configuration** | settings |
-| **Setting** | `values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value` |
+| **Setting** | `values` |
 | **Recommended Value** | 'true' |
 | **Default Value** | false |
 | **Graph API Docs** | [directorySetting resource type - Microsoft Graph beta - Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting) |

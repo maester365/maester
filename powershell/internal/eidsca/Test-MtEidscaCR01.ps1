@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaCR01 {
+function Test-MtEidscaCR01 {
     <#
     .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature is set to 'true'
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.isEnabled
+    $rawValue = $result.isEnabled
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/adminConsentRequestPolicy**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

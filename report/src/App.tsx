@@ -4,6 +4,7 @@ import { Sidebar, SidebarProvider } from "@/components/Sidebar"
 import { Breadcrumb } from "@/components/Breadcrumb"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { testResults } from "@/lib/testResults"
+import { TenantProvider } from "@/context/TenantContext"
 
 // Import pages
 import HomePage from "@/pages/HomePage"
@@ -13,16 +14,21 @@ import ConfigPage from "@/pages/ConfigPage"
 import ExcelPage from "@/pages/ExcelPage"
 import MarkdownPage from "@/pages/MarkdownPage"
 import PrintPage from "@/pages/PrintPage"
+import { reportMainElementId } from "@/lib/reportLinks"
 
-// Component to scroll to top on route change
+// Component to scroll to top on route change.
+// Skipped when a hash is present because the deep-link scroll will position
+// the viewport to the correct row instead.
 function ScrollToTop({ mainRef }: { mainRef: React.RefObject<HTMLElement | null> }) {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
 
   useEffect(() => {
+    if (hash) return
     if (mainRef.current) {
       mainRef.current.scrollTo(0, 0)
     }
-  }, [pathname, mainRef])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   return null
 }
@@ -32,28 +38,31 @@ function App() {
 
   return (
     <ThemeProvider>
-      <SidebarProvider>
-        <div className="flex h-screen font-sans min-h-screen overflow-x-hidden bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600 dark:bg-black">
-          <Sidebar testResults={testResults} />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Breadcrumb testResults={testResults} />
-            <main ref={mainRef} className="flex-1 overflow-auto">
-              <ScrollToTop mainRef={mainRef} />
-              <div className="p-6">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/system" element={<SystemPage />} />
-                  <Route path="/config" element={<ConfigPage testResults={testResults} />} />
-                  <Route path="/view/excel" element={<ExcelPage />} />
-                  <Route path="/view/markdown" element={<MarkdownPage />} />
-                  <Route path="/view/print" element={<PrintPage />} />
-                </Routes>
-              </div>
-            </main>
+      <TenantProvider testResults={testResults}>
+        <SidebarProvider>
+          <div className="flex h-screen font-sans min-h-screen overflow-x-hidden bg-gray-50 antialiased selection:bg-orange-100 selection:text-orange-600 dark:bg-black">
+            <Sidebar />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <Breadcrumb />
+              <main id={reportMainElementId} ref={mainRef} className="flex-1 overflow-auto">
+                <ScrollToTop mainRef={mainRef} />
+                <div className="p-6">
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/system" element={<SystemPage />} />
+                    <Route path="/config" element={<ConfigPage />} />
+                    <Route path="/view/excel" element={<ExcelPage />} />
+                    <Route path="/view/markdown" element={<MarkdownPage />} />
+                    <Route path="/view/print" element={<PrintPage />} />
+                    <Route path="/:testResultAnchor" element={<HomePage />} />
+                  </Routes>
+                </div>
+              </main>
+            </div>
           </div>
-        </div>
-      </SidebarProvider>
+        </SidebarProvider>
+      </TenantProvider>
     </ThemeProvider>
   )
 }

@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAP04 {
+function Test-MtEidscaAP04 {
     <#
     .SYNOPSIS
     Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowInvitesFrom
+    $rawValue = $result.allowInvitesFrom
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -in @('adminsAndGuestInviters','none')
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('adminsAndGuestInviters','none')** for **policies/authorizationPolicy**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

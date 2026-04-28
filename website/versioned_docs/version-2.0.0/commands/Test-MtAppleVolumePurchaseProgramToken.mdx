@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Check the validity of the Apple Volume Purchase Program (VPP) token for Intune.
+id: Test-MtAppleVolumePurchaseProgramToken
+title: Test-MtAppleVolumePurchaseProgramToken
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAppleVolumePurchaseProgramToken.ps1
+---
+
+## SYNOPSIS
+
+Check the validity of the Apple Volume Purchase Program (VPP) token for Intune.
+
+## SYNTAX
+
+```powershell
+Test-MtAppleVolumePurchaseProgramToken [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The Apple Volume Purchase Program (VPP) token is required to synchronize Apple store apps with Microsoft Intune.
+This command checks if the VPP token is valid and not expired.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAppleVolumePurchaseProgramToken
+```
+
+Returns true if the VPP token is valid for more than 30 days, false if it is expired or expiring soon.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAppleVolumePurchaseProgramToken](https://maester.dev/docs/commands/Test-MtAppleVolumePurchaseProgramToken)

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -22,9 +22,10 @@ function Test-AzdoExternalGuestAccess {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoExternalGuestAccess"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
@@ -32,12 +33,12 @@ function Test-AzdoExternalGuestAccess {
     $Policy = $PrivacyPolicies.policy | where-object -property name -eq 'Policy.DisallowAadGuestUserAccess'
     $result = $Policy.value
     if ($result) {
-        $resultMarkdown = "External users should not be allowed access to your Azure DevOps organization"
+        $resultMarkdown = "Your tenant has restricted external guest access to your Azure DevOps organization."
     } else {
-        $resultMarkdown = "External user(s) can be added to the organization to which they were invited and has immediate access. A guest user can add other guest users to the organization after being granted the Guest Inviter role in Microsoft Entra ID."
+        $resultMarkdown = "External user(s) can be added to the organization to which they were invited and have immediate access. A guest user can add other guest users to the organization after being granted the Guest Inviter role in Microsoft Entra ID."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown
 
-    return -not $result
+    return $result
 }

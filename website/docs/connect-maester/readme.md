@@ -103,6 +103,22 @@ Connect-Maester -Service Graph,Dataverse
 
 This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`.
 
+### Connect to Azure DevOps (optional)
+
+Maester includes an *optional* set of Azure DevOps security tests (AZDO.*).
+These tests require the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module and an active connection to your Azure DevOps organization.
+
+Connecting to Azure DevOps is **not** part of `Connect-Maester` and must be done separately:
+
+```powershell
+Install-Module ADOPS -Scope CurrentUser
+Connect-ADOPS -Organization <your-organization>
+```
+
+If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
+
+See the [installation guide](../installation.md#installing-azure-devops-powershell-module) for prerequisites and permissions, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
+
 ### Connect to US Government, US DoD, China and Germany and other clouds
 
 `Connect-Maester` also provides options to connect to the US Government, China and Germany clouds for Microsoft Graph, Azure and Exchange Online.

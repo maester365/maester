@@ -1,14 +1,78 @@
 
 import React from "react";
 import { Grid, Flex, Metric, Text, Icon, CategoryBar, ProgressBar, Card } from "@tremor/react";
-import { CheckCircleIcon, ExclamationTriangleIcon, ArchiveBoxIcon, ExclamationCircleIcon, ForwardIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/solid";
 
 export default function MtTestSummary(props) {
 
+    const allStatuses = ['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'];
+
+    function handleCardClick(status) {
+        if (!props.onStatusChange) return;
+        if (status === null) {
+            props.onStatusChange(allStatuses);
+            return;
+        }
+        const current = props.selectedStatus ?? allStatuses;
+        const isAll = current.length === allStatuses.length;
+        if (isAll) {
+            // First click from "all" view — narrow to just this one
+            props.onStatusChange([status]);
+        } else if (current.includes(status)) {
+            // Deselect — but don't allow empty selection
+            const next = current.filter(s => s !== status);
+            props.onStatusChange(next.length > 0 ? next : allStatuses);
+        } else {
+            props.onStatusChange([...current, status]);
+        }
+    }
+
+    function isActive(status) {
+        if (!props.selectedStatus) return true;
+        if (status === null) return props.selectedStatus.length === allStatuses.length;
+        return props.selectedStatus.includes(status);
+    }
+
+    const cardClass = (status) => {
+        if (!props.onStatusChange) return "";
+        if (isActive(status)) {
+            return "cursor-pointer transition-colors ring-2 ring-slate-300 dark:ring-slate-600";
+        }
+        return "cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50";
+    };
+
+    const statusLabels = {
+        null: 'Total tests',
+        Passed: 'Passed',
+        Failed: 'Failed',
+        Investigate: 'Investigate',
+        Error: 'Error',
+    };
+
+    function getCardProps(status) {
+        if (!props.onStatusChange) return {};
+        const label = statusLabels[status] ?? String(status);
+        const pressed = isActive(status);
+        return {
+            className: cardClass(status),
+            onClick: () => handleCardClick(status),
+            role: "button",
+            tabIndex: 0,
+            onKeyDown: (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCardClick(status);
+                }
+            },
+            'aria-label': label,
+            'aria-pressed': pressed,
+        };
+    }
+
+    const adjustedTotal = Math.max(0, (props.TotalCount || 0) - (props.SkippedCount || 0) - (props.NotRunCount || 0));
+
     const pctPassed = getPercentage(props.PassedCount);
     const pctFailed = getPercentage(props.FailedCount);
-    const pctSkipped = getPercentage(props.SkippedCount);
-    const pctNotRun = getPercentage(props.NotRunCount);
     const pctError = getPercentage(props.ErrorCount);
     const pctInvestigate = getPercentage(props.InvestigateCount);
 
@@ -16,32 +80,27 @@ export default function MtTestSummary(props) {
         props.PassedCount || 0,
         props.FailedCount || 0,
         props.InvestigateCount || 0,
-        props.SkippedCount || 0,
-        props.NotRunCount || 0,
         props.ErrorCount || 0
     ];
-    const testSummaryColors = ["emerald", "rose", "purple", "yellow", "gray", "orange"];
+    const testSummaryColors = ["emerald", "rose", "purple", "orange"];
 
     function getPercentage(count) {
-        const total = props.TotalCount || 0;
-        if (total === 0) return 0;
-        return Math.round(((count || 0) / total) * 100);
+        if (adjustedTotal === 0) return 0;
+        return Math.round(((count || 0) / adjustedTotal) * 100);
     }
 
     let visibleCards = 3;
     if (props.InvestigateCount > 0) visibleCards++;
-    if (props.SkippedCount > 0) visibleCards++;
-    if (props.NotRunCount > 0) visibleCards++;
     if (props.ErrorCount > 0) visibleCards++;
 
     return (
         <Grid numItemsSm={2} numItemsLg={visibleCards} className="gap-6 mb-6">
-            <Card>
+            <Card {...getCardProps(null)}>
                 <Flex alignItems="start">
                     <Text>Total tests</Text>
                 </Flex>
                 <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                    <Metric>{props.TotalCount}</Metric>
+                    <Metric>{adjustedTotal}</Metric>
                 </Flex>
                 <CategoryBar
                     showAnimation={true}
@@ -51,7 +110,7 @@ export default function MtTestSummary(props) {
                     showLabels={false}
                 />
             </Card>
-            <Card>
+            <Card {...getCardProps('Passed')}>
                 <Flex alignItems="start">
                     <Text>Passed</Text>
                     <Icon icon={CheckCircleIcon} color="emerald" size="md" className="ml-2 w-4 h-4" />
@@ -61,7 +120,7 @@ export default function MtTestSummary(props) {
                 </Flex>
                 <ProgressBar value={pctPassed} color="emerald" className="mt-3" showAnimation={true} />
             </Card>
-            <Card>
+            <Card {...getCardProps('Failed')}>
                 <Flex alignItems="start">
                     <Text>Failed</Text>
                     <Icon icon={ExclamationTriangleIcon} color="rose" size="md" className="ml-2 w-4 h-4" />
@@ -72,7 +131,7 @@ export default function MtTestSummary(props) {
                 <ProgressBar value={pctFailed} color="rose" className="mt-3" showAnimation={true} />
             </Card>
             {props.InvestigateCount > 0 && (
-                <Card>
+                <Card {...getCardProps('Investigate')}>
                     <Flex alignItems="start">
                         <Text>Investigate</Text>
                         <Icon icon={MagnifyingGlassCircleIcon} color="purple" size="md" className="ml-2 w-4 h-4" />
@@ -83,32 +142,8 @@ export default function MtTestSummary(props) {
                     <ProgressBar value={pctInvestigate} color="purple" className="mt-3" showAnimation={true} />
                 </Card>
             )}
-            {props.SkippedCount > 0 && (
-                <Card>
-                    <Flex alignItems="start">
-                        <Text>Skipped</Text>
-                        <Icon icon={ForwardIcon} color="yellow" size="md" className="ml-2 w-4 h-4" />
-                    </Flex>
-                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                        <Metric>{props.SkippedCount}</Metric>
-                    </Flex>
-                    <ProgressBar value={pctSkipped} color="yellow" className="mt-3" showAnimation={true} />
-                </Card>
-            )}
-            {props.NotRunCount > 0 && (
-                <Card>
-                    <Flex alignItems="start">
-                        <Text>Not tested</Text>
-                        <Icon icon={ArchiveBoxIcon} size="md" color="gray" className="ml-2 w-4 h-4" />
-                    </Flex>
-                    <Flex justifyContent="start" alignItems="baseline" className="truncate space-x-3">
-                        <Metric>{props.NotRunCount}</Metric>
-                    </Flex>
-                    <ProgressBar value={pctNotRun} color="gray" className="mt-3" showAnimation={true} />
-                </Card>
-            )}
             {props.ErrorCount > 0 && (
-                <Card>
+                <Card {...getCardProps('Error')}>
                     <Flex alignItems="start">
                         <Text>Error</Text>
                         <Icon icon={ExclamationCircleIcon} color="orange" size="md" className="ml-2 w-4 h-4" />

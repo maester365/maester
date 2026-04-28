@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -24,9 +24,10 @@ function Test-AzdoThirdPartyAccessViaOauth {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoThirdPartyAccessViaOauth"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
@@ -34,9 +35,9 @@ function Test-AzdoThirdPartyAccessViaOauth {
     $Policy = $ApplicationPolicies.policy | where-object -property name -eq 'Policy.DisallowOAuthAuthentication'
     $result = $Policy.value
     if ($result) {
-        $resultMarkdown = "Your tenant have not restricted Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $resultMarkdown = "Your tenant has restricted Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     } else {
-        $resultMarkdown = "Your tenant has restricted Azure DevOps OAuth apps to access resources in your organization through OAuth."
+        $resultMarkdown = "Your tenant has not restricted Azure DevOps OAuth apps from accessing resources in your organization through OAuth."
     }
 
     Add-MtTestResultDetail -Result $resultMarkdown

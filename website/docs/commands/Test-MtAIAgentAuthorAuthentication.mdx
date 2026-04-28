@@ -1,0 +1,76 @@
+---
+sidebar_class_name: hidden
+description: Tests if AI agents use author (maker) authentication for their connector tools.
+id: Test-MtAIAgentAuthorAuthentication
+title: Test-MtAIAgentAuthorAuthentication
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAIAgentAuthorAuthentication.ps1
+---
+
+## SYNOPSIS
+
+Tests if AI agents use author (maker) authentication for their connector tools.
+
+## SYNTAX
+
+```powershell
+Test-MtAIAgentAuthorAuthentication [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks all Copilot Studio agents for connector tools that use author (maker)
+authentication instead of end-user authentication.
+When a connection uses
+author authentication, the agent accesses external services (SharePoint, SQL,
+etc.) using the bot maker's stored credentials rather than requiring the end
+user to authenticate.
+This creates a privilege escalation risk - the agent
+operates with the maker's permissions regardless of who is chatting with it.
+
+Reference: https://www.microsoft.com/en-us/security/blog/2026/02/12/copilot-studio-agent-security-top-10-risks-detect-prevent/
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAIAgentAuthorAuthentication
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no agents use author/maker authentication,
+
+### $false if any agent has connections using the maker's credentials,
+### $null if data is unavailable.
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAIAgentAuthorAuthentication](https://maester.dev/docs/commands/Test-MtAIAgentAuthorAuthentication)

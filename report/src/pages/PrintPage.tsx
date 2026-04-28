@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 import { Button } from "@/components/Button"
 import { RiPrinterLine } from "@remixicon/react"
 import StatusLabel from "@/components/StatusLabel"
@@ -8,6 +8,7 @@ import ResultInfo from "@/components/ResultInfo"
 import maesterLogo from "@/assets/maester.png"
 
 export default function PrintPage() {
+  const { selectedTenant: testResults } = useTenant()
   const [isPrinting, setIsPrinting] = useState(false)
   const tenantName = testResults.TenantName || testResults.TenantId || "Tenant"
   const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
@@ -155,7 +156,7 @@ export default function PrintPage() {
                 </tr>
               </thead>
               <tbody>
-                {testResults.Tests.map((test, index) => (
+                {testResults.Tests.map((test: any, index: number) => (
                   <tr
                     key={index}
                     className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
@@ -195,7 +196,7 @@ export default function PrintPage() {
             Test Details
           </h2>
           <div className="space-y-6">
-            {testResults.Tests.map((test, index) => (
+            {testResults.Tests.map((test: any, index: number) => (
               <div
                 key={index}
                 id={`detail-${test.Id}`}

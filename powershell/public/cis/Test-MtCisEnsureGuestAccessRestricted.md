@@ -1,22 +1,53 @@
 5.1.6.2 (L1) Ensure that guest user access is restricted
 
-**Rationale:**
+Microsoft Entra ID, part of Microsoft Entra, allows you to restrict what external guest users can see in their organization in Microsoft Entra ID. Guest users are set to a limited permission level by default in Microsoft Entra ID, while the default for member users is the full set of user permissions.
+
+These directory level permissions are enforced across Microsoft Entra services including Microsoft Graph, PowerShell v2, the Azure portal, and My Apps portal. Microsoft 365 services leveraging Microsoft 365 groups for collaboration scenarios are also affected, specifically Outlook, Microsoft Teams, and SharePoint. They do not override the SharePoint or Microsoft Teams guest settings.
+
+The recommended state is at least **Guest users have limited access to properties and memberships of directory objects** or more restrictive.
+
+#### Rationale
+
 By limiting guest access to the most restrictive state this helps prevent malicious group and user object enumeration in the Microsoft 365 environment. This first step, known as reconnaissance in The Cyber Kill Chain, is often conducted by attackers prior to more advanced targeted attacks.
+
+#### Impact
+
+The default is Guest users have limited access to properties and memberships of directory objects.
+
+When using the 'most restrictive' setting, guests will only be able to access their own profiles and will not be allowed to see other users' profiles, groups, or group memberships.
+
+There are some known issues with Yammer that will prevent guests that are signed in from leaving the group.
 
 #### Remediation action:
 
-1. Navigate to Microsoft Entra ID admin center [https://entra.microsoft.com](https://entra.microsoft.com).
-2. Under **Entra ID** select **External Identities**
-3. Select **External collaboration settings**
-4. Under **Guest user access** set **Guest user access restrictions** to one of the following:
-   - **Guest users have limited access to properties and memberships of directory objects**
-   - **Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)**
-5. Click Save.
+1. Navigate to [Microsoft Entra ID admin center](https://entra.microsoft.com).
+2. Click to expand **Entra ID** > **External Identities** select **External collaboration settings**.
+3. Under **Guest user access** set **Guest user access restrictions** to one of the following:
+* State: **Guest users have limited access to properties and memberships of directory objects**
+* State: **Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)**
+
+##### PowerShell
+
+1. Connect to Microsoft Graph using Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"
+2. Run the following command to set the guest user access restrictions to default:
+```powershell
+# Guest users have limited access to properties and memberships of directory objects
+Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '10dae51f-b6af-4016-8d66-8c2a99b929b3'
+```
+3. Or, run the following command to set it to the "most restrictive":
+```powershell
+# Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)
+Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'
+```
+
+>Note: Either setting allows for a passing state.
 
 #### Related links
 
-* [Microsoft 365 Entra Admin Center | External Identities | External collaboration settings](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/CompanyRelationshipsMenuBlade/~/Settings/menuId/ExternalIdentitiesGettingStarted)
-* [CIS Microsoft 365 Foundations Benchmark v5.0.0 - Page 193](https://www.cisecurity.org/benchmark/microsoft_365)
+* [Microsoft Entra ID admin center](https://entra.microsoft.com)
+* [Restrict guest access permissions in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/users-restrict-guest-permissions)
+* [Cyber Kill Chain](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)
+* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 221](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

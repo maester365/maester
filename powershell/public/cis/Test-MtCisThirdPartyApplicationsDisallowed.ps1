@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Checks if users are not allowed to register applications.
-
-.DESCRIPTION
-    Users should not be allowed to register applications in the tenant.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
-
-.EXAMPLE
-    Test-MtCisThirdPartyApplicationsDisallowed
-
-    Returns true if users are not allowed to register applications in the tenant.
-
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisThirdPartyApplicationsDisallowed
-#>
-function Test-MtCisThirdPartyApplicationsDisallowed {
+﻿function Test-MtCisThirdPartyApplicationsDisallowed {
+    <#
+    .SYNOPSIS
+        Checks if users are not allowed to register applications.
+    
+    .DESCRIPTION
+        Users should not be allowed to register applications in the tenant.
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
+    
+    .EXAMPLE
+        Test-MtCisThirdPartyApplicationsDisallowed
+    
+        Returns true if users are not allowed to register applications in the tenant.
+    
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisThirdPartyApplicationsDisallowed
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,7 +35,8 @@ function Test-MtCisThirdPartyApplicationsDisallowed {
 
         if ($testResult) {
             $testResultMarkdown = "Well done. Your tenant settings comply with CIS recommendations.`n`n%TestResult%"
-        } else {
+        }
+        else {
             $testResultMarkdown = "Your tenant settings do not comply with CIS recommendations.`n`n%TestResult%"
         }
 
@@ -44,7 +45,8 @@ function Test-MtCisThirdPartyApplicationsDisallowed {
 
         if ($checkAllowedToCreateApps) {
             $checkAllowedToCreateAppsResult = '✅ Pass'
-        } else {
+        }
+        else {
             $checkAllowedToCreateAppsResult = '❌ Fail'
         }
 
@@ -54,7 +56,8 @@ function Test-MtCisThirdPartyApplicationsDisallowed {
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $testResult
-    } catch {
+    }
+    catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }

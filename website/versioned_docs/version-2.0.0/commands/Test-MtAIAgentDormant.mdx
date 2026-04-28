@@ -1,0 +1,69 @@
+---
+sidebar_class_name: hidden
+description: Tests if AI agents are dormant.
+id: Test-MtAIAgentDormant
+title: Test-MtAIAgentDormant
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAIAgentDormant.ps1
+---
+
+## SYNOPSIS
+
+Tests if AI agents are dormant.
+
+## SYNTAX
+
+```powershell
+Test-MtAIAgentDormant [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks all published Copilot Studio agents for those that have not been
+modified or republished within 180 days.
+Dormant agents may have outdated configurations, unpatched vulnerabilities,
+or stale permissions that present unnecessary risk.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAIAgentDormant
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no dormant agents are found, $false if any
+
+### published agent exceeds the inactivity threshold, $null if data is unavailable.
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAIAgentDormant](https://maester.dev/docs/commands/Test-MtAIAgentDormant)

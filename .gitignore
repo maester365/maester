@@ -3,9 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Claude Code
-.claude/
-
 # User-specific files
 *.rsuser
 *.suo
@@ -490,18 +487,32 @@ test.json
 
 .idea
 
-# Don't allow test results in the main branch
-test-results
-
-website/build/
-/powershell/maester-tests
-
-# Don't add any test files to this folder
-tests/Custom/*.ps1
-
-# ORCA Staging
-build/orca/orca/
-
 #Ignore Codacy's MCP server configuration and instruction files
 .github/instructions/codacy.instructions.md
 .codacy/**
+
+## ========================== ##
+## Custom Entries for Maester ##
+## ========================== ##
+
+# Claude Code
+.claude//**
+!.claude\agents\maester-test-expert.md
+
+# Don't allow Maester test results in the main branch
+test-results
+
+# Module build output: exists in local builds and CI builds, but should not be checked into source control.
+# Users should download the module from the PowerShell Gallery or from the GitHub releases page.
+module/
+
+# Don't add any test files to the Custom folder.
+# This location is reserved for Maester users to add their own tests.
+tests/Custom/*.ps1
+
+# Build outputs and staging artifacts should not be checked in.
+website/build/
+# ORCA Staging
+build/orca/orca/
+
+powershell/maester-tests

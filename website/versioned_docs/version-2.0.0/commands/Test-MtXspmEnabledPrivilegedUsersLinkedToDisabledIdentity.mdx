@@ -1,0 +1,67 @@
+---
+sidebar_class_name: hidden
+description: Tests if enabled privileged users with assigned high privileged Entra ID roles or criticality level (&lt;= 1) are linked to a disabled identity in Microsoft Defender XDR.
+id: Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
+title: Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity.ps1
+---
+
+## SYNOPSIS
+
+Tests if enabled privileged users with assigned high privileged Entra ID roles or criticality level (&lt;= 1) are linked to a disabled identity in Microsoft Defender XDR.
+
+## SYNTAX
+
+```powershell
+Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function checks if any enabled privileged users with assigned high privileged Entra ID roles or criticality level (&lt;= 1) are linked to a disabled identity in Microsoft Defender XDR.
+Having enabled privileged users linked to disabled identities can pose a security risk, as it may indicate orphaned privileged accounts that could be exploited by attackers.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if no enabled privileged users are linked to disabled identities, otherwise returns $false.
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity](https://maester.dev/docs/commands/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity)

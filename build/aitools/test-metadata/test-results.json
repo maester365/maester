@@ -10466,24 +10466,6 @@
       "ResultDetail": null
     },
     {
-      "Id": "MT.1040",
-      "Title": "Ensure additional storage providers are restricted in Outlook on the web",
-      "Name": "MT.1040: Ensure additional storage providers are restricted in Outlook on the web",
-      "HelpUrl": "",
-      "Tag": [
-        "Maester",
-        "Exchange",
-        "MT.1040"
-      ],
-      "Result": "Failed",
-      "ScriptBlock": "\n        # > CIS 1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'\n\n        #Get-OwaMailboxPolicy | fl Name, AdditionalStorageProvidersAvailable, ThirdPartyFileProvidersEnabled, ConditionalAccessPolicy, ChangePasswordEnabled, *Offline*, ReportJunkEmailEnabled\n        #Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false\n\n        $result = $OwaMailboxPolicyDefault.AdditionalStorageProvidersAvailable\n\n        if ($result -eq $false) {\n            $testResultMarkdown = \"Well done. AdditionalStorageProvidersAvailable is $($result)`n`n\"\n        } else {\n            $testResultMarkdown = \"AdditionalStorageProvidersAvailable should be False and is $($result) in [SecureScore]($portalLink_SecureScore)`n`n\"\n        }\n        $testDetailsMarkdown = \"This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services. Ensure AdditionalStorageProvidersAvailable is restricted.\"\n        Add-MtTestResultDetail -Description $testDetailsMarkdown -Result $testResultMarkdown\n\n        # Actual test\n        if ($null -ne $result) {\n            $result | Should -Be $false -Because \"AdditionalStorageProvidersAvailable should be False\"\n        }\n    ",
-      "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1",
-      "ErrorRecord": [],
-      "Block": "Maester/Exchange",
-      "Duration": "00:00:00",
-      "ResultDetail": null
-    },
-    {
       "Id": "MT.1041",
       "Title": "Ensure users installing Outlook add-ins is not allowed",
       "Name": "MT.1041: Ensure users installing Outlook add-ins is not allowed",
@@ -11528,7 +11510,7 @@
       "Duration": "00:00:00",
       "ResultDetail": {
         "TestTitle": "ORCA.110: Internal Sender notifications are disabled.",
-        "TestResult": "Well done! Internal Sender notifications are disabled.\n\n\n\n|Malware Policy|EnableInternalSenderAdminNotifications|Result|\n|-|-|-|\n|Default|False|✅ Pass|\n",
+        "TestResult": "Well done! Internal Sender notifications are disabled.\n\n\n\n|Malware Policy|EnableInternalSenderNotifications|Result|\n|-|-|-|\n|Default|False|✅ Pass|\n",
         "TestDescription": "Notifying internal senders about malware detected in email messages could have negative impact. An adversary with access to an already compromised mailbox may use this information to verify effectiveness of malware detection.\n\n#### Remediation action\nDisable notifying internal senders of malware detection.\n\n#### Related Links\n\n* [Microsoft 365 Defender Portal - Anti-malware](https://security.microsoft.com/antimalwarev2) \n* [Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)\n",
         "SkippedReason": null,
         "Severity": "",

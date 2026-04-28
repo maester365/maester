@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Only people in my org can bypass the lobby
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
     .EXAMPLE
     Test-MtCisTeamsLobbyBypass
@@ -27,8 +27,8 @@
     Write-Verbose 'Test-MtCisTeamsLobbyBypass: Testing if only people in my org can bypass the lobby'
     try {
         $TeamsMeetingPolicy = Get-CsTeamsMeetingPolicy -Identity Global | Select-Object -ExpandProperty AutoAdmittedUsers
-        if ($TeamsMeetingPolicy -eq 'EveryoneInCompanyExcludingGuests') {
-            Add-MtTestResultDetail -Result 'Well done. Only people in your org (excluding guests) can bypass the lobby.'
+        if ($TeamsMeetingPolicy -eq 'InvitedUsers' -or $TeamsMeetingPolicy -eq 'EveryoneInCompanyExcludingGuests' -or $TeamsMeetingPolicy -eq 'OrganizerOnly') {
+            Add-MtTestResultDetail -Result 'Well done. Only people in your org can bypass the lobby.'
             return $true
         } else {
             Add-MtTestResultDetail -Result "Following people can bypass your lobby: '$($TeamsMeetingPolicy)'."

@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAM07 {
+function Test-MtEidscaAM07 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications is set to 'all_users'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')" -ApiVersion beta
 
-    [string]$tenantValue = $result.featureSettings.displayAppInformationRequiredState.includeTarget.id
+    $rawValue = $result.featureSettings.displayAppInformationRequiredState.includeTarget.id
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'all_users'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'all_users' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'all_users' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'all_users'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('MicrosoftAuthenticator')**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

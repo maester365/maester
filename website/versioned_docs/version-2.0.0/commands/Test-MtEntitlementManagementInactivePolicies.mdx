@@ -1,0 +1,86 @@
+---
+sidebar_class_name: hidden
+description: Checks if access packages have inactive or orphaned assignment policies
+id: Test-MtEntitlementManagementInactivePolicies
+title: Test-MtEntitlementManagementInactivePolicies
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEntitlementManagementInactivePolicies.ps1
+---
+
+## SYNOPSIS
+
+Checks if access packages have inactive or orphaned assignment policies
+
+## SYNTAX
+
+```powershell
+Test-MtEntitlementManagementInactivePolicies [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+MT.1108 - Access packages should not reference inactive or orphaned assignment policies
+
+This test identifies Microsoft Entra ID Governance access packages that contain assignment policies
+which are disabled, misconfigured, or orphaned.
+Inactive policies can cause:
+- Blocked access requests
+- Broken approval workflows
+- Inconsistent user lifecycle automation
+- Configuration drift
+
+The test validates that all assignment policies are:
+- Accepting requests (requestorSettings.acceptRequests = true)
+- Properly configured with valid scope types
+- Not using deprecated scope types (e.g., "NoSubjects")
+- Have valid approval settings where required
+- Not expired
+- Have proper question configuration
+
+Learn more:
+https://maester.dev/docs/tests/MT.1108
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtEntitlementManagementInactivePolicies
+```
+
+Returns $true if all access package assignment policies are active and properly configured
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtEntitlementManagementInactivePolicies](https://maester.dev/docs/commands/Test-MtEntitlementManagementInactivePolicies)

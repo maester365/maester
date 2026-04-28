@@ -88,6 +88,23 @@ html[data-theme="dark"] .navbar--github-link:before {
   margin: 0.5rem 0 0.25rem 1rem;
 }
 
+.sidebar-section {
+  display: block;
+  margin: 1rem 0 0.25rem 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--ifm-color-gray-200);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+html[data-theme="dark"] .sidebar-section {
+  border-top-color: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-500);
+}
+
 /**
  * Syntax line highlighting
  */

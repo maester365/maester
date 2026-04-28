@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Tests your environment for compliance with the specified EIDSCA control
 

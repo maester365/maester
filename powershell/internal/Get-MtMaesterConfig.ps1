@@ -15,53 +15,71 @@
     param(
         # Path to the Maester config file or the directory containing the config file (maester-config.json).
         [Parameter(Mandatory = $true)]
-        $Path
+        $Path,
+
+        # Optional tenant ID. When provided, looks for maester-config.{TenantId}.json first,
+        # then falls back to maester-config.json.
+        [Parameter(Mandatory = $false)]
+        [string] $TenantId
     )
 
     Write-Verbose "Getting Maester config from $Path"
 
-    try {
-        # If the path is a directory, look for the maester-config.json file in it
-        # check up 5 levels up the directory tree for the maester-config.json file
-        if (Test-Path $Path -PathType Container) {
-            $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
-            if (-not (Test-Path -Path $ConfigFilePath)) {
-                Write-Verbose "Config file not found in $Path. Looking for maester-config.json in parent directories."
-                # Check if it's there in the ./tests folder
-                $testsDir = Join-Path -Path $Path -ChildPath 'tests/maester-config.json'
-                if (Test-Path -Path $testsDir) {
-                    $ConfigFilePath = $testsDir
-                } else {
-                    # Check if there are any parent directories
-                    # and look for the maester-config.json file in each parent directory
-                    # up to 5 levels up
-                    # This is to ensure that we can find the config file even if the user is in a subdirectory
-                    # of the tests directory
-                    for ($i = 1; $i -le 5; $i++) {
-                        if (Test-Path -Path $ConfigFilePath) {
-                            break
-                        }
-                        $parentDir = Split-Path -Path $Path -Parent
-                        if ($parentDir -eq $Path -or [string]::IsNullOrEmpty($parentDir)) {
-                            break
-                        }
-                        $Path = $parentDir
-                        $ConfigFilePath = Join-Path -Path $Path -ChildPath 'maester-config.json'
-                    }
-                }
+    # Helper to find a config file by name in a directory, walking up to 5 parent levels
+    function Find-ConfigFile {
+        param([string]$SearchPath, [string]$FileName)
+
+        if (Test-Path $SearchPath -PathType Container) {
+            $candidate = Join-Path -Path $SearchPath -ChildPath $FileName
+            if (Test-Path -Path $candidate) { return $candidate }
+
+            # Check tests subfolder
+            $testsCandidate = Join-Path -Path $SearchPath -ChildPath "tests/$FileName"
+            if (Test-Path -Path $testsCandidate) { return $testsCandidate }
+
+            # Walk up to 5 parent directories
+            $currentDir = $SearchPath
+            for ($i = 1; $i -le 5; $i++) {
+                $parentDir = Split-Path -Path $currentDir -Parent
+                if ($parentDir -eq $currentDir -or [string]::IsNullOrEmpty($parentDir)) { break }
+                $currentDir = $parentDir
+                $candidate = Join-Path -Path $currentDir -ChildPath $FileName
+                if (Test-Path -Path $candidate) { return $candidate }
             }
         }
-        # If the path is a file, use it directly
-        elseif (Test-Path -Path $Path -PathType Leaf) {
-            $ConfigFilePath = $Path
+
+        return $null
+    }
+
+    $ConfigFilePath = $null
+
+    try {
+        # If a valid TenantId (GUID) is provided, look for tenant-specific config first
+        $isValidTenantId = $TenantId -as [guid]
+        if ($isValidTenantId) {
+            $tenantFileName = "maester-config.$TenantId.json"
+            $ConfigFilePath = Find-ConfigFile -SearchPath $Path -FileName $tenantFileName
+            if ($ConfigFilePath) {
+                Write-Verbose "Found tenant-specific config: $ConfigFilePath"
+            } else {
+                Write-Verbose "No tenant-specific config ($tenantFileName) found. Falling back to default."
+            }
+        }
+
+        # Fall back to the default maester-config.json
+        if (-not $ConfigFilePath) {
+            # If Path is a direct file reference, use it as-is (preserves original behavior)
+            if (Test-Path -Path $Path -PathType Leaf) {
+                $ConfigFilePath = $Path
+            } else {
+                $ConfigFilePath = Find-ConfigFile -SearchPath $Path -FileName 'maester-config.json'
+            }
         }
     } catch {
-        # write the error as a warning
         Write-Verbose "Error while trying to seek the config file: $_"
     }
 
-
-    if (-not (Test-Path -Path $ConfigFilePath)) {
+    if (-not $ConfigFilePath -or -not (Test-Path -Path $ConfigFilePath)) {
         # If we didn't find it anywhere, let's use the default config file
         Write-Verbose "Config file not found. Using default config file."
         $ConfigFilePath = Join-Path (Get-MtMaesterTestFolderPath) -ChildPath 'maester-config.json'
@@ -71,7 +89,12 @@
         }
     }
 
+    Write-Verbose "Loading Maester config from: $ConfigFilePath"
     $maesterConfig = Get-Content -Path $ConfigFilePath -Raw | ConvertFrom-Json
+
+    # Store the source file name so the report can show which config was loaded
+    $configFileName = Split-Path -Path $ConfigFilePath -Leaf
+    Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name 'ConfigSource' -Value $configFileName
 
     # Add a new property called TestSettingsHash to the config object with Id as the key for faster access
     Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name 'TestSettingsHash' -Value @{}

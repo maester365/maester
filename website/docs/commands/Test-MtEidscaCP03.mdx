@@ -24,7 +24,7 @@ Defines whether user consent will be blocked when a risky request is detected
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
+graph/settings.values -eq 'true'
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ graph/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | s
 Test-MtEidscaCP03
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value -eq 'true'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'true'
 
 ## PARAMETERS
 

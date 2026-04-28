@@ -1,5 +1,6 @@
+import { useState } from "react"
 import { Grid } from "@tremor/react"
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 import MtTestSummary from "@/components/MtTestSummary"
 import MtDonutChart from "@/components/MtDonutChart"
 import MtSeverityChart from "@/components/MtSeverityChart"
@@ -7,6 +8,8 @@ import MtBlocksArea from "@/components/MtBlocksArea"
 import TestResultsTable from "@/components/TestResultsTable"
 
 export default function HomePage() {
+  const { selectedTenant: testResults } = useTenant()
+  const [selectedStatus, setSelectedStatus] = useState(['Passed', 'Failed', 'Skipped', 'Investigate', 'NotRun', 'Error'])
   const tenantName = testResults.TenantName || testResults.TenantId || "Tenant"
   const testDateLocal = new Date(testResults.ExecutedAt).toLocaleString(
     undefined,
@@ -29,7 +32,7 @@ export default function HomePage() {
       </div>
 
       {/* Test Summary */}
-      <MtTestSummary {...testResults} />
+      <MtTestSummary {...testResults} selectedStatus={selectedStatus} onStatusChange={setSelectedStatus} />
 
       {/* Charts Grid */}
       <Grid numItemsMd={2} numItemsLg={3} className="gap-6 mb-6">
@@ -40,7 +43,7 @@ export default function HomePage() {
 
       {/* Test Results Table */}
       <div className="mt-6">
-        <TestResultsTable TestResults={testResults} />
+        <TestResultsTable TestResults={testResults} selectedStatus={selectedStatus} onStatusChange={setSelectedStatus} />
       </div>
     </>
   )

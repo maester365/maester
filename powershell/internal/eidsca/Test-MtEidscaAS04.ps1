@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaAS04 {
+function Test-MtEidscaAS04 {
     <#
     .SYNOPSIS
     Checks if Authentication Method - SMS - Use for sign-in is set to 'false'
@@ -26,9 +26,10 @@
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')" -ApiVersion beta
 
-    [string]$tenantValue = $result.includeTargets.isUsableForSignIn
+    $rawValue = $result.includeTargets.isUsableForSignIn | select-object -unique
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
@@ -41,3 +42,4 @@
 
     return $tenantValue
 }
+

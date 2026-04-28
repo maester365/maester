@@ -5,7 +5,7 @@
 #### Test script
 ```
 https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
-.%CurrentValue% -%PwshCompareOperator% %RecommendedValue%
+.%CurrentValueProperty% -%PwshCompareOperator% %RecommendedValue%
 ```
 
 #### Related links

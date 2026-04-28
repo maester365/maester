@@ -7,7 +7,7 @@ export default function MtDonutChart(props) {
     function getPercentage(count) {
         let total = (props.PassedCount || 0) + (props.FailedCount || 0) + (props.InvestigateCount || 0);
         let percent = Math.round(count / total * 100);
-        if(isNaN(percent)) percent = "0";
+        if (isNaN(percent)) percent = "0";
         return percent + "%";
     }
 

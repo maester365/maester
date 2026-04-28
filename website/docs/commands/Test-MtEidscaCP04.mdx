@@ -25,7 +25,7 @@ If this option is set to disabled, then users must contact their admin to reques
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
+graph/settings.values -eq 'true'
 
 ## EXAMPLES
 
@@ -35,7 +35,7 @@ graph/settings.values | where-object name -eq 'EnableAdminConsentRequests' | sel
 Test-MtEidscaCP04
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableAdminConsentRequests' | select-object -expand value -eq 'true'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'true'
 
 ## PARAMETERS
 

@@ -1,0 +1,81 @@
+---
+sidebar_class_name: hidden
+description: Escapes text to be safe to use in markdown.
+id: Get-MtSafeMarkdown
+title: Get-MtSafeMarkdown
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtSafeMarkdown.ps1
+---
+
+## SYNOPSIS
+
+Escapes text to be safe to use in markdown.
+
+## SYNTAX
+
+```powershell
+Get-MtSafeMarkdown [[-Text] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Escapes text to be safe to use in markdown.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtSafeMarkdown -Text $tenantName
+```
+
+Converts the content of $tenantName into something safe to use in markdown.
+
+## PARAMETERS
+
+### -Text
+
+The text to escape
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtSafeMarkdown](https://maester.dev/docs/commands/Get-MtSafeMarkdown)

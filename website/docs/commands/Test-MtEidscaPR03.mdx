@@ -24,7 +24,7 @@ When enabled, the words in the list below are used in the banned password system
 
 Queries settings
 and returns the result of
-graph/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
+graph/settings.values -eq 'True'
 
 ## EXAMPLES
 
@@ -34,7 +34,7 @@ graph/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | sele
 Test-MtEidscaPR03
 ```
 
-Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableBannedPasswordCheck' | select-object -expand value -eq 'True'
+Returns the result of graph.microsoft.com/beta/settings.values -eq 'True'
 
 ## PARAMETERS
 

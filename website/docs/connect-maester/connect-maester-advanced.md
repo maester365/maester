@@ -225,3 +225,32 @@ Connect-Maester -Service Dataverse
 ```
 
 > The service principal must be registered as an Application User in Power Platform with a security role that grants read access to the `bot`, `botcomponent`, `systemuser`, and `connectionreference` tables.
+
+### Azure DevOps (via ADOPS)
+
+The Azure DevOps security tests (AZDO.*) use the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module. This module is not bundled with Maester; install it separately and connect to your organization before running `Invoke-Maester`. If `ADOPS` is not installed or there is no active connection, the Azure DevOps tests are skipped.
+
+#### OAuth token-based authentication (recommended for automation)
+
+If you already have an authenticated Azure context (e.g., managed identity, workload identity federation, or `Connect-AzAccount`), you can use `Get-AzAccessToken` to obtain an OAuth token and pass it directly to `Connect-ADOPS`. This avoids the need to manage Personal Access Tokens.
+
+```powershell
+#$tenantId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
+#$devOpsOrganization = "<your-azure-devops-organization>"
+
+$DevOpsToken = ConvertFrom-SecureString `
+  -SecureString (Get-AzAccessToken -AsSecureString -TenantId $tenantId).Token `
+  -AsPlainText
+Connect-ADOPS -Organization $devOpsOrganization -OAuthToken $DevOpsToken
+```
+
+#### Interactive authentication
+
+For interactive sessions (e.g., local runs), use the standard sign-in flow:
+
+```powershell
+Install-Module ADOPS -Scope CurrentUser
+Connect-ADOPS -Organization <your-organization>
+```
+
+> Some Azure DevOps tests require organization-level permissions such as *Project Collection Administrator* (e.g., AZDO.1030) or tenant-level permissions such as *Azure DevOps Administrator* (e.g., AZDO.1032–1036). See [Manage policies as Administrator](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites) and the [installation guide](../installation.md#installing-azure-devops-powershell-module).

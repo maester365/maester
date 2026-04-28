@@ -61,4 +61,11 @@ Describe "Maester/Intune" -Tag "Maester", "Intune" {
             $result | Should -Be $true -Because "MDM Authority is set to Intune."
         }
     }
+
+    It "MT.1123: Ensure BitLocker full disk encryption is configured" -Tag "MT.1123" {
+        $result = Test-MtBitLockerFullDiskEncryption
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "at least one Intune Endpoint Security Disk encryption policy enforces BitLocker full disk encryption."
+        }
+    }
 }

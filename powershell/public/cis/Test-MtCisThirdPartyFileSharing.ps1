@@ -5,7 +5,7 @@
 
     .DESCRIPTION
     Ensure third-party file sharing cloud services in Teams are disabled
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
     .EXAMPLE
     Test-MtCisThirdPartyFileSharing
@@ -28,7 +28,7 @@
 
     try {
         $return = $true
-        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration -Identity Global | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
 
         $passResult = '✅ Pass'
         $failResult = '❌ Fail'

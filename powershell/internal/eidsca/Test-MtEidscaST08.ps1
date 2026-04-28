@@ -1,4 +1,4 @@
-﻿function Test-MtEidscaST08 {
+function Test-MtEidscaST08 {
     <#
     .SYNOPSIS
     Checks if Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner is set to 'false'
@@ -9,12 +9,12 @@
 
     Queries settings
     and returns the result of
-    graph/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
+    graph/settings.values -eq 'false'
 
     .EXAMPLE
     Test-MtEidscaST08
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value -eq 'false'
+    Returns the result of graph.microsoft.com/beta/settings.values -eq 'false'
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -23,9 +23,10 @@
     
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'AllowGuestsToBeGroupOwner' | select-object -expand value
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **settings**"
@@ -38,3 +39,4 @@
 
     return $tenantValue
 }
+

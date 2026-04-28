@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -27,9 +27,10 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
@@ -49,9 +50,9 @@ function Test-AzdoEnableLeakedPersonalAccessTokenAutoRevocation {
         else {
             $resultMarkdown = "Your tenant does not have leaked Personal Access Token auto-revocation enabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }
