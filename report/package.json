@@ -23,7 +23,7 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.14.1",
+    "react-router-dom": "^7.14.2",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "^3.2.2",
