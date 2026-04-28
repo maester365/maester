@@ -1,4 +1,9 @@
 name: CodeQL
+# This workflow replaces the GitHub-managed "Default setup" for CodeQL.
+# Before merging, a repository owner must disable the Default setup at:
+# Settings → Code security → Code scanning → CodeQL analysis → Switch to advanced
+# Failure to do so will cause the "Perform CodeQL analysis" step to fail with:
+#   "CodeQL analyses from advanced configurations cannot be processed when the default setup is enabled"
 
 on:
   pull_request:
