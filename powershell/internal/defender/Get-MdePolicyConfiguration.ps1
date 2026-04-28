@@ -15,11 +15,13 @@ function Get-MdePolicyConfiguration {
     #>
     [CmdletBinding()]
     [OutputType([hashtable])]
-    param()
+    param(
+        [ValidateSet('All', 'IncludeUnassigned', 'OnlyAssigned')]
+        [string]$PolicyFiltering = 'OnlyAssigned'
+    )
 
     try {
-        $mdeGlobalConfig = Get-MtMdeConfig
-        $mdeConfig = Get-MtMdeConfiguration
+        $mdeConfig = Get-MdeConfiguration
 
         if (-not $mdeConfig) {
             Write-Verbose "Unable to retrieve MDE configuration"
@@ -39,10 +41,10 @@ function Get-MdePolicyConfiguration {
             })
         }
 
-        # Apply policy filtering based on configuration
+        # Apply policy filtering based on the cmdlet parameter.
         $finalConfigPolicies = @()
 
-        switch ($mdeGlobalConfig.PolicyFiltering) {
+        switch ($PolicyFiltering) {
             { $_ -in "All", "IncludeUnassigned" } {
                 # Include all matching policies regardless of assignment status
                 $finalConfigPolicies = $configPolicies
@@ -50,13 +52,10 @@ function Get-MdePolicyConfiguration {
             }
             default {
                 # "OnlyAssigned" (default): only include policies with active assignments
-                if ($_ -ne "OnlyAssigned") {
-                    Write-Verbose "Unknown PolicyFiltering value '$_', defaulting to OnlyAssigned"
-                }
                 if ($configPolicies.Count -gt 0) {
                     Write-Verbose "Checking assignments for $($configPolicies.Count) policies"
                     foreach ($policy in $configPolicies) {
-                        if (Test-MtMdePolicyHasAssignment -PolicyId $policy.id) {
+                        if (Test-MdePolicyHasAssignment -PolicyId $policy.id) {
                             $finalConfigPolicies += $policy
                         }
                     }

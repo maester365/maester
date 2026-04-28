@@ -47,7 +47,6 @@ We have the following [test](https://github.com/maester365/maester/tree/main/tes
 - `/EIDSCA` - EIDSCA tests
 - `/Maester` - Maester tests
   - `/Entra` - Maester's Entra tests
-  - `/Defender` - Maester's Microsoft Defender for Endpoint tests
 
 ### Checklist for writing good tests
 

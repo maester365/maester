@@ -63,7 +63,10 @@ function Test-MdePolicyCompliance {
 
         [hashtable]$ValidLevels,
 
-        [int]$MinimumValue
+        [int]$MinimumValue,
+
+        [ValidateSet('AllPolicies', 'AnyPolicy')]
+        [string]$ComplianceLogic = 'AllPolicies'
     )
 
     $compliantPolicies = @()
@@ -118,11 +121,7 @@ function Test-MdePolicyCompliance {
         }
     }
 
-    # Evaluate pass/fail based on ComplianceLogic from MDE config
-    $mdeConfig = Get-MtMdeConfig
-    $complianceLogic = $mdeConfig.ComplianceLogic
-
-    switch ($complianceLogic) {
+    switch ($ComplianceLogic) {
         "AnyPolicy" {
             # At least one policy must be compliant
             $isCompliant = $compliantPolicies.Count -gt 0
@@ -141,6 +140,6 @@ function Test-MdePolicyCompliance {
         HasNonCompliant       = $nonCompliantPolicies.Count -gt 0
         HasNotConfigured      = $notConfiguredPolicies.Count -gt 0
         IsCompliant           = $isCompliant
-        ComplianceLogic       = $complianceLogic
+        ComplianceLogic       = $ComplianceLogic
     }
 }

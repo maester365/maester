@@ -1,4 +1,4 @@
-﻿function Get-MtMaesterConfig {
+function Get-MtMaesterConfig {
     <#
     .SYNOPSIS
     Reads the Maester config from (usually from the root of the ./tests directory)
@@ -129,7 +129,6 @@
                 $mainTestSetting.Severity = $customSetting.Severity
             }
         }
-
     } else {
         Write-Verbose "No custom config file found. Using main config only."
     }
