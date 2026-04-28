@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -27,9 +27,10 @@ function Test-AzdoOrganizationCreationRestriction {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoOrganizationCreationRestriction"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
@@ -48,9 +49,9 @@ function Test-AzdoOrganizationCreationRestriction {
         else {
             $resultMarkdown = "Your tenant does not have organization creation restricted."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }
