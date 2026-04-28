@@ -1,75 +1,68 @@
 ---
 sidebar_class_name: hidden
-description: Helper: validates that a result object has the required properties.
-id: Test-MaesterResultValid
-title: Test-MaesterResultValid
+description: Extracts setting values from Graph API configuration policy responses
+id: Get-MdeSettingValue
+title: Get-MdeSettingValue
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MaesterResultValid.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MdeSettingValue.ps1
 ---
 
 ## SYNOPSIS
 
-Helper: validates that a result object has the required properties.
+Extracts setting values from Graph API configuration policy responses
 
 ## SYNTAX
 
 ```powershell
-Test-MaesterResultValid [[-Result] <PSObject>] [[-RequiredProperties] <String[]>] [[-SourceFile] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MdeSettingValue [-Setting] <Object> [-ComplianceCheck] <String> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-\{\{ Fill in the Description \}\}
+Parses setting objects from Microsoft Graph API configuration policy responses
+and extracts the appropriate value based on the compliance check type.
 
 ## EXAMPLES
 
+### EXAMPLE 1
+
+```powershell
+Get-MdeSettingValue -Setting $settingObj -ComplianceCheck "Boolean"
+```
+
+Returns the extracted value (e.g., "_1" for enabled).
+
 ## PARAMETERS
 
-### -Result
+### -Setting
 
-\{\{ Fill Result Description \}\}
+The setting object from Graph API
 
 ```yaml
-Type: PSObject
+Type: Object
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RequiredProperties
+### -ComplianceCheck
 
-\{\{ Fill RequiredProperties Description \}\}
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SourceFile
-
-\{\{ Fill SourceFile Description \}\}
+The type of compliance check: Boolean, Range, Enum, MinimumLevel, MinimumValue, NotRequired, Manual
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: 3
+Required: True
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -99,7 +92,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Boolean
+### System.String
 
 ## NOTES
 

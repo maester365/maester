@@ -1,0 +1,82 @@
+---
+sidebar_class_name: hidden
+description: Gets information about your organization's Defender-protected devices and their policies
+id: Get-MdeConfiguration
+title: Get-MdeConfiguration
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MdeConfiguration.ps1
+---
+
+## SYNOPSIS
+
+Gets information about your organization's Defender-protected devices and their policies
+
+## SYNTAX
+
+```powershell
+Get-MdeConfiguration [-DisableCache] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Retrieves device inventory, configuration policies, and compliance information
+from Microsoft Graph API for use in MDE tests.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MdeConfiguration
+```
+
+Gets current MDE device and policy information.
+
+## PARAMETERS
+
+### -DisableCache
+
+Bypasses the Graph API response cache and fetches fresh data
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Collections.Hashtable
+
+## NOTES
+
+## RELATED LINKS
