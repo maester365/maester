@@ -35,11 +35,22 @@
     try {
         $policies = Get-InsiderRiskPolicy -ErrorAction Stop
     } catch {
-        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
+        $exception = $_.Exception
+        $errorId = $_.FullyQualifiedErrorId
+        $message = $exception.Message
+
+        if ($exception.Response -and $exception.Response.StatusCode -in @(401, 403)) {
             Add-MtTestResultDetail -SkippedBecause NotAuthorized
-        } else {
+        } elseif (
+            $exception -is [System.Management.Automation.CommandNotFoundException] -or
+            $errorId -match 'CommandNotFoundException' -or
+            $message -match "The term 'Get-InsiderRiskPolicy' is not recognized" -or
+            $message -match 'Get-InsiderRiskPolicy.*(is unavailable|not available|was not found)'
+        ) {
             # IRM cmdlets are unavailable when the tenant is not licensed for Insider Risk Management.
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Get-InsiderRiskPolicy is unavailable. Microsoft 365 E5 or the Insider Risk Management add-on is required."
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         }
         return $null
     }

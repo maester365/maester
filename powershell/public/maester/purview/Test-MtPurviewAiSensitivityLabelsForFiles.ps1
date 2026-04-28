@@ -39,9 +39,26 @@
         # ContentType is a multi-valued field including 'File', 'Email', 'Site', 'UnifiedGroup', 'PurviewAssets' etc.
         $fileLabels = @($labels | Where-Object { $_.ContentType -match 'File' })
 
+        # Build the set of label identifiers actually published by the enforced/enabled policies.
+        # LabelPolicy.Labels is a multi-valued collection of label IDs (GUIDs); fall back to ImmutableId/Name when available.
+        $publishedLabelIds = @()
+        foreach ($policy in $publishedPolicies) {
+            if ($policy.Labels) { $publishedLabelIds += @($policy.Labels) }
+        }
+        $publishedLabelIds = @($publishedLabelIds | Where-Object { $_ } | Select-Object -Unique)
+
+        # Cross-reference: a file-scoped label is only "published" when it appears in at least one published policy.
+        $publishedFileLabels = @($fileLabels | Where-Object {
+                $label = $_
+                $publishedLabelIds | Where-Object {
+                    $_ -eq $label.Guid -or $_ -eq $label.ImmutableId -or $_ -eq $label.Name -or $_ -eq $label.DisplayName
+                }
+            })
+
         $hasPublishedPolicy = $publishedPolicies.Count -ge 1
         $hasFileLabel = $fileLabels.Count -ge 1
-        $testResult = $hasPublishedPolicy -and $hasFileLabel
+        $hasPublishedFileLabel = $publishedFileLabels.Count -ge 1
+        $testResult = $hasPublishedPolicy -and $hasPublishedFileLabel
 
         $portalLink = "https://purview.microsoft.com/informationprotection/labels"
 
@@ -60,6 +77,7 @@
         $result += "| --- | --- | --- |`n"
         $result += "| Published label policy exists | $(if ($hasPublishedPolicy) { $passResult } else { $failResult }) | $($publishedPolicies.Count) policy(ies) published |`n"
         $result += "| Label with File scope exists | $(if ($hasFileLabel) { $passResult } else { $failResult }) | $($fileLabels.Count) label(s) scoped to files |`n"
+        $result += "| File-scoped label is published | $(if ($hasPublishedFileLabel) { $passResult } else { $failResult }) | $($publishedFileLabels.Count) published file-scoped label(s) |`n"
 
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
