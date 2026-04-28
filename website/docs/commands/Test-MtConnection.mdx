@@ -37,7 +37,7 @@ Returns a Boolean value.
 ### EXAMPLE 2
 
 ```powershell
-Test-MtConnection -Details
+Test-MtConnection -Service All -Details
 ```
 
 Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams.
@@ -56,8 +56,8 @@ Checks if the current session is connected to Azure and returns a Boolean result
 ### -Service
 
 The service to check the connection for.
-Valid values are 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'.
-Default is 'All'.
+Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'.
+Default is 'Graph'.
 
 ```yaml
 Type: String[]
