@@ -25,6 +25,14 @@
 
     $MaesterTests = (Get-ChildItem -Path $MaesterTestsPath -Exclude 'Custom').Name
 
+    # Ensure upgrade cleanup removes both the new consolidated suite files and
+    # legacy suite directories from older installs.
+    $LegacySuiteNames = @(
+        'CISA', 'CIS', 'EIDSCA', 'Maester', 'ORCA', 'XSPM',
+        'cisa', 'cis', 'orca'
+    )
+    $SuiteItemsToReplace = @($MaesterTests + $LegacySuiteNames | Select-Object -Unique)
+
     $targetFolderExists = (Test-Path -Path $Path -PathType Container)
     if (-not $targetFolderExists) {
         Write-Verbose "Creating directory $([System.IO.Path]::GetFullPath($Path))"
@@ -41,7 +49,11 @@
 
     if ($targetFolderExists) {
         # Check if the folder already exists and prompt user to confirm overwrite.
-        $itemsToDelete = Get-ChildItem -Path $Path | Where-Object { $_.Name -in $($MaesterTests) }
+        $itemsToDelete = Get-ChildItem -Path $Path |
+            Where-Object {
+                $_.Name -ne 'Custom' -and
+                $_.Name -in $SuiteItemsToReplace
+            }
 
         if ($itemsToDelete.Count -gt 0) {
             $message = "`nThe following items will be deleted when installing the latest Maester tests:`n"
