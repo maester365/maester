@@ -23,7 +23,7 @@ function Test-MtSpoGuestAccessExpiry {
     $return = $true
     try {
         $spoTenant = Get-SPOTenant
-        if ($spoTenant.ExternalUserExpirationRequired -eq $true -and $spoTenant.ExternalUserExpireInDays -le 30) {
+        if ($spoTenant.ExternalUserExpirationRequired -eq $true -and $spoTenant.ExternalUserExpireInDays -gt 0 -and $spoTenant.ExternalUserExpireInDays -le 30) {
             $testResult = "Well done. Guest access expiration is enabled and set to 30 days or less ($($spoTenant.ExternalUserExpireInDays) days)."
         } else {
             $testResult = "Guest access expiration is not enabled or set to more than 30 days."
