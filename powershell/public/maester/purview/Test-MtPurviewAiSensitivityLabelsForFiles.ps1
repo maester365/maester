@@ -35,11 +35,17 @@
         $labels = Get-Label -ErrorAction Stop
         $labelPolicies = Get-LabelPolicy -ErrorAction Stop
 
-        $publishedPolicies = @($labelPolicies | Where-Object { $_.Mode -eq 'Enforce' -or $_.Enabled })
+        # A label policy is "published" when it is in Enforce mode AND, when the Enabled property is exposed by
+        # the SCC schema, it is also enabled. Some tenant/SCC versions omit Enabled entirely on label policies,
+        # in which case Enforce mode alone is the published signal.
+        $publishedPolicies = @($labelPolicies | Where-Object {
+                $_.Mode -eq 'Enforce' -and
+                (($_.PSObject.Properties.Match('Enabled').Count -eq 0) -or $_.Enabled)
+            })
         # ContentType is a multi-valued field including 'File', 'Email', 'Site', 'UnifiedGroup', 'PurviewAssets' etc.
         $fileLabels = @($labels | Where-Object { $_.ContentType -match 'File' })
 
-        # Build the set of label identifiers actually published by the enforced/enabled policies.
+        # Build the set of label identifiers actually published by the enforced (and enabled when supported) policies.
         # LabelPolicy.Labels is a multi-valued collection of label IDs (GUIDs); fall back to ImmutableId/Name when available.
         $publishedLabelIds = @()
         foreach ($policy in $publishedPolicies) {
