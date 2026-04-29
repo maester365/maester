@@ -21,7 +21,7 @@ function Test-MtSpoPreventDownloadMaliciousFile {
 
     $return = $true
     try {
-        $DisallowInfectedFileDownload  = Get-SPOTenant | Select-Object -ExpandProperty DisallowInfectedFileDownload
+        $DisallowInfectedFileDownload = Get-SPOTenant | Select-Object -ExpandProperty DisallowInfectedFileDownload
         if ($DisallowInfectedFileDownload) {
             $testResult = "Well done. Malicious file download prevention is enabled in your SharePoint tenant."
         } else {
