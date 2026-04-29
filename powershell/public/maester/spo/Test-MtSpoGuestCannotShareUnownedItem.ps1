@@ -8,7 +8,7 @@
 .EXAMPLE
     Test-MtSpoGuestCannotShareUnownedItem
 
-    Returns true if the SharePoint tenant is integrated with Microsoft Entra B2B, false otherwise.
+    Returns true if external users are prevented from resharing items they don't own, false otherwise.
 
 .LINK
     https://maester.dev/docs/commands/Test-MtSpoGuestCannotShareUnownedItem
