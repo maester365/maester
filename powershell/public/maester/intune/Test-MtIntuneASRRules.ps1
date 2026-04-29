@@ -92,6 +92,7 @@
             $auditCount = 0
             $warnCount = 0
             $disabledCount = 0
+            $notConfiguredCount = 0
             $ruleDetails = [System.Collections.Generic.List[hashtable]]::new()
 
             foreach ($setting in $settingsResponse) {
@@ -114,6 +115,7 @@
                         elseif ($val -like '*_audit') { $mode = 'Audit'; $auditCount++; $hasActiveRules = $true }
                         elseif ($val -like '*_warn') { $mode = 'Warn'; $warnCount++ }
                         elseif ($val -like '*_off') { $mode = 'Disabled'; $disabledCount++ }
+                        else { $notConfiguredCount++ }
 
                         Write-Verbose "  Rule: $friendlyName = $mode"
                         $ruleDetails.Add(@{ Name = $friendlyName; Mode = $mode })
@@ -122,13 +124,14 @@
             }
 
             $policyResults.Add(@{
-                Name         = $policy.name
-                BlockCount   = $blockCount
-                AuditCount   = $auditCount
-                WarnCount    = $warnCount
-                DisabledCount = $disabledCount
-                TotalRules   = $ruleDetails.Count
-                Rules        = $ruleDetails
+                Name              = $policy.name
+                BlockCount        = $blockCount
+                AuditCount        = $auditCount
+                WarnCount         = $warnCount
+                DisabledCount     = $disabledCount
+                NotConfiguredCount = $notConfiguredCount
+                TotalRules        = $ruleDetails.Count
+                Rules             = $ruleDetails
             })
         }
 
@@ -137,7 +140,7 @@
 
         foreach ($p in $policyResults) {
             $testResultMarkdown += "### $($p.Name)`n"
-            $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.WarnCount) Warn, $($p.DisabledCount) Disabled`n`n"
+            $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.WarnCount) Warn, $($p.DisabledCount) Disabled, $($p.NotConfiguredCount) Not configured`n`n"
             $testResultMarkdown += "| Rule | Mode |`n| --- | --- |`n"
             foreach ($r in $p.Rules) {
                 $testResultMarkdown += "| $($r.Name) | $($r.Mode) |`n"
