@@ -143,6 +143,11 @@
             $EmergencyAccessAccountsUserCount = @($ResolvedEmergencyAccessUsers).Count
             $EmergencyAccessAccountsGroupCount = @($ResolvedEmergencyAccessGroups).Count
 
+            if ($EmergencyAccessAccountsUserCount -eq 0 -and $EmergencyAccessAccountsGroupCount -eq 0) {
+                Add-MtTestResultDetail -Result "Emergency access accounts or groups are configured in maester-config.json, but none could be resolved. Verify the configured Id or UserPrincipalName values."
+                return $false
+            }
+
             # Find policies that are missing ANY of the configured emergency access accounts or groups
             $policiesWithoutEmergency = $policies | Where-Object {
                 $CurrentPolicy = $_

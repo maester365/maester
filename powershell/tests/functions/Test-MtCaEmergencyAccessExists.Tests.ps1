@@ -456,6 +456,22 @@
             $script:capturedResult | Should -BeLike '*Configured emergency access accounts or groups*'
             $script:capturedResult | Should -Not -BeLike '*Automatically detected emergency access*'
         }
+
+        It 'Should fail when configured emergency access entries cannot be resolved' {
+            $policy = Get-PolicyWithUserExclusion -UserIds @($emergencyUserId1)
+            $config = @(@{ UserPrincipalName = "invalid-identifier"; Type = "User" })
+            $script:capturedResult = $null
+
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return $policy }
+            Mock -ModuleName Maester Get-MtMaesterConfigGlobalSetting { return $config }
+            Mock -ModuleName Maester Add-MtTestResultDetail {
+                param($Result)
+                $script:capturedResult = $Result
+            }
+
+            Test-MtCaEmergencyAccessExists -WarningAction SilentlyContinue | Should -BeFalse
+            $script:capturedResult | Should -BeLike '*none could be resolved*'
+        }
     }
 
     Context "Agent Identity and Service Principal policies" {
