@@ -420,6 +420,32 @@ if ($roleAliases.Count -gt 0) {
     Write-Host "Adding $($roleAliases.Count) compatibility aliases for renamed roles: $($roleAliases.Name -join ', ')" -ForegroundColor Yellow
 }
 
+# For CI summary output, prefer comparing against HEAD so local reruns still reflect
+# the pending Git diff until changes are committed.
+$summaryBaselineContent = $roleInfoContent
+if ($env:GITHUB_OUTPUT) {
+    try {
+        $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel 2>$null)
+        if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($repoRoot)) {
+            $resolvedRoleInfoPath = (Resolve-Path $RoleInfoPath).ProviderPath
+            Push-Location $repoRoot
+            try {
+                $relativeRoleInfoPath = Resolve-Path -LiteralPath $resolvedRoleInfoPath -Relative
+            } finally {
+                Pop-Location
+            }
+
+            $relativeRoleInfoPath = $relativeRoleInfoPath -replace '^[.][\\/]', '' -replace '\\', '/'
+            $headRoleInfo = (git -C $repoRoot show "HEAD:$relativeRoleInfoPath" 2>$null | Out-String)
+            if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($headRoleInfo)) {
+                $summaryBaselineContent = $headRoleInfo
+            }
+        }
+    } catch {
+        Write-Verbose "Unable to resolve HEAD baseline for summary output. Falling back to current file content. $_"
+    }
+}
+
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
 $existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
     ForEach-Object { $_.Groups[1].Value }
@@ -500,9 +526,95 @@ if ($roleAliases.Count -gt 0) {
 
 # Report new roles (roles in new data that weren't in the old file)
 $newNames = $roles | ForEach-Object { $_.Name }
-$addedRoles = $newNames | Where-Object { $_ -notin $existingNames }
+$addedRoles = $newNames | Where-Object { $_ -notin $existingRoleGuids.Keys }
 if ($addedRoles) {
     Write-Host "  New roles:   $($addedRoles -join ', ')" -ForegroundColor Yellow
+}
+
+# Output diff summary for GitHub Actions PR body
+if ($env:GITHUB_OUTPUT) {
+    $summaryLines = [System.Collections.Generic.List[string]]::new()
+
+    $summaryGuidPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(?:true|false)\)'
+    $baselineRoleMap = @{}
+    [regex]::Matches($summaryBaselineContent, $summaryGuidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+        ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+    $baselineRoleNames = $baselineRoleMap.Keys
+    $newRoleMap = @{}
+    foreach ($role in $roles) {
+        $newRoleMap[$role.Name] = $role.Id
+    }
+    $summaryAddedRoles = $newNames | Where-Object { $_ -notin $baselineRoleNames }
+    $aliasNames = $roleAliases | ForEach-Object { $_.Name }
+    $deletedRoles = $baselineRoleNames | Where-Object { ($_ -notin $newNames) -and ($_ -notin $aliasNames) }
+
+    # Compare alias mappings against baseline so unchanged compatibility aliases
+    # are not reported repeatedly in every run.
+    $baselineAliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
+    $baselineAliasMap = @{}
+    [regex]::Matches($summaryBaselineContent, $baselineAliasPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+        ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
+    $newAliasMap = @{}
+    foreach ($alias in $roleAliases) {
+        $newAliasMap[$alias.Name] = $alias.CanonicalName
+    }
+    $renamedRoleChanges = [System.Collections.Generic.List[string]]::new()
+    foreach ($aliasName in ($newAliasMap.Keys | Sort-Object)) {
+        if (-not $baselineAliasMap.ContainsKey($aliasName)) {
+            $renamedRoleChanges.Add("- $aliasName → $($newAliasMap[$aliasName])")
+        } elseif ($baselineAliasMap[$aliasName] -ne $newAliasMap[$aliasName]) {
+            $renamedRoleChanges.Add("- ${aliasName}: $($baselineAliasMap[$aliasName]) → $($newAliasMap[$aliasName])")
+        }
+    }
+
+    if ($summaryAddedRoles) {
+        $summaryLines.Add("### Added roles ($(@($summaryAddedRoles).Count))")
+        $summaryAddedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($newRoleMap[$_]))") }
+        $summaryLines.Add('')
+    }
+
+    if ($deletedRoles) {
+        $summaryLines.Add("### Deleted roles ($(@($deletedRoles).Count))")
+        $deletedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($baselineRoleMap[$_]))") }
+        $summaryLines.Add('')
+    }
+
+    if ($renamedRoleChanges.Count -gt 0) {
+        $summaryLines.Add("### Renamed roles ($($renamedRoleChanges.Count))")
+        $renamedRoleChanges | ForEach-Object { $summaryLines.Add($_) }
+        $summaryLines.Add('')
+    }
+
+    # Compute privilege classification changes
+    $existingPrivMap = @{}
+    $privEntryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''[0-9a-f-]+'',\s*\$(true|false)\)'
+    [regex]::Matches($summaryBaselineContent, $privEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+        ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
+    $newPrivMap = @{}
+    foreach ($r in $roles) { $newPrivMap[$r.Name] = $r.IsPrivileged }
+    $privilegeChanges = [System.Collections.Generic.List[string]]::new()
+    foreach ($kv in $existingPrivMap.GetEnumerator()) {
+        if ($newPrivMap.ContainsKey($kv.Key) -and $newPrivMap[$kv.Key] -ne $kv.Value) {
+            $direction = if ($newPrivMap[$kv.Key]) { 'standard → privileged' } else { 'privileged → standard' }
+            $privilegeChanges.Add("- $($kv.Key): $direction")
+        }
+    }
+    if ($privilegeChanges.Count -gt 0) {
+        $summaryLines.Add("### Privilege classification changes ($($privilegeChanges.Count))")
+        $privilegeChanges | ForEach-Object { $summaryLines.Add($_) }
+        $summaryLines.Add('')
+    }
+
+    if ($summaryLines.Count -eq 0) {
+        $summaryLines.Add('_No role additions, deletions, renames, or privilege classification changes._')
+        $summaryLines.Add('')
+    }
+
+    $summaryLines.Add("**Total roles:** $($roles.Count) ($privilegedCount privileged, $($roles.Count - $privilegedCount) standard)")
+
+    $summary = $summaryLines -join "`n"
+    # Multi-line output via heredoc-style EOF delimiter (GitHub Actions requirement)
+    "diff_summary<<DIFF_EOF`n$summary`nDIFF_EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 }
 
 #endregion
