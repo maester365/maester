@@ -4,7 +4,7 @@ function Get-MtMaesterConfig {
     Reads the Maester config from (usually from the root of the ./tests directory)
 
     .DESCRIPTION
-    This also uses the ./custom/maester-config.json file if it exists and
+    This also uses the ./Custom/maester-config.json file if it exists and
     merges the settings, allowing users to override the default settings.
 
     .EXAMPLE
@@ -34,7 +34,7 @@ function Get-MtMaesterConfig {
             if (Test-Path -Path $candidate) { return $candidate }
 
             # Check tests subfolder
-            $testsCandidate = Join-Path -Path $SearchPath -ChildPath "tests/$FileName"
+            $testsCandidate = Join-Path -Path (Join-Path -Path $SearchPath -ChildPath 'tests') -ChildPath $FileName
             if (Test-Path -Path $testsCandidate) { return $testsCandidate }
 
             # Walk up to 5 parent directories
@@ -45,6 +45,30 @@ function Get-MtMaesterConfig {
                 $currentDir = $parentDir
                 $candidate = Join-Path -Path $currentDir -ChildPath $FileName
                 if (Test-Path -Path $candidate) { return $candidate }
+            }
+        }
+
+        return $null
+    }
+
+    function Find-CustomConfigFile {
+        param([string]$ConfigDirectory)
+
+        foreach ($customDirectoryName in @('Custom', 'custom')) {
+            $customConfigPath = Join-Path -Path (Join-Path -Path $ConfigDirectory -ChildPath $customDirectoryName) -ChildPath 'maester-config.json'
+            if (Test-Path -Path $customConfigPath -PathType Leaf) {
+                return $customConfigPath
+            }
+        }
+
+        $customDirectory = Get-ChildItem -Path $ConfigDirectory -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -ieq 'custom' } |
+            Select-Object -First 1
+
+        if ($customDirectory) {
+            $customConfigPath = Join-Path -Path $customDirectory.FullName -ChildPath 'maester-config.json'
+            if (Test-Path -Path $customConfigPath -PathType Leaf) {
+                return $customConfigPath
             }
         }
 
@@ -104,8 +128,8 @@ function Get-MtMaesterConfig {
     }
 
     # Read the custom config file if it exists
-    $customConfigPath = Join-Path -Path (Split-Path -Path $ConfigFilePath -Parent) -ChildPath 'Custom' | Join-Path -ChildPath 'maester-config.json'
-    if (Test-Path $customConfigPath) {
+    $customConfigPath = Find-CustomConfigFile -ConfigDirectory (Split-Path -Path $ConfigFilePath -Parent)
+    if ($customConfigPath -and (Test-Path -Path $customConfigPath -PathType Leaf)) {
         Write-Verbose "Custom config file found at $customConfigPath. Merging with main config."
         $customConfig = Get-Content -Path $customConfigPath -Raw | ConvertFrom-Json
 

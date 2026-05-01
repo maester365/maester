@@ -128,6 +128,16 @@
                 }
             }
             Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
+            $UniqueResolvedEmergencyAccessAccounts = @()
+            $ResolvedEmergencyAccessAccountKeys = @{}
+            foreach ($account in $ResolvedEmergencyAccessAccounts) {
+                $accountKey = "$($account.type):$($account.ObjectId)"
+                if (-not $ResolvedEmergencyAccessAccountKeys.ContainsKey($accountKey)) {
+                    $ResolvedEmergencyAccessAccountKeys[$accountKey] = $true
+                    $UniqueResolvedEmergencyAccessAccounts += $account
+                }
+            }
+            $ResolvedEmergencyAccessAccounts = $UniqueResolvedEmergencyAccessAccounts
             $ResolvedEmergencyAccessUsers = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' }
             $ResolvedEmergencyAccessGroups = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' }
             $EmergencyAccessAccountsUserCount = @($ResolvedEmergencyAccessUsers).Count
