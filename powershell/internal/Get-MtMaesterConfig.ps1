@@ -6,6 +6,7 @@ function Get-MtMaesterConfig {
     .DESCRIPTION
     This also uses the ./Custom/maester-config.json file if it exists and
     merges the settings, allowing users to override the default settings.
+    The Custom directory name is matched case-insensitively.
 
     .EXAMPLE
     $maesterConfig = Get-MtMaesterConfig -ConfigFilePath 'C:\path\to\maester-config.json'
