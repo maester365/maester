@@ -316,6 +316,120 @@ function Get-RoleAliases {
     return $roleAliases
 }
 
+function Get-RoleDiffSummaryMarkdown {
+    <#
+    .SYNOPSIS
+    Builds a Markdown summary of role-definition differences for PR output.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $BaselineContent,
+
+        [Parameter(Mandatory)]
+        [object[]] $Roles,
+
+        [Parameter(Mandatory)]
+        [object[]] $RoleAliases,
+
+        [Parameter(Mandatory)]
+        [int] $PrivilegedCount
+    )
+
+    $summaryLines = [System.Collections.Generic.List[string]]::new()
+    $summaryGuidPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(?:true|false)\)'
+
+    $baselineRoleMap = @{}
+    [regex]::Matches($BaselineContent, $summaryGuidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+    ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+
+    $newRoleMap = @{}
+    foreach ($role in $Roles) {
+        $newRoleMap[$role.Name] = $role.Id
+    }
+
+    $newNames = @($newRoleMap.Keys)
+    $baselineRoleNames = @($baselineRoleMap.Keys)
+    $summaryAddedRoles = $newNames | Where-Object { $_ -notin $baselineRoleNames }
+    $aliasNames = $RoleAliases | ForEach-Object { $_.Name }
+    $deletedRoles = $baselineRoleNames | Where-Object { ($_ -notin $newNames) -and ($_ -notin $aliasNames) }
+
+    # Compare alias mappings against baseline so unchanged compatibility aliases
+    # are not reported repeatedly in every run.
+    $baselineAliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
+    $baselineAliasMap = @{}
+    [regex]::Matches($BaselineContent, $baselineAliasPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+    ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
+
+    $newAliasMap = @{}
+    foreach ($alias in $RoleAliases) {
+        $newAliasMap[$alias.Name] = $alias.CanonicalName
+    }
+
+    $renamedRoleChanges = [System.Collections.Generic.List[string]]::new()
+    foreach ($aliasName in ($newAliasMap.Keys | Sort-Object)) {
+        if (-not $baselineAliasMap.ContainsKey($aliasName)) {
+            $renamedRoleChanges.Add("- $aliasName → $($newAliasMap[$aliasName])")
+        } elseif ($baselineAliasMap[$aliasName] -ne $newAliasMap[$aliasName]) {
+            $renamedRoleChanges.Add("- ${aliasName}: $($baselineAliasMap[$aliasName]) → $($newAliasMap[$aliasName])")
+        }
+    }
+
+    if ($summaryAddedRoles) {
+        $summaryLines.Add("### Added roles ($(@($summaryAddedRoles).Count))")
+        $summaryAddedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($newRoleMap[$_]))") }
+        $summaryLines.Add('')
+    }
+
+    if ($deletedRoles) {
+        $summaryLines.Add("### Deleted roles ($(@($deletedRoles).Count))")
+        $deletedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($baselineRoleMap[$_]))") }
+        $summaryLines.Add('')
+    }
+
+    if ($renamedRoleChanges.Count -gt 0) {
+        $summaryLines.Add("### Renamed roles ($($renamedRoleChanges.Count))")
+        $renamedRoleChanges | ForEach-Object { $summaryLines.Add($_) }
+        $summaryLines.Add('')
+    }
+
+    # Compute privilege classification changes
+    $existingPrivMap = @{}
+    $privEntryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''[0-9a-f-]+'',\s*\$(true|false)\)'
+    [regex]::Matches($BaselineContent, $privEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+    ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
+
+    $newPrivMap = @{}
+    foreach ($role in $Roles) {
+        $newPrivMap[$role.Name] = $role.IsPrivileged
+    }
+
+    $privilegeChanges = [System.Collections.Generic.List[string]]::new()
+    foreach ($kv in $existingPrivMap.GetEnumerator()) {
+        if ($newPrivMap.ContainsKey($kv.Key) -and $newPrivMap[$kv.Key] -ne $kv.Value) {
+            $direction = if ($newPrivMap[$kv.Key]) { 'standard → privileged' } else { 'privileged → standard' }
+            $privilegeChanges.Add("- $($kv.Key): $direction")
+        }
+    }
+
+    if ($privilegeChanges.Count -gt 0) {
+        $summaryLines.Add("### Privilege classification changes ($($privilegeChanges.Count))")
+        $privilegeChanges | ForEach-Object { $summaryLines.Add($_) }
+        $summaryLines.Add('')
+    }
+
+    if ($summaryLines.Count -eq 0) {
+        $summaryLines.Add('_No role additions, deletions, renames, or privilege classification changes._')
+        $summaryLines.Add('')
+    }
+
+    $totalRoles = @($Roles).Count
+    $summaryLines.Add("**Total roles:** $totalRoles ($PrivilegedCount privileged, $($totalRoles - $PrivilegedCount) standard)")
+
+    return ($summaryLines -join "`n")
+}
+
 function Update-FileSection {
     <#
     .SYNOPSIS
@@ -446,18 +560,18 @@ if ($env:GITHUB_OUTPUT) {
     }
 }
 
+# Parse existing role definitions once (MtRoles entries only)
+$guidEntryPattern = "'([A-Za-z0-9]+)'\s*=\s*\[MtRoleDefinition\]::new\('([0-9a-f-]+)'"
+$existingRoleGuids = @{}
+[regex]::Matches($roleInfoContent, $guidEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+ForEach-Object { $existingRoleGuids[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
-$existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
-ForEach-Object { $_.Groups[1].Value }
-if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Count * 0.2)) {
-    throw "Too many existing roles ($($preservedRoles.Count) of $($existingNames.Count)) not found in public docs. Possible parsing issue."
+if ($existingRoleGuids.Count -gt 0 -and $preservedRoles.Count -gt ($existingRoleGuids.Count * 0.2)) {
+    throw "Too many existing roles ($($preservedRoles.Count) of $($existingRoleGuids.Count)) not found in public docs. Possible parsing issue."
 }
 
 # Safeguard: max GUID change rate (no more than 10% of existing role->GUID pairs may change)
-$existingRoleGuids = @{}
-$guidEntryPattern = "'([A-Za-z0-9]+)'\s*=\s*\[MtRoleDefinition\]::new\('([0-9a-f-]+)'"
-[regex]::Matches($roleInfoContent, $guidEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-ForEach-Object { $existingRoleGuids[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
 $newRoleGuidMap = @{}
 foreach ($r in $roles) { $newRoleGuidMap[$r.Name] = $r.Id }
 $changedGuidCount = 0
@@ -533,86 +647,7 @@ if ($addedRoles) {
 
 # Output diff summary for GitHub Actions PR body
 if ($env:GITHUB_OUTPUT) {
-    $summaryLines = [System.Collections.Generic.List[string]]::new()
-
-    $summaryGuidPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(?:true|false)\)'
-    $baselineRoleMap = @{}
-    [regex]::Matches($summaryBaselineContent, $summaryGuidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
-    $baselineRoleNames = $baselineRoleMap.Keys
-    $newRoleMap = @{}
-    foreach ($role in $roles) {
-        $newRoleMap[$role.Name] = $role.Id
-    }
-    $summaryAddedRoles = $newNames | Where-Object { $_ -notin $baselineRoleNames }
-    $aliasNames = $roleAliases | ForEach-Object { $_.Name }
-    $deletedRoles = $baselineRoleNames | Where-Object { ($_ -notin $newNames) -and ($_ -notin $aliasNames) }
-
-    # Compare alias mappings against baseline so unchanged compatibility aliases
-    # are not reported repeatedly in every run.
-    $baselineAliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
-    $baselineAliasMap = @{}
-    [regex]::Matches($summaryBaselineContent, $baselineAliasPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
-    $newAliasMap = @{}
-    foreach ($alias in $roleAliases) {
-        $newAliasMap[$alias.Name] = $alias.CanonicalName
-    }
-    $renamedRoleChanges = [System.Collections.Generic.List[string]]::new()
-    foreach ($aliasName in ($newAliasMap.Keys | Sort-Object)) {
-        if (-not $baselineAliasMap.ContainsKey($aliasName)) {
-            $renamedRoleChanges.Add("- $aliasName → $($newAliasMap[$aliasName])")
-        } elseif ($baselineAliasMap[$aliasName] -ne $newAliasMap[$aliasName]) {
-            $renamedRoleChanges.Add("- ${aliasName}: $($baselineAliasMap[$aliasName]) → $($newAliasMap[$aliasName])")
-        }
-    }
-
-    if ($summaryAddedRoles) {
-        $summaryLines.Add("### Added roles ($(@($summaryAddedRoles).Count))")
-        $summaryAddedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($newRoleMap[$_]))") }
-        $summaryLines.Add('')
-    }
-
-    if ($deletedRoles) {
-        $summaryLines.Add("### Deleted roles ($(@($deletedRoles).Count))")
-        $deletedRoles | Sort-Object | ForEach-Object { $summaryLines.Add("- $_ ($($baselineRoleMap[$_]))") }
-        $summaryLines.Add('')
-    }
-
-    if ($renamedRoleChanges.Count -gt 0) {
-        $summaryLines.Add("### Renamed roles ($($renamedRoleChanges.Count))")
-        $renamedRoleChanges | ForEach-Object { $summaryLines.Add($_) }
-        $summaryLines.Add('')
-    }
-
-    # Compute privilege classification changes
-    $existingPrivMap = @{}
-    $privEntryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''[0-9a-f-]+'',\s*\$(true|false)\)'
-    [regex]::Matches($summaryBaselineContent, $privEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
-    $newPrivMap = @{}
-    foreach ($r in $roles) { $newPrivMap[$r.Name] = $r.IsPrivileged }
-    $privilegeChanges = [System.Collections.Generic.List[string]]::new()
-    foreach ($kv in $existingPrivMap.GetEnumerator()) {
-        if ($newPrivMap.ContainsKey($kv.Key) -and $newPrivMap[$kv.Key] -ne $kv.Value) {
-            $direction = if ($newPrivMap[$kv.Key]) { 'standard → privileged' } else { 'privileged → standard' }
-            $privilegeChanges.Add("- $($kv.Key): $direction")
-        }
-    }
-    if ($privilegeChanges.Count -gt 0) {
-        $summaryLines.Add("### Privilege classification changes ($($privilegeChanges.Count))")
-        $privilegeChanges | ForEach-Object { $summaryLines.Add($_) }
-        $summaryLines.Add('')
-    }
-
-    if ($summaryLines.Count -eq 0) {
-        $summaryLines.Add('_No role additions, deletions, renames, or privilege classification changes._')
-        $summaryLines.Add('')
-    }
-
-    $summaryLines.Add("**Total roles:** $($roles.Count) ($privilegedCount privileged, $($roles.Count - $privilegedCount) standard)")
-
-    $summary = $summaryLines -join "`n"
+    $summary = Get-RoleDiffSummaryMarkdown -BaselineContent $summaryBaselineContent -Roles $roles -RoleAliases $roleAliases -PrivilegedCount $privilegedCount
     # Multi-line output via heredoc-style EOF delimiter (GitHub Actions requirement)
     "diff_summary<<DIFF_EOF`n$summary`nDIFF_EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 }
