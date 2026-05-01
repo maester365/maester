@@ -24,6 +24,12 @@
         return $null
     }
 
+    $licenseType = Get-MtLicenseInformation -Product CustomerLockbox
+    if ($null -eq $licenseType) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedCustomerLockbox
+        return $null
+    }
+
     try {
         Write-Verbose 'Requesting secure scores to get the customer lockbox setting'
         $customerLockbox = Get-MtExo -Request OrganizationConfig | Select-Object CustomerLockBoxEnabled
