@@ -448,7 +448,7 @@ if ($env:GITHUB_OUTPUT) {
 
 # Safeguard: if more than 20% of existing roles would be new preservations, something may be wrong
 $existingNames = [regex]::Matches($roleInfoContent, "'([A-Za-z0-9]+)'\s*=") |
-    ForEach-Object { $_.Groups[1].Value }
+ForEach-Object { $_.Groups[1].Value }
 if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Count * 0.2)) {
     throw "Too many existing roles ($($preservedRoles.Count) of $($existingNames.Count)) not found in public docs. Possible parsing issue."
 }
@@ -457,7 +457,7 @@ if ($existingNames.Count -gt 0 -and $preservedRoles.Count -gt ($existingNames.Co
 $existingRoleGuids = @{}
 $guidEntryPattern = "'([A-Za-z0-9]+)'\s*=\s*\[MtRoleDefinition\]::new\('([0-9a-f-]+)'"
 [regex]::Matches($roleInfoContent, $guidEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $existingRoleGuids[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+ForEach-Object { $existingRoleGuids[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
 $newRoleGuidMap = @{}
 foreach ($r in $roles) { $newRoleGuidMap[$r.Name] = $r.Id }
 $changedGuidCount = 0
@@ -538,7 +538,7 @@ if ($env:GITHUB_OUTPUT) {
     $summaryGuidPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(?:true|false)\)'
     $baselineRoleMap = @{}
     [regex]::Matches($summaryBaselineContent, $summaryGuidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-        ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+    ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
     $baselineRoleNames = $baselineRoleMap.Keys
     $newRoleMap = @{}
     foreach ($role in $roles) {
@@ -553,7 +553,7 @@ if ($env:GITHUB_OUTPUT) {
     $baselineAliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
     $baselineAliasMap = @{}
     [regex]::Matches($summaryBaselineContent, $baselineAliasPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-        ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
+    ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
     $newAliasMap = @{}
     foreach ($alias in $roleAliases) {
         $newAliasMap[$alias.Name] = $alias.CanonicalName
@@ -589,7 +589,7 @@ if ($env:GITHUB_OUTPUT) {
     $existingPrivMap = @{}
     $privEntryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''[0-9a-f-]+'',\s*\$(true|false)\)'
     [regex]::Matches($summaryBaselineContent, $privEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-        ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
+    ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
     $newPrivMap = @{}
     foreach ($r in $roles) { $newPrivMap[$r.Name] = $r.IsPrivileged }
     $privilegeChanges = [System.Collections.Generic.List[string]]::new()
