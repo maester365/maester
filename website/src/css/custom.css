@@ -166,6 +166,77 @@ main h1,
   display: none !important;
 } */
 
+/* Modern table styling */
+.markdown table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.markdown table thead {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.markdown table thead th {
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ifm-color-emphasis-900);
+  border: none;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 0.65rem 0.9rem;
+  background: transparent;
+}
+
+.markdown table tbody td {
+  border: none;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 0.6rem 0.9rem;
+  vertical-align: top;
+}
+
+.markdown table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown table tbody tr:nth-child(even) td {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.markdown table tbody tr:hover td {
+  background-color: var(--ifm-color-emphasis-200);
+  transition: background-color 120ms ease;
+}
+
+[data-theme="dark"] .markdown table {
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .markdown table thead {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+[data-theme="dark"] .markdown table thead th,
+[data-theme="dark"] .markdown table tbody td {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme="dark"] .markdown table tbody tr:nth-child(even) td {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+[data-theme="dark"] .markdown table tbody tr:hover td {
+  background-color: var(--ifm-color-emphasis-300);
+}
+
 /* Override non-category links to be horizonally compact */
 
 .powershell a::before {
