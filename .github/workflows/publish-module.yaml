@@ -11,6 +11,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      pull-requests: read
 
   build-report:
     uses: ./.github/workflows/build-maester-report-template.yaml
