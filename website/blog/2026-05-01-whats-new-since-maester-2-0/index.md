@@ -65,7 +65,7 @@ This release adds a large Microsoft Defender for Endpoint test set, covering pra
 
 The Defender work also adds reusable helper functions for reading MDE configuration and policy state, making it easier to build more endpoint checks in future releases.
 
-Special thanks to Boris Drogja for adding the MDE support, with follow-up test cleanup from [Sam Erde](/blog/authors/samerde).
+Special thanks to [Boris Drogja](https://github.com/bdrogja) for adding the MDE support, with follow-up test cleanup from [Sam Erde](/blog/authors/samerde).
 
 ## Multi-tenant reports
 
@@ -94,7 +94,7 @@ Maester now has additional checks for entitlement management and hybrid identity
 
 These are the kinds of configuration issues that are easy to miss until access reviews, entitlement cleanup, or hybrid identity incidents force the conversation. Maester can now flag them continuously.
 
-Special thanks to [nicowyss](https://github.com/nicowyss) for the entitlement management tests and [Fabian Bader](/blog/authors/fabian) for the `krbtgt_AzureAD` hybrid identity check.
+Special thanks to [Nico Wyss](https://github.com/nicowyss) for the entitlement management tests and [Fabian Bader](/blog/authors/fabian) for the `krbtgt_AzureAD` hybrid identity check.
 
 ## CIS, tags, and test inventory
 
@@ -102,7 +102,7 @@ The CIS Microsoft 365 Foundations Benchmark content has been refreshed for v6.0.
 
 We also added generated tag inventory support using `Get-MtTestInventory`, building on the [Maester tags improvements](/blog/whats-new-with-maester-tags). This gives contributors a clearer view of the tags already in use and helps users select tests by suite, product area, practice, or capability without guessing.
 
-Special thanks to Benjamin Metz for adding the CIS tests, Morten Mynster for the CIS v6.0.1 refresh, and [Sam Erde](/blog/authors/samerde) for the tag inventory and tag documentation automation.
+Special thanks to Benjamin Metz for adding the CIS tests, [Morten Mynster](https://github.com/Mynster9361) for the CIS v6.0.1 refresh, and [Sam Erde](/blog/authors/samerde) for the tag inventory and tag documentation automation.
 
 ## Report and platform improvements
 
@@ -122,13 +122,13 @@ Special callouts for this release:
 
 - [Sam Erde](/blog/authors/samerde) for report deep links, tag documentation automation, build automation, CodeQL and workflow hardening, docs, and release quality.
 - [Sebastian Claesson](/blog/authors/sebastian) for the Azure DevOps test suite and multi-tenant reporting work.
-- Boris Drogja for adding Microsoft Defender for Endpoint support.
+- [Boris Drogja](https://github.com/bdrogja) for adding Microsoft Defender for Endpoint support.
 - [Truls](https://github.com/lnfernux) for adding Copilot Studio support.
-- [nicowyss](https://github.com/nicowyss) for the entitlement management tests.
+- [Nico Wyss](https://github.com/nicowyss) for the entitlement management tests.
 - [Fabian Bader](/blog/authors/fabian) for the `krbtgt_AzureAD` hybrid identity check.
 - Benjamin Metz for adding the CIS tests.
 - [Thomas Naunheim](/blog/authors/thomas) for continued review, test coverage, and project improvements.
-- Morten Mynster for major contributions across tests, CIS updates, and report/template improvements.
+- [Morten Mynster](https://github.com/Mynster9361) for major contributions across tests, CIS updates, and report/template improvements.
 - Frode Flaten, Brian Reid, Anas, Ricardo Mestre, Matt Cave, Brian Veldman, and everyone who opened issues, reviewed PRs, tested preview builds, or fixed docs.
 
 And thank you to everyone using Maester in real tenants. The feedback, edge cases, and "this failed in my environment" reports are what turn good ideas into reliable security checks.
