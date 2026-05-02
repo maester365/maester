@@ -34,7 +34,7 @@
     $dcCount = ($domainControllers | Measure-Object).Count
 
     # Test passes if we successfully retrieved DC data
-    $testResult = $dcCount -ge 0
+    $testResult = $null -ne $domainControllers
 
     # Generate markdown results
     if ($testResult) {
