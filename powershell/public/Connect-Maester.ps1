@@ -367,9 +367,17 @@
           }
           Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
        } catch [Management.Automation.CommandNotFoundException] {
-          Write-Host "`nThe Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine." -ForegroundColor Red
+          $__MtSession.ADConnection = @{
+             Connected = $false
+             Error     = 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
+          }
+          Write-Error 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
        } catch {
-          Write-Host "`nFailed to connect to Active Directory: $($_.Exception.Message)" -ForegroundColor Red
+          $__MtSession.ADConnection = @{
+             Connected = $false
+             Error     = $_.Exception.Message
+          }
+          Write-Error "Failed to connect to Active Directory: $($_.Exception.Message)"
        }
     }
 
