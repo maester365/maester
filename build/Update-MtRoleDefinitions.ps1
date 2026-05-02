@@ -338,11 +338,16 @@ function Get-RoleDiffSummaryMarkdown {
     )
 
     $summaryLines = [System.Collections.Generic.List[string]]::new()
-    $summaryGuidPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(?:true|false)\)'
+    $combinedRolePattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''([0-9a-f-]+)'',\s*\$(true|false)\)'
 
     $baselineRoleMap = @{}
-    [regex]::Matches($BaselineContent, $summaryGuidPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $baselineRoleMap[$_.Groups[1].Value] = $_.Groups[2].Value.ToLower() }
+    $existingPrivMap = @{}
+    [regex]::Matches($BaselineContent, $combinedRolePattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
+        ForEach-Object {
+            $name = $_.Groups[1].Value
+            $baselineRoleMap[$name] = $_.Groups[2].Value.ToLower()
+            $existingPrivMap[$name] = ($_.Groups[3].Value -eq 'true')
+        }
 
     $newRoleMap = @{}
     foreach ($role in $Roles) {
@@ -352,15 +357,14 @@ function Get-RoleDiffSummaryMarkdown {
     $newNames = @($newRoleMap.Keys)
     $baselineRoleNames = @($baselineRoleMap.Keys)
     $summaryAddedRoles = $newNames | Where-Object { $_ -notin $baselineRoleNames }
-    $aliasNames = $RoleAliases | ForEach-Object { $_.Name }
-    $deletedRoles = $baselineRoleNames | Where-Object { ($_ -notin $newNames) -and ($_ -notin $aliasNames) }
+    $deletedRoles = $baselineRoleNames | Where-Object { ($_ -notin $newNames) -and ($_ -notin $RoleAliases.Name) }
 
     # Compare alias mappings against baseline so unchanged compatibility aliases
     # are not reported repeatedly in every run.
     $baselineAliasPattern = '''([A-Za-z0-9]+)''\s*=\s*''([A-Za-z0-9]+)'''
     $baselineAliasMap = @{}
     [regex]::Matches($BaselineContent, $baselineAliasPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
+        ForEach-Object { $baselineAliasMap[$_.Groups[1].Value] = $_.Groups[2].Value }
 
     $newAliasMap = @{}
     foreach ($alias in $RoleAliases) {
@@ -394,12 +398,7 @@ function Get-RoleDiffSummaryMarkdown {
         $summaryLines.Add('')
     }
 
-    # Compute privilege classification changes
-    $existingPrivMap = @{}
-    $privEntryPattern = '''([A-Za-z0-9]+)''\s*=\s*\[MtRoleDefinition\]::new\(''[0-9a-f-]+'',\s*\$(true|false)\)'
-    [regex]::Matches($BaselineContent, $privEntryPattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase) |
-    ForEach-Object { $existingPrivMap[$_.Groups[1].Value] = ($_.Groups[2].Value -eq 'true') }
-
+    # Compute privilege classification changes ($existingPrivMap populated in combined role parse above)
     $newPrivMap = @{}
     foreach ($role in $Roles) {
         $newPrivMap[$role.Name] = $role.IsPrivileged
@@ -648,8 +647,10 @@ if ($addedRoles) {
 # Output diff summary for GitHub Actions PR body
 if ($env:GITHUB_OUTPUT) {
     $summary = Get-RoleDiffSummaryMarkdown -BaselineContent $summaryBaselineContent -Roles $roles -RoleAliases $roleAliases -PrivilegedCount $privilegedCount
-    # Multi-line output via heredoc-style EOF delimiter (GitHub Actions requirement)
-    "diff_summary<<DIFF_EOF`n$summary`nDIFF_EOF" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+    # Multi-line output via heredoc-style EOF delimiter (GitHub Actions requirement).
+    # Use a random delimiter to prevent injection if summary content ever contains the delimiter string.
+    $delimiter = "DIFF_$(New-Guid)"
+    "diff_summary<<$delimiter`n$summary`n$delimiter" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 }
 
 #endregion
