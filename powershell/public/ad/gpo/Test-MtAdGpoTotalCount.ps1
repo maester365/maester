@@ -35,8 +35,8 @@
     # Count total GPOs
     $totalCount = ($gpos | Measure-Object).Count
 
-    # Test passes if we successfully retrieved GPO data
-    $testResult = $totalCount -ge 0
+    # Test passes only if we successfully retrieved the GPO dataset
+    $testResult = $null -ne $gpos
 
     # Generate markdown results
     if ($testResult) {
