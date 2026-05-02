@@ -1,4 +1,4 @@
-#### Test-MtAdGpoEnforcedCount
+#### Test-MtAdGpoEnforcementCount
 
 #### Why This Test Matters
 
