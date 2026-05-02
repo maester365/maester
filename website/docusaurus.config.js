@@ -148,6 +148,12 @@ const config = {
             href: "https://github.com/maester365/maester",
             position: "right",
           },
+          {
+            to: '/docs/installation',
+            label: 'Install',
+            position: 'right',
+            className: 'navbar--install-cta',
+          },
         ],
       },
       footer: {

@@ -239,6 +239,185 @@ main h1,
   background-color: var(--ifm-color-emphasis-300);
 }
 
+/* ---------- Raycast-style floating navbar (homepage only) ---------- */
+
+body:has(.home-page) {
+  background: #050608;
+}
+
+body:has(.home-page) .navbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 1080px;
+  height: 72px;
+  padding: 0 22px;
+  background: rgba(10, 12, 16, 0.78);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  z-index: 200;
+}
+
+body:has(.home-page) .navbar__inner {
+  height: 100%;
+}
+
+body:has(.home-page) .navbar__brand {
+  color: #ffffff;
+  margin-right: 16px;
+}
+
+body:has(.home-page) .navbar__title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+body:has(.home-page) .navbar__logo,
+body:has(.home-page) .navbar__logo img {
+  height: 26px;
+}
+
+body:has(.home-page) .navbar__items .navbar__link {
+  color: #b6b9c2;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+body:has(.home-page) .navbar__items .navbar__link:hover,
+body:has(.home-page) .navbar__items .navbar__link--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body:has(.home-page) .navbar__items .dropdown > .navbar__link::after {
+  border-top-color: #b6b9c2;
+}
+
+body:has(.home-page) .navbar .dropdown__menu {
+  background: #10131a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+body:has(.home-page) .navbar .dropdown__link {
+  color: #b6b9c2;
+}
+
+body:has(.home-page) .navbar .dropdown__link:hover,
+body:has(.home-page) .navbar .dropdown__link--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Hide search, theme switcher, version dropdown, locale dropdown on home navbar */
+body:has(.home-page) .navbar .navbar__search,
+body:has(.home-page) .navbar [class*="searchBox"],
+body:has(.home-page) .navbar .DocSearch,
+body:has(.home-page) .navbar [class*="colorModeToggle"],
+body:has(.home-page) .navbar [class*="toggle_"],
+body:has(.home-page) .navbar .navbar__items > .dropdown:first-child,
+body:has(.home-page) .navbar .navbar__items--right > .dropdown {
+  display: none !important;
+}
+
+/* GitHub icon — bigger, white, on home navbar */
+body:has(.home-page) .navbar--github-link {
+  width: 44px;
+  height: 44px;
+  padding: 9px;
+  margin-left: 0;
+  margin-right: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body:has(.home-page) .navbar--github-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+body:has(.home-page) .navbar--github-link:before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Mobile sidebar toggle */
+body:has(.home-page) .navbar__toggle {
+  color: #ffffff;
+}
+
+/* Install CTA — homepage only, Raycast-style near-white pill */
+.navbar--install-cta {
+  display: none;
+}
+
+body:has(.home-page) .navbar .navbar--install-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 12px;
+  background: #e9eaee;
+  color: #0b0d12 !important;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  border: 1px solid #e9eaee;
+  transition: background 160ms ease, border-color 160ms ease,
+    transform 160ms ease, color 160ms ease;
+}
+
+body:has(.home-page) .navbar .navbar--install-cta:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #0b0d12 !important;
+  transform: translateY(-1px);
+}
+
+body:has(.home-page) .navbar .navbar--install-cta::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b0d12' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E") no-repeat center / contain;
+  display: inline-block;
+}
+
+/* Push hero down so it isn't covered by the floating navbar */
+body:has(.home-page) .home-page > div:first-child > header:first-child {
+  padding-top: 11rem;
+}
+
+@media (max-width: 996px) {
+  body:has(.home-page) .navbar {
+    top: 10px;
+    width: calc(100% - 16px);
+    height: 60px;
+    padding: 0 14px;
+    border-radius: 14px;
+  }
+  body:has(.home-page) .home-page > div:first-child > header:first-child {
+    padding-top: 7.5rem;
+  }
+}
+
 /* Override non-category links to be horizonally compact */
 
 .powershell a::before {
