@@ -37,6 +37,22 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 - [authorizationPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AllowlistPolicyBlade)
 
+## MITRE ATT&CK
+
+```mermaid
+mindmap
+  root{{MITRE ATT&CK}}
+    (Tactic)
+      TA0003 - Persistence - Persistence
+    (Mitigation)
+
+    (Technique)
+
+```
+|Tactic|Technique|Mitigation|
+|---|---|---|
+|[TA0003 - Persistence - Persistence](https://attack.mitre.org/tactics/TA0003)|||
+
 ## Test Metadata
 
 | Field | Value |

@@ -14,5 +14,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 - [phoneAuthenticationMethod resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/phoneauthenticationmethod)
 
 
+
+
 <!--- Results --->
 %TestResult%

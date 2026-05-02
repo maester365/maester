@@ -36,6 +36,23 @@ https://graph.microsoft.com/beta/policies/authorizationPolicy
 - [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=policies/authorizationPolicy&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
 - [authorizationPolicy resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
 
+
+## MITRE ATT&CK
+
+```mermaid
+mindmap
+  root{{MITRE ATT&CK}}
+    (Tactic)
+      TA0043 - Reconnaissance - Reconnaissance
+    (Mitigation)
+
+    (Technique)
+
+```
+|Tactic|Technique|Mitigation|
+|---|---|---|
+|[TA0043 - Reconnaissance - Reconnaissance](https://attack.mitre.org/tactics/TA0043)|||
+
 ## Test Metadata
 
 | Field | Value |

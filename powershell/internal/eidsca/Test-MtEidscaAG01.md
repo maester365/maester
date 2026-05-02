@@ -14,5 +14,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy
 - [Get authenticationMethodsPolicy - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/authenticationmethodspolicy-get)
 - [View in Microsoft Entra admin center](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/AdminAuthMethods)
 
+
+
 <!--- Results --->
 %TestResult%

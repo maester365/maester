@@ -14,5 +14,7 @@ https://graph.microsoft.com/%ApiVersion%/%RelativeUri%
 %GraphDocsUrlMarkdown%
 %PortalDeepLinkMarkdown%
 
+%MitreDiagram%
+
 <!--- Results --->
 %TestResult%
