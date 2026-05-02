@@ -35,7 +35,7 @@
 
     # If DNS data is not available, skip the test
     if ($null -eq $dnsZones -or $dnsZones.Count -eq 0) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory -SkippedBecauseReason "DNS data is not available. Ensure the DnsServer module is installed and you have appropriate permissions."
+        Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory -Result "DNS data is not available. Ensure the DnsServer module is installed and you have appropriate permissions."
         return $null
     }
 
