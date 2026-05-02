@@ -5,7 +5,11 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import { themes as prismThemes } from "prism-react-renderer";
-import { previewVersion } from "./version-config.js";
+import { readFileSync } from "node:fs";
+import { currentVersion, previewVersion } from "./version-config.js";
+
+const releasedVersions = JSON.parse(readFileSync(new URL("./versions.json", import.meta.url), "utf8"));
+const hasCurrentVersion = releasedVersions.includes(currentVersion);
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -65,19 +69,19 @@ const config = {
         docs: {
           sidebarPath: "./sidebars.js",
           editUrl: "https://github.com/maester365/maester/tree/main/website",
-          lastVersion: '2.0.0',
+          lastVersion: hasCurrentVersion ? currentVersion : 'current',
           versions: {
             current: {
-              label: `${previewVersion} (preview)`,
+              label: previewVersion,
               banner: 'unreleased',
               badge: true,
             },
-            '2.0.0': {
-              label: '2.0.0',
+            ...(hasCurrentVersion ? { [currentVersion]: {
+              label: currentVersion,
               path: '/',
               banner: 'none',
               badge: true,
-            },
+            } } : {}),
             // Example of unmaintained / deprecated versions.
             //'1.2.0': {
             //  banner: 'unmaintained',

@@ -78,3 +78,14 @@ jobs:
           prerelease: true
           tag: ${{ steps.moduleversion.outputs.tag }}
           commit: ${{ github.sha }}
+
+      - name: Update website preview version
+        run: node ./build/Update-WebsitePreviewVersion.mjs ${{ steps.moduleversion.outputs.tag }}
+
+      - name: Commit website preview version
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
+        with:
+          commit_message: 'ci(docs): update website preview version ${{ steps.moduleversion.outputs.tag }}'
+          file_pattern: |
+            build/Update-WebsitePreviewVersion.mjs
+            website/version-config.js

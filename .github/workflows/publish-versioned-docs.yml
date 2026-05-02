@@ -1,26 +1,21 @@
-# Merill: Commenting out since we use cloudflare.
-# For now we will create a manual version when a new major release is published.
-# Sam: Re-enabled all but the build and deploy steps so the content can still be updated.
-
-# # This workflow deploys a new version of the Docusaurus documentation when a new GitHub Release is published.
 name: Create Versioned Docs
 
 on:
-  # This workflow triggers whenever a new release is published in GitHub
-  release:
-    types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Stable version to publish on the website, for example 2.1.0"
+        required: true
+        type: string
 
 permissions: {}
 
 concurrency:
-  group: docs-versioning-${{ github.event.release.tag_name }}
+  group: docs-versioning-${{ inputs.version }}
   cancel-in-progress: false
 
 jobs:
   version_and_deploy_docs:
-    # This job only runs if a GitHub release was successfully published
-    if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -44,29 +39,17 @@ jobs:
         working-directory: website
         run: npm ci
 
-      - name: Extract Version Tag
-        id: tag_version
-        # Extracts '1.2.3' from a tag like 'v1.2.3'
-        run: echo "VERSION=$(echo ${{ github.event.release.tag_name }} | sed 's/^v//')" >> $GITHUB_OUTPUT
-
-      - name: 💾 Create Docusaurus Document Version
-        working-directory: website
-        run: npm run docusaurus docs:version ${{ steps.tag_version.outputs.VERSION }}
+      - name: Update website release version
+        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ inputs.version }}
 
       - name: ✍️ Commit Version Files to Main Branch
         uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
         with:
-          commit_message: 'ci(docs): create new docs version ${{ steps.tag_version.outputs.VERSION }}'
-          # This commits the new versioned docs files and metadata in the website directory
+          commit_message: 'ci(docs): update website release version ${{ inputs.version }}'
           file_pattern: |
+            build/Update-WebsiteReleaseVersion.mjs
+            website/docusaurus.config.js
+            website/version-config.js
+            website/versions.json
             website/versioned_docs/
             website/versioned_sidebars/
-            website/versions.json
-
-#       - name: 🏗️ Build and Deploy Docusaurus Site
-#         run: |
-#           npm run build
-#           npm run deploy
-#         env:
-#           # Use the default GitHub Token for deployment authentication
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

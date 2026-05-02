@@ -1,0 +1,155 @@
+---
+sidebar_class_name: hidden
+description: Returns a list of all IP addresses from an SPF record.
+id: Resolve-SPFRecord
+title: Resolve-SPFRecord
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Resolve-SPFRecord.ps1
+---
+
+## SYNOPSIS
+
+Returns a list of all IP addresses from an SPF record.
+
+## SYNTAX
+
+```powershell
+Resolve-SPFRecord [-Name] <String> [[-Server] <String>] [-Referrer <String>] [-Visited <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+A function to resolve and parse SPF records for a given domain name.
+
+Supported SPF directives and functions include:
+- mx
+- a
+- ip4 und ip6
+- redirect
+- Warning for too many include entries
+
+Not supported:
+- explanation
+- macros
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Resolve-SPFRecord microsoft.com
+```
+
+Resolves the SPF record for the domain "microsoft.com" using the default DNS server.
+
+### EXAMPLE 2
+
+```powershell
+Resolve-SPFRecord -Name microsoft.com -Server 1.1.1.1
+```
+
+Resolves the SPF record for the domain "microsoft.com" using the specified DNS server.
+
+## PARAMETERS
+
+### -Name
+
+The domain name to resolve the SPF record for.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName, ByValue)
+Accept wildcard characters: False
+```
+
+### -Server
+
+The DNS server to use for the query.
+If not specified, the system's default DNS server will be used.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Referrer
+
+Provide a referrer to build valid objects during recursive calls of the function.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Visited
+
+Track visited domains to prevent circular references during recursive calls of the function.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: @()
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### Resolve-SPFRecord.SPFRecord[]
+
+### System.String
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Resolve-SPFRecord](https://maester.dev/docs/commands/Resolve-SPFRecord)
+
+[https://cloudbrothers.info/en/powershell-tip-resolve-spf/](https://cloudbrothers.info/en/powershell-tip-resolve-spf/)
