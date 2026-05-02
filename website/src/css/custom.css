@@ -19,13 +19,18 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme="dark"] {
-  --ifm-color-primary: #f44336;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  /* Coral red — keeps the Maester ember-red feel while remaining legible on
+     dark backgrounds. Tuned for >= 5.5:1 contrast on Docusaurus dark canvas
+     (#1b1b1d) and the homepage's #050608 surface. */
+  --ifm-color-primary: #ff7a7a;
+  --ifm-color-primary-dark: #f56565;
+  --ifm-color-primary-darker: #ec5757;
+  --ifm-color-primary-darkest: #c93f3f;
+  --ifm-color-primary-light: #ff9292;
+  --ifm-color-primary-lighter: #ffa1a1;
+  --ifm-color-primary-lightest: #ffbfbf;
+  --ifm-link-color: #ff9292;
+  --ifm-link-hover-color: #ffbfbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
