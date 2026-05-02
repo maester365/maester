@@ -119,6 +119,48 @@ html[data-theme="dark"] .sidebar-section {
   white-space: nowrap;
 }
 
+.theme-doc-markdown.markdown h1:first-child,
+.markdown h1:first-child,
+main h1,
+.hero__title {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+.markdown h2,
+.generated-test-doc h2 {
+  font-size: 1.35rem;
+}
+
+.markdown h3,
+.generated-test-doc h3 {
+  font-size: 1.15rem;
+}
+
+.markdown h4,
+.generated-test-doc h4 {
+  font-size: 1rem;
+}
+
+@media only screen and (max-width: 996px) {
+  .theme-doc-markdown.markdown h1:first-child,
+  .markdown h1:first-child,
+  main h1,
+  .hero__title {
+    font-size: 1.55rem;
+  }
+
+  .markdown h2,
+  .generated-test-doc h2 {
+    font-size: 1.2rem;
+  }
+
+  .markdown h3,
+  .generated-test-doc h3 {
+    font-size: 1.05rem;
+  }
+}
+
 /* Used previously to hide sidebar of tests and commands */
 /* .hidden {
   display: none !important;
