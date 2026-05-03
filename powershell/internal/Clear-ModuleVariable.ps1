@@ -17,6 +17,7 @@
     $__MtSession.TestResultDetail = @{}
     $__MtSession.MaesterConfig = $null
     $__MtSession.AdminPortalUrl = @{}
+    $__MtSession.Licenses = @{}
     Clear-MtDnsCache
     Clear-MtExoCache
     $__MtSession.AIAgentInfo = $null

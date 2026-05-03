@@ -19,4 +19,19 @@
     }
 
     $__MtSession.AdminPortalUrl = Get-MtAdminPortalUrl -Environment $environment
+
+    # Pre-fetch all license products into the session cache so that BeforeDiscovery blocks
+    # in test files pay zero Graph API cost when calling Get-MtLicenseInformation.
+    # ExoLicenseCount is intentionally excluded here as it returns a number (seat count)
+    # rather than a product string and is not used for skip-gating.
+    $licenseProducts = @('EntraID', 'EntraWorkloadID', 'Eop', 'ExoDlp', 'Mdo', 'MdoV2',
+        'AdvAudit', 'DefenderXDR', 'CustomerLockbox', 'Intune')
+    try {
+        foreach ($product in $licenseProducts) {
+            $__MtSession.Licenses[$product] = Get-MtLicenseInformation -Product $product
+        }
+        Write-Verbose "License information pre-fetched for $($licenseProducts.Count) products."
+    } catch {
+        Write-Verbose "License pre-fetch skipped (tenant not reachable or not connected to Graph): $_"
+    }
 }

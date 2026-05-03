@@ -27,11 +27,26 @@ function Get-MtLicenseInformation {
 
     begin {
         # Get all subscribed SKUs once to optimize performance.
-        $SKUs = Invoke-MtGraphRequest -RelativeUri 'subscribedSkus' | Where-Object { $_.capabilityStatus -eq 'Enabled' }
-        $ServicePlans = $SKUs | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId | Sort-Object -Unique
+        # Skip the Graph call entirely if the session cache already has this product.
+        # (Initialize-MtSession pre-populates $__MtSession.Licenses for all products.)
+        $SKUs = $null
+        $ServicePlans = $null
     }
 
     process {
+        # Return from session cache when available (populated by Initialize-MtSession).
+        if ($__MtSession.Licenses.ContainsKey($Product)) {
+            Write-Verbose "Returning cached license information for $Product"
+            return $__MtSession.Licenses[$Product]
+        }
+
+        # Lazy-load SKU data only when a cache miss requires it.
+        if ($null -eq $SKUs) {
+            $SKUs = Invoke-MtGraphRequest -RelativeUri 'subscribedSkus' | Where-Object { $_.capabilityStatus -eq 'Enabled' }
+            $ServicePlans = $SKUs | Select-Object -ExpandProperty servicePlans | Select-Object -ExpandProperty servicePlanId | Sort-Object -Unique
+        }
+
+        $LicenseType = $null
         switch ($Product) {
             'EntraID' {
                 Write-Verbose 'Retrieving license information for Entra ID'
@@ -45,7 +60,6 @@ function Get-MtLicenseInformation {
                     $LicenseType = 'Free'
                 }
                 Write-Information "The license type for Entra ID is $LicenseType"
-                return $LicenseType
                 break
             }
             'EntraWorkloadID' {
@@ -58,7 +72,6 @@ function Get-MtLicenseInformation {
                     $LicenseType = $null
                 }
                 Write-Information "The license type for Entra ID is $LicenseType"
-                return $LicenseType
                 break
             }
             'Eop' {
@@ -76,7 +89,6 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information "The license type for Exchange Online Protection is $LicenseType"
-                return $LicenseType
                 break
             }
             'ExoDlp' {
@@ -99,7 +111,6 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information "The license type for Exchange Online DLP is $LicenseType"
-                return $LicenseType
                 break
             }
             'Mdo' {
@@ -118,7 +129,6 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information "The license type for Defender for Office is $LicenseType"
-                return $LicenseType
                 break
             }
             'MdoV2' {
@@ -135,7 +145,6 @@ function Get-MtLicenseInformation {
                     $LicenseType = 'EOP' # Exchange Online Protection / EOP_ENTERPRISE (326e2b78-9d27-42c9-8509-46c827743a17)
                 }
                 Write-Information "The license type for Defender for Office is $LicenseType"
-                return $LicenseType
                 break
             }
             'AdvAudit' {
@@ -153,7 +162,6 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information "The license type for Advanced Audit is $LicenseType"
-                return $LicenseType
                 break
             }
             'ExoLicenseCount' {
@@ -189,7 +197,7 @@ function Get-MtLicenseInformation {
                 }
 
                 Write-Information "Total Exchange Online licenses: $TotalLicenses"
-                return $TotalLicenses
+                $LicenseType = $TotalLicenses
                 break
             }
             'DefenderXDR' {
@@ -208,7 +216,6 @@ function Get-MtLicenseInformation {
                     }
                 }
                 Write-Information 'The tenant is licensed for Defender XDR'
-                return $LicenseType
                 break
             }
             'CustomerLockbox' {
@@ -224,13 +231,10 @@ function Get-MtLicenseInformation {
                     $LicenseType = $null
                 }
                 Write-Information "The license type for Customer Lockbox is $LicenseType"
-                return $LicenseType
                 break
             }
             "Intune" {
                 Write-Verbose "Retrieving license SKUs for Intune"
-                $subscribedSkus = Invoke-MtGraphRequest -RelativeUri "subscribedSkus" | Where-Object {$_.capabilityStatus -eq 'Enabled'}
-                $uniqueServicePlans = $subscribedSkus.servicePlans.servicePlanId | Sort-Object -Unique
                 $requiredServicePlans = @(
                     # https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
                     "c1ec4a95-1f05-45b3-a911-aa3fa01094f5", # INTUNE_A (Microsoft Intune Plan 1)
@@ -244,16 +248,19 @@ function Get-MtLicenseInformation {
 
                 )
                 $LicenseType = $null
-                foreach($servicePlan in $requiredServicePlans){
-                    if($servicePlan -in $uniqueServicePlans){
+                foreach ($servicePlan in $requiredServicePlans) {
+                    if ($servicePlan -in $ServicePlans) {
                         $LicenseType = "Intune"
                     }
                 }
                 Write-Information "The tenant is licensed for Intune"
-                return $LicenseType
-                Break
+                break
             }
             Default {}
         }
+
+        # Store in session cache so subsequent calls (including BeforeDiscovery blocks) pay no API cost.
+        $__MtSession.Licenses[$Product] = $LicenseType
+        return $LicenseType
     }
 }
