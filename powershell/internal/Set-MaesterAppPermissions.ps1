@@ -56,6 +56,9 @@
         # Get all available Graph app roles
         $graphAppRoles = $graphSP.appRoles
 
+        $failedPermissions = [System.Collections.Generic.List[string]]::new()
+        $grantedCount = 0
+
         # Process each requested scope
         foreach ($scope in $Scopes) {
             Write-Verbose "Processing scope: $scope"
@@ -65,13 +68,16 @@
 
             if (-not $appRole) {
                 Write-Warning "Application permission '$scope' not found in Microsoft Graph. Skipping."
+                continue
             }
 
             # Check if permission already exists
             $existingPermission = $currentAppRoles | Where-Object { $_.appRoleId -eq $appRole.id -and $_.resourceId -eq $graphSP.id }
 
             if ($existingPermission) {
-                Write-Verbose "Permission '$scope' already exists"
+                Write-Verbose "Permission '$scope' already exists. Skipping."
+                $grantedCount++
+                continue
             }
 
             Write-Host "➕ Adding permission '$scope'..." -ForegroundColor Yellow
@@ -83,8 +89,26 @@
             } | ConvertTo-Json
 
             Write-Verbose "Adding permission: $scope"
-            Invoke-MtAzureRequest -RelativeUri "servicePrincipals/$($appSP.id)/appRoleAssignments" -Method POST -Payload $permissionBody -Graph | Out-Null
-            Write-Verbose "Successfully added permission: $scope"
+            $response = Invoke-MtAzureRequest -RelativeUri "servicePrincipals/$($appSP.id)/appRoleAssignments" -Method POST -Payload $permissionBody -Graph
+
+            if ($response.error) {
+                Write-Error "❌ Failed to add permission '$scope': [$($response.error.code)] $($response.error.message)"
+                $failedPermissions.Add($scope)
+            } else {
+                Write-Verbose "Successfully added permission: $scope"
+                $grantedCount++
+            }
+        }
+
+        if ($failedPermissions.Count -gt 0) {
+            $totalRequested = ($Scopes | Measure-Object).Count
+            $failureSummary = (
+                "$($failedPermissions.Count) of $totalRequested permission(s) could not be granted. " +
+                "The application may not function correctly. " +
+                "Ensure the account has Privileged Role Administrator or Global Administrator rights to consent to Graph API permissions. " +
+                "Failed permissions: $($failedPermissions -join ', ')"
+            )
+            throw $failureSummary
         }
     }
 }
