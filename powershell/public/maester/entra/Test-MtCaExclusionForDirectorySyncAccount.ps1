@@ -28,12 +28,19 @@
     $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
     try {
-        $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
-        $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
+        # Role template IDs are stable Microsoft-defined GUIDs; use them as fallback
+        # when Get-MtRoleInfo cannot resolve via the module role definitions cache.
+        # Variables kept as strings so they work correctly in -in comparisons against
+        # CA policy conditions (includeRoles/excludeRoles contain GUID strings).
+        $dirSyncInfo = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
+        $DirectorySynchronizationAccountsRole = if ($null -ne $dirSyncInfo) { $dirSyncInfo.ToString() } else { 'd29b2b05-8046-44ba-8758-1e26182fcf32' }
+
+        $onPremInfo = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
+        $OnPremisesDirectorySyncAccountRole = if ($null -ne $onPremInfo) { $onPremInfo.ToString() } else { 'a92aed5d-d78a-4d16-b381-09adb37eb3b0' }
 
         $Members = @()
-        $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
-        $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+        $Members += Get-MtRoleMember -RoleId ([guid]$DirectorySynchronizationAccountsRole)
+        $Members += Get-MtRoleMember -RoleId ([guid]$OnPremisesDirectorySyncAccountRole)
         $Members = @($Members | Where-Object { $null -ne $_ })
 
         if ( $Members.Count -eq 0 ) {

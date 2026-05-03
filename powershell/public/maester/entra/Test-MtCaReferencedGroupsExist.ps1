@@ -1,5 +1,5 @@
 ﻿function Test-MtCaReferencedGroupsExist {
-    <#
+  <#
     .Synopsis
     Checks if any conditional access policies include or exclude groups that have been deleted.
 
@@ -79,7 +79,7 @@
     return $result
 
   } catch {
-    Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+    Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_ -GraphObjectType ConditionalAccess
     return $null
   }
 }

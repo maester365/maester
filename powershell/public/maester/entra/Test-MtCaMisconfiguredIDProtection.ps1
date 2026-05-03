@@ -24,12 +24,13 @@
         return $null
     }
 
+    $result = $false
+    $hasRiskCAPolicy = $false # flag to check if there is any policy with risk controls, we skip the test if there is none
+    $policiesResult = New-Object System.Collections.ArrayList
+    $testResult = $null
+
     try {
         $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
-        $policiesResult = New-Object System.Collections.ArrayList
-
-        $result = $false
-        $hasRiskCAPolicy = $false # flag to check if there is any policy with risk controls, we skip the test if there is none
 
         foreach ($policy in $policies) {
             if ($policy.conditions.userRiskLevels -or $policy.conditions.signInRiskLevels) {
@@ -45,21 +46,23 @@
             Write-Verbose "$($policy.displayName) - $CurrentResult"
         }
 
-        if ( -not $hasRiskCAPolicy ) {
-            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no Conditional Access policies with risk controls configured.'
-            return $null
-        }
-
         if ( $result ) {
             $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
         } else {
             $testResult = 'Well done! No conditional access policies detected where sign-in risk and user risk are combined.'
         }
-
-        Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
-        return $result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_ -GraphObjectType ConditionalAccess
         return $false
     }
+
+    # Skip check must happen outside the try-catch block to prevent Pester's internal
+    # flow-control exception from being caught and re-thrown as an error result.
+    if ( -not $hasRiskCAPolicy ) {
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'There are no Conditional Access policies with risk controls configured.'
+        return $null
+    }
+
+    Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
+    return $result
 }
