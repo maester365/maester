@@ -1,4 +1,4 @@
-﻿function Get-MtSessionLicenses {
+﻿function Get-MtSessionLicens {
     <#
     .SYNOPSIS
         Returns the pre-fetched license map for the current tenant session.
@@ -15,7 +15,7 @@
 
     .EXAMPLE
         BeforeDiscovery {
-            $Licenses = Get-MtSessionLicenses
+            $Licenses = Get-MtSessionLicens
         }
 
         Describe "Maester/Entra" -Tag "Maester", "Entra" {
@@ -31,7 +31,7 @@
         }
 
     .LINK
-        https://maester.dev/docs/commands/Get-MtSessionLicenses
+        https://maester.dev/docs/commands/Get-MtSessionLicens
     #>
     [OutputType([hashtable])]
     [CmdletBinding()]

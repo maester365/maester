@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $Licenses = Get-MtSessionLicenses
+    $Licenses = Get-MtSessionLicens
 }
 Describe "Maester/Entra" -Tag "Governance", "Entra", "AccessPackages", "License-EntraGovernance" -Skip:($Licenses.EntraID -notin 'P2', 'Governance') {
     It "MT.1109: Access package approval workflows must have valid approvers. See https://maester.dev/docs/tests/MT.1109" -Tag "MT.1109" {
