@@ -33,6 +33,7 @@
     .LINK
         https://maester.dev/docs/commands/Get-MtSessionLicens
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This command is already using singular nouns and is appropriately named for its purpose.')]
     [OutputType([hashtable])]
     [CmdletBinding()]
     param()
