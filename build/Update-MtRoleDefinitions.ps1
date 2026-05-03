@@ -331,6 +331,7 @@ function Get-RoleDiffSummaryMarkdown {
         [object[]] $Roles,
 
         [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
         [object[]] $RoleAliases,
 
         [Parameter(Mandatory)]
