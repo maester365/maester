@@ -97,6 +97,13 @@
 
     Connect to all tested services and run all tests, including the long-running and preview tests.
 
+    .EXAMPLE
+    Invoke-Maester -AutoFilterLicenses
+
+    Runs tests and automatically skips any test that requires a license the tenant does not have.
+    For example, on a tenant with only a Business Premium license, tests requiring Entra ID P2,
+    Defender XDR, or Advanced Audit will be excluded from the run.
+
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
     #>
@@ -206,7 +213,14 @@
 
         # The root directory for configuration drift tracking.
         [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
-        [string] $DriftRoot
+        [string] $DriftRoot,
+
+        # Automatically exclude tests that require licenses not present in the tenant.
+        # When set, Maester queries the tenant license information at startup and adds the
+        # appropriate License-* tags to ExcludeTag so unlicensed tests are skipped cleanly.
+        # This requires a Graph connection and is silently ignored when not connected.
+        [Parameter(HelpMessage = 'Skip tests that require licenses the tenant does not have.')]
+        [switch] $AutoFilterLicenses
     )
 
     function GetDefaultFileName() {
@@ -324,8 +338,50 @@
         Test-MtContext -SendMail:$isMail -SendTeamsMessage:$isTeamsChannelMessage | Out-Null
     }
 
-    # Initialize MtSession after Graph connected.
+    # Initialize MtSession after Graph connected (also pre-fetches license information).
     Initialize-MtSession
+
+    # If -AutoFilterLicenses is set, exclude tests whose required license is absent in the tenant.
+    if ($AutoFilterLicenses.IsPresent) {
+        $tenantLicenses = Get-MtSessionLicenses
+        if ($tenantLicenses.Count -gt 0) {
+            $licenseExclusions = [System.Collections.Generic.List[string]]::new()
+
+            # Entra ID tiers: Free excludes P1 + P2 + Governance; P1 excludes P2 + Governance
+            switch ($tenantLicenses['EntraID']) {
+                'Free' {
+                    $licenseExclusions.AddRange([string[]]@('License-EntraP1', 'License-EntraP2', 'License-EntraGovernance'))
+                }
+                'P1' {
+                    $licenseExclusions.AddRange([string[]]@('License-EntraP2', 'License-EntraGovernance'))
+                }
+            }
+
+            # Binary (licensed / not licensed) products
+            $binaryProducts = @{
+                'EntraWorkloadID' = 'License-EntraWorkloadID'
+                'Eop'             = 'License-Eop'
+                'ExoDlp'          = 'License-ExoDlp'
+                'Mdo'             = 'License-Mdo'
+                'AdvAudit'        = 'License-AdvAudit'
+                'DefenderXDR'     = 'License-DefenderXDR'
+                'CustomerLockbox' = 'License-CustomerLockbox'
+                'Intune'          = 'License-Intune'
+            }
+            foreach ($entry in $binaryProducts.GetEnumerator()) {
+                if ($null -eq $tenantLicenses[$entry.Key]) {
+                    $licenseExclusions.Add($entry.Value)
+                }
+            }
+
+            if ($licenseExclusions.Count -gt 0) {
+                $ExcludeTag = @($ExcludeTag | Where-Object { $_ }) + $licenseExclusions
+                Write-Verbose "AutoFilterLicenses: excluding tags $($licenseExclusions -join ', ')"
+            }
+        } else {
+            Write-Verbose 'AutoFilterLicenses: license data not available, skipping auto-filter.'
+        }
+    }
 
     if ($isWebUri) {
         # Check if TeamChannelWebhookUri is a valid URL.
