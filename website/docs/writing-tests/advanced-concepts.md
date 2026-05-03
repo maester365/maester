@@ -70,6 +70,69 @@ $policy = Invoke-MtGraphRequest @policySplat
 
 To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/blob/main/powershell/public/Invoke-MtGraphRequest.ps1).
 
+## Gating tests on license availability
+
+Some tests only make sense when the tenant has a specific license. Rather than letting those tests fail or produce misleading results on unlicensed tenants, you can skip them cleanly at Pester discovery time using `Get-MtSessionLicenses` and a `BeforeDiscovery` block.
+
+### Get-MtSessionLicenses
+
+`Get-MtSessionLicenses` returns a hashtable of all license products evaluated for the current tenant. The map is populated once by `Initialize-MtSession` when `Invoke-Maester` starts, so calling it inside a `BeforeDiscovery` block costs zero additional Graph API calls.
+
+The keys match the `-Product` parameter of `Get-MtLicenseInformation`:
+
+| Key               | Possible values                            |
+| ----------------- | ------------------------------------------ |
+| `EntraID`         | `'Free'`, `'P1'`, `'P2'`, `'Governance'`   |
+| `EntraWorkloadID` | `'P1'`, `'P2'`, or `$null` if not licensed |
+| `Eop`             | `'Eop'` or `$null`                         |
+| `Mdo`             | plan string or `$null`                     |
+| `Intune`          | `'Intune'` or `$null`                      |
+| `DefenderXDR`     | plan string or `$null`                     |
+| `CustomerLockbox` | plan string or `$null`                     |
+| *(others)*        | plan string or `$null`                     |
+
+### BeforeDiscovery skip pattern
+
+Place `Get-MtSessionLicenses` inside a `BeforeDiscovery` block at the top of the test file. Variables set there are available to `-Skip:()` expressions on `Describe` and `It` blocks.
+
+```powershell
+BeforeDiscovery {
+    $Licenses = Get-MtSessionLicenses
+}
+
+Describe "Contoso" -Tag "Entra", "License-EntraP2" -Skip:($Licenses.EntraID -notin 'P2', 'Governance') {
+    It "CTS.2001: Some P2-only check" -Tag "CTS.2001" {
+        Test-ContosoSomeP2Feature | Should -Be $true
+    }
+}
+```
+
+Use this pattern for each license tier:
+
+| Requirement               | `-Skip:()` expression                                 |
+| ------------------------- | ----------------------------------------------------- |
+| Entra ID P1 or above      | `-Skip:($Licenses.EntraID -eq 'Free')`                |
+| Entra ID P2 or Governance | `-Skip:($Licenses.EntraID -notin 'P2', 'Governance')` |
+| Intune                    | `-Skip:($null -eq $Licenses.Intune)`                  |
+| Defender XDR              | `-Skip:($null -eq $Licenses.DefenderXDR)`             |
+
+### License tags
+
+Add the corresponding `License-*` tag to every `Describe` (or `It`) block that uses a license skip. This enables `Invoke-Maester -AutoFilterLicenses` to exclude the block entirely via tag filtering before discovery — a faster path on unlicensed tenants.
+
+| License requirement           | Tag to add                |
+| ----------------------------- | ------------------------- |
+| Entra ID P1                   | `License-EntraP1`         |
+| Entra ID P2                   | `License-EntraP2`         |
+| Entra ID Governance           | `License-EntraGovernance` |
+| Entra Workload ID             | `License-EntraWorkloadID` |
+| Exchange Online Protection    | `License-Eop`             |
+| Microsoft Defender for Office | `License-Mdo`             |
+| Advanced Audit                | `License-AdvAudit`        |
+| Defender XDR                  | `License-DefenderXDR`     |
+| Customer Lockbox              | `License-CustomerLockbox` |
+| Intune                        | `License-Intune`          |
+
 ## Splitting tests into multiple files
 
 As you write more tests you might find it helpful to split out the markdown part of the tests into a separate file. This helps reduce clutter in the test code and also allows content writers to independently edit the markdown files. Almost all the out of the box Maester tests use this approach of splitting out the markdown content for the test.
