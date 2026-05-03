@@ -540,18 +540,23 @@ if ($env:GITHUB_OUTPUT) {
     try {
         $repoRoot = (git -C $PSScriptRoot rev-parse --show-toplevel 2>$null)
         if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($repoRoot)) {
-            $resolvedRoleInfoPath = (Resolve-Path $RoleInfoPath).ProviderPath
-            Push-Location $repoRoot
-            try {
-                $relativeRoleInfoPath = Resolve-Path -LiteralPath $resolvedRoleInfoPath -Relative
-            } finally {
-                Pop-Location
-            }
+            $resolvedRepoRoot = (Resolve-Path -LiteralPath $repoRoot -ErrorAction Stop).ProviderPath
+            $resolvedRoleInfoPath = (Resolve-Path -LiteralPath $RoleInfoPath -ErrorAction Stop).ProviderPath
+            $relativeRoleInfoPath = [System.IO.Path]::GetRelativePath($resolvedRepoRoot, $resolvedRoleInfoPath)
 
-            $relativeRoleInfoPath = $relativeRoleInfoPath -replace '^[.][\\/]', '' -replace '\\', '/'
-            $headRoleInfo = (git -C $repoRoot show "HEAD:$relativeRoleInfoPath" 2>$null | Out-String)
-            if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($headRoleInfo)) {
-                $summaryBaselineContent = $headRoleInfo
+            if (
+                -not [System.IO.Path]::IsPathRooted($relativeRoleInfoPath) -and
+                -not $relativeRoleInfoPath.StartsWith('..' + [System.IO.Path]::DirectorySeparatorChar) -and
+                -not $relativeRoleInfoPath.StartsWith('..' + [System.IO.Path]::AltDirectorySeparatorChar) -and
+                $relativeRoleInfoPath -ne '..'
+            ) {
+                $relativeRoleInfoPath = $relativeRoleInfoPath -replace '\\', '/'
+                $headRoleInfo = (git -C $resolvedRepoRoot show "HEAD:$relativeRoleInfoPath" 2>$null | Out-String)
+                if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($headRoleInfo)) {
+                    $summaryBaselineContent = $headRoleInfo
+                }
+            } else {
+                Write-Verbose "Unable to resolve HEAD baseline for summary output because '$resolvedRoleInfoPath' is outside repository root '$resolvedRepoRoot'. Falling back to current file content."
             }
         }
     } catch {
