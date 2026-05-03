@@ -1,4 +1,8 @@
-﻿Describe "Maester/Entra" -Tag "Maester", "CA" {
+﻿BeforeDiscovery {
+    $Licenses = Get-MtSessionLicenses
+    $EntraIDPlan = $Licenses.EntraID
+}
+Describe "Maester/Entra" -Tag "Maester", "CA" {
     It "MT.1001: At least one Conditional Access policy is configured with device compliance. See https://maester.dev/docs/tests/MT.1001" -Tag "MT.1001" {
         Test-MtCaDeviceComplianceExists | Should -Be $true -Because "there is no policy which requires device compliances"
     }
@@ -29,10 +33,10 @@
     It "MT.1011: At least one Conditional Access policy is configured to secure security info registration only from a trusted location. See https://maester.dev/docs/tests/MT.1011" -Tag "MT.1011" {
         Test-MtCaSecureSecurityInfoRegistration | Should -Be $true -Because "there is no policy that secures security info registration"
     }
-    It "MT.1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/docs/tests/MT.1012" -Skip:( $EntraIDPlan -eq "P1" ) -Tag "MT.1012" {
+    It "MT.1012: At least one Conditional Access policy is configured to require MFA for risky sign-ins. See https://maester.dev/docs/tests/MT.1012" -Skip:($EntraIDPlan -notin 'P2', 'Governance') -Tag "MT.1012", "License-EntraP2" {
         Test-MtCaMfaForRiskySignIn | Should -Be $true -Because "there is no policy that requires MFA for risky sign-ins"
     }
-    It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" -Skip:( $EntraIDPlan -eq "P1" ) -Tag "MT.1013" {
+    It "MT.1013: At least one Conditional Access policy is configured to require new password when user risk is high. See https://maester.dev/docs/tests/MT.1013" -Skip:($EntraIDPlan -notin 'P2', 'Governance') -Tag "MT.1013", "License-EntraP2" {
         Test-MtCaRequirePasswordChangeForHighUserRisk | Should -Be $true -Because "there is no policy that requires new password when user risk is high"
     }
     It "MT.1014: At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. See https://maester.dev/docs/tests/MT.1014" -Tag "MT.1014" {
@@ -65,7 +69,7 @@
     It "MT.1038: Conditional Access policies should not include or exclude deleted groups. See https://maester.dev/docs/tests/MT.1038" -Tag "MT.1038" {
         Test-MtCaReferencedGroupsExist | Should -Be $true -Because "there are one or more policies relying on deleted groups."
     }
-    It "MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049" -Tag "MT.1049" {
+    It "MT.1049: Conditional Access policies for User Risk and Sign-in Risk should be configured separately. See https://maester.dev/docs/tests/MT.1049" -Tag "MT.1049", "License-EntraP2" -Skip:($EntraIDPlan -notin 'P2', 'Governance') {
         Test-MtCaMisconfiguredIDProtection | Should -Be $false -Because "there is one or more policy with common misconfiguration for ID Protection "
     }
     It "MT.1052: At least one Conditional Access policy is targeting the Device Code authentication flow. See https://maester.dev/docs/tests/MT.1052" -Tag "MT.1052" {

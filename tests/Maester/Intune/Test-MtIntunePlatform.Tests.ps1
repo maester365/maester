@@ -1,4 +1,8 @@
-Describe "Maester/Intune" -Tag "Maester", "Intune" {
+BeforeDiscovery {
+    $Licenses = Get-MtSessionLicenses
+}
+
+Describe "Maester/Intune" -Tag "Maester", "Intune", "License-Intune" -Skip:($null -eq $Licenses.Intune) {
     It "MT.1053: Ensure intune device clean-up rule is configured" -Tag "MT.1053" {
         $result = Test-MtManagedDeviceCleanupSettings
         if ($null -ne $result) {

@@ -1,4 +1,8 @@
-Describe "Maester/Defender" -Tag "Maester", "Defender" {
+BeforeDiscovery {
+    $Licenses = Get-MtSessionLicenses
+}
+
+Describe "Maester/Defender" -Tag "Maester", "Defender", "License-Intune" -Skip:($null -eq $Licenses.Intune) {
     It "MT.1148: Archive Scanning should be enabled. See https://maester.dev/docs/tests/MT.1148" -Tag "MT.1148" {
         $result = Test-MtMdeArchiveScanning
         if ($null -ne $result) {
