@@ -118,7 +118,7 @@ Use this pattern for each license tier:
 
 ### License tags
 
-Add the corresponding `License-*` tag to every `Describe` (or `It`) block that uses a license skip. This enables `Invoke-Maester -AutoFilterLicenses` to exclude the block entirely via tag filtering before discovery — a faster path on unlicensed tenants.
+Add the corresponding `License-*` tag to every `Describe` (or `It`) block that uses a license skip. This enables `Invoke-Maester -AutoFilterLicense` to exclude the block entirely via tag filtering before discovery — a faster path on unlicensed tenants.
 
 | License requirement           | Tag to add                |
 | ----------------------------- | ------------------------- |

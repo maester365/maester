@@ -98,7 +98,7 @@
     Connect to all tested services and run all tests, including the long-running and preview tests.
 
     .EXAMPLE
-    Invoke-Maester -AutoFilterLicens
+    Invoke-Maester -AutoFilterLicense
 
     Runs tests and automatically skips any test that requires a license the tenant does not have.
     For example, on a tenant with only a Business Premium license, tests requiring Entra ID P2,
@@ -220,7 +220,7 @@
         # appropriate License-* tags to ExcludeTag so unlicensed tests are skipped cleanly.
         # This requires a Graph connection and is silently ignored when not connected.
         [Parameter(HelpMessage = 'Skip tests that require licenses the tenant does not have.')]
-        [switch] $AutoFilterLicenses
+        [switch] $AutoFilterLicense
     )
 
     function GetDefaultFileName() {
@@ -341,8 +341,8 @@
     # Initialize MtSession after Graph connected (also pre-fetches license information).
     Initialize-MtSession
 
-    # If -AutoFilterLicens is set, exclude tests whose required license is absent in the tenant.
-    if ($AutoFilterLicens.IsPresent) {
+    # If -AutoFilterLicense is set, exclude tests whose required license is absent in the tenant.
+    if ($AutoFilterLicense.IsPresent) {
         $tenantLicenses = Get-MtSessionLicense
         if ($tenantLicenses.Count -gt 0) {
             $licenseExclusions = [System.Collections.Generic.List[string]]::new()
@@ -376,10 +376,10 @@
 
             if ($licenseExclusions.Count -gt 0) {
                 $ExcludeTag = @($ExcludeTag | Where-Object { $_ }) + $licenseExclusions
-                Write-Verbose "AutoFilterLicens: excluding tags $($licenseExclusions -join ', ')"
+                Write-Verbose "AutoFilterLicense: excluding tags $($licenseExclusions -join ', ')"
             }
         } else {
-            Write-Verbose 'AutoFilterLicens: license data not available, skipping auto-filter.'
+            Write-Verbose 'AutoFilterLicense: license data not available, skipping auto-filter.'
         }
     }
 

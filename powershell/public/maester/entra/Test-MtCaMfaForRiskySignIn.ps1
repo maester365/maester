@@ -19,7 +19,7 @@
     [OutputType([bool])]
     param ()
 
-    if ( ( Get-MtLicenseInformation EntraID ) -ne "P2" ) {
+    if ( ( Get-MtLicenseInformation EntraID ) -notin 'P2', 'Governance') {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         return $null
     }
