@@ -24,10 +24,10 @@ These tests verify Microsoft 365 tenant configuration against CIS Microsoft 365 
 | [CIS.M365.1.2.2](../CIS.M365.1.2.2) | (L1) Ensure sign-in to shared mailboxes is blocked | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.1](../CIS.M365.1.3.1) | (L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)' | High | CIS E3 Level 1 |
 | [CIS.M365.1.3.3](../CIS.M365.1.3.3) | (L2) Ensure 'External sharing' of calendars is not available | Medium | CIS E3 Level 2 |
-| [CIS.M365.1.3.4](../CIS.M365.1.3.4) | Ensure | Unknown | CIS E3 Level 1 |
+| [CIS.M365.1.3.4](../CIS.M365.1.3.4) | Ensure 'User owned apps and services' is restricted | Unknown | CIS E3 Level 1 |
 | [CIS.M365.1.3.5](../CIS.M365.1.3.5) | Ensure internal phishing protection for Forms is enabled | Unknown | CIS E3 Level 1 |
 | [CIS.M365.1.3.6](../CIS.M365.1.3.6) | (L2) Ensure the customer lockbox feature is enabled | High | CIS E5 Level 2 |
-| [CIS.M365.1.3.7](../CIS.M365.1.3.7) | Ensure | Unknown | CIS E3 Level 2 |
+| [CIS.M365.1.3.7](../CIS.M365.1.3.7) | Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'  | Unknown | CIS E3 Level 2 |
 | [CIS.M365.2.1.1](../CIS.M365.2.1.1) | (L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy) | Medium | CIS E5 Level 2 |
 | [CIS.M365.2.1.2](../CIS.M365.2.1.2) | (L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
 | [CIS.M365.2.1.3](../CIS.M365.2.1.3) | (L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy) | Medium | CIS E3 Level 1 |
@@ -43,7 +43,7 @@ These tests verify Microsoft 365 tenant configuration against CIS Microsoft 365 
 | [CIS.M365.3.1.1](../CIS.M365.3.1.1) | (L1) Ensure Microsoft 365 audit log search is Enabled | High | CIS E3 Level 1 |
 | [CIS.M365.4.1](../CIS.M365.4.1) | Ensure devices without a compliance policy are marked | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2) | Ensure third party integrated applications are not allowed | Unknown | CIS E3 Level 2 |
-| [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3) | Ensure | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3) |  Ensure 'Restrict non-admin users from creating tenants' is set to 'Yes' | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1) | Ensure a dynamic group for guest users is created | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](../CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | Unknown | CIS E3 Level 1 |
