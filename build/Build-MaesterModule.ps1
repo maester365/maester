@@ -61,8 +61,16 @@ function Format-ParseErrorSummary {
         [string] $Path
     )
 
-    $FirstParseError = $ParseError | Select-Object -First 1
-    return "Parse error in '$Path' at line $($FirstParseError.Extent.StartLineNumber), column $($FirstParseError.Extent.StartColumnNumber): $($FirstParseError.Message)"
+    $ParseErrorMessages = @($ParseError | Select-Object -First 5 | ForEach-Object {
+            "line $($_.Extent.StartLineNumber), column $($_.Extent.StartColumnNumber): $($_.Message)"
+        })
+
+    $Summary = "Parse error in '$Path' ($($ParseError.Count) error(s)): $($ParseErrorMessages -join '; ')"
+    if ($ParseError.Count -gt $ParseErrorMessages.Count) {
+        $Summary += "; $($ParseError.Count - $ParseErrorMessages.Count) additional error(s) not shown"
+    }
+
+    return $Summary
 }
 
 function Get-PowerShellAst {
@@ -91,6 +99,19 @@ function Get-ParenthesisBalance {
     )
 
     return ([regex]::Matches($Text, '\(').Count - [regex]::Matches($Text, '\)').Count)
+}
+
+function Set-Utf8BomContent {
+    param (
+        [Parameter(Mandatory)]
+        [string] $Path,
+
+        [Parameter(Mandatory)]
+        [string] $Value
+    )
+
+    $Utf8BomEncoding = [System.Text.UTF8Encoding]::new($true)
+    [System.IO.File]::WriteAllText($Path, $Value, $Utf8BomEncoding)
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -527,7 +548,7 @@ try {
 '@)
 
 $OutputPsm1 = Join-Path $OutputRoot 'Maester.psm1'
-Set-Content -Path $OutputPsm1 -Value $Builder.ToString() -Encoding utf8BOM -NoNewline
+Set-Utf8BomContent -Path $OutputPsm1 -Value $Builder.ToString()
 Write-Host '   Written: Maester.psm1'
 $null = Get-PowerShellAst -Path $OutputPsm1
 Write-Host '   Validated: Maester.psm1 syntax'
@@ -583,7 +604,7 @@ foreach ($File in $OrcaCheckFiles) {
 }
 
 $OutputOrcaClasses = Join-Path $OutputRoot 'OrcaClasses.ps1'
-Set-Content -Path $OutputOrcaClasses -Value $OrcaBuilder.ToString() -Encoding utf8BOM -NoNewline
+Set-Utf8BomContent -Path $OutputOrcaClasses -Value $OrcaBuilder.ToString()
 Write-Host "   Written: OrcaClasses.ps1 ($($OrcaCheckFiles.Count) check classes)"
 $null = Get-PowerShellAst -Path $OutputOrcaClasses
 Write-Host '   Validated: OrcaClasses.ps1 syntax'
@@ -652,16 +673,21 @@ if ($Profile) {
     Write-Host '── Phase H: Profiling module import' -ForegroundColor Cyan
 
     $OutputManifestPath = Join-Path $OutputRoot 'Maester.psd1'
-    $ImportTime = Measure-Command {
-        Import-Module $OutputManifestPath -Force -ErrorAction Stop
+    $ImportTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $ImportedModules = @(Import-Module $OutputManifestPath -Force -ErrorAction Stop -PassThru)
+    $ImportTimer.Stop()
+
+    $ImportedModule = $ImportedModules | Where-Object { $_.Name -eq 'Maester' } | Select-Object -First 1
+    if (-not $ImportedModule) {
+        throw 'Import-Module did not return the Maester module object.'
     }
-    $ImportedModule = Get-Module -Name Maester | Select-Object -First 1
+
     $CommandCount = $ImportedModule.ExportedCommands.Count
 
-    Write-Host "   Import time:     $([math]::Round($ImportTime.TotalSeconds, 3))s"
+    Write-Host "   Import time:     $([math]::Round($ImportTimer.Elapsed.TotalSeconds, 3))s"
     Write-Host "   Exported commands: $CommandCount"
 
-    Remove-Module Maester -Force -ErrorAction SilentlyContinue
+    $ImportedModules | Remove-Module -Force -ErrorAction SilentlyContinue
 }
 
 # ──────────────────────────────────────────────────────────────────────────────

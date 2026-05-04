@@ -165,8 +165,8 @@ module/
 - **Source is never modified.** The build reads from `powershell/` and `tests/`
   and writes exclusively to the output directory.
 - **Deterministic output.** Files are sorted by full path before concatenation.
-  The `FunctionsToExport` list is sorted alphabetically. Repeated builds from
-  the same source and PowerShell 7.4 or later produce identical output.
+  The `FunctionsToExport` list is sorted alphabetically. PowerShell 7.4 or
+  later is the preferred and validated build host for release artifacts.
 - **Encoding.** All generated PowerShell files use UTF-8 with BOM (`utf8BOM`),
   matching the project convention.
 - **Preamble stripping is position-aware.** Only lines in the file-level
