@@ -220,7 +220,7 @@
         # appropriate License-* tags to ExcludeTag so unlicensed tests are skipped cleanly.
         # This requires a Graph connection and is silently ignored when not connected.
         [Parameter(HelpMessage = 'Skip tests that require licenses the tenant does not have.')]
-        [switch] $AutoFilterLicens
+        [switch] $AutoFilterLicenses
     )
 
     function GetDefaultFileName() {
