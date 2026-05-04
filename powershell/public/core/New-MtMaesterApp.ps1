@@ -157,7 +157,7 @@
         Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
     } catch {
         $permissionsGranted = $false
-        Write-Host "❌ $_" -ForegroundColor Red
+        Write-Host "❌ $($_.Exception.Message)" -ForegroundColor Red
     }
 
     $result = Get-MtMaesterApp -Id $app.id

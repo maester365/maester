@@ -57,7 +57,6 @@
         $graphAppRoles = $graphSP.appRoles
 
         $failedPermissions = [System.Collections.Generic.List[string]]::new()
-        $grantedCount = 0
 
         # Process each requested scope
         foreach ($scope in $Scopes) {
@@ -76,7 +75,6 @@
 
             if ($existingPermission) {
                 Write-Verbose "Permission '$scope' already exists. Skipping."
-                $grantedCount++
                 continue
             }
 
@@ -96,7 +94,6 @@
                 $failedPermissions.Add($scope)
             } else {
                 Write-Verbose "Successfully added permission: $scope"
-                $grantedCount++
             }
         }
 
