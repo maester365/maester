@@ -128,10 +128,25 @@
                 }
             }
             Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
+            $UniqueResolvedEmergencyAccessAccounts = @()
+            $ResolvedEmergencyAccessAccountKeys = @{}
+            foreach ($account in $ResolvedEmergencyAccessAccounts) {
+                $accountKey = "$($account.type):$($account.ObjectId)"
+                if (-not $ResolvedEmergencyAccessAccountKeys.ContainsKey($accountKey)) {
+                    $ResolvedEmergencyAccessAccountKeys[$accountKey] = $true
+                    $UniqueResolvedEmergencyAccessAccounts += $account
+                }
+            }
+            $ResolvedEmergencyAccessAccounts = $UniqueResolvedEmergencyAccessAccounts
             $ResolvedEmergencyAccessUsers = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' }
             $ResolvedEmergencyAccessGroups = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' }
             $EmergencyAccessAccountsUserCount = @($ResolvedEmergencyAccessUsers).Count
             $EmergencyAccessAccountsGroupCount = @($ResolvedEmergencyAccessGroups).Count
+
+            if ($EmergencyAccessAccountsUserCount -eq 0 -and $EmergencyAccessAccountsGroupCount -eq 0) {
+                Add-MtTestResultDetail -Result "Emergency access accounts or groups are configured in maester-config.json, but none could be resolved. Verify the configured Id or UserPrincipalName values."
+                return $false
+            }
 
             # Find policies that are missing ANY of the configured emergency access accounts or groups
             $policiesWithoutEmergency = $policies | Where-Object {

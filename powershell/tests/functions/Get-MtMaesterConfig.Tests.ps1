@@ -1,11 +1,13 @@
 ﻿Describe 'Get-MtMaesterConfig' {
     BeforeAll {
+        Import-Module $PSScriptRoot/../../Maester.psd1 -Force
         $maesterTestsPath = Join-Path $PSScriptRoot '../../../tests'
 
         # Copy default config to test location to ensure it exists for the tests
         $testFolder = Join-Path 'TestDrive:' 'maester-config-tests'
         $null = New-Item -Path $testFolder -ItemType Directory
-        Copy-Item -Path "$maesterTestsPath/maester-config.json" -Destination "$testFolder/maester-config.json"
+        Copy-Item -Path (Join-Path -Path $maesterTestsPath -ChildPath 'maester-config.json') -Destination (Join-Path -Path $testFolder -ChildPath 'maester-config.json')
+
     }
 
     It 'Finds and reads a default config' {
@@ -114,30 +116,48 @@
     }
 
     Context 'Using custom config' {
-        BeforeAll {
-            $customFolderPath = Join-Path $testFolder 'Custom'
-            $null = New-Item -Path $customFolderPath -ItemType Directory
-            Set-Content -Path "$customFolderPath/maester-config.json" -Value (@{
+        It 'Merges custom config from <CustomFolderName>\maester-config.json' -ForEach @(
+            @{
+                ScenarioName     = 'uppercase'
+                CustomFolderName = 'Custom'
+                AccountId        = '11111111-1111-1111-1111-111111111111'
+            }
+            @{
+                ScenarioName     = 'lowercase'
+                CustomFolderName = 'custom'
+                AccountId        = '22222222-2222-2222-2222-222222222222'
+            }
+            @{
+                ScenarioName     = 'mixedcase'
+                CustomFolderName = 'CUSTOM'
+                AccountId        = '33333333-3333-3333-3333-333333333333'
+            }
+        ) {
+            $customTestFolder = Join-Path -Path 'TestDrive:' -ChildPath "maester-config-tests-$ScenarioName"
+            $null = New-Item -Path $customTestFolder -ItemType Directory -Force
+            Copy-Item -Path (Join-Path -Path $maesterTestsPath -ChildPath 'maester-config.json') -Destination (Join-Path -Path $customTestFolder -ChildPath 'maester-config.json')
+
+            $customFolderPath = Join-Path -Path $customTestFolder -ChildPath $CustomFolderName
+            $null = New-Item -Path $customFolderPath -ItemType Directory -Force
+            Set-Content -Path (Join-Path -Path $customFolderPath -ChildPath 'maester-config.json') -Value (@{
                 GlobalSettings = @{
                     EmergencyAccessAccounts = @(
                         @{
                             Type = 'User'
-                            Id = '11111111-1111-1111-1111-111111111111'
+                            Id   = $AccountId
                         }
                     )
                 }
-                TestSettings = @(
+                TestSettings   = @(
                     @{
-                        Id = 'MT.1001'
+                        Id       = 'MT.1001'
                         Severity = 'Info'
-                        Title = 'Overridden Title from Custom Config'
+                        Title    = 'Overridden Title from Custom Config'
                     }
                 )
             } | ConvertTo-Json -Depth 5)
-        }
 
-        It 'Merges custom config' {
-            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $testFolder } {
+            $result = InModuleScope -ModuleName 'Maester' -Parameters @{ testFolder = $customTestFolder } {
                 Get-MtMaesterConfig -Path $testFolder
             }
 
@@ -148,7 +168,7 @@
             $result.GlobalSettings | Should -Not -BeNullOrEmpty
             $result.GlobalSettings.EmergencyAccessAccounts.Count | Should -BeGreaterThan 0
             $result.GlobalSettings.EmergencyAccessAccounts[0].Type | Should -Be 'User'
-            $result.GlobalSettings.EmergencyAccessAccounts[0].Id | Should -Be '11111111-1111-1111-1111-111111111111'
+            $result.GlobalSettings.EmergencyAccessAccounts[0].Id | Should -Be $AccountId
 
             $sample = $result.TestSettings | Where-Object Id -eq 'MT.1001'
             $sample.Severity | Should -Be 'Info'
