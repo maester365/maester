@@ -29,6 +29,17 @@ Describe 'Get-MtHtmlReport' {
             LoadedModules  = @()
             InvokeCommand  = 'Invoke-Maester'
             MgContext      = [PSCustomObject]@{ TenantId = 'single-tenant-id' }
+            MaesterConfig  = [PSCustomObject]@{
+                GlobalSettings = [PSCustomObject]@{
+                    EmergencyAccessAccounts = @(
+                        [PSCustomObject]@{
+                            Type              = 'User'
+                            UserPrincipalName = 'BreakGlass1@contoso.com'
+                        }
+                    )
+                }
+                TestSettings   = @()
+            }
             Tests          = @(
                 [PSCustomObject]@{
                     Index = 1; Id = 'MT.1001'; Title = 'Test One'
@@ -116,6 +127,12 @@ Describe 'Get-MtHtmlReport' {
             $html = Get-MtHtmlReport -MaesterResults $singleTenant
 
             $html | Should -BeLike '*MT.1001*'
+        }
+
+        It 'Should contain emergency access account config data' {
+            $html = Get-MtHtmlReport -MaesterResults $singleTenant
+
+            $html | Should -BeLike '*BreakGlass1@contoso.com*'
         }
 
         It 'Should not contain sample data from the template' {
