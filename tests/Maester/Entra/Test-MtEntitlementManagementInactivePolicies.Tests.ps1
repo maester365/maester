@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $Licenses = Get-MtSessionLicens
+    $Licenses = Get-MtSessionLicense
 }
 Describe "Maester/Entra" -Tag "Governance", "Entra", "AccessPackages", "License-EntraGovernance" -Skip:($Licenses.EntraID -notin 'P2', 'Governance') {
     It "MT.1108: Access packages should not reference inactive or orphaned assignment policies. See https://maester.dev/docs/tests/MT.1108" -Tag "MT.1108" {

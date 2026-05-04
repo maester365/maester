@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    $Licenses = Get-MtSessionLicens
+    $Licenses = Get-MtSessionLicense
 }
 
 Describe "Maester/Entra" -Tag "Maester", "Privileged" {

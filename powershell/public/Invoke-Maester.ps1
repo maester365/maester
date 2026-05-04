@@ -343,7 +343,7 @@
 
     # If -AutoFilterLicens is set, exclude tests whose required license is absent in the tenant.
     if ($AutoFilterLicens.IsPresent) {
-        $tenantLicenses = Get-MtSessionLicens
+        $tenantLicenses = Get-MtSessionLicense
         if ($tenantLicenses.Count -gt 0) {
             $licenseExclusions = [System.Collections.Generic.List[string]]::new()
 

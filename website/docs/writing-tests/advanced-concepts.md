@@ -27,7 +27,7 @@ The cache is reset when you run Invoke-Maester to ensure you always have the lat
 
 If your tests use Graph cmdlets like `Get-MgUser`, they will not benefit from this caching mechanism and will make a call to the Graph API every time they are run.
 
-### Other key features of `Invoke-MtGraphRequest`:
+### Other key features of `Invoke-MtGraphRequest`
 
 In addition to caching, `Invoke-MtGraphRequest` has other key features that make it very easy to write tests that query data.
 
@@ -72,11 +72,11 @@ To learn more see [Invoke-MtGraphRequest](https://github.com/maester365/maester/
 
 ## Gating tests on license availability
 
-Some tests only make sense when the tenant has a specific license. Rather than letting those tests fail or produce misleading results on unlicensed tenants, you can skip them cleanly at Pester discovery time using `Get-MtSessionLicenses` and a `BeforeDiscovery` block.
+Some tests only make sense when the tenant has a specific license. Rather than letting those tests fail or produce misleading results on unlicensed tenants, you can skip them cleanly at Pester discovery time using `Get-MtSessionLicense` and a `BeforeDiscovery` block.
 
-### Get-MtSessionLicenses
+### Get-MtSessionLicense
 
-`Get-MtSessionLicenses` returns a hashtable of all license products evaluated for the current tenant. The map is populated once by `Initialize-MtSession` when `Invoke-Maester` starts, so calling it inside a `BeforeDiscovery` block costs zero additional Graph API calls.
+`Get-MtSessionLicense` returns a hashtable of all license products evaluated for the current tenant. The map is populated once by `Initialize-MtSession` when `Invoke-Maester` starts, so calling it inside a `BeforeDiscovery` block costs zero additional Graph API calls.
 
 The keys match the `-Product` parameter of `Get-MtLicenseInformation`:
 
@@ -93,11 +93,11 @@ The keys match the `-Product` parameter of `Get-MtLicenseInformation`:
 
 ### BeforeDiscovery skip pattern
 
-Place `Get-MtSessionLicenses` inside a `BeforeDiscovery` block at the top of the test file. Variables set there are available to `-Skip:()` expressions on `Describe` and `It` blocks.
+Place `Get-MtSessionLicense` inside a `BeforeDiscovery` block at the top of the test file. Variables set there are available to `-Skip:()` expressions on `Describe` and `It` blocks.
 
 ```powershell
 BeforeDiscovery {
-    $Licenses = Get-MtSessionLicenses
+    $Licenses = Get-MtSessionLicense
 }
 
 Describe "Contoso" -Tag "Entra", "License-EntraP2" -Skip:($Licenses.EntraID -notin 'P2', 'Governance') {

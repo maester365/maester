@@ -1,5 +1,5 @@
 ﻿BeforeDiscovery {
-    $Licenses = Get-MtSessionLicens
+    $Licenses = Get-MtSessionLicense
     $EntraIDPlan = $Licenses.EntraID
 }
 Describe "Maester/Entra" -Tag "Maester", "CA" {

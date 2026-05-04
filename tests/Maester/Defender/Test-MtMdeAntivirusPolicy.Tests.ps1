@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $Licenses = Get-MtSessionLicens
+    $Licenses = Get-MtSessionLicense
 }
 
 Describe "Maester/Defender" -Tag "Maester", "Defender", "License-Intune" -Skip:($null -eq $Licenses.Intune) {

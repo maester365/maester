@@ -1,6 +1,6 @@
 BeforeDiscovery {
     try {
-        $Licenses = Get-MtSessionLicens
+        $Licenses = Get-MtSessionLicense
         $EntraIDPlan = $Licenses.EntraID
         $RegularUsers = Get-MtUser -Count 5 -UserType 'Member'
         $AdminUsers = Get-MtUser -Count 5 -UserType 'Admin'

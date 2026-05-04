@@ -1,5 +1,5 @@
 BeforeDiscovery {
-    $Licenses = Get-MtSessionLicens
+    $Licenses = Get-MtSessionLicense
 }
 Describe "Maester/Entra" -Tag "Governance", "Entra", "AccessPackages", "License-EntraGovernance" -Skip:($Licenses.EntraID -notin 'P2', 'Governance') {
     It "MT.1110: No catalog should contain resources without any associated access packages. See https://maester.dev/docs/tests/MT.1110" -Tag "MT.1110" {
