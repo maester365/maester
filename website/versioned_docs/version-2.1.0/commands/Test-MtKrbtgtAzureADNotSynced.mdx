@@ -1,0 +1,67 @@
+---
+sidebar_class_name: hidden
+description: Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.
+id: Test-MtKrbtgtAzureADNotSynced
+title: Test-MtKrbtgtAzureADNotSynced
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtKrbtgtAzureADNotSynced.ps1
+---
+
+## SYNOPSIS
+
+Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.
+
+## SYNTAX
+
+```powershell
+Test-MtKrbtgtAzureADNotSynced [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The krbtgt_AzureAD account is a sensitive account that should exist only in Entra ID and should not be synchronized from on-premises Active Directory.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtKrbtgtAzureADNotSynced
+```
+
+Returns true if no synchronized krbtgt_AzureAD account is found in Entra ID.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtKrbtgtAzureADNotSynced](https://maester.dev/docs/commands/Test-MtKrbtgtAzureADNotSynced)

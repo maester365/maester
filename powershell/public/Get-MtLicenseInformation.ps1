@@ -218,7 +218,7 @@ function Get-MtLicenseInformation {
                 # Service Plan: LOCKBOX_ENTERPRISE
                 # Service Plan ID: 9f431833-0334-42de-a7dc-70aa40db46db (Customer Lockbox) or 3ec18638-bd4c-4d3b-8905-479ed636b83e (Customer Lockbox (A))
                 # Reference: https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference
-                if ('9f431833-0334-42de-a7dc-70aa40db46db' -or '3ec18638-bd4c-4d3b-8905-479ed636b83e' -in $ServicePlans) {
+                if ('9f431833-0334-42de-a7dc-70aa40db46db' -in $ServicePlans -or '3ec18638-bd4c-4d3b-8905-479ed636b83e' -in $ServicePlans) {
                     $LicenseType = 'CustomerLockbox' # Customer Lockbox / LOCKBOX_ENTERPRISE
                 } else {
                     $LicenseType = $null

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -22,9 +22,10 @@ function Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoOrganizationRepositorySettingsDisableCreationTFVCRepo"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 

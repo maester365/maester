@@ -15,7 +15,6 @@
     .LINK
     https://maester.dev/docs/commands/Test-MtCaExclusionForDirectorySyncAccount
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllUsers is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
@@ -25,20 +24,20 @@
         return $null
     }
 
-    try {
-        $testDescription = 'It is recommended to exclude directory synchronization accounts from all conditional access policies scoped to all cloud apps.'
-        $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory synchronization accounts:`n`n"
+    $testDescription = 'It is recommended to exclude directory/OnPremises synchronization accounts from all conditional access policies scoped to all cloud apps.'
+    $testResult = "The following conditional access policies are scoped to all users but don't exclude the directory/OnPremises synchronization accounts:`n`n"
 
-        $DirectorySynchronizationAccountRoleTemplateId = 'd29b2b05-8046-44ba-8758-1e26182fcf32'
-        try {
-            $DirectorySynchronizationAccountRoleId = Invoke-MtGraphRequest -RelativeUri "directoryRoles(roleTemplateId='$DirectorySynchronizationAccountRoleTemplateId')" -Select id | Select-Object -ExpandProperty id
-            $DirectorySynchronizationAccounts = Invoke-MtGraphRequest -RelativeUri "directoryRoles/$DirectorySynchronizationAccountRoleId/members" -Select id | Get-ObjectProperty -Property id
-            if ( $null -eq $DirectorySynchronizationAccounts ) {
-                throw 'Directory synchronization accounts not found'
-            }
-        } catch {
-            # Directory synchronization account role not found, this tenant does not have directory synchronization accounts
-            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefor this test is not applicable.'
+    try {
+        $DirectorySynchronizationAccountsRole = Get-MtRoleInfo -RoleName 'DirectorySynchronizationAccounts'
+        $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
+
+        $Members = @()
+        $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+        $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+        $Members = @($Members | Where-Object { $null -ne $_ })
+
+        if ( $Members.Count -eq 0 ) {
+            Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefore this test is not applicable.'
             return $true
         }
 
@@ -72,24 +71,40 @@
                 continue
             }
 
-            $PolicyIncludesAllUsers = $false
+            $PolicyIncludesAnyMember = $false
             $PolicyIncludesRole = $false
-            $DirectorySynchronizationAccounts | ForEach-Object {
-                if ( $_ -in $policy.conditions.users.includeUsers  ) {
-                    $PolicyIncludesAllUsers = $true
+            # Excluding service principals, because they cannot be excluded from policies and therefore do not have to be included in the policies to bypass them.
+            $memberIds = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' } | ForEach-Object { $_.id })
+
+            foreach ($memberId in $memberIds) {
+                if ( $memberId -in $policy.conditions.users.includeUsers ) {
+                    $PolicyIncludesAnyMember = $true
+                    break
                 }
             }
 
-            if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.includeRoles ) {
+            if ( $DirectorySynchronizationAccountsRole -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.includeRoles ) {
                 $PolicyIncludesRole = $true
             }
 
-            if ( $PolicyIncludesAllUsers -or $PolicyIncludesRole ) {
-                # Skip this policy, because all directory synchronization accounts are included and therefor must not be excluded
+            if ( $PolicyIncludesAnyMember -or $PolicyIncludesRole ) {
+                # Skip this policy, because directory synchronization accounts are specifically included and therefore must not be excluded
                 $CurrentResult = $true
                 Write-Verbose "Skipping $($policy.displayName) - $CurrentResult"
+                continue
+            } elseif ( $memberIds.Count -eq 0 ) {
+                # All members are service principals; they are not subject to CA policies and therefore this policy can be skipped
+                $CurrentResult = $true
+                Write-Verbose "Skipping $($policy.displayName) — only service principal members - $CurrentResult"
+                continue
             } else {
-                if ( $DirectorySynchronizationAccountRoleTemplateId -in $policy.conditions.users.excludeRoles ) {
+                # Check if excluded by role
+                $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
+
+                # Check if all user members are individually excluded
+                $excludedByMember = $memberIds.Count -gt 0 -and @($memberIds | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
+
+                if ( $excludedByRole -or $excludedByMember ) {
                     # Directory synchronization accounts are excluded
                     $CurrentResult = $true
                 } else {

@@ -49,11 +49,11 @@
         # This is required when using application permissions.
         # Accepts either a GUID or UPN (User Principal Name) format.
         [ValidateScript({
-            if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$' -and $_ -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
-                throw "Invalid UserId format. It should be a valid GUID or UPN (User Principal Name)."
-            }
-            return $true
-        })]
+                if ($_ -and $_ -notmatch '^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$' -and $_ -notmatch '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$') {
+                    throw "Invalid UserId format. It should be a valid GUID or UPN (User Principal Name)."
+                }
+                return $true
+            })]
         [ValidateNotNullOrEmpty()]
         [string] $UserId
     )
@@ -92,30 +92,37 @@
     $CurrentVersion = $MaesterResults.CurrentVersion
     $LatestVersion = $MaesterResults.LatestVersion
     $ModuleVersion =
-        if ($currentVersion -ne $latestVersion) {
-            "$currentVersion → Latest version: $latestVersion"
-        } else {
-            "$currentVersion"
-        }
+    if ($currentVersion -ne $latestVersion) {
+        "$currentVersion → Latest version: $latestVersion"
+    } else {
+        "$currentVersion"
+    }
 
-    $notRunCount = $MaesterResults.SkippedCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $notRunCount = "-" }
+    $notRunCount = $MaesterResults.NotRunCount
+    if ([string]::IsNullOrEmpty($MaesterResults.NotRunCount)) { $notRunCount = "-" }
+    $skippedCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $skippedCount = "-" }
+    $investigateCount = $MaesterResults.investigateCount
+    if ([string]::IsNullOrEmpty($MaesterResults.investigateCount)) { $investigateCount = "-" }
+
     $emailTemplate = $emailTemplate -replace "%TenantName%", $MaesterResults.TenantName
     $emailTemplate = $emailTemplate -replace "%TenantId%", $MaesterResults.TenantId
     $emailTemplate = $emailTemplate -replace "%ModuleVersion%", $ModuleVersion
     $emailTemplate = $emailTemplate -replace "%TotalCount%", $MaesterResults.TotalCount
     $emailTemplate = $emailTemplate -replace "%PassedCount%", $MaesterResults.PassedCount
     $emailTemplate = $emailTemplate -replace "%FailedCount%", $MaesterResults.FailedCount
-    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $MaesterResults.InvestigateCount
+    $emailTemplate = $emailTemplate -replace "%InvestigateCount%", $investigateCount
+    $emailTemplate = $emailTemplate -replace "%SkippedCount%", $skippedCount
     $emailTemplate = $emailTemplate -replace "%NotRunCount%", $notRunCount
 
     # Add a hidden div that will show in the preview line of the message.
     $bodyElement = '<body lang="EN-US" link="#467886" vlink="#96607D" style="word-wrap:break-word">'
-    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($MaesterResults.InvestigateCount), ⬇️ Not run: $notRunCount</div>")
+    $emailTemplate = $emailTemplate -replace $bodyElement, ($bodyElement + "<div style='display:none;'>🔥 Total: $($MaesterResults.TotalCount), ✅ Passed: $($MaesterResults.PassedCount), ❌ Failed: $($MaesterResults.FailedCount), 🔍 Investigate: $($investigateCount), ⏭️ Skipped: $($skippedCount), ⬇️ Not Run: $($notRunCount)</div>")
     $StatusIcon = @{
-        Passed = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
-        Failed = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
-        NotRun = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
+        Passed      = '<img src="https://maester.dev/img/test-result/pill-pass.png" height="25" alt="Passed"/>'
+        Failed      = '<img src="https://maester.dev/img/test-result/pill-fail.png" height="25" alt="Failed"/>'
+        Skipped     = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Skipped"/>'
+        NotRun      = '<img src="https://maester.dev/img/test-result/pill-notrun.png" height="25" alt="Not Run"/>'
         Investigate = '<img src="https://maester.dev/img/test-result/pill-investigate.png" height="25" alt="Investigate"/>'
     }
 
@@ -172,8 +179,7 @@
     # Send email
     try {
         Invoke-MgGraphRequest -Method POST -Uri $sendMailUri -Body $mailRequestBody
-    }
-    catch {
+    } catch {
         if ($_.Exception.Response.StatusCode -eq 403) {
             # Delegated Mail.Send permission is checked earlier, so this is likely an application permission issue
             Write-Error -Message "Sending email failed with access denied. Make sure you've granted Mail.Send permission to the specified mailbox, see https://maester.dev/docs/monitoring/email/ for instructions."

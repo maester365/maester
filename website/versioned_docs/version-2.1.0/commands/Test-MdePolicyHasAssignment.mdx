@@ -1,0 +1,82 @@
+---
+sidebar_class_name: hidden
+description: Checks if a configuration policy is assigned to any groups or devices
+id: Test-MdePolicyHasAssignment
+title: Test-MdePolicyHasAssignment
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MdePolicyHasAssignment.ps1
+---
+
+## SYNOPSIS
+
+Checks if a configuration policy is assigned to any groups or devices
+
+## SYNTAX
+
+```powershell
+Test-MdePolicyHasAssignment [-PolicyId] <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Returns true if the policy has active assignments (not just exclusions).
+This helps ensure we only test policies that are actually deployed.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MdePolicyHasAssignment -PolicyId "abc-123"
+```
+
+Returns $true if policy is assigned to groups or devices.
+
+## PARAMETERS
+
+### -PolicyId
+
+The ID of the configuration policy to check
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS

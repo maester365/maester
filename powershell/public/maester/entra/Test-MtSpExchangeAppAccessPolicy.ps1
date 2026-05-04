@@ -70,33 +70,51 @@
             }
         }
 
-        # Prepare result table showing all apps with Exchange permissions
-        $detailMarkdown = "### Applications with Exchange Permissions`n`n"
-        $detailMarkdown += "| Application | Permissions | Access Policy? |`n"
-        $detailMarkdown += "| --- | --- | --- |`n"
-
         $missingPolicies = @()
+        $appsWithPolicies = @()
         foreach ($sp in $principalsWithExchangePerms) {
             $hasPolicy = $appAccessPolicies.AppId -contains $sp.AppId
-            $policyStatus = if ($hasPolicy) { '✅ Yes' } else { '❌ No' }
             $filteredPermissions = $sp.Permissions -split ', ' | Where-Object { $_ -in $exchangePermissions }
-            $portalLink = Get-MtLinkServicePrincipal -ServicePrincipal $sp -Blade Permissions
-            $detailMarkdown += "| $portalLink | $($filteredPermissions -join ', ') | $policyStatus |`n"
+            $appRecord = [PSCustomObject]@{
+                Id          = $sp.Id
+                DisplayName = $sp.DisplayName
+                AppId       = $sp.AppId
+                Permissions = $filteredPermissions -join ', '
+            }
 
             if (-not $hasPolicy) {
-                $missingPolicies += $sp
+                $missingPolicies += $appRecord
+            } else {
+                $appsWithPolicies += $appRecord
             }
         }
 
+        $appsWithExchangePermissionsCount = ($principalsWithExchangePerms | Measure-Object).Count
         $invalidCount = ($missingPolicies | Measure-Object).Count
         $result = $invalidCount -eq 0
 
-        if ($result) {
-            $testResultMarkdown = 'Well done. We did not find any applications with tenant-wide Exchange permissions to all mailboxes.'
+        if ($appsWithExchangePermissionsCount -eq 0) {
+            $testResultMarkdown = 'Well done. No applications with Exchange permissions were found.'
+        } elseif ($result) {
+            $testResultMarkdown = "Well done. All **$appsWithExchangePermissionsCount** applications with Exchange permissions have Exchange application access policies configured."
         } else {
-            $testResultMarkdown = "Found **$invalidCount** applications with tenant-wide access to all Exchange mailboxes."
+            $testResultMarkdown = "Found **$appsWithExchangePermissionsCount** applications with Exchange permissions. **$invalidCount** application(s) do not have Exchange application access policies configured."
+
+            $missingPoliciesMarkdown = "`n`n### Applications Missing Exchange Application Access Policies`n`n"
+            $missingPoliciesMarkdown += "| Application | Application ID | Exchange Permissions |`n"
+            $missingPoliciesMarkdown += "| --- | --- | --- |`n"
+
+            foreach ($app in ($missingPolicies | Sort-Object -Property DisplayName)) {
+                $portalLink = Get-MtLinkServicePrincipal -ServicePrincipal $app -Blade Permissions
+                $missingPoliciesMarkdown += "| $portalLink | $($app.AppId) | $($app.Permissions) |`n"
+            }
+
+            $testResultMarkdown += $missingPoliciesMarkdown
         }
-        $testResultMarkdown += "`n`n" + $detailMarkdown
+
+        if ($appsWithPolicies.Count -gt 0 -and $invalidCount -gt 0) {
+            $testResultMarkdown += "`n`n**Applications with access policies configured:** $($appsWithPolicies.Count)"
+        }
 
         Add-MtTestResultDetail -Result $testResultMarkdown
         return $result
