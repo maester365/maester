@@ -372,3 +372,171 @@ Describe 'Get-MtRoleInfo type contract' {
         }
     }
 }
+
+Describe 'Get-RoleDiffSummaryMarkdown' {
+
+    Context 'Added role not present in baseline' {
+        It 'includes the new role under "Added roles"' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$false)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $false }
+                @{ Name = 'RoleB'; Id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'; IsPrivileged = $false }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 0
+
+            $result | Should -Match '### Added roles \(1\)'
+            $result | Should -Match 'RoleB'
+            $result | Should -Not -Match 'Deleted roles'
+        }
+    }
+
+    Context 'Deleted role no longer in the feed and not aliased' {
+        It 'includes the removed role under "Deleted roles"' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$false)
+    'RoleB' = [MtRoleDefinition]::new('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', `$false)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $false }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 0
+
+            $result | Should -Match '### Deleted roles \(1\)'
+            $result | Should -Match 'RoleB'
+            $result | Should -Not -Match 'Added roles'
+        }
+    }
+
+    Context 'Renamed role is not reported as deleted when it appears in RoleAliases' {
+        It 'omits the old name from the Deleted roles section' {
+            $baseline = @"
+    'OldName' = [MtRoleDefinition]::new('cccccccc-cccc-cccc-cccc-cccccccccccc', `$false)
+"@
+            $roles = @(
+                @{ Name = 'NewName'; Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'; IsPrivileged = $false }
+            )
+            $aliases = @(
+                @{ Name = 'OldName'; CanonicalName = 'NewName' }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases $aliases -PrivilegedCount 0
+
+            $result | Should -Not -Match 'Deleted roles'
+        }
+    }
+
+    Context 'New alias not present in baseline' {
+        It 'lists the new alias under "Renamed roles"' {
+            # Baseline has the current role name but no alias entries yet.
+            $baseline = @"
+    'NewName' = [MtRoleDefinition]::new('cccccccc-cccc-cccc-cccc-cccccccccccc', `$false)
+"@
+            $roles = @(
+                @{ Name = 'NewName'; Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'; IsPrivileged = $false }
+            )
+            $aliases = @(
+                @{ Name = 'OldName'; CanonicalName = 'NewName' }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases $aliases -PrivilegedCount 0
+
+            $result | Should -Match '### Renamed roles \(1\)'
+            $result | Should -Match 'OldName'
+            $result | Should -Not -Match 'Deleted roles'
+        }
+    }
+
+    Context 'Existing alias retargeted to a new canonical name' {
+        It 'shows both the old and new target name in "Renamed roles"' {
+            # Baseline: role 'PreviousName' plus an existing alias 'OldName' → 'PreviousName'.
+            $baseline = @"
+    'PreviousName' = [MtRoleDefinition]::new('cccccccc-cccc-cccc-cccc-cccccccccccc', `$false)
+    'OldName' = 'PreviousName'
+"@
+            # New data: role renamed again to 'NewName'; alias retargeted accordingly.
+            $roles = @(
+                @{ Name = 'NewName'; Id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'; IsPrivileged = $false }
+            )
+            $aliases = @(
+                @{ Name = 'OldName'; CanonicalName = 'NewName' }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases $aliases -PrivilegedCount 0
+
+            $result | Should -Match '### Renamed roles'
+            # Line format: "- OldName: PreviousName → NewName"
+            $result | Should -Match 'OldName.*PreviousName.*NewName'
+        }
+    }
+
+    Context 'Role reclassified from standard to privileged' {
+        It 'reports the change under "Privilege classification changes"' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$false)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $true }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 1
+
+            $result | Should -Match '### Privilege classification changes \(1\)'
+            $result | Should -Match 'standard → privileged'
+        }
+    }
+
+    Context 'Role reclassified from privileged to standard' {
+        It 'reports the change under "Privilege classification changes"' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$true)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $false }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 0
+
+            $result | Should -Match '### Privilege classification changes \(1\)'
+            $result | Should -Match 'privileged → standard'
+        }
+    }
+
+    Context 'No changes between baseline and new data' {
+        It 'returns the no-changes placeholder message' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$false)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $false }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 0
+
+            $result | Should -Match '_No role additions'
+            $result | Should -Not -Match 'Added roles'
+            $result | Should -Not -Match 'Deleted roles'
+            $result | Should -Not -Match 'Renamed roles'
+            $result | Should -Not -Match '### Privilege classification'
+        }
+    }
+
+    Context 'Summary footer' {
+        It 'always includes total role count and privileged/standard breakdown' {
+            $baseline = @"
+    'RoleA' = [MtRoleDefinition]::new('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', `$false)
+"@
+            $roles = @(
+                @{ Name = 'RoleA'; Id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'; IsPrivileged = $false }
+                @{ Name = 'RoleB'; Id = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'; IsPrivileged = $true }
+            )
+
+            $result = Get-RoleDiffSummaryMarkdown -BaselineContent $baseline -Roles $roles -RoleAliases @() -PrivilegedCount 1
+
+            $result | Should -Match '\*\*Total roles:\*\* 2 \(1 privileged, 1 standard\)'
+        }
+    }
+}
