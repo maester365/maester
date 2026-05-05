@@ -136,8 +136,10 @@ All other manifest fields (version, GUID, `RequiredModules`,
 ### Phase G — Copy test suites
 
 Copies the `tests/` directory to `maester-tests/` in the output. Tests are
-copied as-is and not consolidated. Future per-suite consolidation is tracked
-in [issue #1559](https://github.com/maester365/maester/issues/1559).
+copied as-is and not consolidated. This intentionally preserves each authored
+Pester file as a separate discovery container because per-suite consolidation
+can change `BeforeDiscovery`, `BeforeAll`, and dynamic test-generation
+semantics.
 
 ### Phase H — Build profiling (optional)
 
