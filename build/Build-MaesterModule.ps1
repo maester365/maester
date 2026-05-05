@@ -656,7 +656,7 @@ Write-Host "   FunctionsToExport: $($ExportFunctionList.Count) functions"
 Write-Host '   ScriptsToProcess:  OrcaClasses.ps1'
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Phase G — Copy tests as-is (issue #1559 tracks future per-suite consolidation)
+# Phase G — Copy tests as-is and preserve Pester file boundaries
 # ──────────────────────────────────────────────────────────────────────────────
 
 Write-Host '── Phase G: Copying test suites' -ForegroundColor Cyan
