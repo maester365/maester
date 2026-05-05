@@ -299,7 +299,7 @@
             ) {
                Write-Verbose 'Connecting to SharePoint Online'
                try {
-                  $tenantDomain = Read-Host -Prompt "Conencting to SharePoint Online requires the onmicrosoft.com domain name of your tenant. Please enter the tenant domain (e.g. contoso.onmicrosoft.com)"
+                  $tenantDomain = Read-Host -Prompt "Connecting to SharePoint Online requires the onmicrosoft.com domain name of your tenant. Please enter the tenant domain (e.g. contoso.onmicrosoft.com)"
                   if ($tenantDomain -notmatch "^[\w-]+\.onmicrosoft\.com$") {
                      Write-Host "The tenant domain must be in the format contoso.onmicrosoft.com" -ForegroundColor Red
                      return
