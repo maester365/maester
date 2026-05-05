@@ -26,7 +26,7 @@
         $ManagementGroups = Invoke-MtAzureRequest `
             -RelativeUri "/providers/Microsoft.Management/managementGroups" `
             -ApiVersion "2020-05-01" |
-            Select-Object -ExpandProperty value
+            Select-Object -ExpandProperty value -erroraction stop
 
     }
     catch {
