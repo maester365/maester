@@ -304,6 +304,7 @@
                      Write-Host "The tenant domain must be in the format contoso.onmicrosoft.com" -ForegroundColor Red
                      return
                   }
+                  $tenantDomain = $tenantDomain.ToLowerInvariant()
                   $spoUri = "https://$(($tenantDomain).Replace(".onmicrosoft.com",$null))-admin.sharepoint.com"
                   Connect-SpoService -Url $spoUri -UseSystemBrowser $true
                } catch [Management.Automation.CommandNotFoundException] {
