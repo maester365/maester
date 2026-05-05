@@ -302,7 +302,8 @@
                   $tenantDomain = Read-Host -Prompt "Connecting to SharePoint Online requires the onmicrosoft.com domain name of your tenant. Please enter the tenant domain (e.g. contoso.onmicrosoft.com)"
                   if ($tenantDomain -notmatch "^[\w-]+\.onmicrosoft\.com$") {
                      Write-Host "The tenant domain must be in the format contoso.onmicrosoft.com" -ForegroundColor Red
-                     return
+                     Write-Host "Skipping SharePoint Online connection and continuing with any remaining services." -ForegroundColor Yellow
+                     break
                   }
                   $tenantDomain = $tenantDomain.ToLowerInvariant()
                   $spoUri = "https://$(($tenantDomain).Replace(".onmicrosoft.com",$null))-admin.sharepoint.com"
