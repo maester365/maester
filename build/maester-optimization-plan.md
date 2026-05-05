@@ -1,9 +1,9 @@
 # Maester Module Optimization Plan
 
 This document describes a set of targeted build-time and structural optimizations for the
-`maester365/maester` repository. The goal is to reduce `Import-Module` time, reduce Pester
-test discovery time, and reduce the installed file count — without changing any user-facing
-behavior or removing bundled tests.
+`maester365/maester` repository. The goal is to reduce `Import-Module` time and reduce the
+installed function-file count while preserving Pester test behavior, user-facing behavior,
+and bundled tests.
 
 All changes are **build-time transformations only**. The source tree stays as individual files
 for developer ergonomics. The published artifact changes.
@@ -14,7 +14,7 @@ for developer ergonomics. The published artifact changes.
 
 - Source files are never modified directly by the build optimizations.
 - The published module must be functionally identical to the current one.
-- `Custom/` test folder is never touched by any build step.
+- Authored Pester test file boundaries must be preserved in build output.
 - Load order (internal before public) must be explicitly enforced, not assumed.
 - Base classes must always be defined before derived classes in consolidated output.
 
@@ -266,44 +266,34 @@ module are not accessible to Pester test scripts running in a separate scope.
 
 ---
 
-## 5. Consolidate Pester Test Suites Into Per-Suite Files
+## 5. Preserve Pester Test File Boundaries
 
-**Status:** Confirmed.
+**Status:** Confirmed after PR #1657 review.
 
-**Problem:** Each test suite (CISA, CIS, EIDSCA, Maester, ORCA) ships as dozens or hundreds
-of individual `*.Tests.ps1` files. Pester performs a filesystem discovery pass at the start
-of every `Invoke-Maester` run. Hundreds of individual files means hundreds of filesystem
-reads before a single test executes.
+**Problem:** Each Pester `*.Tests.ps1` file is a discovery container with its own top-level
+variables, `BeforeDiscovery`, `BeforeAll`, and dynamic test-generation behavior. Raw
+concatenation of multiple authored test files into a single per-suite file can merge those
+containers, change hook ordering and scope, and cause tests to be skipped or never
+discovered.
 
 **Action:**
 
-- During the build, consolidate each suite folder into a single `*.Tests.ps1` file.
-- Use an explicit allowlist of known suite folders. Never use a catch-all glob.
-- The `Custom/` folder must never be touched.
-
-**Suite consolidation map:**
-
-| Source folder | Output file |
-|---|---|
-| `tests/CISA/` | `maester-tests/CISA.Tests.ps1` |
-| `tests/CIS/` | `maester-tests/CIS.Tests.ps1` |
-| `tests/EIDSCA/` | `maester-tests/EIDSCA.Tests.ps1` |
-| `tests/Maester/` | `maester-tests/Maester.Tests.ps1` |
-| `tests/ORCA/` | `maester-tests/ORCA.Tests.ps1` |
-| `tests/Custom/` | Copied as-is. No consolidation. |
+- During the build, copy the `tests/` tree to `module/maester-tests/` as-is.
+- Do not combine multiple authored Pester files into a single suite file.
+- Preserve `Custom/` tests and every suite folder without rewriting Pester structure.
 
 **Implementation notes:**
 
-- Sort input files by full path before concatenation for deterministic output.
-- Each individual `*.Tests.ps1` file is a self-contained set of `Describe`/`It` blocks.
-  Pester does not care how many `Describe` blocks are in a single file.
-- Tag filtering (`-Tag`, `-ExcludeTag`) operates at the `Describe`/`It` level and is
-  unaffected by file consolidation.
+- If any future test packaging optimization is proposed, it must preserve Pester container
+  semantics and include a source-vs-output `Invoke-Pester -SkipRun -PassThru` discovery
+  parity gate for test names, tags, and counts.
+- AST counts alone are not sufficient because Pester discovery can differ even when the
+  number of `Describe` and `It` blocks appears unchanged.
 
 **Impact on `Update-MaesterTests`:**
-The `Update-MaesterTests` function currently overwrites individual test files. After this
-change it should download and overwrite the consolidated suite files instead. This must be
-updated in the `Update-MaesterTests` implementation to match the new output structure.
+No output-structure change is required for `Update-MaesterTests`. It should continue to
+install and update the authored test tree rather than expecting generated per-suite test
+files.
 
 ---
 
@@ -352,11 +342,10 @@ It replaces any ad-hoc or inline build logic that currently exists in the workfl
 5. Copy and update `Maester.psd1` to `./module/Maester.psd1`, writing the auto-generated
    `FunctionsToExport` list and updating `ScriptsToProcess` to reference `OrcaClasses.ps1`
    (Items 3 and 4).
-6. Consolidate each test suite into a single `*.Tests.ps1` file under
-   `./module/maester-tests/` (Item 5).
-7. Copy `tests/Custom/` to `./module/maester-tests/Custom/` without modification.
-8. Copy static assets (`assets/`, `Maester.Format.ps1xml`, `README.md`) to `./module/`.
-9. If the `-Profile` switch is provided, measure and report `Import-Module` time for the
+6. Copy the `tests/` tree to `./module/maester-tests/` without modifying Pester file
+   boundaries (Item 5).
+7. Copy static assets (`assets/`, `Maester.Format.ps1xml`, `README.md`) to `./module/`.
+8. If the `-Profile` switch is provided, measure and report `Import-Module` time for the
    output module (Item 6).
 
 **Parameters:**
@@ -380,13 +369,13 @@ param (
 ├── OrcaClasses.ps1            # consolidated ORCA class definitions
 ├── assets/                    # copied unchanged
 ├── README.md                  # copied unchanged
-└── maester-tests/
-    ├── CISA.Tests.ps1         # consolidated from tests/CISA/
-    ├── CIS.Tests.ps1          # consolidated from tests/CIS/
-    ├── EIDSCA.Tests.ps1       # consolidated from tests/EIDSCA/
-    ├── Maester.Tests.ps1      # consolidated from tests/Maester/
-    ├── ORCA.Tests.ps1         # consolidated from tests/ORCA/
-    └── Custom/                # copied from tests/Custom/ unchanged
+└── maester-tests/             # copied from tests/ with file boundaries preserved
+    ├── CISA/
+    ├── CIS/
+    ├── EIDSCA/
+    ├── Maester/
+    ├── ORCA/
+    └── Custom/
 ```
 
 **On committing build output:**
@@ -503,8 +492,8 @@ This is where the substantive updates belong. Add or update the following:
 - Pester test suite files go in `./tests/<SuiteName>/`.
 - The `FunctionsToExport` list in `Maester.psd1` is auto-generated at build time. Do not
   edit it manually.
-- The consolidated test suite files in `./module/maester-tests/` are generated at build
-  time. Do not edit them manually.
+- Pester test files in `./module/maester-tests/` are copied from `./tests/` at build time.
+  Do not edit build output manually.
 
 ### `./README.md`
 
@@ -551,7 +540,7 @@ Tracking issue for the build-time and structural optimizations described in [the
 - [ ] #N  Item 2 — Consolidate function files into a single PSM1
 - [ ] #N  Item 3 — Auto-generate FunctionsToExport
 - [ ] #N  Item 4 — Consolidate ORCA class files
-- [ ] #N  Item 5 — Consolidate Pester test suites
+- [ ] #N  Item 5 — Preserve Pester test file boundaries
 - [ ] #N  Item 7 — Create Build-MaesterModule.ps1
 - [ ] #N  Item 8 — Update GitHub Actions workflows
 - [ ] #N  Item 9 — Update documentation and contributing guidelines
@@ -581,6 +570,7 @@ The following were considered and rejected during planning:
 | Lazy-loading Pester | The team intentionally pins Pester at `0.0.0` in `RequiredModules` to avoid conflicts with the Windows-bundled version. Runtime validation is already in place. |
 | Adding Graph response caching | Already implemented via `$Script:`-scoped caches in `Invoke-MtGraphRequest` and `Get-MtExo`. |
 | Separating test files from the module package | Rejected in favor of keeping the current single-install user experience. |
+| Consolidating Pester test suites into single per-suite files | Pester test files are discovery containers. Raw consolidation can merge top-level `BeforeDiscovery`, `BeforeAll`, variables, and dynamic test generation in ways that drop or alter discovered tests. |
 
 ---
 
@@ -595,9 +585,9 @@ The items above have dependencies and should be implemented in this sequence:
 3. Auto-generate FunctionsToExport from public source files    (2 and 3 together)
 4. Consolidate ORCA class files → update ScriptsToProcess
         ↓
-5. Consolidate Pester test suites → update Update-MaesterTests
+5. Preserve Pester test file boundaries
         ↓
-7. Write Build-MaesterModule.ps1 in ./build/        (wraps 2–5 into one script)
+7. Write Build-MaesterModule.ps1 in ./build/        (wraps 2-5 into one script)
         ↓
 8. Update GitHub Actions workflows                  (point at ./build/ and ./module/)
         ↓
@@ -611,8 +601,7 @@ The items above have dependencies and should be implemented in this sequence:
 | PR | Contents |
 | --- | --- |
 | PR 1 | Item 1 only — comment-based help move, project-wide. Isolated and reviewable on its own. |
-| PR 2 | Items 2, 3, 4, 6, and 7 — build script that produces the consolidated `./module/` output. |
-| PR 3 | Item 5 — test suite consolidation and `Update-MaesterTests` runtime update. |
-| PR 4 | Item 8 — workflow updates to use `./build/` and publish from `./module/`. |
-| PR 5 | Item 9 — documentation and contributing guidelines. |
-| PR 6 | Item 6 (tentative) — profiling switch, if pursued. |
+| PR 2 | Items 2, 3, 4, 5, and 7 — build script that produces the consolidated `./module/` output while copying Pester tests as-is. |
+| PR 3 | Item 8 — workflow updates to use `./build/` and publish from `./module/`. |
+| PR 4 | Item 9 — documentation and contributing guidelines. |
+| PR 5 | Item 6 (tentative) — profiling switch, if pursued separately. |
