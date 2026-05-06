@@ -7,2027 +7,2432 @@
     {
       "Id": "CIS.M365.1.1.1",
       "Severity": "High",
-      "Title": "(L1) Ensure Administrative accounts are cloud-only"
+      "Title": "(L1) Ensure Administrative accounts are cloud-only",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.1.3",
       "Severity": "High",
-      "Title": "(L1) Ensure that between two and four global admins are designated"
+      "Title": "(L1) Ensure that between two and four global admins are designated",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.2.1",
       "Severity": "Medium",
-      "Title": "(L2) Ensure that only organizationally managed/approved public groups exist"
+      "Title": "(L2) Ensure that only organizationally managed/approved public groups exist",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.2.2",
       "Severity": "High",
-      "Title": "(L1) Ensure sign-in to shared mailboxes is blocked"
+      "Title": "(L1) Ensure sign-in to shared mailboxes is blocked",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.3.1",
       "Severity": "High",
-      "Title": "(L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'"
+      "Title": "(L1) Ensure the 'Password expiration policy' is set to 'Set passwords to never expire (recommended)'",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.3.3",
       "Severity": "Medium",
-      "Title": "(L2) Ensure 'External sharing' of calendars is not available"
+      "Title": "(L2) Ensure 'External sharing' of calendars is not available",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.1.3.6",
       "Severity": "High",
-      "Title": "(L2) Ensure the customer lockbox feature is enabled"
+      "Title": "(L2) Ensure the customer lockbox feature is enabled",
+      "Licenses": ["CustomerLockbox"]
     },
     {
       "Id": "CIS.M365.2.1.1",
       "Severity": "Medium",
-      "Title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)"
+      "Title": "(L2) Ensure Safe Links for Office Applications is Enabled (Only Checks Default Policy)",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CIS.M365.2.1.2",
       "Severity": "Medium",
-      "Title": "(L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)"
+      "Title": "(L1) Ensure the Common Attachment Types Filter is enabled (Only Checks Default Policy)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.3",
       "Severity": "Medium",
-      "Title": "(L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)"
+      "Title": "(L1) Ensure notifications for internal users sending malware is Enabled (Only Checks Default Policy)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.4",
       "Severity": "High",
-      "Title": "(L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)"
+      "Title": "(L2) Ensure Safe Attachments policy is enabled (Only Checks Default Policy)",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CIS.M365.2.1.5",
       "Severity": "High",
-      "Title": "(L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled"
+      "Title": "(L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CIS.M365.2.1.6",
       "Severity": "Medium",
-      "Title": "(L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)"
+      "Title": "(L1) Ensure Exchange Online Spam Policies are set to notify administrators (Only Checks Default Policy)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.7",
       "Severity": "Medium",
-      "Title": "(L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)"
+      "Title": "(L1) Ensure that an anti-phishing policy has been created (Only Checks Default Policy)",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CIS.M365.2.1.9",
       "Severity": "High",
-      "Title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains"
+      "Title": "(L1) Ensure that DKIM is enabled for all Exchange Online Domains",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.11",
       "Severity": "High",
-      "Title": "(L2) Ensure comprehensive attachment filtering is applied"
+      "Title": "(L2) Ensure comprehensive attachment filtering is applied",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.12",
       "Severity": "Medium",
-      "Title": "(L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)"
+      "Title": "(L1) Ensure the connection filter IP allow list is not used (Only Checks Default Policy)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.1.13",
       "Severity": "Medium",
-      "Title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)"
+      "Title": "(L1) Ensure the connection filter safe list is off (Only Checks Default Policy)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.2.4.4",
       "Severity": "Medium",
-      "Title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)"
+      "Title": "(L1) Ensure Zero-hour auto purge for Microsoft Teams is on (Only Checks ZAP is enabled)",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.3.1.1",
       "Severity": "High",
-      "Title": "(L1) Ensure Microsoft 365 audit log search is Enabled"
+      "Title": "(L1) Ensure Microsoft 365 audit log search is Enabled",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.8.1.1",
       "Severity": "Medium",
-      "Title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services"
+      "Title": "(L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.8.2.2",
       "Severity": "Medium",
-      "Title": "(L1) Ensure communication with unmanaged Teams users is disabled"
+      "Title": "(L1) Ensure communication with unmanaged Teams users is disabled",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.8.2.4",
       "Severity": "Medium",
-      "Title": "(L1) Ensure communication with Skype users is disabled"
+      "Title": "(L1) Ensure communication with Skype users is disabled",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "CIS.M365.8.4.1",
       "Severity": "High",
-      "Title": "(L1) Ensure all or a majority of third-party and custom apps are blocked"
+      "Title": "(L1) Ensure all or a majority of third-party and custom apps are blocked",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.8.5.3",
       "Severity": "Medium",
-      "Title": "(L1) Ensure only people in my org can bypass the lobby"
+      "Title": "(L1) Ensure only people in my org can bypass the lobby",
+      "Licenses": []
     },
     {
       "Id": "CIS.M365.8.6.1",
       "Severity": "Medium",
-      "Title": "(L1) Ensure users can report security concerns in Teams to internal destination"
+      "Title": "(L1) Ensure users can report security concerns in Teams to internal destination",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.1.1",
       "Severity": "High",
-      "Title": "Legacy authentication SHALL be blocked."
+      "Title": "Legacy authentication SHALL be blocked.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.2.1",
       "Severity": "High",
-      "Title": "Users detected as high risk SHALL be blocked."
+      "Title": "Users detected as high risk SHALL be blocked.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.2.2",
       "Severity": "High",
-      "Title": "A notification SHOULD be sent to the administrator when high-risk users are detected."
+      "Title": "A notification SHOULD be sent to the administrator when high-risk users are detected.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.2.3",
       "Severity": "High",
-      "Title": "Sign-ins detected as high risk SHALL be blocked."
+      "Title": "Sign-ins detected as high risk SHALL be blocked.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.3.1",
       "Severity": "High",
-      "Title": "Phishing-resistant MFA SHALL be enforced for all users."
+      "Title": "Phishing-resistant MFA SHALL be enforced for all users.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.2",
       "Severity": "High",
-      "Title": "If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users."
+      "Title": "If phishing-resistant MFA has not been enforced, an alternative MFA method SHALL be enforced for all users.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.3",
       "Severity": "Medium",
-      "Title": "If Microsoft Authenticator is enabled, it SHALL be configured to show login context information."
+      "Title": "If Microsoft Authenticator is enabled, it SHALL be configured to show login context information.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.4",
       "Severity": "High",
-      "Title": "The Authentication Methods Manage Migration feature SHALL be set to Migration Complete."
+      "Title": "The Authentication Methods Manage Migration feature SHALL be set to Migration Complete.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.5",
       "Severity": "High",
-      "Title": "The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled."
+      "Title": "The authentication methods SMS, Voice Call, and Email One-Time Passcode (OTP) SHALL be disabled.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.6",
       "Severity": "High",
-      "Title": "Phishing-resistant MFA SHALL be required for highly privileged roles."
+      "Title": "Phishing-resistant MFA SHALL be required for highly privileged roles.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.7",
       "Severity": "High",
-      "Title": "Managed devices SHOULD be required for authentication."
+      "Title": "Managed devices SHOULD be required for authentication.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.3.8",
       "Severity": "High",
-      "Title": "Managed Devices SHOULD be required to register MFA."
+      "Title": "Managed Devices SHOULD be required to register MFA.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.4.1",
       "Severity": "High",
-      "Title": "Security logs SHALL be sent to the agency's security operations center for monitoring."
+      "Title": "Security logs SHALL be sent to the agency's security operations center for monitoring.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "CISA.MS.AAD.5.1",
       "Severity": "High",
-      "Title": "Only administrators SHALL be allowed to register applications."
+      "Title": "Only administrators SHALL be allowed to register applications.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.5.2",
       "Severity": "High",
-      "Title": "Only administrators SHALL be allowed to consent to applications."
+      "Title": "Only administrators SHALL be allowed to consent to applications.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.5.3",
       "Severity": "High",
-      "Title": "An admin consent workflow SHALL be configured for applications."
+      "Title": "An admin consent workflow SHALL be configured for applications.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.5.4",
       "Severity": "High",
-      "Title": "Group owners SHALL NOT be allowed to consent to applications."
+      "Title": "Group owners SHALL NOT be allowed to consent to applications.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.6.1",
       "Severity": "High",
-      "Title": "User passwords SHALL NOT expire."
+      "Title": "User passwords SHALL NOT expire.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.7.1",
       "Severity": "High",
-      "Title": "A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role."
+      "Title": "A minimum of two users and a maximum of eight users SHALL be provisioned with the Global Administrator role.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.7.2",
       "Severity": "High",
-      "Title": "Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator."
+      "Title": "Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.7.3",
       "Severity": "High",
-      "Title": "Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers."
+      "Title": "Privileged users SHALL be provisioned cloud-only accounts separate from an on-premises directory or other federated identity providers.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.7.4",
       "Severity": "High",
-      "Title": "Permanent active role assignments SHALL NOT be allowed for highly privileged roles."
+      "Title": "Permanent active role assignments SHALL NOT be allowed for highly privileged roles.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.7.5",
       "Severity": "High",
-      "Title": "Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system."
+      "Title": "Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.7.6",
       "Severity": "High",
-      "Title": "Activation of the Global Administrator role SHALL require approval."
+      "Title": "Activation of the Global Administrator role SHALL require approval.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.7.7",
       "Severity": "High",
-      "Title": "Eligible and Active highly privileged role assignments SHALL trigger an alert."
+      "Title": "Eligible and Active highly privileged role assignments SHALL trigger an alert.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.7.8",
       "Severity": "High",
-      "Title": "User activation of the Global Administrator role SHALL trigger an alert."
+      "Title": "User activation of the Global Administrator role SHALL trigger an alert.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.7.9",
       "Severity": "High",
-      "Title": "User activation of other highly privileged roles SHOULD trigger an alert."
+      "Title": "User activation of other highly privileged roles SHOULD trigger an alert.",
+      "Licenses": ["EntraIDGovernance", "EntraIDP2"]
     },
     {
       "Id": "CISA.MS.AAD.8.1",
       "Severity": "Medium",
-      "Title": "Guest users SHOULD have limited or restricted access to Azure AD directory objects."
+      "Title": "Guest users SHOULD have limited or restricted access to Azure AD directory objects.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.8.2",
       "Severity": "High",
-      "Title": "Only users with the Guest Inviter role SHOULD be able to invite guest users."
+      "Title": "Only users with the Guest Inviter role SHOULD be able to invite guest users.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.AAD.8.3",
       "Severity": "Medium",
-      "Title": "Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes."
+      "Title": "Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.1.1",
       "Severity": "High",
-      "Title": "Automatic forwarding to external domains SHALL be disabled."
+      "Title": "Automatic forwarding to external domains SHALL be disabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.2.1",
       "Severity": "Medium",
-      "Title": "A list of approved IP addresses for sending mail SHALL be maintained."
+      "Title": "A list of approved IP addresses for sending mail SHALL be maintained.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.2.2",
       "Severity": "Medium",
-      "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders."
+      "Title": "An SPF policy SHALL be published for each domain, designating only these addresses as approved senders.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.3.1",
       "Severity": "Medium",
-      "Title": "DKIM SHOULD be enabled for all domains."
+      "Title": "DKIM SHOULD be enabled for all domains.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.4.1",
       "Severity": "Medium",
-      "Title": "A DMARC policy SHALL be published for every second-level domain."
+      "Title": "A DMARC policy SHALL be published for every second-level domain.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.4.2",
       "Severity": "High",
-      "Title": "The DMARC message rejection option SHALL be p=reject."
+      "Title": "The DMARC message rejection option SHALL be p=reject.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.4.3",
       "Severity": "Medium",
-      "Title": "The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov."
+      "Title": "The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.5.1",
       "Severity": "High",
-      "Title": "SMTP AUTH SHALL be disabled."
+      "Title": "SMTP AUTH SHALL be disabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.6.1",
       "Severity": "Medium",
-      "Title": "Contact folders SHALL NOT be shared with all domains."
+      "Title": "Contact folders SHALL NOT be shared with all domains.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.6.2",
       "Severity": "Medium",
-      "Title": "Calendar details SHALL NOT be shared with all domains."
+      "Title": "Calendar details SHALL NOT be shared with all domains.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.7.1",
       "Severity": "Medium",
-      "Title": "External sender warnings SHALL be implemented."
+      "Title": "External sender warnings SHALL be implemented.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.8.1",
       "Severity": "High",
-      "Title": "A DLP solution SHALL be used."
+      "Title": "A DLP solution SHALL be used.",
+      "Licenses": ["ExoDlp"]
     },
     {
       "Id": "CISA.MS.EXO.8.2",
       "Severity": "Medium",
-      "Title": "The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency."
+      "Title": "The DLP solution SHALL protect personally identifiable information (PII) and sensitive information, as defined by the agency.",
+      "Licenses": ["ExoDlp"]
     },
     {
       "Id": "CISA.MS.EXO.8.3",
       "Severity": "Medium",
-      "Title": "The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft."
+      "Title": "The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.8.4",
       "Severity": "High",
-      "Title": "At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email."
+      "Title": "At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.",
+      "Licenses": ["ExoDlp"]
     },
     {
       "Id": "CISA.MS.EXO.9.1",
       "Severity": "Medium",
-      "Title": "Emails SHALL be filtered by attachment file types."
+      "Title": "Emails SHALL be filtered by attachment file types.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.9.2",
       "Severity": "Medium",
-      "Title": "The attachment filter SHOULD attempt to determine the true file type and assess the file extension."
+      "Title": "The attachment filter SHOULD attempt to determine the true file type and assess the file extension.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.9.3",
       "Severity": "High",
-      "Title": "Disallowed file types SHALL be determined and enforced."
+      "Title": "Disallowed file types SHALL be determined and enforced.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.9.4",
       "Severity": "Medium",
-      "Title": "Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter."
+      "Title": "Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.9.5",
       "Severity": "High",
-      "Title": "At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe)."
+      "Title": "At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe).",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.10.1",
       "Severity": "High",
-      "Title": "Emails SHALL be scanned for malware."
+      "Title": "Emails SHALL be scanned for malware.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.10.2",
       "Severity": "High",
-      "Title": "Emails identified as containing malware SHALL be quarantined or dropped."
+      "Title": "Emails identified as containing malware SHALL be quarantined or dropped.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.10.3",
       "Severity": "High",
-      "Title": "Email scanning SHALL be capable of reviewing emails after delivery."
+      "Title": "Email scanning SHALL be capable of reviewing emails after delivery.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.11.1",
       "Severity": "High",
-      "Title": "Impersonation protection checks SHOULD be used."
+      "Title": "Impersonation protection checks SHOULD be used.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.11.2",
       "Severity": "Medium",
-      "Title": "User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed."
+      "Title": "User warnings, comparable to the user safety tips included with EOP, SHOULD be displayed.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.11.3",
       "Severity": "Medium",
-      "Title": "The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence."
+      "Title": "The phishing protection solution SHOULD include an AI-based phishing detection tool comparable to EOP Mailbox Intelligence.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.12.1",
       "Severity": "Medium",
-      "Title": "IP allow lists SHOULD NOT be created."
+      "Title": "IP allow lists SHOULD NOT be created.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.12.2",
       "Severity": "Medium",
-      "Title": "Safe lists SHOULD NOT be enabled."
+      "Title": "Safe lists SHOULD NOT be enabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.13.1",
       "Severity": "High",
-      "Title": "Mailbox auditing SHALL be enabled."
+      "Title": "Mailbox auditing SHALL be enabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.14.1",
       "Severity": "High",
-      "Title": "A spam filter SHALL be enabled."
+      "Title": "A spam filter SHALL be enabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.14.2",
       "Severity": "Medium",
-      "Title": "Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder."
+      "Title": "Spam and high confidence spam SHALL be moved to either the junk email folder or the quarantine folder.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.14.3",
       "Severity": "Medium",
-      "Title": "Allowed domains SHALL NOT be added to inbound anti-spam protection policies."
+      "Title": "Allowed domains SHALL NOT be added to inbound anti-spam protection policies.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.14.4",
       "Severity": "Medium",
-      "Title": "If a third-party party filtering solution is used, the solution SHOULD offer services comparable to the native spam filtering offered by Microsoft."
+      "Title": "If a third-party party filtering solution is used, the solution SHOULD offer services comparable to the native spam filtering offered by Microsoft.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.15.1",
       "Severity": "Medium",
-      "Title": "URL comparison with a block-list SHOULD be enabled."
+      "Title": "URL comparison with a block-list SHOULD be enabled.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.15.2",
       "Severity": "High",
-      "Title": "Direct download links SHOULD be scanned for malware."
+      "Title": "Direct download links SHOULD be scanned for malware.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.15.3",
       "Severity": "Medium",
-      "Title": "User click tracking SHOULD be enabled."
+      "Title": "User click tracking SHOULD be enabled.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.16.1",
       "Severity": "High",
-      "Title": "Alerts SHALL be enabled."
+      "Title": "Alerts SHALL be enabled.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.16.2",
       "Severity": "Medium",
-      "Title": "Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system."
+      "Title": "Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.",
+      "Licenses": ["MdoP1"]
     },
     {
       "Id": "CISA.MS.EXO.17.1",
       "Severity": "High",
-      "Title": "Microsoft Purview Audit (Standard) logging SHALL be enabled."
+      "Title": "Microsoft Purview Audit (Standard) logging SHALL be enabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.17.2",
       "Severity": "Medium",
-      "Title": "Microsoft Purview Audit (Premium) logging SHALL be enabled."
+      "Title": "Microsoft Purview Audit (Premium) logging SHALL be enabled.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.EXO.17.3",
       "Severity": "Medium",
-      "Title": "Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C)."
+      "Title": "Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C).",
+      "Licenses": ["AdvAudit"]
     },
     {
       "Id": "CISA.MS.SHAREPOINT.1.1",
       "Severity": "Medium",
-      "Title": "External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization."
+      "Title": "External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.",
+      "Licenses": []
     },
     {
       "Id": "CISA.MS.SHAREPOINT.1.3",
       "Severity": "High",
-      "Title": "External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs."
+      "Title": "External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF01",
       "Severity": "High",
-      "Title": "Authentication Method - FIDO2 security key - State."
+      "Title": "Authentication Method - FIDO2 security key - State.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF02",
       "Severity": "Medium",
-      "Title": "Authentication Method - FIDO2 security key - Allow self-service set up."
+      "Title": "Authentication Method - FIDO2 security key - Allow self-service set up.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF03",
       "Severity": "High",
-      "Title": "Authentication Method - FIDO2 security key - Enforce attestation."
+      "Title": "Authentication Method - FIDO2 security key - Enforce attestation.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF04",
       "Severity": "High",
-      "Title": "Authentication Method - FIDO2 security key - Enforce key restrictions."
+      "Title": "Authentication Method - FIDO2 security key - Enforce key restrictions.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF05",
       "Severity": "High",
-      "Title": "Authentication Method - FIDO2 security key - Restricted."
+      "Title": "Authentication Method - FIDO2 security key - Restricted.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AF06",
       "Severity": "Medium",
-      "Title": "Authentication Method - FIDO2 security key - Restrict specific keys."
+      "Title": "Authentication Method - FIDO2 security key - Restrict specific keys.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AG01",
       "Severity": "High",
-      "Title": "Authentication Method - General Settings - Manage migration."
+      "Title": "Authentication Method - General Settings - Manage migration.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AG02",
       "Severity": "Medium",
-      "Title": "Authentication Method - General Settings - Report suspicious activity - State."
+      "Title": "Authentication Method - General Settings - Report suspicious activity - State.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AG03",
       "Severity": "Medium",
-      "Title": "Authentication Method - General Settings - Report suspicious activity - Included users/groups."
+      "Title": "Authentication Method - General Settings - Report suspicious activity - Included users/groups.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM01",
       "Severity": "High",
-      "Title": "Authentication Method - Microsoft Authenticator - State."
+      "Title": "Authentication Method - Microsoft Authenticator - State.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM02",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP."
+      "Title": "Authentication Method - Microsoft Authenticator - Allow use of Microsoft Authenticator OTP.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM03",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Require number matching for push notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Require number matching for push notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM04",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups of number matching for push notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM06",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Show application name in push and passwordless notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM07",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show application name in push and passwordless notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM09",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Show geographic location in push and passwordless notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AM10",
       "Severity": "Medium",
-      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications."
+      "Title": "Authentication Method - Microsoft Authenticator - Included users/groups to show geographic location in push and passwordless notifications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP01",
       "Severity": "High",
-      "Title": "Default Authorization Settings - Enabled Self service password reset for administrators."
+      "Title": "Default Authorization Settings - Enabled Self service password reset for administrators.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP04",
       "Severity": "Medium",
-      "Title": "Default Authorization Settings - Guest invite restrictions."
+      "Title": "Default Authorization Settings - Guest invite restrictions.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP05",
       "Severity": "Medium",
-      "Title": "Default Authorization Settings - Sign-up for email based subscription."
+      "Title": "Default Authorization Settings - Sign-up for email based subscription.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP06",
       "Severity": "Medium",
-      "Title": "Default Authorization Settings - User can join the tenant by email validation."
+      "Title": "Default Authorization Settings - User can join the tenant by email validation.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP07",
       "Severity": "High",
-      "Title": "Default Authorization Settings - Guest user access."
+      "Title": "Default Authorization Settings - Guest user access.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP08",
       "Severity": "Medium",
-      "Title": "Default Authorization Settings - User consent policy assigned for applications."
+      "Title": "Default Authorization Settings - User consent policy assigned for applications.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP09",
       "Severity": "Medium",
-      "Title": "Default Authorization Settings - Allow user consent on risk-based apps."
+      "Title": "Default Authorization Settings - Allow user consent on risk-based apps.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP10",
       "Severity": "High",
-      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Apps."
+      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to create Apps.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AP14",
       "Severity": "High",
-      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users."
+      "Title": "Default Authorization Settings - Default User Role Permissions - Allowed to read other users.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AS04",
       "Severity": "High",
-      "Title": "Authentication Method - SMS - Use for sign-in."
+      "Title": "Authentication Method - SMS - Use for sign-in.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AT01",
       "Severity": "High",
-      "Title": "Authentication Method - Temporary Access Pass - State."
+      "Title": "Authentication Method - Temporary Access Pass - State.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AT02",
       "Severity": "High",
-      "Title": "Authentication Method - Temporary Access Pass - One-time."
+      "Title": "Authentication Method - Temporary Access Pass - One-time.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.AV01",
       "Severity": "High",
-      "Title": "Authentication Method - Voice call - State."
+      "Title": "Authentication Method - Voice call - State.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CP01",
       "Severity": "High",
-      "Title": "Default Settings - Consent Policy Settings - Group owner consent for apps accessing data."
+      "Title": "Default Settings - Consent Policy Settings - Group owner consent for apps accessing data.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CP03",
       "Severity": "High",
-      "Title": "Default Settings - Consent Policy Settings - Block user consent for risky apps."
+      "Title": "Default Settings - Consent Policy Settings - Block user consent for risky apps.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CP04",
       "Severity": "Medium",
-      "Title": "Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to."
+      "Title": "Default Settings - Consent Policy Settings - Users can request admin consent to apps they are unable to consent to.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CR01",
       "Severity": "High",
-      "Title": "Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature."
+      "Title": "Consent Framework - Admin Consent Request - Policy to enable or disable admin consent request feature.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CR02",
       "Severity": "Medium",
-      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests."
+      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications for requests.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CR03",
       "Severity": "Medium",
-      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire."
+      "Title": "Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.CR04",
       "Severity": "High",
-      "Title": "Consent Framework - Admin Consent Request - Consent request duration (days)."
+      "Title": "Consent Framework - Admin Consent Request - Consent request duration (days).",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.PR01",
       "Severity": "High",
-      "Title": "Default Settings - Password Rule Settings - Password Protection - Mode."
+      "Title": "Default Settings - Password Rule Settings - Password Protection - Mode.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.PR02",
       "Severity": "High",
-      "Title": "Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory."
+      "Title": "Default Settings - Password Rule Settings - Password Protection - Enable password protection on Windows Server Active Directory.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.PR03",
       "Severity": "Medium",
-      "Title": "Default Settings - Password Rule Settings - Enforce custom list."
+      "Title": "Default Settings - Password Rule Settings - Enforce custom list.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.PR05",
       "Severity": "Medium",
-      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds."
+      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.PR06",
       "Severity": "Medium",
-      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold."
+      "Title": "Default Settings - Password Rule Settings - Smart Lockout - Lockout threshold.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.ST08",
       "Severity": "Medium",
-      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner."
+      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to become Group Owner.",
+      "Licenses": []
     },
     {
       "Id": "EIDSCA.ST09",
       "Severity": "Medium",
-      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content."
+      "Title": "Default Settings - Classification and M365 Groups - M365 groups - Allow Guests to have access to groups content.",
+      "Licenses": []
     },
     {
       "Id": "MT.1001",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured with device compliance."
+      "Title": "At least one Conditional Access policy is configured with device compliance.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1002",
       "Severity": "High",
-      "Title": "App management restrictions on applications and service principals is configured and enabled."
+      "Title": "App management restrictions on applications and service principals is configured and enabled.",
+      "Licenses": []
     },
     {
       "Id": "MT.1003",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured with All Apps."
+      "Title": "At least one Conditional Access policy is configured with All Apps.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1004",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured with All Apps and All Users."
+      "Title": "At least one Conditional Access policy is configured with All Apps and All Users.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1005",
       "Severity": "High",
-      "Title": "All Conditional Access policies are configured to exclude at least one emergency/break glass account or group."
+      "Title": "All Conditional Access policies are configured to exclude at least one emergency/break glass account or group.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1006",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for admins."
+      "Title": "At least one Conditional Access policy is configured to require MFA for admins.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1007",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for all users."
+      "Title": "At least one Conditional Access policy is configured to require MFA for all users.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1008",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for Azure management."
+      "Title": "At least one Conditional Access policy is configured to require MFA for Azure management.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1009",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to block other legacy authentication."
+      "Title": "At least one Conditional Access policy is configured to block other legacy authentication.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1010",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync."
+      "Title": "At least one Conditional Access policy is configured to block legacy authentication for Exchange ActiveSync.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1011",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to secure security info registration only from a trusted location."
+      "Title": "At least one Conditional Access policy is configured to secure security info registration only from a trusted location.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1012",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for risky sign-ins."
+      "Title": "At least one Conditional Access policy is configured to require MFA for risky sign-ins.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1013",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require new password when user risk is high."
+      "Title": "At least one Conditional Access policy is configured to require new password when user risk is high.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1014",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins."
+      "Title": "At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1015",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms."
+      "Title": "At least one Conditional Access policy is configured to block access for unknown or unsupported device platforms.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1016",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for guest access."
+      "Title": "At least one Conditional Access policy is configured to require MFA for guest access.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1017",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices."
+      "Title": "At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1018",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices."
+      "Title": "At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1019",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured to enable application enforced restrictions."
+      "Title": "At least one Conditional Access policy is configured to enable application enforced restrictions.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1020",
       "Severity": "High",
-      "Title": "All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them."
+      "Title": "All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1021",
       "Severity": "High",
-      "Title": "Security Defaults are enabled."
+      "Title": "Security Defaults are enabled.",
+      "Licenses": []
     },
     {
       "Id": "MT.1022",
       "Severity": "Medium",
-      "Title": "All users utilizing a P1 license should be licensed."
+      "Title": "All users utilizing a P1 license should be licensed.",
+      "Licenses": ["EntraIDP1", "EntraIDP2"]
     },
     {
       "Id": "MT.1023",
       "Severity": "Medium",
-      "Title": "All users utilizing a P2 license should be licensed."
+      "Title": "All users utilizing a P2 license should be licensed.",
+      "Licenses": ["EntraIDP1", "EntraIDP2"]
     },
     {
       "Id": "MT.1025",
       "Severity": "High",
-      "Title": "No external user with permanent role assignment on Control Plane."
+      "Title": "No external user with permanent role assignment on Control Plane.",
+      "Licenses": []
     },
     {
       "Id": "MT.1026",
       "Severity": "High",
-      "Title": "No hybrid user with permanent role assignment on Control Plane."
+      "Title": "No hybrid user with permanent role assignment on Control Plane.",
+      "Licenses": []
     },
     {
       "Id": "MT.1027",
       "Severity": "High",
-      "Title": "No Service Principal with Client Secret and permanent role assignment on Control Plane."
+      "Title": "No Service Principal with Client Secret and permanent role assignment on Control Plane.",
+      "Licenses": []
     },
     {
       "Id": "MT.1028",
       "Severity": "High",
-      "Title": "No user with mailbox and permanent role assignment on Control Plane."
+      "Title": "No user with mailbox and permanent role assignment on Control Plane.",
+      "Licenses": []
     },
     {
       "Id": "MT.1029",
       "Severity": "High",
-      "Title": "Stale accounts are not assigned to privileged roles."
+      "Title": "Stale accounts are not assigned to privileged roles.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1030",
       "Severity": "High",
-      "Title": "Eligible role assignments on Control Plane are in use by administrators."
+      "Title": "Eligible role assignments on Control Plane are in use by administrators.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1031",
       "Severity": "High",
-      "Title": "Privileged role on Control Plane are managed by PIM only."
+      "Title": "Privileged role on Control Plane are managed by PIM only.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1032",
       "Severity": "High",
-      "Title": "Limited number of Global Admins are assigned."
+      "Title": "Limited number of Global Admins are assigned.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1033.0",
       "Severity": "High",
-      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1033.1",
       "Severity": "High",
-      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1033.2",
       "Severity": "High",
-      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1033.3",
       "Severity": "High",
-      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1033.4",
       "Severity": "High",
-      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)"
+      "Title": "User should be blocked from using legacy authentication (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1034.0",
       "Severity": "High",
-      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1034.1",
       "Severity": "High",
-      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1034.2",
       "Severity": "High",
-      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1034.3",
       "Severity": "High",
-      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1034.4",
       "Severity": "High",
-      "Title": "Emergency access users should not be blocked (<userPrincipalName>)"
+      "Title": "Emergency access users should not be blocked (<userPrincipalName>)",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1035",
       "Severity": "High",
-      "Title": "All security groups assigned to Conditional Access Policies should be protected by RMAU."
+      "Title": "All security groups assigned to Conditional Access Policies should be protected by RMAU.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1036",
       "Severity": "Medium",
-      "Title": "All excluded objects should have a fallback include in another policy."
+      "Title": "All excluded objects should have a fallback include in another policy.",
+      "Licenses": []
     },
     {
       "Id": "MT.1037",
       "Severity": "High",
-      "Title": "Only users with Presenter role are allowed to present in Teams meetings"
+      "Title": "Only users with Presenter role are allowed to present in Teams meetings",
+      "Licenses": []
     },
     {
       "Id": "MT.1038",
       "Severity": "Medium",
-      "Title": "Conditional Access policies should not include or exclude deleted groups."
+      "Title": "Conditional Access policies should not include or exclude deleted groups.",
+      "Licenses": []
     },
     {
       "Id": "MT.1039",
       "Severity": "Low",
-      "Title": "Ensure MailTips are enabled for end users"
+      "Title": "Ensure MailTips are enabled for end users",
+      "Licenses": []
     },
     {
       "Id": "MT.1041",
       "Severity": "High",
-      "Title": "Ensure users installing Outlook add-ins is not allowed"
+      "Title": "Ensure users installing Outlook add-ins is not allowed",
+      "Licenses": []
     },
     {
       "Id": "MT.1042",
       "Severity": "Medium",
-      "Title": "Restrict dial-in users from bypassing a meeting lobby"
+      "Title": "Restrict dial-in users from bypassing a meeting lobby",
+      "Licenses": []
     },
     {
       "Id": "MT.1043",
       "Severity": "Medium",
-      "Title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains"
+      "Title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains",
+      "Licenses": []
     },
     {
       "Id": "MT.1044",
       "Severity": "High",
-      "Title": "Ensure modern authentication for Exchange Online is enabled"
+      "Title": "Ensure modern authentication for Exchange Online is enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1045",
       "Severity": "Medium",
-      "Title": "Only invited users should be automatically admitted to Teams meetings"
+      "Title": "Only invited users should be automatically admitted to Teams meetings",
+      "Licenses": []
     },
     {
       "Id": "MT.1046",
       "Severity": "Medium",
-      "Title": "Restrict anonymous users from joining meetings"
+      "Title": "Restrict anonymous users from joining meetings",
+      "Licenses": []
     },
     {
       "Id": "MT.1047",
       "Severity": "Medium",
-      "Title": "Restrict anonymous users from starting Teams meetings"
+      "Title": "Restrict anonymous users from starting Teams meetings",
+      "Licenses": []
     },
     {
       "Id": "MT.1048",
       "Severity": "Medium",
-      "Title": "Limit external participants from having control in a Teams meeting"
+      "Title": "Limit external participants from having control in a Teams meeting",
+      "Licenses": []
     },
     {
       "Id": "MT.1049",
       "Severity": "High",
-      "Title": "Conditional Access policies for User Risk and Sign-in Risk should be configured separately."
+      "Title": "Conditional Access policies for User Risk and Sign-in Risk should be configured separately.",
+      "Licenses": ["EntraIDP2"]
     },
     {
       "Id": "MT.1050",
       "Severity": "High",
-      "Title": "Apps with high-risk permissions having a direct path to Global Admin"
+      "Title": "Apps with high-risk permissions having a direct path to Global Admin",
+      "Licenses": []
     },
     {
       "Id": "MT.1051",
       "Severity": "High",
-      "Title": "Apps with high-risk permissions having an indirect path to Global Admin"
+      "Title": "Apps with high-risk permissions having an indirect path to Global Admin",
+      "Licenses": []
     },
     {
       "Id": "MT.1052",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is targeting the Device Code authentication flow."
+      "Title": "At least one Conditional Access policy is targeting the Device Code authentication flow.",
+      "Licenses": []
     },
     {
       "Id": "MT.1053",
       "Severity": "Medium",
-      "Title": "Ensure intune device clean-up rule is configured"
+      "Title": "Ensure intune device clean-up rule is configured",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1054",
       "Severity": "Medium",
-      "Title": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'"
+      "Title": "Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant'",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1055",
       "Severity": "Medium",
-      "Title": "Microsoft 365 Group (and Team) creation should be restricted to approved users."
+      "Title": "Microsoft 365 Group (and Team) creation should be restricted to approved users.",
+      "Licenses": []
     },
     {
       "Id": "MT.1056",
       "Severity": "High",
-      "Title": "Ensure that no person has permanent access to all Azure subscriptions at the root scope"
+      "Title": "Ensure that no person has permanent access to all Azure subscriptions at the root scope",
+      "Licenses": []
     },
     {
       "Id": "MT.1057",
       "Severity": "Medium",
-      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to notify users."
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to notify users.",
+      "Licenses": []
     },
     {
       "Id": "MT.1058",
       "Severity": "Medium",
-      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups."
+      "Title": "Ensure Microsoft 365 Group (and Team) expiration is configured to auto-expire groups.",
+      "Licenses": []
     },
     {
       "Id": "MT.1059",
       "Severity": "Medium",
-      "Title": "Microsoft Defender for Identity health issues should be resolved"
+      "Title": "Microsoft Defender for Identity health issues should be resolved",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1061",
       "Severity": "Medium",
-      "Title": "Device registration MFA control conflicts with Conditional Access policies"
+      "Title": "Device registration MFA control conflicts with Conditional Access policies",
+      "Licenses": []
     },
     {
       "Id": "MT.1062",
       "Severity": "Medium",
-      "Title": "Ensure Direct Send is set to be rejected"
+      "Title": "Ensure Direct Send is set to be rejected",
+      "Licenses": []
     },
     {
       "Id": "MT.1063",
       "Severity": "High",
-      "Title": "All app registration owners should have MFA registered"
+      "Title": "All app registration owners should have MFA registered",
+      "Licenses": []
     },
     {
       "Id": "MT.1064",
       "Severity": "High",
-      "Title": "Management group creation should be limited to users with explicit write access"
+      "Title": "Management group creation should be limited to users with explicit write access",
+      "Licenses": []
     },
     {
       "Id": "MT.1065",
       "Severity": "High",
-      "Title": "Soft Delete should be enabled on all Recovery Services Vaults"
+      "Title": "Soft Delete should be enabled on all Recovery Services Vaults",
+      "Licenses": []
     },
     {
       "Id": "MT.1066",
       "Severity": "Medium",
-      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles."
+      "Title": "Conditional Access policies should not include or exclude deleted users, groups, or roles.",
+      "Licenses": []
     },
     {
       "Id": "MT.1067",
       "Severity": "Medium",
-      "Title": "Authentication methods policies should not reference deleted groups."
+      "Title": "Authentication methods policies should not reference deleted groups.",
+      "Licenses": []
     },
     {
       "Id": "MT.1068",
       "Severity": "Medium",
-      "Title": "Restrict non-admin users from creating tenants"
+      "Title": "Restrict non-admin users from creating tenants",
+      "Licenses": []
     },
     {
       "Id": "MT.1069",
       "Severity": "Low",
-      "Title": "Restrict non-admin users from creating security groups."
+      "Title": "Restrict non-admin users from creating security groups.",
+      "Licenses": []
     },
     {
       "Id": "MT.1070",
       "Severity": "Medium",
-      "Title": "Restrict device join to selected users/groups or none."
+      "Title": "Restrict device join to selected users/groups or none.",
+      "Licenses": []
     },
     {
       "Id": "MT.1071",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps."
+      "Title": "At least one Conditional Access policy explicitly includes Azure DevOps.",
+      "Licenses": ["EntraIDP1"]
     },
     {
       "Id": "MT.1072",
       "Severity": "High",
-      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+      "Title": "Conditional access policies should not use the deprecated Approved Client App grant.",
+      "Licenses": []
     },
     {
       "Id": "MT.1073",
       "Severity": "Medium",
-      "Title": "Soft- and hard-matching of synchronized objects should be blocked."
+      "Title": "Soft- and hard-matching of synchronized objects should be blocked.",
+      "Licenses": []
     },
     {
       "Id": "MT.1074",
       "Severity": "Medium",
-      "Title": "Mailboxes should not send outbound mails using the .onmicrosoft.com domain."
+      "Title": "Mailboxes should not send outbound mails using the .onmicrosoft.com domain.",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1075",
       "Severity": "Medium",
-      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users."
+      "Title": "Third Party Entra Apps should only have explicitly assigned users instead of All Users.",
+      "Licenses": []
     },
     {
       "Id": "MT.1076",
       "Severity": "High",
-      "Title": "MOERA SHOULD NOT be used for sent mail."
+      "Title": "MOERA SHOULD NOT be used for sent mail.",
+      "Licenses": []
     },
     {
       "Id": "MT.1077",
       "Severity": "Medium",
-      "Title": "App registrations with privileged API permissions should not have owners"
+      "Title": "App registrations with privileged API permissions should not have owners",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1078",
       "Severity": "Medium",
-      "Title": "App registrations with highly privileged directory roles should not have owners"
+      "Title": "App registrations with highly privileged directory roles should not have owners",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1079",
       "Severity": "Medium",
-      "Title": "Privileged API permissions on service principals should not remain unused"
+      "Title": "Privileged API permissions on service principals should not remain unused",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1080",
       "Severity": "Medium",
-      "Title": "Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints"
+      "Title": "Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1081",
       "Severity": "Medium",
-      "Title": "Hybrid users should not be assigned Entra ID role assignments"
+      "Title": "Hybrid users should not be assigned Entra ID role assignments",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1083",
       "Severity": "Low",
-      "Title": "Ensure Delicensing Resiliency is enabled"
+      "Title": "Ensure Delicensing Resiliency is enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1084",
       "Severity": "High",
-      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers."
+      "Title": "Seamless Single SignOn should be disabled for all domains in EntraID Connect servers.",
+      "Licenses": []
     },
     {
       "Id": "MT.1085",
       "Severity": "Medium",
-      "Title": "Pending approvals for Critical Asset Management should not be present"
+      "Title": "Pending approvals for Critical Asset Management should not be present",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1086",
       "Severity": "Low",
-      "Title": "Devices should not share both critical and non-critical user credentials."
+      "Title": "Devices should not share both critical and non-critical user credentials.",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1087",
       "Severity": "High",
-      "Title": "Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's."
+      "Title": "Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's.",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1088",
       "Severity": "Medium",
-      "Title": "Devices with critical credentials should be protected by TPM."
+      "Title": "Devices with critical credentials should be protected by TPM.",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1089",
       "Severity": "Medium",
-      "Title": "Devices with critical credentials should be protected by Credential Guard."
+      "Title": "Devices with critical credentials should be protected by Credential Guard.",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1090",
       "Severity": "Medium",
-      "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join"
+      "Title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join",
+      "Licenses": []
     },
     {
       "Id": "MT.1091",
       "Severity": "Medium",
-      "Title": "Registering user should not be added as local administrator on the device during Microsoft Entra join"
+      "Title": "Registering user should not be added as local administrator on the device during Microsoft Entra join",
+      "Licenses": []
     },
     {
       "Id": "MT.1092",
       "Severity": "High",
-      "Title": "Intune APNS certificate should be valid for more than 30 days"
+      "Title": "Intune APNS certificate should be valid for more than 30 days",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1093",
       "Severity": "High",
-      "Title": "Apple Automated Device Enrollment Tokens should be valid for more than 30 days"
+      "Title": "Apple Automated Device Enrollment Tokens should be valid for more than 30 days",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1094",
       "Severity": "High",
-      "Title": "Apple Volume Purchase Program Tokens should be valid for more than 30 days"
+      "Title": "Apple Volume Purchase Program Tokens should be valid for more than 30 days",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1095",
       "Severity": "High",
-      "Title": "Android Enterprise Account Connection should be healthy"
+      "Title": "Android Enterprise Account Connection should be healthy",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1096",
       "Severity": "Medium",
-      "Title": "Intune Multi Admin approval should be configured"
+      "Title": "Intune Multi Admin approval should be configured",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1097",
       "Severity": "High",
-      "Title": "Certificate Connectors should be healthy and running supported versions"
+      "Title": "Certificate Connectors should be healthy and running supported versions",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1098",
       "Severity": "Critical",
-      "Title": "Mobile Threat Defense Connectors should be healthy"
+      "Title": "Mobile Threat Defense Connectors should be healthy",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1099",
       "Severity": "Low",
-      "Title": "Windows Diagnostic Data Processing should be enabled"
+      "Title": "Windows Diagnostic Data Processing should be enabled",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1100",
       "Severity": "High",
-      "Title": "Intune Audit Logs should be retained"
+      "Title": "Intune Audit Logs should be retained",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1101",
       "Severity": "Low",
-      "Title": "Default Branding Profile should be customized"
+      "Title": "Default Branding Profile should be customized",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1102",
       "Severity": "High",
-      "Title": "Windows Feature Update Policy Settings should not reference end of support builds"
+      "Title": "Windows Feature Update Policy Settings should not reference end of support builds",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1103",
       "Severity": "High",
-      "Title": "Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups"
+      "Title": "Intune RBAC groups should be protected by Restricted Management Administrative Units or Role Assignable groups",
+      "Licenses": ["EntraIDP1", "Intune"]
     },
     {
       "Id": "MT.1105",
       "Severity": "Low",
-      "Title": "MDM Authority should be set to Microsoft Intune"
+      "Title": "MDM Authority should be set to Microsoft Intune",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1106",
       "Severity": "Medium",
-      "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)"
+      "Title": "Catalog resources must have valid roles (no stale app roles or deleted SPNs)",
+      "Licenses": ["EntraIDGovernance"]
     },
     {
       "Id": "MT.1107",
       "Severity": "Medium",
-      "Title": "Access packages and catalogs should not reference deleted groups"
+      "Title": "Access packages and catalogs should not reference deleted groups",
+      "Licenses": ["EntraIDGovernance"]
     },
     {
       "Id": "MT.1108",
       "Severity": "Medium",
-      "Title": "Access packages should not have inactive or orphaned assignment policies"
+      "Title": "Access packages should not have inactive or orphaned assignment policies",
+      "Licenses": ["EntraIDGovernance"]
     },
     {
       "Id": "MT.1109",
       "Severity": "Medium",
-      "Title": "Access package approval workflows must have valid approvers"
+      "Title": "Access package approval workflows must have valid approvers",
+      "Licenses": ["EntraIDGovernance"]
     },
     {
       "Id": "MT.1110",
       "Severity": "Medium",
-      "Title": "No catalog should contain resources without any associated access packages"
+      "Title": "No catalog should contain resources without any associated access packages",
+      "Licenses": ["EntraIDGovernance"]
     },
     {
       "Id": "MT.1111",
       "Severity": "Low",
-      "Title": "High privileged user should be linked to an identity"
+      "Title": "High privileged user should be linked to an identity",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1112",
       "Severity": "Medium",
-      "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled"
+      "Title": "Privileged user accounts should not remain enabled when the linked primary account is disabled",
+      "Licenses": ["DefenderXDR"]
     },
     {
       "Id": "MT.1113",
       "Severity": "High",
-      "Title": "AI agents should not be shared with broad access control policies"
+      "Title": "AI agents should not be shared with broad access control policies",
+      "Licenses": []
     },
     {
       "Id": "MT.1114",
       "Severity": "High",
-      "Title": "AI agents should require user authentication"
+      "Title": "AI agents should require user authentication",
+      "Licenses": []
     },
     {
       "Id": "MT.1115",
       "Severity": "Medium",
-      "Title": "AI agents should not have risky HTTP configurations"
+      "Title": "AI agents should not have risky HTTP configurations",
+      "Licenses": []
     },
     {
       "Id": "MT.1116",
       "Severity": "High",
-      "Title": "AI agents should not send email with AI-controlled inputs"
+      "Title": "AI agents should not send email with AI-controlled inputs",
+      "Licenses": []
     },
     {
       "Id": "MT.1117",
       "Severity": "Low",
-      "Title": "Published AI agents should not be dormant"
+      "Title": "Published AI agents should not be dormant",
+      "Licenses": []
     },
     {
       "Id": "MT.1118",
       "Severity": "Medium",
-      "Title": "AI agents should avoid using author (maker) authentication for tools"
+      "Title": "AI agents should avoid using author (maker) authentication for tools",
+      "Licenses": []
     },
     {
       "Id": "MT.1119",
       "Severity": "High",
-      "Title": "AI agents should not have hard-coded credentials in topics"
+      "Title": "AI agents should not have hard-coded credentials in topics",
+      "Licenses": []
     },
     {
       "Id": "MT.1120",
       "Severity": "Medium",
-      "Title": "AI agents should not use MCP server tools without review"
+      "Title": "AI agents should not use MCP server tools without review",
+      "Licenses": []
     },
     {
       "Id": "MT.1121",
       "Severity": "Medium",
-      "Title": "AI agents with generative orchestration should have custom instructions"
+      "Title": "AI agents with generative orchestration should have custom instructions",
+      "Licenses": []
     },
     {
       "Id": "MT.1122",
       "Severity": "Medium",
-      "Title": "AI agents should not have orphaned ownership"
+      "Title": "AI agents should not have orphaned ownership",
+      "Licenses": []
     },
     {
       "Id": "MT.1123",
       "Severity": "High",
-      "Title": "Ensure BitLocker full disk encryption is configured via Intune"
+      "Title": "Ensure BitLocker full disk encryption is configured via Intune",
+      "Licenses": ["Intune"]
     },
     {
       "Id": "MT.1147",
       "Severity": "High",
-      "Title": "Do not sync krbtgt_AzureAD to Entra ID"
+      "Title": "Do not sync krbtgt_AzureAD to Entra ID",
+      "Licenses": []
     },
     {
       "Id": "MT.1148",
       "Severity": "High",
-      "Title": "Archive Scanning should be enabled"
+      "Title": "Archive Scanning should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1149",
       "Severity": "High",
-      "Title": "Behavior Monitoring should be enabled"
+      "Title": "Behavior Monitoring should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1150",
       "Severity": "High",
-      "Title": "Cloud Protection should be enabled"
+      "Title": "Cloud Protection should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1151",
       "Severity": "High",
-      "Title": "Email Scanning should be enabled"
+      "Title": "Email Scanning should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1152",
       "Severity": "High",
-      "Title": "Script Scanning should be enabled"
+      "Title": "Script Scanning should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1153",
       "Severity": "High",
-      "Title": "Real-time Monitoring should be enabled"
+      "Title": "Real-time Monitoring should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1154",
       "Severity": "High",
-      "Title": "Full Scan Removable Drives should be enabled"
+      "Title": "Full Scan Removable Drives should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1155",
       "Severity": "High",
-      "Title": "Full Scan Mapped Drives should be disabled for performance"
+      "Title": "Full Scan Mapped Drives should be disabled for performance",
+      "Licenses": []
     },
     {
       "Id": "MT.1156",
       "Severity": "High",
-      "Title": "Scanning Network Files should be enabled"
+      "Title": "Scanning Network Files should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1157",
       "Severity": "High",
-      "Title": "CPU Load Factor should be optimized (20-30%)"
+      "Title": "CPU Load Factor should be optimized (20-30%)",
+      "Licenses": []
     },
     {
       "Id": "MT.1158",
       "Severity": "High",
-      "Title": "Scan should be scheduled"
+      "Title": "Scan should be scheduled",
+      "Licenses": []
     },
     {
       "Id": "MT.1159",
       "Severity": "High",
-      "Title": "Quick Scan Time configuration is not required"
+      "Title": "Quick Scan Time configuration is not required",
+      "Licenses": []
     },
     {
       "Id": "MT.1160",
       "Severity": "High",
-      "Title": "Signatures should be checked before scan"
+      "Title": "Signatures should be checked before scan",
+      "Licenses": []
     },
     {
       "Id": "MT.1161",
       "Severity": "High",
-      "Title": "Cloud Block Level should be High or higher"
+      "Title": "Cloud Block Level should be High or higher",
+      "Licenses": []
     },
     {
       "Id": "MT.1162",
       "Severity": "High",
-      "Title": "Cloud Extended Timeout should be 30-50 seconds"
+      "Title": "Cloud Extended Timeout should be 30-50 seconds",
+      "Licenses": []
     },
     {
       "Id": "MT.1163",
       "Severity": "High",
-      "Title": "Signature Update Interval should be 1-4 hours"
+      "Title": "Signature Update Interval should be 1-4 hours",
+      "Licenses": []
     },
     {
       "Id": "MT.1164",
       "Severity": "High",
-      "Title": "PUA Protection should be enabled"
+      "Title": "PUA Protection should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1165",
       "Severity": "High",
-      "Title": "Network Protection should be enabled"
+      "Title": "Network Protection should be enabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1166",
       "Severity": "High",
-      "Title": "Local Admin Merge should be disabled"
+      "Title": "Local Admin Merge should be disabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1167",
       "Severity": "High",
-      "Title": "Real-Time Scan Direction should cover both directions"
+      "Title": "Real-Time Scan Direction should cover both directions",
+      "Licenses": []
     },
     {
       "Id": "MT.1168",
       "Severity": "High",
-      "Title": "Cleaned Malware should be retained for at least 30 days"
+      "Title": "Cleaned Malware should be retained for at least 30 days",
+      "Licenses": []
     },
     {
       "Id": "MT.1169",
       "Severity": "High",
-      "Title": "Catch-up Full Scan should be disabled"
+      "Title": "Catch-up Full Scan should be disabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1170",
       "Severity": "High",
-      "Title": "Catch-up Quick Scan should be disabled"
+      "Title": "Catch-up Quick Scan should be disabled",
+      "Licenses": []
     },
     {
       "Id": "MT.1171",
       "Severity": "High",
-      "Title": "Sample Submission should send safe samples automatically"
+      "Title": "Sample Submission should send safe samples automatically",
+      "Licenses": []
     },
     {
       "Id": "ORCA.100",
       "Severity": "Medium",
-      "Title": "Bulk Complaint Level threshold is between 4 and 6."
+      "Title": "Bulk Complaint Level threshold is between 4 and 6.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.101",
       "Severity": "Medium",
-      "Title": "Bulk is marked as spam."
+      "Title": "Bulk is marked as spam.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.102",
       "Severity": "Medium",
-      "Title": "Advanced Spam filter options are turned off."
+      "Title": "Advanced Spam filter options are turned off.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.103",
       "Severity": "Medium",
-      "Title": "Outbound spam filter policy settings configured."
+      "Title": "Outbound spam filter policy settings configured.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.104",
       "Severity": "High",
-      "Title": "High Confidence Phish action set to Quarantine message."
+      "Title": "High Confidence Phish action set to Quarantine message.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.105",
       "Severity": "Medium",
-      "Title": "Safe Links Synchronous URL detonation is enabled."
+      "Title": "Safe Links Synchronous URL detonation is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.106",
       "Severity": "Medium",
-      "Title": "Quarantine retention period is 30 days."
+      "Title": "Quarantine retention period is 30 days.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.107",
       "Severity": "Low",
-      "Title": "End-user spam notification is enabled."
+      "Title": "End-user spam notification is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.108",
       "Severity": "Medium",
-      "Title": "DKIM signing is set up for all your custom domains."
+      "Title": "DKIM signing is set up for all your custom domains.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.108.1",
       "Severity": "Medium",
-      "Title": "DNS Records have been set up to support DKIM."
+      "Title": "DNS Records have been set up to support DKIM.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.109",
       "Severity": "Medium",
-      "Title": "Senders are not being allow listed in an unsafe manner."
+      "Title": "Senders are not being allow listed in an unsafe manner.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.110",
       "Severity": "Medium",
-      "Title": "Internal Sender notifications are disabled."
+      "Title": "Internal Sender notifications are disabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.111",
       "Severity": "High",
-      "Title": "Anti-phishing policy exists and EnableUnauthenticatedSender is true."
+      "Title": "Anti-phishing policy exists and EnableUnauthenticatedSender is true.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.112",
       "Severity": "Medium",
-      "Title": "Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy."
+      "Title": "Anti-spoofing protection action is configured to Move message to the recipients' Junk Email folders in Anti-phishing policy.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.113",
       "Severity": "Medium",
-      "Title": "AllowClickThrough is disabled in Safe Links policies."
+      "Title": "AllowClickThrough is disabled in Safe Links policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.114",
       "Severity": "High",
-      "Title": "No IP Allow Lists have been configured."
+      "Title": "No IP Allow Lists have been configured.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.115",
       "Severity": "Medium",
-      "Title": "Mailbox intelligence based impersonation protection is enabled in anti-phishing policies."
+      "Title": "Mailbox intelligence based impersonation protection is enabled in anti-phishing policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.116",
       "Severity": "Medium",
-      "Title": "Mailbox intelligence based impersonation protection action set to move message to junk mail folder."
+      "Title": "Mailbox intelligence based impersonation protection action set to move message to junk mail folder.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.118.1",
       "Severity": "High",
-      "Title": "Domains are not being allow listed in an unsafe manner in Anti-Spam Policies."
+      "Title": "Domains are not being allow listed in an unsafe manner in Anti-Spam Policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.118.2",
       "Severity": "High",
-      "Title": "Domains are not being allow listed in an unsafe manner in Transport Rules."
+      "Title": "Domains are not being allow listed in an unsafe manner in Transport Rules.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.118.3",
       "Severity": "Medium",
-      "Title": "Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies."
+      "Title": "Your own domains are not being allow listed in an unsafe manner in Anti-Spam Policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.118.4",
       "Severity": "Medium",
-      "Title": "Your own domains are not being allow listed in an unsafe manner in Transport Rules."
+      "Title": "Your own domains are not being allow listed in an unsafe manner in Transport Rules.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.119",
       "Severity": "Info",
-      "Title": "Similar Domains Safety Tips is enabled."
+      "Title": "Similar Domains Safety Tips is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.120.1",
       "Severity": "Medium",
-      "Title": "Zero Hour Autopurge Enabled for Phish."
+      "Title": "Zero Hour Autopurge Enabled for Phish.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.120.2",
       "Severity": "Medium",
-      "Title": "Zero Hour Autopurge Enabled for Malware."
+      "Title": "Zero Hour Autopurge Enabled for Malware.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.120.3",
       "Severity": "Medium",
-      "Title": "Zero Hour Autopurge Enabled for Spam."
+      "Title": "Zero Hour Autopurge Enabled for Spam.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.121",
       "Severity": "Low",
-      "Title": "Supported filter policy action used."
+      "Title": "Supported filter policy action used.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.123",
       "Severity": "Info",
-      "Title": "Unusual Characters Safety Tips is enabled."
+      "Title": "Unusual Characters Safety Tips is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.124",
       "Severity": "High",
-      "Title": "Safe attachments unknown malware response set to block messages."
+      "Title": "Safe attachments unknown malware response set to block messages.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.139",
       "Severity": "Low",
-      "Title": "Spam action set to move message to junk mail folder or quarantine."
+      "Title": "Spam action set to move message to junk mail folder or quarantine.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.140",
       "Severity": "High",
-      "Title": "High Confidence Spam action set to Quarantine message."
+      "Title": "High Confidence Spam action set to Quarantine message.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.141",
       "Severity": "Medium",
-      "Title": "Bulk action set to Move message to Junk Email Folder."
+      "Title": "Bulk action set to Move message to Junk Email Folder.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.142",
       "Severity": "Medium",
-      "Title": "Phish action set to Quarantine message."
+      "Title": "Phish action set to Quarantine message.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.143",
       "Severity": "Info",
-      "Title": "Safety Tips are enabled."
+      "Title": "Safety Tips are enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.156",
       "Severity": "Medium",
-      "Title": "Safe Links Policies are tracking when user clicks on safe links."
+      "Title": "Safe Links Policies are tracking when user clicks on safe links.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.158",
       "Severity": "Medium",
-      "Title": "Safe Attachments is enabled for SharePoint and Teams."
+      "Title": "Safe Attachments is enabled for SharePoint and Teams.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.179",
       "Severity": "Medium",
-      "Title": "Safe Links is enabled intra-organization."
+      "Title": "Safe Links is enabled intra-organization.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.180",
       "Severity": "Medium",
-      "Title": "Anti-phishing policy exists and EnableSpoofIntelligence is true."
+      "Title": "Anti-phishing policy exists and EnableSpoofIntelligence is true.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.189",
       "Severity": "Medium",
-      "Title": "Safe Attachments is not bypassed."
+      "Title": "Safe Attachments is not bypassed.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.189.2",
       "Severity": "High",
-      "Title": "Safe Links is not bypassed."
+      "Title": "Safe Links is not bypassed.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.205",
       "Severity": "Medium",
-      "Title": "Common attachment type filter is enabled."
+      "Title": "Common attachment type filter is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.220",
       "Severity": "Medium",
-      "Title": "Advanced Phish filter Threshold level is adequate."
+      "Title": "Advanced Phish filter Threshold level is adequate.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.221",
       "Severity": "Medium",
-      "Title": "Mailbox intelligence is enabled in anti-phishing policies."
+      "Title": "Mailbox intelligence is enabled in anti-phishing policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.222",
       "Severity": "Medium",
-      "Title": "Domain Impersonation action is set to move to Quarantine."
+      "Title": "Domain Impersonation action is set to move to Quarantine.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.223",
       "Severity": "High",
-      "Title": "User impersonation action is set to move to Quarantine."
+      "Title": "User impersonation action is set to move to Quarantine.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.224",
       "Severity": "Info",
-      "Title": "Similar Users Safety Tips is enabled."
+      "Title": "Similar Users Safety Tips is enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.225",
       "Severity": "Medium",
-      "Title": "Safe Documents is enabled for Office clients."
+      "Title": "Safe Documents is enabled for Office clients.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.226",
       "Severity": "Medium",
-      "Title": "Each domain has a Safe Link policy applied to it."
+      "Title": "Each domain has a Safe Link policy applied to it.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.227",
       "Severity": "Medium",
-      "Title": "Each domain has a Safe Attachments policy applied to it."
+      "Title": "Each domain has a Safe Attachments policy applied to it.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.228",
       "Severity": "High",
-      "Title": "No trusted senders in Anti-phishing policy."
+      "Title": "No trusted senders in Anti-phishing policy.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.229",
       "Severity": "Medium",
-      "Title": "No trusted domains in Anti-phishing policy."
+      "Title": "No trusted domains in Anti-phishing policy.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.230",
       "Severity": "Medium",
-      "Title": "Each domain has a Anti-phishing policy applied to it, or the default policy is being used."
+      "Title": "Each domain has a Anti-phishing policy applied to it, or the default policy is being used.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.231",
       "Severity": "Medium",
-      "Title": "Each domain has a anti-spam policy applied to it, or the default policy is being used."
+      "Title": "Each domain has a anti-spam policy applied to it, or the default policy is being used.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.232",
       "Severity": "High",
-      "Title": "Each domain has a malware filter policy applied to it, or the default policy is being used."
+      "Title": "Each domain has a malware filter policy applied to it, or the default policy is being used.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.233",
       "Severity": "Medium",
-      "Title": "Domains are pointed directly at EOP or enhanced filtering is used."
+      "Title": "Domains are pointed directly at EOP or enhanced filtering is used.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.233.1",
       "Severity": "Medium",
-      "Title": "Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors."
+      "Title": "Domains are pointed directly at EOP or enhanced filtering is configured on all default connectors.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.234",
       "Severity": "Medium",
-      "Title": "Click through is disabled for Safe Documents."
+      "Title": "Click through is disabled for Safe Documents.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.235",
       "Severity": "Medium",
-      "Title": "SPF records is set up for all your custom domains."
+      "Title": "SPF records is set up for all your custom domains.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.236",
       "Severity": "Medium",
-      "Title": "Safe Links is enabled for emails."
+      "Title": "Safe Links is enabled for emails.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.237",
       "Severity": "Medium",
-      "Title": "Safe Links is enabled for teams messages."
+      "Title": "Safe Links is enabled for teams messages.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.238",
       "Severity": "Medium",
-      "Title": "Safe Links is enabled for office documents."
+      "Title": "Safe Links is enabled for office documents.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.239",
       "Severity": "High",
-      "Title": "No exclusions for the built-in protection policies."
+      "Title": "No exclusions for the built-in protection policies.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.240",
       "Severity": "Medium",
-      "Title": "Outlook is configured to display external tags for external emails."
+      "Title": "Outlook is configured to display external tags for external emails.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.241",
       "Severity": "Medium",
-      "Title": "Anti-phishing policy exists and EnableFirstContactSafetyTips is true."
+      "Title": "Anti-phishing policy exists and EnableFirstContactSafetyTips is true.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.242",
       "Severity": "High",
-      "Title": "Important protection alerts responsible for AIR activities are enabled."
+      "Title": "Important protection alerts responsible for AIR activities are enabled.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.243",
       "Severity": "Medium",
-      "Title": "Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO."
+      "Title": "Authenticated Receive Chain is set up for domains not pointing to EOP/MDO, or all domains point to EOP/MDO.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.244",
       "Severity": "Medium",
-      "Title": "Policies are configured to honor sending domains DMARC."
+      "Title": "Policies are configured to honor sending domains DMARC.",
+      "Licenses": []
     },
     {
       "Id": "ORCA.1000",
       "Severity": "High",
-      "Title": "Exchange Online Protection (EOP) is enabled."
+      "Title": "Exchange Online Protection (EOP) is enabled.",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "ORCA.1001",
       "Severity": "High",
-      "Title": "Spam filter policy settings configured."
+      "Title": "Spam filter policy settings configured.",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "ORCA.1002",
       "Severity": "High",
-      "Title": "Malware filter policy settings configured."
+      "Title": "Malware filter policy settings configured.",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "ORCA.1003",
       "Severity": "High",
-      "Title": "Phishing filter policy settings configured."
+      "Title": "Phishing filter policy settings configured.",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "ORCA.1004",
       "Severity": "High",
-      "Title": "<URL> filtering policy settings configured."
+      "Title": "<URL> filtering policy settings configured.",
+      "Licenses": ["TBD"]
     },
     {
       "Id": "AZDO.1000",
       "Severity": "High",
-      "Title": "Azure DevOps OAuth apps can access resources in your organization through OAuth"
+      "Title": "Azure DevOps OAuth apps can access resources in your organization through OAuth",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1001",
       "Severity": "High",
-      "Title": "Identities can connect to your organization's Git repos through SSH"
+      "Title": "Identities can connect to your organization's Git repos through SSH",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1002",
       "Severity": "High",
-      "Title": "Log Audit Events"
+      "Title": "Log Audit Events",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1003",
       "Severity": "High",
-      "Title": "Restrict public projects"
+      "Title": "Restrict public projects",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1004",
       "Severity": "High",
-      "Title": "Additional protections when using public registries"
+      "Title": "Additional protections when using public registries",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1005",
       "Severity": "High",
-      "Title": "IP Conditional Access policy validation"
+      "Title": "IP Conditional Access policy validation",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1006",
       "Severity": "High",
-      "Title": "External Users access"
+      "Title": "External Users access",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1007",
       "Severity": "High",
-      "Title": "Team and project administrator are allowed to invite new users"
+      "Title": "Team and project administrator are allowed to invite new users",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1008",
       "Severity": "Medium",
-      "Title": "Request access to Azure DevOps by e-mail notifications to administrators"
+      "Title": "Request access to Azure DevOps by e-mail notifications to administrators",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1009",
       "Severity": "Info",
-      "Title": "Feedback Collection"
+      "Title": "Feedback Collection",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1010",
       "Severity": "High",
-      "Title": "Audit streaming"
+      "Title": "Audit streaming",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1011",
       "Severity": "Info",
-      "Title": "Project Resource Limits"
+      "Title": "Project Resource Limits",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1012",
       "Severity": "Info",
-      "Title": "Work Items Tags Limits"
+      "Title": "Work Items Tags Limits",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1013",
       "Severity": "High",
-      "Title": "Organization Owner should not be an individual"
+      "Title": "Organization Owner should not be an individual",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1014",
       "Severity": "Medium",
-      "Title": "Anonymous access to pipeline badges"
+      "Title": "Anonymous access to pipeline badges",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1015",
       "Severity": "High",
-      "Title": "Limit variables that can be set at queue time"
+      "Title": "Limit variables that can be set at queue time",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1016",
       "Severity": "High",
-      "Title": "Limit job authorization scope to current project for non-release pipelines"
+      "Title": "Limit job authorization scope to current project for non-release pipelines",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1017",
       "Severity": "High",
-      "Title": "Limit job authorization scope to current project for classic release pipelines"
+      "Title": "Limit job authorization scope to current project for classic release pipelines",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1018",
       "Severity": "High",
-      "Title": "Protect access to repositories in YAML pipelines"
+      "Title": "Protect access to repositories in YAML pipelines",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1019",
       "Severity": "Medium",
-      "Title": "Stage chooser"
+      "Title": "Stage chooser",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1020",
       "Severity": "Medium",
-      "Title": "Creation of classic build pipelines"
+      "Title": "Creation of classic build pipelines",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1021",
       "Severity": "Medium",
-      "Title": "Creation of classic release pipelines"
+      "Title": "Creation of classic release pipelines",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1022",
       "Severity": "High",
-      "Title": "Limit building pull requests from forked GitHub repositories"
+      "Title": "Limit building pull requests from forked GitHub repositories",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1023",
       "Severity": "High",
-      "Title": "Disable Marketplace tasks"
+      "Title": "Disable Marketplace tasks",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1024",
       "Severity": "Medium",
-      "Title": "Disable Node 6 tasks"
+      "Title": "Disable Node 6 tasks",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1025",
       "Severity": "High",
-      "Title": "Enable shell tasks arguments validation"
+      "Title": "Enable shell tasks arguments validation",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1026",
       "Severity": "Medium",
-      "Title": "Enable automatic enrollment to Advanced Security for Azure DevOps"
+      "Title": "Enable automatic enrollment to Advanced Security for Azure DevOps",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1027",
       "Severity": "Medium",
-      "Title": "Disable showing Gravatar images for users outside of your enterprise"
+      "Title": "Disable showing Gravatar images for users outside of your enterprise",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1028",
       "Severity": "Medium",
-      "Title": "Disable creation of TFVC repositories"
+      "Title": "Disable creation of TFVC repositories",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1029",
       "Severity": "Medium",
-      "Title": "Storage Usage Limit"
+      "Title": "Storage Usage Limit",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1030",
       "Severity": "Critical",
-      "Title": "Project Collection Administrators"
+      "Title": "Project Collection Administrators",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1031",
       "Severity": "High",
-      "Title": "Validate SSH key expiration"
+      "Title": "Validate SSH key expiration",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1032",
       "Severity": "High",
-      "Title": "(Tenant) Restrict creation of global Personal Access Tokens"
+      "Title": "(Tenant) Restrict creation of global Personal Access Tokens",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1033",
       "Severity": "Critical",
-      "Title": "(Tenant) Enable automatic revocation of leaked Personal Access Tokens"
+      "Title": "(Tenant) Enable automatic revocation of leaked Personal Access Tokens",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1034",
       "Severity": "High",
-      "Title": "(Tenant) Restrict creation of new Azure DevOps organizations"
+      "Title": "(Tenant) Restrict creation of new Azure DevOps organizations",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1035",
       "Severity": "High",
-      "Title": "(Tenant) Restrict Personal Access Token lifespan"
+      "Title": "(Tenant) Restrict Personal Access Token lifespan",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1036",
       "Severity": "High",
-      "Title": "(Tenant) Restrict Personal Access Token full scope"
+      "Title": "(Tenant) Restrict Personal Access Token full scope",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1037",
       "Severity": "High",
-      "Title": "(Organization) Restrict Personal Access Token creation"
+      "Title": "(Organization) Restrict Personal Access Token creation",
+      "Licenses": ["AzureDevOps"]
     },
     {
       "Id": "AZDO.1038",
       "Severity": "Medium",
-      "Title": "(Organization) Disallow extensions from accessing resources on the local network"
+      "Title": "(Organization) Disallow extensions from accessing resources on the local network",
+      "Licenses": ["AzureDevOps"]
     }
   ]
 }
