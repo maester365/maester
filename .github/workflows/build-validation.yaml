@@ -69,3 +69,77 @@ jobs:
         with:
           name: test-results-${{ runner.os }}
           path: TestResults/*.xml
+
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: filter
+        with:
+          filters: |
+            pwshmodule:
+              - 'powershell/**'
+              - 'report/**'
+              - 'tests/**'
+              - '.github/workflows/build-validation.yaml'
+
+      - name: Install PowerShell dependencies
+        if: steps.filter.outputs.pwshmodule == 'true'
+        shell: pwsh
+        run: |
+          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          try {
+            Install-Module Microsoft.PowerShell.PSResourceGet -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+          }
+          catch {
+            Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
+          }
+
+      - name: Run Pester tests with code coverage
+        if: steps.filter.outputs.pwshmodule == 'true'
+        shell: pwsh
+        env:
+          PESTER_COVERAGE: 'true'
+        run: |
+          ./powershell/tests/pester.ps1
+
+      - name: Publish coverage summary
+        if: steps.filter.outputs.pwshmodule == 'true'
+        shell: pwsh
+        run: |
+          $coverageFile = 'TestResults/CodeCoverage.xml'
+          if (Test-Path $coverageFile) {
+            [xml]$jacoco = Get-Content $coverageFile -Raw
+            $lineCounter = $jacoco.report.counter | Where-Object { $_.type -eq 'LINE' }
+            if ($lineCounter) {
+              $covered = [int]$lineCounter.covered
+              $missed  = [int]$lineCounter.missed
+              $total   = $covered + $missed
+              $pct     = if ($total -gt 0) { [math]::Round(($covered / $total) * 100, 1) } else { 0 }
+              @"
+          ## Code Coverage (baseline)
+
+          | Metric        | Value              |
+          |---------------|--------------------|
+          | Lines covered | $covered / $total  |
+          | Coverage      | $pct%              |
+
+          > No threshold is enforced in this baseline run.
+          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+              Write-Host "Coverage: $pct% ($covered/$total lines covered)"
+            } else {
+              Write-Warning "No LINE counter found in $coverageFile"
+            }
+          } else {
+            Write-Warning "Coverage file not found: $coverageFile"
+          }
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true'
+        with:
+          name: coverage-report
+          path: TestResults/CodeCoverage.xml
