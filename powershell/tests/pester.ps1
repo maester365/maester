@@ -113,7 +113,7 @@ if ($enableCoverage) {
     } else {
     Write-PSFMessage -Level Important -Message "Running $($allTestPaths.Count) test files in combined coverage run"
     $config.TestResult.OutputPath   = Join-Path "$PSScriptRoot\..\..\TestResults" "TEST-Coverage.xml"
-    $config.TestResult.OutputFormat = "NUnitXml"
+    $config.TestResult.OutputFormat = "JUnitXml"
     $config.Run.Path                = $allTestPaths.ToArray()
     $config.Run.PassThru            = $true
     $config.Output.Verbosity        = $Output
