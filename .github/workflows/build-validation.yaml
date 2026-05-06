@@ -37,11 +37,11 @@ jobs:
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
-          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSFramework -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Scope CurrentUser -AllowClobber
+          Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -AllowClobber
           try {
-            Install-Module Microsoft.PowerShell.PSResourceGet -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+            Install-Module Microsoft.PowerShell.PSResourceGet -Scope CurrentUser -AllowClobber -ErrorAction Stop
           }
           catch {
             Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
@@ -89,12 +89,12 @@ jobs:
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
-          Install-Module Pester -MinimumVersion 5.2.0 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSFramework -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Scope CurrentUser -AllowClobber
+          Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -AllowClobber
           try {
-            Install-Module Microsoft.PowerShell.PSResourceGet -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+            Install-Module Microsoft.PowerShell.PSResourceGet -Scope CurrentUser -AllowClobber -ErrorAction Stop
           }
           catch {
             Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
