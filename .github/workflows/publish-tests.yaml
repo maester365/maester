@@ -4,6 +4,10 @@ name: publish-tests
 permissions:
   contents: read
 
+concurrency:
+  group: publish-tests
+  cancel-in-progress: false
+
 on:
   # Runs whenever a new Maester module is published
   release:

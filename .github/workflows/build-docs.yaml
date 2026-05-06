@@ -7,6 +7,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: build-docs
+  cancel-in-progress: false
+
 jobs:
   build:
     permissions:

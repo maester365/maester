@@ -17,6 +17,10 @@ on:
 # Deny all permissions by default; grant only what each job needs.
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
 jobs:
   analysis:
     name: Scorecard analysis
