@@ -7,16 +7,22 @@
     invokes (powershell/public|internal/...) for license signals, then writes the
     resulting Licenses array onto each matching TestSettings item by Id.
 
-    Signals (first match wins, but multiple matches union):
+    Signals (multiple matches union):
       1. Add-MtTestResultDetail -SkippedBecause NotLicensed<Token>
       2. Get-MtLicenseInformation -Product X comparisons
       3. -Skip:( ... license check ... ) on the It block
       4. Same patterns inside the underlying Test-* function
       5. License-bearing Describe/Context/It tags
-      6. Suite default (AZDO -> AzureDevOps; EIDSCA -> []; everything else -> TBD)
+      6. Explicit license-requirement statements in the website doc and in the
+         function's companion .md (e.g. "Microsoft Entra ID P1 or P2 is required")
 
-    Empty array = baseline (no premium license required).
-    ['TBD']   = needs human review.
+    Defaults when no signal is found:
+      - AZDO.* tests                   -> ["AzureDevOps"]
+      - Config Id with no backing test -> ["TBD"]   (true orphan)
+      - Test exists, no premium signal -> []        (baseline is adequate)
+
+    The script is idempotent: re-running replaces an existing Licenses field
+    in-place rather than appending a duplicate key.
 
 .PARAMETER DryRun
     Print the per-test license map and a tally; do not write to maester-config.json.
@@ -35,6 +41,7 @@ $repoRoot = Split-Path $PSScriptRoot -Parent
 $testsRoot = Join-Path $repoRoot 'tests'
 $psPublicRoot = Join-Path $repoRoot 'powershell/public'
 $psInternalRoot = Join-Path $repoRoot 'powershell/internal'
+$docsRoot = Join-Path $repoRoot 'website/docs/tests'
 $configPath = Join-Path $testsRoot 'maester-config.json'
 
 # --- Token vocabulary (kept in sync with Get-MtLicenseInformation.ps1 + Get-MtSkippedReason.ps1) ---
@@ -78,6 +85,24 @@ $tagMap = @{
     'customerlockbox' = 'CustomerLockbox'
     'mdop1'           = 'MdoP1'
     'mdop2'           = 'MdoP2'
+}
+
+# Markdown free-text phrase -> token. Scanned in remediation/overview prose of
+# website/docs/tests/<id>.md and the companion <function>.md beside the test
+# function. Catches license claims that aren't reflected in code (e.g. a doc
+# that says "Microsoft Entra ID P1 or P2 is required" but the code doesn't gate).
+$markdownPhraseMap = [ordered]@{
+    'entra id p2 license'                    = 'EntraIDP2'
+    'entra id p1 license'                    = 'EntraIDP1'
+    'entra id p1 or p2'                      = 'EntraIDP1'
+    'entra id p2'                            = 'EntraIDP2'
+    'entra id p1'                            = 'EntraIDP1'
+    'entra id governance'                    = 'EntraIDGovernance'
+    'aad premium p2'                         = 'EntraIDP2'
+    'aad premium p1'                         = 'EntraIDP1'
+    'azure ad premium p2'                    = 'EntraIDP2'
+    'azure ad premium p1'                    = 'EntraIDP1'
+    'workload identities premium'            = 'EntraWorkloadIDP1'
 }
 
 # Test ID regex (matches website/scripts/generate-test-docs.mjs:231)
@@ -152,6 +177,35 @@ function Get-LicenseTokensFromText {
     return @($tokens | Sort-Object)
 }
 
+function Get-MarkdownSignalsFromText {
+    [OutputType([string[]])]
+    param([Parameter(Mandatory)] [AllowEmptyString()] [string] $Text)
+    $tokens = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
+
+    # Strip the front-matter and the auto-generated "Test Metadata" section so we
+    # only inspect prose. Those sections echo Pester Describe tags and would create
+    # circular signal (markdown reflecting the same tag the code-signal already saw).
+    $lines = $Text -split "`r?`n"
+    $body = [System.Collections.Generic.List[string]]::new()
+    $inFront = $false
+    $skipBlock = $false
+    foreach ($line in $lines) {
+        if ($line -match '^---\s*$') { $inFront = -not $inFront; continue }
+        if ($inFront) { continue }
+        if ($line -match '^## Test Metadata') { $skipBlock = $true; continue }
+        if ($skipBlock -and $line -match '^## ') { $skipBlock = $false }
+        if ($skipBlock) { continue }
+        $body.Add($line)
+    }
+    $prose = ($body -join "`n").ToLowerInvariant()
+
+    foreach ($pair in $markdownPhraseMap.GetEnumerator()) {
+        if ($prose.Contains($pair.Key)) { [void] $tokens.Add($pair.Value) }
+    }
+    return @($tokens | Sort-Object)
+}
+
 function Get-FunctionFileForTest {
     param(
         [Parameter(Mandatory)] [string] $TestFunctionName
@@ -160,6 +214,21 @@ function Get-FunctionFileForTest {
         if (-not (Test-Path $root)) { continue }
         $hit = Get-ChildItem -Path $root -Recurse -Filter "$TestFunctionName.ps1" -ErrorAction SilentlyContinue | Select-Object -First 1
         if ($hit) { return $hit.FullName }
+    }
+    return $null
+}
+
+function Get-MarkdownFileForId {
+    param([Parameter(Mandatory)] [string] $Id)
+    if (-not (Test-Path $docsRoot)) { return $null }
+    $candidate = Get-ChildItem -Path $docsRoot -Recurse -Filter "$Id.md" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($candidate) { return $candidate.FullName }
+    # Parent fallback (e.g. MT.1033.0 -> MT.1033.md, if it ever existed).
+    $parent = $Id
+    while ($parent -match '\.\d+$') {
+        $parent = $parent -replace '\.\d+$', ''
+        $candidate = Get-ChildItem -Path $docsRoot -Recurse -Filter "$parent.md" -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($candidate) { return $candidate.FullName }
     }
     return $null
 }
@@ -273,6 +342,8 @@ foreach ($setting in $config.TestSettings) {
         }
     }
 
+    $functionFile = $null
+
     if ($entry) {
         # Signals 1-3 from the It block.
         foreach ($t in (Get-LicenseTokensFromText -Text $entry.ItText)) { [void] $tokens.Add($t) }
@@ -287,6 +358,22 @@ foreach ($setting in $config.TestSettings) {
                 $functionContent = Get-Content -Path $functionFile -Raw
                 foreach ($t in (Get-LicenseTokensFromText -Text $functionContent)) { [void] $tokens.Add($t) }
             }
+        }
+    }
+
+    # Signal 7: explicit license-requirement statements in the website doc and
+    # in the function's companion .md (e.g. "Microsoft Entra ID P1 or P2 is required").
+    # Catches license requirements that the test code doesn't gate on.
+    $markdownFile = Get-MarkdownFileForId -Id $id
+    if ($markdownFile) {
+        $mdContent = Get-Content -Path $markdownFile -Raw
+        foreach ($t in (Get-MarkdownSignalsFromText -Text $mdContent)) { [void] $tokens.Add($t) }
+    }
+    if ($functionFile) {
+        $companionMd = [System.IO.Path]::ChangeExtension($functionFile, '.md')
+        if (Test-Path $companionMd) {
+            $companionContent = Get-Content -Path $companionMd -Raw
+            foreach ($t in (Get-MarkdownSignalsFromText -Text $companionContent)) { [void] $tokens.Add($t) }
         }
     }
 
@@ -380,10 +467,21 @@ for ($i = 0; $i -lt $lines.Count; $i++) {
     if ($line -match "^$([regex]::Escape($pendingIndent))\}\,?\s*$") {
         # Insert the Licenses line just before the closing brace.
         $closingLine = $pendingObjectLines[$pendingObjectLines.Count - 1]
-        $bodyLines = $pendingObjectLines.GetRange(0, $pendingObjectLines.Count - 1)
+        $bodyLines = [System.Collections.Generic.List[string]]::new()
+        for ($k = 0; $k -lt $pendingObjectLines.Count - 1; $k++) {
+            $bodyLines.Add($pendingObjectLines[$k])
+        }
 
-        # The previous body line currently has no trailing comma. We need to add one,
-        # then insert "Licenses": [...].
+        # Idempotency: if a Licenses field already exists in this object, drop it
+        # so we can rewrite cleanly. Anything else (Id/Severity/Title/etc) is left alone.
+        for ($k = $bodyLines.Count - 1; $k -ge 0; $k--) {
+            if ($bodyLines[$k] -match '^\s*"Licenses"\s*:') { $bodyLines.RemoveAt($k) }
+        }
+
+        # The previous body line may or may not have a trailing comma (depends on
+        # whether the object originally ended with Licenses or with another field).
+        # Normalize: ensure the last remaining body line has a trailing comma so we
+        # can append the new Licenses line.
         $lastBodyIdx = $bodyLines.Count - 1
         $lastBody = $bodyLines[$lastBodyIdx]
         if ($lastBody -notmatch ',\s*$') {

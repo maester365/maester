@@ -9,13 +9,16 @@
         Id  | Config | Test | Function | Markdown | Verdict
 
     Verdicts:
-        OK             — config matches the union of independent signals
+        OK             — config matches the union of code-derived signals
+        OK_MD          — config tokens are not in code, but markdown evidence supports them
         BASELINE       — config is [] and no signals anywhere (intentional baseline)
         ORPHAN         — no test file backs this Id (config-only entry)
         TBD            — config says TBD; no signals found
-        MISMATCH       — independent signals contradict the config (config has too few or too many tokens)
+        MISMATCH       — code signals contradict the config (config is missing or has tokens
+                         that aren't backed by code or markdown)
 
-    Pass -OnlyMismatches to filter out OK / BASELINE / ORPHAN rows.
+    Pass -OnlyMismatches to show only rows that warrant review: MISMATCH, TBD, and ORPHAN.
+    OK / OK_MD / BASELINE rows are filtered out.
 
 .EXAMPLE
     pwsh build/Test-MaesterConfigLicenses.ps1
@@ -41,6 +44,17 @@ $configPath = Join-Path $testsRoot 'maester-config.json'
     or "AADPremiumP1" could all be fine as long as we're consistent in the config and the mapping). Using
     official names would just make the output clearer to external audiences and reduce the mental mapping.
 #>
+
+# Canonical token vocabulary. Mirrors $canonicalTokens in Update-MaesterConfigLicenses.ps1
+# so the License:<Token> extractor below rejects tokens neither script recognizes.
+$canonicalTokens = @(
+    'EntraIDP1', 'EntraIDP2', 'EntraIDGovernance',
+    'EntraWorkloadIDP1', 'EntraWorkloadIDP2',
+    'Eop', 'MdoP1', 'MdoP2',
+    'ExoDlp', 'AdvAudit', 'DefenderXDR',
+    'Intune', 'CustomerLockbox',
+    'AzureDevOps', 'TBD'
+)
 
 # Token vocabulary mirrors Get-MtLicenseInformation.ps1 + Get-MtSkippedReason.ps1.
 $skipReasonMap = @{
@@ -132,7 +146,8 @@ function Get-CodeSignals {
         if ($Text -match "[""']\s*$([regex]::Escape($pair.Key))\s*[""']") { [void] $tokens.Add($pair.Value) }
     }
     foreach ($m in [regex]::Matches($Text, "[""']License:([A-Za-z0-9]+)[""']")) {
-        [void] $tokens.Add($m.Groups[1].Value)
+        $candidate = $m.Groups[1].Value
+        if ($canonicalTokens -contains $candidate) { [void] $tokens.Add($candidate) }
     }
     return @($tokens | Sort-Object)
 }
