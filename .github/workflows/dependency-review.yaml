@@ -9,9 +9,12 @@ on:
       - "report/package.json"
       - "report/package-lock.json"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   dependency-review:
@@ -23,4 +26,5 @@ jobs:
       - name: Dependency review
         uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
         with:
-          fail-on-severity: high
+          fail-on-severity: moderate
+          fail-on-scopes: runtime, development, unknown
