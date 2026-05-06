@@ -108,6 +108,9 @@ if ($enableCoverage) {
         }
     }
 
+    if ($allTestPaths.Count -eq 0) {
+        Write-PSFMessage -Level Warning -Message "No test files matched the current filters in coverage mode; skipping Invoke-Pester."
+    } else {
     Write-PSFMessage -Level Important -Message "Running $($allTestPaths.Count) test files in combined coverage run"
     $config.TestResult.OutputPath   = Join-Path "$PSScriptRoot\..\..\TestResults" "TEST-Coverage.xml"
     $config.TestResult.OutputFormat = "NUnitXml"
@@ -131,6 +134,7 @@ if ($enableCoverage) {
             $null = $scriptAnalyzerFailures.Add($test.StandardOutput)
         }
     }
+    } # end if ($allTestPaths.Count -gt 0)
     #endregion Combined single-run mode
 } else {
     #region Run General Tests
@@ -151,7 +155,7 @@ if ($enableCoverage) {
             $result = Invoke-Pester -Configuration $config
 
             $totalRun += $result.TotalCount
-            $totalFailed += $result.FailedCount
+            $totalFailed += $result.FailedCount + $result.FailedContainersCount
             foreach ($test in $result.Tests) {
                 if ($test.Result -ne 'Passed') {
                     $failedTest = [pscustomobject]@{
