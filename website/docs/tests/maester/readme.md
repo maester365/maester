@@ -162,3 +162,4 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1169](../MT.1169) | Catch-up Full Scan should be disabled | High | Defender |
 | [MT.1170](../MT.1170) | Catch-up Quick Scan should be disabled | High | Defender |
 | [MT.1171](../MT.1171) | Sample Submission should send safe samples automatically | High | Defender |
+| [MT.1172](../MT.1172) | No active configuration drifts from Entra UTCM | High | Entra |

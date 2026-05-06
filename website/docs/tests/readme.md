@@ -18,7 +18,7 @@ This section is generated from the Maester test source. Each page includes the t
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 144 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 145 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 38 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
@@ -327,6 +327,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1169](./MT.1169) | Catch-up Full Scan should be disabled | Maester | High | Defender |
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled | Maester | High | Defender |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically | Maester | High | Defender |
+| [MT.1172](./MT.1172) | No active configuration drifts from Entra UTCM | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

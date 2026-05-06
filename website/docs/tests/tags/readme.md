@@ -194,7 +194,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | EIDSCA.PR06 | 1 | [EIDSCA.PR06](../EIDSCA.PR06) |
 | EIDSCA.ST08 | 1 | [EIDSCA.ST08](../EIDSCA.ST08) |
 | EIDSCA.ST09 | 1 | [EIDSCA.ST09](../EIDSCA.ST09) |
-| Entra | 28 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
+| Entra | 29 | [MT.1024](../MT.1024), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1068](../MT.1068), [MT.1069](../MT.1069), ... |
 | Entra ID Free | 11 | [CISA.MS.AAD.5.1](../CISA.MS.AAD.5.1), [CISA.MS.AAD.5.2](../CISA.MS.AAD.5.2), [CISA.MS.AAD.5.3](../CISA.MS.AAD.5.3), [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.AAD.6.1](../CISA.MS.AAD.6.1), [CISA.MS.AAD.7.1](../CISA.MS.AAD.7.1), [CISA.MS.AAD.7.2](../CISA.MS.AAD.7.2), [CISA.MS.AAD.7.3](../CISA.MS.AAD.7.3), ... |
 | Entra ID P1 | 10 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), [CISA.MS.AAD.3.5](../CISA.MS.AAD.3.5), [CISA.MS.AAD.3.6](../CISA.MS.AAD.3.6), [CISA.MS.AAD.3.7](../CISA.MS.AAD.3.7), ... |
 | Entra ID P2 | 9 | [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.7.4](../CISA.MS.AAD.7.4), [CISA.MS.AAD.7.5](../CISA.MS.AAD.7.5), [CISA.MS.AAD.7.6](../CISA.MS.AAD.7.6), [CISA.MS.AAD.7.7](../CISA.MS.AAD.7.7), [CISA.MS.AAD.7.8](../CISA.MS.AAD.7.8), ... |
@@ -209,7 +209,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | L1 | 22 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.2](../CIS.M365.2.1.2), [CIS.M365.2.1.3](../CIS.M365.2.1.3), ... |
 | L2 | 12 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
 | LongRunning | 19 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
-| Maester | 100 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 101 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MDI | 1 | [MT.1059](../MT.1059) |
 | MS.AAD | 30 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
 | MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
@@ -431,6 +431,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | MT.1169 | 1 | [MT.1169](../MT.1169) |
 | MT.1170 | 1 | [MT.1170](../MT.1170) |
 | MT.1171 | 1 | [MT.1171](../MT.1171) |
+| MT.1172 | 1 | [MT.1172](../MT.1172) |
 | ORCA | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
 | ORCA.100 | 1 | [ORCA.100](../ORCA.100) |
 | ORCA.101 | 1 | [ORCA.101](../ORCA.101) |
@@ -500,7 +501,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | ORCA.243 | 1 | [ORCA.243](../ORCA.243) |
 | ORCA.244 | 1 | [ORCA.244](../ORCA.244) |
 | PIM | 4 | [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032) |
-| Preview | 4 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112) |
+| Preview | 5 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1111](../MT.1111), [MT.1112](../MT.1112), [MT.1172](../MT.1172) |
 | Privileged | 16 | [MT.1025](../MT.1025), [MT.1026](../MT.1026), [MT.1027](../MT.1027), [MT.1028](../MT.1028), [MT.1029](../MT.1029), [MT.1030](../MT.1030), [MT.1031](../MT.1031), [MT.1032](../MT.1032), ... |
 | Recommendation | 1 | [MT.1024](../MT.1024) |
 | Security | 12 | [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.4.1](../CIS.M365.4.1), [CIS.M365.5.1.2.2](../CIS.M365.5.1.2.2), [CIS.M365.5.1.2.3](../CIS.M365.5.1.2.3), [CIS.M365.5.1.3.1](../CIS.M365.5.1.3.1), [CIS.M365.5.1.5.1](../CIS.M365.5.1.5.1), ... |
