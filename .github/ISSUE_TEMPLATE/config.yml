@@ -1,3 +1,7 @@
+# Note: GitHub's community profile API may report 'issue_template: null' for repositories
+# that exclusively use YAML issue forms. This is a known platform API limitation.
+# The issue forms below are valid and functional. See:
+# https://github.com/orgs/community/discussions/34427
 blank_issues_enabled: false
 contact_links:
   - name: Questions & Discussions 💬
