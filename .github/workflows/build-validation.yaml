@@ -120,16 +120,17 @@ jobs:
               $missed  = [int]$lineCounter.missed
               $total   = $covered + $missed
               $pct     = if ($total -gt 0) { [math]::Round(($covered / $total) * 100, 1) } else { 0 }
-              @"
-          ## Code Coverage (baseline)
+              $summary = @"
+## Code Coverage (baseline)
 
-          | Metric        | Value              |
-          |---------------|--------------------|
-          | Lines covered | $covered / $total  |
-          | Coverage      | $pct%              |
+| Metric        | Value             |
+|---------------|-------------------|
+| Lines covered | $covered / $total |
+| Coverage      | $pct%             |
 
-          > No threshold is enforced in this baseline run.
-          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+> No threshold is enforced in this baseline run.
+"@
+              $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
               Write-Host "Coverage: $pct% ($covered/$total lines covered)"
             } else {
               Write-Warning "No LINE counter found in $coverageFile"
