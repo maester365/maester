@@ -14,8 +14,7 @@
     [switch]
     $NoError,
 
-    # When set (or when $env:PESTER_COVERAGE equals 'true'), runs all tests in a single
-    # combined Pester invocation and generates a JaCoCo code-coverage report.
+    # When set (or when $env:PESTER_COVERAGE equals 'true'), runs all tests in a single combined Pester invocation and generates a JaCoCo code-coverage report.
     [switch]
     $Coverage
 )
