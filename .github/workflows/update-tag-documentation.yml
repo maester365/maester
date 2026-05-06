@@ -9,6 +9,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: update-tag-documentation
+  cancel-in-progress: false
+
 jobs:
   update-tags:
     runs-on: ubuntu-latest

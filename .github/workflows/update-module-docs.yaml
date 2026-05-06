@@ -11,6 +11,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: update-module-docs
+  cancel-in-progress: false
+
 jobs:
   update-command-reference:
     runs-on: windows-latest
