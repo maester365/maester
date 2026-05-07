@@ -7,7 +7,9 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
+
+    GitHub requires an explicit Connect-MtGitHub call before testing — unlike other services it has no auto-detection. When checked via -Service All, GitHub is treated as required and will return $false if Connect-MtGitHub has not been called.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -15,17 +17,23 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a Boolean value.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (if Connect-MtGitHub was called). Returns a Boolean value.
 
     .EXAMPLE
     Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (if Connect-MtGitHub was called). Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
 
     Checks if the current session is connected to Azure and returns a Boolean result.
+
+    .EXAMPLE
+    Test-MtConnection -Service GitHub
+
+    Checks if the current session is connected to GitHub and returns a Boolean result.
+    Returns $false if Connect-MtGitHub has not been called in this session.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtConnection
