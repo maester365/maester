@@ -35,7 +35,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -49,6 +49,7 @@
             PSTypeName  = 'Maester.Connections'
             Azure = $null
             AzureDevOps = $null
+            GitHub = $null
             Graph = $null
             ExchangeOnline = $null
             ExchangeOnlineProtection = $null
@@ -180,6 +181,23 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion AzureDevOps
+
+        #region GitHub
+        if ($Service -contains 'GitHub' -or $Service -contains 'All') {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.GitHubConnection) {
+                if ($__MtSession.GitHubConnection.Connected -eq $true) {
+                    $MtConnections.GitHub = $__MtSession.GitHubConnection
+                    $IsConnected = $true
+                }
+            } else {
+                # No session state — GitHub requires explicit Connect-MtGitHub (no module auto-detect)
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
+            }
+            Write-Verbose "GitHub: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion GitHub
 
         $MtConnections.AllConnected = $ConnectionState
 

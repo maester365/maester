@@ -1,0 +1,125 @@
+﻿function Invoke-MtGitHubRequest {
+    <#
+    .SYNOPSIS
+    Internal: Authenticated read-only GET request to GitHub REST API with caching and pagination.
+
+    .DESCRIPTION
+    Uses Invoke-WebRequest for PowerShell 5.1 compatibility (Invoke-RestMethod
+    -ResponseHeadersVariable is PowerShell 7+ only). Provides per-session caching,
+    explicit opt-in pagination, and rate-limit detection.
+
+    Cache key: ApiVersion|absoluteUri (cleared on reconnect and by Clear-ModuleVariable).
+    Rate-limit detection: checks x-ratelimit-remaining in both success and error responses.
+
+    .PARAMETER RelativeUri
+    Path relative to ApiBaseUri. URL-encode path segments with [Uri]::EscapeDataString.
+
+    .PARAMETER Paginate
+    Follows Link header rel="next" and appends per_page=100. Use for list endpoints only.
+
+    .PARAMETER DisableCache
+    Bypasses session cache; makes a live API call.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string] $RelativeUri,
+        [switch] $Paginate,
+        [switch] $DisableCache
+    )
+
+    if ($null -eq $__MtSession.GitHubConnection -or
+        $__MtSession.GitHubConnection.Connected -ne $true) {
+        throw "Not connected to GitHub. Call Connect-MtGitHub first."
+    }
+
+    $baseUri = $__MtSession.GitHubConnection.ApiBaseUri
+    $version = $__MtSession.GitHubConnection.ApiVersion
+    $headers = $__MtSession.GitHubAuthHeader
+
+    $absUri = "$baseUri/$($RelativeUri.TrimStart('/'))"
+    if ($Paginate -and $absUri -notmatch '[?&]per_page=') {
+        $sep = if ($absUri -match '\?') { '&' } else { '?' }
+        $absUri = "${absUri}${sep}per_page=100"
+    }
+
+    $cacheKey = "$version|$absUri"
+    if (-not $DisableCache -and $__MtSession.GitHubCache.ContainsKey($cacheKey)) {
+        Write-Verbose "GitHub cache hit: $absUri"
+        return $__MtSession.GitHubCache[$cacheKey]
+    }
+
+    function Invoke-Page ([string]$Uri) {
+        try {
+            $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
+
+            $body = if (-not [string]::IsNullOrWhiteSpace($wr.Content)) {
+                $wr.Content | ConvertFrom-Json
+            } else {
+                $null
+            }
+
+            # Rate-limit warning on successful response — do NOT throw; the response body is valid.
+            $remaining = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-remaining'
+            if ($null -ne $remaining -and [int]$remaining -eq 0) {
+                $reset = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-reset'
+                $resetTime = if ($reset) { [DateTimeOffset]::FromUnixTimeSeconds([long]$reset).LocalDateTime } else { 'unknown' }
+                Write-Verbose "GitHub API rate limit remaining is 0 after this successful response. Resets at: $resetTime"
+            }
+
+            $linkHeader = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'Link'
+            return [PSCustomObject]@{ Body = $body; Link = $linkHeader }
+        } catch {
+            $code = Get-MtGitHubErrorStatusCode -ErrorRecord $_
+
+            if ($code -in 403, 429) {
+                try {
+                    $errResp = $_.Exception.Response
+                    if ($errResp) {
+                        $errHeaders = $errResp.Headers
+                        $remaining = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'x-ratelimit-remaining'
+                        $retryAfter = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'retry-after'
+                        if ($null -ne $remaining -and [int]$remaining -eq 0) {
+                            $reset = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'x-ratelimit-reset'
+                            $resetTime = if ($reset) { [DateTimeOffset]::FromUnixTimeSeconds([long]$reset).LocalDateTime } else { 'unknown' }
+                            throw "GitHub API rate limit encountered (HTTP $code). Resets at: $resetTime"
+                        }
+                        if ($null -ne $retryAfter) {
+                            throw "GitHub secondary rate limit encountered (HTTP $code). Retry after: ${retryAfter}s"
+                        }
+                    }
+                } catch {
+                    if ($_.Exception.Message -match 'rate limit') { throw }
+                }
+            }
+
+            throw
+        }
+    }
+
+    function Get-NextLink ([string]$Link) {
+        if ([string]::IsNullOrEmpty($Link)) { return $null }
+        $m = [regex]::Match($Link, '<([^>]+)>;\s*rel="next"')
+        if ($m.Success) { return $m.Groups[1].Value }
+        return $null
+    }
+
+    $first = Invoke-Page $absUri
+
+    if (-not $Paginate) {
+        $result = $first.Body
+    } else {
+        $all = [System.Collections.Generic.List[object]]::new()
+        $all.AddRange(@($first.Body))
+        $next = Get-NextLink $first.Link
+        while ($null -ne $next) {
+            $page = Invoke-Page $next
+            $all.AddRange(@($page.Body))
+            $next = Get-NextLink $page.Link
+        }
+        $result = $all.ToArray()
+    }
+
+    if (-not $DisableCache) { $__MtSession.GitHubCache[$cacheKey] = $result }
+    return $result
+}
