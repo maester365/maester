@@ -9,6 +9,8 @@
     .PARAMETER Service
     The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
 
+    GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection. When checked via -Service All, GitHub is treated as required and will return $false if Connect-MtGitHub has not been called.
+
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
 
@@ -26,6 +28,12 @@
     Test-MtConnection -Service Azure
 
     Checks if the current session is connected to Azure and returns a Boolean result.
+
+    .EXAMPLE
+    Test-MtConnection -Service GitHub
+
+    Checks if the current session is connected to GitHub and returns a Boolean result.
+    Returns $false if Connect-MtGitHub has not been called in this session.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtConnection
