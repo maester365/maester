@@ -5,13 +5,15 @@ BeforeAll {
 Describe 'Test-MtConnection — GitHub service' {
     BeforeEach {
         InModuleScope Maester {
-            $__MtSession.GitHubConnection = $null
+            $__MtSession.GitHubConnection      = $null
+            $__MtSession.AzureDevOpsConnection = $null
         }
     }
 
     AfterEach {
         InModuleScope Maester {
-            $__MtSession.GitHubConnection = $null
+            $__MtSession.GitHubConnection      = $null
+            $__MtSession.AzureDevOpsConnection = $null
         }
     }
 
@@ -70,18 +72,71 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
-    Context '-Service All -Details with GitHub connected' {
-        It 'Populates the GitHub property even when other services are absent' {
+    Context '-Service GitHub -Details with GitHub connected' {
+        It 'Populates the GitHub property and returns AllConnected $true' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
-                # Other services (Azure, Graph, etc.) are not connected in unit test scope.
-                # AllConnected will be $false due to missing services, but GitHub must be set.
-                $result = Test-MtConnection -Service All -Details
-                $result.GitHub | Should -Not -BeNullOrEmpty
-                $result.GitHub.Connected | Should -BeTrue
-                # AllConnected reflects ALL services; other services will be absent here
-                $result.AllConnected | Should -BeFalse
             }
+            $result = Test-MtConnection -Service GitHub -Details
+            $result.GitHub | Should -Not -BeNullOrEmpty
+            $result.GitHub.Connected | Should -BeTrue
+            $result.AllConnected | Should -BeTrue
+        }
+    }
+
+    Context '-Service All regression — GitHub absence does not flip AllConnected' {
+        It 'Returns AllConnected $true when all MS services are connected and GitHub session is absent' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection      = $null
+                $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
+            }
+            Mock Get-AzContext { [PSCustomObject]@{ Account = 'test@contoso.com' } } -ModuleName Maester
+            Mock Invoke-AzRestMethod { [PSCustomObject]@{} } -ModuleName Maester
+            Mock Get-MgContext { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+            Mock Get-MtExo {
+                @(
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $false }
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $true }
+                )
+            } -ModuleName Maester
+            Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+            $result = Test-MtConnection -Service All -Details
+            $result.AllConnected | Should -BeTrue
+            $result.GitHub | Should -BeNullOrEmpty
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
+            }
+        }
+    }
+
+    Context '-Service All — GitHub skipped when NotCalled sentinel exists' {
+        It 'Does not set the GitHub property' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
+                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+            }
+            Mock Get-AzContext { $null } -ModuleName Maester
+            Mock Get-MgContext { $null } -ModuleName Maester
+            Mock Get-MtExo { $null } -ModuleName Maester
+            Mock Get-CsTenant { $null } -ModuleName Maester
+            $result = Test-MtConnection -Service All -Details
+            $result.GitHub | Should -BeNullOrEmpty
+        }
+    }
+
+    Context '-Service All — GitHub included when connected' {
+        It 'Populates the GitHub property' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
+                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+            }
+            Mock Get-AzContext { $null } -ModuleName Maester
+            Mock Get-MgContext { $null } -ModuleName Maester
+            Mock Get-MtExo { $null } -ModuleName Maester
+            Mock Get-CsTenant { $null } -ModuleName Maester
+            $result = Test-MtConnection -Service All -Details
+            $result.GitHub | Should -Not -BeNullOrEmpty
+            $result.GitHub.Connected | Should -BeTrue
         }
     }
 }
