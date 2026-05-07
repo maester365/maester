@@ -67,6 +67,17 @@
     $__MtSession.GitHubAuthHeader = $null
     $__MtSession.GitHubCache = @{}
 
+    # Lazy-load config once if MaesterConfig is not yet set and any config-backed parameter is
+    # omitted. This makes the config fallback work when Connect-MtGitHub is called before
+    # Invoke-Maester (the normal pre-run workflow). Get-MtMaesterConfig walks up to 5 parent
+    # directories from the given path, so it finds the config from anywhere in the test tree.
+    if ($null -eq $__MtSession.MaesterConfig -and (
+            [string]::IsNullOrWhiteSpace($Organization) -or
+            [string]::IsNullOrWhiteSpace($ApiBaseUri) -or
+            [string]::IsNullOrWhiteSpace($ApiVersion))) {
+        $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path (Get-Location).Path
+    }
+
     # Resolve organization (param -> config -> error)
     if ([string]::IsNullOrWhiteSpace($Organization)) {
         $Organization = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubOrganization'
@@ -78,15 +89,19 @@
     }
 
     # Resolve ApiBaseUri (param -> config -> default)
+    # Use a local variable for the config lookup to avoid triggering [ValidatePattern] on $null.
     if ([string]::IsNullOrWhiteSpace($ApiBaseUri)) {
-        $ApiBaseUri = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiBaseUri'
+        $configApiBaseUri = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiBaseUri'
+        if (-not [string]::IsNullOrWhiteSpace($configApiBaseUri)) { $ApiBaseUri = $configApiBaseUri }
     }
     if ([string]::IsNullOrWhiteSpace($ApiBaseUri)) { $ApiBaseUri = 'https://api.github.com' }
     $ApiBaseUri = $ApiBaseUri.TrimEnd('/')
 
     # Resolve ApiVersion (param -> config -> default)
+    # Use a local variable for the config lookup to avoid triggering [ValidatePattern] on $null.
     if ([string]::IsNullOrWhiteSpace($ApiVersion)) {
-        $ApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
+        $configApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
+        if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $ApiVersion = $configApiVersion }
     }
     if ([string]::IsNullOrWhiteSpace($ApiVersion)) { $ApiVersion = '2022-11-28' }
 
