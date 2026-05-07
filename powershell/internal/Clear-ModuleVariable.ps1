@@ -21,6 +21,8 @@
     Clear-MtExoCache
     $__MtSession.AIAgentInfo = $null
     $__MtSession.AzureDevOpsConnection = $null
+    # Keep GitHubConnection and GitHubAuthHeader until Disconnect-MtGitHub is called.
+    $__MtSession.GitHubCache = @{}
     $__MtSession.SpoCache = @{}
     # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
 }

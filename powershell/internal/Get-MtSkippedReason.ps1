@@ -14,6 +14,7 @@
         "NotConnectedSecurityCompliance" { "Not connected to Security & Compliance. See [Connecting to Security & Compliance](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break }
         "NotConnectedTeams" { "Not connected to Teams. See [Connecting to Teams](https://maester.dev/docs/connect-maester/#connect-to-azure-exchange-online-and-teams)"; break }
         "NotConnectedAzureDevOps" { "Not connected to Azure DevOps. See [Connecting to Azure DevOps](https://maester.dev/docs/connect-maester/#connect-to-azure-devops-optional)"; break }
+        "NotConnectedGitHub" { "Not connected to GitHub. Call Connect-MtGitHub with a valid PAT and organization name. See [Connect-MtGitHub](https://maester.dev/docs/commands/Connect-MtGitHub)"; break }
         "NotConnectedGraph" { "Not connected to Graph. See [Connect-Maester](https://maester.dev/docs/commands/Connect-Maester#examples)"; break }
         "NotConnectedSharePoint" { "Not connected to SharePoint Online. See [Connecting to SharePoint Online](https://maester.dev/docs/connect-maester/#connect-to-sharepoint-online-optional)"; break }
         "NotDotGovDomain" { "This test is only for federal, executive branch, departments and agencies. To override use [Test-MtCisaDmarcAggregateCisa -Force](https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa)"; break }
