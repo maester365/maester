@@ -1,4 +1,4 @@
-function Disconnect-MtGitHub {
+﻿function Disconnect-MtGitHub {
     <#
     .SYNOPSIS
     Clears the current GitHub REST session in Maester.
