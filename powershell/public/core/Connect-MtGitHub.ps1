@@ -1,32 +1,48 @@
 ﻿function Connect-MtGitHub {
     <#
     .SYNOPSIS
-    Connects to the GitHub REST API for Maester security testing.
+    Establishes a GitHub Enterprise Cloud organization REST API session for Maester.
 
     .DESCRIPTION
-    Establishes a GitHub REST API session for Maester CIS GitHub Enterprise Cloud benchmark
-    tests. Validates the PAT via three probes, all of which must succeed:
-      1. GET /user                            — token identity
-      2. GET /orgs/{org}                      — org metadata (login, plan)
-      3. GET /orgs/{org}/memberships/{user}   — org-access proof (state + role)
+    Establishes a GitHub Enterprise Cloud organization REST API session for Maester CIS
+    benchmark tests. This is an organization-scoped session, not a full enterprise-admin
+    session: enterprise-admin endpoints under /enterprises/{enterprise} are not verified
+    by this command and would require a future enterprise-access probe if CIS controls
+    need them.
+
+    Validates the PAT via four probes. The first three are blocking (any failure aborts
+    the connection); the fourth is non-blocking (failure emits a warning but the session
+    is still established):
+      1. GET /user                            — token identity (blocking)
+      2. GET /orgs/{org}                      — org metadata (blocking)
+      3. GET /orgs/{org}/memberships/{user}   — org-access proof, state + role (blocking)
+      4. GET /orgs/{org}/actions/permissions  — administration access probe (non-blocking)
 
     The membership probe is the real access gate: /orgs/{org} returns public metadata
     even for tokens with no relationship to the organization. A 4xx, malformed body,
     or missing state/role on probe 3 aborts with FailureReason = 'OrgMembershipFailed'.
 
-    On success, Role = 'admin' + RoleState = 'active' is the no-warning path. Other
-    valid roles (member, billing_manager, etc.) or 'pending' state still connect but
-    emit a warning indicating limited CIS coverage.
+    Probe 4 verifies the token can reach an org-administration endpoint. GitHub
+    documents /orgs/{org}/actions/permissions as requiring classic PAT 'admin:org' or
+    fine-grained 'Organization Administration: read'. Failure here records
+    AdministrationPermissionVerified = $false and emits a warning, but does not flip
+    Connected to $false — the session remains usable for controls that don't require
+    org administration access.
+
+    On success, Role = 'admin' + RoleState = 'active' + AdministrationPermissionVerified
+    = $true is the no-warning path. Other valid roles (member, billing_manager, etc.)
+    or 'pending' state, or admin-probe failure, still connect but emit warnings
+    indicating limited CIS coverage.
 
     Token resolution order:
       1. -Token parameter (SecureString)
       2. MAESTER_GITHUB_TOKEN environment variable
       3. GH_TOKEN environment variable (GitHub CLI convention)
 
-    Required permissions (classic PAT): admin:org
-    Fine-grained PAT (expected; validate in integration testing):
-      Organization Administration: read + Organization Members: read
-    Required GitHub role: organization owner for full org settings visibility.
+    Required permissions:
+      Classic PAT:        admin:org
+      Fine-grained PAT:   Organization Members: read + Organization Administration: read
+      Required role for full coverage: organization owner/admin
 
     Note: Connection success proves token validity and org access, not that all
     CIS control fields will be visible. Each CIS test validates field availability
@@ -69,7 +85,6 @@
         [string] $ApiBaseUri,
 
         [Parameter(Mandatory = $false)]
-        [ValidatePattern('^\d{4}-\d{2}-\d{2}$')]
         [string] $ApiVersion
     )
 
@@ -120,13 +135,23 @@
     }
     $ApiBaseUri = $resolvedApiBaseUri
 
-    # Resolve ApiVersion (param -> config -> default)
-    # Use a local variable for the config lookup to avoid triggering [ValidatePattern] on $null.
-    if ([string]::IsNullOrWhiteSpace($ApiVersion)) {
+    # Resolve ApiVersion (param -> config -> default). Validation runs on the resolved value
+    # so the same FailureReason path applies whether the bad value came from -ApiVersion or
+    # GitHubApiVersion config — a parameter [ValidatePattern] would otherwise throw before
+    # the session-clearing logic at the top of this function ran.
+    $resolvedApiVersion = $ApiVersion
+    if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) {
         $configApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
-        if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $ApiVersion = $configApiVersion }
+        if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $resolvedApiVersion = $configApiVersion }
     }
-    if ([string]::IsNullOrWhiteSpace($ApiVersion)) { $ApiVersion = '2022-11-28' }
+    if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) { $resolvedApiVersion = '2022-11-28' }
+
+    if ($resolvedApiVersion -notmatch '^\d{4}-\d{2}-\d{2}$') {
+        Write-Host "`nGitHub API version must use YYYY-MM-DD format. Got: '$resolvedApiVersion'." -ForegroundColor Red
+        $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiVersion' }
+        return
+    }
+    $ApiVersion = $resolvedApiVersion
 
     # Resolve token (param -> MAESTER_GITHUB_TOKEN -> GH_TOKEN)
     $plainToken = $null
@@ -164,7 +189,17 @@
         $user = $userResponse.Content | ConvertFrom-Json
         Write-Verbose "GitHub token identity: $($user.login)"
     } catch {
-        $code = Get-MtGitHubErrorStatusCode -ErrorRecord $_
+        $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
+        $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
+        # 410 = unsupported API version. 400 with a message about API/version support
+        # also indicates an unsupported X-GitHub-Api-Version header value — GitHub's
+        # documented wording includes "Not a supported version" and "version is not supported".
+        $isUnsupportedApiVersion = $code -eq 410 -or ($code -eq 400 -and $apiMsg -match '(?i)api\s+version|x-github-api-version|not\s+.*supported.*version|version.*not\s+.*supported')
+        if ($isUnsupportedApiVersion) {
+            Write-Host "`nGitHub API version '$ApiVersion' is not supported by GitHub. Update GitHubApiVersion or omit it to use the default." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiVersion' }
+            return
+        }
         Write-Host "`nGitHub token validation failed (HTTP $code). Verify the PAT is valid and not expired." -ForegroundColor Red
         $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
         return
@@ -244,24 +279,60 @@
         return
     }
 
-    $__MtSession.GitHubAuthHeader = $authHeaders
-    $__MtSession.GitHubConnection = [PSCustomObject]@{
-        Connected                     = $true
-        Organization                  = $Organization
-        ApiBaseUri                    = $ApiBaseUri
-        ApiVersion                    = $ApiVersion
-        TokenLogin                    = $user.login
-        Plan                          = $planName
-        Role                          = $role
-        RoleState                     = $roleState
-        RoleVerified                  = $true
-        RoleVerificationFailureReason = $null
-        FailureReason                 = $null
+    # Probe 4: organization administration access (non-blocking).
+    # /orgs/{org}/actions/permissions requires classic PAT 'admin:org' or fine-grained
+    # 'Organization Administration: read' — a closer match to the permissions needed by
+    # CIS org-admin controls than the membership endpoint. Failure here records the
+    # outcome and emits a warning, but does not flip Connected to $false.
+    $adminVerified           = $false
+    $adminFailureReason      = $null
+    $adminStatusCode         = $null
+    $adminAcceptedPermissions = $null
+    $adminWarning            = $null
+    try {
+        $adminResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg/actions/permissions" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+        $adminVerified   = $true
+        $adminStatusCode = 200
+        if ($adminResponse.PSObject.Properties.Name -contains 'StatusCode' -and $null -ne $adminResponse.StatusCode) {
+            $adminStatusCode = [int]$adminResponse.StatusCode
+        }
+    } catch {
+        $adminStatusCode    = Get-MtGitHubErrorStatusCode -ErrorRecord $_
+        $adminApiMsg        = Get-MtGitHubErrorMessage    -ErrorRecord $_
+        $respHeaders        = $null
+        if ($null -ne $_.Exception -and $null -ne $_.Exception.Response) {
+            $respHeaders = $_.Exception.Response.Headers
+        }
+        $adminAcceptedPermissions = Get-MtGitHubResponseHeaderValue -Headers $respHeaders -Name 'x-accepted-github-permissions'
+        $adminFailureReason = switch ($adminStatusCode) {
+            403     { "HTTP 403 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+            404     { "HTTP 404 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+            default { "HTTP $adminStatusCode from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+        }
+        $adminWarning = "GitHub organization administration API access was not verified. Some CIS controls requiring org administration may skip or report limited visibility. Required token permissions — classic PAT: admin:org; fine-grained PAT: Organization Administration: read. Detail: $adminFailureReason"
     }
 
-    if ($roleWarning) {
-        Write-Warning $roleWarning
+    $__MtSession.GitHubAuthHeader = $authHeaders
+    $__MtSession.GitHubConnection = [PSCustomObject]@{
+        Connected                                   = $true
+        Organization                                = $Organization
+        ApiBaseUri                                  = $ApiBaseUri
+        ApiVersion                                  = $ApiVersion
+        TokenLogin                                  = $user.login
+        Plan                                        = $planName
+        Role                                        = $role
+        RoleState                                   = $roleState
+        RoleVerified                                = $true
+        RoleVerificationFailureReason               = $null
+        AdministrationPermissionVerified            = $adminVerified
+        AdministrationPermissionFailureReason       = $adminFailureReason
+        AdministrationPermissionStatusCode          = $adminStatusCode
+        AdministrationPermissionAcceptedPermissions = $adminAcceptedPermissions
+        FailureReason                               = $null
     }
+
+    if ($roleWarning)  { Write-Warning $roleWarning }
+    if ($adminWarning) { Write-Warning $adminWarning }
 
     $planDisplay = if ($planName) { " (plan: $planName)" } else { '' }
     Write-Host "Connected to GitHub organization '$($orgData.login)' as '$($user.login)'$planDisplay." -ForegroundColor Green

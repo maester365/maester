@@ -111,6 +111,9 @@ Describe 'Connect-MtGitHub' {
     Context 'Successful connection' {
         BeforeEach {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
+            }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
             }
@@ -125,19 +128,37 @@ Describe 'Connect-MtGitHub' {
         It 'Sets Connected = $true and stores GitHubAuthHeader' {
             Connect-MtGitHub -Organization 'myorg' 3>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection.Connected     | Should -BeTrue
-                $__MtSession.GitHubConnection.Organization  | Should -Be 'myorg'
-                $__MtSession.GitHubConnection.TokenLogin    | Should -Be 'testuser'
-                $__MtSession.GitHubAuthHeader               | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Match '^Bearer '
+                $__MtSession.GitHubConnection.Connected                        | Should -BeTrue
+                $__MtSession.GitHubConnection.Organization                     | Should -Be 'myorg'
+                $__MtSession.GitHubConnection.TokenLogin                       | Should -Be 'testuser'
+                $__MtSession.GitHubConnection.AdministrationPermissionVerified | Should -BeTrue
+                $__MtSession.GitHubAuthHeader                                  | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader['Authorization']                 | Should -Match '^Bearer '
             }
         }
 
-        It 'All three probes use the configured ApiBaseUri and X-GitHub-Api-Version header' {
+        It 'All four probes use the configured ApiBaseUri and X-GitHub-Api-Version header' {
             Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.myco.ghe.com' -ApiVersion '2024-01-01' 3>$null
 
-            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 3 -ParameterFilter {
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -ParameterFilter {
                 $Uri -match 'api\.myco\.ghe\.com' -and $Headers['X-GitHub-Api-Version'] -eq '2024-01-01'
+            }
+        }
+
+        It 'GHE.com data residency: all four endpoint paths target the configured base URI' {
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.octocorp.ghe.com' 3>$null
+
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.octocorp.ghe.com/user'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg/memberships/testuser'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg/actions/permissions'
             }
         }
     }
@@ -145,6 +166,9 @@ Describe 'Connect-MtGitHub' {
     Context 'Role probe' {
         BeforeEach {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
@@ -167,6 +191,7 @@ Describe 'Connect-MtGitHub' {
                 $c.RoleState     | Should -Be 'active'
                 $c.RoleVerified  | Should -BeTrue
                 $c.RoleVerificationFailureReason | Should -BeNullOrEmpty
+                $c.AdministrationPermissionVerified | Should -BeTrue
             }
         }
 
@@ -219,6 +244,98 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
+    }
+
+    Context 'Administration permission probe' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+        }
+
+        It 'admin + active + admin probe 200: Connected=true, AdministrationPermissionVerified=true, no admin warning, four IWR calls' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
+            }
+
+            $warns = @()
+            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+
+            ($warns -join ' ') | Should -Not -Match 'administration API access'
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected                                    | Should -BeTrue
+                $c.AdministrationPermissionVerified             | Should -BeTrue
+                $c.AdministrationPermissionFailureReason        | Should -BeNullOrEmpty
+                $c.AdministrationPermissionStatusCode           | Should -Be 200
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4
+        }
+
+        It 'admin + active + admin probe 403: Connected=true, FailureReason=null, AdministrationPermissionVerified=false, warning mentions both permission models' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 403
+                Headers    = @{ 'x-accepted-github-permissions' = 'administration=read' }
+            }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 403 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Resource not accessible by personal access token' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } { throw $ex }
+
+            $warns = @()
+            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+
+            $combined = $warns -join ' '
+            $combined | Should -Match 'admin:org'
+            $combined | Should -Match 'Administration: read'
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected                                    | Should -BeTrue
+                $c.FailureReason                                | Should -BeNullOrEmpty
+                $c.Role                                         | Should -Be 'admin'
+                $c.AdministrationPermissionVerified             | Should -BeFalse
+                $c.AdministrationPermissionStatusCode           | Should -Be 403
+                $c.AdministrationPermissionFailureReason        | Should -Match 'HTTP 403'
+                $c.AdministrationPermissionAcceptedPermissions  | Should -Be 'administration=read'
+            }
+        }
+
+        It 'member + active + admin probe 403: emits both role and admin-permission warnings' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"member"}' }
+            }
+            $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 403 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Resource not accessible' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } { throw $ex }
+
+            $warns = @()
+            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+
+            $warns.Count | Should -BeGreaterOrEqual 2
+            $combined = $warns -join ' '
+            $combined | Should -Match 'admin/owner|full CIS coverage'
+            $combined | Should -Match 'administration API access|Administration: read'
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected                        | Should -BeTrue
+                $c.Role                             | Should -Be 'member'
+                $c.AdministrationPermissionVerified | Should -BeFalse
+            }
+        }
     }
 
     Context 'Failure: OrgMembershipFailed' {
@@ -363,6 +480,9 @@ Describe 'Connect-MtGitHub' {
         }
 
         It 'Parameter https URI with trailing slash still works and is trimmed' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
             }
@@ -394,6 +514,9 @@ Describe 'Connect-MtGitHub' {
                 }
             }
             Mock Get-MtMaesterConfig -ModuleName Maester { throw 'Get-MtMaesterConfig must not be called when config is pre-loaded' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
             }
@@ -428,6 +551,9 @@ Describe 'Connect-MtGitHub' {
                 }
             }
             Mock Get-MtMaesterConfig -ModuleName Maester { $fakeConfig }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
             }
@@ -468,6 +594,119 @@ Describe 'Connect-MtGitHub' {
                 $conn.Organization | Should -Be 'lazy-org'
                 $conn.ApiBaseUri   | Should -Be 'https://api.lazy.ghe.com'
                 $conn.ApiVersion   | Should -Be '2024-06-01'
+            }
+        }
+    }
+
+    Context 'Failure: InvalidApiVersion' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It 'Config GitHubApiVersion = "latest" fails before any web request' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiVersion = 'latest'
+                    }
+                }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiVersion is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiVersion'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Config GitHubApiVersion with valid format but /user returns 410: InvalidApiVersion (not TokenInvalid)' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiVersion = '2020-01-01'
+                    }
+                }
+            }
+            $fakeResp = [PSCustomObject]@{ StatusCode = 410; Headers = @{} }
+            $ex = [System.Exception]::new('Gone')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 410 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'API version is not supported' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiVersion'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Parameter -ApiVersion "latest" sets InvalidApiVersion and clears prior session state' {
+            # Pre-seed a stale session to prove the function clears it before failing.
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'stale' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer stale-token' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiVersion is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiVersion 'latest' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiVersion'
+                # Stale auth header must be cleared even though the failure path runs early.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It '/user 400 with "Not a supported version" message maps to InvalidApiVersion (not TokenInvalid)' {
+            $fakeResp = [PSCustomObject]@{ StatusCode = 400; Headers = @{} }
+            $ex = [System.Exception]::new('Bad Request')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 400 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Not a supported version' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiVersion '2024-01-01' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiVersion'
+            }
+        }
+
+        It 'Parameter -ApiVersion "2024-01-01" passes local format validation and reaches /user header' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiVersion '2024-01-01' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiVersion | Should -Be '2024-01-01'
+                $__MtSession.GitHubAuthHeader['X-GitHub-Api-Version'] | Should -Be '2024-01-01'
             }
         }
     }
