@@ -496,8 +496,8 @@ test.json
 ## ========================== ##
 
 # Claude Code
-.claude//**
-!.claude\agents\maester-test-expert.md
+.claude/**
+!.claude/agents/**
 
 # Don't allow Maester test results in the main branch
 test-results
