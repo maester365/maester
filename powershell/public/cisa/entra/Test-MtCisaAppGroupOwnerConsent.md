@@ -1,3 +1,5 @@
+**This is no longer applicable, and is deprecated by CISA as of March 2025. The content below is retained as a historical archive and will be removed in a future version.**
+
 Group owners SHALL NOT be allowed to consent to applications.
 
 Rationale: In M365, group owners and team owners can consent to applications accessing data in the tenant. By requiring consent requests to go through an approval workflow, risk of exposure to malicious applications is reduced.

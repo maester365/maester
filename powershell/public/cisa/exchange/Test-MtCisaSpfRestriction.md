@@ -1,3 +1,5 @@
+**This is no longer applicable, and is deprecated by CISA as of May 2024. The content below is retained as a historical archive and will be removed in a future version.**
+
 A list of approved IP addresses for sending mail SHALL be maintained.
 
 Rationale: Failing to maintain an accurate list of authorized IP addresses may result in spoofed email messages or failure to deliver legitimate messages when SPF is enabled. Maintaining such a list helps ensure that unauthorized servers sending spoofed messages can be detected, and permits message delivery from legitimate senders.
