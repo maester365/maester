@@ -5,7 +5,16 @@
 
     .DESCRIPTION
     Establishes a GitHub REST API session for Maester CIS GitHub Enterprise Cloud benchmark
-    tests. Validates the PAT via GET /user (token identity) and GET /orgs/{org} (org access).
+    tests. Validates the PAT via three probes:
+      1. GET /user                            — token identity
+      2. GET /orgs/{org}                      — org access
+      3. GET /orgs/{org}/memberships/{user}   — role check (admin vs member, active vs pending)
+
+    The third probe populates Role, RoleState, RoleVerified, and RoleVerificationFailureReason
+    on the connection object. RoleVerified = $true with Role = 'admin' and RoleState = 'active'
+    is the no-warning path; anything else (member role, pending state, or a probe failure)
+    emits a warning. A failed role probe does NOT block connection — token validity and org
+    access are already proven.
 
     Token resolution order:
       1. -Token parameter (SecureString)
@@ -171,15 +180,71 @@
         $planName = $orgData.plan.name
     }
 
+    # Probe 3: org membership / role
+    # Distinguishes "known non-admin" (RoleVerified=$true, Role!='admin') from
+    # "could not check" (RoleVerified=$false). Failures here never block connection.
+    $role                          = $null
+    $roleState                     = $null
+    $roleVerified                  = $false
+    $roleVerificationFailureReason = $null
+    $roleWarning                   = $null
+
+    $encodedLogin = [System.Uri]::EscapeDataString($user.login)
+    try {
+        $membershipResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg/memberships/$encodedLogin" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
+
+        $membershipData = $null
+        try {
+            $membershipData = $membershipResponse.Content | ConvertFrom-Json -ErrorAction Stop
+        } catch {
+            $membershipData = $null
+        }
+
+        $hasState = $null -ne $membershipData -and $membershipData.PSObject.Properties.Name -contains 'state' -and -not [string]::IsNullOrWhiteSpace([string]$membershipData.state)
+        $hasRole  = $null -ne $membershipData -and $membershipData.PSObject.Properties.Name -contains 'role'  -and -not [string]::IsNullOrWhiteSpace([string]$membershipData.role)
+
+        if (-not ($hasState -and $hasRole)) {
+            $roleVerified                  = $false
+            $roleVerificationFailureReason = 'Malformed membership response'
+            $roleWarning                   = "GitHub role could not be verified: $roleVerificationFailureReason. Continuing — some controls may report limited visibility."
+        } else {
+            $role         = [string]$membershipData.role
+            $roleState    = [string]$membershipData.state
+            $roleVerified = $true
+
+            if ($roleState -eq 'active' -and $role -eq 'admin') {
+                # No-warning path
+            } elseif ($roleState -eq 'pending') {
+                $roleWarning = "GitHub organization membership is pending acceptance. Some controls may report limited visibility until membership is accepted."
+            } else {
+                $roleWarning = "GitHub organization admin/owner permissions required for full CIS coverage. Current role: '$role'. Some controls may skip or report limited visibility."
+            }
+        }
+    } catch {
+        $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
+        $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
+        $roleVerified                  = $false
+        $roleVerificationFailureReason = "${code}: $apiMsg"
+        $roleWarning                   = "GitHub role could not be verified (HTTP $code). $apiMsg Continuing — some controls may report limited visibility."
+    }
+
     $__MtSession.GitHubAuthHeader = $authHeaders
     $__MtSession.GitHubConnection = [PSCustomObject]@{
-        Connected     = $true
-        Organization  = $Organization
-        ApiBaseUri    = $ApiBaseUri
-        ApiVersion    = $ApiVersion
-        TokenLogin    = $user.login
-        Plan          = $planName
-        FailureReason = $null
+        Connected                     = $true
+        Organization                  = $Organization
+        ApiBaseUri                    = $ApiBaseUri
+        ApiVersion                    = $ApiVersion
+        TokenLogin                    = $user.login
+        Plan                          = $planName
+        Role                          = $role
+        RoleState                     = $roleState
+        RoleVerified                  = $roleVerified
+        RoleVerificationFailureReason = $roleVerificationFailureReason
+        FailureReason                 = $null
+    }
+
+    if ($roleWarning) {
+        Write-Warning $roleWarning
     }
 
     $planDisplay = if ($planName) { " (plan: $planName)" } else { '' }

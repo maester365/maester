@@ -59,7 +59,7 @@
         'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Clear-MtDnsCache', 'Clear-MtExoCache',
         'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester', 'Connect-MtGitHub', 'Convert-MtResultsToFlatObject',
         'ConvertFrom-MailAuthenticationRecordDkim', 'ConvertFrom-MailAuthenticationRecordDmarc',
-        'ConvertFrom-MailAuthenticationRecordMx', 'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester',
+        'ConvertFrom-MailAuthenticationRecordMx', 'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester', 'Disconnect-MtGitHub',
         'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRole',
