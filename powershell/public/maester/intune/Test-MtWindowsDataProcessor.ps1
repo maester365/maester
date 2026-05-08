@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtWindowsDataProcessor {
+    <#
+    .SYNOPSIS
     Check the Intune Windows Data Processor settings.
-.DESCRIPTION
+    .DESCRIPTION
     This command checks the Windows Data Processor settings in Microsoft Intune to determine if features requiring Windows diagnostic data are enabled and if the Windows license verification is complete.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtWindowsDataProcessor
 
     Returns true if features requiring Windows diagnostic data are enabled and the Windows license verification is complete.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtWindowsDataProcessor
-#>
-function Test-MtWindowsDataProcessor {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

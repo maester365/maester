@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpoSharing {
+    <#
+    .SYNOPSIS
     Checks state of SharePoint Online sharing
 
-.DESCRIPTION
+    .DESCRIPTION
     External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpoSharing
 
     Returns true if sharing is restricted
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpoSharing
-#>
-function Test-MtCisaSpoSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

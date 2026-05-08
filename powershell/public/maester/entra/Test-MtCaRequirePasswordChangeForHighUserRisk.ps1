@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring password change for high user risk.
+﻿function Test-MtCaRequirePasswordChangeForHighUserRisk {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy requiring password change for high user risk.
 
- .Description
+    .Description
     Password change for high user risk is a good way to prevent compromised accounts from being used to access your tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk-user
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk-user
 
- .Example
-  Test-MtCaRequirePasswordChangeForHighUserRisk
+    .Example
+    Test-MtCaRequirePasswordChangeForHighUserRisk
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaRequirePasswordChangeForHighUserRisk
-#>
-function Test-MtCaRequirePasswordChangeForHighUserRisk {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

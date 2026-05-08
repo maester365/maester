@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaMailboxAuditing {
+    <#
+    .SYNOPSIS
     Checks state of mailbox auditing
 
-.DESCRIPTION
+    .DESCRIPTION
     Mailbox auditing SHALL be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaMailboxAuditing
 
     Returns true if mailbox auditing is enabled.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaMailboxAuditing
-#>
-function Test-MtCisaMailboxAuditing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

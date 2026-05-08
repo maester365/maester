@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmPendingApprovalCriticalAssetManagement {
+    <#
+    .SYNOPSIS
     Tests for pending approval for Critical Asset Management.
 
-.DESCRIPTION
+    .DESCRIPTION
     Tests for pending approval for Critical Asset Management.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no pending approvals for Critical Asset Management are found, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmPendingApprovalCriticalAssetManagement
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmPendingApprovalCriticalAssetManagement
-#>
-
-function Test-MtXspmPendingApprovalCriticalAssetManagement {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for pending approvals for Critical Asset Management.')]
     [OutputType([bool])]

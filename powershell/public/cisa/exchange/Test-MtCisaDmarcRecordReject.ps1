@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcRecordReject {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     The DMARC message rejection option SHALL be p=reject.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcRecordReject
 
     Returns true if DMARC record with reject policy exists for every domain
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcRecordReject
-#>
-function Test-MtCisaDmarcRecordReject {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -46,7 +46,7 @@ function Test-MtCisaDmarcRecordReject {
 
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
+        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
         $dmarcMatch = $domain.domainname -match $matchDomain
         if($dmarcMatch){
             $expandedDomains += [PSCustomObject]@{

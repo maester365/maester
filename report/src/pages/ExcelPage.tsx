@@ -2,9 +2,10 @@ import { useState } from "react"
 import { Button } from "@/components/Button"
 import { Dialog, DialogPanel } from "@tremor/react"
 import { RiClipboardLine, RiCheckLine } from "@remixicon/react"
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 
 export default function ExcelPage() {
+  const { selectedTenant: testResults } = useTenant()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const copyToClipboard = () => {
@@ -19,7 +20,8 @@ export default function ExcelPage() {
       "Tags",
       "Notes",
     ]
-    const rows = testResults.Tests.map((test) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rows = testResults.Tests.map((test: any) => {
       return [
         test.Id,
         test.Title,
@@ -103,7 +105,7 @@ export default function ExcelPage() {
             </tr>
           </thead>
           <tbody>
-            {testResults.Tests.map((test, index) => (
+            {testResults.Tests.map((test: any, index: number) => (
               <tr
                 key={index}
                 className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"

@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA233{
+    <#
+    .SYNOPSIS
     Domains are pointed directly at EOP or enhanced filtering is used.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA233
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA233
-#>
-function Test-ORCA233{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

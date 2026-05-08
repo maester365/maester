@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA244{
+    <#
+    .SYNOPSIS
     Policies are configured to honor sending domains DMARC.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA244
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA244
-#>
-function Test-ORCA244{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

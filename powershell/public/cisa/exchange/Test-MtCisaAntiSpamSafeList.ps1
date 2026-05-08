@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAntiSpamSafeList {
+    <#
+    .SYNOPSIS
     Checks state of anti-spam policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Safe lists SHOULD NOT be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAntiSpamSafeList
 
     Returns true if Safe List is disabled in anti-spam policy
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAntiSpamSafeList
-#>
-function Test-MtCisaAntiSpamSafeList {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

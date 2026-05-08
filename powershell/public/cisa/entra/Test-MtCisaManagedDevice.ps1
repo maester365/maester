@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaManagedDevice {
+    <#
+    .SYNOPSIS
     Checks if Conditional Access Policy requiring managed device is enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Managed devices SHOULD be required for authentication.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaManagedDevice
 
     Returns true if at least one policy requires managed devices
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaManagedDevice
-#>
-function Test-MtCisaManagedDevice {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(

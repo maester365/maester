@@ -1,20 +1,19 @@
-<#
-.Synopsis
+﻿function Test-MtDeviceRegistrationMfaConflict {
+    <#
+    .Synopsis
     This function checks if MFA during device registration is being enforced in Entra ID settings and in conditional access policies.
 
-.Description
+    .Description
     When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
     When both are enabled, the conditional access policy with the "Register device" user action will not work as expected. More information
     can be found at: https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy
 
-.Example
+    .Example
     Test-MtDeviceRegistrationMfaConflict
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtDeviceRegistrationMfaConflict
-#>
-
-function Test-MtDeviceRegistrationMfaConflict {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -1,0 +1,69 @@
+---
+sidebar_class_name: hidden
+description: Tests if AI agents require user authentication.
+id: Test-MtAIAgentNoAuthentication
+title: Test-MtAIAgentNoAuthentication
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAIAgentNoAuthentication.ps1
+---
+
+## SYNOPSIS
+
+Tests if AI agents require user authentication.
+
+## SYNTAX
+
+```powershell
+Test-MtAIAgentNoAuthentication [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Checks all Copilot Studio agents for weak or missing authentication.
+Flags agents with no authentication configured, as well as agents where
+authentication is configured but 'Require users to sign in' is not enabled
+(trigger set to 'As Needed' instead of 'Always').
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAIAgentNoAuthentication
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### [bool] - Returns $true if all agents require authentication with sign-in enforced,
+
+### $false if any agent has weak or missing authentication, $null if data is unavailable.
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAIAgentNoAuthentication](https://maester.dev/docs/commands/Test-MtAIAgentNoAuthentication)

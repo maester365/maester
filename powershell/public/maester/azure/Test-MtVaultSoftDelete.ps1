@@ -1,21 +1,21 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtVaultSoftDelete {
+    <#
+    .SYNOPSIS
     Checks if all Recovery Services Vaults have Soft Delete enabled
 
-.DESCRIPTION
+    .DESCRIPTION
     This test ensures that all Recovery Services Vaults have Soft Delete enabled
     by evaluating the `enhancedSecurityState` property. Soft Delete protects backup
     data from accidental or malicious deletion and is a recommended security control.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtVaultSoftDelete
 
     Returns true if all vaults have Soft Delete enabled.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtVaultSoftDelete
-#>
-function Test-MtVaultSoftDelete {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

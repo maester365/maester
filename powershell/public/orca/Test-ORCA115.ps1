@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA115{
+    <#
+    .SYNOPSIS
     Mailbox intelligence based impersonation protection is enabled in anti-phishing policies.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA115
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA115
-#>
-function Test-ORCA115{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

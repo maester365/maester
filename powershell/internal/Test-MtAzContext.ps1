@@ -1,10 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtAzContext {
+    <#
+    .SYNOPSIS
     Validates the AzContext to ensure a valid connection to Azure.
     This cmdlet is used mainly by the Get-MtMaesterApp and Update-MtMaesterApp cmdlets and related cmdlets.
-#>
-
-function Test-MtAzContext {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Colors are beautiful')]

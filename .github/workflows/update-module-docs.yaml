@@ -9,21 +9,26 @@ on:
       - "!powershell/Maester.psd1"
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
+
+concurrency:
+  group: update-module-docs
+  cancel-in-progress: false
 
 jobs:
   update-command-reference:
     runs-on: windows-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Update maester.dev powershell docs
         run: ./build/Update-CommandReference.ps1
         shell: pwsh
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           title: Update maester.dev powershell docs

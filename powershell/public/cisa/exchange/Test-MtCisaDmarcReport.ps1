@@ -1,22 +1,22 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcReport {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     An agency point of contact SHOULD be included for aggregate and failure reports.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcReport
 
     Returns true if DMARC record inlcudes report targets within same domain
 
-.PARAMETER Strict
+    .PARAMETER Strict
     Require the CISA explicit 2nd level validation
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcReport
-#>
-function Test-MtCisaDmarcReport {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -39,7 +39,7 @@ function Test-MtCisaDmarcReport {
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
+        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
         $dmarcMatch = $domain.domainname -match $matchDomain
         if($dmarcMatch){
             $expandedDomains += $Matches.second

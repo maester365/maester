@@ -1,0 +1,197 @@
+---
+sidebar_class_name: hidden
+description: Tests compliance for a specific MDE setting value
+id: Test-MdeSettingCompliance
+title: Test-MdeSettingCompliance
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MdeSettingCompliance.ps1
+---
+
+## SYNOPSIS
+
+Tests compliance for a specific MDE setting value
+
+## SYNTAX
+
+```powershell
+Test-MdeSettingCompliance [[-Value] <Object>] [-ComplianceCheck] <String> [[-ExpectedValue] <String>]
+ [[-RangeMin] <Int32>] [[-RangeMax] <Int32>] [[-ValidValues] <String[]>] [[-ValidLevels] <Hashtable>]
+ [[-MinimumValue] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Evaluates a setting value against compliance criteria to determine
+if it meets requirements.
+Returns "Compliant", "NonCompliant", or "NotConfigured".
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MdeSettingCompliance -Value "_1" -ComplianceCheck "Boolean" -ExpectedValue "_1"
+```
+
+Returns "Compliant"
+
+## PARAMETERS
+
+### -Value
+
+The setting value to test
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ComplianceCheck
+
+The type of compliance check to perform
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExpectedValue
+
+The expected value for Boolean checks
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RangeMin
+
+Minimum value for Range checks
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RangeMax
+
+Maximum value for Range checks
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ValidValues
+
+Array of valid values for Enum checks
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ValidLevels
+
+Hashtable mapping values to numeric levels for MinimumLevel checks
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -MinimumValue
+
+Minimum numeric value for MinimumValue and MinimumLevel checks
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: 0
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.String
+
+## NOTES
+
+## RELATED LINKS

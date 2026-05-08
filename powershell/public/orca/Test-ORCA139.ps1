@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA139{
+    <#
+    .SYNOPSIS
     Spam action set to move message to junk mail folder or quarantine.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA139
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA139
-#>
-function Test-ORCA139{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

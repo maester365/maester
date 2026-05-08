@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAppRegistration {
+    <#
+    .SYNOPSIS
     Checks if user app registration is prevented
 
-.DESCRIPTION
+    .DESCRIPTION
     Only administrators SHALL be allowed to register applications.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAppRegistration
 
     Returns true if disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAppRegistration
-#>
-function Test-MtCisaAppRegistration {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

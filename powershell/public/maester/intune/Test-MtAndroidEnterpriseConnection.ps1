@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtAndroidEnterpriseConnection {
+    <#
+    .SYNOPSIS
     Check the health of the Android Enterprise connection for Intune.
-.DESCRIPTION
+    .DESCRIPTION
     The Android Enterprise connection is required to synchronize Android enterprise apps and allow Android enrollment with Microsoft Intune. This command checks if the connection is valid and not expired.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtAndroidEnterpriseConnection
 
     Returns true if the Android Enterprise connection is healthy, false if it is expired or expiring soon.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtAndroidEnterpriseConnection
-#>
-function Test-MtAndroidEnterpriseConnection {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

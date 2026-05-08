@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAP05 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Sign-up for email based subscription is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicates whether users can sign up for email based subscriptions.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
+    graph/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP05
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowedToSignUpEmailBasedSubscriptions -eq 'false'
-#>
-
-function Test-MtEidscaAP05 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAP05 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowedToSignUpEmailBasedSubscriptions
+    $rawValue = $result.allowedToSignUpEmailBasedSubscriptions
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAP05 {
 
     return $tenantValue
 }
+

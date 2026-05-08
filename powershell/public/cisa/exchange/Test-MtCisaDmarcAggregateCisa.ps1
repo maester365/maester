@@ -1,24 +1,24 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDmarcAggregateCisa {
+    <#
+    .SYNOPSIS
     Checks state of DMARC records for all exo domains
 
-.DESCRIPTION
+    .DESCRIPTION
     The DMARC point of contact for aggregate reports SHALL include reports@dmarc.cyber.dhs.gov.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcAggregateCisa
 
     Returns true if DMARC record with reject policy exists for every domain if a .gov domain exists
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDmarcAggregateCisa -Force
 
     Returns true if DMARC record with reject policy exists for every domain
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa
-#>
-function Test-MtCisaDmarcAggregateCisa {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param(
@@ -55,7 +55,7 @@ function Test-MtCisaDmarcAggregateCisa {
     foreach($domain in $acceptedDomains){
         #This regex does NOT capture for third level domain scenarios
         #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'\w+.\w+$)"
+        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
         $dmarcMatch = $domain.domainname -match $matchDomain
         if($dmarcMatch){
             $expandedDomains += $Matches.second

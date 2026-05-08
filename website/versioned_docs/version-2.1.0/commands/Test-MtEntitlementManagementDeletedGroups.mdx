@@ -1,0 +1,86 @@
+---
+sidebar_class_name: hidden
+description: Checks if Entra ID Governance access packages or catalogs reference deleted groups
+id: Test-MtEntitlementManagementDeletedGroups
+title: Test-MtEntitlementManagementDeletedGroups
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtEntitlementManagementDeletedGroups.ps1
+---
+
+## SYNOPSIS
+
+Checks if Entra ID Governance access packages or catalogs reference deleted groups
+
+## SYNTAX
+
+```powershell
+Test-MtEntitlementManagementDeletedGroups [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+MT.1107 - Access packages and catalogs should not reference deleted groups
+
+This test identifies access packages and catalogs in Microsoft Entra ID Governance
+that reference Entra ID groups which have been deleted.
+Deleted group references can cause:
+- Unexpected access provisioning failures
+- Configuration inconsistencies
+- Approval workflow issues
+- Compliance and audit concerns
+
+The test performs comprehensive checks across:
+- Access package resource assignments (groups assigned as resources)
+- Access package assignment policies (groups configured as approvers)
+- Access package catalog resources (groups registered in catalogs)
+
+For deleted groups still in the recycle bin, the test retrieves the actual group name
+to provide clear identification of which groups need attention.
+
+Learn more:
+https://maester.dev/docs/tests/MT.1107
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtEntitlementManagementDeletedGroups
+```
+
+Returns $true if all access packages and catalogs reference only active groups
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtEntitlementManagementDeletedGroups](https://maester.dev/docs/commands/Test-MtEntitlementManagementDeletedGroups)

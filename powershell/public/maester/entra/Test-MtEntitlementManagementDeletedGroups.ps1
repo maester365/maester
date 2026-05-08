@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntitlementManagementDeletedGroups {
+    <#
+    .SYNOPSIS
     Checks if Entra ID Governance access packages or catalogs reference deleted groups
 
-.DESCRIPTION
+    .DESCRIPTION
     MT.1107 - Access packages and catalogs should not reference deleted groups
 
     This test identifies access packages and catalogs in Microsoft Entra ID Governance
@@ -23,16 +24,14 @@
     Learn more:
     https://maester.dev/docs/tests/MT.1107
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntitlementManagementDeletedGroups
 
     Returns $true if all access packages and catalogs reference only active groups
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntitlementManagementDeletedGroups
-#>
-
-function Test-MtEntitlementManagementDeletedGroups {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Groups is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -309,5 +308,3 @@ function Test-MtEntitlementManagementDeletedGroups {
         return $false
     }
 }
-
-

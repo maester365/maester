@@ -1,14 +1,15 @@
-<#
-.SYNOPSIS
+﻿function Test-MtCaLicenseUtilization {
+    <#
+    .SYNOPSIS
     Test Conditional Access License Utilization and return stats on usage for the specific license.
 
-.DESCRIPTION
+    .DESCRIPTION
     Utilization is validated using the insights provided by Microsoft Graph.
 
     Learn more:
     https://techcommunity.microsoft.com/t5/microsoft-entra-blog/introducing-microsoft-entra-license-utilization-insights/ba-p/3796393
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCaLicenseUtilization -License P1
 
     This example tests the utilization of P1 licenses in the tenant.
@@ -17,10 +18,9 @@
 
     This example tests the utilization of P2 licenses in the tenant.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaLicenseUtilization
-#>
-function Test-MtCaLicenseUtilization {
+    #>
     [CmdletBinding()]
     param (
         # The type of license to check. Currently supports 'P1' and 'P2'

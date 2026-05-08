@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA237{
+    <#
+    .SYNOPSIS
     Safe Links is enabled for teams messages.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA237
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA237
-#>
-function Test-ORCA237{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

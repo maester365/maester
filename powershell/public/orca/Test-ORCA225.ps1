@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA225{
+    <#
+    .SYNOPSIS
     Safe Documents is enabled for Office clients.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA225
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA225
-#>
-function Test-ORCA225{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

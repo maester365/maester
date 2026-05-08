@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Check the health of the Android Enterprise connection for Intune.
+id: Test-MtAndroidEnterpriseConnection
+title: Test-MtAndroidEnterpriseConnection
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtAndroidEnterpriseConnection.ps1
+---
+
+## SYNOPSIS
+
+Check the health of the Android Enterprise connection for Intune.
+
+## SYNTAX
+
+```powershell
+Test-MtAndroidEnterpriseConnection [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The Android Enterprise connection is required to synchronize Android enterprise apps and allow Android enrollment with Microsoft Intune.
+This command checks if the connection is valid and not expired.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtAndroidEnterpriseConnection
+```
+
+Returns true if the Android Enterprise connection is healthy, false if it is expired or expiring soon.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtAndroidEnterpriseConnection](https://maester.dev/docs/commands/Test-MtAndroidEnterpriseConnection)

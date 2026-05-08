@@ -1,21 +1,21 @@
-<#
-.SYNOPSIS
+﻿function Test-MtExoDelicensingResiliency {
+    <#
+    .SYNOPSIS
     Checks if Delicensing Resiliency is enabled in Exchange Online
 
-.DESCRIPTION
+    .DESCRIPTION
     Delicensing Resiliency should be enabled to maintain access to mailboxes
     when licenses are removed, providing a grace period before access is lost.
     This helps prevent immediate disruption when licenses expire or are reassigned.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoDelicensingResiliency
 
     Returns true if Delicensing Resiliency is enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoDelicensingResiliency
-#>
-function Test-MtExoDelicensingResiliency {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

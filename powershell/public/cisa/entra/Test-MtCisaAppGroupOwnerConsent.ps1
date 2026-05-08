@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-MtCisaAppGroupOwnerConsent {
+    <#
+    .SYNOPSIS
     Checks if group owners can consent to apps
 
-.DESCRIPTION
+    .DESCRIPTION
     Group owners SHALL NOT be allowed to consent to applications.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAppGroupOwnerConsent
 
     Returns true if disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAppGroupOwnerConsent
-#>
-function Test-MtCisaAppGroupOwnerConsent {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

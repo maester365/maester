@@ -1,17 +1,17 @@
-﻿<#
- .Synopsis
-  Returns all the conditional access policies in the tenant.
+﻿function Get-MtConditionalAccessPolicy {
+    <#
+    .Synopsis
+    Returns all the conditional access policies in the tenant.
 
- .Description
-  Returns all the conditional access policies in the tenant.
+    .Description
+    Returns all the conditional access policies in the tenant.
 
- .Example
-  Get-MtConditionalAccessPolicy
+    .Example
+    Get-MtConditionalAccessPolicy
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtConditionalAccessPolicy
-#>
-function Get-MtConditionalAccessPolicy {
+    #>
   [CmdletBinding()]
   param(
     # Specify if this request should skip cache and go directly to Graph.

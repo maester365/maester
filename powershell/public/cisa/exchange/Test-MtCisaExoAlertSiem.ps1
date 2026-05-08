@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaExoAlertSiem {
+    <#
+    .SYNOPSIS
     Checks state of alerts
 
-.DESCRIPTION
+    .DESCRIPTION
     Alerts SHOULD be sent to a monitored address or incorporated into a security information and event management (SIEM) system.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaExoAlertSiem
 
     Returns null
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaExoAlertSiem
-#>
-function Test-MtCisaExoAlertSiem {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

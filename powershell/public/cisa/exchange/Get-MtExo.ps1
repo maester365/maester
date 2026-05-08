@@ -1,22 +1,22 @@
-<#
-.SYNOPSIS
+﻿function Get-MtExo {
+    <#
+    .SYNOPSIS
     Retrieves cached response or requests from cmdlet
 
-.DESCRIPTION
+    .DESCRIPTION
     Manages the EXO cmdlet caching
 
-.PARAMETER Request
+    .PARAMETER Request
     Provide the name of the EXO Cmdlet without the Get- prepended (e.g. Get-AcceptedDomain = -Request AcceptedDomain)
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtExo -Request AcceptedDomain
 
     Returns accepted domains for a tenant
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtExo
-#>
-function Get-MtExo {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
     [CmdletBinding()]
     [OutputType([string], [object[]], [psobject])]
@@ -57,7 +57,8 @@ function Get-MtExo {
         "EOPProtectionPolicyRule"        = "Get-EOPProtectionPolicyRule"
         "ATPProtectionPolicyRule"        = "Get-ATPProtectionPolicyRule"
         "ProtectionAlert"                = "Get-ProtectionAlert"
-        "EXOMailbox"                     = "Get-EXOMailbox"
+        "EXOMailbox"                     = "Get-EXOMailbox -ResultSize 'Unlimited'"
+        "EXOSharedMailbox"               = "Get-EXOMailbox -RecipientTypeDetails 'SharedMailbox' -ResultSize 'Unlimited'"
         "ArcConfig"                      = "Get-ArcConfig"
         "ExternalInOutlook"              = "Get-ExternalInOutlook"
         "InboundConnector"               = "Get-InboundConnector"

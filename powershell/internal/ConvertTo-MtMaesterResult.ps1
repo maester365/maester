@@ -1,9 +1,8 @@
-﻿<#
-.SYNOPSIS
-  Converts Pester results to the Maester test results format which includes additional information.
-#>
-
-function ConvertTo-MtMaesterResult {
+﻿function ConvertTo-MtMaesterResult {
+    <#
+    .SYNOPSIS
+    Converts Pester results to the Maester test results format which includes additional information.
+    #>
     [CmdletBinding()]
     param(
         # The Pester test results returned from Invoke-Pester -PassThru
@@ -31,7 +30,7 @@ function ConvertTo-MtMaesterResult {
             $tenant = Get-CsTenant
             return $tenant.DisplayName
         } else {
-            return "TenantName (not connected to Graph)"
+            return 'TenantName (not connected to Graph)'
         }
     }
 
@@ -43,7 +42,7 @@ function ConvertTo-MtMaesterResult {
             $tenant = Get-CsTenant
             return $tenant.TenantId
         } else {
-            return "TenantId (not connected to Graph)"
+            return 'TenantId (not connected to Graph)'
         }
     }
 
@@ -55,7 +54,7 @@ function ConvertTo-MtMaesterResult {
             #    $tenant = Get-CsTenant #ToValidate: N/A
             #    return $tenant.DisplayName
         } else {
-            return "Account (not connected to Graph)"
+            return 'Account (not connected to Graph)'
         }
     }
 
@@ -71,15 +70,16 @@ function ConvertTo-MtMaesterResult {
     function GetFormattedDate($date) {
         if (!$IsCoreCLR) {
             # Prevent 5.1 date format to json issue
-            return $date.ToString("o")
+            return $date.ToString('o')
         } else {
             return $date
         }
     }
 
     function GetMaesterLatestVersion() {
-        if (Get-Command 'Find-Module' -ErrorAction SilentlyContinue) {
-            return (Find-Module -Name Maester).Version
+        $latestVersion = Get-MtLatestModuleVersion -Name Maester -TimeoutSec 10
+        if ($null -ne $latestVersion) {
+            return $latestVersion.ToString()
         }
 
         return 'Unknown'
@@ -99,9 +99,9 @@ function ConvertTo-MtMaesterResult {
 
     function GetPowerShellInfo() {
         $psInfo = [PSCustomObject]@{
-            Version       = $PSVersionTable.PSVersion.ToString()
-            Edition       = $PSVersionTable.PSEdition
-            Platform      = if ($PSVersionTable.Platform) { $PSVersionTable.Platform } else { 'Win32NT' }
+            Version  = $PSVersionTable.PSVersion.ToString()
+            Edition  = $PSVersionTable.PSEdition
+            Platform = if ($PSVersionTable.Platform) { $PSVersionTable.Platform } else { 'Win32NT' }
         }
         return $psInfo
     }
@@ -121,16 +121,16 @@ function ConvertTo-MtMaesterResult {
             $mgContext = Get-MgContext
             if ($null -ne $mgContext) {
                 return [PSCustomObject]@{
-                    ClientId             = $mgContext.ClientId
-                    TenantId             = $mgContext.TenantId
-                    Scopes               = @($mgContext.Scopes)
-                    AuthType             = [string]$mgContext.AuthType
-                    TokenCredentialType  = [string]$mgContext.TokenCredentialType
-                    Account              = $mgContext.Account
-                    AppName              = $mgContext.AppName
-                    ContextScope         = [string]$mgContext.ContextScope
-                    Environment          = $mgContext.Environment
-                    ManagedIdentityId    = $mgContext.ManagedIdentityId
+                    ClientId            = $mgContext.ClientId
+                    TenantId            = $mgContext.TenantId
+                    Scopes              = @($mgContext.Scopes)
+                    AuthType            = [string]$mgContext.AuthType
+                    TokenCredentialType = [string]$mgContext.TokenCredentialType
+                    Account             = $mgContext.Account
+                    AppName             = $mgContext.AppName
+                    ContextScope        = [string]$mgContext.ContextScope
+                    Environment         = $mgContext.Environment
+                    ManagedIdentityId   = $mgContext.ManagedIdentityId
                 }
             }
         }
@@ -146,7 +146,7 @@ function ConvertTo-MtMaesterResult {
                     $base64Logo = [System.Convert]::ToBase64String($logoBytes)
                     # Detect content type from response or default to png
                     $contentType = $response.Content.Headers.ContentType.MediaType
-                    if ([string]::IsNullOrEmpty($contentType)) { $contentType = "image/png" }
+                    if ([string]::IsNullOrEmpty($contentType)) { $contentType = 'image/png' }
                     return "data:$contentType;base64,$base64Logo"
                 }
             }
@@ -181,7 +181,7 @@ function ConvertTo-MtMaesterResult {
 
         # Convert PesterConfiguration to a simple hashtable for JSON serialization
         $configInfo = [PSCustomObject]@{
-            Run = [PSCustomObject]@{
+            Run          = [PSCustomObject]@{
                 Path                   = @($config.Run.Path.Value)
                 ExcludePath            = @($config.Run.ExcludePath.Value)
                 ScriptBlock            = @($config.Run.ScriptBlock.Value | ForEach-Object { if ($null -ne $_) { $_.ToString() } })
@@ -193,7 +193,7 @@ function ConvertTo-MtMaesterResult {
                 SkipRun                = $config.Run.SkipRun.Value
                 SkipRemainingOnFailure = [string]$config.Run.SkipRemainingOnFailure.Value
             }
-            Filter = [PSCustomObject]@{
+            Filter       = [PSCustomObject]@{
                 Tag         = @($config.Filter.Tag.Value)
                 ExcludeTag  = @($config.Filter.ExcludeTag.Value)
                 Line        = @($config.Filter.Line.Value)
@@ -212,24 +212,24 @@ function ConvertTo-MtMaesterResult {
                 UseBreakpoints        = $config.CodeCoverage.UseBreakpoints.Value
                 SingleHitBreakpoints  = $config.CodeCoverage.SingleHitBreakpoints.Value
             }
-            TestResult = [PSCustomObject]@{
+            TestResult   = [PSCustomObject]@{
                 Enabled        = $config.TestResult.Enabled.Value
                 OutputFormat   = $config.TestResult.OutputFormat.Value
                 OutputPath     = $config.TestResult.OutputPath.Value
                 OutputEncoding = $config.TestResult.OutputEncoding.Value
                 TestSuiteName  = $config.TestResult.TestSuiteName.Value
             }
-            Should = [PSCustomObject]@{
+            Should       = [PSCustomObject]@{
                 ErrorAction = [string]$config.Should.ErrorAction.Value
             }
-            Debug = [PSCustomObject]@{
+            Debug        = [PSCustomObject]@{
                 ShowFullErrors         = $config.Debug.ShowFullErrors.Value
                 WriteDebugMessages     = $config.Debug.WriteDebugMessages.Value
                 WriteDebugMessagesFrom = @($config.Debug.WriteDebugMessagesFrom.Value)
                 ShowNavigationMarkers  = $config.Debug.ShowNavigationMarkers.Value
                 ReturnRawResultObject  = $config.Debug.ReturnRawResultObject.Value
             }
-            Output = [PSCustomObject]@{
+            Output       = [PSCustomObject]@{
                 Verbosity           = [string]$config.Output.Verbosity.Value
                 StackTraceVerbosity = [string]$config.Output.StackTraceVerbosity.Value
                 CIFormat            = [string]$config.Output.CIFormat.Value
@@ -270,7 +270,7 @@ function ConvertTo-MtMaesterResult {
 
         $helpUrl = ''
 
-        $start = $name.IndexOf("See https")
+        $start = $name.IndexOf('See https')
         # Get the Help Url from the message and the ID
         if ($start -gt 0) {
             $helpUrl = $name.Substring($start + 4).Trim() #Strip away the "See https://maester.dev" part
@@ -301,21 +301,20 @@ function ConvertTo-MtMaesterResult {
         }
 
         # Setting Result to Error or Investigate, Overwriting the Skipped state
-        if ($testResultDetail.TestSkipped -eq "Error" ) {
-            $result = "Error"
+        if ($testResultDetail.TestSkipped -eq 'Error' ) {
+            $result = 'Error'
         } elseif ($testResultDetail.TestInvestigate -eq $true) {
-            $result = "Investigate"
+            $result = 'Investigate'
         } elseif ((
                 $test -and
                 $test.ErrorRecord -and
                 $test.ErrorRecord.Count -gt 0 -and
                 $test.ErrorRecord[0].CategoryInfo -and
                 $test.ErrorRecord[0].CategoryInfo.Reason) -and
-                (@("RuntimeException","ParameterBindingValidationException","ParameterBindingException","HttpRequestException","TaskCanceledException") -Contains $test.ErrorRecord[0].CategoryInfo.Reason )) {
+            (@('RuntimeException', 'ParameterBindingValidationException', 'ParameterBindingException', 'HttpRequestException', 'TaskCanceledException') -contains $test.ErrorRecord[0].CategoryInfo.Reason )) {
             Write-Verbose "Setting result=Error $($name) because: $($test.ErrorRecord[0].CategoryInfo.Reason)"
-            $result = "Error"
-        }
-        else {
+            $result = 'Error'
+        } else {
             $result = $test.Result
         }
 
@@ -377,8 +376,7 @@ function ConvertTo-MtMaesterResult {
                     Tag              = $block.Tag
                 }
                 $mtBlocks += $mtBlockInfo
-            }
-            else {
+            } else {
                 # We already seen and counted all blocks
             }
         }
@@ -413,7 +411,7 @@ function ConvertTo-MtMaesterResult {
         MaesterConfig     = $__MtSession.MaesterConfig
         Tests             = $mtTests
         Blocks            = $mtBlocks
-        EndOfJson         = "EndOfJson" # Always leave this as the last property. Used by the script to determine the end of the JSON
+        EndOfJson         = 'EndOfJson' # Always leave this as the last property. Used by the script to determine the end of the JSON
     }
 
     # Add output files information if provided

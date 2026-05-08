@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAP10 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Default User Role Permissions - Allowed to create Apps is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Controls if non-admin users may register custom-developed applications for use within this directory.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
+    graph/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP10
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.defaultUserRolePermissions.allowedToCreateApps -eq 'false'
-#>
-
-function Test-MtEidscaAP10 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAP10 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.defaultUserRolePermissions.allowedToCreateApps
+    $rawValue = $result.defaultUserRolePermissions.allowedToCreateApps
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAP10 {
 
     return $tenantValue
 }
+

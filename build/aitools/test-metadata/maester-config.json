@@ -13,7 +13,8 @@
         "UserPrincipalName": "emergency@contoso.com",
         "Type": "User"
       }
-    ]
+    ],
+    "DataverseEnvironmentUrl": "org12345.crm.dynamics.com"
   },
   "TestSettings": [
     {
@@ -1005,11 +1006,6 @@
       "Id": "MT.1039",
       "Title": "Ensure MailTips are enabled for end users",
       "Severity": "Low"
-    },
-    {
-      "Id": "MT.1040",
-      "Title": "Ensure additional storage providers are restricted in Outlook on the web",
-      "Severity": "Medium"
     },
     {
       "Id": "MT.1041",

@@ -1,21 +1,21 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtExoRejectDirectSend {
+    <#
+    .SYNOPSIS
     Checks if direct send is configured to reject
 
-.DESCRIPTION
+    .DESCRIPTION
     Attackers can exploit direct send to send spam or phishing emails without authentication.
     Direct Send covers anonymous messages (unauthenticated messages) sent from your own domain
     to your organization's mailboxes using the tenant MX
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtExoRejectDirectSend
 
     Returns true if direct send is configured to reject
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtExoRejectDirectSend
-#>
-function Test-MtExoRejectDirectSend {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,21 +1,21 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one emergency/break glass account or account group excluded from all conditional access policies
+﻿function Test-MtCaEmergencyAccessExists {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one emergency/break glass account or account group excluded from all conditional access policies
 
- .Description
-  It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
-  This allows for emergency access to the tenant in case of a misconfiguration or other issues.
+    .Description
+    It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
+    This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access
+    Learn more:
+    https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access
 
- .Example
-  Test-MtCaEmergencyAccessExists
+    .Example
+    Test-MtCaEmergencyAccessExists
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaEmergencyAccessExists
-#>
-function Test-MtCaEmergencyAccessExists {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -128,10 +128,25 @@ function Test-MtCaEmergencyAccessExists {
                 }
             }
             Write-Verbose "Emergency access accounts or groups defined in the Maester config: $($EmergencyAccessAccounts.Count) entries"
+            $UniqueResolvedEmergencyAccessAccounts = @()
+            $ResolvedEmergencyAccessAccountKeys = @{}
+            foreach ($account in $ResolvedEmergencyAccessAccounts) {
+                $accountKey = "$($account.type):$($account.ObjectId)"
+                if (-not $ResolvedEmergencyAccessAccountKeys.ContainsKey($accountKey)) {
+                    $ResolvedEmergencyAccessAccountKeys[$accountKey] = $true
+                    $UniqueResolvedEmergencyAccessAccounts += $account
+                }
+            }
+            $ResolvedEmergencyAccessAccounts = $UniqueResolvedEmergencyAccessAccounts
             $ResolvedEmergencyAccessUsers = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'user' }
             $ResolvedEmergencyAccessGroups = $ResolvedEmergencyAccessAccounts | Where-Object { $_.type -eq 'group' }
             $EmergencyAccessAccountsUserCount = @($ResolvedEmergencyAccessUsers).Count
             $EmergencyAccessAccountsGroupCount = @($ResolvedEmergencyAccessGroups).Count
+
+            if ($EmergencyAccessAccountsUserCount -eq 0 -and $EmergencyAccessAccountsGroupCount -eq 0) {
+                Add-MtTestResultDetail -Result "Emergency access accounts or groups are configured in maester-config.json, but none could be resolved. Verify the configured Id or UserPrincipalName values."
+                return $false
+            }
 
             # Find policies that are missing ANY of the configured emergency access accounts or groups
             $policiesWithoutEmergency = $policies | Where-Object {

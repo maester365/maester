@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA143{
+    <#
+    .SYNOPSIS
     Safety Tips are enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA143
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA143
-#>
-function Test-ORCA143{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

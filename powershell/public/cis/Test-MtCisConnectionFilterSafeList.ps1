@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisConnectionFilterSafeList {
+    <#
+    .SYNOPSIS
     Checks if connection filter IPs are allow listed
 
-.DESCRIPTION
+    .DESCRIPTION
     The connection filter should not have the safe list enabled
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisConnectionFilterSafeList
 
     Returns true if the safe list is not enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisConnectionFilterSafeList
-#>
-function Test-MtCisConnectionFilterSafeList {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

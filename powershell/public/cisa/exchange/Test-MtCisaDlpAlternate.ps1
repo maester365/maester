@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaDlpAlternate {
+    <#
+    .SYNOPSIS
     This will always return $null
 
-.DESCRIPTION
+    .DESCRIPTION
     The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaDlpAlternate
 
     Always will return $null
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaDlpAlternate
-#>
-function Test-MtCisaDlpAlternate {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

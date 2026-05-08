@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisTeamsReportSecurityConcerns {
+    <#
+    .SYNOPSIS
     Ensure users can report security concerns in Teams to internal destination
 
-.DESCRIPTION
+    .DESCRIPTION
     Report security concerns in Teams only to internal destination
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisTeamsReportSecurityConcerns
 
     Returns true if configured properly
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisTeamsReportSecurityConcerns
-#>
-function Test-MtCisTeamsReportSecurityConcerns {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]

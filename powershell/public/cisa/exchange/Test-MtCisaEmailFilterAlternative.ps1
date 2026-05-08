@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaEmailFilterAlternative {
+    <#
+    .SYNOPSIS
     Placeholder
 
-.DESCRIPTION
+    .DESCRIPTION
     Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaEmailFilterAlternative
 
     Always returns null
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaEmailFilterAlternative
-#>
-function Test-MtCisaEmailFilterAlternative {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

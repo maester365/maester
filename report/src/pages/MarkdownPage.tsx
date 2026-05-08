@@ -1,12 +1,13 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Button } from "@/components/Button"
 import { Dialog, DialogPanel, Tab, TabGroup, TabList, TabPanel, TabPanels } from "@tremor/react"
 import { RiClipboardLine, RiEyeLine, RiCodeLine, RiCheckLine } from "@remixicon/react"
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 
-function generateMarkdown(results: typeof testResults) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function generateMarkdown(results: any) {
   const testDateLocal = new Date(results.ExecutedAt).toLocaleString(undefined, {
     dateStyle: "medium",
     timeStyle: "short",
@@ -27,15 +28,15 @@ function generateMarkdown(results: typeof testResults) {
   md += `## Test Results\n\n`
   md += `| Name | Severity | Result |\n`
   md += `| :--- | :---: | :---: |\n`
-  results.Tests.forEach((test) => {
-    const safeName = test.Name.replace(/\|/g, "\\|")
+  results.Tests.forEach((test: any) => {
+    const safeName = test.Name.replace(/\\/g, "\\\\").replace(/\|/g, "\\|")
     md += `| ${safeName} | ${test.Severity} | ${test.Result} |\n`
   })
   md += `\n`
 
   md += `## Test Details\n\n`
 
-  results.Tests.forEach((test) => {
+  results.Tests.forEach((test: any) => {
     const icon =
       test.Result === "Passed"
         ? "✅"
@@ -69,8 +70,14 @@ function generateMarkdown(results: typeof testResults) {
 }
 
 export default function MarkdownPage() {
+  const { selectedTenant: testResults } = useTenant()
   const [markdown, setMarkdown] = useState(generateMarkdown(testResults))
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  // Regenerate markdown when tenant changes
+  useEffect(() => {
+    setMarkdown(generateMarkdown(testResults))
+  }, [testResults])
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(markdown)

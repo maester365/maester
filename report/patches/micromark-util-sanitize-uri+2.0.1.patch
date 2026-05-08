@@ -1,0 +1,13 @@
+diff --git a/node_modules/micromark-util-sanitize-uri/index.js b/node_modules/micromark-util-sanitize-uri/index.js
+index fb6fe6f..1964a2f 100644
+--- a/node_modules/micromark-util-sanitize-uri/index.js
++++ b/node_modules/micromark-util-sanitize-uri/index.js
+@@ -71,7 +71,7 @@ export function normalizeUri(value) {
+     }
+     // ASCII.
+     else if (code < 128) {
+-      if (!/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(code))) {
++      if (!/[!#$&'()*+,\-./0-9:;=?@A-Z_a-z~]/.test(String.fromCharCode(code))) {
+         replace = String.fromCharCode(code);
+       }
+     }

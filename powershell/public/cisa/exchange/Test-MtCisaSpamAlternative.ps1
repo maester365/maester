@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpamAlternative {
+    <#
+    .SYNOPSIS
     Checks state of spam filter
 
-.DESCRIPTION
+    .DESCRIPTION
     If a third-party party filtering solution is used, the solution SHOULD offer services comparable to the native spam filtering offered by Microsoft.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpamAlternative
 
     Always returns $null
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpamAlternative
-#>
-function Test-MtCisaSpamAlternative {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

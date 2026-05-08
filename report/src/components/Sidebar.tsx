@@ -15,11 +15,14 @@ import {
   FileJson,
   BookOpen,
   MessageCircle,
+  Building2,
 } from "lucide-react"
 import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "react-router-dom"
 import React, { useState, createContext, useContext, useRef, useEffect } from "react"
 import maesterLogo from "@/assets/maester.png"
+import { useTenant } from "@/context/TenantContext"
+import { scrollReportToTop } from "@/lib/reportLinks"
 
 interface SidebarContextType {
   isCollapsed: boolean
@@ -39,6 +42,7 @@ interface NavItemProps {
   label: string
   isActive?: boolean
   isCollapsed?: boolean
+  onClick?: () => void
 }
 
 function NavItem({
@@ -47,10 +51,12 @@ function NavItem({
   label,
   isActive,
   isCollapsed,
+  onClick,
 }: NavItemProps) {
   return (
     <Link
       to={href}
+      onClick={onClick}
       className={cx(
         "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
         isActive
@@ -141,17 +147,6 @@ function SubNavItem({ href, icon: Icon, label, isActive }: SubNavItemProps) {
   )
 }
 
-interface TenantLogos {
-  Banner?: string | null
-}
-
-interface SidebarProps {
-  testResults?: {
-    TenantName?: string
-    TenantId?: string
-    TenantLogos?: TenantLogos | null
-  }
-}
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -163,19 +158,18 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function Sidebar({ testResults }: SidebarProps) {
+export function Sidebar() {
   const { isCollapsed } = useSidebar()
   const location = useLocation()
   const pathname = location.pathname
+  const { tenants, selectedIndex, selectedTenant, setSelectedIndex } = useTenant()
+  const isMultiTenant = tenants.length > 1
 
   const isViewActive = pathname.startsWith("/view")
   const currentView = pathname.split("/").pop()
 
-  const getTenantDisplay = () => {
-    return (
-      <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-    )
-  }
+  const displayTenantName = selectedTenant?.TenantName || selectedTenant?.TenantId || "Tenant"
+
 
   return (
     <div
@@ -189,7 +183,7 @@ export function Sidebar({ testResults }: SidebarProps) {
         "flex h-16 items-center gap-3 border-b border-gray-200 dark:border-gray-800",
         isCollapsed ? "justify-center px-2" : "px-4"
       )}>
-        <Link to="/" aria-label="Home" className="flex items-center gap-3">
+        <Link to="/" onClick={scrollReportToTop} aria-label="Home" className="flex items-center gap-3 overflow-hidden">
           <span className="sr-only">Maester Logo (go home)</span>
           <img
             src={maesterLogo}
@@ -202,12 +196,59 @@ export function Sidebar({ testResults }: SidebarProps) {
             <div className="flex flex-col overflow-hidden">
               <span className="text-sm font-semibold tracking-tight text-gray-900 dark:text-gray-100">Maester</span>
               <span className="truncate text-xs tracking-tight text-gray-500 dark:text-gray-400">
-                {testResults?.TenantName || testResults?.TenantId || "Tenant"}
+                {displayTenantName}
               </span>
             </div>
           )}
         </Link>
       </div>
+
+      {/* Tenant Selector (multi-tenant only) */}
+      {isMultiTenant && !isCollapsed && (
+        <div className="border-b border-gray-200 p-3 dark:border-gray-800">
+          <div className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
+            Tenants
+          </div>
+          <div className="space-y-0.5">
+            {tenants.map((tenant, index) => (
+              <button
+                key={tenant.TenantId || index}
+                onClick={() => setSelectedIndex(index)}
+                className={cx(
+                  "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
+                  index === selectedIndex
+                    ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                )}
+              >
+                <Building2 className="size-[18px] shrink-0" />
+                <span className="truncate">{tenant.TenantName || tenant.TenantId || `Tenant ${index + 1}`}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tenant Selector (collapsed, multi-tenant only) */}
+      {isMultiTenant && isCollapsed && (
+        <div className="border-b border-gray-200 p-2 dark:border-gray-800">
+          {tenants.map((tenant, index) => (
+            <button
+              key={tenant.TenantId || index}
+              onClick={() => setSelectedIndex(index)}
+              title={tenant.TenantName || tenant.TenantId || `Tenant ${index + 1}`}
+              className={cx(
+                "flex w-full items-center justify-center rounded-md p-2 transition-all duration-100",
+                index === selectedIndex
+                  ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+              )}
+            >
+              <Building2 className="size-[18px]" />
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
@@ -217,6 +258,7 @@ export function Sidebar({ testResults }: SidebarProps) {
           label="Home"
           isActive={pathname === "/"}
           isCollapsed={isCollapsed}
+          onClick={scrollReportToTop}
         />
 
         <NavGroup
@@ -251,9 +293,8 @@ export function Sidebar({ testResults }: SidebarProps) {
       <div className="relative border-t border-gray-200 p-3 dark:border-gray-800">
         <SettingsMenu
           isCollapsed={isCollapsed}
-          getTenantDisplay={getTenantDisplay}
-          tenantName={testResults?.TenantName}
-          tenantId={testResults?.TenantId}
+          tenantName={selectedTenant?.TenantName}
+          tenantId={selectedTenant?.TenantId}
           pathname={pathname}
         />
       </div>
@@ -263,13 +304,12 @@ export function Sidebar({ testResults }: SidebarProps) {
 
 interface SettingsMenuProps {
   isCollapsed: boolean
-  getTenantDisplay: () => React.ReactNode
   tenantName?: string
   tenantId?: string
   pathname: string
 }
 
-function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pathname }: SettingsMenuProps) {
+function SettingsMenu({ isCollapsed, tenantName, tenantId, pathname }: SettingsMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -339,7 +379,7 @@ function SettingsMenu({ isCollapsed, getTenantDisplay, tenantName, tenantId, pat
         )}
       >
         <div className="shrink-0">
-          {getTenantDisplay()}
+          <Settings className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         </div>
         {!isCollapsed && (
           <div className="flex flex-1 flex-col overflow-hidden text-left">

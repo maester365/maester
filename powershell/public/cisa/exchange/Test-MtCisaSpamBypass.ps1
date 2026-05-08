@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSpamBypass {
+    <#
+    .SYNOPSIS
     Checks state of spam filter
 
-.DESCRIPTION
+    .DESCRIPTION
     Allowed domains SHALL NOT be added to inbound anti-spam protection policies.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSpamBypass
 
     Returns true if spam filter enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSpamBypass
-#>
-function Test-MtCisaSpamBypass {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

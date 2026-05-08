@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
+    <#
+    .SYNOPSIS
     Tests if enabled privileged users with assigned high privileged Entra ID roles or criticality level (<= 1) are linked to a disabled identity in Microsoft Defender XDR.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function checks if any enabled privileged users with assigned high privileged Entra ID roles or criticality level (<= 1) are linked to a disabled identity in Microsoft Defender XDR. Having enabled privileged users linked to disabled identities can pose a security risk, as it may indicate orphaned privileged accounts that could be exploited by attackers.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no enabled privileged users are linked to disabled identities, otherwise returns $false.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity
-#>
-
-function Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks multiple users and roles.')]
     [OutputType([bool])]

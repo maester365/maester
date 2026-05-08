@@ -1,17 +1,17 @@
-<#
-.SYNOPSIS
+﻿function Get-MtAuthenticationMethodPolicyConfig {
+    <#
+    .SYNOPSIS
     Get details of authentication methods
 
-.DESCRIPTION
+    .DESCRIPTION
     This function retrieves the configuration of authentication methods with specific state.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtAuthenticationMethodPolicyConfig -State Enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtAuthenticationMethodPolicyConfig
-#>
-function Get-MtAuthenticationMethodPolicyConfig {
+    #>
 
     [CmdletBinding()]
     param(

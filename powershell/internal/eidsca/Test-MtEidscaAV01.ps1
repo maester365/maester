@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAV01 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Voice call - State is set to 'disabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Whether the Voice call is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAV01
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice').state -eq 'disabled'
-#>
-
-function Test-MtEidscaAV01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAV01 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'disabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'disabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'disabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'disabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAV01 {
 
     return $tenantValue
 }
+

@@ -1,0 +1,99 @@
+---
+sidebar_class_name: hidden
+description: Counts how many devices are protected by Microsoft Defender for Endpoint
+id: Get-MdeDeviceCount
+title: Get-MdeDeviceCount
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MdeDeviceCount.ps1
+---
+
+## SYNOPSIS
+
+Counts how many devices are protected by Microsoft Defender for Endpoint
+
+## SYNTAX
+
+### Count (Default)
+
+```powershell
+Get-MdeDeviceCount [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### Details
+
+```powershell
+Get-MdeDeviceCount [-IncludeDetails] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Returns the number of Windows devices that can receive MDE antivirus policies.
+Only includes devices managed by Defender ('msSense') or Intune ('mdm').
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MdeDeviceCount
+```
+
+Returns the number of MDE-protected devices.
+
+### EXAMPLE 2
+
+```powershell
+Get-MdeDeviceCount -IncludeDetails
+```
+
+Returns a hashtable with Count, Devices, and TotalManagedDevices.
+
+## PARAMETERS
+
+### -IncludeDetails
+
+Returns detailed device information instead of just the count
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Details
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Int32
+
+### System.Collections.Hashtable
+## NOTES
+
+## RELATED LINKS

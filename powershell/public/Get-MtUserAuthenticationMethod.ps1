@@ -1,30 +1,30 @@
-<#
-.SYNOPSIS
-  Get the authentication methods for the specified user
+﻿function Get-MtUserAuthenticationMethod {
+    <#
+    .SYNOPSIS
+    Get the authentication methods for the specified user
 
-.DESCRIPTION
-  Get the authentication method from the /users/{id}/authentication/methods endpoint and
-  appends the `typeDisplayName` and `isMfa` properties to each authentication method.
+    .DESCRIPTION
+    Get the authentication method from the /users/{id}/authentication/methods endpoint and
+    appends the `typeDisplayName` and `isMfa` properties to each authentication method.
 
-  The user authentication method returned by Graph is missing key information such as the
-  display name and whether an auth method is a multi-factor authentication method or not.
+    The user authentication method returned by Graph is missing key information such as the
+    display name and whether an auth method is a multi-factor authentication method or not.
 
-  This cmdlet also returns an IsMfa status for the overall user object and is set to true
-  if the user has at least one MFA method enabled.
+    This cmdlet also returns an IsMfa status for the overall user object and is set to true
+    if the user has at least one MFA method enabled.
 
-  Note: The overall IsMfa status may not be accurate in tenants that identity federation
-  or authentication methods like Certificate Based Authentication that don't have a state
-  registered against the user object.
+    Note: The overall IsMfa status may not be accurate in tenants that identity federation
+    or authentication methods like Certificate Based Authentication that don't have a state
+    registered against the user object.
 
-.EXAMPLE
-  Get-MtUserAuthenticationMethod -UserId 'john@contoso.com'
+    .EXAMPLE
+    Get-MtUserAuthenticationMethod -UserId 'john@contoso.com'
 
-  # Get the authentication methods for the specified user
+    # Get the authentication methods for the specified user
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtUserAuthenticationMethod
-#>
-function Get-MtUserAuthenticationMethod {
+    #>
   [CmdletBinding()]
   param(
     # The GUID or user principal name of the user to get Authentication Methods for.

@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAP09 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Allow user consent on risk-based apps is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Indicates whether user consent for risky apps is allowed. For example, consent requests for newly registered multi-tenant apps that are not publisher verified and require non-basic permissions are considered risky.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
+    graph/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP09
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowUserConsentForRiskyApps -eq 'false'
-#>
-
-function Test-MtEidscaAP09 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAP09 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowUserConsentForRiskyApps
+    $rawValue = $result.allowUserConsentForRiskyApps
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authorizationPolicy**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAP09 {
 
     return $tenantValue
 }
+

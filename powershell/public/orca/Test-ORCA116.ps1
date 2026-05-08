@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA116{
+    <#
+    .SYNOPSIS
     Mailbox intelligence based impersonation protection action set to move message to junk mail folder.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA116
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA116
-#>
-function Test-ORCA116{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

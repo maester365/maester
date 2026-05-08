@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisThirdPartyFileSharing {
+    <#
+    .SYNOPSIS
     Ensure third-party file sharing cloud services in Teams are disabled
 
-.DESCRIPTION
+    .DESCRIPTION
     Ensure third-party file sharing cloud services in Teams are disabled
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisThirdPartyFileSharing
 
     Returns true if all third-party file sharing cloud services in Teams are disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisThirdPartyFileSharing
-#>
-function Test-MtCisThirdPartyFileSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -28,7 +28,7 @@ function Test-MtCisThirdPartyFileSharing {
 
     try {
         $return = $true
-        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
+        $thirdPartyCloudServices = Get-CsTeamsClientConfiguration -Identity Global | Select-Object AllowDropbox, AllowBox, AllowGoogleDrive, AllowShareFile, AllowEgnyte
 
         $passResult = '✅ Pass'
         $failResult = '❌ Fail'

@@ -27,3 +27,4 @@ function Test-MtEidscaControl {
     Write-Verbose -Message "Invoking EIDSCA control check $CheckId."
     & "Test-MtEidsca$CheckId"
 }
+

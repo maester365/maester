@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaPR05 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Password Rule Settings - Smart Lockout - Lockout duration in seconds is set to 60
 
-.DESCRIPTION
+    .DESCRIPTION
 
     The minimum length in seconds of each lockout. If an account locks repeatedly, this duration increases.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
+    graph/settings.values -ge 60
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaPR05
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value -ge 60
-#>
-
-function Test-MtEidscaPR05 {
+    Returns the result of graph.microsoft.com/beta/settings.values -ge 60
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaPR05 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [int]$tenantValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'LockoutDurationInSeconds' | select-object -expand value
+    [int]$tenantValue = $rawValue
     $testResult = $tenantValue -ge 60
-    $tenantValueNotSet = $null -eq $tenantValue -and 60 -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 60 -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is greater than or equal to **60** for **settings**"
@@ -42,3 +42,4 @@ function Test-MtEidscaPR05 {
 
     return $tenantValue
 }
+

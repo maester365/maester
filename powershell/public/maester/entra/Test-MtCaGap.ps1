@@ -1,17 +1,17 @@
-<#
-.Synopsis
+﻿function Get-ObjectDifference {
+    <#
+    .Synopsis
     This function compares to object arrays
 
-.Description
+    .Description
     Provides the differences in objects between two arrays of objects.
 
-.Example
+    .Example
     Get-ObjectDifference
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-ObjectDifference
-#>
-function Get-ObjectDifference {
+    #>
     [CmdletBinding()]
     [OutputType([object[]])]
     param (
@@ -34,20 +34,20 @@ function Get-ObjectDifference {
     return $objectDifferences
 }
 
-<#
-.Synopsis
+function Get-RelatedPolicy {
+    <#
+    .Synopsis
     Provides MarkDown text for specific array of objects
 
-.Description
+    .Description
     Returns a structured MarkDown string resolving objects
 
-.Example
+    .Example
     Get-RelatedPolicy
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-RelatedPolicy
-#>
-function Get-RelatedPolicy {
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param (
@@ -67,22 +67,22 @@ function Get-RelatedPolicy {
     return $result
 }
 
-<#
-.Synopsis
+function Test-MtCaGap {
+    <#
+    .Synopsis
     This function checks if all objects found in policy exclusions are found in policy inclusions.
 
-.Description
+    .Description
     Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically included
     in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
     overlooked exclusions which do not have a fallback.
 
-.Example
+    .Example
     Test-MtCaGap
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaGap
-#>
-function Test-MtCaGap {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()
