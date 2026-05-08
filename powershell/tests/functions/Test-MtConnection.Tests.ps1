@@ -1,5 +1,22 @@
 BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
+
+    # Bypass Pester's slow command-resolution path when MS service modules are not loaded
+    # in the test environment. Track which stubs we created so AfterAll cleans up only
+    # those — never touch real cmdlets that were already present.
+    $script:createdStubs = @()
+    foreach ($cmd in 'Get-AzContext','Invoke-AzRestMethod','Get-MgContext','Get-CsTenant') {
+        if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
+            New-Item -Path "function:global:$cmd" -Value { } | Out-Null
+            $script:createdStubs += $cmd
+        }
+    }
+}
+
+AfterAll {
+    foreach ($cmd in $script:createdStubs) {
+        Remove-Item -Path "function:global:$cmd" -ErrorAction SilentlyContinue
+    }
 }
 
 Describe 'Test-MtConnection — GitHub service' {

@@ -11,6 +11,10 @@
     Disconnect-MgGraph
     ```
 
+    When invoked as Disconnect-Maester or Disconnect-MtMaester, also clears any active GitHub
+    REST session (token, connection metadata, per-session cache). The Disconnect-MtGraph alias
+    keeps its narrow Graph-only semantic and does NOT clear GitHub state.
+
     .Example
     Disconnect-MtGraph
 
@@ -59,5 +63,10 @@
    if ($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
       Disconnect-MicrosoftTeams
+   }
+
+   $invokedAs = $MyInvocation.InvocationName
+   if ($invokedAs -iin @('Disconnect-Maester','Disconnect-MtMaester')) {
+      Disconnect-MtGitHub
    }
 }
