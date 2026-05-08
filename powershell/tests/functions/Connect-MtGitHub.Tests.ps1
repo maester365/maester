@@ -71,6 +71,78 @@ Describe 'Connect-MtGitHub' {
         }
     }
 
+    Context 'Failure: ApiBaseUriFailed' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It 'Sets FailureReason = ApiBaseUriFailed when /user throws with no Response/StatusCode (DNS/TLS/transport)' {
+            # Plain exception with no Response — Get-MtGitHubErrorStatusCode returns $null,
+            # which models DNS failure, TLS handshake failure, connection refused, or an
+            # unreachable GHE base URI. Must not be classified as TokenInvalid.
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                throw [System.Exception]::new('No such host is known')
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiBaseUriFailed'
+                $c.FailureReason | Should -Not -Be 'TokenInvalid'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+    }
+
+    Context 'Failure: ApiUnavailable' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It 'Sets FailureReason = ApiUnavailable when /user returns HTTP 500 (server error, URI is fine)' {
+            # 5xx means GitHub responded — the base URI resolved and TLS succeeded — but the
+            # service itself is failing. Must not be conflated with TokenInvalid or ApiBaseUriFailed.
+            $fakeResp = [PSCustomObject]@{ StatusCode = 500; Headers = @{} }
+            $ex = [System.Exception]::new('Internal Server Error')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 500 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Internal Server Error' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiUnavailable'
+                $c.FailureReason | Should -Not -Be 'TokenInvalid'
+                $c.FailureReason | Should -Not -Be 'ApiBaseUriFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Sets FailureReason = ApiUnavailable when /user returns HTTP 503' {
+            $fakeResp = [PSCustomObject]@{ StatusCode = 503; Headers = @{} }
+            $ex = [System.Exception]::new('Service Unavailable')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 503 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Service Unavailable' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiUnavailable'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+    }
+
     Context 'Failure: OrgAccessFailed' {
         BeforeEach {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'
@@ -474,6 +546,45 @@ Describe 'Connect-MtGitHub' {
                 $c.Connected     | Should -BeFalse
                 $c.FailureReason | Should -Be 'InvalidApiBaseUri'
                 # Security property: invalid URI must short-circuit before headers are stored.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Parameter -ApiBaseUri http:// fails before any web request and clears prior session state' {
+            # Pre-seed a stale session to prove the parameter validation path no longer throws
+            # before the session-clear step at the top of Connect-MtGitHub runs.
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'stale' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer stale-token' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'http://api.example.com' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                # Stale session state must be cleared even when the parameter value is rejected.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Parameter -ApiBaseUri "not-a-uri" fails before any web request and clears prior session state' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'stale' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer stale-token' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'not-a-uri' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
                 $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0

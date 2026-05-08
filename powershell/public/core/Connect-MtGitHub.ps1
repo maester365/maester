@@ -81,7 +81,6 @@
         [securestring] $Token,
 
         [Parameter(Mandatory = $false)]
-        [ValidatePattern('^https://')]
         [string] $ApiBaseUri,
 
         [Parameter(Mandatory = $false)]
@@ -114,9 +113,7 @@
         return
     }
 
-    # Resolve ApiBaseUri (param -> config -> default) into a local variable. Reassigning
-    # $ApiBaseUri would re-trigger [ValidatePattern] and short-circuit the config path with
-    # a hard exception instead of our InvalidApiBaseUri failure.
+    # Resolve ApiBaseUri (param -> config -> default).
     $resolvedApiBaseUri = $ApiBaseUri
     if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) {
         $configApiBaseUri = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiBaseUri'
@@ -125,8 +122,9 @@
     if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) { $resolvedApiBaseUri = 'https://api.github.com' }
     $resolvedApiBaseUri = $resolvedApiBaseUri.TrimEnd('/')
 
-    # Revalidate the fully-resolved URI. [ValidatePattern] on the param only fires when -ApiBaseUri
-    # is bound, so a config value can otherwise reach Invoke-WebRequest with a Bearer header on http://.
+    # Validate the fully-resolved URI. Done in-body (not via parameter [ValidatePattern]) so
+    # config-supplied values are checked too, and so an invalid value records InvalidApiBaseUri
+    # after the session-clearing logic at the top of this function rather than throwing before it.
     $parsedUri = $null
     if (-not [uri]::TryCreate($resolvedApiBaseUri, [UriKind]::Absolute, [ref]$parsedUri) -or $parsedUri.Scheme -cne 'https') {
         Write-Host "`nGitHub API base URI must be an absolute https:// URI. Got: '$resolvedApiBaseUri'." -ForegroundColor Red
@@ -198,6 +196,26 @@
         if ($isUnsupportedApiVersion) {
             Write-Host "`nGitHub API version '$ApiVersion' is not supported by GitHub. Update GitHubApiVersion or omit it to use the default." -ForegroundColor Red
             $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiVersion' }
+            return
+        }
+        # $null status code means no HTTP response was produced (DNS failure, TLS handshake
+        # failure, connection refused, hostname unreachable). The PAT was never evaluated and
+        # the URI itself didn't resolve to a working endpoint — commonly a wrong GHE base URI.
+        if ($null -eq $code) {
+            Write-Host "`nGitHub API base URI '$ApiBaseUri' is not reachable (no response). Verify network connectivity, DNS/TLS, and the GitHubApiBaseUri value (use https://api.{subdomain}.ghe.com for GHE.com)." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiBaseUriFailed' }
+            return
+        }
+        # 5xx means GitHub responded but the endpoint is failing — the URI is fine, the
+        # service is unavailable. Don't conflate with token or base-URI problems.
+        if ($code -ge 500 -and $code -le 599) {
+            Write-Host "`nGitHub API request failed (HTTP $code). The GitHub service may be temporarily unavailable; check https://www.githubstatus.com/ and retry." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiUnavailable' }
+            return
+        }
+        if ($code -eq 401) {
+            Write-Host "`nGitHub token validation failed (HTTP 401). Verify the PAT is valid and not expired." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
             return
         }
         Write-Host "`nGitHub token validation failed (HTTP $code). Verify the PAT is valid and not expired." -ForegroundColor Red
