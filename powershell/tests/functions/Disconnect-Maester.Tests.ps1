@@ -37,6 +37,22 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
         }
     }
 
+    Context 'Module-qualified invocation (Maester\Disconnect-Maester)' {
+        It 'Clears all three GitHub session keys' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
+                $__MtSession.GitHubCache      = @{ 'foo' = 'bar' }
+            }
+            Maester\Disconnect-Maester 6>$null
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection  | Should -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader  | Should -BeNullOrEmpty
+                $__MtSession.GitHubCache.Count | Should -Be 0
+            }
+        }
+    }
+
     Context 'Disconnect-MtMaester alias' {
         It 'Clears GitHub state' {
             InModuleScope Maester {

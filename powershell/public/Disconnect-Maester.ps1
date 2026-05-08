@@ -54,7 +54,14 @@
       Disconnect-MicrosoftTeams
    }
 
-   $invokedAs = $MyInvocation.InvocationName
+   # Strip module qualifier (e.g. 'Maester\Disconnect-Maester') so module-qualified
+   # invocation still routes to the GitHub-clearing branch. PowerShell uses '\' for
+   # the qualifier on all OSes, so split on the literal char rather than Split-Path.
+   $invokedAs = if ([string]::IsNullOrEmpty($MyInvocation.InvocationName)) {
+      $MyInvocation.MyCommand.Name
+   } else {
+      ($MyInvocation.InvocationName -split '\\')[-1]
+   }
    if ($invokedAs -iin @('Disconnect-Maester','Disconnect-MtMaester')) {
       Disconnect-MtGitHub
    }

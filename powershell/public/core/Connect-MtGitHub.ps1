@@ -5,16 +5,18 @@
 
     .DESCRIPTION
     Establishes a GitHub REST API session for Maester CIS GitHub Enterprise Cloud benchmark
-    tests. Validates the PAT via three probes:
+    tests. Validates the PAT via three probes, all of which must succeed:
       1. GET /user                            — token identity
-      2. GET /orgs/{org}                      — org access
-      3. GET /orgs/{org}/memberships/{user}   — role check (admin vs member, active vs pending)
+      2. GET /orgs/{org}                      — org metadata (login, plan)
+      3. GET /orgs/{org}/memberships/{user}   — org-access proof (state + role)
 
-    The third probe populates Role, RoleState, RoleVerified, and RoleVerificationFailureReason
-    on the connection object. RoleVerified = $true with Role = 'admin' and RoleState = 'active'
-    is the no-warning path; anything else (member role, pending state, or a probe failure)
-    emits a warning. A failed role probe does NOT block connection — token validity and org
-    access are already proven.
+    The membership probe is the real access gate: /orgs/{org} returns public metadata
+    even for tokens with no relationship to the organization. A 4xx, malformed body,
+    or missing state/role on probe 3 aborts with FailureReason = 'OrgMembershipFailed'.
+
+    On success, Role = 'admin' + RoleState = 'active' is the no-warning path. Other
+    valid roles (member, billing_manager, etc.) or 'pending' state still connect but
+    emit a warning indicating limited CIS coverage.
 
     Token resolution order:
       1. -Token parameter (SecureString)
@@ -97,14 +99,26 @@
         return
     }
 
-    # Resolve ApiBaseUri (param -> config -> default)
-    # Use a local variable for the config lookup to avoid triggering [ValidatePattern] on $null.
-    if ([string]::IsNullOrWhiteSpace($ApiBaseUri)) {
+    # Resolve ApiBaseUri (param -> config -> default) into a local variable. Reassigning
+    # $ApiBaseUri would re-trigger [ValidatePattern] and short-circuit the config path with
+    # a hard exception instead of our InvalidApiBaseUri failure.
+    $resolvedApiBaseUri = $ApiBaseUri
+    if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) {
         $configApiBaseUri = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiBaseUri'
-        if (-not [string]::IsNullOrWhiteSpace($configApiBaseUri)) { $ApiBaseUri = $configApiBaseUri }
+        if (-not [string]::IsNullOrWhiteSpace($configApiBaseUri)) { $resolvedApiBaseUri = $configApiBaseUri }
     }
-    if ([string]::IsNullOrWhiteSpace($ApiBaseUri)) { $ApiBaseUri = 'https://api.github.com' }
-    $ApiBaseUri = $ApiBaseUri.TrimEnd('/')
+    if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) { $resolvedApiBaseUri = 'https://api.github.com' }
+    $resolvedApiBaseUri = $resolvedApiBaseUri.TrimEnd('/')
+
+    # Revalidate the fully-resolved URI. [ValidatePattern] on the param only fires when -ApiBaseUri
+    # is bound, so a config value can otherwise reach Invoke-WebRequest with a Bearer header on http://.
+    $parsedUri = $null
+    if (-not [uri]::TryCreate($resolvedApiBaseUri, [UriKind]::Absolute, [ref]$parsedUri) -or $parsedUri.Scheme -cne 'https') {
+        Write-Host "`nGitHub API base URI must be an absolute https:// URI. Got: '$resolvedApiBaseUri'." -ForegroundColor Red
+        $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiBaseUri' }
+        return
+    }
+    $ApiBaseUri = $resolvedApiBaseUri
 
     # Resolve ApiVersion (param -> config -> default)
     # Use a local variable for the config lookup to avoid triggering [ValidatePattern] on $null.
@@ -180,14 +194,12 @@
         $planName = $orgData.plan.name
     }
 
-    # Probe 3: org membership / role
-    # Distinguishes "known non-admin" (RoleVerified=$true, Role!='admin') from
-    # "could not check" (RoleVerified=$false). Failures here never block connection.
-    $role                          = $null
-    $roleState                     = $null
-    $roleVerified                  = $false
-    $roleVerificationFailureReason = $null
-    $roleWarning                   = $null
+    # Probe 3: org membership / role — blocking proof of org access.
+    # /orgs/{org} returns public org metadata even for tokens with no relationship to the org,
+    # so membership is the real access gate. Any failure here aborts the connection.
+    $role         = $null
+    $roleState    = $null
+    $roleWarning  = $null
 
     $encodedLogin = [System.Uri]::EscapeDataString($user.login)
     try {
@@ -204,28 +216,32 @@
         $hasRole  = $null -ne $membershipData -and $membershipData.PSObject.Properties.Name -contains 'role'  -and -not [string]::IsNullOrWhiteSpace([string]$membershipData.role)
 
         if (-not ($hasState -and $hasRole)) {
-            $roleVerified                  = $false
-            $roleVerificationFailureReason = 'Malformed membership response'
-            $roleWarning                   = "GitHub role could not be verified: $roleVerificationFailureReason. Continuing — some controls may report limited visibility."
-        } else {
-            $role         = [string]$membershipData.role
-            $roleState    = [string]$membershipData.state
-            $roleVerified = $true
+            Write-Host "`nGitHub organization membership could not be verified: malformed response from /orgs/$Organization/memberships/$($user.login)." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgMembershipFailed' }
+            return
+        }
 
-            if ($roleState -eq 'active' -and $role -eq 'admin') {
-                # No-warning path
-            } elseif ($roleState -eq 'pending') {
-                $roleWarning = "GitHub organization membership is pending acceptance. Some controls may report limited visibility until membership is accepted."
-            } else {
-                $roleWarning = "GitHub organization admin/owner permissions required for full CIS coverage. Current role: '$role'. Some controls may skip or report limited visibility."
-            }
+        $role      = [string]$membershipData.role
+        $roleState = [string]$membershipData.state
+
+        if ($roleState -eq 'active' -and $role -eq 'admin') {
+            # No-warning path
+        } elseif ($roleState -eq 'pending') {
+            $roleWarning = "GitHub organization membership is pending acceptance. Some controls may report limited visibility until membership is accepted."
+        } else {
+            $roleWarning = "GitHub organization admin/owner permissions required for full CIS coverage. Current role: '$role'. Some controls may skip or report limited visibility."
         }
     } catch {
         $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
-        $roleVerified                  = $false
-        $roleVerificationFailureReason = "${code}: $apiMsg"
-        $roleWarning                   = "GitHub role could not be verified (HTTP $code). $apiMsg Continuing — some controls may report limited visibility."
+        $msg = switch ($code) {
+            403     { "Membership probe forbidden (403). The token cannot prove membership in '$Organization'. GitHub API: $apiMsg" }
+            404     { "User '$($user.login)' is not a member of organization '$Organization' (404). GitHub API: $apiMsg" }
+            default { "Membership probe failed (HTTP $code). $apiMsg" }
+        }
+        Write-Host "`nFailed to verify GitHub organization membership: $msg" -ForegroundColor Red
+        $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgMembershipFailed' }
+        return
     }
 
     $__MtSession.GitHubAuthHeader = $authHeaders
@@ -238,8 +254,8 @@
         Plan                          = $planName
         Role                          = $role
         RoleState                     = $roleState
-        RoleVerified                  = $roleVerified
-        RoleVerificationFailureReason = $roleVerificationFailureReason
+        RoleVerified                  = $true
+        RoleVerificationFailureReason = $null
         FailureReason                 = $null
     }
 
