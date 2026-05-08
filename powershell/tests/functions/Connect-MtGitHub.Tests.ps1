@@ -219,7 +219,20 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
-        It 'probe HTTP 403: warning, RoleVerified=$false, failure reason includes 403 and api message; Connected=$true' {
+    }
+
+    Context 'Failure: OrgMembershipFailed' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+        }
+
+        It 'Membership HTTP 403 fails connection with FailureReason = OrgMembershipFailed' {
             $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
             $ex = [System.Exception]::new('Forbidden')
             Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
@@ -227,20 +240,18 @@ Describe 'Connect-MtGitHub' {
             Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Insufficient permissions to read membership.' }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } { throw $ex }
 
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+            Connect-MtGitHub -Organization 'myorg' 6>$null
 
-            $warns.Count | Should -BeGreaterOrEqual 1
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected                     | Should -BeTrue
-                $c.RoleVerified                  | Should -BeFalse
-                $c.RoleVerificationFailureReason | Should -Match '^403:'
-                $c.RoleVerificationFailureReason | Should -Match 'Insufficient permissions'
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
 
-        It 'probe HTTP 404: warning, RoleVerified=$false, failure reason includes 404; Connected=$true' {
+        It 'Membership HTTP 404 fails connection with FailureReason = OrgMembershipFailed' {
             $fakeResp = [PSCustomObject]@{ StatusCode = 404; Headers = @{} }
             $ex = [System.Exception]::new('Not Found')
             Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
@@ -248,60 +259,126 @@ Describe 'Connect-MtGitHub' {
             Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Not Found' }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } { throw $ex }
 
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+            Connect-MtGitHub -Organization 'myorg' 6>$null
 
-            $warns.Count | Should -BeGreaterOrEqual 1
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected                     | Should -BeTrue
-                $c.RoleVerified                  | Should -BeFalse
-                $c.RoleVerificationFailureReason | Should -Match '^404:'
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
 
-        It '200 with malformed JSON body: warning, RoleVerified=$false, reason="Malformed membership response"; Connected=$true' {
+        It '200 with malformed JSON body fails connection with FailureReason = OrgMembershipFailed' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = 'not-json{' }
             }
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
-            $warns.Count | Should -BeGreaterOrEqual 1
+            Connect-MtGitHub -Organization 'myorg' 6>$null
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected                     | Should -BeTrue
-                $c.RoleVerified                  | Should -BeFalse
-                $c.RoleVerificationFailureReason | Should -Be 'Malformed membership response'
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
 
-        It '200 with valid JSON missing role field: same as malformed path; Connected=$true' {
+        It '200 with valid JSON missing role field fails connection with FailureReason = OrgMembershipFailed' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"active"}' }
             }
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
-            $warns.Count | Should -BeGreaterOrEqual 1
+            Connect-MtGitHub -Organization 'myorg' 6>$null
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected                     | Should -BeTrue
-                $c.RoleVerified                  | Should -BeFalse
-                $c.RoleVerificationFailureReason | Should -Be 'Malformed membership response'
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
 
-        It '200 with valid JSON missing state field: same as malformed path; Connected=$true' {
+        It '200 with valid JSON missing state field fails connection with FailureReason = OrgMembershipFailed' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"role":"admin"}' }
             }
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
-            $warns.Count | Should -BeGreaterOrEqual 1
+            Connect-MtGitHub -Organization 'myorg' 6>$null
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected                     | Should -BeTrue
-                $c.RoleVerified                  | Should -BeFalse
-                $c.RoleVerificationFailureReason | Should -Be 'Malformed membership response'
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+    }
+
+    Context 'Failure: InvalidApiBaseUri' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It 'Config http:// URI fails before any web request' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiBaseUri = 'http://api.example.com'
+                    }
+                }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                # Security property: invalid URI must short-circuit before headers are stored.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Config non-URI value fails before any web request' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiBaseUri = 'not-a-uri'
+                    }
+                }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri is invalid' }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                # Security property: invalid URI must short-circuit before headers are stored.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Parameter https URI with trailing slash still works and is trimmed' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.example.com/' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiBaseUri | Should -Be 'https://api.example.com'
             }
         }
     }
