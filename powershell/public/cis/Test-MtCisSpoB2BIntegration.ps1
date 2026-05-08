@@ -8,14 +8,14 @@
     The recommended state is EnableAzureADB2BIntegration set to $true.
 
 .EXAMPLE
-    Test-MtSpoB2BIntegration
+    Test-MtCisSpoB2BIntegration
 
     Returns true if the SharePoint tenant is integrated with Microsoft Entra B2B, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoB2BIntegration
+    https://maester.dev/docs/commands/Test-MtCisSpoB2BIntegration
 #>
-function Test-MtSpoB2BIntegration {
+function Test-MtCisSpoB2BIntegration {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

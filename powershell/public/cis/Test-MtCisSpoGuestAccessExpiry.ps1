@@ -7,14 +7,14 @@
     This means that once a guest user is granted access to a site or OneDrive, they will have indefinite access until manually removed by an administrator. Enabling automatic expiration of guest access helps to ensure that external users do not retain access to sensitive information longer than necessary, reducing the risk of unauthorized access and supporting a more secure sharing environment. The recommended state is to enable guest access expiration and set it to 30 days or less.
 
 .EXAMPLE
-    Test-MtSpoGuestAccessExpiry
+    Test-MtCisSpoGuestAccessExpiry
 
     Returns true if guest access expiration is enabled and set to 30 days or less, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoGuestAccessExpiry
+    https://maester.dev/docs/commands/Test-MtCisSpoGuestAccessExpiry
 #>
-function Test-MtSpoGuestAccessExpiry {
+function Test-MtCisSpoGuestAccessExpiry {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

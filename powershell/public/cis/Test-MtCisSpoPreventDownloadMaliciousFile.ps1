@@ -6,14 +6,14 @@
     By default, users can't open, move, copy, or share* malicious files that are detected by Safe Attachments for SharePoint, OneDrive, and Microsoft Teams. However, they can delete and download malicious files.
 
 .EXAMPLE
-    Test-MtSpoPreventDownloadMaliciousFile
+    Test-MtCisSpoPreventDownloadMaliciousFile
 
     Returns true if malicious file download prevention is enabled in your SharePoint tenant, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoPreventDownloadMaliciousFile
+    https://maester.dev/docs/commands/Test-MtCisSpoPreventDownloadMaliciousFile
     #>
-function Test-MtSpoPreventDownloadMaliciousFile {
+function Test-MtCisSpoPreventDownloadMaliciousFile {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

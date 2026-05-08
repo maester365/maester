@@ -187,7 +187,7 @@
     'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
     'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices',
     'Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices',
-    'Test-MtSpoB2BIntegration', 'Test-MtSpoDefaultSharingLink', 'Test-MtSpoDefaultSharingLinkPermission', 'Test-MtSpoGuestAccessExpiry', 'Test-MtSpoGuestCannotShareUnownedItem', 'Test-MtSpoPreventDownloadMaliciousFile'
+    'Test-MtCisSpoB2BIntegration', 'Test-MtCisSpoDefaultSharingLink', 'Test-MtCisSpoDefaultSharingLinkPermission', 'Test-MtCisSpoGuestAccessExpiry', 'Test-MtCisSpoGuestCannotShareUnownedItem', 'Test-MtCisSpoPreventDownloadMaliciousFile'
     'Test-MtEntitlementManagementDeletedGroups',
     'Test-MtEntitlementManagementInactivePolicies',
     'Test-MtEntitlementManagementOrphanedResources',

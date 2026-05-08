@@ -6,14 +6,14 @@
     By default, the sharing link permission in SharePoint and OneDrive is set to "Edit". This means that when users share files or folders, the default option allows recipients to edit the content, which can lead to unintentional modifications or deletions of sensitive information. By changing the default sharing link permission to "View", users are encouraged to be more deliberate about granting edit permissions, reducing the risk of unauthorized changes and supporting a more secure sharing environment.
 
 .EXAMPLE
-    Test-MtSpoDefaultSharingLinkPermission
+    Test-MtCisSpoDefaultSharingLinkPermission
 
     Returns true if the default sharing link permission is set to a restrictive option, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoDefaultSharingLinkPermission
+    https://maester.dev/docs/commands/Test-MtCisSpoDefaultSharingLinkPermission
 #>
-function Test-MtSpoDefaultSharingLinkPermission {
+function Test-MtCisSpoDefaultSharingLinkPermission {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

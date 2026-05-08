@@ -116,7 +116,7 @@
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'Microsoft.Online.SharePoint.PowerShell')
+   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
    switch ($OrderedImport.Name) {
 
       'Az.Accounts' {
@@ -292,31 +292,7 @@
 
       'Microsoft.Online.SharePoint.PowerShell' {
          if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
-            if (
-                  ( $PSVersionTable.OS -match "Windows" -or [System.Environment]::OSVersion.VersionString -match "Windows" ) -and
-                  ( $PSVersionTable.PSVersion.Major -eq 5 ) -and
-                  ( Get-MtUserInteractive )
-            ) {
-               Write-Verbose 'Connecting to SharePoint Online'
-               try {
-                  $tenantDomain = Read-Host -Prompt "Connecting to SharePoint Online requires the onmicrosoft.com domain name of your tenant. Please enter the tenant domain (e.g. contoso.onmicrosoft.com)"
-                  if ($tenantDomain -notmatch "^[\w-]+\.onmicrosoft\.com$") {
-                     Write-Host "The tenant domain must be in the format contoso.onmicrosoft.com" -ForegroundColor Red
-                     Write-Host "Skipping SharePoint Online connection and continuing with any remaining services." -ForegroundColor Yellow
-                     break
-                  }
-                  $tenantDomain = $tenantDomain.ToLowerInvariant()
-                  $spoUri = "https://$(($tenantDomain).Replace(".onmicrosoft.com",$null))-admin.sharepoint.com"
-                  Connect-SpoService -Url $spoUri -UseSystemBrowser $true
-               } catch [Management.Automation.CommandNotFoundException] {
-                  Write-Host "`nThe SharePoint Online PowerShell module is not installed or imported. Please install and import the module using the following command. For more information see https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/connect-sposervice" -ForegroundColor Red
-                  Write-Host "`Install-Module Microsoft.Online.SharePoint.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
-                  Write-Host "`Import-Module Microsoft.Online.SharePoint.PowerShell`n" -ForegroundColor Yellow
-               }
-            } else {
-               Write-Host "`nThe SharePoint Online PowerShell module is currently limited in its functionality and can only be used on interactive sessions on a Windows machine with PowerShell 5" -ForegroundColor Red
-               Write-Host "Please connect to SharePoint Online using Connect-SpoService in a separate PowerShell session." -ForegroundColor Yellow
-            }
+
          }
       }
    } # end switch OrderedImport

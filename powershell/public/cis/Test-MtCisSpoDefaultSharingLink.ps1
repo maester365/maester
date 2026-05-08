@@ -6,14 +6,14 @@
     By default, the sharing link experience in SharePoint and OneDrive is set to "Anyone with the link". This means that when users share files or folders, the default option allows anyone with the link to access the content, which can lead to unintentional overexposure of sensitive information. By changing the default sharing link type to "Specific people", users are encouraged to be more deliberate about who they share content with, reducing the risk of unauthorized access and supporting a more secure sharing environment.
 
 .EXAMPLE
-    Test-MtSpoDefaultSharingLink
+    Test-MtCisSpoDefaultSharingLink
 
     Returns true if the default sharing link type is set to a restrictive option, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoDefaultSharingLink
+    https://maester.dev/docs/commands/Test-MtCisSpoDefaultSharingLink
 #>
-function Test-MtSpoDefaultSharingLink {
+function Test-MtCisSpoDefaultSharingLink {
     [CmdletBinding()]
     [OutputType([bool])]
     param()

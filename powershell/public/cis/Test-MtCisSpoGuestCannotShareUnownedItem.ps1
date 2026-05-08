@@ -6,14 +6,14 @@
     By default, external users can share items they don't own. This means that if a guest user has access to an item, they can share it with others, potentially leading to unauthorized access and data leaks. By preventing external users from resharing items they don't own, you can help protect sensitive information and maintain better control over who has access to your SharePoint resources. The recommended state is PreventExternalUsersFromResharing set to $true.
 
 .EXAMPLE
-    Test-MtSpoGuestCannotShareUnownedItem
+    Test-MtCisSpoGuestCannotShareUnownedItem
 
     Returns true if external users are prevented from resharing items they don't own, false otherwise.
 
 .LINK
-    https://maester.dev/docs/commands/Test-MtSpoGuestCannotShareUnownedItem
+    https://maester.dev/docs/commands/Test-MtCisSpoGuestCannotShareUnownedItem
 #>
-function Test-MtSpoGuestCannotShareUnownedItem {
+function Test-MtCisSpoGuestCannotShareUnownedItem {
     [CmdletBinding()]
     [OutputType([bool])]
     param()
