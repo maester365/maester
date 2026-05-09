@@ -51,7 +51,7 @@
                 Expected = 'False when returned'
                 Pass     = $org.members_can_create_internal_repositories -eq $false
             }
-            $checks = @($checks; $internalRepositoryCheck)
+            $checks = $checks + $internalRepositoryCheck
         }
 
         $result = @($checks | Where-Object { $_.Pass -ne $true }).Count -eq 0

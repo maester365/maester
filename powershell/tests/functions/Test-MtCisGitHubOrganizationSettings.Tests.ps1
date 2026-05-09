@@ -95,6 +95,13 @@ Describe 'CIS GitHub organization setting tests' {
 
             Test-MtCisGitHubRepositoryCreationLimited | Should -BeTrue
         }
+
+        It 'Passes when GitHub returns mixed-case Read because -contains is case-insensitive' {
+            # This documents PowerShell's default case-insensitive -contains behavior.
+            $script:orgResponse.default_repository_permission = 'Read'
+
+            Test-MtCisGitHubStrictBasePermission | Should -BeTrue
+        }
     }
 
     Context 'Fail cases' {
@@ -136,11 +143,6 @@ Describe 'CIS GitHub organization setting tests' {
             & $Function | Should -BeFalse
         }
 
-        It 'Handles strict base permissions casing consistently' {
-            $script:orgResponse.default_repository_permission = 'Read'
-
-            Test-MtCisGitHubStrictBasePermission | Should -BeTrue
-        }
     }
 
     Context 'Missing evidence' {
@@ -213,7 +215,7 @@ Describe 'CIS GitHub organization setting tests' {
 
             & $_ | Should -BeNullOrEmpty
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'Error'
+                $SkippedBecause -eq 'Error' -and $null -ne $SkippedError
             }
         }
     }
