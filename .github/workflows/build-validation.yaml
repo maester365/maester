@@ -92,18 +92,21 @@ jobs:
               $missed  = [int]$lineCounter.missed
               $total   = $covered + $missed
               $pct     = if ($total -gt 0) { [math]::Round(($covered / $total) * 100, 1) } else { 0 }
-              $summary = @"
-## Code Coverage (baseline)
-
-| Metric        | Value             |
-|---------------|-------------------|
-| Lines covered | $covered / $total |
-| Coverage      | $pct%             |
-
-> Coverage is measured on the Linux + PowerShell 7 matrix leg only.
-> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.
-> No threshold is enforced in this baseline run.
-"@
+              # Avoid a PowerShell here-string (@"..."@) here: the closing "@ must sit
+              # at column 0, which would terminate the YAML block scalar early and cause
+              # a "workflow file issue" parse error on GitHub Actions.
+              $summary = @(
+                "## Code Coverage (baseline)",
+                "",
+                "| Metric        | Value             |",
+                "|---------------|-------------------|",
+                "| Lines covered | $covered / $total |",
+                "| Coverage      | $pct%             |",
+                "",
+                "> Coverage is measured on the Linux + PowerShell 7 matrix leg only.",
+                "> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.",
+                "> No threshold is enforced in this baseline run."
+              ) -join "`n"
               $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
               Write-Host "Coverage: $pct% ($covered/$total lines covered)"
             } else {
