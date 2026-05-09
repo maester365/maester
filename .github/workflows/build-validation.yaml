@@ -37,6 +37,9 @@ jobs:
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
+          # Pester 5.7.1+ is required for the coverage configuration used in pester.ps1.
+          # Installed on every leg so behavior stays consistent across the matrix.
+          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSFramework -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -AllowClobber
@@ -50,6 +53,12 @@ jobs:
       - name: Run Pester tests
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
+        env:
+          # Enable code coverage only on the Linux + PowerShell 7 leg so we get a
+          # baseline JaCoCo report without re-running the entire test suite in a
+          # separate dedicated coverage job. Other matrix legs still run the
+          # original per-file Pester loop unchanged.
+          PESTER_COVERAGE: "${{ runner.os == 'Linux' && 'true' || 'false' }}"
         run: |
           ./powershell/tests/pester.ps1
 
@@ -64,52 +73,10 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true' # run this step even if previous step failed and tests were run
-        with:
-          name: test-results-${{ runner.os }}
-          path: TestResults/*.xml
-
-  coverage:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
-        id: filter
-        with:
-          filters: |
-            pwshmodule:
-              - 'powershell/**'
-              - 'report/**'
-              - 'tests/**'
-              - '.github/workflows/build-validation.yaml'
-
-      - name: Install PowerShell dependencies
-        if: steps.filter.outputs.pwshmodule == 'true'
-        shell: pwsh
-        run: |
-          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSFramework -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -AllowClobber
-          try {
-            Install-Module Microsoft.PowerShell.PSResourceGet -Scope CurrentUser -AllowClobber -ErrorAction Stop
-          }
-          catch {
-            Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
-          }
-
-      - name: Run Pester tests with code coverage
-        if: steps.filter.outputs.pwshmodule == 'true'
-        shell: pwsh
-        env:
-          PESTER_COVERAGE: 'true'
-        run: |
-          ./powershell/tests/pester.ps1
-
       - name: Publish coverage summary
-        if: steps.filter.outputs.pwshmodule == 'true'
+        # Only the Linux leg produces a JaCoCo coverage report (see PESTER_COVERAGE above).
+        # Run on success or failure so partial coverage data is still surfaced when tests fail.
+        if: (success() || failure()) && runner.os == 'Linux' && steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
           $coverageFile = 'TestResults/CodeCoverage.xml'
@@ -129,6 +96,8 @@ jobs:
 | Lines covered | $covered / $total |
 | Coverage      | $pct%             |
 
+> Coverage is measured on the Linux + PowerShell 7 matrix leg only.
+> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.
 > No threshold is enforced in this baseline run.
 "@
               $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
@@ -140,8 +109,15 @@ jobs:
             Write-Warning "Coverage file not found: $coverageFile"
           }
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true'
+      - name: Upload coverage report
+        if: (success() || failure()) && runner.os == 'Linux' && steps.filter.outputs.pwshmodule == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           path: TestResults/CodeCoverage.xml
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true' # run this step even if previous step failed and tests were run
+        with:
+          name: test-results-${{ runner.os }}
+          path: TestResults/*.xml
