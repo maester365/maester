@@ -1228,5 +1228,53 @@ Describe 'Connect-MtGitHub' {
                 $c.ApiVersion | Should -Be '2024-06-01'
             }
         }
+
+        It 'Trims surrounding whitespace from -ApiBaseUri parameter before validation' {
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri ' https://api.github.com ' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiBaseUri | Should -Be 'https://api.github.com'
+            }
+            # Probe URI must be clean — no URL-encoded whitespace prefix/suffix that would 404.
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.github.com/user'
+            }
+        }
+
+        It 'Trims surrounding whitespace from -ApiBaseUri parameter combined with trailing slash' {
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com/ ' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiBaseUri | Should -Be 'https://api.github.com'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.github.com/user'
+            }
+        }
+
+        It 'Trims surrounding whitespace from config-supplied GitHubApiBaseUri before validation' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiBaseUri = ' https://api.github.com/ '
+                    }
+                }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiBaseUri | Should -Be 'https://api.github.com'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.github.com/user'
+            }
+        }
     }
 }
