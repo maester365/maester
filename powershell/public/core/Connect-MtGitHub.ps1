@@ -187,6 +187,12 @@
         $user = $userResponse.Content | ConvertFrom-Json
         Write-Verbose "GitHub token identity: $($user.login)"
     } catch {
+        $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
+        if ($rateLimitMessage) {
+            Write-Host "`n$rateLimitMessage" -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'RateLimited' }
+            return
+        }
         $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
         # 410 = unsupported API version. 400 with a message about API/version support
@@ -229,6 +235,12 @@
         $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
         $orgData = $orgResponse.Content | ConvertFrom-Json
     } catch {
+        $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
+        if ($rateLimitMessage) {
+            Write-Host "`n$rateLimitMessage" -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'RateLimited' }
+            return
+        }
         $code = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage -ErrorRecord $_
         $msg = switch ($code) {
@@ -285,6 +297,12 @@
             $roleWarning = "GitHub organization admin/owner permissions required for full CIS coverage. Current role: '$role'. Some controls may skip or report limited visibility."
         }
     } catch {
+        $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
+        if ($rateLimitMessage) {
+            Write-Host "`n$rateLimitMessage" -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'RateLimited' }
+            return
+        }
         $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
         $msg = switch ($code) {
@@ -322,12 +340,18 @@
             $respHeaders = $_.Exception.Response.Headers
         }
         $adminAcceptedPermissions = Get-MtGitHubResponseHeaderValue -Headers $respHeaders -Name 'x-accepted-github-permissions'
-        $adminFailureReason = switch ($adminStatusCode) {
-            403     { "HTTP 403 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
-            404     { "HTTP 404 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
-            default { "HTTP $adminStatusCode from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+        $adminRateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
+        if ($adminRateLimitMessage) {
+            $adminFailureReason = $adminRateLimitMessage
+            $adminWarning = "GitHub organization administration API access was not verified due to a GitHub API rate limit. Detail: $adminRateLimitMessage"
+        } else {
+            $adminFailureReason = switch ($adminStatusCode) {
+                403     { "HTTP 403 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+                404     { "HTTP 404 from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+                default { "HTTP $adminStatusCode from /orgs/$Organization/actions/permissions. $adminApiMsg" }
+            }
+            $adminWarning = "GitHub organization administration API access was not verified. Some CIS controls requiring org administration may skip or report limited visibility. Required token permissions — classic PAT: admin:org; fine-grained PAT: Organization Administration: read. Detail: $adminFailureReason"
         }
-        $adminWarning = "GitHub organization administration API access was not verified. Some CIS controls requiring org administration may skip or report limited visibility. Required token permissions — classic PAT: admin:org; fine-grained PAT: Organization Administration: read. Detail: $adminFailureReason"
     }
 
     $__MtSession.GitHubAuthHeader = $authHeaders

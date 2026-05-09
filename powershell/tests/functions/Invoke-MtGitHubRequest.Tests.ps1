@@ -189,6 +189,43 @@ Describe 'Invoke-MtGitHubRequest' {
             }
         }
 
+        It 'Rethrows ordinary 403 without rate-limit headers as the original error (not a rate-limit message)' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $fakeResp = [PSCustomObject]@{
+                    StatusCode = 403
+                    Headers    = @{}
+                }
+                $ex = [System.Exception]::new('Forbidden')
+                Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+                throw $ex
+            }
+            InModuleScope Maester {
+                $thrownMessage = $null
+                try { Invoke-MtGitHubRequest '/orgs/myorg' } catch { $thrownMessage = $_.Exception.Message }
+                $thrownMessage | Should -Match 'Forbidden'
+                $thrownMessage | Should -Not -Match 'rate limit'
+            }
+        }
+
+        It 'Rethrows original error when x-ratelimit-remaining is malformed (no parse exception)' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                $fakeResp = [PSCustomObject]@{
+                    StatusCode = 403
+                    Headers    = @{ 'x-ratelimit-remaining' = 'not-a-number' }
+                }
+                $ex = [System.Exception]::new('Forbidden')
+                Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+                throw $ex
+            }
+            InModuleScope Maester {
+                $thrownMessage = $null
+                try { Invoke-MtGitHubRequest '/orgs/myorg' } catch { $thrownMessage = $_.Exception.Message }
+                $thrownMessage | Should -Match 'Forbidden'
+                $thrownMessage | Should -Not -Match 'rate limit'
+                $thrownMessage | Should -Not -Match 'Cannot convert'
+            }
+        }
+
         It 'Throws on secondary rate-limit (HTTP 429, retry-after header present)' {
             Mock Invoke-WebRequest -ModuleName Maester {
                 $fakeResp = [PSCustomObject]@{
