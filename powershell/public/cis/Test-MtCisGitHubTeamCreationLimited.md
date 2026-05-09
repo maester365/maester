@@ -28,5 +28,10 @@ In the organization settings, open **Member privileges** and disable **Allow mem
 
 This test verifies the organization-level team creation setting. It does not review custom operational processes for who may request or approve new teams.
 
+#### Related links
+
+* [CIS GitHub Benchmark v1.2.0 - Page 77](https://www.cisecurity.org/benchmark/github)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
+
 <!--- Results --->
 %TestResult%

@@ -168,6 +168,11 @@
         $configApiVersion = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubApiVersion'
         if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $resolvedApiVersion = $configApiVersion }
     }
+    # 2022-11-28 is GitHub's initial REST API version and the documented default for
+    # unversioned requests. Re-test before changing this pin: GitHub documents that
+    # API versions are supported for at least 24 months after a successor is released.
+    # Latest version at PR 2 implementation time: 2026-03-10.
+    # See: https://docs.github.com/en/rest/about-the-rest-api/api-versions
     if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) { $resolvedApiVersion = '2022-11-28' }
     $resolvedApiVersion = $resolvedApiVersion.Trim()
 

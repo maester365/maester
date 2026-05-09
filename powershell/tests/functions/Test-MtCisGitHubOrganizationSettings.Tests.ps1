@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -57,14 +57,33 @@ Describe 'CIS GitHub organization setting tests' {
                 $RelativeUri -eq '/orgs/myorg'
             }
         }
+
+        It 'Get-MtGitHubOrganization throws when GitHub is not connected' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = $null
+                { Get-MtGitHubOrganization } | Should -Throw -ExpectedMessage 'Not connected to GitHub. Call Connect-MtGitHub first.'
+            }
+        }
     }
 
     Context 'Pass cases' {
-        It 'Passes the five core organization-setting controls when API evidence is compliant' {
+        It 'Passes repository creation when API evidence is compliant' {
             Test-MtCisGitHubRepositoryCreationLimited | Should -BeTrue
+        }
+
+        It 'Passes repository deletion when API evidence is compliant' {
             Test-MtCisGitHubRepositoryDeletionLimited | Should -BeTrue
+        }
+
+        It 'Passes issue deletion when API evidence is compliant' {
             Test-MtCisGitHubIssueDeletionLimited | Should -BeTrue
+        }
+
+        It 'Passes team creation when API evidence is compliant' {
             Test-MtCisGitHubTeamCreationLimited | Should -BeTrue
+        }
+
+        It 'Passes strict base permissions when API evidence is compliant' {
             Test-MtCisGitHubStrictBasePermission | Should -BeTrue
         }
 
@@ -79,41 +98,123 @@ Describe 'CIS GitHub organization setting tests' {
     }
 
     Context 'Fail cases' {
-        It 'Fails repository creation when public repository creation is allowed' {
-            $script:orgResponse.members_can_create_public_repositories = $true
+        $failCases = @(
+            @{
+                Name     = 'repository creation when public repository creation is allowed'
+                Function = 'Test-MtCisGitHubRepositoryCreationLimited'
+                Mutate   = { $script:orgResponse.members_can_create_public_repositories = $true }
+            }
+            @{
+                Name     = 'repository creation when returned internal repository creation is allowed'
+                Function = 'Test-MtCisGitHubRepositoryCreationLimited'
+                Mutate   = { $script:orgResponse.members_can_create_internal_repositories = $true }
+            }
+            @{
+                Name     = 'repository deletion when member repository deletion is allowed'
+                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
+                Mutate   = { $script:orgResponse.members_can_delete_repositories = $true }
+            }
+            @{
+                Name     = 'issue deletion when member issue deletion is allowed'
+                Function = 'Test-MtCisGitHubIssueDeletionLimited'
+                Mutate   = { $script:orgResponse.members_can_delete_issues = $true }
+            }
+            @{
+                Name     = 'team creation when member team creation is allowed'
+                Function = 'Test-MtCisGitHubTeamCreationLimited'
+                Mutate   = { $script:orgResponse.members_can_create_teams = $true }
+            }
+            @{
+                Name     = 'strict base permissions when default permission is write'
+                Function = 'Test-MtCisGitHubStrictBasePermission'
+                Mutate   = { $script:orgResponse.default_repository_permission = 'write' }
+            }
+        )
 
-            Test-MtCisGitHubRepositoryCreationLimited | Should -BeFalse
+        It 'Fails <Name>' -ForEach $failCases {
+            & $Mutate
+            & $Function | Should -BeFalse
         }
 
-        It 'Fails strict base permissions when default permission is write' {
-            $script:orgResponse.default_repository_permission = 'write'
+        It 'Handles strict base permissions casing consistently' {
+            $script:orgResponse.default_repository_permission = 'Read'
 
-            Test-MtCisGitHubStrictBasePermission | Should -BeFalse
+            Test-MtCisGitHubStrictBasePermission | Should -BeTrue
         }
     }
 
     Context 'Missing evidence' {
-        It 'Skips when a required field is missing' {
+        $missingFieldCases = @(
+            @{
+                Function = 'Test-MtCisGitHubRepositoryCreationLimited'
+                Field    = 'members_can_create_public_repositories'
+            }
+            @{
+                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
+                Field    = 'members_can_delete_repositories'
+            }
+            @{
+                Function = 'Test-MtCisGitHubIssueDeletionLimited'
+                Field    = 'members_can_delete_issues'
+            }
+            @{
+                Function = 'Test-MtCisGitHubTeamCreationLimited'
+                Field    = 'members_can_create_teams'
+            }
+            @{
+                Function = 'Test-MtCisGitHubStrictBasePermission'
+                Field    = 'default_repository_permission'
+            }
+        )
+
+        It 'Skips <Function> when <Field> is missing' -ForEach $missingFieldCases {
             $script:orgResponse = [PSCustomObject]@{ login = 'myorg' }
 
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+            & $Function | Should -BeNullOrEmpty
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -match 'members_can_delete_repositories'
+                $SkippedBecause -eq 'Custom' -and $SkippedCustomReason -match $Field
             }
         }
     }
 
     Context 'Disconnected GitHub' {
-        It 'Skips when GitHub is not connected' {
+        $functions = @(
+            'Test-MtCisGitHubRepositoryCreationLimited'
+            'Test-MtCisGitHubRepositoryDeletionLimited'
+            'Test-MtCisGitHubIssueDeletionLimited'
+            'Test-MtCisGitHubTeamCreationLimited'
+            'Test-MtCisGitHubStrictBasePermission'
+        )
+
+        It 'Skips <_> when GitHub is not connected' -ForEach $functions {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = $null
             }
 
-            Test-MtCisGitHubTeamCreationLimited | Should -BeNullOrEmpty
+            & $_ | Should -BeNullOrEmpty
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 $SkippedBecause -eq 'NotConnectedGitHub'
             }
             Should -Invoke Invoke-MtGitHubRequest -ModuleName Maester -Exactly -Times 0
+        }
+    }
+
+    Context 'GitHub request errors' {
+        $functions = @(
+            'Test-MtCisGitHubRepositoryCreationLimited'
+            'Test-MtCisGitHubRepositoryDeletionLimited'
+            'Test-MtCisGitHubIssueDeletionLimited'
+            'Test-MtCisGitHubTeamCreationLimited'
+            'Test-MtCisGitHubStrictBasePermission'
+        )
+
+        It 'Skips <_> when the GitHub organization request throws' -ForEach $functions {
+            Mock Invoke-MtGitHubRequest -ModuleName Maester { throw 'GitHub API boom' }
+
+            & $_ | Should -BeNullOrEmpty
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                $SkippedBecause -eq 'Error'
+            }
         }
     }
 }

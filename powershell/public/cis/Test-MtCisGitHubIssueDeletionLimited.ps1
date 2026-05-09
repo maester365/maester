@@ -1,4 +1,4 @@
-function Test-MtCisGitHubIssueDeletionLimited {
+﻿function Test-MtCisGitHubIssueDeletionLimited {
     <#
     .SYNOPSIS
     CIS.GH.1.2.4: Ensure issue deletion is limited to specific users.
