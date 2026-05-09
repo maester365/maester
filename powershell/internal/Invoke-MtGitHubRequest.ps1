@@ -104,6 +104,24 @@
         return $null
     }
 
+    # Refuse to follow a Link rel="next" that points outside the configured ApiBaseUri.
+    # A malicious or buggy upstream that injects a foreign URL would otherwise receive
+    # the Authorization header on a cross-origin request. Compare scheme + host + port
+    # + base path prefix so GHE bases like https://host/api/v3 are honored.
+    function Test-NextLinkSameOrigin ([string]$NextUri, [string]$BaseUri) {
+        $baseParsed = $null
+        $nextParsed = $null
+        if (-not [uri]::TryCreate($BaseUri, [UriKind]::Absolute, [ref]$baseParsed)) { return $false }
+        if (-not [uri]::TryCreate($NextUri, [UriKind]::Absolute, [ref]$nextParsed)) { return $false }
+        if ($baseParsed.Scheme -ne $nextParsed.Scheme) { return $false }
+        if (-not [string]::Equals($baseParsed.Host, $nextParsed.Host, [System.StringComparison]::OrdinalIgnoreCase)) { return $false }
+        if ($baseParsed.Port -ne $nextParsed.Port) { return $false }
+        $basePath = $baseParsed.AbsolutePath.TrimEnd('/')
+        $nextPath = $nextParsed.AbsolutePath
+        if ([string]::IsNullOrEmpty($basePath)) { return $true }
+        return $nextPath -eq $basePath -or $nextPath.StartsWith("$basePath/", [System.StringComparison]::Ordinal)
+    }
+
     $first = Invoke-Page $absUri
 
     if (-not $Paginate) {
@@ -113,6 +131,9 @@
         $all.AddRange(@($first.Body))
         $next = Get-NextLink $first.Link
         while ($null -ne $next) {
+            if (-not (Test-NextLinkSameOrigin -NextUri $next -BaseUri $baseUri)) {
+                throw "GitHub pagination refused: next link '$next' is outside the configured ApiBaseUri '$baseUri'."
+            }
             $page = Invoke-Page $next
             $all.AddRange(@($page.Body))
             $next = Get-NextLink $page.Link
