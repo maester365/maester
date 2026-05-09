@@ -29,7 +29,7 @@
         $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
 
         Write-Verbose 'Get domains where passwords are set to expire'
-        $result = $domains | Where-Object { ($_.PasswordValidityPeriodInDays -ne '2147483647') -and ($_.authenticationType -eq "Managed") }
+        $result = $domains | Where-Object { ($_.PasswordValidityPeriodInDays -ne '2147483647') -and ($_.authenticationType -eq "Managed") -and ($_.isVerified -eq $true) }
 
         $testResult = ($result | Measure-Object).Count -eq 0
 
