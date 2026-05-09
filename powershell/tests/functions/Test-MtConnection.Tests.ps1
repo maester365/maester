@@ -57,6 +57,13 @@ Describe 'Test-MtConnection — GitHub service' {
                 Test-MtConnection -Service GitHub | Should -BeFalse
             }
         }
+
+        It 'Returns $false when membership is pending (FailureReason = OrgMembershipPending)' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgMembershipPending' }
+                Test-MtConnection -Service GitHub | Should -BeFalse
+            }
+        }
     }
 
     Context 'When GitHub is connected' {

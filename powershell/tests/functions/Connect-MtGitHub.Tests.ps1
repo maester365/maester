@@ -267,19 +267,32 @@ Describe 'Connect-MtGitHub' {
             }
         }
 
-        It 'admin + pending: warning mentions pending; RoleState=pending, RoleVerified=$true' {
+        It 'admin + pending: fails connection with FailureReason = OrgMembershipPending and clears auth header' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
                 [PSCustomObject]@{ Content = '{"state":"pending","role":"admin"}' }
             }
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
-            $warns.Count | Should -BeGreaterOrEqual 1
-            ($warns -join ' ') | Should -Match 'pending'
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
-                $c.Connected    | Should -BeTrue
-                $c.RoleState    | Should -Be 'pending'
-                $c.RoleVerified | Should -BeTrue
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipPending'
+                # Security property: failed connection must not leave a Bearer header in session.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'member + pending: fails connection with FailureReason = OrgMembershipPending' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"pending","role":"member"}' }
+            }
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipPending'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
 

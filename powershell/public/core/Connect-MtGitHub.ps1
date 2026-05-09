@@ -21,6 +21,10 @@
     The membership probe is the real access gate: /orgs/{org} returns public metadata
     even for tokens with no relationship to the organization. A 4xx, malformed body,
     or missing state/role on probe 3 aborts with FailureReason = 'OrgMembershipFailed'.
+    A successful response whose membership state is anything other than 'active'
+    (e.g. 'pending' for an invitation that has not been accepted) also aborts the
+    connection, with FailureReason = 'OrgMembershipPending' — only an active
+    membership proves the user can act on the organization.
 
     Probe 4 verifies the token can reach an org-administration endpoint. GitHub
     documents /orgs/{org}/actions/permissions as requiring classic PAT 'admin:org' or
@@ -30,9 +34,9 @@
     org administration access.
 
     On success, Role = 'admin' + RoleState = 'active' + AdministrationPermissionVerified
-    = $true is the no-warning path. Other valid roles (member, billing_manager, etc.)
-    or 'pending' state, or admin-probe failure, still connect but emit warnings
-    indicating limited CIS coverage.
+    = $true is the no-warning path. Other active roles (member, billing_manager, etc.)
+    or admin-probe failure still connect but emit warnings indicating limited CIS
+    coverage. Non-active membership states do not connect at all.
 
     Token resolution order:
       1. -Token parameter (SecureString)
@@ -289,11 +293,17 @@
         $role      = [string]$membershipData.role
         $roleState = [string]$membershipData.state
 
-        if ($roleState -eq 'active' -and $role -eq 'admin') {
-            # No-warning path
-        } elseif ($roleState -eq 'pending') {
-            $roleWarning = "GitHub organization membership is pending acceptance. Some controls may report limited visibility until membership is accepted."
-        } else {
+        # Only an 'active' membership proves the user can actually act on the org.
+        # 'pending' (invitation not accepted) and any other non-active state should
+        # not be treated as a usable session — org-scoped controls would silently
+        # fail or report misleading data. Fail closed and do not retain auth state.
+        if ($roleState -ne 'active') {
+            Write-Host "`nGitHub organization membership is not active (state: '$roleState'). Accept the organization invitation in GitHub and reconnect." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgMembershipPending' }
+            return
+        }
+
+        if ($role -ne 'admin') {
             $roleWarning = "GitHub organization admin/owner permissions required for full CIS coverage. Current role: '$role'. Some controls may skip or report limited visibility."
         }
     } catch {
