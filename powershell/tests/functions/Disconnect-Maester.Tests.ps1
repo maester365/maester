@@ -83,6 +83,26 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
         }
     }
 
+    Context 'When Graph disconnect throws' {
+        It 'Still clears GitHub state and rethrows the original exception' {
+            InModuleScope Maester {
+                $__MtSession.Connections      = @('Graph')
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
+                $__MtSession.GitHubCache      = @{ 'foo' = 'bar' }
+            }
+            Mock Disconnect-MgGraph -ModuleName Maester { throw 'Graph disconnect blew up' }
+
+            { Disconnect-Maester 6>$null } | Should -Throw '*Graph disconnect blew up*'
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection  | Should -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader  | Should -BeNullOrEmpty
+                $__MtSession.GitHubCache.Count | Should -Be 0
+            }
+        }
+    }
+
     Context 'When no GitHub state exists' {
         It 'Produces no GitHub-related host output' {
             $hostOutput = Disconnect-Maester 6>&1 | Out-String

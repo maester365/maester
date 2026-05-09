@@ -31,38 +31,44 @@
    [CmdletBinding()]
    param()
 
-   if($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All"){
-      Write-Verbose -Message "Disconnecting from Microsoft Graph."
-      Disconnect-MgGraph
-   }
-
-   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All"){
-      Write-Verbose -Message "Disconnecting from Microsoft Azure."
-      try {
-         Disconnect-AzAccount -ErrorAction Stop | Out-Null
-      } catch {
-         Write-Verbose "Disconnect-AzAccount encountered an error: $($_.Exception.Message)"
-      }
-   }
-
-   if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){
-      Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
-      Disconnect-ExchangeOnline
-   }
-   if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
-      Write-Verbose -Message "Disconnecting from Microsoft Teams."
-      Disconnect-MicrosoftTeams
-   }
-
    # Strip module qualifier (e.g. 'Maester\Disconnect-Maester') so module-qualified
    # invocation still routes to the GitHub-clearing branch. PowerShell uses '\' for
    # the qualifier on all OSes, so split on the literal char rather than Split-Path.
+   # Computed up-front so a failure in any service-disconnect call below cannot
+   # leave GitHub state behind: cleanup runs from the finally block.
    $invokedAs = if ([string]::IsNullOrEmpty($MyInvocation.InvocationName)) {
       $MyInvocation.MyCommand.Name
    } else {
       ($MyInvocation.InvocationName -split '\\')[-1]
    }
-   if ($invokedAs -iin @('Disconnect-Maester','Disconnect-MtMaester')) {
-      Disconnect-MtGitHub
+   $shouldDisconnectGitHub = $invokedAs -iin @('Disconnect-Maester','Disconnect-MtMaester')
+
+   try {
+      if($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All"){
+         Write-Verbose -Message "Disconnecting from Microsoft Graph."
+         Disconnect-MgGraph
+      }
+
+      if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All"){
+         Write-Verbose -Message "Disconnecting from Microsoft Azure."
+         try {
+            Disconnect-AzAccount -ErrorAction Stop | Out-Null
+         } catch {
+            Write-Verbose "Disconnect-AzAccount encountered an error: $($_.Exception.Message)"
+         }
+      }
+
+      if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){
+         Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
+         Disconnect-ExchangeOnline
+      }
+      if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
+         Write-Verbose -Message "Disconnecting from Microsoft Teams."
+         Disconnect-MicrosoftTeams
+      }
+   } finally {
+      if ($shouldDisconnectGitHub) {
+         Disconnect-MtGitHub
+      }
    }
 }
