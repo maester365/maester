@@ -54,7 +54,14 @@
             $wr = Invoke-WebRequest -Uri $Uri -Headers $headers -Method GET -UseBasicParsing -ErrorAction Stop
 
             $body = if (-not [string]::IsNullOrWhiteSpace($wr.Content)) {
-                $wr.Content | ConvertFrom-Json
+                # ConvertFrom-Json '[]' yields $null because it enumerates the (empty)
+                # array, so pagination can't distinguish "no items" from "one null item"
+                # without short-circuiting the empty-array case here.
+                if ($wr.Content.Trim() -eq '[]') {
+                    ,@()
+                } else {
+                    $wr.Content | ConvertFrom-Json
+                }
             } else {
                 $null
             }
@@ -107,14 +114,20 @@
         $result = $first.Body
     } else {
         $all = [System.Collections.Generic.List[object]]::new()
-        $all.AddRange(@($first.Body))
+        # Filter $null per page so an empty-content or `[]` page does not contribute
+        # spurious null items to the merged result.
+        foreach ($item in @($first.Body)) {
+            if ($null -ne $item) { $all.Add($item) }
+        }
         $next = Get-NextLink $first.Link
         while ($null -ne $next) {
             if (-not (Test-NextLinkSameOrigin -NextUri $next -BaseUri $baseUri)) {
                 throw "GitHub pagination refused: next link '$next' is outside the configured ApiBaseUri '$baseUri'."
             }
             $page = Invoke-Page $next
-            $all.AddRange(@($page.Body))
+            foreach ($item in @($page.Body)) {
+                if ($null -ne $item) { $all.Add($item) }
+            }
             $next = Get-NextLink $page.Link
         }
         $result = $all.ToArray()
