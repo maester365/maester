@@ -1,4 +1,4 @@
-BeforeAll {
+﻿BeforeAll {
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
@@ -1146,6 +1146,86 @@ Describe 'Connect-MtGitHub' {
                 $c.Connected  | Should -BeTrue
                 $c.ApiVersion | Should -Be '2024-01-01'
                 $__MtSession.GitHubAuthHeader['X-GitHub-Api-Version'] | Should -Be '2024-01-01'
+            }
+        }
+    }
+
+    Context 'Whitespace trimming on resolved values' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+        }
+
+        It 'Trims surrounding whitespace from -Organization parameter' {
+            Connect-MtGitHub -Organization "  myorg`t" 3>$null
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected    | Should -BeTrue
+                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
+            }
+            # Probe URIs must use the trimmed org, not URL-encoded whitespace.
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.github.com/orgs/myorg'
+            }
+        }
+
+        It 'Trims surrounding whitespace from config-supplied GitHubOrganization' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubOrganization = "  myorg `n"
+                    }
+                }
+            }
+
+            Connect-MtGitHub 3>$null
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected    | Should -BeTrue
+                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
+                $Uri -eq 'https://api.github.com/orgs/myorg'
+            }
+        }
+
+        It 'Trims surrounding whitespace from -ApiVersion parameter before validation' {
+            Connect-MtGitHub -Organization 'myorg' -ApiVersion "  2024-01-01`t" 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiVersion | Should -Be '2024-01-01'
+                $__MtSession.GitHubAuthHeader['X-GitHub-Api-Version'] | Should -Be '2024-01-01'
+            }
+        }
+
+        It 'Trims surrounding whitespace from config-supplied GitHubApiVersion before validation' {
+            InModuleScope Maester {
+                $__MtSession.MaesterConfig = [PSCustomObject]@{
+                    GlobalSettings = [PSCustomObject]@{
+                        GitHubApiVersion = " 2024-06-01 "
+                    }
+                }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected  | Should -BeTrue
+                $c.ApiVersion | Should -Be '2024-06-01'
             }
         }
     }
