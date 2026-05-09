@@ -271,6 +271,39 @@ Describe 'Invoke-MtGitHubRequest' {
             }
         }
 
+        It 'Does not throw on successful response when x-ratelimit-reset is out of range for FromUnixTimeSeconds' {
+            # 253402300800 is one second past the documented upper bound of FromUnixTimeSeconds
+            # (max accepted = 253402300799 = 9999-12-31T23:59:59Z). A bogus reset epoch from
+            # an upstream proxy must not raise ArgumentOutOfRangeException and mask the response.
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [PSCustomObject]@{
+                    Content = '{"login":"myorg"}'
+                    Headers = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = '253402300800' }
+                }
+            }
+            InModuleScope Maester {
+                { Invoke-MtGitHubRequest '/orgs/myorg' } | Should -Not -Throw
+                $result = Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache
+                $result.login | Should -Be 'myorg'
+            }
+        }
+
+        It 'Does not throw on successful response when x-ratelimit-remaining is malformed' {
+            # Successful response body is valid; a malformed rate-limit header (e.g. an upstream
+            # proxy rewriting the value) must not raise a parse exception that masks the response.
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [PSCustomObject]@{
+                    Content = '{"login":"myorg"}'
+                    Headers = @{ 'x-ratelimit-remaining' = 'not-a-number'; 'x-ratelimit-reset' = 'also-bogus' }
+                }
+            }
+            InModuleScope Maester {
+                { Invoke-MtGitHubRequest '/orgs/myorg' } | Should -Not -Throw
+                $result = Invoke-MtGitHubRequest '/orgs/myorg' -DisableCache
+                $result.login | Should -Be 'myorg'
+            }
+        }
+
         It 'Throws on secondary rate-limit (HTTP 429, retry-after header present)' {
             Mock Invoke-WebRequest -ModuleName Maester {
                 $fakeResp = [PSCustomObject]@{

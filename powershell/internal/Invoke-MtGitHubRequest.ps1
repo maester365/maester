@@ -67,10 +67,24 @@
             }
 
             # Rate-limit warning on successful response — do NOT throw; the response body is valid.
+            # TryParse rather than [int] cast: a malformed header (e.g. an upstream proxy
+            # rewriting the value) must not raise a parse exception that masks a successful response.
             $remaining = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-remaining'
-            if ($null -ne $remaining -and [int]$remaining -eq 0) {
+            $remainingValue = 0
+            if ($null -ne $remaining -and [int]::TryParse([string]$remaining, [ref]$remainingValue) -and $remainingValue -eq 0) {
                 $reset = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'x-ratelimit-reset'
-                $resetTime = if ($reset) { [DateTimeOffset]::FromUnixTimeSeconds([long]$reset).LocalDateTime } else { 'unknown' }
+                $resetValue = 0L
+                $resetTime = 'unknown'
+                if ($reset -and [long]::TryParse([string]$reset, [ref]$resetValue)) {
+                    # FromUnixTimeSeconds throws ArgumentOutOfRangeException for values
+                    # outside [-62135596800, 253402300799]. A bogus reset epoch must not
+                    # mask the successful response — fall back to 'unknown' instead.
+                    try {
+                        $resetTime = [DateTimeOffset]::FromUnixTimeSeconds($resetValue).LocalDateTime
+                    } catch {
+                        $resetTime = 'unknown'
+                    }
+                }
                 Write-Verbose "GitHub API rate limit remaining is 0 after this successful response. Resets at: $resetTime"
             }
 
