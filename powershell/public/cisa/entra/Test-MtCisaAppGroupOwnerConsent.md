@@ -1,4 +1,6 @@
-**This is no longer applicable, and is deprecated by CISA as of March 2025. The content below is retained as a historical archive and will be removed in a future version.**
+**This test is deprecated by CISA as of March 2025 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.**
+
+MS.AAD.5.4v1 was removed because Microsoft announced via MC712143 that group owner consent to applications is no longer a configurable setting. The setting has been removed from the product entirely, making the policy moot. See [CISA SCuBA Removed Policies — MS.AAD.5.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/removedpolicies.md#msaad54v1).
 
 Group owners SHALL NOT be allowed to consent to applications.
 

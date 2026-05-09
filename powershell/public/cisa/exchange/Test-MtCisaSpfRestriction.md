@@ -1,4 +1,6 @@
-**This is no longer applicable, and is deprecated by CISA as of May 2024. The content below is retained as a historical archive and will be removed in a future version.**
+**This test is deprecated by CISA as of May 2024 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.**
+
+MS.EXO.2.1v1 was removed because it is not a security configuration that can be audited; it acts as an implementation step for MS.EXO.2.2. Maintaining the list of approved IP addresses has been incorporated into the implementation guidance for MS.EXO.2.2 and removed as a standalone policy. See [CISA SCuBA Removed Policies — MS.EXO.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/removedpolicies.md#msexo21v1).
 
 A list of approved IP addresses for sending mail SHALL be maintained.
 
