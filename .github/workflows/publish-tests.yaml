@@ -32,7 +32,7 @@ jobs:
         run: |
           $tag = '${{ github.event.release.tag_name }}'
           if ([string]::IsNullOrWhiteSpace($tag)) {
-            $tag = (gh release view --repo ${{ github.repository }} --json tagName -q .tagName)
+            $tag = (gh release view --repo $env:GITHUB_REPOSITORY --json tagName -q .tagName)
           }
           if ([string]::IsNullOrWhiteSpace($tag)) {
             throw "Could not resolve a release tag for the stamp step."
