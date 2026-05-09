@@ -36,9 +36,19 @@ if (-not (Test-Path -LiteralPath $ConfigPath)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($ConfigVersion)) {
-    $dates = @(git log --format=%cd --date=format:%Y.%m.%d -- $ConfigPath)
+    # Resolve to a repo-relative path so git lookup works regardless of CWD
+    # or whether ConfigPath was passed as relative or absolute.
+    $resolvedConfigPath = (Resolve-Path -LiteralPath $ConfigPath).Path
+    $configDir = Split-Path -Parent $resolvedConfigPath
+    $repoRoot = (& git -C $configDir rev-parse --show-toplevel 2>$null)
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repoRoot)) {
+        throw "Could not determine ConfigVersion: $ConfigPath is not inside a git repository."
+    }
+    $repoRoot = $repoRoot.Trim()
+    $repoRelative = [System.IO.Path]::GetRelativePath($repoRoot, $resolvedConfigPath).Replace('\', '/')
+    $dates = @(& git -C $repoRoot log --format=%cd --date=format:%Y.%m.%d -- $repoRelative)
     if ($LASTEXITCODE -ne 0 -or $dates.Count -eq 0) {
-        throw "Could not determine ConfigVersion: no git history found for $ConfigPath"
+        throw "Could not determine ConfigVersion: no git history found for $repoRelative in $repoRoot."
     }
     $lastDate = $dates[0]
     $sameDayCount = @($dates | Where-Object { $_ -eq $lastDate }).Count
@@ -52,17 +62,20 @@ try { $null = $content | ConvertFrom-Json } catch { throw "Input file is not val
 $mvLine = '"ModuleVersion": "{0}"' -f $ModuleVersion
 $cvLine = '"ConfigVersion": "{0}"' -f $ConfigVersion
 
-$mvRegex = [regex]'"ModuleVersion"\s*:\s*"[^"]*"'
+# Multiline mode + leading-whitespace capture preserves the file's indentation
+# and only matches keys that start a line (avoiding accidental matches on a
+# nested property that happens to share the name).
+$mvRegex = [regex]'(?m)^([ \t]*)"ModuleVersion"\s*:\s*"[^"]*"'
 if (-not $mvRegex.IsMatch($content)) {
-    throw "Required field ModuleVersion not found at the top level of $ConfigPath. Add `"ModuleVersion`": `"<version>`" before re-running."
+    throw "Required field ModuleVersion not found in $ConfigPath. Add `"ModuleVersion`": `"<version>`" as a top-level key before re-running."
 }
-$content = $mvRegex.Replace($content, $mvLine, 1)
+$content = $mvRegex.Replace($content, ('$1' + $mvLine), 1)
 
-$cvRegex = [regex]'"ConfigVersion"\s*:\s*"[^"]*"'
+$cvRegex = [regex]'(?m)^([ \t]*)"ConfigVersion"\s*:\s*"[^"]*"'
 if (-not $cvRegex.IsMatch($content)) {
-    throw "Required field ConfigVersion not found at the top level of $ConfigPath. Add `"ConfigVersion`": `"`" before re-running."
+    throw "Required field ConfigVersion not found in $ConfigPath. Add `"ConfigVersion`": `"`" as a top-level key before re-running."
 }
-$content = $cvRegex.Replace($content, $cvLine, 1)
+$content = $cvRegex.Replace($content, ('$1' + $cvLine), 1)
 
 try { $null = $content | ConvertFrom-Json } catch { throw "Output is not valid JSON after stamping: $_" }
 
