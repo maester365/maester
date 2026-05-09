@@ -24,9 +24,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Resolve latest release tag
+        id: release_tag
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = '${{ github.event.release.tag_name }}'
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = (gh release view --repo ${{ github.repository }} --json tagName -q .tagName)
+          }
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            throw "Could not resolve a release tag for the stamp step."
+          }
+          "tag=$tag" | Out-File -Append -FilePath $env:GITHUB_OUTPUT
+
       - name: Stamp maester-config.json version fields
         shell: pwsh
-        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion '${{ github.event.release.tag_name }}'
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion '${{ steps.release_tag.outputs.tag }}'
 
       - name: Publish to maester-tests
         id: push_directory

@@ -8,8 +8,10 @@
     avoiding a JSON round-trip. Validates the input and output are valid JSON.
     Writes UTF-8 without BOM.
 
-    Inserts either field if absent so the script also works on a config file
-    that has not yet been migrated to include these fields.
+    Both fields must already exist in the source file. The script does not
+    insert missing fields — if either is absent, it throws and asks the
+    caller to add them manually. This avoids fragile insertion logic and
+    makes schema changes explicit in source control.
 
     ConfigVersion is a CalVer-style YYYY.MM.DD.N string derived from git
     history of the config file: YYYY.MM.DD is the date of the most recent
@@ -51,21 +53,16 @@ $mvLine = '"ModuleVersion": "{0}"' -f $ModuleVersion
 $cvLine = '"ConfigVersion": "{0}"' -f $ConfigVersion
 
 $mvRegex = [regex]'"ModuleVersion"\s*:\s*"[^"]*"'
-if ($mvRegex.IsMatch($content)) {
-    $content = $mvRegex.Replace($content, $mvLine, 1)
-} else {
-    # Insert as first key after the opening brace.
-    $content = $content -replace '^\{\s*', "{`n  $mvLine,`n  "
+if (-not $mvRegex.IsMatch($content)) {
+    throw "Required field ModuleVersion not found at the top level of $ConfigPath. Add `"ModuleVersion`": `"<version>`" before re-running."
 }
+$content = $mvRegex.Replace($content, $mvLine, 1)
 
 $cvRegex = [regex]'"ConfigVersion"\s*:\s*"[^"]*"'
-if ($cvRegex.IsMatch($content)) {
-    $content = $cvRegex.Replace($content, $cvLine, 1)
-} else {
-    # Insert immediately after the ModuleVersion line.
-    $anchorRegex = [regex]([regex]::Escape($mvLine) + ',')
-    $content = $anchorRegex.Replace($content, "$mvLine,`n  $cvLine,", 1)
+if (-not $cvRegex.IsMatch($content)) {
+    throw "Required field ConfigVersion not found at the top level of $ConfigPath. Add `"ConfigVersion`": `"`" before re-running."
 }
+$content = $cvRegex.Replace($content, $cvLine, 1)
 
 try { $null = $content | ConvertFrom-Json } catch { throw "Output is not valid JSON after stamping: $_" }
 
