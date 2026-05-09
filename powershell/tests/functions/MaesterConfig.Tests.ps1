@@ -1,4 +1,27 @@
 ﻿Describe 'Maester Configuration File - tests/maester-config.json' {
+    Context 'Version fields' {
+        It 'has a top-level ModuleVersion string' {
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+
+            $configJson.PSObject.Properties.Name | Should -Contain 'ModuleVersion'
+            $configJson.ModuleVersion | Should -BeOfType [string]
+            $configJson.ModuleVersion | Should -Not -BeNullOrEmpty
+        }
+
+        It 'has a top-level ConfigVersion string (CalVer YYYY.MM.DD.N or empty sentinel)' {
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+
+            $configJson.PSObject.Properties.Name | Should -Contain 'ConfigVersion'
+            $configJson.ConfigVersion | Should -BeOfType [string]
+            # Empty (source sentinel) or CalVer format. CI stamps the CalVer at publish time.
+            $configJson.ConfigVersion | Should -Match '^$|^\d{4}\.\d{2}\.\d{2}\.\d+$'
+        }
+    }
+
     Context 'TestSettings array' {
         It 'should be sorted by Id' {
             # Correctly join paths to find the repo root and config file

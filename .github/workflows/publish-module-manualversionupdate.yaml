@@ -32,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
@@ -40,15 +42,19 @@ jobs:
           name: updated-report-template
           path: powershell/assets/
 
-      - name: Package ./tests to PowerShell module
-        id: package-tests
-        shell: pwsh
-        run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
-
       - name: Get current module  version
         id: moduleversion
         shell: pwsh
         run: ./.github/workflows/get-version.ps1
+
+      - name: Stamp maester-config.json version fields
+        shell: pwsh
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion '${{ steps.moduleversion.outputs.tag }}'
+
+      - name: Package ./tests to PowerShell module
+        id: package-tests
+        shell: pwsh
+        run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
 
       - name: Update PowerShell Module to PowerShell Gallery
         id: publish-to-gallery
