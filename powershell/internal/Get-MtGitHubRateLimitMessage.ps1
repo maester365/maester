@@ -14,6 +14,9 @@ function Get-MtGitHubRateLimitMessage {
         response carries x-ratelimit-remaining = 0 (primary rate limit).
       - "GitHub secondary rate limit encountered (HTTP <code>). Retry after: <n>s" when
         the response carries retry-after (secondary rate limit / abuse detection).
+      - "GitHub secondary rate limit encountered (HTTP <code>). Retry after at least 60s."
+        when the response body indicates secondary-limit / abuse-detection wording but
+        no retry-after header is present.
       - $null for any other error, including 403/429 without rate-limit headers.
     #>
     param(
@@ -55,6 +58,17 @@ function Get-MtGitHubRateLimitMessage {
     $retryAfter = Get-MtGitHubResponseHeaderValue -Headers $headers -Name 'retry-after'
     if ($null -ne $retryAfter) {
         return "GitHub secondary rate limit encountered (HTTP $code). Retry after: ${retryAfter}s"
+    }
+
+    # Some secondary-limit responses omit retry-after entirely (e.g. older abuse-detection
+    # responses, or responses where the proxy strips the header). Fall back to body wording -
+    # GitHub's documented messages include phrases like "secondary rate limit" and
+    # "abuse detection mechanism". When matched, recommend the 60-second minimum backoff
+    # documented at https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api.
+    $bodyMessage = Get-MtGitHubErrorMessage -ErrorRecord $ErrorRecord
+    if (-not [string]::IsNullOrEmpty($bodyMessage) -and
+        $bodyMessage -match '(?i)secondary\s+rate\s+limit|abuse\s+detection') {
+        return "GitHub secondary rate limit encountered (HTTP $code). Retry after at least 60s."
     }
 
     return $null

@@ -99,4 +99,43 @@ Describe 'Get-MtGitHubRateLimitMessage' {
             }
         }
     }
+
+    Context 'Body-fallback secondary rate-limit detection' {
+        It 'Returns secondary rate-limit message for 403 when body mentions secondary rate limit and no retry-after header is present' {
+            InModuleScope Maester {
+                $resp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+                $ex = [System.Exception]::new('Forbidden')
+                Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $resp
+                $err = [System.Management.Automation.ErrorRecord]::new($ex, 'id', 'NotSpecified', $null)
+                $err.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"message":"You have exceeded a secondary rate limit. Please wait a few minutes before you try again."}')
+                $msg = Get-MtGitHubRateLimitMessage -ErrorRecord $err
+                $msg | Should -Match '^GitHub secondary rate limit encountered \(HTTP 403\)\.'
+                $msg | Should -Match 'Retry after at least 60s'
+            }
+        }
+
+        It 'Returns secondary rate-limit message for 429 when body mentions abuse detection and no retry-after header is present' {
+            InModuleScope Maester {
+                $resp = [PSCustomObject]@{ StatusCode = 429; Headers = @{} }
+                $ex = [System.Exception]::new('Too Many Requests')
+                Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $resp
+                $err = [System.Management.Automation.ErrorRecord]::new($ex, 'id', 'NotSpecified', $null)
+                $err.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"message":"Triggered abuse detection mechanism."}')
+                $msg = Get-MtGitHubRateLimitMessage -ErrorRecord $err
+                $msg | Should -Match '^GitHub secondary rate limit encountered \(HTTP 429\)\.'
+                $msg | Should -Match 'Retry after at least 60s'
+            }
+        }
+
+        It 'Still returns $null for 403 when body has unrelated message and no rate-limit headers' {
+            InModuleScope Maester {
+                $resp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+                $ex = [System.Exception]::new('Forbidden')
+                Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $resp
+                $err = [System.Management.Automation.ErrorRecord]::new($ex, 'id', 'NotSpecified', $null)
+                $err.ErrorDetails = [System.Management.Automation.ErrorDetails]::new('{"message":"Resource not accessible by personal access token"}')
+                Get-MtGitHubRateLimitMessage -ErrorRecord $err | Should -BeNullOrEmpty
+            }
+        }
+    }
 }
