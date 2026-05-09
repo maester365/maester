@@ -178,6 +178,43 @@ Describe 'Connect-MtGitHub' {
                 $__MtSession.GitHubConnection.FailureReason | Should -Be 'OrgAccessFailed'
             }
         }
+
+        It 'Sets FailureReason = ApiBaseUriFailed when /orgs/{org} throws transport exception (no Response)' {
+            # /user succeeded, then DNS/TLS fails on the second probe. Must not be classified
+            # as OrgAccessFailed — the org access can't be determined when there's no HTTP response.
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/' } {
+                throw [System.Exception]::new('Connection reset by peer')
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiBaseUriFailed'
+                $c.FailureReason | Should -Not -Be 'OrgAccessFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Sets FailureReason = ApiUnavailable when /orgs/{org} returns HTTP 500' {
+            $fakeResp = [PSCustomObject]@{ StatusCode = 500; Headers = @{} }
+            $ex = [System.Exception]::new('Internal Server Error')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 500 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Internal Server Error' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiUnavailable'
+                $c.FailureReason | Should -Not -Be 'OrgAccessFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
     }
 
     Context 'Successful connection' {
@@ -513,6 +550,41 @@ Describe 'Connect-MtGitHub' {
                 $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
         }
+
+        It 'Sets FailureReason = ApiBaseUriFailed when /memberships/ throws transport exception (no Response)' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                throw [System.Exception]::new('No such host is known')
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiBaseUriFailed'
+                $c.FailureReason | Should -Not -Be 'OrgMembershipFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Sets FailureReason = ApiUnavailable when /memberships/ returns HTTP 503' {
+            $fakeResp = [PSCustomObject]@{ StatusCode = 503; Headers = @{} }
+            $ex = [System.Exception]::new('Service Unavailable')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 503 }
+            Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Service Unavailable' }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'ApiUnavailable'
+                $c.FailureReason | Should -Not -Be 'OrgMembershipFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
     }
 
     Context 'Failure: RateLimited' {
@@ -724,13 +796,149 @@ Describe 'Connect-MtGitHub' {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
 
-            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.example.com/' 3>$null
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com/' 3>$null
 
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
                 $c.Connected  | Should -BeTrue
-                $c.ApiBaseUri | Should -Be 'https://api.example.com'
+                $c.ApiBaseUri | Should -Be 'https://api.github.com'
             }
+        }
+
+        It 'api.github.com (SaaS) passes the host allowlist' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com' 3>$null
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected  | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.github.com'
+            }
+        }
+
+        It 'api.<subdomain>.ghe.com (GHE.com data residency) passes the host allowlist' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.octocorp.ghe.com' 3>$null
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected  | Should -BeTrue
+                $__MtSession.GitHubConnection.ApiBaseUri | Should -Be 'https://api.octocorp.ghe.com'
+            }
+        }
+
+        It 'Non-allowlisted https host fails before any web request and clears prior session state' {
+            # Pre-seed a stale session to confirm session-clear runs before host validation rejects the URI.
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'stale' }
+                $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer stale-token' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri host is not allowlisted' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://evil.example.com' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                # Security property: PAT must never be sent to non-GitHub hosts; auth header must be cleared.
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Non-allowlisted https host with /api/v3 path (GHES on-prem shape) is rejected' {
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri host is not allowlisted' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://github.example.com/api/v3' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Allowlisted host with a query string is rejected before any web request' {
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri has a query string' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com?foo=bar' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Allowlisted host with a fragment is rejected before any web request' {
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri has a fragment' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com#frag' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Allowlisted host with non-default port is rejected before any web request' {
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri uses a non-default port' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com:8443' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
+        }
+
+        It 'Allowlisted host with extra path component is rejected' {
+            # api.github.com/api/v3 has the right host but a non-root path; reject so the PAT isn't
+            # sent to an unexpected endpoint that could be a proxy or path-rewriting middleware.
+            Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri has a non-root path' }
+
+            Connect-MtGitHub -Organization 'myorg' -ApiBaseUri 'https://api.github.com/api/v3' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'InvalidApiBaseUri'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
         }
     }
 

@@ -129,9 +129,28 @@
     # Validate the fully-resolved URI. Done in-body (not via parameter [ValidatePattern]) so
     # config-supplied values are checked too, and so an invalid value records InvalidApiBaseUri
     # after the session-clearing logic at the top of this function rather than throwing before it.
+    # Host allowlist prevents the PAT from being sent to arbitrary HTTPS hosts: only the
+    # documented GitHub API endpoints — api.github.com (SaaS) and api.<subdomain>.ghe.com
+    # (GHE.com data residency) — are accepted. GHES on-prem is intentionally not supported.
     $parsedUri = $null
     if (-not [uri]::TryCreate($resolvedApiBaseUri, [UriKind]::Absolute, [ref]$parsedUri) -or $parsedUri.Scheme -cne 'https') {
         Write-Host "`nGitHub API base URI must be an absolute https:// URI. Got: '$resolvedApiBaseUri'." -ForegroundColor Red
+        $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiBaseUri' }
+        return
+    }
+    $uriHost = $parsedUri.Host.ToLowerInvariant()
+    $isGitHubSaas = $uriHost -eq 'api.github.com'
+    $isGheCom     = $uriHost -match '^api\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.ghe\.com$'
+    $hasRootPath  = [string]::IsNullOrEmpty($parsedUri.AbsolutePath) -or $parsedUri.AbsolutePath -eq '/'
+    # Reject query strings, fragments, and non-default ports — none are valid for the
+    # GitHub API base, and accepting them would let an attacker-supplied config redirect
+    # the PAT to an unexpected listener (e.g. a debug proxy on :8443) while still passing
+    # the host allowlist.
+    $hasNoQuery    = [string]::IsNullOrEmpty($parsedUri.Query)
+    $hasNoFragment = [string]::IsNullOrEmpty($parsedUri.Fragment)
+    $hasDefaultPort = $parsedUri.IsDefaultPort
+    if (-not (($isGitHubSaas -or $isGheCom) -and $hasRootPath -and $hasNoQuery -and $hasNoFragment -and $hasDefaultPort)) {
+        Write-Host "`nGitHub API base URI must be https://api.github.com or https://api.<subdomain>.ghe.com (no path, query, fragment, or non-default port). Got: '$resolvedApiBaseUri'." -ForegroundColor Red
         $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'InvalidApiBaseUri' }
         return
     }
@@ -247,6 +266,19 @@
         }
         $code = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage -ErrorRecord $_
+        # Same transport/5xx classification as /user — a probe that gets to the network can
+        # still fail for reasons unrelated to org access (DNS hiccup, partial outage), and
+        # those should report ApiBaseUriFailed / ApiUnavailable rather than OrgAccessFailed.
+        if ($null -eq $code) {
+            Write-Host "`nGitHub API base URI '$ApiBaseUri' is not reachable (no response) while probing /orgs/$Organization. Verify network connectivity, DNS/TLS, and the GitHubApiBaseUri value." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiBaseUriFailed' }
+            return
+        }
+        if ($code -ge 500 -and $code -le 599) {
+            Write-Host "`nGitHub API request failed (HTTP $code) while probing /orgs/$Organization. The GitHub service may be temporarily unavailable; check https://www.githubstatus.com/ and retry." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiUnavailable' }
+            return
+        }
         $msg = switch ($code) {
             403     { "Access denied (403). Verify the PAT has 'admin:org' scope and is used by an organization owner. GitHub API: $apiMsg" }
             404     { "Organization '$Organization' not found (404). Check the organization login name. GitHub API: $apiMsg" }
@@ -315,6 +347,18 @@
         }
         $code   = Get-MtGitHubErrorStatusCode -ErrorRecord $_
         $apiMsg = Get-MtGitHubErrorMessage    -ErrorRecord $_
+        # Same transport/5xx classification as /user — separating "the network/service broke"
+        # from "the token cannot prove membership" matters for actionable diagnostics.
+        if ($null -eq $code) {
+            Write-Host "`nGitHub API base URI '$ApiBaseUri' is not reachable (no response) while probing membership for '$($user.login)' in '$Organization'." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiBaseUriFailed' }
+            return
+        }
+        if ($code -ge 500 -and $code -le 599) {
+            Write-Host "`nGitHub API request failed (HTTP $code) while probing membership for '$($user.login)' in '$Organization'. Service may be temporarily unavailable; check https://www.githubstatus.com/ and retry." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'ApiUnavailable' }
+            return
+        }
         $msg = switch ($code) {
             403     { "Membership probe forbidden (403). The token cannot prove membership in '$Organization'. GitHub API: $apiMsg" }
             404     { "User '$($user.login)' is not a member of organization '$Organization' (404). GitHub API: $apiMsg" }
