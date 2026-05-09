@@ -141,6 +141,35 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
+    Context '-Service GitHub -Details formatted output' {
+        It 'Renders safe GitHub metadata and excludes auth/token values' {
+            $fakeToken = 'ghp_FAKE_TOKEN_VALUE_DO_NOT_USE'
+            InModuleScope Maester -ArgumentList $fakeToken {
+                param($FakeToken)
+                $__MtSession.GitHubConnection = [PSCustomObject]@{
+                    Connected                        = $true
+                    Organization                     = 'myorg'
+                    TokenLogin                       = 'octocat'
+                    ApiBaseUri                       = 'https://api.github.com'
+                    ApiVersion                       = '2022-11-28'
+                    Role                             = 'admin'
+                    RoleState                        = 'active'
+                    AdministrationPermissionVerified = $true
+                }
+                $__MtSession.GitHubAuthHeader = @{
+                    Authorization = "Bearer $FakeToken"
+                }
+            }
+            $rendered = Test-MtConnection -Service GitHub -Details | Out-String
+            $rendered | Should -Match 'GitHub'
+            $rendered | Should -Match 'myorg'
+            $rendered | Should -Match 'octocat'
+            $rendered | Should -Not -Match 'Bearer'
+            $rendered | Should -Not -Match 'Authorization'
+            $rendered | Should -Not -Match ([regex]::Escape($fakeToken))
+        }
+    }
+
     Context '-Service All — GitHub included when connected' {
         It 'Populates the GitHub property' {
             InModuleScope Maester {
