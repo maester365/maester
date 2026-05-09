@@ -22,8 +22,7 @@
 
         $allowedValues = @('none', 'read')
         $actual = [string]$org.$field
-        $normalizedActual = $actual.ToLowerInvariant()
-        $result = $allowedValues -contains $normalizedActual
+        $result = $allowedValues -contains $actual
         Add-MtTestResultDetail -Result "CIS.GH.1.3.8 automated evidence from ``GET /orgs/{org}``: ``$field`` is ``$actual``. Expected value: ``none`` or ``read``."
         return $result
     } catch {
