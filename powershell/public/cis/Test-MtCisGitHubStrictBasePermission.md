@@ -28,5 +28,10 @@ In the organization settings, open **Member privileges** and set **Base permissi
 
 This test verifies the organization default repository permission only. It does not review per-repository collaborators, teams, or custom access grants.
 
+#### Related links
+
+* [CIS GitHub Benchmark v1.2.0 - Page 89](https://www.cisecurity.org/benchmark/github)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
+
 <!--- Results --->
 %TestResult%

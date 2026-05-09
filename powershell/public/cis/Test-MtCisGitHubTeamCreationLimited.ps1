@@ -1,4 +1,4 @@
-function Test-MtCisGitHubTeamCreationLimited {
+﻿function Test-MtCisGitHubTeamCreationLimited {
     <#
     .SYNOPSIS
     CIS.GH.1.3.2: Ensure team creation is limited to specific members.

@@ -1,4 +1,4 @@
-function Test-MtCisGitHubStrictBasePermission {
+﻿function Test-MtCisGitHubStrictBasePermission {
     <#
     .SYNOPSIS
     CIS.GH.1.3.8: Ensure strict base permissions are set for repositories.
@@ -22,7 +22,8 @@ function Test-MtCisGitHubStrictBasePermission {
 
         $allowedValues = @('none', 'read')
         $actual = [string]$org.$field
-        $result = $allowedValues -contains $actual
+        $normalizedActual = $actual.ToLowerInvariant()
+        $result = $allowedValues -contains $normalizedActual
         Add-MtTestResultDetail -Result "CIS.GH.1.3.8 automated evidence from ``GET /orgs/{org}``: ``$field`` is ``$actual``. Expected value: ``none`` or ``read``."
         return $result
     } catch {

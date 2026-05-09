@@ -1,11 +1,12 @@
-function Test-MtGitHubObjectProperty {
+﻿function Test-MtGitHubObjectProperty {
     <#
     .SYNOPSIS
     Internal: Returns true when a GitHub response object includes a property.
 
     .DESCRIPTION
-    Checks property presence rather than truthiness so an API field whose value is
-    $false is still treated as present evidence.
+    Shared readability helper for property-presence checks. It checks the response
+    object's property names rather than the property's value, so $false values are
+    still treated as present evidence.
     #>
     [CmdletBinding()]
     [OutputType([bool])]

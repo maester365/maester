@@ -1,4 +1,4 @@
-function Test-MtCisGitHubRepositoryCreationLimited {
+﻿function Test-MtCisGitHubRepositoryCreationLimited {
     <#
     .SYNOPSIS
     CIS.GH.1.2.2: Ensure repository creation is limited to specific members.
@@ -33,24 +33,25 @@ function Test-MtCisGitHubRepositoryCreationLimited {
             [PSCustomObject]@{
                 Field    = 'members_can_create_public_repositories'
                 Actual   = $org.members_can_create_public_repositories
-                Expected = '$false'
+                Expected = $false
                 Pass     = $org.members_can_create_public_repositories -eq $false
             }
             [PSCustomObject]@{
                 Field    = 'members_can_create_private_repositories'
                 Actual   = $org.members_can_create_private_repositories
-                Expected = '$false'
+                Expected = $false
                 Pass     = $org.members_can_create_private_repositories -eq $false
             }
         )
 
         if (Test-MtGitHubObjectProperty -InputObject $org -PropertyName 'members_can_create_internal_repositories') {
-            $checks += [PSCustomObject]@{
+            $internalRepositoryCheck = [PSCustomObject]@{
                 Field    = 'members_can_create_internal_repositories'
                 Actual   = $org.members_can_create_internal_repositories
-                Expected = '$false when returned'
+                Expected = 'False when returned'
                 Pass     = $org.members_can_create_internal_repositories -eq $false
             }
+            $checks = @($checks; $internalRepositoryCheck)
         }
 
         $result = @($checks | Where-Object { $_.Pass -ne $true }).Count -eq 0

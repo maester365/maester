@@ -23,6 +23,8 @@ Evidence fields:
 
 The test passes when public and private repository creation are `false`, and internal repository creation is also `false` when the API returns that field.
 
+The internal repository check is an intentional GHEC / GHEC EMU enterprise-associated extension beyond the literal CIS audit text, which calls out public and private repository creation. An organization with public and private creation disabled but internal creation enabled will fail this Maester test even though it may satisfy the literal CIS checkbox wording.
+
 #### Permissions required
 
 GitHub requires organization-owner visibility for full organization details. Use `Connect-MtGitHub` with a classic PAT that has `admin:org`, or a fine-grained PAT with organization Members read and Administration read permissions.
@@ -34,6 +36,11 @@ In the organization settings, open **Member privileges** and clear the repositor
 #### Known limitations
 
 This test uses the granular repository creation fields because GitHub is replacing the older `members_allowed_repository_creation_type` behavior. If required granular fields are not returned, the test skips with a field-specific reason.
+
+#### Related links
+
+* [CIS GitHub Benchmark v1.2.0 - Page 61](https://www.cisecurity.org/benchmark/github)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
 
 <!--- Results --->
 %TestResult%

@@ -24,11 +24,16 @@ GitHub requires organization-owner visibility for full organization details. Use
 
 #### Remediation summary
 
-In the organization settings, open **Member privileges** and disable the option that allows members to delete or transfer repositories for the organization.
+In the organization settings, open **Member privileges** and disable the option that allows members to delete or transfer repositories for the organization. Alternatively, if the setting remains enabled, manually verify that repository administrators are limited to trusted users as described by CIS.
 
 #### Known limitations
 
 This test verifies the organization setting only. It does not enumerate repository administrators or decide whether individual admins are trusted.
+
+#### Related links
+
+* [CIS GitHub Benchmark v1.2.0 - Page 63](https://www.cisecurity.org/benchmark/github)
+* [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
 
 <!--- Results --->
 %TestResult%
