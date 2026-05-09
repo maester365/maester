@@ -116,6 +116,9 @@
         $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotConfigured' }
         return
     }
+    # Surrounding whitespace from a config file or shell-quoted parameter would otherwise
+    # be URL-encoded into the probe paths and silently 404 against GitHub.
+    $Organization = $Organization.Trim()
 
     # Resolve ApiBaseUri (param -> config -> default).
     $resolvedApiBaseUri = $ApiBaseUri
@@ -166,6 +169,7 @@
         if (-not [string]::IsNullOrWhiteSpace($configApiVersion)) { $resolvedApiVersion = $configApiVersion }
     }
     if ([string]::IsNullOrWhiteSpace($resolvedApiVersion)) { $resolvedApiVersion = '2022-11-28' }
+    $resolvedApiVersion = $resolvedApiVersion.Trim()
 
     if ($resolvedApiVersion -notmatch '^\d{4}-\d{2}-\d{2}$') {
         Write-Host "`nGitHub API version must use YYYY-MM-DD format. Got: '$resolvedApiVersion'." -ForegroundColor Red
