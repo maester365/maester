@@ -123,6 +123,51 @@ Describe 'Invoke-MtGitHubRequest' {
         }
     }
 
+    Context 'Pagination of empty arrays' {
+        It 'Returns an empty result (count 0) when the only page is `[]` with no next link' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [PSCustomObject]@{ Content = '[]'; Headers = @{} }
+            }
+            InModuleScope Maester {
+                $result = Invoke-MtGitHubRequest '/orgs/myorg/members' -Paginate
+                @($result).Count | Should -Be 0
+                # Must not contain a spurious $null item (the regression case).
+                @($result) -contains $null | Should -BeFalse
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
+        }
+
+        It 'Skips an empty intermediate page without contributing $null items' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -notmatch '[?&]page=\d' } {
+                [PSCustomObject]@{
+                    Content = '[]'
+                    Headers = @{ 'Link' = '<https://api.github.com/orgs/myorg/members?page=2>; rel="next"' }
+                }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '[?&]page=\d' } {
+                [PSCustomObject]@{ Content = '[{"id":7}]'; Headers = @{} }
+            }
+            InModuleScope Maester {
+                $result = Invoke-MtGitHubRequest '/orgs/myorg/members' -Paginate
+                @($result).Count | Should -Be 1
+                @($result)[0].id | Should -Be 7
+                @($result) -contains $null | Should -BeFalse
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+        }
+
+        It 'Non-paginated `[]` response does not return a single $null item' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [PSCustomObject]@{ Content = '[]'; Headers = @{} }
+            }
+            InModuleScope Maester {
+                $result = Invoke-MtGitHubRequest '/orgs/myorg/members'
+                @($result).Count | Should -Be 0
+                @($result) -contains $null | Should -BeFalse
+            }
+        }
+    }
+
     Context 'Pagination cross-origin guard' {
         It 'Throws and stops paginating when next link is on a different origin' {
             Mock Invoke-WebRequest -ModuleName Maester {
