@@ -123,6 +123,42 @@ Describe 'Invoke-MtGitHubRequest' {
         }
     }
 
+    Context 'Pagination cross-origin guard' {
+        It 'Throws and stops paginating when next link is on a different origin' {
+            Mock Invoke-WebRequest -ModuleName Maester {
+                [PSCustomObject]@{
+                    Content = '[{"id":1}]'
+                    Headers = @{ 'Link' = '<https://evil.example/orgs/myorg/members?page=2>; rel="next"' }
+                }
+            }
+            InModuleScope Maester {
+                { Invoke-MtGitHubRequest '/orgs/myorg/members' -Paginate } |
+                    Should -Throw '*outside the configured ApiBaseUri*'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 1
+        }
+
+        It 'Allows a same-origin next link with a base path prefix (GHE-style /api/v3)' {
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.ApiBaseUri = 'https://ghe.example.com/api/v3'
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -notmatch '[?&]page=\d' } {
+                [PSCustomObject]@{
+                    Content = '[{"id":1}]'
+                    Headers = @{ 'Link' = '<https://ghe.example.com/api/v3/orgs/myorg/members?page=2>; rel="next"' }
+                }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '[?&]page=\d' } {
+                [PSCustomObject]@{ Content = '[{"id":2}]'; Headers = @{} }
+            }
+            InModuleScope Maester {
+                $result = Invoke-MtGitHubRequest '/orgs/myorg/members' -Paginate
+                $result.Count | Should -Be 2
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 2
+        }
+    }
+
     Context 'Rate limit handling' {
         It 'Emits verbose message when x-ratelimit-remaining is 0 on successful response' {
             Mock Invoke-WebRequest -ModuleName Maester {
