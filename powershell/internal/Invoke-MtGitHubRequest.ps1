@@ -70,29 +70,8 @@
             $linkHeader = Get-MtGitHubResponseHeaderValue -Headers $wr.Headers -Name 'Link'
             return [PSCustomObject]@{ Body = $body; Link = $linkHeader }
         } catch {
-            $code = Get-MtGitHubErrorStatusCode -ErrorRecord $_
-
-            if ($code -in 403, 429) {
-                try {
-                    $errResp = $_.Exception.Response
-                    if ($errResp) {
-                        $errHeaders = $errResp.Headers
-                        $remaining = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'x-ratelimit-remaining'
-                        $retryAfter = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'retry-after'
-                        if ($null -ne $remaining -and [int]$remaining -eq 0) {
-                            $reset = Get-MtGitHubResponseHeaderValue -Headers $errHeaders -Name 'x-ratelimit-reset'
-                            $resetTime = if ($reset) { [DateTimeOffset]::FromUnixTimeSeconds([long]$reset).LocalDateTime } else { 'unknown' }
-                            throw "GitHub API rate limit encountered (HTTP $code). Resets at: $resetTime"
-                        }
-                        if ($null -ne $retryAfter) {
-                            throw "GitHub secondary rate limit encountered (HTTP $code). Retry after: ${retryAfter}s"
-                        }
-                    }
-                } catch {
-                    if ($_.Exception.Message -match 'rate limit') { throw }
-                }
-            }
-
+            $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
+            if ($rateLimitMessage) { throw $rateLimitMessage }
             throw
         }
     }

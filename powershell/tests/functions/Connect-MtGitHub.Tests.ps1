@@ -502,6 +502,113 @@ Describe 'Connect-MtGitHub' {
         }
     }
 
+    Context 'Failure: RateLimited' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It '/user 403 with x-ratelimit-remaining=0 sets FailureReason=RateLimited and clears auth header' {
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 403
+                Headers    = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = '9999999999' }
+            }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'RateLimited'
+                $c.FailureReason | Should -Not -Be 'TokenInvalid'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It '/orgs/{org} 429 with retry-after sets FailureReason=RateLimited (not OrgAccessFailed)' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 429
+                Headers    = @{ 'retry-after' = '60' }
+            }
+            $ex = [System.Exception]::new('Too Many Requests')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'RateLimited'
+                $c.FailureReason | Should -Not -Be 'OrgAccessFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It '/memberships/ 403 with x-ratelimit-remaining=0 sets FailureReason=RateLimited (not OrgMembershipFailed)' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 403
+                Headers    = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = '9999999999' }
+            }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'RateLimited'
+                $c.FailureReason | Should -Not -Be 'OrgMembershipFailed'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Admin probe 429 with retry-after: Connected=true, FailureReason=null, admin permission marked rate-limited, warning mentions rate limit' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 429
+                Headers    = @{ 'retry-after' = '90' }
+            }
+            $ex = [System.Exception]::new('Too Many Requests')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } { throw $ex }
+
+            $warns = @()
+            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected                                | Should -BeTrue
+                $c.FailureReason                            | Should -BeNullOrEmpty
+                $c.AdministrationPermissionVerified         | Should -BeFalse
+                $c.AdministrationPermissionStatusCode       | Should -Be 429
+                $c.AdministrationPermissionFailureReason    | Should -Match 'rate limit'
+            }
+            ($warns -join ' ') | Should -Match 'rate limit'
+        }
+    }
+
     Context 'Failure: InvalidApiBaseUri' {
         BeforeEach {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'
