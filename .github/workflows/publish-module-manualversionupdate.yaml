@@ -5,6 +5,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: publish-module-manualversionupdate
+  cancel-in-progress: false
+
 jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yaml

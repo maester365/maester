@@ -23,6 +23,10 @@ on:
       - "website/**"
       - ".github/workflows/build-website.yaml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 

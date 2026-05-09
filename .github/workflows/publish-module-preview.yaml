@@ -12,6 +12,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: publish-module-preview
+  cancel-in-progress: false
+
 jobs:
   build-report:
     uses: ./.github/workflows/build-maester-report-template.yaml
