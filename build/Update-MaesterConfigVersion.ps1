@@ -62,20 +62,20 @@ try { $null = $content | ConvertFrom-Json } catch { throw "Input file is not val
 $mvLine = '"ModuleVersion": "{0}"' -f $ModuleVersion
 $cvLine = '"ConfigVersion": "{0}"' -f $ConfigVersion
 
-# Multiline mode + leading-whitespace capture preserves the file's indentation
-# and only matches keys that start a line (avoiding accidental matches on a
-# nested property that happens to share the name).
-$mvRegex = [regex]'(?m)^([ \t]*)"ModuleVersion"\s*:\s*"[^"]*"'
+# Multiline mode + exact 2-space indent prefix matches only top-level keys in
+# this file's formatting (top level uses 2 spaces, nested keys use 4+). This
+# rules out accidental matches on a nested property of the same name.
+$mvRegex = [regex]'(?m)^  "ModuleVersion"\s*:\s*"[^"]*"'
 if (-not $mvRegex.IsMatch($content)) {
-    throw "Required field ModuleVersion not found in $ConfigPath. Add `"ModuleVersion`": `"<version>`" as a top-level key before re-running."
+    throw "Required field ModuleVersion not found at the top level of $ConfigPath (must be at 2-space indent). Add `"ModuleVersion`": `"<version>`" as a top-level key before re-running."
 }
-$content = $mvRegex.Replace($content, ('$1' + $mvLine), 1)
+$content = $mvRegex.Replace($content, ('  ' + $mvLine), 1)
 
-$cvRegex = [regex]'(?m)^([ \t]*)"ConfigVersion"\s*:\s*"[^"]*"'
+$cvRegex = [regex]'(?m)^  "ConfigVersion"\s*:\s*"[^"]*"'
 if (-not $cvRegex.IsMatch($content)) {
-    throw "Required field ConfigVersion not found in $ConfigPath. Add `"ConfigVersion`": `"`" as a top-level key before re-running."
+    throw "Required field ConfigVersion not found at the top level of $ConfigPath (must be at 2-space indent). Add `"ConfigVersion`": `"`" as a top-level key before re-running."
 }
-$content = $cvRegex.Replace($content, ('$1' + $cvLine), 1)
+$content = $cvRegex.Replace($content, ('  ' + $cvLine), 1)
 
 try { $null = $content | ConvertFrom-Json } catch { throw "Output is not valid JSON after stamping: $_" }
 

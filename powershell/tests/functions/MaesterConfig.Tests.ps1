@@ -10,6 +10,20 @@
             $configJson.ModuleVersion | Should -Not -BeNullOrEmpty
         }
 
+        It 'source ModuleVersion matches powershell/Maester.psd1 ModuleVersion' {
+            # The published artifact's ModuleVersion is stamped by CI, but the
+            # source-tree value should track Maester.psd1 so a clone shows a
+            # sensible number. Drift between the two is a maintenance bug.
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+            $configPath = Join-Path $repoRoot 'tests/maester-config.json'
+            $manifestPath = Join-Path $repoRoot 'powershell/Maester.psd1'
+
+            $configJson = Get-Content -Path $configPath -Raw | ConvertFrom-Json
+            $manifest = Import-PowerShellDataFile -Path $manifestPath
+
+            $configJson.ModuleVersion | Should -Be $manifest.ModuleVersion -Because "tests/maester-config.json ModuleVersion ($($configJson.ModuleVersion)) should match powershell/Maester.psd1 ModuleVersion ($($manifest.ModuleVersion))"
+        }
+
         It 'has a top-level ConfigVersion string (CalVer YYYY.MM.DD.N or empty sentinel)' {
             $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
             $configPath = Join-Path $repoRoot 'tests/maester-config.json'
