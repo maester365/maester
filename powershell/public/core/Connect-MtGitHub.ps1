@@ -127,7 +127,7 @@
         if (-not [string]::IsNullOrWhiteSpace($configApiBaseUri)) { $resolvedApiBaseUri = $configApiBaseUri }
     }
     if ([string]::IsNullOrWhiteSpace($resolvedApiBaseUri)) { $resolvedApiBaseUri = 'https://api.github.com' }
-    $resolvedApiBaseUri = $resolvedApiBaseUri.TrimEnd('/')
+    $resolvedApiBaseUri = $resolvedApiBaseUri.Trim().TrimEnd('/')
 
     # Validate the fully-resolved URI. Done in-body (not via parameter [ValidatePattern]) so
     # config-supplied values are checked too, and so an invalid value records InvalidApiBaseUri
