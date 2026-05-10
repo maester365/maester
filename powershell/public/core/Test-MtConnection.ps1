@@ -9,7 +9,7 @@
     .PARAMETER Service
     The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
 
-    GitHub requires an explicit Connect-MtGitHub call before testing — unlike other services it has no auto-detection. When checked via -Service All, GitHub is only evaluated if Connect-MtGitHub has been called — if no GitHub session exists it is silently skipped and does not affect the result.
+    GitHub requires an explicit Connect-MtGitHub call before testing - unlike other services it has no auto-detection. When checked via -Service All, GitHub is evaluated only after Connect-MtGitHub has been called in the current session; otherwise GitHub is skipped and does not affect the result.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -17,12 +17,12 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only if Connect-MtGitHub was called). Returns a Boolean value.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only after Connect-MtGitHub has been called in the current session). Returns a Boolean value.
 
     .EXAMPLE
     Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only if Connect-MtGitHub was called). Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only after Connect-MtGitHub has been called in the current session). Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure

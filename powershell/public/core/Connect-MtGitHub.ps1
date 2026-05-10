@@ -38,6 +38,18 @@
     or admin-probe failure still connect but emit warnings indicating limited CIS
     coverage. Non-active membership states do not connect at all.
 
+    A non-rate-limited HTTP 403 from GET /user aborts with FailureReason =
+    'TokenForbidden'. Common causes include SAML SSO enforcement, IP allowlists,
+    token/account blocking, or other authorization policies. A rate-limited 403
+    is still classified as FailureReason = 'RateLimited'.
+
+    A malformed JSON response from GET /orgs/{org} aborts with FailureReason =
+    'OrgAccessFailed' and identifies the response parsing problem instead of
+    blaming the PAT scope, organization name, or API base URI.
+
+    The successful GET /orgs/{org} response is cached only after the full
+    connection succeeds, so failed connection attempts do not seed org data.
+
     Token resolution order:
       1. -Token parameter (SecureString)
       2. MAESTER_GITHUB_TOKEN environment variable
@@ -256,6 +268,11 @@
             $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
             return
         }
+        if ($code -eq 403) {
+            Write-Host "`nGitHub token validation failed (HTTP 403). The token is forbidden from accessing /user. Verify SAML SSO authorization, organization IP allowlists, and whether the token or account is blocked." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenForbidden' }
+            return
+        }
         Write-Host "`nGitHub token validation failed (HTTP $code). Verify the PAT is valid and not expired." -ForegroundColor Red
         $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'TokenInvalid' }
         return
@@ -265,7 +282,18 @@
     $encodedOrg = [System.Uri]::EscapeDataString($Organization)
     try {
         $orgResponse = Invoke-WebRequest -Uri "$ApiBaseUri/orgs/$encodedOrg" -Headers $authHeaders -Method GET -UseBasicParsing -ErrorAction Stop
-        $orgData = $orgResponse.Content | ConvertFrom-Json
+        $orgData = $null
+        try {
+            $orgData = $orgResponse.Content | ConvertFrom-Json -ErrorAction Stop
+        } catch {
+            $orgData = $null
+        }
+
+        if ($null -eq $orgData) {
+            Write-Host "`nGitHub organization API returned a response that could not be parsed as JSON. Verify no proxy is modifying response bodies and retry." -ForegroundColor Red
+            $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'OrgAccessFailed' }
+            return
+        }
     } catch {
         $rateLimitMessage = Get-MtGitHubRateLimitMessage -ErrorRecord $_
         if ($rateLimitMessage) {
@@ -435,6 +463,9 @@
         AdministrationPermissionAcceptedPermissions = $adminAcceptedPermissions
         FailureReason                               = $null
     }
+
+    $orgCacheKey = Get-MtGitHubCacheKey -ApiVersion $ApiVersion -AbsoluteUri "$ApiBaseUri/orgs/$encodedOrg"
+    $__MtSession.GitHubCache[$orgCacheKey] = $orgData
 
     if ($roleWarning)  { Write-Warning $roleWarning }
     if ($adminWarning) { Write-Warning $adminWarning }

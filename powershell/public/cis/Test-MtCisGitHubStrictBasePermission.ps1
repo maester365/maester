@@ -2,6 +2,19 @@
     <#
     .SYNOPSIS
     CIS.GH.1.3.8: Ensure strict base permissions are set for repositories.
+
+    .DESCRIPTION
+    CIS GitHub Benchmark v1.2.0 section 1.3.8 marks this recommendation as
+    Manual. This test automates the organization default repository permission
+    exposed by GET /orgs/{org} and requires the value to be none or read.
+
+    .EXAMPLE
+    Test-MtCisGitHubStrictBasePermission
+
+    Returns true when default_repository_permission is none or read.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisGitHubStrictBasePermission
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -13,6 +26,7 @@
     }
 
     try {
+        Write-Verbose 'Retrieving GitHub organization settings for CIS.GH.1.3.8.'
         $org = Get-MtGitHubOrganization
         $field = 'default_repository_permission'
         if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
@@ -23,7 +37,14 @@
         $allowedValues = @('none', 'read')
         $actual = [string]$org.$field
         $result = $allowedValues -contains $actual
-        Add-MtTestResultDetail -Result "CIS.GH.1.3.8 automated evidence from ``GET /orgs/{org}``: ``$field`` is ``$actual``. Expected value: ``none`` or ``read``."
+        $resultMarkdown = @"
+CIS.GH.1.3.8 automated evidence from ``GET /orgs/{org}``.
+
+| Field | Actual | Expected |
+| --- | --- | --- |
+| ``$field`` | ``$actual`` | ``none`` or ``read`` |
+"@
+        Add-MtTestResultDetail -Result $resultMarkdown
         return $result
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_

@@ -4,8 +4,20 @@
     CIS.GH.1.2.4: Ensure issue deletion is limited to specific users.
 
     .DESCRIPTION
-    Implements the strict automated setting-based interpretation by requiring
-    members_can_delete_issues to be false.
+    CIS GitHub Benchmark v1.2.0 section 1.2.4 marks this recommendation as
+    Manual. This test automates the organization member-privileges field
+    exposed by GET /orgs/{org}. By default, Maester uses a strict automated
+    interpretation and requires members_can_delete_issues to be false. If
+    GitHubAllowMemberIssueDeletion is literal boolean true in maester-config.json,
+    a true value is reported as requiring manual review instead of a hard failure.
+
+    .EXAMPLE
+    Test-MtCisGitHubIssueDeletionLimited
+
+    Returns true when members cannot delete issues.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited
     #>
     [CmdletBinding()]
     [OutputType([bool])]
@@ -17,6 +29,7 @@
     }
 
     try {
+        Write-Verbose 'Retrieving GitHub organization settings for CIS.GH.1.2.4.'
         $org = Get-MtGitHubOrganization
         $field = 'members_can_delete_issues'
         if (-not (Test-MtGitHubObjectProperty -InputObject $org -PropertyName $field)) {
@@ -25,7 +38,22 @@
         }
 
         $result = $org.$field -eq $false
-        Add-MtTestResultDetail -Result "CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``: ``$field`` is ``$($org.$field)``. Expected strict automated value: ``False``."
+        $resultMarkdown = @"
+CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
+
+| Field | Actual | Expected |
+| --- | --- | --- |
+| ``$field`` | ``$($org.$field)`` | ``False`` |
+"@
+        $allowManualReview = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubAllowMemberIssueDeletion'
+        $manualReviewAllowed = $allowManualReview -is [bool] -and $allowManualReview -eq $true
+        if (-not $result -and $manualReviewAllowed) {
+            $reason = "Manual review required - members_can_delete_issues is true. CIS GH 1.2.4 permits this configuration only if every repository administrator is individually trusted (Branch A audit). Verify the admin list and either disable the toggle or document the trust review as an exception."
+            Add-MtTestResultDetail -Result $resultMarkdown -SkippedBecause Custom -SkippedCustomReason $reason -Investigate
+            return $null
+        }
+
+        Add-MtTestResultDetail -Result $resultMarkdown
         return $result
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_

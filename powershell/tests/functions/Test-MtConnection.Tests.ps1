@@ -34,6 +34,15 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
+    Context 'Help' {
+        It 'Documents the -Service All GitHub explicit connection behavior' {
+            $help = Get-Help Test-MtConnection -Detailed | Out-String
+            $help | Should -Match 'after Connect-MtGitHub has been called'
+            $help | Should -Not -Match 'NotCalled sentinel'
+            $help | Should -Match 'skipped and does not affect the result'
+        }
+    }
+
     Context 'When Connect-MtGitHub has never been called' {
         It 'Returns $false for -Service GitHub' {
             InModuleScope Maester {
@@ -41,7 +50,7 @@ Describe 'Test-MtConnection — GitHub service' {
             }
         }
 
-        It 'Writes the NotCalled sentinel to GitHubConnection' {
+        It 'Records that Connect-MtGitHub has not been called' {
             InModuleScope Maester {
                 Test-MtConnection -Service GitHub | Out-Null
                 $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
@@ -133,17 +142,24 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
-    Context '-Service All — GitHub skipped when NotCalled sentinel exists' {
-        It 'Does not set the GitHub property' {
+    Context '-Service All — GitHub skipped when Connect-MtGitHub has not been called' {
+        It 'Does not set the GitHub property or flip AllConnected' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
-                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
             }
-            Mock Get-AzContext { $null } -ModuleName Maester
-            Mock Get-MgContext { $null } -ModuleName Maester
-            Mock Get-MtExo { $null } -ModuleName Maester
-            Mock Get-CsTenant { $null } -ModuleName Maester
+            Mock Get-AzContext { [PSCustomObject]@{ Account = 'test@contoso.com' } } -ModuleName Maester
+            Mock Invoke-AzRestMethod { [PSCustomObject]@{} } -ModuleName Maester
+            Mock Get-MgContext { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+            Mock Get-MtExo {
+                @(
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $false }
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $true }
+                )
+            } -ModuleName Maester
+            Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
+            $result.AllConnected | Should -BeTrue
             $result.GitHub | Should -BeNullOrEmpty
         }
     }
@@ -178,16 +194,23 @@ Describe 'Test-MtConnection — GitHub service' {
     }
 
     Context '-Service All — GitHub included when connected' {
-        It 'Populates the GitHub property' {
+        It 'Populates the GitHub property and participates in AllConnected' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
-                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
             }
-            Mock Get-AzContext { $null } -ModuleName Maester
-            Mock Get-MgContext { $null } -ModuleName Maester
-            Mock Get-MtExo { $null } -ModuleName Maester
-            Mock Get-CsTenant { $null } -ModuleName Maester
+            Mock Get-AzContext { [PSCustomObject]@{ Account = 'test@contoso.com' } } -ModuleName Maester
+            Mock Invoke-AzRestMethod { [PSCustomObject]@{} } -ModuleName Maester
+            Mock Get-MgContext { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+            Mock Get-MtExo {
+                @(
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $false }
+                    [PSCustomObject]@{ Name = 'ExchangeOnline'; State = 'Connected'; IsEopSession = $true }
+                )
+            } -ModuleName Maester
+            Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
+            $result.AllConnected | Should -BeTrue
             $result.GitHub | Should -Not -BeNullOrEmpty
             $result.GitHub.Connected | Should -BeTrue
         }
