@@ -27,7 +27,7 @@ Evidence fields:
 - `members_can_create_public_repositories`
 - `members_can_create_private_repositories`
 - `members_can_create_internal_repositories` when returned, shown as informational
-- `members_can_create_repositories` is displayed when returned, but is not decisive
+- `members_allowed_repository_creation_type` is displayed when returned, but is not decisive
 
 The test passes when public and private repository creation are `false`. Internal repository creation is shown as additional enterprise/GHEC context only because the CIS GH 1.2.2 literal audit covers public and private repository creation.
 

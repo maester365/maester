@@ -21,7 +21,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [Maester](./maester) | 149 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 49 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
