@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaGlobalAdminRatio {
+    <#
+    .SYNOPSIS
     Checks the ratio of global admins to privileged roles
 
-.DESCRIPTION
+    .DESCRIPTION
     Privileged users SHALL be provisioned with finer-grained roles instead of Global Administrator.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaGlobalAdminRatio
 
     Returns true if global admin to privileged roles ration is 1 or less
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaGlobalAdminRatio
-#>
-function Test-MtCisaGlobalAdminRatio {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

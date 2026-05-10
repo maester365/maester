@@ -1,7 +1,9 @@
-import { testResults } from "@/lib/testResults"
+import { useTenant } from "@/context/TenantContext"
 import { Divider } from "@/components/Divider"
 
 export default function SettingsPage() {
+  const { selectedTenant: testResults } = useTenant()
+
   return (
     <div className="max-w-3xl">
       <h1 className="mb-6 text-2xl font-semibold text-gray-900">

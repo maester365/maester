@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSafeLink {
+    <#
+    .SYNOPSIS
     Checks state of URL block list
 
-.DESCRIPTION
+    .DESCRIPTION
     URL comparison with a block-list SHOULD be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSafeLink
 
     Returns true if URL block list enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSafeLink
-#>
-function Test-MtCisaSafeLink {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtManagedDeviceCleanupSettings {
+    <#
+    .SYNOPSIS
     Ensure device clean-up rule is configured
 
-.DESCRIPTION
+    .DESCRIPTION
     The device clean-up rule should be configured
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtManagedDeviceCleanupSettings
 
     Returns true if the device clean-up rule is configured
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtManagedDeviceCleanupSettings
-#>
-function Test-MtManagedDeviceCleanupSettings {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test refers to multiple settings.')]

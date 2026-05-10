@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntraIDConnectSyncSoftHardMatching {
+    <#
+    .SYNOPSIS
     Ensure soft and hard matching for on-premises synchronization objects is blocked
 
-.DESCRIPTION
+    .DESCRIPTION
     Soft and hard matching for on-premises synchronization objects is a feature that allows Entra ID to match users based on their userprincipalname, email address or other attributes.
     This can lead to unintended consequences, such as mismatching user data.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntraIDConnectSyncSoftHardMatching
 
     Returns true if soft and hard matching is blocked / disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntraIDConnectSyncSoftHardMatching
-#>
-function Test-MtEntraIDConnectSyncSoftHardMatching {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -39,7 +39,6 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
 
     try {
         $onPremisesSynchronizationConfig = Invoke-MtGraphRequest -RelativeUri "directory/onPremisesSynchronization"
-
         $passResult = "✅ Pass"
         $failResult = "❌ Fail"
 
@@ -68,7 +67,11 @@ function Test-MtEntraIDConnectSyncSoftHardMatching {
         }
         return $return
     } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -eq 403) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
         return $null
     }
 }

@@ -1,20 +1,19 @@
-﻿<#
-  .Synopsis
-  Checks if any conditional access policies include or exclude groups that have been deleted.
+﻿function Test-MtCaReferencedGroupsExist {
+    <#
+    .Synopsis
+    Checks if any conditional access policies include or exclude groups that have been deleted.
 
-  .Description
-  Security Groups will be used to exclude and include users from Conditional Access Policies.
-  Assignments are still visible in the policy definition in Microsoft Graph API even the group is deleted.
-  This test checks if all groups used in Conditional Access Policies still exist and shows invalid or deleted items.
+    .Description
+    Security Groups will be used to exclude and include users from Conditional Access Policies.
+    Assignments are still visible in the policy definition in Microsoft Graph API even the group is deleted.
+    This test checks if all groups used in Conditional Access Policies still exist and shows invalid or deleted items.
 
-  .Example
-  Test-MtCaReferencedGroupsExist
+    .Example
+    Test-MtCaReferencedGroupsExist
 
-  .LINK
-  https://maester.dev/docs/commands/Test-MtCaReferencedGroupsExist
-#>
-
-function Test-MtCaReferencedGroupsExist {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCaReferencedGroupsExist
+    #>
   [CmdletBinding()]
   [OutputType([bool])]
   param ()

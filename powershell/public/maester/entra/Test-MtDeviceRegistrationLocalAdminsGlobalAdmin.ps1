@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtDeviceRegistrationLocalAdminsGlobalAdmin {
+    <#
+    .SYNOPSIS
     Tests whether global administrators are configured as local administrators on devices during Microsoft Entra join.
 
-.DESCRIPTION
+    .DESCRIPTION
     Global administrator role should not be added as local administrator on the device during Microsoft Entra join.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtDeviceRegistrationLocalAdminsGlobalAdmin
     Returns true if global administrators are not configured as local administrators on devices during Microsoft Entra join, false if they are, and null if the test could not be completed.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtDeviceRegistrationLocalAdminsGlobalAdmin
-#>
-function Test-MtDeviceRegistrationLocalAdminsGlobalAdmin {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -35,4 +35,3 @@ function Test-MtDeviceRegistrationLocalAdminsGlobalAdmin {
         return $null
     }
 }
-

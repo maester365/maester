@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring MFA for admins
+﻿function Test-MtCaMfaForAdmin {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy requiring MFA for admins
 
- .Description
+    .Description
     MFA for admins conditional access policy can be used to require MFA for all admins in the tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-admin-mfa
 
- .Example
-  Test-MtCaMfaForAdmin
+    .Example
+    Test-MtCaMfaForAdmin
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaMfaForAdmin
-#>
-function Test-MtCaMfaForAdmin {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'PolicyIncludesAllRoles is used in the condition.')]
     [CmdletBinding()]
     [OutputType([bool])]

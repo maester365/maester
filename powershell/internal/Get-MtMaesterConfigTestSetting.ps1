@@ -1,15 +1,14 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtMaesterConfigTestSetting {
+    <#
+    .SYNOPSIS
     Gets the test settings for a specific test ID from the Maester config.
-.DESCRIPTION
+    .DESCRIPTION
     This function retrieves the test settings for a specific test ID from the Maester config.
     It returns the settings as a hashtable, which can be used to customize the behavior of the test.
-.EXAMPLE
+    .EXAMPLE
     $testSettings = Get-MtMaesterConfigTestSetting -TestId 'Mt.1001'
     # This will return the test settings for the test with ID 'Mt.1001'.
-#>
-
-function Get-MtMaesterConfigTestSetting {
+    #>
     [CmdletBinding()]
     [OutputType([hashtable])]
     param(

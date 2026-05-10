@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtFeatureUpdatePolicy {
+    <#
+    .SYNOPSIS
     Check whether a Windows Feature Update Policy in Intune is using unsupported builds.
-.DESCRIPTION
+    .DESCRIPTION
     This command checks the Windows Feature Update Policies configured in Microsoft Intune to identify any policies that are using Windows builds that are no longer supported by Microsoft.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtFeatureUpdatePolicy
 
     Returns true if no Feature Update Policies are using unsupported builds, false if any policies are found using unsupported builds.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtFeatureUpdatePolicy
-#>
-function Test-MtFeatureUpdatePolicy {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

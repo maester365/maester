@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaCP01 {
+    <#
+    .SYNOPSIS
     Checks if Default Settings - Consent Policy Settings - Group owner consent for apps accessing data is set to 'False'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Group and team owners can authorize applications, such as applications published by third-party vendors, to access your organization's data associated with a group. For example, a team owner in Microsoft Teams can allow an app to read all Teams messages in the team, or list the basic profile of a group's members.
 
     Queries settings
     and returns the result of
-     graph/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
+    graph/settings.values -eq 'False'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCP01
 
-    Returns the result of graph.microsoft.com/beta/settings.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value -eq 'False'
-#>
-
-function Test-MtEidscaCP01 {
+    Returns the result of graph.microsoft.com/beta/settings.values -eq 'False'
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaCP01 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
-    [string]$tenantValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
+    $rawValue = $result.values | where-object name -eq 'EnableGroupSpecificConsent' | select-object -expand value
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'False'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'False' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'False' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'False'** for **settings**"
@@ -42,3 +42,4 @@ function Test-MtEidscaCP01 {
 
     return $tenantValue
 }
+

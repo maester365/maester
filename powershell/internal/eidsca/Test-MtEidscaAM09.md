@@ -14,5 +14,7 @@ https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authentica
 - [microsoftAuthenticatorAuthenticationMethodConfiguration resource type - Microsoft Graph v1.0 | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/microsoftauthenticatorauthenticationmethodconfiguration)
 
 
+
+
 <!--- Results --->
 %TestResult%

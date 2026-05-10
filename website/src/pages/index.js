@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
-import HomepageFeatures from "@site/src/components/HomepageFeatures";
 
 import Heading from "@theme/Heading";
 import styles from "./index.module.css";
@@ -54,89 +54,128 @@ Integrate Maester with GitHub Actions to continuously monitor your tenant config
 workflow integration in Maester.
 <br/><br/>
 <strong>Use Workload Identify Federation</strong> for your automation account to connect to Microsoft Graph (no more secrets or credential rotation!).`,
-  codeExample: `
-import React from 'react';
-import {Text, View} from 'react-native';
-import {Header} from './Header';
-import {heading} from './Typography';
-
-const WelcomeScreen = () => (
-  <View>
-    <Header title="Welcome to React Native"/>
-    <Text style={heading}>Step One</Text>
-    <Text>
-      Edit App.js to change this screen and turn it
-      into your app.
-    </Text>
-    <Text style={heading}>See Your Changes</Text>
-    <Text>
-      Press Cmd + R inside the simulator to reload
-      your app’s code.
-    </Text>
-    <Text style={heading}>Debug</Text>
-    <Text>
-      Press Cmd + M or Shake your device to open the
-      React Native Debug Menu.
-    </Text>
-    <Text style={heading}>Learn</Text>
-    <Text>
-      Read the docs to discover what to do next:
-    </Text>
-   </View>
-);
-  `,
-  forEveryone: `
-React Native lets you create truly native apps and doesn't compromise your users' experiences.
-It provides a core set of platform agnostic native components like <code>View</code>, <code>Text</code>, and <code>Image</code>
-that map directly to the platform’s native UI building blocks.
-  `,
-  crossPlatform: `
-React components wrap existing native code and interact with native APIs via
-React’s declarative UI paradigm and JavaScript. This enables native app development
-for whole new teams of developers, and can let existing native teams work much faster.
-  `,
-  fastRefresh: `
-<strong>See your changes as soon as you save.</strong> With the power of JavaScript,
-React Native lets you iterate at lightning speed. No more waiting for native builds to finish.
-Save, see, repeat.
-  `,
-  talks: `
-Members of the React Native team frequently speak at various conferences.
-<br/><br/>
-You can follow the latest news from the React Native team on Twitter
-  `,
 };
 
-function Heading2({ text }) {
-  return <h2 className="Heading">{text}</h2>;
-}
+const stats = [
+  { value: "500K+", label: "PowerShell Gallery downloads" },
+  { value: "120K+", label: "Tenants protected" },
+  { value: "360+", label: "Built-in security tests" },
+  { value: "5", label: "Compliance frameworks" },
+];
 
-function HomepageHeader() {
+const features = [
+  {
+    icon: "🔥",
+    title: "Ready-made tests",
+    body: "Hundreds of curated tests covering identity, access, devices and apps — ready to run on day one.",
+  },
+  {
+    icon: "🛡️",
+    title: "Confidently make changes",
+    body: "Run regression tests before you change a Conditional Access policy. Catch loopholes before attackers do.",
+  },
+  {
+    icon: "🛰️",
+    title: "Continuous monitoring",
+    body: "Schedule Maester in GitHub Actions, Azure DevOps or Azure Automation. Get alerts when posture drifts.",
+  },
+  {
+    icon: "🧩",
+    title: "Easy to customize",
+    body: "Built on Pester and Microsoft Graph. Encode your own business and security policies as code.",
+  },
+  {
+    icon: "🧭",
+    title: "Configuration guidance",
+    body: "Every test ships with remediation steps and direct links into the Microsoft admin portals.",
+  },
+  {
+    icon: "🦅",
+    title: "Compliance baselines",
+    body: "EIDSCA, CISA SCuBA, CIS Microsoft 365 and ORCA — all wired into a single test framework.",
+  },
+];
+
+const suites = [
+  {
+    emoji: "🔥",
+    title: "Maester",
+    desc: "Best-practice tests curated by the Maester community.",
+    count: "170+ tests",
+    href: "/docs/tests/maester",
+  },
+  {
+    emoji: "🛡️",
+    title: "EIDSCA",
+    desc: "Entra ID Security Config Analyzer baseline.",
+    count: "60+ tests",
+    href: "/docs/tests/eidsca",
+  },
+  {
+    emoji: "🦅",
+    title: "CISA SCuBA",
+    desc: "US CISA Secure Cloud Business Applications baselines.",
+    count: "70+ tests",
+    href: "/docs/tests/cisa",
+  },
+  {
+    emoji: "🌀",
+    title: "CIS M365",
+    desc: "CIS Microsoft 365 Foundations Benchmark v3.1.0.",
+    count: "60+ tests",
+    href: "/docs/tests/cis",
+  },
+  {
+    emoji: "📨",
+    title: "ORCA",
+    desc: "Office 365 Recommended Configuration Analyzer.",
+    count: "Exchange Online",
+    href: "/docs/tests/orca",
+  },
+];
+
+function Hero() {
   const { siteConfig } = useDocusaurusContext();
+  const logoUrl = useBaseUrl("/img/maester.png");
   return (
-    <header className={clsx("hero hero--primary", styles.heroBanner)}>
+    <header className={styles.hero}>
+      <div className={styles.heroGlow} aria-hidden="true" />
       <div className="container">
-        <div class="row">
-          <div class="col col--6">
-            <Heading as="h1" className="hero__title">
-              {siteConfig.title}
-            </Heading>
-            <p className="hero__subtitle">{siteConfig.tagline}</p>
-            <div className={styles.buttons}>
-              <Link
-                className="button button--secondary button--lg"
-                to="/docs/intro"
-              >
-                Get Started → 🔥
-              </Link>
-            </div>
+        <div className={styles.heroInner}>
+          <span className={styles.heroBadge}>
+            <span className={styles.heroBadgeDot} aria-hidden="true" />
+            Open source · Community driven
+          </span>
+          <div className={styles.heroLogoWrap}>
+            <img className={styles.heroLogo} src={logoUrl} alt="Maester" />
           </div>
-          <div class="col col--6">
+          <Heading as="h1" className={styles.heroTitle}>
+            Test automation for your <em>Microsoft 365</em> security posture
+          </Heading>
+          <p className={styles.heroSubtitle}>
+            {siteConfig.tagline} — Maester turns Microsoft security best
+            practices into runnable tests so you can make changes with
+            confidence and prove compliance over time.
+          </p>
+          <div className={styles.heroButtons}>
+            <Link className={styles.btnPrimary} to="/docs/installation">
+              Get Started →
+            </Link>
+            <Link
+              className={styles.btnGhost}
+              to="https://github.com/maester365/maester"
+            >
+              Star on GitHub
+            </Link>
+          </div>
+        </div>
+        <div className={styles.heroShowcase}>
+          <div className={styles.heroShowcaseFrame}>
             <img
-              src="img/maester-demo.gif"
-              class="rounded-corners"
-              alt="Maester Demo"
-              width="500"
+              className={styles.heroShowcaseMedia}
+              src={useBaseUrl("/img/maester-demo.gif")}
+              alt="Maester running in a terminal and producing an interactive HTML report"
+              loading="lazy"
             />
           </div>
         </div>
@@ -144,6 +183,115 @@ function HomepageHeader() {
     </header>
   );
 }
+
+function Stats() {
+  return (
+    <section className={styles.statsSection}>
+      <div className="container">
+        <div className={styles.stats}>
+          {stats.map((s) => (
+            <div key={s.label} className={styles.statItem}>
+              <span className={styles.statValue}>{s.value}</span>
+              <span className={styles.statLabel}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Features() {
+  return (
+    <section className={clsx(styles.section, styles.sectionAtmosphere)}>
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <span className={styles.eyebrow}>Why Maester</span>
+          <Heading as="h2" className={styles.sectionTitle}>
+            Security as code, for the Microsoft cloud
+          </Heading>
+          <p className={styles.sectionLede}>
+            One framework, hundreds of tests, every change validated. Maester
+            is how modern teams keep Microsoft 365 secure as it evolves.
+          </p>
+        </div>
+        <div className={styles.featureGrid}>
+          {features.map((f) => (
+            <article key={f.title} className={styles.featureCard}>
+              <div className={styles.featureIcon} aria-hidden="true">
+                {f.icon}
+              </div>
+              <h3 className={styles.featureTitle}>{f.title}</h3>
+              <p className={styles.featureBody}>{f.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Suites() {
+  return (
+    <section className={styles.section}>
+      <div className="container">
+        <div className={styles.sectionHeader}>
+          <span className={styles.eyebrow}>Test suites</span>
+          <Heading as="h2" className={styles.sectionTitle}>
+            Five baselines, one report
+          </Heading>
+          <p className={styles.sectionLede}>
+            Run the suites you care about — community best practices and the
+            major Microsoft 365 compliance baselines, all in one place.
+          </p>
+        </div>
+        <div className={styles.suitesGrid}>
+          {suites.map((s) => (
+            <Link key={s.title} className={styles.suiteCard} to={s.href}>
+              <span className={styles.suiteEmoji} aria-hidden="true">
+                {s.emoji}
+              </span>
+              <h3 className={styles.suiteTitle}>{s.title}</h3>
+              <p className={styles.suiteDesc}>{s.desc}</p>
+              <span className={styles.suiteCount}>{s.count}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CtaBand() {
+  return (
+    <section>
+      <div className="container">
+        <div className={styles.ctaBand}>
+          <Heading as="h2" className={styles.ctaTitle}>
+            Run your first Maester test in under a minute
+          </Heading>
+          <p className={styles.ctaSubtitle}>
+            Install the PowerShell module, connect to Microsoft Graph and get
+            an interactive HTML report of your tenant's posture.
+          </p>
+          <div className={styles.heroButtons}>
+            <Link className={styles.btnPrimary} to="/docs/installation">
+              Get Started →
+            </Link>
+            <Link
+              className={styles.btnGhost}
+              to="https://github.com/maester365/maester"
+            >
+              View on GitHub
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Existing product story sections (kept) ---------- */
 
 export function Section({
   element = "section",
@@ -163,6 +311,10 @@ export function Section({
       {children}
     </El>
   );
+}
+
+function Heading2({ text }) {
+  return <h2 className="Heading">{text}</h2>;
 }
 
 function TextColumn({ title, text, moreContent }) {
@@ -222,8 +374,11 @@ function WhatIf() {
           />
         }
         columnTwo={
-          <img className="FeatureImageRight"
-          alt="Code sample of a what if test" src="img/home/conditional-access-policywhat-if-test.png" />
+          <img
+            className="FeatureImageRight"
+            alt="Code sample of a what if test"
+            src="img/home/conditional-access-policywhat-if-test.png"
+          />
         }
       />
     </Section>
@@ -264,15 +419,18 @@ function MaesterReport() {
           />
         }
         columnTwo={
-          <img className="FeatureImageRight"
-          alt="Maester summary report" src="img/home/maester-report.png" />
+          <img
+            className="FeatureImageRight"
+            alt="Maester summary report"
+            src="img/home/maester-report.png"
+          />
         }
       />
     </Section>
   );
 }
 
-function GitHub() {
+function GitHubSection() {
   return (
     <Section className="CrossPlatform LeftImage" background="tint">
       <TwoColumns
@@ -303,7 +461,8 @@ function AzureDevOps() {
           />
         }
         columnTwo={
-          <img className="FeatureImageRight"
+          <img
+            className="FeatureImageRight"
             alt="Azure DevOps Screenshot"
             src="img/home/azure-devops-maester-report.png"
           />
@@ -341,7 +500,8 @@ function Eidsca() {
           <TextColumn title="40+ EIDSCA Tests" text={textContent.eidsca} />
         }
         columnTwo={
-          <img className="FeatureImageRight"
+          <img
+            className="FeatureImageRight"
             alt="Screenshot of an EIDSCA test result"
             src="img/home/maester-report-eidsca.png"
           />
@@ -374,22 +534,28 @@ export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`${siteConfig.title}`}
-      description="Your Microsoft Security test automation framework!"
+      title={siteConfig.title}
+      description="Maester is the open source test automation framework for your Microsoft 365 security posture."
+      wrapperClassName="home-page"
     >
-      <HomepageHeader />
-      <main>
-        <HomepageFeatures />
+      <div className={styles.home}>
+        <Hero />
+        <Stats />
+        <Features />
+        <Suites />
+        <CtaBand />
+      </div>
+      <main className={styles.homeDark}>
+        <CustomTests />
+        <WhatIf />
+        <MaesterArchitecture />
+        <MaesterReport />
+        <QuickRemediation />
+        <Eidsca />
+        <GitHubSection />
+        <AzureDevOps />
+        <EmailAlert />
       </main>
-      <CustomTests />
-      <WhatIf />
-      <MaesterArchitecture />
-      <MaesterReport />
-      <QuickRemediation />
-      <Eidsca />
-      <GitHub />
-      <AzureDevOps />
-      <EmailAlert />
     </Layout>
   );
 }

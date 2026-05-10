@@ -19,13 +19,18 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme="dark"] {
-  --ifm-color-primary: #f44336;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  /* Coral red — keeps the Maester ember-red feel while remaining legible on
+     dark backgrounds. Tuned for >= 5.5:1 contrast on Docusaurus dark canvas
+     (#1b1b1d) and the homepage's #050608 surface. */
+  --ifm-color-primary: #ff7a7a;
+  --ifm-color-primary-dark: #f56565;
+  --ifm-color-primary-darker: #ec5757;
+  --ifm-color-primary-darkest: #c93f3f;
+  --ifm-color-primary-light: #ff9292;
+  --ifm-color-primary-lighter: #ffa1a1;
+  --ifm-color-primary-lightest: #ffbfbf;
+  --ifm-link-color: #ff9292;
+  --ifm-link-hover-color: #ffbfbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
@@ -88,6 +93,23 @@ html[data-theme="dark"] .navbar--github-link:before {
   margin: 0.5rem 0 0.25rem 1rem;
 }
 
+.sidebar-section {
+  display: block;
+  margin: 1rem 0 0.25rem 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--ifm-color-gray-200);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+html[data-theme="dark"] .sidebar-section {
+  border-top-color: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-500);
+}
+
 /**
  * Syntax line highlighting
  */
@@ -102,10 +124,288 @@ html[data-theme="dark"] .navbar--github-link:before {
   white-space: nowrap;
 }
 
+.theme-doc-markdown.markdown h1:first-child,
+.markdown h1:first-child,
+main h1,
+.hero__title {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+
+.markdown h2,
+.generated-test-doc h2 {
+  font-size: 1.35rem;
+}
+
+.markdown h3,
+.generated-test-doc h3 {
+  font-size: 1.15rem;
+}
+
+.markdown h4,
+.generated-test-doc h4 {
+  font-size: 1rem;
+}
+
+@media only screen and (max-width: 996px) {
+  .theme-doc-markdown.markdown h1:first-child,
+  .markdown h1:first-child,
+  main h1,
+  .hero__title {
+    font-size: 1.55rem;
+  }
+
+  .markdown h2,
+  .generated-test-doc h2 {
+    font-size: 1.2rem;
+  }
+
+  .markdown h3,
+  .generated-test-doc h3 {
+    font-size: 1.05rem;
+  }
+}
+
 /* Used previously to hide sidebar of tests and commands */
 /* .hidden {
   display: none !important;
 } */
+
+/* Modern table styling */
+.markdown table {
+  display: table;
+  width: 100%;
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.markdown table thead {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.markdown table thead th {
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ifm-color-emphasis-900);
+  border: none;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 0.65rem 0.9rem;
+  background: transparent;
+}
+
+.markdown table tbody td {
+  border: none;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  padding: 0.6rem 0.9rem;
+  vertical-align: top;
+}
+
+.markdown table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown table tbody tr:nth-child(even) td {
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+.markdown table tbody tr:hover td {
+  background-color: var(--ifm-color-emphasis-200);
+  transition: background-color 120ms ease;
+}
+
+[data-theme="dark"] .markdown table {
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .markdown table thead {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+[data-theme="dark"] .markdown table thead th,
+[data-theme="dark"] .markdown table tbody td {
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme="dark"] .markdown table tbody tr:nth-child(even) td {
+  background-color: var(--ifm-color-emphasis-200);
+}
+
+[data-theme="dark"] .markdown table tbody tr:hover td {
+  background-color: var(--ifm-color-emphasis-300);
+}
+
+/* ---------- Raycast-style floating navbar (homepage only) ---------- */
+
+body:has(.home-page) {
+  background: #050608;
+}
+
+body:has(.home-page) .navbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 1080px;
+  height: 72px;
+  padding: 0 22px;
+  background: rgba(10, 12, 16, 0.78);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  z-index: 200;
+}
+
+body:has(.home-page) .navbar__inner {
+  height: 100%;
+}
+
+body:has(.home-page) .navbar__brand {
+  color: #ffffff;
+  margin-right: 16px;
+}
+
+body:has(.home-page) .navbar__title {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+body:has(.home-page) .navbar__logo,
+body:has(.home-page) .navbar__logo img {
+  height: 26px;
+}
+
+body:has(.home-page) .navbar__items .navbar__link {
+  color: #b6b9c2;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+body:has(.home-page) .navbar__items .navbar__link:hover,
+body:has(.home-page) .navbar__items .navbar__link--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body:has(.home-page) .navbar__items .dropdown > .navbar__link::after {
+  border-top-color: #b6b9c2;
+}
+
+body:has(.home-page) .navbar .dropdown__menu {
+  background: #10131a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+body:has(.home-page) .navbar .dropdown__link {
+  color: #b6b9c2;
+}
+
+body:has(.home-page) .navbar .dropdown__link:hover,
+body:has(.home-page) .navbar .dropdown__link--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Hide search, theme switcher, version dropdown, locale dropdown on home navbar */
+body:has(.home-page) .navbar .navbar__search,
+body:has(.home-page) .navbar [class*="searchBox"],
+body:has(.home-page) .navbar .DocSearch,
+body:has(.home-page) .navbar [class*="colorModeToggle"],
+body:has(.home-page) .navbar [class*="toggle_"],
+body:has(.home-page) .navbar .navbar__items > .dropdown:first-child,
+body:has(.home-page) .navbar .navbar__items--right > .dropdown {
+  display: none !important;
+}
+
+/* GitHub icon hidden on homepage */
+body:has(.home-page) .navbar--github-link {
+  display: none !important;
+}
+
+/* Mobile sidebar toggle */
+body:has(.home-page) .navbar__toggle {
+  color: #ffffff;
+}
+
+/* Install CTA — homepage only, Raycast-style near-white pill */
+.navbar--install-cta {
+  display: none;
+}
+
+body:has(.home-page) .navbar .navbar--install-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  margin-left: 0;
+  margin-right: 0;
+  border-radius: 8px;
+  background: #e9eaee;
+  color: #0b0d12 !important;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  border: 1px solid #e9eaee;
+  transition: background 160ms ease, border-color 160ms ease,
+    transform 160ms ease, color 160ms ease;
+}
+
+body:has(.home-page) .navbar .navbar--install-cta:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #0b0d12 !important;
+  transform: translateY(-1px);
+}
+
+body:has(.home-page) .navbar .navbar--install-cta::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b0d12' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 7 10 12 4 17'/%3E%3Cline x1='13' y1='19' x2='20' y2='19'/%3E%3C/svg%3E") no-repeat center / contain;
+  display: inline-block;
+}
+
+/* Push hero down so it isn't covered by the floating navbar */
+body:has(.home-page) .home-page > div:first-child > header:first-child {
+  padding-top: 11rem;
+}
+
+@media (max-width: 996px) {
+  body:has(.home-page) .navbar {
+    top: 10px;
+    width: calc(100% - 16px);
+    height: 60px;
+    padding: 0 14px;
+    border-radius: 14px;
+  }
+  body:has(.home-page) .home-page > div:first-child > header:first-child {
+    padding-top: 7.5rem;
+  }
+}
 
 /* Override non-category links to be horizonally compact */
 

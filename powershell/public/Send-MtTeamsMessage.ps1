@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Send-MtTeamsMessage {
+    <#
+    .SYNOPSIS
     Send an adaptive card in a teams channel with the summary of the Maester test results
 
-.DESCRIPTION
+    .DESCRIPTION
     Uses Graph API to send an adaptive card in a teams channel with the summary of the Maester test results.
 
     This command requires the ChannelMessage.Send delegate permission in the Microsoft Graph API.
@@ -18,21 +19,20 @@
     When running in a non-interactive environment (Azure DevOps, GitHub) the ChannelMessage.Send permission
     must be granted to the application in the Microsoft Entra portal.
 
-.EXAMPLE
+    .EXAMPLE
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamId '00000000-0000-0000-0000-000000000000' -TeamChannelId '19%3A00000000000000000000000000000000%40thread.tacv2' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 
-.EXAMPLE
+    .EXAMPLE
     Send-MtTeamsMessage -MaesterResults $MaesterResults -TeamChannelWebhookUri 'https://some-url.logic.azure.com/workflows/invoke?api-version=2016-06-01' -Subject 'Maester Results' -TestResultsUri "https://github.com/contoso/maester/runs/123456789"
 
     Sends an Adaptive Card in a Teams Channel with the summary of the Maester test results to the specified channel along with the link to the detailed test results.
 
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Send-MtTeamsMessage
-#>
-function Send-MtTeamsMessage {
+    #>
     [CmdletBinding()]
     param(
         # The Maester test results returned from `Invoke-Pester -PassThru | ConvertTo-MtMaesterResult`
@@ -74,7 +74,7 @@ function Send-MtTeamsMessage {
         - Add a switch to send the card to a user instead of a channel
     #>
     if (!$TeamChannelWebhookUri) {
-      if (!(Test-MtContext -SendTeamsMessage)) { return }
+        if (!(Test-MtContext -SendTeamsMessage)) { return }
     } else {
         # Check if TeamChannelWebhookUri is a valid URL
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
@@ -98,9 +98,12 @@ function Send-MtTeamsMessage {
         "$currentVersion"
     }
 
-    $NotRunCount = $MaesterResults.SkippedCount
-    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $NotRunCount = "-" }
-
+    $NotRunCount = $MaesterResults.NotRunCount
+    if ([string]::IsNullOrEmpty($MaesterResults.NotRunCount)) { $NotRunCount = "-" }
+    $skippedCount = $MaesterResults.SkippedCount
+    if ([string]::IsNullOrEmpty($MaesterResults.SkippedCount)) { $skippedCount = "-" }
+    $investigateCount = $MaesterResults.investigateCount
+    if ([string]::IsNullOrEmpty($MaesterResults.investigateCount)) { $investigateCount = "-" }
     $adaptiveCardData = @{
         title       = $Subject
         description = "Results for Maester Test run of $($MaesterResults.ExecutedAt)"
@@ -111,7 +114,8 @@ function Send-MtTeamsMessage {
             TotalCount       = $MaesterResults.TotalCount
             PassedCount      = $MaesterResults.PassedCount
             FailedCount      = $MaesterResults.FailedCount
-            InvestigateCount = $MaesterResults.InvestigateCount
+            InvestigateCount = $investigateCount
+            SkippedCount     = $skippedCount
             NotRunCount      = $NotRunCount
             TestResultURL    = $TestResultsUri
         }
@@ -150,12 +154,16 @@ function Send-MtTeamsMessage {
             $currentValue
         })
 
-        # Set donut values
-        $adaptiveCardBody = $adaptiveCardBody.replace('99990',$adaptiveCardData.run.PassedCount)
-        $adaptiveCardBody = $adaptiveCardBody.replace('99991',$adaptiveCardData.run.FailedCount)
+    $passedCount = if ($null -ne $adaptiveCardData.run.PassedCount) { [int]$adaptiveCardData.run.PassedCount } else { 0 }
+    $failedCount = if ($null -ne $adaptiveCardData.run.FailedCount) { [int]$adaptiveCardData.run.FailedCount } else { 0 }
+    $investigateCount = if ($null -ne $adaptiveCardData.run.InvestigateCount -or $adaptiveCardData.run.InvestigateCount -ne '-') { [int]$adaptiveCardData.run.InvestigateCount } else { 0 }
 
-    if (!$TeamChannelWebhookUri)
-    {
+    # Set donut values
+    $adaptiveCardBody = $adaptiveCardBody.replace('99990', $passedCount.ToString())
+    $adaptiveCardBody = $adaptiveCardBody.replace('99991', $failedCount.ToString())
+    $adaptiveCardBody = $adaptiveCardBody.replace('99992', $investigateCount.ToString())
+
+    if (!$TeamChannelWebhookUri) {
         $attachmentGuid = New-Guid
 
         $params = @{
@@ -176,26 +184,24 @@ function Send-MtTeamsMessage {
             )
         }
 
-      Write-Verbose -Message "Uri: $SendTeamsMessageUri"
+        $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
+        Write-Verbose -Message "Uri: $SendTeamsMessageUri"
 
-      $SendTeamsMessageUri = "https://graph.microsoft.com/v1.0/teams/$($TeamId)/channels/$($TeamChannelId)/messages"
-
-      Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
-    }else
-    {
+        Invoke-MgGraphRequest -Method POST -Uri $SendTeamsMessageUri -Body $params | Out-Null
+    } else {
         $params = @{
-            type     = "message"
+            type        = "message"
             attachments = @(
                 @{
-                    contentType  = "application/vnd.microsoft.card.adaptive"
-                    contentUrl   = $null
-                    content      = $null
+                    contentType = "application/vnd.microsoft.card.adaptive"
+                    contentUrl  = $null
+                    content     = $null
                 }
             )
         }
 
-      $params.attachments[0].content = ($adaptiveCardBody | convertFrom-Json)
-      Write-Verbose -Message "Posting message to Teams channel using webhook: $TeamChannelWebhookUri"
-      Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body ($params | ConvertTo-Json -Depth 25) -Uri $TeamChannelWebhookUri
+        $params.attachments[0].content = ($adaptiveCardBody | convertFrom-Json)
+        Write-Verbose -Message "Posting message to Teams channel using webhook: $TeamChannelWebhookUri"
+        Invoke-RestMethod -Method post -ContentType 'Application/Json' -Body ($params | ConvertTo-Json -Depth 25) -Uri $TeamChannelWebhookUri
     }
 }

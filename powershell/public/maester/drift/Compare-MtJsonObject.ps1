@@ -1,4 +1,4 @@
-class MtPropertyDifference {
+﻿class MtPropertyDifference {
     [string]$PropertyName
     [object]$ExpectedValue
     [object]$ActualValue
@@ -13,51 +13,51 @@ class MtPropertyDifference {
     }
 }
 
-<#
-.SYNOPSIS
+function Compare-MtJsonObject {
+    <#
+    .SYNOPSIS
     Compares two PowerShell objects (typically JSON objects) and returns a list of differences.
 
-.DESCRIPTION
+    .DESCRIPTION
     The Compare-MtJsonObject function recursively compares two objects (such as those imported from JSON)
     and returns an array of differences. It supports comparison of nested objects, arrays, and allows
     exclusion of specific properties via the Settings parameter. The function is useful for configuration
     drift detection, regression testing, or validating changes between baseline and current states.
 
-.PARAMETER Baseline
+    .PARAMETER Baseline
     The reference object to compare against (e.g., the expected or original state).
 
-.PARAMETER Current
+    .PARAMETER Current
     The object to compare to the baseline (e.g., the actual or new state).
 
-.PARAMETER Path
+    .PARAMETER Path
     (Optional) The property path being compared. Used internally for recursion and reporting.
 
-.PARAMETER Settings
+    .PARAMETER Settings
     (Optional) An object that may contain an ExcludeProperties property (array of property names to skip).
 
-.OUTPUTS
+    .OUTPUTS
     [MtPropertyDifference[]] Returns an array of objects describing each difference found.
 
-.EXAMPLE
+    .EXAMPLE
     # Compare two JSON files and output the differences
     $baseline = Get-Content -Raw -Path 'baseline.json' | ConvertFrom-Json
     $current = Get-Content -Raw -Path 'current.json' | ConvertFrom-Json
     $diffs = Compare-MtJsonObject -Baseline $baseline -Current $current
     $diffs | Format-Table
 
-.EXAMPLE
+    .EXAMPLE
     # Exclude specific properties from comparison
     $settings = [PSCustomObject]@{ ExcludeProperties = @('timestamp', 'lastModified') }
     $diffs = Compare-MtJsonObject -Baseline $baseline -Current $current -Settings $settings
 
-.NOTES
+    .NOTES
     Author: Stephan van Rooij @svrooij
     Date:   2025-06-26
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Compare-MtJsonObject
-#>
-function Compare-MtJsonObject {
+    #>
     [OutputType([MtPropertyDifference[]])]
     param (
         [Parameter(Mandatory = $true)]

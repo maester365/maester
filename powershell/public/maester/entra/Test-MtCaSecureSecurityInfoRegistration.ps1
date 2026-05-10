@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy securing security info registration.
+﻿function Test-MtCaSecureSecurityInfoRegistration {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy securing security info registration.
 
- .Description
+    .Description
     Security info registration conditional access policy can secure the registration of security info for users in the tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration
 
- .Example
-  Test-MtCaSecureSecurityInfoRegistration
+    .Example
+    Test-MtCaSecureSecurityInfoRegistration
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaSecureSecurityInfoRegistration
-#>
-function Test-MtCaSecureSecurityInfoRegistration {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

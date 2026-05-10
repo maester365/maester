@@ -34,7 +34,7 @@ BeforeDiscovery {
     # Get root directory for drift tests
     # This assumes the drift tests are located in a folder named "drift" at the root of the current location
     # $driftRoot = Join-Path -Path $(Get-Location) -ChildPath "drift"
-    $driftRoot = $env:MEASTER_FOLDER_DRIFT
+    $driftRoot = $env:MAESTER_FOLDER_DRIFT
     # Ensure the drift root directory exists
     if ($null -eq $driftRoot -or -not (Test-Path -Path $driftRoot)) {
         return $null

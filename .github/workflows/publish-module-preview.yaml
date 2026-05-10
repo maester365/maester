@@ -10,28 +10,32 @@ on:
       - "report/**"
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: write
-  checks: write
-  actions: read
-  pull-requests: write
-  statuses: write
+permissions: {}
+
+concurrency:
+  group: publish-module-preview
+  cancel-in-progress: false
 
 jobs:
   build-report:
-    uses: ./.github/workflows/build-report.yaml
+    uses: ./.github/workflows/build-maester-report-template.yaml
+    permissions:
+      contents: read
+      actions: read
 
   create-preview-release:
     needs: build-report
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
-      - uses: actions/checkout@v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: updated-report-template
           path: powershell/assets/
@@ -47,7 +51,7 @@ jobs:
         run: ./.github/workflows/minor-version-update.ps1 -preview
 
       - name: Archive PowerShell build
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: maester-module
           path: |
@@ -68,7 +72,7 @@ jobs:
           Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
 
       - name: Create release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           artifacts: "maester.zip"
           replacesArtifacts: true
@@ -78,3 +82,14 @@ jobs:
           prerelease: true
           tag: ${{ steps.moduleversion.outputs.tag }}
           commit: ${{ github.sha }}
+
+      - name: Update website preview version
+        run: node ./build/Update-WebsitePreviewVersion.mjs ${{ steps.moduleversion.outputs.tag }}
+
+      - name: Commit website preview version
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
+        with:
+          commit_message: 'ci(docs): update website preview version ${{ steps.moduleversion.outputs.tag }}'
+          file_pattern: |
+            build/Update-WebsitePreviewVersion.mjs
+            website/version-config.js

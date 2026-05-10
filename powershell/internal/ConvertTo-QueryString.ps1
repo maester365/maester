@@ -1,18 +1,18 @@
-<#
-.SYNOPSIS
+﻿function ConvertTo-QueryString {
+    <#
+    .SYNOPSIS
     Convert Hashtable to Query String.
-.EXAMPLE
+    .EXAMPLE
     PS C:\>ConvertTo-QueryString @{ name = 'path/file.json'; index = 10 }
     Convert hashtable to query string.
-.EXAMPLE
+    .EXAMPLE
     PS C:\>[ordered]@{ title = 'convert&prosper'; id = [guid]'352182e6-9ab0-4115-807b-c36c88029fa4' } | ConvertTo-QueryString
     Convert ordered dictionary to query string.
-.INPUTS
+    .INPUTS
     System.Collections.Hashtable
-.LINK
+    .LINK
     https://github.com/jasoth/Utility.PS
-#>
-function ConvertTo-QueryString {
+    #>
     [CmdletBinding()]
     [OutputType([string])]
     param (

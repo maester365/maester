@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAP04 {
+    <#
+    .SYNOPSIS
     Checks if Default Authorization Settings - Guest invite restrictions is set to @('adminsAndGuestInviters','none')
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Manages controls who can invite guests to your directory to collaborate on resources secured by your Entra ID (Azure AD), such as SharePoint sites or Azure resources.
 
     Queries policies/authorizationPolicy
     and returns the result of
-     graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
+    graph/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAP04
 
     Returns the result of graph.microsoft.com/beta/policies/authorizationPolicy.allowInvitesFrom -in @('adminsAndGuestInviters','none')
-#>
-
-function Test-MtEidscaAP04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAP04 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.allowInvitesFrom
+    $rawValue = $result.allowInvitesFrom
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -in @('adminsAndGuestInviters','none')
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and @('adminsAndGuestInviters','none') -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is one of the following values **@('adminsAndGuestInviters','none')** for **policies/authorizationPolicy**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAP04 {
 
     return $tenantValue
 }
+

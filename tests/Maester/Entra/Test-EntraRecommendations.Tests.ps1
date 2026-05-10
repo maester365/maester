@@ -1,6 +1,7 @@
-BeforeDiscovery {
+﻿BeforeDiscovery {
     try {
-        $EntraRecommendations = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
+        $EntraRecommendationsResponse = Invoke-MtGraphRequest -DisableCache -ApiVersion beta -RelativeUri 'directory/recommendations?$expand=impactedResources' -OutputType Hashtable
+        $EntraRecommendations = @($EntraRecommendationsResponse.value)
         Write-Verbose "Found $($EntraRecommendations.Count) Entra recommendations"
     } catch {
         Write-Verbose 'Authentication needed. Please call Connect-MgGraph.'

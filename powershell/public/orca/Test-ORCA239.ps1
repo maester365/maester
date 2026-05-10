@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA239{
+    <#
+    .SYNOPSIS
     No exclusions for the built-in protection policies.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA239
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA239
-#>
-function Test-ORCA239{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

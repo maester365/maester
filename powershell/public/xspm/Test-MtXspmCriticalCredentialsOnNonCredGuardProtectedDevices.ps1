@@ -1,21 +1,20 @@
-<#
-.SYNOPSIS
+﻿function Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices {
+    <#
+    .SYNOPSIS
     Find devices with critical credentials stored on devices not protected by Credential Guard.
 
-.DESCRIPTION
+    .DESCRIPTION
     Find devices with critical credentials stored on devices not protected by Credential Guard.
 
-.OUTPUTS
+    .OUTPUTS
     [bool] - Returns $true if no devices are found, $false if any are found, $null if skipped or prerequisites not met.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices
-#>
-
-function Test-MtXspmCriticalCredentialsOnNonCredGuardProtectedDevices {
+    #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for devices that have critical credentials stored on devices that are not protected by Credential Guard.')]
     [OutputType([bool])]

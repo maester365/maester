@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA241{
+    <#
+    .SYNOPSIS
     Anti-phishing policy exists and EnableFirstContactSafetyTips is true.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA241
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA241
-#>
-function Test-ORCA241{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

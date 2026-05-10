@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
+﻿function Test-MtCaMfaForAllUsers {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all users
 
- .Description
+    .Description
     MFA for all users conditional access policy can be used to require MFA for all users in the tenant.
 
-  Learn more:
-  https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
+    Learn more:
+    https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-all-users-mfa
 
- .Example
-  Test-MtCaMfaForAllUsers
+    .Example
+    Test-MtCaMfaForAllUsers
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaMfaForAllUsers
-#>
-function Test-MtCaMfaForAllUsers {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'AllUsers is a well known term for conditional access policies.')]
     [CmdletBinding()]
     [OutputType([bool])]

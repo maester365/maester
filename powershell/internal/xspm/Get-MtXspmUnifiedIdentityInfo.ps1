@@ -1,21 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtXspmUnifiedIdentityInfo {
+    <#
+    .SYNOPSIS
     Check data from various XDR tables to identify users and workload identities with sensitive privileges and apply classification from community project EntraOps.
 
-.DESCRIPTION
+    .DESCRIPTION
     Executes KQL function over Advanced Hunting API to retrieves unified identity information from XDR, including user and workload identities with sensitive privileges.
     It applies classification from the EntraOps community project to identify critical assets and their roles.
 
-.EXAMPLE
+    .EXAMPLE
     Get-MtXspmUnifiedIdentityInfo
 
     Returns a detailed list of user and workload identities with sensitive privileges, including their roles, classifications, and criticality levels.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Get-MtXspmUnifiedIdentityInfo
-#>
-
-function Get-MtXspmUnifiedIdentityInfo {
+    #>
     param (
         [Parameter()]
         [switch]$ValidateRequiredTablesOnly = $false
@@ -271,7 +270,7 @@ function Get-MtXspmUnifiedIdentityInfo {
             | extend CriticalityLevel = toint(parse_json(XspmCriticalAssetDetails)['criticalityLevel'])
             | project-away XspmGraphNodeId, XspmGraphNodeId1, ServicePrincipalId1, ServicePrincipalId2, XspmGraphNodeId1, XspmGraphNodeId2, TargetNodeId, XspmGraphOAuthAppNodeId, XspmGraphOAuthAppNodeId1
             | sort by ServicePrincipalName asc
-            | project Timestamp, TimeGenerated, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy, AccountStatus
+            | project Timestamp, ServicePrincipalName, ServicePrincipalId, OAuthAppId, CriticalityLevel, AddedOnTime, LastModifiedTime, AppStatus, VerifiedPublisher, IsAdminConsented, AppOrigin, AppOwnerTenantId, ApiPermissions, AssignedAzureRoles, AssignedEntraRoles, AuthenticatedBy, OwnedBy, AccountStatus
             | extend Classification = case(
                 AssignedEntraRoles has 'ControlPlane' or ApiPermissions has 'ControlPlane', 'ControlPlane',
                 AssignedEntraRoles has 'ManagementPlane' or ApiPermissions has 'ManagementPlane', 'ManagementPlane',

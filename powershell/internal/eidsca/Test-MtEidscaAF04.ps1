@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAF04 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - FIDO2 security key - Enforce key restrictions is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Manages if registration of FIDO2 keys should be restricted.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAF04
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2').keyRestrictions.isEnforced -eq 'true'
-#>
-
-function Test-MtEidscaAF04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaAF04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')" -ApiVersion beta
 
-    [string]$tenantValue = $result.keyRestrictions.isEnforced
+    $rawValue = $result.keyRestrictions.isEnforced
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Fido2')**"
@@ -42,3 +42,4 @@ function Test-MtEidscaAF04 {
 
     return $tenantValue
 }
+

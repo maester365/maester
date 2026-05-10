@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA123{
+    <#
+    .SYNOPSIS
     Unusual Characters Safety Tips is enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:32 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA123
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA123
-#>
-function Test-ORCA123{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

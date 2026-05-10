@@ -1,21 +1,20 @@
-<#
- .Synopsis
-Checks for common misconfigurations in Conditional Access - both user risk and sign-in risk are configured in one policy.
+﻿function Test-MtCaMisconfiguredIDProtection {
+    <#
+    .Synopsis
+    Checks for common misconfigurations in Conditional Access - both user risk and sign-in risk are configured in one policy.
 
- .Description
-Conditional Access policies access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
+    .Description
+    Conditional Access policies access controls are enforced only if ALL conditions are met. Therefore, sign-in risk and user risk should be configured separately.
 
-  Learn more:
-  https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies
+    Learn more:
+    https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies
 
- .Example
-  Test-MtCaMisconfiguredIDProtection
+    .Example
+    Test-MtCaMisconfiguredIDProtection
 
-  .LINK
-  https://maester.dev/docs/commands/Test-MtCaMisconfiguredIDProtection
-#>
-
-function Test-MtCaMisconfiguredIDProtection {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCaMisconfiguredIDProtection
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -1,8 +1,9 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntitlementManagementOrphanedResources {
+    <#
+    .SYNOPSIS
     Checks if catalogs contain unused resources without associated access packages
 
-.DESCRIPTION
+    .DESCRIPTION
     MT.1110 - No catalog should contain resources without any associated access packages
 
     This test identifies Microsoft Entra ID Governance access package catalogs that contain
@@ -24,16 +25,14 @@
     Learn more:
     https://maester.dev/docs/tests/MT.1110
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntitlementManagementOrphanedResources
 
     Returns $true if all catalog resources are used in access packages
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntitlementManagementOrphanedResources
-#>
-
-function Test-MtEntitlementManagementOrphanedResources {
+    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Resources is the resource type being tested')]
     [CmdletBinding()]
     [OutputType([bool])]
@@ -236,5 +235,3 @@ function Test-MtEntitlementManagementOrphanedResources {
         return $false
     }
 }
-
-

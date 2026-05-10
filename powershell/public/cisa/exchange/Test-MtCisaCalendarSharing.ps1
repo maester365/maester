@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaCalendarSharing {
+    <#
+    .SYNOPSIS
     Checks state of sharing policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Calendar details SHALL NOT be shared with all domains.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaCalendarSharing
 
     Returns true if no sharing policies allow uncontrolled calendar sharing.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaCalendarSharing
-#>
-function Test-MtCisaCalendarSharing {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

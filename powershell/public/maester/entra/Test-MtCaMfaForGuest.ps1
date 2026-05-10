@@ -1,4 +1,5 @@
-<#
+﻿function Test-MtCaMfaForGuest {
+    <#
     .Synopsis
     Checks if the tenant has at least one conditional access policy requiring multifactor authentication for all guest users.
 
@@ -11,10 +12,9 @@
     .Example
     Test-MtCaMfaForGuest
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaMfaForGuest
-#>
-function Test-MtCaMfaForGuest {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

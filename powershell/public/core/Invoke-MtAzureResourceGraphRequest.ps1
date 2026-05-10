@@ -1,4 +1,5 @@
-﻿<#
+﻿function Invoke-MtAzureResourceGraphRequest {
+    <#
     .SYNOPSIS
     Invoke a query request to the Azure Resource Graph.
 
@@ -18,9 +19,7 @@
 
     .LINK
     https://maester.dev/docs/commands/Invoke-MtAzureResourceGraphRequest
-#>
-
-function Invoke-MtAzureResourceGraphRequest {
+    #>
     [CmdletBinding()]
     param(
         # The Resource Graph query to execute using KQL (Kusto Query Language)

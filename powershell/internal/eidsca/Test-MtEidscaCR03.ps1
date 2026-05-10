@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaCR03 {
+    <#
+    .SYNOPSIS
     Checks if Consent Framework - Admin Consent Request - Reviewers will receive email notifications when admin consent requests are about to expire is set to 'true'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Specifies whether reviewers will receive reminder emails
 
     Queries policies/adminConsentRequestPolicy
     and returns the result of
-     graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
+    graph/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaCR03
 
     Returns the result of graph.microsoft.com/beta/policies/adminConsentRequestPolicy.remindersEnabled -eq 'true'
-#>
-
-function Test-MtEidscaCR03 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaCR03 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/adminConsentRequestPolicy" -ApiVersion beta
 
-    [string]$tenantValue = $result.remindersEnabled
+    $rawValue = $result.remindersEnabled
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'true'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'true' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'true' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'true'** for **policies/adminConsentRequestPolicy**"
@@ -42,3 +42,4 @@ function Test-MtEidscaCR03 {
 
     return $tenantValue
 }
+

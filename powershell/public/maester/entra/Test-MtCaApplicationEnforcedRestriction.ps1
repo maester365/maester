@@ -1,20 +1,20 @@
-<#
- .Synopsis
-  Checks if the tenant has at least one conditional access policy is configured to enable application enforced restrictions
+﻿function Test-MtCaApplicationEnforcedRestriction {
+    <#
+    .Synopsis
+    Checks if the tenant has at least one conditional access policy is configured to enable application enforced restrictions
 
- .Description
+    .Description
     Application enforced restrictions conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
 
-  Learn more:
-  https://aka.ms/CATemplatesAppRestrictions
+    Learn more:
+    https://aka.ms/CATemplatesAppRestrictions
 
- .Example
-  Test-MtCaApplicationEnforcedRestriction
+    .Example
+    Test-MtCaApplicationEnforcedRestriction
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCaApplicationEnforcedRestriction
-#>
-function Test-MtCaApplicationEnforcedRestriction {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param ()

@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAT01 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - Temporary Access Pass - State is set to 'enabled'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Whether the Temporary Access Pass is enabled in the tenant.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').state -eq 'enabled'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').state -eq 'enabled'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAT01
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass').state -eq 'enabled'
-#>
-
-function Test-MtEidscaAT01 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -24,9 +23,10 @@ function Test-MtEidscaAT01 {
     
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')" -ApiVersion beta
 
-    [string]$tenantValue = $result.state
+    $rawValue = $result.state
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'enabled'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'enabled' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'enabled' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'enabled'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('TemporaryAccessPass')**"
@@ -39,3 +39,4 @@ function Test-MtEidscaAT01 {
 
     return $tenantValue
 }
+

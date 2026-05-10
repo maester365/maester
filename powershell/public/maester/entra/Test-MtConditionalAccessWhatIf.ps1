@@ -1,8 +1,9 @@
-<#
-.SYNOPSIS
+﻿function Test-MtConditionalAccessWhatIf {
+    <#
+    .SYNOPSIS
     Tests Conditional Access evaluation with What If for a given scenario.
 
-.DESCRIPTION
+    .DESCRIPTION
     This function tests a Conditional Access evaluation with What If for a given scenario.
 
     The function uses the Microsoft Graph API to evaluate the Conditional Access policies.
@@ -11,53 +12,52 @@
     https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
     https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -IncludeApplications '00000002-0000-0ff1-ce00-000000000000' `
-        -ClientAppType 'exchangeActiveSync'
+    -IncludeApplications '00000002-0000-0ff1-ce00-000000000000' `
+    -ClientAppType 'exchangeActiveSync'
 
     This example tests the Conditional Access policies for a user signing into Exchange Online using a legacy Mail client that relies on basic authentication.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -UserAction 'registerOrJoinDevices'
+    -UserAction 'registerOrJoinDevices'
 
     This example tests the Conditional Access policies for a user registering or joining a device to Microsoft Entra.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
-        -Country 'FR' -IpAddress '92.205.185.202'
+    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
+    -Country 'FR' -IpAddress '92.205.185.202'
 
     This example tests the Conditional Access policies for a user signing into **Office 365** from **France** with a specific **IP address**.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
-        -SignInRiskLevel 'High' -DevicePlatform 'iOS'
+    -IncludeApplications '67ad5377-2d78-4ac2-a867-6300cda00e85' `
+    -SignInRiskLevel 'High' -DevicePlatform 'iOS'
 
     This example tests the Conditional Access policies for a user signing into **Office 365** from an **iOS** device with a **High** sign-in risk level.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -IncludeApplications 'bbad9299-f060-4e15-9a9a-285980ae00fc' `
-        -DeviceInfo @{ 'isCompliant' = 'true'; 'Manufacturer' = 'Dell' } `
-        -InsiderRiskLevel 'Minor'
+    -IncludeApplications 'bbad9299-f060-4e15-9a9a-285980ae00fc' `
+    -DeviceInfo @{ 'isCompliant' = 'true'; 'Manufacturer' = 'Dell' } `
+    -InsiderRiskLevel 'Minor'
 
     This example tests the Conditional Access policies for a user accessing an **application** from a **compliant**, **Dell** device with a **Minor** insider risk level.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtConditionalAccessWhatIf -UserId '7a6da1c3-616a-416b-a820-cbe4fa8e225e' `
-        -IncludeApplications 'a7936c39-024c-4148-a9b3-f88f2e9406f6' `
-        -ServicePrincipalRiskLevel 'High' -Verbose
+    -IncludeApplications 'a7936c39-024c-4148-a9b3-f88f2e9406f6' `
+    -ServicePrincipalRiskLevel 'High' -Verbose
 
     This example tests the Conditional Access policies for a service principal user accessing the **application** with a **High** service principal risk level.
     It will return all applied results, including the report-only and disabled policies.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtConditionalAccessWhatIf
-#>
-function Test-MtConditionalAccessWhatIf {
+    #>
     [CmdletBinding(DefaultParameterSetName = 'ApplicationBasedCA')]
     [OutputType([object])]
     param (

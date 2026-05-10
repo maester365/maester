@@ -1,0 +1,231 @@
+# Example: Multi-tenant Maester pipeline for Azure DevOps
+#
+# This pipeline runs Maester tests against multiple tenants using separate
+# service connections (workload identity federation), merges the results,
+# and publishes a single HTML report with a tenant selector.
+#
+# Supports Global, China (21Vianet), US Government and other cloud environments.
+#
+# Prerequisites:
+#   - One Azure DevOps service connection per tenant (federated credentials)
+#   - Each service principal needs Microsoft Graph read permissions (see Maester docs)
+#   - A service connection for publishing to the web app
+#   - The multi-tenant ReportTemplate.html built from the report/ source
+
+trigger: none
+
+parameters:
+  - name: tenants
+    type: object
+    default:
+      - name: Production
+        serviceConnection: sc-maester-production
+        tenantId: 00000000-0000-0000-0000-000000000000
+        clientId: 00000000-0000-0000-0000-000000000000
+        environment: Global
+        includeTeams: true
+        includeExchange: true
+        includeAzureDevOps: false
+        includeISSP: false
+        organizationName: contoso.onmicrosoft.com
+        devOpsOrganization: ''
+      - name: Development
+        serviceConnection: sc-maester-development
+        tenantId: 11111111-1111-1111-1111-111111111111
+        clientId: 11111111-1111-1111-1111-111111111111
+        environment: Global
+        includeTeams: false
+        includeExchange: false
+        includeAzureDevOps: false
+        includeISSP: false
+        organizationName: ''
+        devOpsOrganization: ''
+      - name: China
+        serviceConnection: sc-maester-china
+        tenantId: 22222222-2222-2222-2222-222222222222
+        clientId: 22222222-2222-2222-2222-222222222222
+        environment: China
+        includeTeams: false
+        includeExchange: false
+        includeAzureDevOps: false
+        includeISSP: false
+        organizationName: ''
+        devOpsOrganization: ''
+
+variables:
+  PublishServiceConnection: sc-maester-publish
+  WebAppSubscriptionId: 00000000-0000-0000-0000-000000000000
+  WebAppResourceGroup: rg-maester
+  WebAppName: app-maester-example
+  ResultsDir: $(Pipeline.Workspace)/maester-results
+
+schedules:
+- cron: "0 6 * * *"
+  displayName: daily at 06:00
+  always: true
+  branches:
+    include:
+    - main
+
+jobs:
+- job: maester
+  timeoutInMinutes: 0
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+  - checkout: self
+    fetchDepth: 1
+
+  # Install modules once
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: ${{ parameters.tenants[0].serviceConnection }}
+      ScriptType: 'InlineScript'
+      pwsh: true
+      azurePowerShellVersion: latestVersion
+      Inline: |
+        Install-Module 'Maester', 'Pester', 'NuGet', 'PackageManagement', 'Microsoft.Graph.Authentication', 'ExchangeOnlineManagement', 'MicrosoftTeams', 'ADOPS' -Confirm:$false -Force
+        New-Item -ItemType Directory -Force -Path '$(ResultsDir)'
+    displayName: 'Install required modules'
+
+  # Run Maester tests for each tenant
+  - ${{ each tenant in parameters.tenants }}:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: ${{ tenant.serviceConnection }}
+        ScriptType: 'InlineScript'
+        pwsh: true
+        azurePowerShellVersion: latestVersion
+        Inline: |
+          $includeExchange = '${{ tenant.includeExchange }}'.Trim().ToLower() -eq 'true'
+          $includeTeams = '${{ tenant.includeTeams }}'.Trim().ToLower() -eq 'true'
+          $includeISSP = '${{ tenant.includeISSP }}'.Trim().ToLower() -eq 'true'
+          $includeAzureDevOps = '${{ tenant.includeAzureDevOps }}'.Trim().ToLower() -eq 'true'
+          $TenantId = '${{ tenant.tenantId }}'
+          $ClientId = '${{ tenant.clientId }}'
+          $Environment = '${{ tenant.environment }}'
+
+          # Set endpoints based on cloud environment
+          switch ($Environment) {
+              'China' {
+                  $graphUrl = 'https://microsoftgraph.chinacloudapi.cn'
+                  $graphEnvironment = 'China'
+                  $outlookUrl = 'https://partner.outlook.cn'
+                  $exchangeEnv = 'O365China'
+                  $complianceUrl = 'https://ps.compliance.protection.partner.outlook.cn'
+              }
+              'USGov' {
+                  $graphUrl = 'https://graph.microsoft.us'
+                  $graphEnvironment = 'USGov'
+                  $outlookUrl = 'https://outlook.office365.us'
+                  $exchangeEnv = 'O365USGovGCCHigh'
+                  $complianceUrl = 'https://ps.compliance.protection.office365.us'
+              }
+              'USGovDoD' {
+                  $graphUrl = 'https://dod-graph.microsoft.us'
+                  $graphEnvironment = 'USGovDoD'
+                  $outlookUrl = 'https://outlook.office365.us'
+                  $exchangeEnv = 'O365USGovDoD'
+                  $complianceUrl = 'https://ps.compliance.protection.office365.us'
+              }
+              'Germany' {
+                  $graphUrl = 'https://graph.microsoft.de'
+                  $graphEnvironment = 'Germany'
+                  $outlookUrl = 'https://outlook.office.de'
+                  $exchangeEnv = 'O365GermanyCloud'
+                  $complianceUrl = 'https://ps.compliance.protection.outlook.de'
+              }
+              default {
+                  $graphUrl = 'https://graph.microsoft.com'
+                  $graphEnvironment = 'Global'
+                  $outlookUrl = 'https://outlook.office365.com'
+                  $exchangeEnv = 'O365Default'
+                  $complianceUrl = 'https://ps.compliance.protection.outlook.com'
+              }
+          }
+
+          # Connect to Microsoft Graph
+          Write-Verbose "Connecting to Microsoft Graph ($Environment)" -Verbose
+          $graphToken = Get-AzAccessToken -ResourceUrl $graphUrl -AsSecureString
+          Connect-MgGraph -AccessToken $graphToken.Token -Environment $graphEnvironment -NoWelcome
+
+          # Exchange Online (optional)
+          if ($includeExchange) {
+              Import-Module ExchangeOnlineManagement
+              $outlookToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl $outlookUrl -AsSecureString).Token -AsPlainText)
+              Connect-ExchangeOnline -AccessToken $outlookToken -AppId $ClientId -Organization $TenantId -ExchangeEnvironmentName $exchangeEnv -ShowBanner:$false
+
+              if ($includeISSP) {
+                $ISSPToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -ResourceUrl $complianceUrl -AsSecureString).Token -AsPlainText)
+                Connect-IPPSSession -AccessToken $ISSPToken -Organization '${{ tenant.organizationName }}'
+              }
+          }
+
+          # Teams (optional)
+          if ($includeTeams) {
+              Import-Module MicrosoftTeams
+              $teamsToken = Get-AzAccessToken -ResourceUrl '48ac35b8-9aa8-4d74-927d-1f4a14a0b239' -AsSecureString
+              $regularGraphToken = ConvertFrom-SecureString -SecureString $graphToken.Token -AsPlainText
+              $teamsTokenPlainText = ConvertFrom-SecureString -SecureString $teamsToken.Token -AsPlainText
+              Connect-MicrosoftTeams -AccessTokens @($regularGraphToken, $teamsTokenPlainText)
+          }
+
+          # Azure DevOps (optional)
+          if ($includeAzureDevOps) {
+            $DevOpsAccessToken = (ConvertFrom-SecureString -SecureString (Get-AzAccessToken -AsSecureString -TenantId $TenantId).Token -AsPlainText)
+            Import-Module -Name ADOPS -Force
+            Connect-ADOPS -Organization '${{ tenant.devOpsOrganization }}' -OAuthToken $DevOpsAccessToken
+          }
+
+          # Run Maester tests
+          $runFolder = Join-Path "$(Agent.TempDirectory)" '${{ tenant.name }}-tests'
+          New-Item -ItemType Directory -Force -Path "$runFolder"
+          Push-Location $runFolder
+          Install-MaesterTests .\tests
+
+          $jsonFile = Join-Path '$(ResultsDir)' '${{ tenant.name }}.json'
+          Invoke-Maester -OutputJsonFile $jsonFile -PassThru -Verbosity Normal
+          Pop-Location
+
+          Write-Verbose "JSON results saved to: $jsonFile" -Verbose
+      displayName: 'Run Maester tests (${{ tenant.name }})'
+
+  # Merge tenant results into a single multi-tenant report
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: $(PublishServiceConnection)
+      ScriptType: 'InlineScript'
+      pwsh: true
+      azurePowerShellVersion: latestVersion
+      Inline: |
+        $resultsDir = '$(ResultsDir)'
+
+        # Merge all tenant JSON results and generate the report
+        $merged = Merge-MtMaesterResult -Path $resultsDir
+        $date = (Get-Date).ToString("yyyyMMdd-HHmm")
+        $outputDir = Join-Path "$(Agent.TempDirectory)" "report-$date"
+        New-Item -ItemType Directory -Force -Path $outputDir
+        Get-MtHtmlReport -MaesterResults $merged |
+            Out-File -FilePath (Join-Path $outputDir 'index.html') -Encoding UTF8
+
+        $zipPath = Join-Path "$(Agent.TempDirectory)" "MaesterReport$date.zip"
+        Compress-Archive -Path (Get-ChildItem -Path $outputDir).FullName -DestinationPath $zipPath
+
+        if (-not (Test-Path $zipPath)) {
+            throw "Zip file was not created at: $zipPath"
+        }
+        Write-Host "##vso[task.setvariable variable=MaesterZipPath]$zipPath"
+    displayName: 'Merge results and generate multi-tenant report'
+
+  # Publish to Azure Web App
+  - task: AzurePowerShell@5
+    inputs:
+      azureSubscription: $(PublishServiceConnection)
+      ScriptType: 'InlineScript'
+      pwsh: true
+      azurePowerShellVersion: latestVersion
+      Inline: |
+        Select-AzSubscription -Subscription '$(WebAppSubscriptionId)'
+        Publish-AzWebApp -ResourceGroupName '$(WebAppResourceGroup)' -Name '$(WebAppName)' -ArchivePath '$(MaesterZipPath)' -Force
+    displayName: 'Publish results to web app'

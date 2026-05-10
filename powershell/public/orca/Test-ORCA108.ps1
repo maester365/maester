@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA108{
+    <#
+    .SYNOPSIS
     DKIM signing is set up for all your custom domains.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA108
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA108
-#>
-function Test-ORCA108{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

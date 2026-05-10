@@ -1,22 +1,21 @@
-<#
-.SYNOPSIS
+function Test-MtEidscaAS04 {
+    <#
+    .SYNOPSIS
     Checks if Authentication Method - SMS - Use for sign-in is set to 'false'
 
-.DESCRIPTION
+    .DESCRIPTION
 
     Determines if users can use this authentication method to sign in to Microsoft Entra ID. true if users can use this method for primary authentication, otherwise false.
 
     Queries policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')
     and returns the result of
-     graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
+    graph/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEidscaAS04
 
     Returns the result of graph.microsoft.com/beta/policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms').includeTargets.isUsableForSignIn -eq 'false'
-#>
-
-function Test-MtEidscaAS04 {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
@@ -27,9 +26,10 @@ function Test-MtEidscaAS04 {
     }
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')" -ApiVersion beta
 
-    [string]$tenantValue = $result.includeTargets.isUsableForSignIn
+    $rawValue = $result.includeTargets.isUsableForSignIn | select-object -unique
+    [string]$tenantValue = $rawValue
     $testResult = $tenantValue -eq 'false'
-    $tenantValueNotSet = ($null -eq $tenantValue -or $tenantValue -eq "") -and 'false' -notlike '*$null*'
+    $tenantValueNotSet = ($null -eq $rawValue -or $rawValue -eq "") -and 'false' -notlike '*$null*'
 
     if($testResult){
         $testResultMarkdown = "Well done. The configuration in your tenant and recommended value is **'false'** for **policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Sms')**"
@@ -42,3 +42,4 @@ function Test-MtEidscaAS04 {
 
     return $tenantValue
 }
+

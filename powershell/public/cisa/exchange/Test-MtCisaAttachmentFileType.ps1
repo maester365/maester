@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaAttachmentFileType {
+    <#
+    .SYNOPSIS
     Checks state of preset security policies
 
-.DESCRIPTION
+    .DESCRIPTION
     Emails SHALL be filtered by attachment file types
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaAttachmentFileType
 
     Returns true if standard and strict protection is on
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaAttachmentFileType
-#>
-function Test-MtCisaAttachmentFileType {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

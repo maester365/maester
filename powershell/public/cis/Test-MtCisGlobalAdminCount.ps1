@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisGlobalAdminCount {
+    <#
+    .SYNOPSIS
     Checks if the number of Global Admins is between 2 and 4
 
-.DESCRIPTION
+    .DESCRIPTION
     A minimum of two users and a maximum of four users SHALL be provisioned with the Global Administrator role.
-    CIS Microsoft 365 Foundations Benchmark v5.0.0
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisGlobalAdminCount
 
     Returns true if only 2 to 4 users are eligible to be global admins
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisGlobalAdminCount
-#>
-function Test-MtCisGlobalAdminCount {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

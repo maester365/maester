@@ -1,19 +1,19 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtCisaSafeLinkClickTracking {
+    <#
+    .SYNOPSIS
     Checks state of URL direct download scans
 
-.DESCRIPTION
+    .DESCRIPTION
     User click tracking SHOULD be enabled.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtCisaSafeLinkClickTracking
 
     Returns true if URL direct download scan enabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtCisaSafeLinkClickTracking
-#>
-function Test-MtCisaSafeLinkClickTracking {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

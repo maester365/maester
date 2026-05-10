@@ -1,18 +1,18 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtTenantCustomization {
+    <#
+    .SYNOPSIS
     Check the Intune Tenant Customization.
-.DESCRIPTION
+    .DESCRIPTION
     This command checks the Intune Tenant Customization settings, specifically the Default Branding Profile, to determine if it has been customized.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtTenantCustomization
 
     Returns true if the Default Branding Profile is customized or if custom branding profiles exist.
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtTenantCustomization
-#>
-function Test-MtTenantCustomization {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

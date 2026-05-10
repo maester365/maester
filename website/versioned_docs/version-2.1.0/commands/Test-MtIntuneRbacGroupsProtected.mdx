@@ -1,0 +1,66 @@
+---
+sidebar_class_name: hidden
+description: Checks if Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable Groups.
+id: Test-MtIntuneRbacGroupsProtected
+title: Test-MtIntuneRbacGroupsProtected
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtIntuneRbacGroupsProtected.ps1
+---
+
+## SYNOPSIS
+
+Checks if Intune RBAC groups are protected by Restricted Management Administrative Units or Role Assignable Groups.
+
+## SYNTAX
+
+```powershell
+Test-MtIntuneRbacGroupsProtected [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This command checks if the security groups assigned in Intune RBAC roles are protected by Restricted Management Administrative Units or Role Assignable Groups.
+This is important to ensure that only authorized administrators can manage specific devices or users, enhancing the security of your Intune environment.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtIntuneRbacGroupsProtected
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtIntuneRbacGroupsProtected](https://maester.dev/docs/commands/Test-MtIntuneRbacGroupsProtected)

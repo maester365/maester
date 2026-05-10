@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA113{
+    <#
+    .SYNOPSIS
     AllowClickThrough is disabled in Safe Links policies.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA113
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA113
-#>
-function Test-ORCA113{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

@@ -1,25 +1,24 @@
-﻿<#
-  .Synopsis
-  Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups.
+﻿function Test-MtCaGroupsRestricted {
+    <#
+    .Synopsis
+    Checks if groups used in Conditional Access are protected by either Restricted Management Administrative Units or Role Assignable Groups.
 
-  .Description
-  Security Groups will be used to exclude and include users from Conditional Access Policies.
-  Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access Policies.
-  To prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups.
-  Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups.
-  This test checks if all groups used in Conditional Access Policies are protected.
+    .Description
+    Security Groups will be used to exclude and include users from Conditional Access Policies.
+    Modify group membership outside of Conditional Access Administrator or other privileged roles can lead to bypassing Conditional Access Policies.
+    To prevent this, you can protect these groups by using Restricted Management Administrative Units or Role Assignable Groups.
+    Role Assignable Group should be used in combination of assignments to Entra ID roles. Restricted Management Administrative Units should be used to protect groups by restricting management to specific users or groups.
+    This test checks if all groups used in Conditional Access Policies are protected.
 
-  Learn more:
-  https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
+    Learn more:
+    https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
-  .Example
-  Test-MtCaGroupsRestricted
+    .Example
+    Test-MtCaGroupsRestricted
 
-  .LINK
-  https://maester.dev/docs/commands/Test-MtCaGroupsRestricted
-#>
-
-function Test-MtCaGroupsRestricted {
+    .LINK
+    https://maester.dev/docs/commands/Test-MtCaGroupsRestricted
+    #>
   [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Exists is not a plural.')]
   [CmdletBinding()]
   [OutputType([bool])]
@@ -31,7 +30,7 @@ function Test-MtCaGroupsRestricted {
   }
 
   try {
-    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+    $Policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -in @('enabled','enabledForReportingButNotEnforced') }
 
     $Groups = $Policies.conditions.users | Where-Object {
       @($_.includeGroups).Count -gt 0 -or @($_.excludeGroups).Count -gt 0

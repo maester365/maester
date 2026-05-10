@@ -1,15 +1,14 @@
-﻿<#
-.SYNOPSIS
+﻿function Get-MtMaesterConfigGlobalSetting {
+    <#
+    .SYNOPSIS
     Gets the global settings from the Maester config.
-.DESCRIPTION
+    .DESCRIPTION
     This function retrieves the value of the specified global setting from the Maester config.
     It returns the value of the specified global setting, which may be of any type depending on the configuration.
-.EXAMPLE
+    .EXAMPLE
     $globalSettings = Get-MtMaesterConfigGlobalSetting -SettingName 'EmergencyAccessAccounts'
     # This will return the global settings for the setting with name 'EmergencyAccessAccounts'.
-#>
-
-function Get-MtMaesterConfigGlobalSetting {
+    #>
     [CmdletBinding()]
     [OutputType([object])]
     param(

@@ -36,7 +36,7 @@ class ORCA110 : ORCACheck
         $this.Importance="Notifying internal senders about malware detected in email messages could have negative impact. An adversary with access to an already compromised mailbox may use this information to verify effectiveness of malware detection."
         $this.ExpandResults=$True
         $this.ItemName="Malware Policy"
-        $this.DataType="EnableInternalSenderAdminNotifications"
+        $this.DataType="EnableInternalSenderNotifications"
         $this.Links= @{
             "Microsoft 365 Defender Portal - Anti-malware"="https://security.microsoft.com/antimalwarev2"
             "Recommended settings for EOP and Office 365 Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-6"
@@ -57,7 +57,7 @@ class ORCA110 : ORCACheck
         ForEach($Policy in $Config["MalwareFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
-            $EnableInternalSenderNotifications = $($Policy.EnableInternalSenderAdminNotifications)
+            $EnableInternalSenderNotifications = $($Policy.EnableInternalSenderNotifications)
 
             $IsBuiltIn = $false
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name

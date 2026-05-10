@@ -1,19 +1,19 @@
-<#
-.SYNOPSIS
+﻿function Test-ORCA119{
+    <#
+    .SYNOPSIS
     Similar Domains Safety Tips is enabled.
 
-.DESCRIPTION
+    .DESCRIPTION
     Generated on 08/10/2025 15:41:31 by .\build\orca\Update-OrcaTests.ps1
 
-.EXAMPLE
+    .EXAMPLE
     Test-ORCA119
 
     Returns true or false
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-ORCA119
-#>
-function Test-ORCA119{
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

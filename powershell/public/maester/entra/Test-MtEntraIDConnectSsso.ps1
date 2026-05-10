@@ -1,20 +1,20 @@
-﻿<#
-.SYNOPSIS
+﻿function Test-MtEntraIDConnectSsso {
+    <#
+    .SYNOPSIS
     Ensure Microsoft Entra seamless single sign-on is disabled for all domains.
 
-.DESCRIPTION
+    .DESCRIPTION
     Microsoft Entra seamless single sign-on (SSSO) provides users with easy access to cloud-based applications by automatically signing them in when they are on their corporate devices connected to the corporate network.
     However, if not managed properly, it can introduce security risks, especially if devices are compromised or if there are misconfigurations.
 
-.EXAMPLE
+    .EXAMPLE
     Test-MtEntraIDConnectSsso
 
     Returns true if Microsoft Entra seamless single sign-on is disabled
 
-.LINK
+    .LINK
     https://maester.dev/docs/commands/Test-MtEntraIDConnectSsso
-#>
-function Test-MtEntraIDConnectSsso {
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
