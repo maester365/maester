@@ -16,7 +16,7 @@ Members without the required repository or organization role will not be able to
 
 CIS marks this recommendation as Manual. By default, this Maester test uses a strict automated setting-based interpretation of CIS GH 1.2.3 and requires `members_can_delete_repositories` to be `false`.
 
-If `GitHubAllowMemberRepositoryDeletion` is set to literal boolean `true` in `maester-config.json`, a true value is reported as requiring manual review instead of a hard failure. That opt-in is intended for organizations that have completed and documented the CIS Branch A trusted repository-admin review.
+If `GitHubAllowMemberRepositoryDeletion` is set to literal boolean `true` in `maester-config.json`, a true value is reported as requiring manual review instead of a hard failure. That opt-in is intended for organizations that have completed and documented the CIS audit path where the organization-level repository deletion setting is enabled, requiring repository admin members to be trusted and qualified.
 
 #### API evidence
 
@@ -36,7 +36,7 @@ In the organization settings, open **Member privileges** and disable the option 
 
 #### Known limitations
 
-This test verifies the organization setting only. It does not enumerate repository administrators or decide whether individual admins are trusted.
+This test verifies the organization setting only. It does not enumerate repository administrators or decide whether individual admins are trusted. When the organization-level setting is disabled, the alternate CIS audit path still requires organization owners to be trusted and qualified.
 
 #### Related links
 

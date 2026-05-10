@@ -50,7 +50,7 @@ CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
         if (-not $result -and $manualReviewAllowed) {
             $resultMarkdown += @"
 
-Manual review required - ``members_can_delete_issues`` is true. CIS GH 1.2.4 Branch A audit applies; verify the repository administrator list and document the trust review.
+Manual review required - ``members_can_delete_issues`` is true. CIS GH 1.2.4 audit requires verifying repository admin members are trusted and qualified; document the review.
 "@
             Add-MtTestResultDetail -Result $resultMarkdown -Investigate
             return $null
