@@ -1,19 +1,20 @@
-﻿<#
-.SYNOPSIS
-    7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive
+﻿function Test-MtCisSpoDefaultSharingLink {
+    <#
+    .SYNOPSIS
+        Ensure link sharing is restricted in SharePoint and OneDrive
 
-.DESCRIPTION
-    By default, the sharing link experience in SharePoint and OneDrive is set to "Anyone with the link". This means that when users share files or folders, the default option allows anyone with the link to access the content, which can lead to unintentional overexposure of sensitive information. By changing the default sharing link type to "Specific people", users are encouraged to be more deliberate about who they share content with, reducing the risk of unauthorized access and supporting a more secure sharing environment.
+    .DESCRIPTION
+        7.2.7 (L1) Ensure link sharing is restricted in SharePoint and OneDrive
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
-    Test-MtCisSpoDefaultSharingLink
+    .EXAMPLE
+        Test-MtCisSpoDefaultSharingLink
 
-    Returns true if the default sharing link type is set to a restrictive option, false otherwise.
+        Returns true if link sharing is restricted in SharePoint and OneDrive
 
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisSpoDefaultSharingLink
-#>
-function Test-MtCisSpoDefaultSharingLink {
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisSpoDefaultSharingLink
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

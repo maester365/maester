@@ -1,21 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Ensure your SharePoint tenant is integrated with Microsoft Entra B2B for external sharing.
+﻿function Test-MtCisSpoB2BIntegration {
+    <#
+    .SYNOPSIS
+        Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
 
-.DESCRIPTION
-    Microsoft Entra B2B integration allows you to manage external sharing in SharePoint Online using Microsoft Entra. With this integration, you can use Microsoft Entra to control access to your SharePoint Online resources, including sites, lists, and libraries. This provides a more secure and streamlined way to manage external sharing in SharePoint Online.
-    When Microsoft Entra B2B integration is enabled, you can use Microsoft Entra to create and manage guest users, assign permissions, and monitor access to your SharePoint Online resources. This allows you to have better control over who can access your SharePoint Online resources and what they can do with them.
-    The recommended state is EnableAzureADB2BIntegration set to $true.
+    .DESCRIPTION
+        7.2.2 (L1) Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
-    Test-MtCisSpoB2BIntegration
+    .EXAMPLE
+        Test-MtCisSpoB2BIntegration
 
-    Returns true if the SharePoint tenant is integrated with Microsoft Entra B2B, false otherwise.
+        Returns true if SharePoint and OneDrive integration with Azure AD B2B is enabled
 
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisSpoB2BIntegration
-#>
-function Test-MtCisSpoB2BIntegration {
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisSpoB2BIntegration
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()

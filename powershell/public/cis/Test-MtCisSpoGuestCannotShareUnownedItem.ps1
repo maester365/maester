@@ -1,19 +1,20 @@
-﻿<#
-.SYNOPSIS
-    Ensure that SharePoint guest users cannot share items they don't own
+﻿function Test-MtCisSpoGuestCannotShareUnownedItem {
+    <#
+    .SYNOPSIS
+        Ensure that SharePoint guest users cannot share items they don't own
 
-.DESCRIPTION
-    By default, external users can share items they don't own. This means that if a guest user has access to an item, they can share it with others, potentially leading to unauthorized access and data leaks. By preventing external users from resharing items they don't own, you can help protect sensitive information and maintain better control over who has access to your SharePoint resources. The recommended state is PreventExternalUsersFromResharing set to $true.
+    .DESCRIPTION
+        7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own
+        CIS Microsoft 365 Foundations Benchmark v6.0.1
 
-.EXAMPLE
-    Test-MtCisSpoGuestCannotShareUnownedItem
+    .EXAMPLE
+        Test-MtCisSpoGuestCannotShareUnownedItem
 
-    Returns true if external users are prevented from resharing items they don't own, false otherwise.
+        Returns true if SharePoint guest users cannot share items they don't own
 
-.LINK
-    https://maester.dev/docs/commands/Test-MtCisSpoGuestCannotShareUnownedItem
-#>
-function Test-MtCisSpoGuestCannotShareUnownedItem {
+    .LINK
+        https://maester.dev/docs/commands/Test-MtCisSpoGuestCannotShareUnownedItem
+    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param()
