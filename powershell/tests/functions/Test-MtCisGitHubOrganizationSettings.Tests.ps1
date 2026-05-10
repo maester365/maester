@@ -249,7 +249,7 @@ Describe 'CIS GitHub organization setting tests' {
             Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
         }
 
-        It 'Skips with investigate detail when repository deletion manual review is explicitly allowed' {
+        It 'Marks repository deletion as investigate when manual review is explicitly allowed' {
             $script:orgResponse.members_can_delete_repositories = $true
             InModuleScope Maester {
                 $__MtSession.MaesterConfig.GlobalSettings | Add-Member -MemberType NoteProperty -Name GitHubAllowMemberRepositoryDeletion -Value $true -Force
@@ -257,9 +257,11 @@ Describe 'CIS GitHub organization setting tests' {
 
             Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'Custom' -and
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
                 $Investigate -eq $true -and
-                $SkippedCustomReason -match '^Manual review required - members_can_delete_repositories is true\.' -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'members_can_delete_repositories' -and
                 $Result -match '\| `members_can_delete_repositories` \| `True` \| `False` \|'
             }
         }
@@ -279,7 +281,7 @@ Describe 'CIS GitHub organization setting tests' {
             Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
         }
 
-        It 'Skips with investigate detail when issue deletion manual review is explicitly allowed' {
+        It 'Marks issue deletion as investigate when manual review is explicitly allowed' {
             $script:orgResponse.members_can_delete_issues = $true
             InModuleScope Maester {
                 $__MtSession.MaesterConfig.GlobalSettings | Add-Member -MemberType NoteProperty -Name GitHubAllowMemberIssueDeletion -Value $true -Force
@@ -287,9 +289,11 @@ Describe 'CIS GitHub organization setting tests' {
 
             Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                $SkippedBecause -eq 'Custom' -and
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
                 $Investigate -eq $true -and
-                $SkippedCustomReason -match '^Manual review required - members_can_delete_issues is true\.' -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'members_can_delete_issues' -and
                 $Result -match '\| `members_can_delete_issues` \| `True` \| `False` \|'
             }
         }

@@ -41,7 +41,7 @@ In the organization settings, open **Member privileges** and clear the public an
 
 #### Known limitations
 
-This test uses the granular repository creation fields because GitHub is replacing the older `members_allowed_repository_creation_type` behavior. If required granular fields are not returned, the test skips with a field-specific reason.
+This test uses the granular repository creation fields because GitHub is replacing the legacy `members_allowed_repository_creation_type` umbrella field. That umbrella value is displayed when returned, but is not decisive. If required granular fields are not returned, the test skips with a field-specific reason.
 
 #### Related links
 

@@ -49,8 +49,11 @@ CIS.GH.1.2.3 automated evidence from ``GET /orgs/{org}``.
         $allowManualReview = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubAllowMemberRepositoryDeletion'
         $manualReviewAllowed = $allowManualReview -is [bool] -and $allowManualReview -eq $true
         if (-not $result -and $manualReviewAllowed) {
-            $reason = "Manual review required - members_can_delete_repositories is true. CIS GH 1.2.3 permits this configuration only if every repository administrator is individually trusted (Branch A audit). Verify the admin list and either disable the toggle or document the trust review as an exception."
-            Add-MtTestResultDetail -Result $resultMarkdown -SkippedBecause Custom -SkippedCustomReason $reason -Investigate
+            $resultMarkdown += @"
+
+Manual review required - ``members_can_delete_repositories`` is true. CIS GH 1.2.3 Branch A audit applies; verify the repository administrator list and document the trust review.
+"@
+            Add-MtTestResultDetail -Result $resultMarkdown -Investigate
             return $null
         }
 
