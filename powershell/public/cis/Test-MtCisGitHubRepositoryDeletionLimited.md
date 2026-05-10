@@ -14,9 +14,9 @@ Members without the required repository or organization role will not be able to
 
 #### Maester automation note
 
-CIS marks this recommendation as Manual. By default, this Maester test uses a strict automated setting-based interpretation of CIS GH 1.2.3 and requires `members_can_delete_repositories` to be `false`.
+CIS marks this recommendation as Manual. This Maester test collects the organization setting evidence that maps to CIS GH 1.2.3, then reports Investigate because CIS still requires a human trust review.
 
-If `GitHubAllowMemberRepositoryDeletion` is set to literal boolean `true` in `maester-config.json`, a true value is reported as requiring manual review instead of a hard failure. That opt-in is intended for organizations that have completed and documented the CIS audit path where the organization-level repository deletion setting is enabled, requiring repository admin members to be trusted and qualified.
+When `members_can_delete_repositories` is `true`, CIS requires verifying that repository admin members are trusted and qualified. When it is `false`, CIS still requires verifying that organization owners are trusted and qualified.
 
 #### API evidence
 
@@ -24,7 +24,7 @@ Endpoint: `GET /orgs/{org}`
 
 Evidence field: `members_can_delete_repositories`
 
-The test passes when `members_can_delete_repositories` is `false`. With the opt-in manual-review setting enabled, a `true` value returns an Investigate/Skipped result that tells the operator to verify trusted repository administrators.
+When this field is returned, the test records the actual value and returns Investigate so the remaining CIS manual review path is visible in Maester results.
 
 #### Permissions required
 
@@ -32,11 +32,11 @@ GitHub requires organization-owner visibility for full organization details. Use
 
 #### Remediation summary
 
-In the organization settings, open **Member privileges** and disable the option that allows members to delete or transfer repositories for the organization. If the setting remains enabled, manually verify that repository administrators are limited to trusted users and document the review.
+In the organization settings, open **Member privileges** and disable the option that allows members to delete or transfer repositories for the organization. If the setting remains enabled, manually verify that repository administrators are limited to trusted users and document the review. If the setting is disabled, verify that organization owners are limited to trusted users and document the review.
 
 #### Known limitations
 
-This test verifies the organization setting only. It does not enumerate repository administrators or decide whether individual admins are trusted. When the organization-level setting is disabled, the alternate CIS audit path still requires organization owners to be trusted and qualified.
+This test verifies the organization setting only. It does not enumerate repository administrators, organization owners, or decide whether those users are trusted.
 
 #### Related links
 

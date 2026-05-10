@@ -21,7 +21,7 @@ Describe 'CIS GitHub organization setting tests' {
             members_can_create_public_repositories  = $false
             members_can_create_private_repositories = $false
             members_can_create_internal_repositories = $false
-            members_can_create_repositories         = $false
+            members_allowed_repository_creation_type = 'none'
             members_can_delete_repositories         = $false
             members_can_delete_issues               = $false
             members_can_create_teams                = $false
@@ -73,14 +73,6 @@ Describe 'CIS GitHub organization setting tests' {
             Test-MtCisGitHubRepositoryCreationLimited | Should -BeTrue
         }
 
-        It 'Passes repository deletion when API evidence is compliant' {
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeTrue
-        }
-
-        It 'Passes issue deletion when API evidence is compliant' {
-            Test-MtCisGitHubIssueDeletionLimited | Should -BeTrue
-        }
-
         It 'Passes team creation when API evidence is compliant' {
             Test-MtCisGitHubTeamCreationLimited | Should -BeTrue
         }
@@ -124,6 +116,7 @@ Describe 'CIS GitHub organization setting tests' {
                 )
                 HasLegacyFooter = $true
                 HasInternalNote = $true
+                IsInvestigate   = $false
             }
             @{
                 Function        = 'Test-MtCisGitHubRepositoryDeletionLimited'
@@ -131,6 +124,7 @@ Describe 'CIS GitHub organization setting tests' {
                 ExpectedRows    = @('\| `members_can_delete_repositories` \| `False` \| `False` \|')
                 HasLegacyFooter = $false
                 HasInternalNote = $false
+                IsInvestigate   = $true
             }
             @{
                 Function        = 'Test-MtCisGitHubIssueDeletionLimited'
@@ -138,6 +132,7 @@ Describe 'CIS GitHub organization setting tests' {
                 ExpectedRows    = @('\| `members_can_delete_issues` \| `False` \| `False` \|')
                 HasLegacyFooter = $false
                 HasInternalNote = $false
+                IsInvestigate   = $true
             }
             @{
                 Function        = 'Test-MtCisGitHubTeamCreationLimited'
@@ -145,6 +140,7 @@ Describe 'CIS GitHub organization setting tests' {
                 ExpectedRows    = @('\| `members_can_create_teams` \| `False` \| `False` \|')
                 HasLegacyFooter = $false
                 HasInternalNote = $false
+                IsInvestigate   = $false
             }
             @{
                 Function        = 'Test-MtCisGitHubStrictBasePermission'
@@ -152,16 +148,23 @@ Describe 'CIS GitHub organization setting tests' {
                 ExpectedRows    = @('\| `default_repository_permission` \| `read` \| `none` or `read` \|')
                 HasLegacyFooter = $false
                 HasInternalNote = $false
+                IsInvestigate   = $false
             }
         )
 
         It 'Renders <Function> with the common evidence table shape' -ForEach $renderingCases {
-            & $Function | Should -BeTrue
+            $functionResult = & $Function
+            if ($IsInvestigate) {
+                $functionResult | Should -BeNullOrEmpty
+            } else {
+                $functionResult | Should -BeTrue
+            }
 
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 $Result -match "$Id automated evidence from ``GET /orgs/\{org\}``\." -and
                 $Result -match '\| Field \| Actual \| Expected \|' -and
-                $Result -match '\| --- \| --- \| --- \|'
+                $Result -match '\| --- \| --- \| --- \|' -and
+                (($IsInvestigate -and $Investigate -eq $true) -or (-not $IsInvestigate -and -not $Investigate))
             }
 
             foreach ($row in $ExpectedRows) {
@@ -172,12 +175,12 @@ Describe 'CIS GitHub organization setting tests' {
 
             if ($HasLegacyFooter) {
                 Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                    $Result -match 'Umbrella legacy field `members_can_create_repositories` was returned as `False`' -and
+                    $Result -match 'Deprecated umbrella field `members_allowed_repository_creation_type` was returned as `none`' -and
                     $Result -match 'granular fields above are the decisive checks'
                 }
             } else {
                 Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
-                    $Result -notmatch 'Umbrella legacy field'
+                    $Result -notmatch 'Deprecated umbrella field'
                 }
             }
 
@@ -188,7 +191,7 @@ Describe 'CIS GitHub organization setting tests' {
             }
         }
 
-        It 'Renders repository creation legacy footer when the umbrella field is omitted' {
+        It 'Renders repository creation deprecated umbrella footer when the umbrella field is omitted' {
             $script:orgResponse = [PSCustomObject]@{
                 login                                    = 'myorg'
                 members_can_create_public_repositories  = $false
@@ -200,7 +203,7 @@ Describe 'CIS GitHub organization setting tests' {
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 $Result -match '\| `members_can_create_public_repositories` \| `False` \| `False` \|' -and
                 $Result -match '\| `members_can_create_private_repositories` \| `False` \| `False` \|' -and
-                $Result -match 'Umbrella legacy field `members_can_create_repositories` was not returned' -and
+                $Result -match 'Deprecated umbrella field `members_allowed_repository_creation_type` was not returned' -and
                 $Result -match 'granular fields above are the decisive checks'
             }
         }
@@ -212,16 +215,6 @@ Describe 'CIS GitHub organization setting tests' {
                 Name     = 'repository creation when public repository creation is allowed'
                 Function = 'Test-MtCisGitHubRepositoryCreationLimited'
                 Mutate   = { $script:orgResponse.members_can_create_public_repositories = $true }
-            }
-            @{
-                Name     = 'repository deletion when member repository deletion is allowed'
-                Function = 'Test-MtCisGitHubRepositoryDeletionLimited'
-                Mutate   = { $script:orgResponse.members_can_delete_repositories = $true }
-            }
-            @{
-                Name     = 'issue deletion when member issue deletion is allowed'
-                Function = 'Test-MtCisGitHubIssueDeletionLimited'
-                Mutate   = { $script:orgResponse.members_can_delete_issues = $true }
             }
             @{
                 Name     = 'team creation when member team creation is allowed'
@@ -242,58 +235,59 @@ Describe 'CIS GitHub organization setting tests' {
 
     }
 
-    Context 'Manual review opt-in' {
-        It 'Fails repository deletion by default when member repository deletion is allowed' {
-            $script:orgResponse.members_can_delete_repositories = $true
-
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
-        }
-
-        It 'Marks repository deletion as investigate when manual review is explicitly allowed' {
-            $script:orgResponse.members_can_delete_repositories = $true
-            InModuleScope Maester {
-                $__MtSession.MaesterConfig.GlobalSettings | Add-Member -MemberType NoteProperty -Name GitHubAllowMemberRepositoryDeletion -Value $true -Force
-            }
-
+    Context 'Manual review required' {
+        It 'Marks repository deletion as investigate when member repository deletion is disabled' {
             Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 -not $SkippedBecause -and
                 -not $SkippedCustomReason -and
                 $Investigate -eq $true -and
                 $Result -match 'Manual review required' -and
-                $Result -match 'members_can_delete_repositories' -and
+                $Result -match 'organization owners are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_repositories` \| `False` \| `False` \|'
+            }
+        }
+
+        It 'Marks repository deletion as investigate when member repository deletion is enabled' {
+            $script:orgResponse.members_can_delete_repositories = $true
+
+            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'repository admin members are trusted and qualified' -and
                 $Result -match '\| `members_can_delete_repositories` \| `True` \| `False` \|'
             }
         }
 
-        It 'Fails repository deletion when the manual-review config value is not a literal boolean' {
-            $script:orgResponse.members_can_delete_repositories = $true
-            InModuleScope Maester {
-                $__MtSession.MaesterConfig.GlobalSettings | Add-Member -MemberType NoteProperty -Name GitHubAllowMemberRepositoryDeletion -Value 'true' -Force
-            }
-
-            Test-MtCisGitHubRepositoryDeletionLimited | Should -BeFalse
-        }
-
-        It 'Fails issue deletion by default when member issue deletion is allowed' {
-            $script:orgResponse.members_can_delete_issues = $true
-
-            Test-MtCisGitHubIssueDeletionLimited | Should -BeFalse
-        }
-
-        It 'Marks issue deletion as investigate when manual review is explicitly allowed' {
-            $script:orgResponse.members_can_delete_issues = $true
-            InModuleScope Maester {
-                $__MtSession.MaesterConfig.GlobalSettings | Add-Member -MemberType NoteProperty -Name GitHubAllowMemberIssueDeletion -Value $true -Force
-            }
-
+        It 'Marks issue deletion as investigate when member issue deletion is disabled' {
             Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+
             Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
                 -not $SkippedBecause -and
                 -not $SkippedCustomReason -and
                 $Investigate -eq $true -and
                 $Result -match 'Manual review required' -and
-                $Result -match 'members_can_delete_issues' -and
+                $Result -match 'organization owners are trusted and qualified' -and
+                $Result -match '\| `members_can_delete_issues` \| `False` \| `False` \|'
+            }
+        }
+
+        It 'Marks issue deletion as investigate when member issue deletion is enabled' {
+            $script:orgResponse.members_can_delete_issues = $true
+
+            Test-MtCisGitHubIssueDeletionLimited | Should -BeNullOrEmpty
+
+            Should -Invoke Add-MtTestResultDetail -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                -not $SkippedBecause -and
+                -not $SkippedCustomReason -and
+                $Investigate -eq $true -and
+                $Result -match 'Manual review required' -and
+                $Result -match 'repository admin members are trusted and qualified' -and
                 $Result -match '\| `members_can_delete_issues` \| `True` \| `False` \|'
             }
         }

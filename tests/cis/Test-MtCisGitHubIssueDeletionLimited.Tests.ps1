@@ -2,8 +2,6 @@
     It "CIS.GH.1.2.4: Ensure issue deletion is limited to specific users" {
         $result = Test-MtCisGitHubIssueDeletionLimited
 
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because "members_can_delete_issues is false"
-        }
+        $result | Should -BeNullOrEmpty -Because "CIS GH 1.2.4 requires manual trust review after collecting issue deletion setting evidence"
     }
 }

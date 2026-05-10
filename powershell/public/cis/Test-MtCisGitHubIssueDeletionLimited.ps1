@@ -5,16 +5,15 @@
 
     .DESCRIPTION
     CIS GitHub Benchmark v1.2.0 section 1.2.4 marks this recommendation as
-    Manual. This test automates the organization member-privileges field
-    exposed by GET /orgs/{org}. By default, Maester uses a strict automated
-    interpretation and requires members_can_delete_issues to be false. If
-    GitHubAllowMemberIssueDeletion is literal boolean true in maester-config.json,
-    a true value is reported as requiring manual review instead of a hard failure.
+    Manual. This test collects organization setting evidence from
+    GET /orgs/{org} and marks the result as Investigate because CIS GH 1.2.4
+    still requires a manual trust review for either repository administrators
+    or organization owners.
 
     .EXAMPLE
     Test-MtCisGitHubIssueDeletionLimited
 
-    Returns true when members cannot delete issues.
+    Returns Investigate when the GitHub organization setting is available.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited
@@ -37,7 +36,6 @@
             return $null
         }
 
-        $result = $org.$field -eq $false
         $resultMarkdown = @"
 CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
 
@@ -45,19 +43,21 @@ CIS.GH.1.2.4 automated evidence from ``GET /orgs/{org}``.
 | --- | --- | --- |
 | ``$field`` | ``$($org.$field)`` | ``False`` |
 "@
-        $allowManualReview = Get-MtMaesterConfigGlobalSetting -SettingName 'GitHubAllowMemberIssueDeletion'
-        $manualReviewAllowed = $allowManualReview -is [bool] -and $allowManualReview -eq $true
-        if (-not $result -and $manualReviewAllowed) {
+
+        if ($org.$field -eq $true) {
             $resultMarkdown += @"
 
 Manual review required - ``members_can_delete_issues`` is true. CIS GH 1.2.4 audit requires verifying repository admin members are trusted and qualified; document the review.
 "@
-            Add-MtTestResultDetail -Result $resultMarkdown -Investigate
-            return $null
+        } else {
+            $resultMarkdown += @"
+
+Manual review required - ``members_can_delete_issues`` is false. CIS GH 1.2.4 audit still requires verifying organization owners are trusted and qualified; document the review.
+"@
         }
 
-        Add-MtTestResultDetail -Result $resultMarkdown
-        return $result
+        Add-MtTestResultDetail -Result $resultMarkdown -Investigate
+        return $null
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null

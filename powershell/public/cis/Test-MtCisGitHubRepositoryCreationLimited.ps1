@@ -72,10 +72,10 @@
         $detailRows = $checks | ForEach-Object {
             "| ``$($_.Field)`` | ``$($_.Actual)`` | ``$($_.Expected)`` |"
         }
-        $legacyValue = if (Test-MtGitHubObjectProperty -InputObject $org -PropertyName 'members_can_create_repositories') {
-            "Umbrella legacy field ``members_can_create_repositories`` was returned as ``$($org.members_can_create_repositories)``. The granular fields above are the decisive checks."
+        $legacyValue = if (Test-MtGitHubObjectProperty -InputObject $org -PropertyName 'members_allowed_repository_creation_type') {
+            "Deprecated umbrella field ``members_allowed_repository_creation_type`` was returned as ``$($org.members_allowed_repository_creation_type)``. The granular fields above are the decisive checks."
         } else {
-            "Umbrella legacy field ``members_can_create_repositories`` was not returned. The granular fields above are the decisive checks."
+            "Deprecated umbrella field ``members_allowed_repository_creation_type`` was not returned. The granular fields above are the decisive checks."
         }
 
         $resultMarkdown = @"

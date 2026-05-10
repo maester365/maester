@@ -1,0 +1,73 @@
+---
+sidebar_class_name: hidden
+description: "CIS.GH.1.2.2: Ensure repository creation is limited to specific members."
+id: Test-MtCisGitHubRepositoryCreationLimited
+title: Test-MtCisGitHubRepositoryCreationLimited
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisGitHubRepositoryCreationLimited.ps1
+---
+
+## SYNOPSIS
+
+CIS.GH.1.2.2: Ensure repository creation is limited to specific members.
+
+## SYNTAX
+
+```powershell
+Test-MtCisGitHubRepositoryCreationLimited [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+CIS GitHub Benchmark v1.2.0 section 1.2.2 marks this recommendation as
+Manual.
+This test automates the organization member-privileges fields
+exposed by GET /orgs/\{org\}.
+Public and private repository creation decide
+the test result; internal repository creation is shown as informational
+evidence when GitHub returns it.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCisGitHubRepositoryCreationLimited
+```
+
+Returns true when members cannot create public or private repositories.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCisGitHubRepositoryCreationLimited](https://maester.dev/docs/commands/Test-MtCisGitHubRepositoryCreationLimited)

@@ -2,8 +2,6 @@
     It "CIS.GH.1.2.3: Ensure repository deletion is limited to specific users" {
         $result = Test-MtCisGitHubRepositoryDeletionLimited
 
-        if ($null -ne $result) {
-            $result | Should -Be $true -Because "members_can_delete_repositories is false"
-        }
+        $result | Should -BeNullOrEmpty -Because "CIS GH 1.2.3 requires manual trust review after collecting repository deletion setting evidence"
     }
 }
