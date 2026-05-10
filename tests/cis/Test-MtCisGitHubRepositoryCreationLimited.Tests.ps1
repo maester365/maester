@@ -3,7 +3,7 @@
         $result = Test-MtCisGitHubRepositoryCreationLimited
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "members cannot create public, private, or returned internal repositories"
+            $result | Should -Be $true -Because "members cannot create public or private repositories"
         }
     }
 }
