@@ -4,9 +4,17 @@ CIS Benchmark: CIS GitHub Benchmark v1.2.0
 
 Assessment Status: Manual
 
+#### Rationale
+
+Base permissions apply broadly across organization repositories. Keeping the default at none or read follows least privilege and lowers the chance that every member can change code where they do not have a specific business need.
+
+#### Impact
+
+Some members may lose default write access and require explicit repository, team, or role assignments before they can contribute changes.
+
 #### Maester automation note
 
-CIS marks this recommendation as Manual. This Maester test automates the portion of the CIS audit procedure that maps to documented GitHub REST API evidence. It should be treated as automated evidence collection for the corresponding GitHub setting, not as a claim that every possible manual review path for the CIS recommendation has been fully evaluated.
+CIS marks this recommendation as Manual. This Maester test automates the portion of CIS GH 1.3.8 that maps to documented GitHub REST API evidence. It should be treated as automated evidence collection for the corresponding GitHub setting, not as a claim that every possible manual review path has been fully evaluated.
 
 #### API evidence
 
@@ -30,7 +38,7 @@ This test verifies the organization default repository permission only. It does 
 
 #### Related links
 
-* [CIS GitHub Benchmark v1.2.0 - Page 89](https://www.cisecurity.org/benchmark/github)
+* [CIS GitHub Benchmark v1.2.0 - Section 1.3.8](https://www.cisecurity.org/benchmark/github)
 * [GitHub REST API: Get an organization](https://docs.github.com/en/rest/orgs/orgs#get-an-organization)
 
 <!--- Results --->
