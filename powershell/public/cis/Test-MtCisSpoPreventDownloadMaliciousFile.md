@@ -18,7 +18,7 @@ The only potential impact associated with implementation of this setting is pote
 2. Run the following PowerShell command to set the recommended value:
 
 ```powershell
-Set-SPOTenant –DisallowInfectedFileDownload $true
+Set-SPOTenant -DisallowInfectedFileDownload $true
 ```
 
 >Note: The Global Reader role cannot access SharePoint using PowerShell according to Microsoft. See the reference section for more information.
@@ -30,3 +30,6 @@ Set-SPOTenant –DisallowInfectedFileDownload $true
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
 * [Overview of external sharing in SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/external-sharing-overview)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 394](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%

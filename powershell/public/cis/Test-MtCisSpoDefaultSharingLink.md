@@ -35,3 +35,6 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 
 * [Set-SPOTenant](https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 381](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%

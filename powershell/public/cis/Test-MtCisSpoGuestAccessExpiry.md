@@ -39,3 +39,6 @@ Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True
 * [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
 * [Managing SharePoint Online Security: A Team Effort](https://learn.microsoft.com/en-us/microsoft-365/community/sharepoint-security-a-team-effort)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 385](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%
