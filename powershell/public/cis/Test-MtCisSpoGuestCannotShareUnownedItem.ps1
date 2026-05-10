@@ -22,7 +22,7 @@
 
     $return = $true
     try {
-        $PreventExternalUsersFromResharing = Get-SPOTenant | Select-Object -ExpandProperty PreventExternalUsersFromResharing
+        $PreventExternalUsersFromResharing = Get-PnPTenant | Select-Object -ExpandProperty PreventExternalUsersFromResharing
         if ($PreventExternalUsersFromResharing) {
             $testResult = "Well done. External users cannot share items they don't own."
         } else {

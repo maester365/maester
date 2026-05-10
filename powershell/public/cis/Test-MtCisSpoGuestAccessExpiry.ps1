@@ -22,7 +22,7 @@
 
     $return = $true
     try {
-        $spoTenant = Get-SPOTenant
+        $spoTenant = Get-PnPTenant
         if ($spoTenant.ExternalUserExpirationRequired -eq $true -and $spoTenant.ExternalUserExpireInDays -gt 0 -and $spoTenant.ExternalUserExpireInDays -le 30) {
             $testResult = "Well done. Guest access expiration is enabled and set to 30 days or less ($($spoTenant.ExternalUserExpireInDays) days)."
         } else {

@@ -22,7 +22,7 @@
 
     $return = $true
     try {
-        $B2BIntegration = Get-SPOTenant | Select-Object -ExpandProperty EnableAzureADB2BIntegration
+        $B2BIntegration = Get-PnPTenant | Select-Object -ExpandProperty EnableAzureADB2BIntegration
         if ($B2BIntegration) {
             $testResult = "Well done. Your SharePoint tenant is integrated with Microsoft Entra B2B."
         } else {

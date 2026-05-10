@@ -22,7 +22,7 @@
 
     $return = $true
     try {
-        $DefaultSharingLinkType = Get-SPOTenant | Select-Object -ExpandProperty DefaultSharingLinkType
+        $DefaultSharingLinkType = Get-PnPTenant | Select-Object -ExpandProperty DefaultSharingLinkType
         if ($DefaultSharingLinkType -eq "Direct" -or $DefaultSharingLinkType -eq "Internal") {
             $testResult = "Well done. Default sharing link type is set to a restrictive option."
         } else {

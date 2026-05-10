@@ -22,7 +22,7 @@
 
     $return = $true
     try {
-        $DefaultLinkPermission = Get-SPOTenant | Select-Object -ExpandProperty DefaultLinkPermission
+        $DefaultLinkPermission = Get-PnPTenant | Select-Object -ExpandProperty DefaultLinkPermission
         if ($DefaultLinkPermission -eq "View") {
             $testResult = "Well done. Default sharing link permission is set to View."
         } else {
