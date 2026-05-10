@@ -77,6 +77,30 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
+### Connect to SharePoint Online (optional)
+
+Maester includes SharePoint Online security tests that use the [PnP PowerShell](https://pnp.github.io/powershell/) module.
+
+Install the PnP PowerShell module if you haven't already:
+
+```powershell
+Install-Module PnP.PowerShell -Scope CurrentUser
+```
+
+Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline
+```
+
+If auto-discovery does not work (e.g. in government or custom-domain tenants), supply the admin URL explicitly:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+```
+
+If the PnP PowerShell module is not installed or there is no active connection, all SharePoint Online tests are skipped automatically.
+
 ### Connect to Azure, Exchange Online, Copilot Studio and Teams
 
 `Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.

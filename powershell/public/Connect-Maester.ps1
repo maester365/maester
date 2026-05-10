@@ -72,6 +72,11 @@
 
    Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
+.EXAMPLE
+   Connect-Maester -Service Graph,SharePointOnline
+
+   Connects to Microsoft Graph and SharePoint Online. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -116,12 +121,16 @@
       [string]$TenantId,
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
-      [string]$GraphClientId
+      [string]$GraphClientId,
+
+      # The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g. https://contoso-admin.sharepoint.com).
+      # If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
+      [string]$SharePointAdminUrl
    )
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
+   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'PnP.PowerShell')
    switch ($OrderedImport.Name) {
 
       'Az.Accounts' {
@@ -352,9 +361,47 @@
          }
       }
 
-      'Microsoft.Online.SharePoint.PowerShell' {
+      'PnP.PowerShell' {
          if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            Write-Verbose 'Connecting to SharePoint Online'
+            try {
+               $spoAdminUrl = $SharePointAdminUrl
+               if ([string]::IsNullOrEmpty($spoAdminUrl)) {
+                  # Auto-discover the admin URL from the tenant's initial domain via Graph
+                  $org = Invoke-MtGraphRequest -RelativeUri 'organization' -ErrorAction Stop
+                  $tenantDomain = ($org.verifiedDomains | Where-Object { $_.isInitial -eq $true }) | Select-Object -ExpandProperty Name -First 1
+                  $spoAdminUrl = "https://$(($tenantDomain).Replace('.onmicrosoft.com', ''))-admin.sharepoint.com"
+                  Write-Verbose "Auto-discovered SharePoint Admin URL: $spoAdminUrl"
+               }
 
+               $pnpAzureEnv = switch ($AzureEnvironment) {
+                  'AzureChinaCloud' { 'China' }
+                  'AzureUSGovernment' { 'USGovernment' }
+                  default { 'Production' }
+               }
+
+               $pnpParams = @{
+                  Url              = $spoAdminUrl
+                  AzureEnvironment = $pnpAzureEnv
+               }
+
+               if ($UseDeviceCode) {
+                  $resolveTenant = if ($TenantId) { $TenantId } else { (Get-MgContext -ErrorAction SilentlyContinue).TenantId }
+                  if ($resolveTenant) {
+                     $pnpParams['DeviceLogin'] = $true
+                     $pnpParams['Tenant'] = $resolveTenant
+                  } else {
+                     Write-Host "`nDevice code login for SharePoint Online requires a -TenantId parameter." -ForegroundColor Red
+                  }
+               } else {
+                  $pnpParams['Interactive'] = $true
+               }
+
+               Connect-PnPOnline @pnpParams
+            } catch [Management.Automation.CommandNotFoundException] {
+               Write-Host "`nThe PnP PowerShell module is not installed. Please install the module using the following command. For more information see https://pnp.github.io/powershell/" -ForegroundColor Red
+               Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+            }
          }
       }
    } # end switch OrderedImport
