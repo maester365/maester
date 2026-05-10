@@ -20,6 +20,11 @@
     param()
     Write-Verbose "Testing that SharePoint guest users cannot share items they don't own..."
 
+    if (!(Test-MtConnection SharePointOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        return $null
+    }
+
     $return = $true
     try {
         $PreventExternalUsersFromResharing = Get-PnPTenant | Select-Object -ExpandProperty PreventExternalUsersFromResharing

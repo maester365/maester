@@ -20,6 +20,11 @@
     param()
     Write-Verbose "Testing default sharing link type in SharePoint Online..."
 
+    if (!(Test-MtConnection SharePointOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        return $null
+    }
+
     $return = $true
     try {
         $DefaultSharingLinkType = Get-PnPTenant | Select-Object -ExpandProperty DefaultSharingLinkType

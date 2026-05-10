@@ -20,6 +20,11 @@
     param()
     Write-Verbose "Testing SharePoint Entra B2B integration..."
 
+    if (!(Test-MtConnection SharePointOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        return $null
+    }
+
     $return = $true
     try {
         $B2BIntegration = Get-PnPTenant | Select-Object -ExpandProperty EnableAzureADB2BIntegration

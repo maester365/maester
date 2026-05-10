@@ -20,6 +20,11 @@
     param()
     Write-Verbose "Testing guest access expiration settings in SharePoint Online..."
 
+    if (!(Test-MtConnection SharePointOnline)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        return $null
+    }
+
     $return = $true
     try {
         $spoTenant = Get-PnPTenant
