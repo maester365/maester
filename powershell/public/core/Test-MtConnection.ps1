@@ -7,7 +7,7 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -15,12 +15,12 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a Boolean value.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a Boolean value.
 
     .EXAMPLE
     Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
@@ -35,7 +35,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -46,14 +46,15 @@
 
     begin {
         $MtConnections = [PSCustomObject]@{
-            PSTypeName  = 'Maester.Connections'
-            Azure = $null
-            AzureDevOps = $null
-            Graph = $null
-            ExchangeOnline = $null
+            PSTypeName               = 'Maester.Connections'
+            Azure                    = $null
+            AzureDevOps              = $null
+            Graph                    = $null
+            ExchangeOnline           = $null
             ExchangeOnlineProtection = $null
-            Teams = $null
-            AllConnected = $false
+            SharePointOnline         = $null
+            Teams                    = $null
+            AllConnected             = $false
         }
 
         # This can potentially be replaced by $MtConnections.AllConnected but all functions that reference this function would need to be updated.
@@ -146,6 +147,20 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion Teams
+
+        #region SharePointOnline
+        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            $IsConnected = $false
+            try {
+                $MtConnections.SharePointOnline = Get-PnPConnection -ErrorAction Stop
+                $IsConnected = $null -ne ($MtConnections.SharePointOnline)
+            } catch {
+                Write-Debug "SharePoint Online: $false"
+            }
+            Write-Verbose "SharePoint Online: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion SharePointOnline
 
         #region AzureDevOps
         if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {
