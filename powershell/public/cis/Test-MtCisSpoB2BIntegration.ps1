@@ -21,14 +21,14 @@
     Write-Verbose "Testing SharePoint Entra B2B integration..."
 
     if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
     $return = $true
     try {
-        $B2BIntegration = Get-PnPTenant | Select-Object -ExpandProperty EnableAzureADB2BIntegration
-        if ($B2BIntegration) {
+        $spoTenant = Get-MtSpo
+        if ($spoTenant.B2BIntegration.EnableAzureADB2BIntegration) {
             $testResult = "Well done. Your SharePoint tenant is integrated with Microsoft Entra B2B."
         } else {
             $testResult = "Your SharePoint tenant is not integrated with Microsoft Entra B2B."

@@ -52,7 +52,7 @@
             Graph                    = $null
             ExchangeOnline           = $null
             ExchangeOnlineProtection = $null
-            SharePointOnline         = $null
+            SharePoint               = $null
             Teams                    = $null
             AllConnected             = $false
         }
@@ -148,19 +148,19 @@
         }
         #endregion Teams
 
-        #region SharePointOnline
-        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+        #region SharePoint
+        if ($Service -contains 'SharePoint' -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.SharePointOnline = Get-PnPConnection -ErrorAction Stop
-                $IsConnected = $null -ne ($MtConnections.SharePointOnline)
+                $MtConnections.SharePoint = Get-PnPConnection
+                $IsConnected = $null -ne ($MtConnections.SharePoint)
             } catch {
-                Write-Debug "SharePoint Online: $false"
+                Write-Debug "SharePoint: $false"
             }
-            Write-Verbose "SharePoint Online: $IsConnected"
+            Write-Verbose "SharePoint: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }
         }
-        #endregion SharePointOnline
+        #endregion SharePoint
 
         #region AzureDevOps
         if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {

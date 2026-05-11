@@ -21,14 +21,14 @@
     Write-Verbose "Testing default sharing link type in SharePoint Online..."
 
     if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
     $return = $true
     try {
-        $DefaultSharingLinkType = Get-PnPTenant | Select-Object -ExpandProperty DefaultSharingLinkType
-        if ($DefaultSharingLinkType -eq "Direct" -or $DefaultSharingLinkType -eq "Internal") {
+        $spoTenant = Get-MtSpo
+        if ($spoTenant.DefaultSharingLinkType -eq "Direct" -or $spoTenant.DefaultSharingLinkType -eq "Internal") {
             $testResult = "Well done. Default sharing link type is set to a restrictive option."
         } else {
             $testResult = "Default sharing link type is not set to a restrictive option."

@@ -47,8 +47,13 @@
    }
 
    if ($__MtSession.Connections -contains "SharePointOnline" -or $__MtSession.Connections -contains "All") {
-      Write-Verbose -Message "Disconnecting from SharePoint Online."
-      Disconnect-PnPOnline
+      Write-Verbose -Message "Disconnecting from SharePoint Online (PnP)."
+      try {
+         Disconnect-PnPOnline -ErrorAction Stop
+      } catch {
+         Write-Verbose "Disconnect-PnPOnline encountered an error: $($_.Exception.Message)"
+      }
+      $__MtSession.SpoCache = @{}
    }
 
    if ($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All") {

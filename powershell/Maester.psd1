@@ -63,7 +63,7 @@
         'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRole',
-        'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtTestInventory', 'Get-MtUser',
+        'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtSpo', 'Get-MtTestInventory', 'Get-MtUser',
         'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType', 'Import-MtMaesterResult',
         'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
         'Invoke-MtGraphRequest', 'Invoke-MtGraphSecurityQuery', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'Resolve-SPFRecord',

@@ -21,14 +21,14 @@
     Write-Verbose "Testing default sharing link permission in SharePoint Online..."
 
     if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
     $return = $true
     try {
-        $DefaultLinkPermission = Get-PnPTenant | Select-Object -ExpandProperty DefaultLinkPermission
-        if ($DefaultLinkPermission -eq "View") {
+        $spoTenant = Get-MtSpo
+        if ($spoTenant.DefaultLinkPermission -eq "View") {
             $testResult = "Well done. Default sharing link permission is set to View."
         } else {
             $testResult = "Default sharing link permission is not set to View."

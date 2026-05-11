@@ -28,6 +28,8 @@ To learn more about the `Invoke-Maester` cmdlet including how to filter tests, a
 
 Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
 
+> Also see [Create-entra-app](sections/create-entra-app.md)
+
 ### Installing Azure, Exchange Online, Teams and PnP.PowerShell modules
 
 ```powershell

@@ -21,14 +21,14 @@
     Write-Verbose "Testing malicious file download prevention in SharePoint Online..."
 
     if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
     $return = $true
     try {
-        $DisallowInfectedFileDownload = Get-PnPTenant | Select-Object -ExpandProperty DisallowInfectedFileDownload
-        if ($DisallowInfectedFileDownload) {
+        $spoTenant = Get-MtSpo
+        if ($spoTenant.DisallowInfectedFileDownload) {
             $testResult = "Well done. Malicious file download prevention is enabled in your SharePoint tenant."
         } else {
             $testResult = "Malicious file download prevention is not enabled in your SharePoint tenant."

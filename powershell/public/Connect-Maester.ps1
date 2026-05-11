@@ -113,7 +113,7 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO. Default is Graph.
+      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, and SharePoint Online. Default is Graph.
       [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
       [string[]]$Service = 'Graph',
 
@@ -123,9 +123,8 @@
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
       [string]$GraphClientId,
 
-      # The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g. https://contoso-admin.sharepoint.com).
-      # If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
-      [string]$SharePointAdminUrl
+      # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline. Create the app using Register-PnPEntraIDAppForInteractiveLogin.
+      [string]$SharePointClientId
    )
 
    $__MtSession.Connections = $Service
@@ -234,27 +233,27 @@
 
          if ($Service -contains 'SecurityCompliance' -or $Service -contains 'All') {
             $Environments = @{
-               'O365China'         = @{
+               'O365China'        = @{
                   ConnectionUri    = 'https://ps.compliance.protection.partner.outlook.cn/powershell-liveid'
                   AuthZEndpointUri = 'https://login.chinacloudapi.cn/common'
                }
-               'O365GermanyCloud'  = @{
+               'O365GermanyCloud' = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
-               'O365Default'       = @{
+               'O365Default'      = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
-               'O365USGovGCCHigh'  = @{
+               'O365USGovGCCHigh' = @{
                   ConnectionUri    = 'https://ps.compliance.protection.office365.us/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.us/common'
                }
-               'O365USGovDoD'      = @{
+               'O365USGovDoD'     = @{
                   ConnectionUri    = 'https://l5.ps.compliance.protection.office365.us/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.us/common'
                }
-               Default             = @{
+               Default            = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
@@ -297,8 +296,8 @@
                   # Remove the broken cmdlet and re-import the working EXO one.
                   Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
                   $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
-                     Select-Object -ExpandProperty ModuleName |
-                        Import-Module -Function 'Get-AdminAuditLogConfig' > $null
+                  Select-Object -ExpandProperty ModuleName |
+                  Import-Module -Function 'Get-AdminAuditLogConfig' > $null
                } catch {
                   Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
                }
@@ -362,48 +361,40 @@
       }
 
       'PnP.PowerShell' {
+         # SharePoint Online via PnP — must run AFTER Graph to avoid Microsoft.Graph.Core DLL conflict
          if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
-            Write-Verbose 'Connecting to SharePoint Online'
-            try {
-               $spoAdminUrl = $SharePointAdminUrl
-               if ([string]::IsNullOrEmpty($spoAdminUrl)) {
-                  # Auto-discover the admin URL from the tenant's initial domain via Graph
-                  $org = Invoke-MtGraphRequest -RelativeUri 'organization' -ErrorAction Stop
-                  $tenantDomain = ($org.verifiedDomains | Where-Object { $_.isInitial -eq $true }) | Select-Object -ExpandProperty Name -First 1
-                  $spoAdminUrl = "https://$(($tenantDomain).Replace('.onmicrosoft.com', ''))-admin.sharepoint.com"
-                  Write-Verbose "Auto-discovered SharePoint Admin URL: $spoAdminUrl"
-               }
+            Write-Verbose 'Connecting to SharePoint Online via PnP'
 
-               $pnpAzureEnv = switch ($AzureEnvironment) {
-                  'AzureChinaCloud' { 'China' }
-                  'AzureUSGovernment' { 'USGovernment' }
-                  default { 'Production' }
-               }
-
-               $pnpParams = @{
-                  Url              = $spoAdminUrl
-                  AzureEnvironment = $pnpAzureEnv
-               }
-
-               if ($UseDeviceCode) {
-                  $resolveTenant = if ($TenantId) { $TenantId } else { (Get-MgContext -ErrorAction SilentlyContinue).TenantId }
-                  if ($resolveTenant) {
-                     $pnpParams['DeviceLogin'] = $true
-                     $pnpParams['Tenant'] = $resolveTenant
-                  } else {
-                     Write-Host "`nDevice code login for SharePoint Online requires a -TenantId parameter." -ForegroundColor Red
+            if (-not $SharePointClientId) {
+               Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. Create a PnP app registration using Register-PnPEntraIDAppForInteractiveLogin.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
+            } else {
+               try {
+                  # Resolve the SharePoint admin URL from the tenant's initial domain
+                  $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+                  $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
+                  $tenantPrefix = ($initialDomain -split '\.')[0]
+                  $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
+                  Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+                  Import-Module PnP.PowerShell -ErrorAction Stop
+                  $pnpParams = @{
+                     Url      = $spoAdminUrl
+                     ClientId = $SharePointClientId
                   }
-               } else {
-                  $pnpParams['Interactive'] = $true
+                  if ($UseDeviceCode) {
+                     $pnpParams['DeviceLogin'] = $true
+                  }
+                  if ($TenantId) {
+                     $pnpParams['Tenant'] = $TenantId
+                  }
+                  Connect-PnPOnline @pnpParams
+               } catch [Management.Automation.CommandNotFoundException] {
+                  Write-Host "`nThe PnP.PowerShell module is not installed. Please install the module using the following command.`nFor more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
+                  Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+               } catch {
+                  Write-Host "`nFailed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
                }
-
-               Connect-PnPOnline @pnpParams
-            } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe PnP PowerShell module is not installed. Please install the module using the following command. For more information see https://pnp.github.io/powershell/" -ForegroundColor Red
-               Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
             }
          }
       }
-   } # end switch OrderedImport
-
+   }
 } # end function Connect-Maester

@@ -21,13 +21,13 @@
     Write-Verbose "Testing guest access expiration settings in SharePoint Online..."
 
     if (!(Test-MtConnection SharePointOnline)) {
-        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePointOnline
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSharePoint
         return $null
     }
 
     $return = $true
     try {
-        $spoTenant = Get-PnPTenant
+        $spoTenant = Get-MtSpo
         if ($spoTenant.ExternalUserExpirationRequired -eq $true -and $spoTenant.ExternalUserExpireInDays -gt 0 -and $spoTenant.ExternalUserExpireInDays -le 30) {
             $testResult = "Well done. Guest access expiration is enabled and set to 30 days or less ($($spoTenant.ExternalUserExpireInDays) days)."
         } else {
