@@ -1,6 +1,6 @@
 # Validates that the Docusaurus website builds successfully.
-# Runs on PRs that modify website files, and can also be called from other
-# workflows or triggered manually.
+# Runs on PRs that modify website files or docs source files, and can also be
+# called from other workflows or triggered manually.
 name: "\U0001F3D7️ Build Website"
 
 on:
@@ -20,6 +20,9 @@ on:
   pull_request:
     branches: ["main"]
     paths:
+      - "build/Update-CommandReference.ps1"
+      - "powershell/**"
+      - "tests/**"
       - "website/**"
       - ".github/workflows/build-website.yaml"
 
@@ -28,16 +31,122 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
+  actions: read
   contents: read
+  pull-requests: read
 
 jobs:
+  detect-command-reference-changes:
+    name: "Detect command reference changes"
+    runs-on: ubuntu-latest
+    outputs:
+      generate: ${{ github.event_name != 'pull_request' || steps.filter.outputs.command_reference == 'true' }}
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check command reference inputs
+        if: github.event_name == 'pull_request'
+        id: filter
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        with:
+          filters: |
+            command_reference:
+              - "build/Update-CommandReference.ps1"
+              - "powershell/**"
+              - "tests/**"
+              - ".github/workflows/build-website.yaml"
+
+  generate-command-reference:
+    name: "Generate command reference"
+    needs: detect-command-reference-changes
+    if: needs.detect-command-reference-changes.outputs.generate == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Generate command reference
+        shell: pwsh
+        run: ./build/Update-CommandReference.ps1
+
+      - name: Package generated command reference
+        shell: pwsh
+        run: |
+          $ProgressPreference = "SilentlyContinue"
+          $artifactRoot = Join-Path $env:GITHUB_WORKSPACE "generated-command-reference"
+          $docsRoot = Join-Path $artifactRoot "docs"
+          New-Item -ItemType Directory -Path $docsRoot -Force | Out-Null
+
+          $sourceCommands = Join-Path $env:GITHUB_WORKSPACE "website/docs/commands"
+          if (-not (Test-Path $sourceCommands)) {
+            throw "Command reference docs were not generated at $sourceCommands."
+          }
+
+          Copy-Item -Path $sourceCommands -Destination $docsRoot -Recurse -Force
+
+          $versionedDocsRoot = Join-Path $env:GITHUB_WORKSPACE "website/versioned_docs"
+          if (Test-Path $versionedDocsRoot) {
+            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
+              $sourceVersionCommands = Join-Path $versionFolder.FullName "commands"
+              if (Test-Path $sourceVersionCommands) {
+                $targetVersionRoot = Join-Path $artifactRoot "versioned_docs/$($versionFolder.Name)"
+                New-Item -ItemType Directory -Path $targetVersionRoot -Force | Out-Null
+                Copy-Item -Path $sourceVersionCommands -Destination $targetVersionRoot -Recurse -Force
+              }
+            }
+          }
+
+          Compress-Archive -Path (Join-Path $artifactRoot "*") -DestinationPath command-reference-docs.zip -Force
+
+      - name: Upload generated command reference
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: generated-command-reference
+          path: command-reference-docs.zip
+          if-no-files-found: error
+
   build:
     name: "Build Docusaurus website \U0001F3D7️"
+    needs: [detect-command-reference-changes, generate-command-reference]
+    if: always() && needs.detect-command-reference-changes.result == 'success' && (needs.generate-command-reference.result == 'success' || needs.generate-command-reference.result == 'skipped')
     runs-on: ubuntu-latest
 
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Download generated command reference
+        if: needs.detect-command-reference-changes.outputs.generate == 'true'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: generated-command-reference
+          path: ${{ runner.temp }}/command-reference
+
+      - name: Apply generated command reference
+        if: needs.detect-command-reference-changes.outputs.generate == 'true'
+        shell: pwsh
+        env:
+          WEBSITE_WORKING_DIRECTORY: ${{ inputs.working_directory || 'website' }}
+        run: |
+          $ProgressPreference = "SilentlyContinue"
+          Remove-Item -Path (Join-Path $env:WEBSITE_WORKING_DIRECTORY "docs/commands") -Recurse -Force -ErrorAction SilentlyContinue
+
+          $versionedDocsRoot = Join-Path $env:WEBSITE_WORKING_DIRECTORY "versioned_docs"
+          if (Test-Path $versionedDocsRoot) {
+            foreach ($versionFolder in Get-ChildItem $versionedDocsRoot -Directory) {
+              Remove-Item -Path (Join-Path $versionFolder.FullName "commands") -Recurse -Force -ErrorAction SilentlyContinue
+            }
+          }
+
+          Expand-Archive -Path "${{ runner.temp }}/command-reference/command-reference-docs.zip" -DestinationPath $env:WEBSITE_WORKING_DIRECTORY -Force
 
       - name: ⚙️ Set up Node.js ${{ inputs.node_version || '24.x' }}
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
