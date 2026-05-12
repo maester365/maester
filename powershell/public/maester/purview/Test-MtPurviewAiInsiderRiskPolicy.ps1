@@ -27,6 +27,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-MtPurviewAiInsiderRiskPolicy: Checking for Insider Risk Management policies using the Risky AI usage template."
+
     if (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null

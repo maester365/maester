@@ -29,6 +29,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-MtPurviewAiDlpPolicy: Checking for DLP policies targeting the Microsoft 365 Copilot location."
+
     if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null

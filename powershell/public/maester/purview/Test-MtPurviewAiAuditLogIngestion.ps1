@@ -28,6 +28,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-MtPurviewAiAuditLogIngestion: Checking if the Microsoft 365 unified audit log is enabled."
+
     if (!(Test-MtConnection ExchangeOnline)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedExchange
         return $null

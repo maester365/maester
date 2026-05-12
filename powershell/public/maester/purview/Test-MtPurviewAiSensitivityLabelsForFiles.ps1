@@ -26,6 +26,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-MtPurviewAiSensitivityLabelsForFiles: Checking for sensitivity labels published with the File scope."
+
     if (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
