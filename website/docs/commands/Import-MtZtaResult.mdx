@@ -1,0 +1,214 @@
+---
+sidebar_class_name: hidden
+description: Loads a Zero Trust Assessment (ZTA) result bundle into Maester so subsequent tests can focus on the areas ZTA flagged.
+id: Import-MtZtaResult
+title: Import-MtZtaResult
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Import-MtZtaResult.ps1
+---
+
+## SYNOPSIS
+
+Loads a Zero Trust Assessment (ZTA) result bundle into Maester so subsequent tests can focus on the areas ZTA flagged.
+
+## SYNTAX
+
+```powershell
+Import-MtZtaResult [[-ZtaResultsPath] <String>] [[-FreshnessDays] <Int32>] [-ForceJsonFallback]
+ [[-ExpectedTenantId] <String>] [[-ZtaSettings] <Object>] [[-GlobalSettings] <Object>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Resolves a ZTA result source (local path, Azure Blob URI, or Azure Artifacts
+Universal Package reference) via `Resolve-MtZtaArtifact`, validates the bundle
+contains the expected files (manifest.json + ZeroTrustAssessmentReport.json + db/zt.db),
+opens the DuckDB database read-only via `Read-MtZtaDatabase` (with JSON fallback on
+any failure), checks freshness via `Test-MtZtaFreshness`, and populates the
+module-private `$script:MtZtaContext` with the normalised data.
+
+Idempotent — subsequent calls with the same source short-circuit.
+
+No-ops gracefully when `-ZtaResultsPath` is `$null` or empty (keeps vanilla
+`Invoke-Maester` runs byte-identical to upstream).
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Import-MtZtaResult -ZtaResultsPath .\zta-results-2026-05-01.tar.gz
+```
+
+### EXAMPLE 2
+
+```powershell
+Import-MtZtaResult -ZtaResultsPath 'https://contoso-sec.blob.core.windows.net/zta/2026-05-01.tar.gz'
+```
+
+### EXAMPLE 3
+
+```powershell
+Import-MtZtaResult -ZtaResultsPath 'upkg://OnTrask-Security/Assessments/zta-results/customer-a-2026-05-01@1.0.0'
+```
+
+### EXAMPLE 4
+
+```powershell
+Import-MtZtaResult -ZtaResultsPath .\zta -ForceJsonFallback
+```
+
+## PARAMETERS
+
+### -ZtaResultsPath
+
+ZTA result source string. Three patterns recognised, in priority order:
+
+1. `https://<account>.blob.core.windows.net/...` — Azure Blob (SAS in URI / WIF / -Identity)
+2. `upkg://<org>/<project>/<feed>/<name>@<ver>` — Azure Artifacts Universal Package
+3. `<local path>` — folder, `.tar.gz`, or `.zip`
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -FreshnessDays
+
+Override the default 14-day freshness threshold. Stale runs proceed (warn-but-proceed)
+but set `$script:MtZtaContext.IsStale = $true`.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: 14
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ForceJsonFallback
+
+Skip DuckDB entirely and use the JSON-only path. Useful on Linux without the
+DuckDB.NET native binary or for repro tests.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExpectedTenantId
+
+Optional tenant-id pin. When set, the manifest's tenantId must match exactly or
+the load aborts before any test runs. Cross-tenant data leakage guard.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ZtaSettings
+
+The `ZtaSettings` block from `maester-config.json` (already deserialised), passed
+through to subsequent cmdlets via `$script:MtZtaContext.ZtaSettings`. Drives:
+
+- CategoryMappings (`Get-MtZta -Section FlaggedUsers`, `Get-MtZtaRecommendedTag`)
+- SeverityEscalationRules (`Update-MtSeverityFromZta`)
+- DataDrivenSettings (`Group-MtZtaFlaggedIdentity` caps)
+- PillarTagMap (`Get-MtZtaRecommendedTag` pillar-tag union)
+
+Optional — when omitted, callers default to vendor-neutral baselines.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GlobalSettings
+
+The `GlobalSettings` block from `maester-config.json` (Maester's standard
+section). Today only `EmergencyAccessAccounts` is consumed: it is normalised
+and surfaced via `Get-MtZta -Section EmergencyAccessAccounts` and used by
+`Test-MtZtaIsEmergencyAccess` to mark legitimate break-glass identities as
+compliant-by-design in tests like MT.Zta.1107 (permanent Global Admins).
+Each entry can be a string (UPN or GUID) OR an object with `id` /
+`userPrincipalName` / `displayName` properties — all three shapes accepted.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+This cmdlet has the alias `Import-MtZtaResults` for backward compatibility.
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Import-MtZtaResult](https://maester.dev/docs/commands/Import-MtZtaResult)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

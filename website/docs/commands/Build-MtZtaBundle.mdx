@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: Compiles a single hashtable of ZTA-derived analytics for embedding into the Maester report's HTML/JSON output (consumed by the ZTA tab in the React report).
+id: Build-MtZtaBundle
+title: Build-MtZtaBundle
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Build-MtZtaBundle.ps1
+---
+
+## SYNOPSIS
+
+Compiles a single hashtable of ZTA-derived analytics for embedding into the Maester report's HTML/JSON output (consumed by the ZTA tab in the React report).
+
+## SYNTAX
+
+```powershell
+Build-MtZtaBundle [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+The Maester HTML report inlines its result JSON via `Get-MtHtmlReport`.
+The ZTA tab needs a few extra fields beyond the standard test rows:
+bundle metadata, per-pillar summary, inventory counts, and curated
+analytics (auth-method posture, privileged exposure, application
+credential hygiene, device trust mix).
+
+This helper walks `$script:MtZtaContext` (populated by
+`Import-MtZtaResult`) and emits one hashtable that the orchestrator
+injects into the Maester result object as `ZtaBundle`. When no ZTA
+context is loaded the function returns `$null` — the orchestrator
+skips augmentation and the ZTA tab degrades gracefully.
+
+Reuses `Get-MtZtaAuthMethodSet` for method classification and the same
+Tier-0 role-template constants used by the ZTA-aware test surface.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+# In the orchestrator, right after Invoke-Maester returns:
+$bundle = Build-MtZtaBundle
+if ($bundle) {
+    $result | Add-Member -NotePropertyName 'ZtaBundle' -NotePropertyValue $bundle -Force
+}
+```
+
+## PARAMETERS
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[hashtable] or $null
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Build-MtZtaBundle](https://maester.dev/docs/commands/Build-MtZtaBundle)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

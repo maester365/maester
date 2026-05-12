@@ -1,0 +1,66 @@
+---
+sidebar_class_name: hidden
+description: Derives a Pester -Tag list from current ZTA findings so Maester runs only the tests relevant to the areas ZTA flagged.
+id: Get-MtZtaRecommendedTag
+title: Get-MtZtaRecommendedTag
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtZtaRecommendedTag.ps1
+---
+
+## SYNOPSIS
+
+Derives a Pester `-Tag` list from current ZTA findings so Maester runs only the tests relevant to the areas ZTA flagged.
+
+## SYNTAX
+
+```powershell
+Get-MtZtaRecommendedTag [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Walks `$script:MtZtaContext.Tests` (failed entries only), classifies each into a bucket
+per `ZtaSettings.CategoryMappings`, and emits the union of `MaesterTagBoost` arrays
+plus the literal pillar names as a `[string[]]`.
+
+Defaults when no `ZtaSettings` is present on the context:
+
+- `PillarTagMap` falls back to a vendor-neutral baseline that mirrors the pillar
+  keywords already used in upstream Maester tests
+  (Identity, Devices, Network, Data, MFA, ConditionalAccess, PIM, Intune, Compliance, ...).
+- `CategoryMappings` empty — all failures classify as `Other` (no boost tags emitted).
+
+Returns an empty array when ZTA was not loaded or has no failures.
+
+**Coverage warning:** if more than 10% of failed tests classify as `Other`, the cmdlet
+emits a `Write-Warning` so the operator can revisit the `CategoryMappings` block.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+$tags = Get-MtZtaRecommendedTag
+Invoke-Maester -Tag $tags
+```
+
+## PARAMETERS
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[string[]] or [object[]]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtZtaRecommendedTag](https://maester.dev/docs/commands/Get-MtZtaRecommendedTag)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

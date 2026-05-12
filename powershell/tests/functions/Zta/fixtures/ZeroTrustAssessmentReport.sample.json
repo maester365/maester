@@ -1,0 +1,89 @@
+{
+  "TenantId": "00000000-0000-0000-0000-000000000000",
+  "TenantName": "Sample Tenant",
+  "Domain": "sample.example",
+  "Account": null,
+  "ExecutedAt": "2026-05-01T10:00:00.0000000+00:00",
+  "CurrentVersion": { "Major": 2, "Minor": 2, "Build": 0, "Revision": -1 },
+  "LatestVersion": "2.2.0",
+  "TenantInfo": null,
+  "TestResultSummary": {
+    "Identity": { "Passed": 1, "Failed": 1, "Skipped": 0, "Investigate": 0, "Planned": 0 },
+    "Devices":  { "Passed": 0, "Failed": 1, "Skipped": 0, "Investigate": 0, "Planned": 0 },
+    "Network":  { "Passed": 0, "Failed": 1, "Skipped": 0, "Investigate": 0, "Planned": 0 },
+    "Data":     { "Passed": 0, "Failed": 0, "Skipped": 1, "Investigate": 0, "Planned": 0 }
+  },
+  "Tests": [
+    {
+      "TestId": "21892",
+      "TestTitle": "All sign-in activity comes from managed devices",
+      "TestStatus": "Failed",
+      "TestPillar": "Identity",
+      "TestCategory": "Access control",
+      "TestRisk": "High",
+      "TestImpact": "High",
+      "TestDescription": "Requiring sign-ins from managed devices ensures compliance.",
+      "TestResult": "Not all sign-in activity comes from managed devices. (sample)",
+      "TestSkipped": "",
+      "SkippedReason": null,
+      "TestTags": null
+    },
+    {
+      "TestId": "21816",
+      "TestTitle": "All Microsoft Entra privileged role assignments are managed with PIM",
+      "TestStatus": "Passed",
+      "TestPillar": "Identity",
+      "TestCategory": "Privileged access",
+      "TestRisk": "High",
+      "TestImpact": "High",
+      "TestDescription": "PIM management of privileged roles.",
+      "TestResult": "All checked privileged role assignments use PIM.",
+      "TestSkipped": "",
+      "SkippedReason": null,
+      "TestTags": null
+    },
+    {
+      "TestId": "24823",
+      "TestTitle": "Devices are marked compliant before access",
+      "TestStatus": "Failed",
+      "TestPillar": "Devices",
+      "TestCategory": "Tenant",
+      "TestRisk": "Medium",
+      "TestImpact": "Medium",
+      "TestDescription": "Compliance baseline.",
+      "TestResult": "Compliance baseline policy is not configured. (sample)",
+      "TestSkipped": "",
+      "SkippedReason": null,
+      "TestTags": null
+    },
+    {
+      "TestId": "26011",
+      "TestTitle": "Global Secure Access tunnel is enabled for all tenants",
+      "TestStatus": "Failed",
+      "TestPillar": "Network",
+      "TestCategory": "Global Secure Access",
+      "TestRisk": "Medium",
+      "TestImpact": "Medium",
+      "TestDescription": "GSA identity-aware access.",
+      "TestResult": "Global Secure Access is not enabled. (sample)",
+      "TestSkipped": "",
+      "SkippedReason": null,
+      "TestTags": null
+    },
+    {
+      "TestId": "35009",
+      "TestTitle": "Sensitivity labels are configured and published",
+      "TestStatus": "Skipped",
+      "TestPillar": "Data",
+      "TestCategory": "Sensitivity Labels",
+      "TestRisk": "Medium",
+      "TestImpact": "Medium",
+      "TestDescription": "Sensitivity label classification.",
+      "TestResult": "",
+      "TestSkipped": "Skipped — not licensed for AIP in this fixture.",
+      "SkippedReason": "Not licensed for AIP",
+      "TestTags": null
+    }
+  ],
+  "EndOfJson": true
+}

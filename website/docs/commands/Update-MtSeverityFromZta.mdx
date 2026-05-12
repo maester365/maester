@@ -1,0 +1,142 @@
+---
+sidebar_class_name: hidden
+description: Mutates an in-memory TestSettings[] array per ZtaSettings.SeverityEscalationRules before Pester discovery, so ZTA findings can escalate severity on matching Maester tests.
+id: Update-MtSeverityFromZta
+title: Update-MtSeverityFromZta
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Update-MtSeverityFromZta.ps1
+---
+
+## SYNOPSIS
+
+Mutates an in-memory `TestSettings[]` array per `ZtaSettings.SeverityEscalationRules`
+before Pester discovery, so ZTA findings can escalate severity on matching Maester tests.
+
+## SYNTAX
+
+```powershell
+Update-MtSeverityFromZta [-TestSettings] <Object[]> [-WhatIf] [-Confirm]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Reads `$script:MtZtaContext.ZtaSettings.SeverityEscalationRules`, evaluates each rule
+against the loaded context, and mutates entries in `-TestSettings` whose `Id` or `Tag`
+matches an active rule's selector.
+
+Rule shape:
+
+```jsonc
+{
+  "WhenPillarFailedAtLeast": <int>,           // count of Failed tests in pillar
+  "WhenCategoryFlaggedUsersAtLeast": <int>,   // count of users in CategoryMappings bucket
+  "Pillar": "<Identity|Devices|Network|Data>",
+  "Category": "<bucket name from CategoryMappings>",
+  "EscalateMaesterTagged": ["<tag>", ...],    // selector — match TestSetting.Tag
+  "EscalateMaesterTestId": ["<id>", ...],     // selector — match TestSetting.Id (wildcards allowed)
+  "From": "<severity>",                        // optional — only escalate if current severity == From
+  "To": "<severity>"
+}
+```
+
+Idempotent — running twice does not double-escalate (the second run finds severity
+already at the target). Safe to call before Pester discovery on each `Invoke-Maester`.
+
+No-op when `$script:MtZtaContext` is unset, ZtaSettings is missing, or no rules fire.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+$cfg = Get-Content maester-config.json -Raw | ConvertFrom-Json
+Import-MtZtaResult -ZtaResultsPath .\zta -ZtaSettings $cfg.ZtaSettings
+$cfg.TestSettings = Update-MtSeverityFromZta -TestSettings $cfg.TestSettings
+```
+
+## PARAMETERS
+
+### -TestSettings
+
+The TestSettings array from `maester-config.json` (already deserialised to PSObject).
+Mutated in place AND returned for pipeline-style chaining.
+
+```yaml
+Type: Object[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+
+Shows what would happen if the cmdlet runs without actually making changes.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Confirm
+
+Prompts you for confirmation before running the cmdlet.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[object[]]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Update-MtSeverityFromZta](https://maester.dev/docs/commands/Update-MtSeverityFromZta)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

@@ -1,0 +1,123 @@
+---
+sidebar_class_name: hidden
+description: Returns curated classification of Microsoft Graph methodsRegistered enum values into PhishResistant / Phishable / SingleFactor / All buckets.
+id: Get-MtZtaAuthMethodSet
+title: Get-MtZtaAuthMethodSet
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtZtaAuthMethodSet.ps1
+---
+
+## SYNOPSIS
+
+Returns curated classification of Microsoft Graph `methodsRegistered` enum values into PhishResistant / Phishable / SingleFactor / All buckets.
+
+## SYNTAX
+
+```powershell
+Get-MtZtaAuthMethodSet [[-Bucket] <String>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Centralises the classification used by ZTA-aware MFA-uplift tests
+(MT.Zta.1140 / 1141 / 1142 / 1143) so a single source of truth feeds every
+check. Without this helper, each test inlines a different ad-hoc regex /
+array which drifts as Microsoft adds new methods.
+
+Classification rationale:
+
+- **PhishResistant** — methods whose protocol prevents an attacker-controlled
+  relay site from harvesting the credential (FIDO2/WebAuthn binding the
+  credential to the relying-party origin, X.509 cert with PIN, Windows Hello
+  for Business, device-bound passkeys).
+
+- **Phishable** — every interactive method that an AiTM proxy or social-eng
+  attack can capture or replay: phone-bound (`mobilePhone` /
+  `alternateMobilePhone` / `officePhone` — these are the URD enum values
+  for what user-facing tooling calls "SMS"; URD does NOT emit `sms`),
+  `voice`, email OTP, software and hardware TOTP, Authenticator push (consent
+  fatigue), and `microsoftAuthenticatorPasswordless`. Note: `sms` is a value
+  in the CA `authenticationMethodModes` enum (used by authStrength
+  `allowedCombinations`), NOT the URD `methodsRegistered` enum this cmdlet
+  models. The CA-side vocabulary is checked inline in MT.Zta.1131; this cmdlet
+  feeds the user-data-side checks (MT.Zta.1140 / 1141 / 1142 / 1143) that
+  read URD rows.
+
+- **SingleFactor** — methods that are explicitly NOT MFA at all
+  (`x509CertificateSingleFactor`, `password`). Listed for completeness.
+
+References:
+
+- Graph schema: https://learn.microsoft.com/graph/api/resources/userregistrationdetails
+- Microsoft phish-resistant MFA list: https://learn.microsoft.com/azure/active-directory/authentication/concept-authentication-strengths
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+$classes = Get-MtZtaAuthMethodSet
+$hasOnlyWeak = -not (@($u.methodsRegistered | Where-Object { $_ -in $classes.PhishResistant }).Count -gt 0)
+```
+
+### EXAMPLE 2
+
+```powershell
+$phishable = Get-MtZtaAuthMethodSet -Bucket Phishable
+if (@($u.methodsRegistered | Where-Object { $_ -in $phishable }).Count -gt 0) { ... }
+```
+
+## PARAMETERS
+
+### -Bucket
+
+Which classification bucket to return. Default returns the full hashtable.
+
+Valid values: `PhishResistant`, `Phishable`, `SingleFactor`, `All`.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: All
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[hashtable] or [string[]]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtZtaAuthMethodSet](https://maester.dev/docs/commands/Get-MtZtaAuthMethodSet)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

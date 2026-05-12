@@ -1,0 +1,126 @@
+---
+sidebar_class_name: hidden
+description: Returns a per-test threshold value, sourced from ZtaSettings.Thresholds.<TestId> in maester-config.json with a caller-supplied default fallback.
+id: Get-MtZtaThreshold
+title: Get-MtZtaThreshold
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtZtaThreshold.ps1
+---
+
+## SYNOPSIS
+
+Returns a per-test threshold value, sourced from `ZtaSettings.Thresholds.<TestId>` in maester-config.json with a caller-supplied default fallback.
+
+## SYNTAX
+
+```powershell
+Get-MtZtaThreshold [-TestId] <String> [-Default] <Object> [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Lets ZTA-aware tests expose their numeric thresholds (warn-band counts,
+fail-ratio cutoffs, sample caps) to operator tuning via maester-config
+without forking the test code.
+
+Lookup is two-step:
+
+1. `(Get-MtZta).ZtaSettings.Thresholds.<TestId>` if present and non-null
+2. otherwise the `-Default` parameter
+
+If `ZtaSettings` carries a hashtable / pscustomobject under `Thresholds`,
+both shapes are accepted — JSON-deserialised pscustomobject (default
+`ConvertFrom-Json` behaviour) or hashtable (operator passing `-AsHashtable`).
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+$threshold = Get-MtZtaThreshold -TestId 'MT.Zta.1001' -Default 30
+$summary.IdentityFailed | Should -BeLessThan $threshold
+```
+
+### EXAMPLE 2
+
+```powershell
+# In maester-config.json:
+# "ZtaSettings": {
+#   "Thresholds": {
+#     "MT.Zta.1001": 50,
+#     "MT.Zta.1140": 5
+#   }
+# }
+```
+
+## PARAMETERS
+
+### -TestId
+
+The Maester test id (e.g. `MT.Zta.1001`). Conventionally the same as the `It`
+block tag — that way the threshold key in maester-config matches what operators
+see in the report.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Default
+
+The threshold value to return when no operator override exists. Required —
+every threshold-bearing test must declare its built-in default.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[object]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtZtaThreshold](https://maester.dev/docs/commands/Get-MtZtaThreshold)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

@@ -1,0 +1,123 @@
+---
+sidebar_class_name: hidden
+description: Returns the ZTA context loaded by Import-MtZtaResult, or $null if ZTA was not ingested.
+id: Get-MtZta
+title: Get-MtZta
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtZta.ps1
+---
+
+## SYNOPSIS
+
+Returns the ZTA context loaded by `Import-MtZtaResult`, or `$null` if ZTA was not ingested.
+
+## SYNTAX
+
+```powershell
+Get-MtZta [[-Section] <String>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Accessor used inside Pester `BeforeDiscovery` and `It` blocks to consume ZTA findings.
+Returns `$null` when ZTA was not loaded so tests can `Set-ItResult -Skipped` cleanly
+without having to know whether the operator opted into ZTA-focused mode.
+
+When `-Section` is omitted the full `$script:MtZtaContext` object is returned.
+
+When the context is null but `$env:ZTA_RESULTS_REF` points to a valid path the cmdlet
+self-heals by re-invoking `Import-MtZtaResult`. This covers the case where Pester's
+child runspace resets the `$script:` scope to null during test execution. See the
+"Environment variables" section in the [Zero Trust Assessment integration](../zero-trust-assessment.md)
+page for details.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+BeforeDiscovery { $script:zta = Get-MtZta -Section Tests }
+It 'Identity pillar has fewer than 30 failures' -Skip:(-not $script:zta) {
+    ($script:zta | Where-Object { $_.TestPillar -eq 'Identity' -and $_.TestStatus -eq 'Failed' }).Count |
+        Should -BeLessThan 30
+}
+```
+
+### EXAMPLE 2
+
+```powershell
+$summary = Get-MtZta -Section Summary
+if ($summary.IdentityFailRatio -ge 0.5) { ... }
+```
+
+### EXAMPLE 3
+
+```powershell
+$buckets = Get-MtZta -Section FlaggedUsers
+Describe 'Per-user posture' -ForEach $buckets { ... }
+```
+
+## PARAMETERS
+
+### -Section
+
+Which section of the ZTA context to return. When omitted, returns the full
+`$script:MtZtaContext` object.
+
+Valid values:
+
+- `Tests` — raw Tests[] array from ZeroTrustAssessmentReport.json
+- `Manifest` — manifest.json contents (tenant, run time, ZTA version, hashes)
+- `Database` — DuckDB query context (Tier 2 — when ZTA's loaded assembly available)
+- `JsonExport` — JSON-shadow query context (Tier 1 — always populated when bundle has zt-export/)
+- `Reader` — highest-tier-available reader (Database if loaded, else JsonExport). Use this for tests that want to read tables without caring which tier services the request.
+- `EmergencyAccessAccounts` — normalised break-glass list from GlobalSettings.EmergencyAccessAccounts. Returns [pscustomobject[]] with { Id, UserPrincipalName, DisplayName }.
+- `Summary` — per-pillar fail counts + ratios + tenant id
+- `FlaggedUsers` — output of Group-MtZtaFlaggedIdentity
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+[object] or [object[]]
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtZta](https://maester.dev/docs/commands/Get-MtZta)
+
+[https://maester.dev/docs/zero-trust-assessment](https://maester.dev/docs/zero-trust-assessment)

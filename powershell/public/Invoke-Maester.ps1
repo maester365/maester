@@ -22,6 +22,36 @@
     .PARAMETER NonInteractive
     This will suppress the logo when Maester starts, prevent the test results from being opened in the default browser, and suppress all pretty messages.
 
+    .PARAMETER ZtaResultsPath
+    Path or URL to a Zero Trust Assessment (ZTA) result bundle. When supplied,
+    Maester pre-loads the bundle via Import-MtZtaResult so ZTA-aware tests
+    (under Custom/Zta/ in the customer test tree) have data to consume.
+    After Pester runs, Build-MtZtaBundle attaches a ZtaBundle property to the
+    returned $maesterResults so the HTML report's ZTA tab and the JSON /
+    Markdown outputs all carry per-tenant analytics.
+
+    Three source patterns accepted:
+      - Local path to a folder, .tar.gz, or .zip
+      - Azure Blob URL: https://<account>.blob.core.windows.net/...
+      - Azure Artifacts Universal Package: upkg://<org>/<project>/<feed>/<name>@<ver>
+
+    Omitting this parameter preserves stock Maester behaviour byte-for-byte.
+
+    .PARAMETER DisableZta
+    Opt-out switch. When set, Maester ignores -ZtaResultsPath even if supplied.
+
+    .PARAMETER ZtaForceJsonFallback
+    Skip the DuckDB reader tier and use the JSON-shadow tier only. Useful on
+    hosts without the DuckDB.NET native binary or for reproducibility tests.
+
+    .PARAMETER ZtaFreshnessDays
+    Override the default 14-day artifact freshness threshold. Stale bundles
+    still load (warn-but-proceed); MtZtaContext.IsStale lets tests react.
+
+    .PARAMETER ExpectedTenantId
+    Cross-tenant safety pin. When set, the bundle's manifest.tenantId must
+    match exactly or the load aborts before any test runs.
+
     .EXAMPLE
     Invoke-Maester
 
@@ -96,6 +126,27 @@
     ```
 
     Connect to all tested services and run all tests, including the long-running and preview tests.
+
+    .EXAMPLE
+    ```powershell
+    Connect-Maester
+    Invoke-Maester -ZtaResultsPath './zta-results-2026-05-01' -Path './maester-tests'
+    ```
+
+    Loads a Zero Trust Assessment bundle (local folder, .tar.gz, .zip, blob URI, or upkg://)
+    before running tests so ZTA-aware tests under Custom/Zta/ can consume it.
+    After Pester finishes, attaches a `ZtaBundle` analytics object to the result
+    so the HTML report renders a ZTA tab and the JSON output carries the data.
+
+    .EXAMPLE
+    ```powershell
+    Invoke-Maester -ZtaResultsPath 'https://contoso-sec.blob.core.windows.net/zta/2026-05-01.tar.gz' `
+                   -ExpectedTenantId '00000000-0000-0000-0000-000000000000' `
+                   -ZtaFreshnessDays 7
+    ```
+
+    Loads a ZTA bundle from Azure Blob storage with cross-tenant safety pin and a
+    tighter 7-day freshness threshold.
 
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
@@ -206,7 +257,44 @@
 
         # The root directory for configuration drift tracking.
         [Parameter(HelpMessage = 'Specify drift root directory, see https://maester.dev/docs/tests/MT.1060')]
-        [string] $DriftRoot
+        [string] $DriftRoot,
+
+        # Path to a Zero Trust Assessment (ZTA) result bundle. When supplied,
+        # `Import-MtZtaResult` runs before Pester discovery so ZTA-aware tests
+        # under `Custom/Zta/` (and any test calling `Get-MtZta`) have data to
+        # consume. After the run, `Build-MtZtaBundle` attaches a `ZtaBundle`
+        # property to the returned results so the HTML report's ZTA tab and the
+        # JSON/Markdown outputs all carry analytics alongside the test rows.
+        #
+        # Three source patterns recognised (in priority order):
+        #   1. https://<account>.blob.core.windows.net/...  — Azure Blob (SAS / WIF / -Identity)
+        #   2. upkg://<org>/<project>/<feed>/<name>@<ver>   — Azure Artifacts Universal Package
+        #   3. <local path>                                  — folder, .tar.gz, or .zip
+        #
+        # Empty / not-passed = current behaviour, byte-identical to upstream.
+        [Parameter(HelpMessage = 'Path / URL to a ZTA result bundle. Enables ZTA-aware focus mode.')]
+        [string] $ZtaResultsPath,
+
+        # Opt-out switch — short-circuits all ZTA logic even when -ZtaResultsPath
+        # is supplied (useful for repro runs or when the bundle is known-stale).
+        [Parameter(HelpMessage = 'Disable ZTA loading even if -ZtaResultsPath is provided.')]
+        [switch] $DisableZta,
+
+        # Skip DuckDB entirely and use the JSON-only path. Useful on Linux without
+        # the DuckDB.NET native binary or for reproducibility tests.
+        [Parameter(HelpMessage = 'Force JSON-only reader; do not attempt the DuckDB tier.')]
+        [switch] $ZtaForceJsonFallback,
+
+        # Override the default 14-day ZTA artifact freshness threshold. Stale
+        # runs still proceed (warn-but-proceed); the IsStale flag rides on the
+        # context so tests can decide what to do.
+        [Parameter(HelpMessage = 'Override the default 14-day ZTA freshness threshold.')]
+        [int] $ZtaFreshnessDays = 14,
+
+        # Cross-tenant safety pin. When set, the bundle's manifest.tenantId must
+        # match exactly or the load aborts before any test runs.
+        [Parameter(HelpMessage = 'Pin the ZTA bundle to a specific tenant id.')]
+        [string] $ExpectedTenantId
     )
 
     function GetDefaultFileName() {
@@ -448,6 +536,67 @@
     }
     $__MtSession.MaesterConfig = Get-MtMaesterConfig -Path $Path -TenantId $configTenantId
 
+    # ── ZTA-focus integration ───────────────────────────────────────────────
+    # When -ZtaResultsPath is supplied, prime $script:MtZtaContext BEFORE
+    # Pester discovery so Get-MtZta returns real data inside It blocks and
+    # Update-MtSeverityFromZta can mutate TestSettings before discovery reads them.
+    # ZtaSettings and GlobalSettings are pulled from the merged Maester config.
+    #
+    # Two env vars are exported for the in-Pester self-heal path: Pester child
+    # runspaces can reset $script:MtZtaContext; Get-MtZta re-bootstraps from
+    # $env:ZTA_RESULTS_REF + $env:MAESTER_ZTA_CONFIG_PATH when that happens.
+    $ztaLoaded = $false
+    if (-not [string]::IsNullOrWhiteSpace($ZtaResultsPath) -and -not $DisableZta.IsPresent) {
+        Write-MtProgress -Activity 'Starting Maester' -Status 'Loading Zero Trust Assessment bundle...' -Force
+        $importArgs = @{
+            ZtaResultsPath = $ZtaResultsPath
+            FreshnessDays  = $ZtaFreshnessDays
+            ErrorAction    = 'SilentlyContinue'
+        }
+        if ($ZtaForceJsonFallback.IsPresent) { $importArgs['ForceJsonFallback'] = $true }
+        if (-not [string]::IsNullOrWhiteSpace($ExpectedTenantId)) { $importArgs['ExpectedTenantId'] = $ExpectedTenantId }
+
+        $cfg = $__MtSession.MaesterConfig
+        if ($cfg) {
+            if ($cfg.PSObject.Properties['ZtaSettings']    -and $cfg.ZtaSettings)    { $importArgs['ZtaSettings']    = $cfg.ZtaSettings }
+            if ($cfg.PSObject.Properties['GlobalSettings'] -and $cfg.GlobalSettings) { $importArgs['GlobalSettings'] = $cfg.GlobalSettings }
+        }
+
+        try {
+            Import-MtZtaResult @importArgs
+            $ztaLoaded = $null -ne (Get-MtZta -ErrorAction SilentlyContinue)
+            if ($ztaLoaded) {
+                $env:ZTA_RESULTS_REF = $ZtaResultsPath
+                $cfgFile = $__MtSession.MaesterConfig.PSObject.Properties['__ConfigFilePath']
+                if ($cfgFile -and $cfgFile.Value) { $env:MAESTER_ZTA_CONFIG_PATH = [string]$cfgFile.Value }
+                Write-Verbose "ZTA bundle loaded; context available via Get-MtZta."
+
+                # Severity overlay — mutates TestSettings pre-discovery. Re-assign the
+                # return value because ConvertFrom-Json arrays may not behave reference-
+                # like across module boundaries.
+                if ((Get-Command Update-MtSeverityFromZta -ErrorAction SilentlyContinue) -and
+                    $__MtSession.MaesterConfig -and
+                    $__MtSession.MaesterConfig.PSObject.Properties['TestSettings']) {
+                    try {
+                        $currentTestSettings = @($__MtSession.MaesterConfig.TestSettings)
+                        $updated = Update-MtSeverityFromZta -TestSettings $currentTestSettings -ErrorAction SilentlyContinue
+                        if ($null -ne $updated) {
+                            $__MtSession.MaesterConfig.TestSettings = @($updated)
+                        }
+                    } catch {
+                        Write-Verbose "Update-MtSeverityFromZta failed (non-fatal): $($_.Exception.Message)"
+                    }
+                }
+            }
+            else {
+                Write-Warning "ZTA load returned no context (likely empty/malformed bundle at '$ZtaResultsPath'). Continuing without ZTA awareness."
+            }
+        }
+        catch {
+            Write-Warning "ZTA bundle load failed: $($_.Exception.Message). Continuing without ZTA awareness."
+        }
+    }
+
     Write-MtProgress -Activity 'Starting Maester' -Status 'Discovering tests to run...' -Force
 
     $pesterResults = Invoke-Pester -Configuration $pesterConfig
@@ -476,8 +625,50 @@
 
         $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig
 
+        # When ZTA was loaded, compile analytics into ZtaBundle and attach to results.
+        # The HTML/JSON/Markdown writers serialise $maesterResults, so this single
+        # attachment makes the ZTA tab visible with no further plumbing. Non-fatal.
+        if ($ztaLoaded) {
+            Write-MtProgress -Activity 'Processing test results' -Status 'Building ZTA analytics bundle...' -Force
+            try {
+                $ztaBundle = Build-MtZtaBundle
+                if ($ztaBundle) {
+                    $maesterResults | Add-Member -NotePropertyName 'ZtaBundle' -NotePropertyValue $ztaBundle -Force
+                    Write-Verbose 'ZtaBundle attached to results; HTML / JSON / MD outputs will include it.'
+                }
+            } catch {
+                Write-Warning "Build-MtZtaBundle failed: $($_.Exception.Message). Outputs will not carry the ZTA tab."
+            }
+        }
+
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            # Serialize at stock depth=5 (upstream byte-identical). Pester's nested
+            # ErrorRecord chain contains `Exception.Data` as a
+            # System.Collections.ListDictionaryInternal — a non-string-keyed
+            # dictionary that ConvertTo-Json refuses. Depth=5 doesn't recurse
+            # deep enough to hit it, so the write always succeeds.
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8
+
+            # ZtaBundle injection — read-modify-write the JUST-WRITTEN on-disk
+            # JSON to add the bundle at high depth. Once data is round-tripped
+            # through ConvertFrom-Json, the ListDictionaryInternal instances
+            # are gone (everything is plain pscustomobject), so writing at
+            # high depth succeeds.
+            #
+            # This mirrors the orchestrator pattern documented in
+            # Invoke-MaesterAssessment.ps1 and is bug-equivalent: write at the
+            # safe depth, then re-emit at the bundle-friendly depth so the
+            # nested Inventory / Applications / Devices / Privileged /
+            # AuthMethodScore hashtables survive.
+            if ($maesterResults.PSObject.Properties['ZtaBundle'] -and $maesterResults.ZtaBundle) {
+                try {
+                    $disk = Get-Content -Path $out.OutputJsonFile -Raw | ConvertFrom-Json -Depth 100
+                    $disk | Add-Member -NotePropertyName 'ZtaBundle' -NotePropertyValue $maesterResults.ZtaBundle -Force
+                    $disk | ConvertTo-Json -Depth 100 -WarningAction SilentlyContinue | Set-Content -Path $out.OutputJsonFile -Encoding UTF8
+                } catch {
+                    Write-Warning "ZtaBundle injection to JSON failed (test rows are intact): $($_.Exception.Message)"
+                }
+            }
         }
 
         if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
@@ -505,8 +696,12 @@
             }
 
             if ( ( Get-MtUserInteractive ) -and ( -not $NonInteractive ) ) {
-                # Open test results in the default browser.
-                Invoke-Item $out.OutputHtmlFile | Out-Null
+                # Open test results in the default browser. Some Windows shell
+                # registrations crash the host with 0xC0000005 from
+                # ShellExecuteEx — guard so the report stays on disk and the
+                # PassThru return value reaches the caller even on failure.
+                try { Invoke-Item $out.OutputHtmlFile | Out-Null }
+                catch { Write-Verbose "Invoke-Item failed to auto-open the report: $($_.Exception.Message). Open '$($out.OutputHtmlFile)' manually." }
             }
         }
 

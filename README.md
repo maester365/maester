@@ -71,6 +71,40 @@ Allowed values include:
 Connect-Maester -Environment USGov
 ```
 
+## Zero Trust Assessment integration
+
+Maester can load a [Zero Trust Assessment](https://microsoft.github.io/zerotrustassessment/) (ZTA) result bundle so its tests can focus on the areas ZTA flagged. ZTA runs separately (workstation, another pipeline, another tenant); Maester reads the captured bundle and runs **38 ZTA-aware Pester tests** under `tests/Zta/` plus attaches a `ZtaBundle` analytics object to the result so the HTML report renders a dedicated **ZTA tab**.
+
+### Quick start
+
+```powershell
+Connect-Maester
+Invoke-Maester -ZtaResultsPath ./zta-bundle -Path ./tests
+```
+
+`-ZtaResultsPath` accepts three source patterns (in priority order):
+
+1. **Local path** to a folder, `.tar.gz`, or `.zip`
+2. **Azure Blob URL** — `https://<account>.blob.core.windows.net/...` (SAS, WIF, or `-Identity`)
+3. **Azure Artifacts Universal Package** — `upkg://<org>/<project>/<feed>/<name>@<ver>`
+
+### What it does
+
+- **Before Pester** — `Import-MtZtaResult` loads bundle metadata, manifests freshness, and exposes `Get-MtZta` to every test. Applies `Update-MtSeverityFromZta` so ZTA evidence can escalate severity on matching Maester core tests.
+- **During Pester** — the 38 `MT.Zta.*` tests evaluate pillar posture, run CA What-If simulations against the live tenant, gap-fill compensating-control checks (App Protection, MFA registration, privileged hygiene), and cross-table joins on the ZTA data via the bundle reader.
+- **After Pester** — `Build-MtZtaBundle` compiles per-tenant analytics (inventory, auth-method posture, CA coverage, privileged snapshot, sign-in funnel) and attaches as `$results.ZtaBundle` so HTML / JSON / Markdown outputs all carry it.
+
+### Where the pieces live
+
+- `powershell/public/*Zta*.ps1` — 8 public cmdlets (`Get-MtZta`, `Import-MtZtaResult`, `Build-MtZtaBundle`, `Get-MtZtaAuthMethodSet`, `Get-MtZtaRecommendedTag`, `Get-MtZtaThreshold`, `Test-MtZtaIsEmergencyAccess`, `Update-MtSeverityFromZta`)
+- `powershell/internal/*Zta*.ps1` — 5 internal helpers (Tier 1 / Tier 2 readers, freshness, artifact resolver, bucketing)
+- `tests/Zta/*.Tests.ps1` — 11 test files, 38 distinct `MT.Zta.*` tests
+- `report/src/pages/ZtaPage.tsx` + `report/src/components/MtZta*.{jsx,tsx}` — ZTA tab UI
+
+Omitting `-ZtaResultsPath` keeps Maester behaviour byte-identical to upstream — no test changes, no extra dependencies.
+
+For full documentation see [Zero Trust Assessment](https://maester.dev/docs/zero-trust-assessment).
+
 ## Keeping your Maester tests up to date
 
 The Maester team will add new tests over time. To get the latest updates, use the commands below to update this folder with the latest tests.

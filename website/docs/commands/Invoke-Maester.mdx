@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_class_name: hidden
 description: This is the main Maester command that runs the tests and generates a report of the results.
 id: Invoke-Maester
@@ -21,7 +21,9 @@ Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-I
  [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
  [-SkipGraphConnect] [-DisableTelemetry] [-SkipVersionCheck] [-ExportCsv] [-ExportExcel] [-NoLogo]
- [-DriftRoot <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-DriftRoot <String>] [-ZtaResultsPath <String>] [-DisableZta] [-ZtaForceJsonFallback]
+ [-ZtaFreshnessDays <Int32>] [-ExpectedTenantId <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -145,6 +147,30 @@ Invoke-Maester -IncludeLongRunning -IncludePreview
 ```
 
 Connect to all tested services and run all tests, including the long-running and preview tests.
+
+### EXAMPLE 14
+
+```powershell
+Connect-Maester
+Invoke-Maester -ZtaResultsPath './zta-bundle' -Path './tests'
+```
+
+Loads a Zero Trust Assessment result bundle (local folder, `.tar.gz`, `.zip`,
+blob URI, or `upkg://`) before running tests so the 38 `MT.Zta.*` tests under
+`tests/Zta/` can consume it. After Pester finishes, attaches a `ZtaBundle`
+analytics object to the result so the HTML report renders a dedicated ZTA tab
+and the JSON output carries the data. See [Zero Trust Assessment](../zero-trust-assessment.md).
+
+### EXAMPLE 15
+
+```powershell
+Invoke-Maester -ZtaResultsPath 'https://contoso-sec.blob.core.windows.net/zta/2026-05-01.tar.gz' `
+               -ExpectedTenantId '00000000-0000-0000-0000-000000000000' `
+               -ZtaFreshnessDays 7
+```
+
+Loads a ZTA bundle from Azure Blob storage with a cross-tenant safety pin and
+a tighter 7-day freshness threshold (default is 14 days).
 
 ## PARAMETERS
 
@@ -609,6 +635,109 @@ Accept wildcard characters: False
 ### -DriftRoot
 
 The root directory for configuration drift tracking.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ZtaResultsPath
+
+Path or URL to a Zero Trust Assessment (ZTA) result bundle. When supplied,
+Maester pre-loads the bundle via `Import-MtZtaResult` before Pester
+discovery, applies any ZTA-driven severity overlay via
+`Update-MtSeverityFromZta`, and after the run compiles a `ZtaBundle`
+analytics object onto the returned results so the HTML / JSON / Markdown
+outputs all carry per-tenant analytics (Inventory, AuthMethodScore, CA
+coverage, Sign-in funnel, Privileged snapshot, Devices / Applications mix).
+
+Three source patterns are accepted (priority order):
+
+1. Local path — folder, `.tar.gz`, or `.zip`
+2. Azure Blob URL — `https://<account>.blob.core.windows.net/...` (SAS in URI, WIF, or `-Identity`)
+3. Azure Artifacts Universal Package — `upkg://<org>/<project>/<feed>/<name>@<ver>`
+
+Omitting this parameter preserves stock Maester behaviour byte-for-byte. See
+[Zero Trust Assessment](../zero-trust-assessment.md) for the full integration
+guide.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DisableZta
+
+Opt-out switch. When set, Maester ignores `-ZtaResultsPath` even if supplied
+— useful for repro runs or when the bundle is known-stale.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ZtaForceJsonFallback
+
+Skip the DuckDB reader tier and use the JSON-shadow tier only. Useful on hosts
+without the `DuckDB.NET` native binary, on PowerShell 5.1, or for
+reproducibility tests where DuckDB version drift could change results.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ZtaFreshnessDays
+
+Override the default 14-day artifact freshness threshold. Stale bundles still
+load (warn-but-proceed); `MtZtaContext.IsStale` lets tests react to age.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: 14
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExpectedTenantId
+
+Cross-tenant safety pin. When set, the bundle's `manifest.tenantId` must
+match exactly or the load aborts before any test runs. Use to prevent
+accidentally running tests against a bundle from a different tenant than
+your live Graph session.
 
 ```yaml
 Type: String

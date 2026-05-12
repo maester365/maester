@@ -120,6 +120,11 @@ function Get-MtMaesterConfig {
     # Store the source file name so the report can show which config was loaded
     $configFileName = Split-Path -Path $ConfigFilePath -Leaf
     Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name 'ConfigSource' -Value $configFileName
+    # Resolved absolute path. Invoke-Maester exports this as $env:MAESTER_ZTA_CONFIG_PATH
+    # so Get-MtZta can re-load ZtaSettings + GlobalSettings inside a Pester sub-runspace
+    # where $script:MtZtaContext may reset to $null.
+    $resolvedConfigPath = (Resolve-Path -LiteralPath $ConfigFilePath).Path
+    Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name '__ConfigFilePath' -Value $resolvedConfigPath
 
     # Add a new property called TestSettingsHash to the config object with Id as the key for faster access
     Add-Member -InputObject $maesterConfig -MemberType NoteProperty -Name 'TestSettingsHash' -Value @{}

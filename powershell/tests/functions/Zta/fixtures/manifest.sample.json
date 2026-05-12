@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  "tenantName": "Sample Tenant",
+  "runStartTime": "2026-05-01T10:00:00.0000000+00:00",
+  "ztaVersion": "2.2.0",
+  "pillarsCovered": [ "Identity", "Devices", "Network", "Data" ],
+  "duckdbVersion": "1.5.2",
+  "contentHashes": {
+    "ZeroTrustAssessmentReport.json": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "zt.db": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  }
+}

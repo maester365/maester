@@ -56,7 +56,7 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
-        'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Clear-MtDnsCache', 'Clear-MtExoCache',
+        'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Build-MtZtaBundle', 'Clear-MtDnsCache', 'Clear-MtExoCache',
         'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester', 'Convert-MtResultsToFlatObject',
         'ConvertFrom-MailAuthenticationRecordDkim', 'ConvertFrom-MailAuthenticationRecordDmarc',
         'ConvertFrom-MailAuthenticationRecordMx', 'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester',
@@ -64,7 +64,9 @@
         'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRole',
         'Get-MtRoleMember', 'Get-MtSafeMarkdown', 'Get-MtSession', 'Get-MtTestInventory', 'Get-MtUser',
-        'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType', 'Import-MtMaesterResult',
+        'Get-MtUserAuthenticationMethod', 'Get-MtUserAuthenticationMethodInfoByType', 'Get-MtZta',
+        'Get-MtZtaAuthMethodSet', 'Get-MtZtaRecommendedTag', 'Get-MtZtaThreshold',
+        'Import-MtMaesterResult', 'Import-MtZtaResult',
         'Install-MaesterTests', 'Invoke-Maester', 'Invoke-MtAzureRequest', 'Invoke-MtAzureResourceGraphRequest',
         'Invoke-MtGraphRequest', 'Invoke-MtGraphSecurityQuery', 'Merge-MtMaesterResult', 'New-MtMaesterApp', 'Resolve-SPFRecord',
         'Send-MtMail', 'Send-MtTeamsMessage', 'Test-AzdoAllowExtensionsLocalNetworkAccess', 'Test-AzdoAllowRequestAccessToken',
@@ -165,7 +167,8 @@
         'Test-MtXspmCriticalCredentialsOnNonTpmProtectedDevices', 'Test-MtXspmCriticalCredsOnDevicesWithNonCriticalAccounts',
         'Test-MtXspmEnabledPrivilegedUsersLinkedToDisabledIdentity', 'Test-MtXspmExposedCredentialsForPrivilegedUsers',
         'Test-MtXspmHybridUsersWithAssignedEntraIdRoles', 'Test-MtXspmPendingApprovalCriticalAssetManagement',
-        'Test-MtXspmPrivilegedUsersLinkedToIdentity', 'Test-MtXspmPublicRemotelyExploitableHighExposureDevices', 'Test-ORCA100',
+        'Test-MtXspmPrivilegedUsersLinkedToIdentity', 'Test-MtXspmPublicRemotelyExploitableHighExposureDevices',
+        'Test-MtZtaIsEmergencyAccess', 'Test-ORCA100',
         'Test-ORCA101', 'Test-ORCA102', 'Test-ORCA103', 'Test-ORCA104', 'Test-ORCA105', 'Test-ORCA106', 'Test-ORCA107',
         'Test-ORCA108', 'Test-ORCA108_1', 'Test-ORCA109', 'Test-ORCA110', 'Test-ORCA111', 'Test-ORCA112', 'Test-ORCA113',
         'Test-ORCA114', 'Test-ORCA115', 'Test-ORCA116', 'Test-ORCA118_1', 'Test-ORCA118_2', 'Test-ORCA118_3', 'Test-ORCA118_4',
@@ -175,7 +178,8 @@
         'Test-ORCA221', 'Test-ORCA222', 'Test-ORCA223', 'Test-ORCA224', 'Test-ORCA225', 'Test-ORCA226', 'Test-ORCA227',
         'Test-ORCA228', 'Test-ORCA229', 'Test-ORCA230', 'Test-ORCA231', 'Test-ORCA232', 'Test-ORCA233', 'Test-ORCA233_1',
         'Test-ORCA234', 'Test-ORCA235', 'Test-ORCA236', 'Test-ORCA237', 'Test-ORCA238', 'Test-ORCA239', 'Test-ORCA240',
-        'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243', 'Test-ORCA244', 'Update-MaesterTests', 'Update-MtMaesterApp'
+        'Test-ORCA241', 'Test-ORCA242', 'Test-ORCA243', 'Test-ORCA244', 'Update-MaesterTests', 'Update-MtMaesterApp',
+        'Update-MtSeverityFromZta'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -188,7 +192,9 @@
     AliasesToExport      = @(
         'Invoke-MtMaester',
         'Connect-MtGraph', 'Connect-MtMaester',
-        'Disconnect-MtGraph', 'Disconnect-MtMaester'
+        'Disconnect-MtGraph', 'Disconnect-MtMaester',
+        # Back-compat alias for the singular-noun rename of Import-MtZtaResult.
+        'Import-MtZtaResults'
     )
 
     # List of all modules packaged with this module
