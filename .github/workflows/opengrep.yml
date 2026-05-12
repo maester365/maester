@@ -1,0 +1,83 @@
+name: "OpenGrep"
+
+# OpenGrep is an LGPL 2.1 fork of Semgrep CE, backed by a consortium of
+# AppSec vendors. It is rule-compatible with Semgrep, so existing rule packs
+# (p/security-audit, p/javascript, p/typescript, p/github-actions) work
+# unchanged. See https://opengrep.dev for project details.
+#
+# This workflow currently runs on workflow_dispatch only while we evaluate
+# the tool's effectiveness for the Maester codebase. If results are valuable,
+# add push/pull_request triggers in a follow-up PR.
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+    inputs:
+      opengrep_version:
+        description: 'OpenGrep release tag to install (e.g. v1.21.0). Leave blank for latest.'
+        required: false
+        default: 'v1.21.0'
+      config:
+        description: 'Rule config(s) to run (space- or comma-separated).'
+        required: false
+        default: 'p/security-audit p/javascript p/typescript p/github-actions'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: Scan with OpenGrep
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install OpenGrep
+        env:
+          OPENGREP_VERSION: ${{ inputs.opengrep_version }}
+        run: |
+          set -euo pipefail
+          if [ -n "${OPENGREP_VERSION}" ]; then
+            echo "Installing OpenGrep ${OPENGREP_VERSION}"
+            curl -fsSL https://raw.githubusercontent.com/opengrep/opengrep/main/install.sh \
+              | bash -s -- --version "${OPENGREP_VERSION}"
+          else
+            echo "Installing latest OpenGrep"
+            curl -fsSL https://raw.githubusercontent.com/opengrep/opengrep/main/install.sh | bash
+          fi
+          opengrep --version
+
+      - name: Run OpenGrep scan
+        env:
+          OPENGREP_CONFIG: ${{ inputs.config }}
+        run: |
+          set -euo pipefail
+          # Build --config flags from the space/comma-separated input
+          CONFIG_ARGS=""
+          for cfg in $(echo "${OPENGREP_CONFIG}" | tr ',' ' '); do
+            CONFIG_ARGS="${CONFIG_ARGS} --config ${cfg}"
+          done
+          opengrep scan \
+            ${CONFIG_ARGS} \
+            --sarif \
+            --sarif-output=results.sarif \
+            --error \
+            --no-suppress-errors \
+            . || true
+          # `|| true` keeps the workflow green during evaluation phase so the
+          # SARIF upload step still runs and findings are visible in the
+          # Security tab. Remove this once we are confident in the ruleset.
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
+        with:
+          sarif_file: results.sarif
+          category: opengrep
