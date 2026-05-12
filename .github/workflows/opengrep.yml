@@ -15,9 +15,13 @@ on:
   workflow_dispatch:
     inputs:
       opengrep_version:
-        description: 'OpenGrep release tag to install (e.g. v1.21.0). Leave blank for latest.'
+        description: 'OpenGrep release tag to install. Defaults to the pinned, checksum-verified version below; override only if you also provide a matching opengrep_sha256.'
         required: false
         default: 'v1.21.0'
+      opengrep_sha256:
+        description: 'SHA256 of opengrep_manylinux_x86 for the chosen version. Leave blank to use the built-in checksum for the default version.'
+        required: false
+        default: ''
       config:
         description: 'Rule config(s) to run (space- or comma-separated).'
         required: false
@@ -40,19 +44,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      # Install OpenGrep by downloading the signed release binary directly
-      # from GitHub Releases (pinned by tag). Avoids piping a moving
-      # `install.sh` into bash, which would weaken supply-chain integrity.
+      # Install OpenGrep by downloading the release binary directly from
+      # GitHub Releases (pinned by tag) and verifying its SHA256 before
+      # executing it. Avoids piping a moving `install.sh` into bash and
+      # closes the integrity gap left by trusting a mutable release tag.
       - name: Install OpenGrep
         env:
           OPENGREP_VERSION: ${{ inputs.opengrep_version }}
+          OPENGREP_SHA256_INPUT: ${{ inputs.opengrep_sha256 }}
+          # Pinned checksum for opengrep_manylinux_x86 at the default version
+          # (v1.21.0). Update both the version default above and this value
+          # in lockstep when bumping the pinned release.
+          DEFAULT_OPENGREP_VERSION: 'v1.21.0'
+          DEFAULT_OPENGREP_SHA256: '9ed0ceee4a3a406d27d40894bcce85ea151be21e6d4b180689689224faff2a3e'
         run: |
           set -euo pipefail
-          version="${OPENGREP_VERSION:-v1.21.0}"
+          version="${OPENGREP_VERSION:-${DEFAULT_OPENGREP_VERSION}}"
+          expected_sha="${OPENGREP_SHA256_INPUT}"
+          if [[ -z "${expected_sha}" ]]; then
+            if [[ "${version}" != "${DEFAULT_OPENGREP_VERSION}" ]]; then
+              echo "::error::Custom opengrep_version '${version}' supplied without opengrep_sha256. Refusing to install an unverified binary." >&2
+              exit 1
+            fi
+            expected_sha="${DEFAULT_OPENGREP_SHA256}"
+          fi
           asset="opengrep_manylinux_x86"
           base="https://github.com/opengrep/opengrep/releases/download/${version}"
           echo "Downloading OpenGrep ${version} (${asset})"
           curl -fsSL --retry 3 -o /tmp/opengrep "${base}/${asset}"
+          echo "${expected_sha}  /tmp/opengrep" | sha256sum --check --status
           chmod +x /tmp/opengrep
           sudo mv /tmp/opengrep /usr/local/bin/opengrep
           opengrep --version
