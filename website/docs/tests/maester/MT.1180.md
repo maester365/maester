@@ -25,7 +25,7 @@ When Managed Installer is enabled in an App Control for Business policy, applica
 - Only user-installed, sideloaded, or internet-downloaded apps are subject to policy restrictions.
 - Reduces false positives while maintaining security against unauthorized software.
 
-The test passes if at least one App Control for Business policy has **Trust apps from managed installer** enabled.
+The test passes if **at least one App Control for Business policy is in Enforce mode** (audit mode disabled) **AND** has **Trust apps from managed installer** enabled. Managed Installer enabled on an audit-only policy does not actively trust deployed apps because the underlying App Control policy is not blocking untrusted executables.
 
 ## How to fix
 

@@ -11,15 +11,17 @@ sidebar_class_name: hidden
 
 Checks Intune Endpoint Security Account Protection policies for Windows Local Administrator Password Solution (LAPS) profiles that back up local administrator passwords to Microsoft Entra ID.
 
-Windows LAPS automatically rotates and backs up local administrator passwords, preventing lateral movement attacks that exploit shared or stale local admin credentials. The test passes if at least one LAPS policy is configured with **Backup Directory** set to **Azure AD only** (`_1`).
+Windows LAPS automatically rotates and backs up local administrator passwords, preventing lateral movement attacks that exploit shared or stale local admin credentials.
 
 Key settings evaluated:
 
 - **Backup Directory**: Must be set to `Azure AD only` (`_1`) so passwords are stored in Entra ID and can be retrieved centrally.
-- **Password Complexity**: Recommended `Large + small + numbers + special` (`_4`) or improved (`_8`).
-- **Password Length**: Recommended **>= 14** characters.
-- **Post-Authentication Actions**: Reset password (and optionally logoff or reboot) after the configured delay.
-- **Automatic Account Management**: Whether LAPS auto-manages the local admin account.
+- **Password Complexity**: Must be `Large + small + numbers + special` (`_4`) or improved (`_8`).
+- **Password Length**: Must be **>= 14** characters.
+- **Post-Authentication Actions**: Must be set to a defined action (`_1`/`_3`/`_5`/`_11`) so the password rotates after use.
+- **Automatic Account Management**: Whether LAPS auto-manages the local admin account (informational).
+
+The test passes if **at least one LAPS policy** meets **all** of the criteria above (Entra backup AND complexity >= `_4` AND length >= 14 AND a defined post-auth action).
 
 ## How to fix
 

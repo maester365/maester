@@ -16,11 +16,12 @@ App Control for Business restricts which applications and drivers are allowed to
 Key settings evaluated:
 
 - **Build Options** — Whether the policy uses built-in controls (`built_in_controls_selected`) or a custom uploaded policy (`upload_policy_selected`).
+- **Policy XML** — For uploaded policies, whether an XML code-integrity payload is actually present (not empty).
 - **Audit Mode** — Whether the policy is in audit mode (logging only) or enforce mode (blocking).
 - **Trust apps from managed installer** — Whether apps deployed via Intune/SCCM are automatically trusted.
 - **Trust apps with good reputation (ISG)** — Whether apps with good Intelligent Security Graph reputation are trusted.
 
-The test passes if at least one App Control for Business policy exists with build options configured. Policies still in **Audit mode** trigger an informational note recommending a transition to **Enforce mode** after validation.
+The test passes if **at least one App Control policy is enforcing** (audit mode disabled) **AND** has either built-in controls selected or an uploaded XML policy with a non-empty payload. Audit-only policies and upload-mode policies with no XML payload are reported but do not satisfy the pass criterion, because they do not block untrusted executables.
 
 ## How to fix
 

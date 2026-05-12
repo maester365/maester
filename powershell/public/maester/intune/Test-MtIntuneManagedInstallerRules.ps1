@@ -21,12 +21,14 @@
     - Only user-installed or sideloaded apps are subject to policy restrictions
     - Reduces false positives while maintaining security
 
-    The test passes if at least one App Control policy has the "Trust apps from managed installer" setting enabled.
+    The test passes if at least one App Control policy is in **enforce mode** (audit mode disabled) AND has
+    the "Trust apps from managed installer" setting enabled. Managed Installer enabled on an audit-only
+    policy does not actively trust deployed apps because the underlying App Control policy is not enforcing.
 
     .EXAMPLE
     Test-MtIntuneManagedInstallerRules
 
-    Returns true if at least one App Control policy has Managed Installer enabled.
+    Returns true if at least one enforcing App Control policy has Managed Installer enabled.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtIntuneManagedInstallerRules
@@ -63,7 +65,6 @@
         $managedInstallerId = 'device_vendor_msft_policy_config_applicationcontrolv2_trustappsfrommanagedinstaller'
 
         $policyResults = [System.Collections.Generic.List[hashtable]]::new()
-        $hasManagedInstaller = $false
 
         foreach ($policy in $appControlPolicies) {
             Write-Verbose "Checking App Control policy: $($policy.name) ($($policy.id))"
@@ -74,6 +75,8 @@
                 Name              = $policy.name
                 ManagedInstaller  = 'Not configured'
                 AuditMode         = 'Not configured'
+                MIEnabled         = $false
+                Enforcing         = $false
             }
 
             foreach ($setting in $settingsResponse) {
@@ -85,7 +88,7 @@
                             $childVal = $child.choiceSettingValue.value
                             if ($childVal -like '*_enabled') {
                                 $policyDetail.ManagedInstaller = 'Enabled'
-                                $hasManagedInstaller = $true
+                                $policyDetail.MIEnabled = $true
                             } else {
                                 $policyDetail.ManagedInstaller = 'Disabled'
                             }
@@ -93,7 +96,13 @@
                         }
                         if ($child.settingDefinitionId -eq 'device_vendor_msft_policy_config_applicationcontrolv2_auditmode') {
                             $childVal = $child.choiceSettingValue.value
-                            $policyDetail.AuditMode = if ($childVal -like '*_enabled') { 'Audit' } else { 'Enforce' }
+                            if ($childVal -like '*_enabled') {
+                                $policyDetail.AuditMode = 'Audit'
+                                $policyDetail.Enforcing = $false
+                            } else {
+                                $policyDetail.AuditMode = 'Enforce'
+                                $policyDetail.Enforcing = $true
+                            }
                             Write-Verbose "  AuditMode: $($policyDetail.AuditMode)"
                         }
                     }
@@ -103,24 +112,32 @@
             $policyResults.Add($policyDetail)
         }
 
+        # Pass: at least one enforcing App Control policy with Managed Installer enabled.
+        $enforcingMI = @($policyResults | Where-Object { $_.MIEnabled -and $_.Enforcing })
+        $hasEnforcingMI = $enforcingMI.Count -gt 0
+
         # Build result markdown
         $testResultMarkdown = "Found $($appControlPolicies.Count) App Control for Business policy/policies in Intune.`n`n"
+        $testResultMarkdown += "**Pass criteria:** At least one App Control policy must be in **Enforce** mode AND have **Managed Installer** enabled.`n`n"
         $testResultMarkdown += "| Policy | Managed Installer | Enforcement Mode |`n"
         $testResultMarkdown += "| --- | --- | --- |`n"
         foreach ($p in $policyResults) {
             $testResultMarkdown += "| $($p.Name) | $($p.ManagedInstaller) | $($p.AuditMode) |`n"
         }
 
-        if ($hasManagedInstaller) {
-            $testResultMarkdown += "`n**Result:** Well done. At least one App Control policy has **Managed Installer** enabled."
+        if ($hasEnforcingMI) {
+            $testResultMarkdown += "`n**Result:** Well done. $($enforcingMI.Count) App Control policy/policies are in **Enforce** mode with **Managed Installer** enabled."
             $testResultMarkdown += " Applications deployed through Intune/SCCM will be automatically trusted."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true
         } else {
-            $testResultMarkdown += "`n**Result:** No App Control policies have **Managed Installer** enabled.`n`n"
-            $testResultMarkdown += "> **Risk:** Without Managed Installer, applications deployed via Intune may be blocked by App Control policies. "
-            $testResultMarkdown += "This leads to false positives and help desk tickets. Enable 'Trust apps from managed installer' to "
-            $testResultMarkdown += "automatically trust IT-deployed software."
+            $auditMI = @($policyResults | Where-Object { $_.MIEnabled -and -not $_.Enforcing })
+            $testResultMarkdown += "`n**Result:** No App Control policies have **Managed Installer** enabled in **Enforce** mode.`n`n"
+            if ($auditMI.Count -gt 0) {
+                $testResultMarkdown += "$($auditMI.Count) policy/policies have Managed Installer enabled but the underlying App Control policy is in **Audit** mode, so deployed apps are not actively trusted.`n`n"
+            }
+            $testResultMarkdown += "> **Risk:** Without Managed Installer on an enforcing App Control policy, applications deployed via Intune may be blocked once App Control transitions to Enforce mode. "
+            $testResultMarkdown += "This leads to false positives and help desk tickets. Enable 'Trust apps from managed installer' on an enforcing policy to automatically trust IT-deployed software."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }

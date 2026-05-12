@@ -10,18 +10,20 @@
     Windows LAPS (Local Administrator Password Solution) automatically rotates and backs up local admin
     passwords, preventing lateral movement attacks that exploit shared or stale local admin credentials.
 
-    Key settings evaluated:
-    - BackupDirectory: Must be set to 1 (Entra ID) to store passwords in the cloud.
-    - PasswordComplexity: Recommended 4 (large letters + small letters + numbers + special characters) or 8.
-    - PasswordLength: Recommended >= 14 characters.
-    - AutomaticAccountManagementEnabled: Whether LAPS auto-manages the local admin account.
+    Pass criteria (all required on at least one LAPS policy):
+    - BackupDirectory = 1 (Entra ID) to store passwords in the cloud.
+    - PasswordComplexity >= 4 (large + small letters + numbers + special characters; values 4 or 8 are accepted).
+    - PasswordLength >= 14 characters.
+    - PostAuthenticationActions configured to a non-zero value (reset password, optionally logoff/reboot/terminate).
 
-    The test passes if at least one LAPS policy is configured with BackupDirectory set to Entra ID.
+    AutomaticAccountManagementEnabled is reported for completeness but does not affect pass/fail.
+
+    The test passes if at least one LAPS policy meets all four criteria above.
 
     .EXAMPLE
     Test-MtIntuneLAPSConfiguration
 
-    Returns true if at least one LAPS policy backs up passwords to Entra ID.
+    Returns true if at least one LAPS policy meets the secure baseline (Entra ID backup, complexity >= 4, length >= 14, post-auth action configured).
 
     .LINK
     https://maester.dev/docs/commands/Test-MtIntuneLAPSConfiguration
@@ -82,8 +84,13 @@
             '_8' = 'Large + small + numbers + special (improved)'
         }
 
+        # Pass-criteria thresholds
+        $minPasswordLength = 14
+        $minComplexitySuffixes = @('_4', '_8')   # 4-class or improved 4-class
+        $validPostAuthSuffixes = @('_1', '_3', '_5', '_11')
+
         $policyResults = [System.Collections.Generic.List[hashtable]]::new()
-        $hasEntraBackup = $false
+        $hasCompliantPolicy = $false
 
         foreach ($policy in $lapsPolicies) {
             Write-Verbose "Checking LAPS policy: $($policy.name) ($($policy.id))"
@@ -91,14 +98,20 @@
             $settingsResponse = @(Invoke-MtGraphRequest -RelativeUri $settingsUri -ApiVersion beta)
 
             $policyDetail = @{
-                Name              = $policy.name
-                BackupDirectory   = 'Not configured'
+                Name               = $policy.name
+                BackupDirectory    = 'Not configured'
                 PasswordComplexity = 'Not configured'
-                PasswordLength    = 'Not configured'
-                PostAuthActions   = 'Not configured'
-                PostAuthDelay     = 'Not configured'
-                AutoAccountMgmt   = 'Not configured'
+                PasswordLength     = 'Not configured'
+                PostAuthActions    = 'Not configured'
+                PostAuthDelay      = 'Not configured'
+                AutoAccountMgmt    = 'Not configured'
+                Compliant          = 'No'
             }
+
+            $hasEntra = $false
+            $hasComplexity = $false
+            $hasLength = $false
+            $hasPostAuth = $false
 
             foreach ($setting in $settingsResponse) {
                 $defId = $setting.settingInstance.settingDefinitionId
@@ -108,7 +121,7 @@
                     foreach ($suffix in $backupDirectoryLabels.Keys) {
                         if ($val.EndsWith($suffix)) {
                             $policyDetail.BackupDirectory = $backupDirectoryLabels[$suffix]
-                            if ($suffix -eq '_1') { $hasEntraBackup = $true }
+                            if ($suffix -eq '_1') { $hasEntra = $true }
                             break
                         }
                     }
@@ -122,11 +135,16 @@
                             $policyDetail.PasswordComplexity = $complexityLabels[$suffix]
                         }
                     }
+                    foreach ($suffix in $minComplexitySuffixes) {
+                        if ($val -and $val.EndsWith($suffix)) { $hasComplexity = $true; break }
+                    }
                     Write-Verbose "  PasswordComplexity: $($policyDetail.PasswordComplexity)"
                 }
 
                 if ($defId -eq $passwordLengthId) {
-                    $policyDetail.PasswordLength = "$($setting.settingInstance.simpleSettingValue.value) characters"
+                    $lengthVal = [int]($setting.settingInstance.simpleSettingValue.value)
+                    $policyDetail.PasswordLength = "$lengthVal characters"
+                    if ($lengthVal -ge $minPasswordLength) { $hasLength = $true }
                     Write-Verbose "  PasswordLength: $($policyDetail.PasswordLength)"
                 }
 
@@ -136,6 +154,9 @@
                     elseif ($val -like '*_3') { $policyDetail.PostAuthActions = 'Reset password + logoff' }
                     elseif ($val -like '*_5') { $policyDetail.PostAuthActions = 'Reset password + reboot' }
                     elseif ($val -like '*_11') { $policyDetail.PostAuthActions = 'Reset password + logoff + terminate processes' }
+                    foreach ($suffix in $validPostAuthSuffixes) {
+                        if ($val -and $val.EndsWith($suffix)) { $hasPostAuth = $true; break }
+                    }
                     Write-Verbose "  PostAuthActions: $($policyDetail.PostAuthActions)"
                 }
 
@@ -156,25 +177,31 @@
                 }
             }
 
+            if ($hasEntra -and $hasComplexity -and $hasLength -and $hasPostAuth) {
+                $policyDetail.Compliant = 'Yes'
+                $hasCompliantPolicy = $true
+            }
+
             $policyResults.Add($policyDetail)
         }
 
         # Build result markdown
         $testResultMarkdown = "Found $($lapsPolicies.Count) Windows LAPS policy/policies in Intune.`n`n"
-        $testResultMarkdown += "| Policy | Backup Directory | Complexity | Length | Post-Auth Actions | Post-Auth Delay | Auto Account Mgmt |`n"
-        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- | --- |`n"
+        $testResultMarkdown += "**Pass criteria:** Entra ID backup + Complexity >= 4-class + Length >= $minPasswordLength + Post-auth action configured.`n`n"
+        $testResultMarkdown += "| Policy | Backup Directory | Complexity | Length | Post-Auth Actions | Post-Auth Delay | Auto Account Mgmt | Meets baseline |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- | --- | --- | --- | --- |`n"
         foreach ($p in $policyResults) {
-            $testResultMarkdown += "| $($p.Name) | $($p.BackupDirectory) | $($p.PasswordComplexity) | $($p.PasswordLength) | $($p.PostAuthActions) | $($p.PostAuthDelay) | $($p.AutoAccountMgmt) |`n"
+            $testResultMarkdown += "| $($p.Name) | $($p.BackupDirectory) | $($p.PasswordComplexity) | $($p.PasswordLength) | $($p.PostAuthActions) | $($p.PostAuthDelay) | $($p.AutoAccountMgmt) | $($p.Compliant) |`n"
         }
 
-        if ($hasEntraBackup) {
-            $testResultMarkdown += "`n**Result:** Well done. At least one LAPS policy backs up passwords to **Entra ID**."
+        if ($hasCompliantPolicy) {
+            $testResultMarkdown += "`n**Result:** Well done. At least one LAPS policy meets the secure baseline (Entra ID backup, complexity, length, and post-auth action)."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true
         } else {
-            $testResultMarkdown += "`n**Result:** No LAPS policy is configured to back up passwords to **Entra ID**.`n`n"
-            $testResultMarkdown += "> **Risk:** Without cloud backup of local admin passwords, compromised or forgotten local admin credentials "
-            $testResultMarkdown += "cannot be recovered or rotated centrally, increasing lateral movement risk."
+            $testResultMarkdown += "`n**Result:** No LAPS policy meets all four baseline requirements (Entra ID backup, complexity >= 4-class, length >= $minPasswordLength, post-auth action).`n`n"
+            $testResultMarkdown += "> **Risk:** A LAPS policy that misses any of these settings provides reduced protection. Weak complexity or short passwords are easier to brute force; "
+            $testResultMarkdown += "without cloud backup, compromised local admin credentials cannot be rotated centrally; without a post-authentication action, a stolen password remains valid."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }

@@ -1,7 +1,7 @@
 ﻿function Test-MtIntuneASRRules {
     <#
     .SYNOPSIS
-    Ensure at least one Intune Attack Surface Reduction (ASR) policy has rules configured in Block or Audit mode.
+    Ensure the Microsoft Defender ASR Standard Protection baseline rules are configured in Block or Audit mode.
 
     .DESCRIPTION
     Checks Intune Endpoint Security Attack Surface Reduction policies (configurationPolicies API) for
@@ -16,14 +16,32 @@
     - Warn: Warns the user before allowing the behavior
     - Disabled/Not configured: Rule is inactive
 
-    This test queries Endpoint Security ASR policies filtered by templateFamily 'endpointSecurityAttackSurfaceReduction'
-    and inspects each rule's enforcement state. The test passes if at least one ASR policy has one or more rules
-    configured in Block or Audit mode.
+    Pass criteria:
+    The test passes if every rule in the Microsoft Defender for Endpoint ASR Standard Protection baseline is
+    configured in Block or Audit mode in at least one ASR policy. The Standard Protection baseline is the
+    minimum recommended set Microsoft publishes for initial ASR deployment:
+
+    1. Block abuse of exploited vulnerable signed drivers
+    2. Block credential stealing from LSASS
+    3. Block persistence through WMI event subscription
+
+    See https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement
+
+    Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result.
 
     .EXAMPLE
     Test-MtIntuneASRRules
 
-    Returns true if at least one ASR policy has rules configured in Block or Audit mode.
+    Returns true if every Standard Protection baseline rule is configured (Block or Audit) in at least one ASR policy
+
+    See https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement
+
+    Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result.
+
+    .EXAMPLE
+    Test-MtIntuneASRRules
+
+    Returns true if every Standard Protection baseline rule is configured (Block or Audit) in at least one ASR policy.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtIntuneASRRules
@@ -80,8 +98,21 @@
             'blockwebshellcreationforservers'                                                         = 'Block webshell creation for servers'
         }
 
+        # Microsoft Standard Protection baseline (minimum recommended ASR rules per Defender deployment guide).
+        # Pass requires every rule in this set to be Block or Audit across the union of all ASR policies.
+        $standardProtectionRuleSuffixes = @{
+            'blockabuseofexploitedvulnerablesigneddrivers'                                            = 'Block abuse of exploited vulnerable signed drivers'
+            'blockcredentialstealingfromwindowslocalsecurityauthoritysubsystem'                       = 'Block credential stealing from LSASS'
+            'blockpersistencethroughwmieventsubscription'                                             = 'Block persistence through WMI event subscription'
+        }
+
         $policyResults = [System.Collections.Generic.List[hashtable]]::new()
-        $hasActiveRules = $false
+        # Track best mode seen across the union of all policies for each baseline rule.
+        # Priority: Block > Audit > Warn > Disabled > Not configured.
+        $baselineRuleStatus = @{}
+        foreach ($k in $standardProtectionRuleSuffixes.Keys) { $baselineRuleStatus[$k] = 'Not configured' }
+
+        $modeRank = @{ 'Block' = 4; 'Audit' = 3; 'Warn' = 2; 'Disabled' = 1; 'Not configured' = 0 }
 
         foreach ($policy in $asrPolicies) {
             Write-Verbose "Checking ASR policy: $($policy.name) ($($policy.id))"
@@ -111,14 +142,22 @@
 
                         # Determine enforcement mode from value suffix
                         $mode = 'Not configured'
-                        if ($val -like '*_block') { $mode = 'Block'; $blockCount++; $hasActiveRules = $true }
-                        elseif ($val -like '*_audit') { $mode = 'Audit'; $auditCount++; $hasActiveRules = $true }
+                        if ($val -like '*_block') { $mode = 'Block'; $blockCount++ }
+                        elseif ($val -like '*_audit') { $mode = 'Audit'; $auditCount++ }
                         elseif ($val -like '*_warn') { $mode = 'Warn'; $warnCount++ }
                         elseif ($val -like '*_off') { $mode = 'Disabled'; $disabledCount++ }
                         else { $notConfiguredCount++ }
 
                         Write-Verbose "  Rule: $friendlyName = $mode"
-                        $ruleDetails.Add(@{ Name = $friendlyName; Mode = $mode })
+                        $ruleDetails.Add(@{ Name = $friendlyName; Mode = $mode; IsBaseline = $standardProtectionRuleSuffixes.ContainsKey($ruleSuffix) })
+
+                        # Track best mode for baseline rules across all policies
+                        if ($standardProtectionRuleSuffixes.ContainsKey($ruleSuffix)) {
+                            $current = $baselineRuleStatus[$ruleSuffix]
+                            if ($modeRank[$mode] -gt $modeRank[$current]) {
+                                $baselineRuleStatus[$ruleSuffix] = $mode
+                            }
+                        }
                     }
                 }
             }
@@ -135,35 +174,55 @@
             })
         }
 
+        # Evaluate baseline coverage across the union of all policies
+        $baselineMissing = @()
+        foreach ($k in $standardProtectionRuleSuffixes.Keys) {
+            $mode = $baselineRuleStatus[$k]
+            if ($mode -ne 'Block' -and $mode -ne 'Audit') {
+                $baselineMissing += [pscustomobject]@{ Name = $standardProtectionRuleSuffixes[$k]; Mode = $mode }
+            }
+        }
+        $baselinePassed = ($baselineMissing.Count -eq 0)
+
         # Build result markdown
         $testResultMarkdown = "Found $($asrPolicies.Count) Attack Surface Reduction policy/policies in Intune.`n`n"
+        $testResultMarkdown += "**Pass criteria:** Every rule in the Microsoft Defender ASR Standard Protection baseline must be configured in **Block** or **Audit** mode in at least one ASR policy.`n`n"
+
+        $testResultMarkdown += "### Standard Protection baseline coverage (across all policies)`n"
+        $testResultMarkdown += "| Baseline rule | Best mode found |`n| --- | --- |`n"
+        foreach ($k in $standardProtectionRuleSuffixes.Keys) {
+            $testResultMarkdown += "| $($standardProtectionRuleSuffixes[$k]) | $($baselineRuleStatus[$k]) |`n"
+        }
+        $testResultMarkdown += "`n"
 
         foreach ($p in $policyResults) {
             $testResultMarkdown += "### $($p.Name)`n"
             $testResultMarkdown += "**$($p.TotalRules) rules:** $($p.BlockCount) Block, $($p.AuditCount) Audit, $($p.WarnCount) Warn, $($p.DisabledCount) Disabled, $($p.NotConfiguredCount) Not configured`n`n"
-            $testResultMarkdown += "| Rule | Mode |`n| --- | --- |`n"
+            $testResultMarkdown += "| Rule | Mode | Baseline |`n| --- | --- | --- |`n"
             foreach ($r in $p.Rules) {
-                $testResultMarkdown += "| $($r.Name) | $($r.Mode) |`n"
+                $baselineMark = if ($r.IsBaseline) { 'Yes' } else { '' }
+                $testResultMarkdown += "| $($r.Name) | $($r.Mode) | $baselineMark |`n"
             }
             $testResultMarkdown += "`n"
         }
 
-        if ($hasActiveRules) {
-            $testResultMarkdown += "**Result:** Well done. At least one ASR policy has rules in **Block** or **Audit** mode."
+        if ($baselinePassed) {
+            $testResultMarkdown += "**Result:** Well done. Every rule in the Microsoft Defender ASR Standard Protection baseline is configured in **Block** or **Audit** mode."
 
-            # Warn about policies with audit coverage but no block-mode rules
-            $auditOnly = @($policyResults | Where-Object { $_.BlockCount -eq 0 -and $_.AuditCount -gt 0 })
+            # Warn about baseline rules that are still in Audit only across the tenant
+            $auditOnly = @($baselineRuleStatus.Keys | Where-Object { $baselineRuleStatus[$_] -eq 'Audit' })
             if ($auditOnly.Count -gt 0) {
-                $testResultMarkdown += "`n`n> **Note:** $($auditOnly.Count) policy/policies have no rules in **Block** mode and at least one rule in **Audit** mode. "
-                $testResultMarkdown += "Consider transitioning tested Audit rules to **Block** mode for active protection."
+                $testResultMarkdown += "`n`n> **Note:** $($auditOnly.Count) baseline rule(s) are only in **Audit** mode. "
+                $testResultMarkdown += "Once you have validated impact, transition them to **Block** mode for active protection."
             }
 
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true
         } else {
-            $testResultMarkdown += "**Result:** No ASR rules are configured in Block or Audit mode.`n`n"
-            $testResultMarkdown += "> **Risk:** Without active ASR rules, endpoints are vulnerable to common attack techniques "
-            $testResultMarkdown += "such as Office macro abuse, credential theft, and script-based attacks."
+            $missingTable = ($baselineMissing | ForEach-Object { "- $($_.Name) (current: $($_.Mode))" }) -join "`n"
+            $testResultMarkdown += "**Result:** The following Standard Protection baseline rules are not in Block or Audit mode:`n`n$missingTable`n`n"
+            $testResultMarkdown += "> **Risk:** The Microsoft Defender ASR Standard Protection baseline is the published minimum set of rules required to mitigate "
+            $testResultMarkdown += "common credential theft, driver abuse, and persistence techniques. Missing rules leave endpoints exposed to these well-known attack patterns."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }
