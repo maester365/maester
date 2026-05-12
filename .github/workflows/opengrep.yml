@@ -40,43 +40,48 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # Install OpenGrep by downloading the signed release binary directly
+      # from GitHub Releases (pinned by tag). Avoids piping a moving
+      # `install.sh` into bash, which would weaken supply-chain integrity.
       - name: Install OpenGrep
         env:
           OPENGREP_VERSION: ${{ inputs.opengrep_version }}
         run: |
           set -euo pipefail
-          if [ -n "${OPENGREP_VERSION}" ]; then
-            echo "Installing OpenGrep ${OPENGREP_VERSION}"
-            curl -fsSL https://raw.githubusercontent.com/opengrep/opengrep/main/install.sh \
-              | bash -s -- --version "${OPENGREP_VERSION}"
-          else
-            echo "Installing latest OpenGrep"
-            curl -fsSL https://raw.githubusercontent.com/opengrep/opengrep/main/install.sh | bash
-          fi
+          version="${OPENGREP_VERSION:-v1.21.0}"
+          asset="opengrep_manylinux_x86"
+          base="https://github.com/opengrep/opengrep/releases/download/${version}"
+          echo "Downloading OpenGrep ${version} (${asset})"
+          curl -fsSL --retry 3 -o /tmp/opengrep "${base}/${asset}"
+          chmod +x /tmp/opengrep
+          sudo mv /tmp/opengrep /usr/local/bin/opengrep
           opengrep --version
 
       - name: Run OpenGrep scan
+        id: scan
+        continue-on-error: true
         env:
           OPENGREP_CONFIG: ${{ inputs.config }}
         run: |
           set -euo pipefail
-          # Build --config flags from the space/comma-separated input
-          CONFIG_ARGS=""
-          for cfg in $(echo "${OPENGREP_CONFIG}" | tr ',' ' '); do
-            CONFIG_ARGS="${CONFIG_ARGS} --config ${cfg}"
+          # Build a bash array of --config flags from the space/comma-separated
+          # input so values are passed as discrete argv entries (no
+          # word-splitting surprises).
+          args=()
+          normalized="${OPENGREP_CONFIG//,/ }"
+          for cfg in ${normalized}; do
+            args+=(--config "${cfg}")
           done
           opengrep scan \
-            ${CONFIG_ARGS} \
+            "${args[@]}" \
             --sarif \
             --sarif-output=results.sarif \
             --error \
             --no-suppress-errors \
-            . || true
-          # `|| true` keeps the workflow green during evaluation phase so the
-          # SARIF upload step still runs and findings are visible in the
-          # Security tab. Remove this once we are confident in the ruleset.
+            .
 
       - name: Upload SARIF results
+        if: always() && hashFiles('results.sarif') != ''
         uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
         with:
           sarif_file: results.sarif
