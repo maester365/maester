@@ -1,7 +1,7 @@
 ---
-title: MT.1149 - Ensure ASR Rules are configured correctly
+title: MT.1178 - Ensure ASR Rules are configured correctly
 description: Checks Intune Endpoint Security Attack Surface Reduction (ASR) policies for rules configured in Block or Audit mode.
-slug: /tests/MT.1149
+slug: /tests/MT.1178
 sidebar_class_name: hidden
 ---
 

@@ -1,7 +1,7 @@
 ---
-title: MT.1148 - Ensure LAPS Configuration Policy is properly set
+title: MT.1177 - Ensure LAPS Configuration Policy is properly set
 description: Checks Intune Endpoint Security Account Protection policies for Windows LAPS profiles that back up local administrator passwords to Microsoft Entra ID.
-slug: /tests/MT.1148
+slug: /tests/MT.1177
 sidebar_class_name: hidden
 ---
 

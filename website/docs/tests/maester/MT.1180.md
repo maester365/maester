@@ -1,7 +1,7 @@
 ---
-title: MT.1151 - Ensure Managed Installer Rules are configured correctly
+title: MT.1180 - Ensure Managed Installer Rules are configured correctly
 description: Checks Intune Endpoint Security Application Control policies for the 'Trust apps from managed installer' setting.
-slug: /tests/MT.1151
+slug: /tests/MT.1180
 sidebar_class_name: hidden
 ---
 

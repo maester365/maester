@@ -1355,22 +1355,22 @@
       "Title": "Ensure BitLocker full disk encryption is configured via Intune"
     },
     {
-      "Id": "MT.1148",
+      "Id": "MT.1177",
       "Severity": "High",
       "Title": "Ensure LAPS Configuration Policy is properly set"
     },
     {
-      "Id": "MT.1149",
+      "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
     },
     {
-      "Id": "MT.1150",
+      "Id": "MT.1179",
       "Severity": "High",
       "Title": "Ensure App Control for Business is enabled"
     },
     {
-      "Id": "MT.1151",
+      "Id": "MT.1180",
       "Severity": "Medium",
       "Title": "Ensure Managed Installer Rules are configured correctly"
     },

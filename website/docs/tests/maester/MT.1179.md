@@ -1,7 +1,7 @@
 ---
-title: MT.1150 - Ensure App Control for Business is enabled
+title: MT.1179 - Ensure App Control for Business is enabled
 description: Checks Intune Endpoint Security Application Control policies for App Control for Business (formerly WDAC) configurations.
-slug: /tests/MT.1150
+slug: /tests/MT.1179
 sidebar_class_name: hidden
 ---
 
