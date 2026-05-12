@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
     Stamps the ModuleVersion and ConfigVersion fields at the top of a
-    maester-config.json file using surgical regex replacement.
+    maester-config.json file.
 
 .DESCRIPTION
-    Preserves the file's existing 2-space indentation and overall layout by
-    avoiding a JSON round-trip. Validates the input and output are valid JSON.
-    Writes UTF-8 without BOM.
+    Reads and updates the JSON object directly, then writes UTF-8 without BOM.
+    Uses an explicit JSON depth when writing so future nested settings are not
+    truncated by the default ConvertTo-Json depth.
 
     Both fields must already exist in the source file. The script does not
     insert missing fields — if either is absent, it throws and asks the
@@ -35,10 +35,10 @@ if (-not (Test-Path -LiteralPath $ConfigPath)) {
     throw "Config file not found: $ConfigPath"
 }
 
-if ([string]::IsNullOrWhiteSpace($ConfigVersion)) {
+if (-not $PSBoundParameters.ContainsKey('ConfigVersion')) {
     # Resolve to a repo-relative path so git lookup works regardless of CWD
     # or whether ConfigPath was passed as relative or absolute.
-    $resolvedConfigPath = (Resolve-Path -LiteralPath $ConfigPath).Path
+    $resolvedConfigPath = (Resolve-Path -LiteralPath $ConfigPath).ProviderPath
     $configDir = Split-Path -Parent $resolvedConfigPath
     $repoRoot = (& git -C $configDir rev-parse --show-toplevel 2>$null)
     if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repoRoot)) {
@@ -46,40 +46,42 @@ if ([string]::IsNullOrWhiteSpace($ConfigVersion)) {
     }
     $repoRoot = $repoRoot.Trim()
     $repoRelative = [System.IO.Path]::GetRelativePath($repoRoot, $resolvedConfigPath).Replace('\', '/')
-    $dates = @(& git -C $repoRoot log --format=%cd --date=format:%Y.%m.%d -- $repoRelative)
-    if ($LASTEXITCODE -ne 0 -or $dates.Count -eq 0) {
+    $commitTimestamps = @(& git -C $repoRoot log --format=%ct -- $repoRelative)
+    if ($LASTEXITCODE -ne 0 -or $commitTimestamps.Count -eq 0) {
         throw "Could not determine ConfigVersion: no git history found for $repoRelative in $repoRoot."
     }
-    $lastDate = $dates[0]
-    $sameDayCount = @($dates | Where-Object { $_ -eq $lastDate }).Count
+    $utcDates = @($commitTimestamps | ForEach-Object {
+            [System.DateTimeOffset]::FromUnixTimeSeconds([long]$_).UtcDateTime.ToString('yyyy.MM.dd', [System.Globalization.CultureInfo]::InvariantCulture)
+        })
+    $lastDate = $utcDates[0]
+    $sameDayCount = @($utcDates | Where-Object { $_ -eq $lastDate }).Count
     $ConfigVersion = "$lastDate.$sameDayCount"
     Write-Verbose "Computed ConfigVersion=$ConfigVersion (date $lastDate, $sameDayCount commit(s) that day)"
 }
 
 $content = Get-Content -LiteralPath $ConfigPath -Raw
-try { $null = $content | ConvertFrom-Json } catch { throw "Input file is not valid JSON: $_" }
-
-$mvLine = '"ModuleVersion": "{0}"' -f $ModuleVersion
-$cvLine = '"ConfigVersion": "{0}"' -f $ConfigVersion
-
-# Multiline mode + exact 2-space indent prefix matches only top-level keys in
-# this file's formatting (top level uses 2 spaces, nested keys use 4+). This
-# rules out accidental matches on a nested property of the same name.
-$mvRegex = [regex]'(?m)^  "ModuleVersion"\s*:\s*"[^"]*"'
-if (-not $mvRegex.IsMatch($content)) {
-    throw "Required field ModuleVersion not found at the top level of $ConfigPath (must be at 2-space indent). Add `"ModuleVersion`": `"<version>`" as a top-level key before re-running."
+try {
+    $config = $content | ConvertFrom-Json
+} catch {
+    throw "Input file is not valid JSON: $_"
 }
-$content = $mvRegex.Replace($content, ('  ' + $mvLine), 1)
 
-$cvRegex = [regex]'(?m)^  "ConfigVersion"\s*:\s*"[^"]*"'
-if (-not $cvRegex.IsMatch($content)) {
-    throw "Required field ConfigVersion not found at the top level of $ConfigPath (must be at 2-space indent). Add `"ConfigVersion`": `"`" as a top-level key before re-running."
+if (-not ($config.PSObject.Properties.Name -contains 'ModuleVersion')) {
+    throw "Required field ModuleVersion not found in $ConfigPath. Add `"ModuleVersion`": `"<version>`" as a top-level key before re-running."
 }
-$content = $cvRegex.Replace($content, ('  ' + $cvLine), 1)
 
-try { $null = $content | ConvertFrom-Json } catch { throw "Output is not valid JSON after stamping: $_" }
+if (-not ($config.PSObject.Properties.Name -contains 'ConfigVersion')) {
+    throw "Required field ConfigVersion not found in $ConfigPath. Add `"ConfigVersion`": `"`" as a top-level key before re-running."
+}
+
+$config.ModuleVersion = $ModuleVersion
+$config.ConfigVersion = $ConfigVersion
+$updatedContent = $config | ConvertTo-Json -Depth 10 -WarningAction Stop
+
+try { $null = $updatedContent | ConvertFrom-Json } catch { throw "Output is not valid JSON after stamping: $_" }
 
 $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
-[System.IO.File]::WriteAllText((Resolve-Path -LiteralPath $ConfigPath).Path, $content, $utf8NoBom)
+$resolvedOutputPath = (Resolve-Path -LiteralPath $ConfigPath).ProviderPath
+[System.IO.File]::WriteAllText($resolvedOutputPath, $updatedContent, $utf8NoBom)
 
 Write-Host "Stamped ${ConfigPath}: ModuleVersion=$ModuleVersion, ConfigVersion=$ConfigVersion"
