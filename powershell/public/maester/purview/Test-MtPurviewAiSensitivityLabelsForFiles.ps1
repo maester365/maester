@@ -1,0 +1,100 @@
+﻿function Test-MtPurviewAiSensitivityLabelsForFiles {
+    <#
+    .SYNOPSIS
+    Ensure Microsoft Purview sensitivity labels are published so Microsoft 365 Copilot and DSPM for AI honor and inherit them on AI-generated content.
+
+    .DESCRIPTION
+    Checks that at least one sensitivity label policy is published, and that at least one published label is
+    scoped to files (the scope that governs SharePoint, OneDrive and Office files used by Microsoft 365 Copilot).
+
+    Microsoft 365 Copilot only respects sensitivity labels and inherits the most restrictive label onto generated
+    content if labels are actually published to users. When no label is published or no published label targets
+    files, Copilot has no labelling signal to apply and DSPM for AI cannot report on label-based oversharing.
+
+    The test passes if at least one published label policy exists AND at least one label has the File scope.
+
+    .EXAMPLE
+    Test-MtPurviewAiSensitivityLabelsForFiles
+
+    Returns true if a sensitivity label scoped to files is published in the tenant.
+
+    .LINK
+    https://maester.dev/docs/commands/Test-MtPurviewAiSensitivityLabelsForFiles
+    #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Files is the Microsoft Purview sensitivity label scope being tested')]
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param()
+
+    if (!(Test-MtConnection SecurityCompliance)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
+        return $null
+    }
+
+    try {
+        $labels = Get-Label -ErrorAction Stop
+        $labelPolicies = Get-LabelPolicy -ErrorAction Stop
+
+        # A label policy is "published" when it is in Enforce mode AND, when the Enabled property is exposed by
+        # the SCC schema, it is also enabled. Some tenant/SCC versions omit Enabled entirely on label policies,
+        # in which case Enforce mode alone is the published signal.
+        $publishedPolicies = @($labelPolicies | Where-Object {
+                $_.Mode -eq 'Enforce' -and
+                (($_.PSObject.Properties.Match('Enabled').Count -eq 0) -or $_.Enabled)
+            })
+        # ContentType is a multi-valued field including 'File', 'Email', 'Site', 'UnifiedGroup', 'PurviewAssets' etc.
+        $fileLabels = @($labels | Where-Object { $_.ContentType -match 'File' })
+
+        # Build the set of label identifiers actually published by the enforced (and enabled when supported) policies.
+        # LabelPolicy.Labels is a multi-valued collection of label IDs (GUIDs); fall back to ImmutableId/Name when available.
+        $publishedLabelIds = @()
+        foreach ($policy in $publishedPolicies) {
+            if ($policy.Labels) { $publishedLabelIds += @($policy.Labels) }
+        }
+        $publishedLabelIds = @($publishedLabelIds | Where-Object { $_ } | Select-Object -Unique)
+
+        # Cross-reference: a file-scoped label is only "published" when it appears in at least one published policy.
+        $publishedFileLabels = @($fileLabels | Where-Object {
+                $label = $_
+                $publishedLabelIds | Where-Object {
+                    $_ -eq $label.Guid -or $_ -eq $label.ImmutableId -or $_ -eq $label.Name -or $_ -eq $label.DisplayName
+                }
+            })
+
+        $hasPublishedPolicy = $publishedPolicies.Count -ge 1
+        $hasFileLabel = $fileLabels.Count -ge 1
+        $hasPublishedFileLabel = $publishedFileLabels.Count -ge 1
+        $testResult = $hasPublishedPolicy -and $hasPublishedFileLabel
+
+        $portalLink = "https://purview.microsoft.com/informationprotection/labels"
+
+        if ($testResult) {
+            $testResultMarkdown = "Well done. Your tenant publishes [sensitivity labels]($portalLink) scoped to files, "
+            $testResultMarkdown += "so Microsoft 365 Copilot honors and inherits them on AI-generated content.`n`n%TestResult%"
+        } else {
+            $testResultMarkdown = "Your tenant does not have [sensitivity labels]($portalLink) published for files.`n`n"
+            $testResultMarkdown += "> **Risk:** Microsoft 365 Copilot cannot honor or inherit sensitivity labels onto AI-generated content "
+            $testResultMarkdown += "if no published label targets files. DSPM for AI oversharing reports based on labels will also be empty.`n`n%TestResult%"
+        }
+
+        $passResult = "✅ Pass"
+        $failResult = "❌ Fail"
+        $result = "| Check | Status | Details |`n"
+        $result += "| --- | --- | --- |`n"
+        $result += "| Published label policy exists | $(if ($hasPublishedPolicy) { $passResult } else { $failResult }) | $($publishedPolicies.Count) policy(ies) published |`n"
+        $result += "| Label with File scope exists | $(if ($hasFileLabel) { $passResult } else { $failResult }) | $($fileLabels.Count) label(s) scoped to files |`n"
+        $result += "| File-scoped label is published | $(if ($hasPublishedFileLabel) { $passResult } else { $failResult }) | $($publishedFileLabels.Count) published file-scoped label(s) |`n"
+
+        $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
+
+        Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testResult
+    } catch {
+        if ($_.Exception.Response -and $_.Exception.Response.StatusCode -in @(401, 403)) {
+            Add-MtTestResultDetail -SkippedBecause NotAuthorized
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        }
+        return $null
+    }
+}
