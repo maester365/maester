@@ -206,8 +206,8 @@ $related
 "@
 
     $outPath = Join-Path $docsDir "$($t.Id).md"
-    $utf8Bom = New-Object System.Text.UTF8Encoding $true
-    [System.IO.File]::WriteAllText($outPath, $page, $utf8Bom)
+    $utf8NoBom = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($outPath, $page, $utf8NoBom)
     $written++
 }
 
