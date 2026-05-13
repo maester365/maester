@@ -22,6 +22,7 @@ import { Link, useLocation } from "react-router-dom"
 import React, { useState, createContext, useContext, useRef, useEffect } from "react"
 import maesterLogo from "@/assets/maester.png"
 import { useTenant } from "@/context/TenantContext"
+import { scrollReportToTop } from "@/lib/reportLinks"
 
 interface SidebarContextType {
   isCollapsed: boolean
@@ -41,6 +42,7 @@ interface NavItemProps {
   label: string
   isActive?: boolean
   isCollapsed?: boolean
+  onClick?: () => void
 }
 
 function NavItem({
@@ -49,10 +51,12 @@ function NavItem({
   label,
   isActive,
   isCollapsed,
+  onClick,
 }: NavItemProps) {
   return (
     <Link
       to={href}
+      onClick={onClick}
       className={cx(
         "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium tracking-tight transition-all duration-100",
         isActive
@@ -179,7 +183,7 @@ export function Sidebar() {
         "flex h-16 items-center gap-3 border-b border-gray-200 dark:border-gray-800",
         isCollapsed ? "justify-center px-2" : "px-4"
       )}>
-        <Link to="/" aria-label="Home" className="flex items-center gap-3 overflow-hidden">
+        <Link to="/" onClick={scrollReportToTop} aria-label="Home" className="flex items-center gap-3 overflow-hidden">
           <span className="sr-only">Maester Logo (go home)</span>
           <img
             src={maesterLogo}
@@ -254,6 +258,7 @@ export function Sidebar() {
           label="Home"
           isActive={pathname === "/"}
           isCollapsed={isCollapsed}
+          onClick={scrollReportToTop}
         />
 
         <NavGroup

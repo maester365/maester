@@ -152,12 +152,24 @@
     Write-Host "Configuring permissions..." -ForegroundColor Yellow
     Write-Verbose "Required scopes: $($requiredScopes -join ', ')"
 
-    Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
+    $permissionsGranted = $true
+    try {
+        Set-MaesterAppPermission -AppId $app.appId -Scopes $requiredScopes
+    } catch {
+        $permissionsGranted = $false
+        Write-Host "❌ $($_.Exception.Message)" -ForegroundColor Red
+    }
 
     $result = Get-MtMaesterApp -Id $app.id
 
     Write-Host ""
-    Write-Host "🎉 Maester application created successfully!" -ForegroundColor Green
+    if ($permissionsGranted) {
+        Write-Host "🎉 Maester application created successfully!" -ForegroundColor Green
+    } else {
+        Write-Host "⚠️ Maester application was created but some permissions could not be granted." -ForegroundColor Red
+        Write-Host "   The application is in a non-functional state until all required permissions are consented." -ForegroundColor Yellow
+        Write-Host "   Ensure the account running New-MtMaesterApp has Privileged Role Administrator or Global Administrator rights." -ForegroundColor Yellow
+    }
 
     if ($GitHubOrganization) {
         Add-MtMaesterAppFederatedCredential -AppId $app.appId -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository

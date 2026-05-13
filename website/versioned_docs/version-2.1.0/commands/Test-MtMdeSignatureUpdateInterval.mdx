@@ -1,0 +1,105 @@
+---
+sidebar_class_name: hidden
+description: Checks if signature update interval is configured between 1-4 hours
+id: Test-MtMdeSignatureUpdateInterval
+title: Test-MtMdeSignatureUpdateInterval
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtMdeSignatureUpdateInterval.ps1
+---
+
+## SYNOPSIS
+
+Checks if signature update interval is configured between 1-4 hours
+
+## SYNTAX
+
+```powershell
+Test-MtMdeSignatureUpdateInterval [[-ComplianceLogic] <String>] [[-PolicyFiltering] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Tests that all assigned Microsoft Defender Antivirus policies have the
+signature update interval configured within the recommended range of 1-4 hours.
+Infrequent signature updates reduce detection of the latest threats.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtMdeSignatureUpdateInterval
+```
+
+Returns $true if all policies have signature update interval configured between 1-4 hours.
+
+## PARAMETERS
+
+### -ComplianceLogic
+
+Determines how policy compliance is evaluated.
+'AllPolicies' requires every assigned policy to be compliant; 'AnyPolicy' requires at least one.
+Default: 'AllPolicies'.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: AllPolicies
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PolicyFiltering
+
+Determines which Defender Antivirus policies are evaluated.
+'OnlyAssigned' (default) checks only assigned policies; 'IncludeUnassigned' includes unassigned policies; 'All' includes every policy.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: OnlyAssigned
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtMdeSignatureUpdateInterval](https://maester.dev/docs/commands/Test-MtMdeSignatureUpdateInterval)

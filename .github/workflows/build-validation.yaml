@@ -8,12 +8,14 @@ on:
   pull_request:
     branches: ["main"]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
   actions: read
-  checks: write
-  pull-requests: write
-  statuses: write
+  pull-requests: read
 
 jobs:
   build-validation:
@@ -39,6 +41,9 @@ jobs:
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
+          # Pester 5.7.1+ is required for the coverage configuration used in pester.ps1.
+          # Installed on every leg so behavior stays consistent across the matrix.
+          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
@@ -52,6 +57,12 @@ jobs:
       - name: Run Pester tests
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
+        env:
+          # Enable code coverage only on the Linux + PowerShell 7 leg so we get a
+          # baseline JaCoCo report without re-running the entire test suite in a
+          # separate dedicated coverage job. Other matrix legs still run the
+          # original per-file Pester loop unchanged.
+          PESTER_COVERAGE: "${{ runner.os == 'Linux' && 'true' || 'false' }}"
         run: |
           ./powershell/tests/pester.ps1
 
@@ -65,6 +76,52 @@ jobs:
           Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
+
+      - name: Publish coverage summary
+        # Only the Linux leg produces a JaCoCo coverage report (see PESTER_COVERAGE above).
+        # Run on success or failure so partial coverage data is still surfaced when tests fail.
+        if: (success() || failure()) && runner.os == 'Linux' && steps.filter.outputs.pwshmodule == 'true'
+        shell: pwsh
+        run: |
+          $coverageFile = 'TestResults/CodeCoverage.xml'
+          if (Test-Path $coverageFile) {
+            [xml]$jacoco = Get-Content $coverageFile -Raw
+            $lineCounter = $jacoco.report.counter | Where-Object { $_.type -eq 'LINE' }
+            if ($lineCounter) {
+              $covered = [int]$lineCounter.covered
+              $missed  = [int]$lineCounter.missed
+              $total   = $covered + $missed
+              $pct     = if ($total -gt 0) { [math]::Round(($covered / $total) * 100, 1) } else { 0 }
+              # Avoid a PowerShell here-string (@"..."@) here: the closing "@ must sit
+              # at column 0, which would terminate the YAML block scalar early and cause
+              # a "workflow file issue" parse error on GitHub Actions.
+              $summary = @(
+                "## Code Coverage (baseline)",
+                "",
+                "| Metric        | Value             |",
+                "|---------------|-------------------|",
+                "| Lines covered | $covered / $total |",
+                "| Coverage      | $pct%             |",
+                "",
+                "> Coverage is measured on the Linux + PowerShell 7 matrix leg only.",
+                "> Code paths gated to Windows PowerShell 5.1 or other platforms may appear uncovered here.",
+                "> No threshold is enforced in this baseline run."
+              ) -join "`n"
+              $summary | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+              Write-Host "Coverage: $pct% ($covered/$total lines covered)"
+            } else {
+              Write-Warning "No LINE counter found in $coverageFile"
+            }
+          } else {
+            Write-Warning "Coverage file not found: $coverageFile"
+          }
+
+      - name: Upload coverage report
+        if: (success() || failure()) && runner.os == 'Linux' && steps.filter.outputs.pwshmodule == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-report
+          path: TestResults/CodeCoverage.xml
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: (success() || failure()) && steps.filter.outputs.pwshmodule == 'true' # run this step even if previous step failed and tests were run

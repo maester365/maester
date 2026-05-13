@@ -1,4 +1,4 @@
-﻿function Get-MtRoleMember {
+function Get-MtRoleMember {
     <#
     .Synopsis
     Returns all the members of a role.
@@ -36,11 +36,26 @@
     .LINK
     https://maester.dev/docs/commands/Get-MtRoleMember
     #>
+
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'ArgumentCompleter requires the full script block signature, even when only wordToComplete is used.')]
     [CmdletBinding(DefaultParameterSetName = 'RoleName')]
     param(
         # The name of the role to get members for.
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
-        [ValidateSet('AIAdministrator', 'ApplicationAdministrator', 'ApplicationDeveloper', 'AttackPayloadAuthor', 'AttackSimulationAdministrator', 'AttributeAssignmentAdministrator', 'AttributeAssignmentReader', 'AttributeDefinitionAdministrator', 'AttributeDefinitionReader', 'AttributeLogAdministrator', 'AttributeLogReader', 'AttributeProvisioningAdministrator', 'AttributeProvisioningReader', 'AuthenticationAdministrator', 'AuthenticationExtensibilityAdministrator', 'AuthenticationPolicyAdministrator', 'AzureADJoinedDeviceLocalAdministrator', 'AzureDevOpsAdministrator', 'AzureInformationProtectionAdministrator', 'B2CIEFKeysetAdministrator', 'B2CIEFPolicyAdministrator', 'BillingAdministrator', 'CloudAppSecurityAdministrator', 'CloudApplicationAdministrator', 'CloudDeviceAdministrator', 'ComplianceAdministrator', 'ComplianceDataAdministrator', 'ConditionalAccessAdministrator', 'CustomerLockBoxAccessApprover', 'DesktopAnalyticsAdministrator', 'DeviceJoin', 'DeviceManagers', 'DeviceUsers', 'DirectoryReaders', 'DirectorySynchronizationAccounts', 'DirectoryWriters', 'DomainNameAdministrator', 'Dynamics365Administrator', 'Dynamics365BusinessCentralAdministrator', 'EdgeAdministrator', 'ExchangeAdministrator', 'ExchangeRecipientAdministrator', 'ExtendedDirectoryUserAdministrator', 'ExternalIDUserFlowAdministrator', 'ExternalIDUserFlowAttributeAdministrator', 'ExternalIdentityProviderAdministrator', 'FabricAdministrator', 'GlobalAdministrator', 'GlobalReader', 'GlobalSecureAccessAdministrator', 'GlobalSecureAccessLogReader', 'GroupsAdministrator', 'GuestInviter', 'GuestUser', 'HelpdeskAdministrator', 'HybridIdentityAdministrator', 'IdentityGovernanceAdministrator', 'InsightsAdministrator', 'InsightsAnalyst', 'InsightsBusinessLeader', 'IntuneAdministrator', 'IoTDeviceAdministrator', 'KaizalaAdministrator', 'KnowledgeAdministrator', 'KnowledgeManager', 'LicenseAdministrator', 'LifecycleWorkflowsAdministrator', 'MessageCenterPrivacyReader', 'MessageCenterReader', 'Microsoft365BackupAdministrator', 'Microsoft365MigrationAdministrator', 'MicrosoftHardwareWarrantyAdministrator', 'MicrosoftHardwareWarrantySpecialist', 'NetworkAdministrator', 'OfficeAppsAdministrator', 'OnPremisesDirectorySyncAccount', 'OrganizationalBrandingAdministrator', 'OrganizationalMessagesApprover', 'OrganizationalMessagesWriter', 'PartnerTier1Support', 'PartnerTier2Support', 'PasswordAdministrator', 'PeopleAdministrator', 'PermissionsManagementAdministrator', 'PowerPlatformAdministrator', 'PrinterAdministrator', 'PrinterTechnician', 'PrivilegedAuthenticationAdministrator', 'PrivilegedRoleAdministrator', 'ReportsReader', 'RestrictedGuestUser', 'SearchAdministrator', 'SearchEditor', 'SecurityAdministrator', 'SecurityOperator', 'SecurityReader', 'ServiceSupportAdministrator', 'SharePointAdministrator', 'SharePointEmbeddedAdministrator', 'SkypeforBusinessAdministrator', 'TeamsAdministrator', 'TeamsCommunicationsAdministrator', 'TeamsCommunicationsSupportEngineer', 'TeamsCommunicationsSupportSpecialist', 'TeamsDevicesAdministrator', 'TeamsTelephonyAdministrator', 'TenantCreator', 'UsageSummaryReportsReader', 'User', 'UserAdministrator', 'UserExperienceSuccessManager', 'VirtualVisitsAdministrator', 'VivaGoalsAdministrator', 'VivaPulseAdministrator', 'Windows365Administrator', 'WindowsUpdateDeploymentAdministrator', 'WorkplaceDeviceJoin', 'YammerAdministrator')]
+        [ArgumentCompleter({
+                param($commandName, $parameterName, $wordToComplete)
+                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
+                $roleNames |
+                    Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
+                    Sort-Object | ForEach-Object {
+                        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+                    }
+            })]
+        [ValidateScript({
+                $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
+                if ($_ -in $roleNames) { return $true }
+                throw "Unknown role '$_'. Use tab-completion to see valid role names."
+            })]
         [string[]]$Role,
 
         # The ID of the role to get members for.
@@ -88,7 +103,11 @@
         $groups = $assignments | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.group' }
         $groups | ForEach-Object {
             #5/10/2024 - Entra ID Role Enabled Security Groups do not currently support nesting
-            $assignments += Get-MtGroupMember -GroupId $_.id
+            # Get-MtGroupMember returns $null when a group cannot be resolved (e.g., GDAP external groups, deleted groups). Skip null results.
+            $groupMembers = Get-MtGroupMember -GroupId $_.id
+            if ($null -ne $groupMembers) {
+                $assignments += $groupMembers
+            }
         }
 
         # Append the type of assignment
@@ -108,7 +127,9 @@
     }
 
     if ($Role) {
-        $RoleId = $Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_) }
+        # Resolve role names to GUIDs via MtRoleDefinition.ToString(), then explicitly cast to [guid[]]
+        # to avoid relying on implicit coercion from MtRoleDefinition through the typed parameter variable.
+        $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })
     }
 
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID

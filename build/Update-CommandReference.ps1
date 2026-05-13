@@ -25,7 +25,10 @@ foreach ($file in $cmdMarkdownFiles) {
     $content = Get-Content $file
     $synopsis = $content[($content.IndexOf("## SYNOPSIS") + 2)] # Get the synopsis
     if (![string]::IsNullOrWhiteSpace($synopsis)) {
-        $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: $($synopsis)`nid:")
+        # Escape embedded double quotes and wrap value in double quotes so YAML front matter
+        # remains valid even when the synopsis contains characters like ':' that have YAML meaning.
+        $escapedSynopsis = $synopsis -replace '"', '\"'
+        $updatedContent = $content.Replace("id:", "sidebar_class_name: hidden`ndescription: `"$escapedSynopsis`"`nid:")
         Set-Content $file $updatedContent
     }
 }
