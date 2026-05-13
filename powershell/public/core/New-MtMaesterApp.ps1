@@ -26,6 +26,25 @@
     .PARAMETER Scopes
     Additional custom permission scopes to include beyond the default Maester scopes.
 
+    .PARAMETER GitHubOrganization
+    Your GitHub organization name or GitHub username (e.g. 'jasonf'). When supplied
+    together with -GitHubRepository the cmdlet will also create a federated identity
+    credential for GitHub Actions OIDC.
+
+    .PARAMETER GitHubRepository
+    Your GitHub repository name where the workflow lives (e.g. 'maester-tests').
+
+    .PARAMETER GitHubActions
+    Enable end-to-end GitHub Actions setup. Creates a federated identity credential
+    after granting permissions, and auto-detects the GitHub organization/repository
+    from the local git remote ('origin') when -GitHubOrganization/-GitHubRepository
+    are not explicitly supplied.
+
+    .PARAMETER SetGitHubSecrets
+    Together with -GitHubActions, also pushes AZURE_CLIENT_ID and AZURE_TENANT_ID
+    to the target repository's Actions secrets via the GitHub CLI ('gh'). Falls back
+    to printing manual instructions when 'gh' is unavailable or not authenticated.
+
     .EXAMPLE
     New-MtMaesterApp
 
@@ -40,6 +59,13 @@
     New-MtMaesterApp -Privileged -Scopes @("User.Read.All", "Group.Read.All")
 
     Creates a new Maester app with privileged scopes and additional custom scopes.
+
+    .EXAMPLE
+    New-MtMaesterApp -GitHubActions -SetGitHubSecrets
+
+    Full zero-config GitHub Actions setup. Auto-detects the target repository from
+    the current git remote, creates the app, grants permissions, adds the federated
+    credential, and pushes the AZURE_CLIENT_ID / AZURE_TENANT_ID secrets via gh CLI.
 
     .LINK
     https://maester.dev/docs/commands/New-MtMaesterApp
@@ -68,7 +94,16 @@
         [string] $GitHubOrganization,
 
         # Your GitHub repository name where the GitHub Actions workflow is located. E.g. maester-tests
-        [string] $GitHubRepository
+        [string] $GitHubRepository,
+
+        # Enable end-to-end GitHub Actions setup (creates a federated identity credential).
+        # Auto-detects -GitHubOrganization/-GitHubRepository from the local git remote when
+        # they are not explicitly provided.
+        [switch] $GitHubActions,
+
+        # Together with -GitHubActions, push AZURE_CLIENT_ID/AZURE_TENANT_ID to the repo's
+        # Actions secrets via the GitHub CLI ('gh').
+        [switch] $SetGitHubSecrets
     )
 
     # We use the Azure module to create the app registration since it has pre-consented permissions to create apps
@@ -79,9 +114,22 @@
         return
     }
 
-    if ($GitHubOrganization -or $GitHubRepository) {
+    # Treat any GitHub-flow parameter as opting into the GitHub Actions path.
+    $useGitHubFlow = $GitHubActions -or $SetGitHubSecrets -or $GitHubOrganization -or $GitHubRepository
+
+    if ($useGitHubFlow) {
+        # Auto-detect from local git remote when org/repo not explicitly provided.
         if (-not $GitHubOrganization -or -not $GitHubRepository) {
-            Write-Error "Both GitHubOrganization and GitHubRepository must be specified to add a federated credential."
+            $detected = Get-MtGitHubRepoFromGit
+            if ($detected) {
+                if (-not $GitHubOrganization) { $GitHubOrganization = $detected.Organization }
+                if (-not $GitHubRepository)   { $GitHubRepository   = $detected.Repository }
+                Write-Host "Auto-detected GitHub repository from git remote: $GitHubOrganization/$GitHubRepository" -ForegroundColor Cyan
+            }
+        }
+
+        if (-not $GitHubOrganization -or -not $GitHubRepository) {
+            Write-Error "Both GitHubOrganization and GitHubRepository must be specified to add a federated credential. They can be auto-detected when the current directory is a git working tree whose 'origin' remote points at GitHub."
             return
         }
     }
@@ -171,8 +219,14 @@
         Write-Host "   Ensure the account running New-MtMaesterApp has Privileged Role Administrator or Global Administrator rights." -ForegroundColor Yellow
     }
 
-    if ($GitHubOrganization) {
-        Add-MtMaesterAppFederatedCredential -AppId $app.appId -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository
+    if ($useGitHubFlow) {
+        $ficParams = @{
+            AppId               = $app.appId
+            GitHubOrganization  = $GitHubOrganization
+            GitHubRepository    = $GitHubRepository
+        }
+        if ($SetGitHubSecrets) { $ficParams['SetGitHubSecrets'] = $true }
+        Add-MtMaesterAppFederatedCredential @ficParams
     } else {
         Write-Output $result
     }
