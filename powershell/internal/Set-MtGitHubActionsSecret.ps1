@@ -1,4 +1,4 @@
-function Set-MtGitHubActionsSecret {
+﻿function Set-MtGitHubActionsSecret {
     <#
     .SYNOPSIS
     Sets AZURE_CLIENT_ID and AZURE_TENANT_ID as GitHub Actions repository secrets via the GitHub CLI.
