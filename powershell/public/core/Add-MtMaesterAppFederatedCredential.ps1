@@ -17,9 +17,11 @@
 
     .PARAMETER GitHubRepository
     The GitHub repository name (without the organization). E.g. maester-tests.
-    If omitted (together with -GitHubOrganization) and the current working directory is
-    inside a git repository whose 'origin' remote points at GitHub, the repository is
-    auto-detected from `git remote get-url origin`.
+    If both -GitHubOrganization and -GitHubRepository are omitted and the current working
+    directory is inside a git repository whose 'origin' remote points at GitHub, both
+    values are auto-detected from `git remote get-url origin`. Specifying one without
+    the other is not supported - either pass both explicitly, or pass neither and rely
+    on auto-detection.
 
     .PARAMETER GitHubBranch
     The GitHub branch that can use this credential. Defaults to 'main'.
@@ -33,8 +35,9 @@
     authenticated (`gh auth login`). When the secrets cannot be set automatically the
     cmdlet falls back to printing the manual setup instructions.
 
-    .PARAMETER Force
-    Skip the confirmation prompt if a similar credential already exists.
+    Re-running the cmdlet with -SetGitHubSecrets against an app that already has a
+    matching federated credential will skip the credential creation step and proceed
+    directly to (re)setting the secrets.
 
     .EXAMPLE
     Add-MtMaesterAppFederatedCredential -AppId "12345678-1234-1234-1234-123456789012" -GitHubOrganization "myorg" -GitHubRepository "myrepo"
@@ -99,14 +102,19 @@
         return
     }
 
-    # Auto-detect GitHub org/repo from the local git remote when caller didn't provide them.
-    if (-not $GitHubOrganization -or -not $GitHubRepository) {
+    # Auto-detect GitHub org/repo from the local git remote. Only triggers when BOTH
+    # parameters were omitted - mixing an explicit value with an auto-detected one is
+    # ambiguous (which repo did the caller really mean?) so we require both-or-neither.
+    if (-not $GitHubOrganization -and -not $GitHubRepository) {
         $detected = Get-MtGitHubRepoFromGit
         if ($detected) {
-            if (-not $GitHubOrganization) { $GitHubOrganization = $detected.Organization }
-            if (-not $GitHubRepository)   { $GitHubRepository   = $detected.Repository }
+            $GitHubOrganization = $detected.Organization
+            $GitHubRepository   = $detected.Repository
             Write-Host "Auto-detected GitHub repository from git remote: $GitHubOrganization/$GitHubRepository" -ForegroundColor Cyan
         }
+    } elseif (-not $GitHubOrganization -or -not $GitHubRepository) {
+        Write-Error "Specify both -GitHubOrganization and -GitHubRepository, or omit both to auto-detect from the local git remote."
+        return
     }
 
     if (-not $GitHubOrganization -or -not $GitHubRepository) {
@@ -150,11 +158,11 @@
 
         if ($duplicateName -or $duplicateSubject) {
             if($duplicateSubject) {
-                Write-Error "A federated credential for this repository already exists:"
-                $duplicateCred += $duplicateSubject
+                Write-Warning "A federated credential for this repository already exists:"
+                $duplicateCred = $duplicateSubject
             }
             elseif($duplicateName) {
-                Write-Error "A federated credential with this name already exists:"
+                Write-Warning "A federated credential with this name already exists:"
                 $duplicateCred = $duplicateName
             }
 
@@ -163,6 +171,20 @@
                 Write-Host "  Subject: $($_.subject)" -ForegroundColor Yellow
                 Write-Host ""
             }
+
+            # If the existing credential already matches the requested repo/branch and the
+            # caller asked us to also set secrets, do that work instead of silently returning.
+            # This makes `-SetGitHubSecrets` idempotent on re-runs.
+            if ($duplicateSubject -and $SetGitHubSecrets) {
+                Write-Host "Existing credential matches - proceeding to (re)set GitHub Actions secrets." -ForegroundColor Cyan
+                $tenantId = (Get-AzContext).Tenant.Id
+                $secretsConfigured = Set-MtGitHubActionsSecret -GitHubRepository "$GitHubOrganization/$GitHubRepository" -ClientId $app.AppId -TenantId $tenantId
+                if (-not $secretsConfigured) {
+                    Write-MtGitHubSecretsManualInstruction -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository -ClientId $app.AppId -TenantId $tenantId
+                }
+                return $duplicateSubject
+            }
+
             return
         }
 
@@ -183,7 +205,6 @@
             throw "Failed to create federated credential. Error: $($createdCredential.error.message)"
         }
 
-        $githubSecretsUrl = "https://github.com/$GitHubOrganization/$GitHubRepository/settings/secrets/actions"
         $tenantId = (Get-AzContext).Tenant.Id
 
         Write-Host ""
@@ -196,21 +217,7 @@
         }
 
         if (-not $secretsConfigured) {
-            Write-Host "GitHub Actions Configuration:" -ForegroundColor Yellow
-            Write-Host "Add these secrets to your GitHub repository ($GitHubOrganization/$GitHubRepository):" -ForegroundColor White
-            Write-Host ""
-            Write-Host "1. Browse to $githubSecretsUrl" -ForegroundColor Cyan
-            Write-Host "2. Click on 'New repository secret'" -ForegroundColor Cyan
-            Write-Host "3. Create the following secrets:" -ForegroundColor Cyan
-            Write-Host ""
-            Write-Host "   Name: AZURE_CLIENT_ID" -ForegroundColor Cyan
-            Write-Host "    Value: $($app.AppId)" -ForegroundColor Cyan
-            Write-Host "   Name: AZURE_TENANT_ID" -ForegroundColor Cyan
-            Write-Host "    Value: $tenantId" -ForegroundColor Cyan
-            Write-Host ""
-            Write-Host "Tip: re-run with -SetGitHubSecrets to push these via the GitHub CLI automatically." -ForegroundColor DarkGray
-            Write-Host "See https://maester.dev/docs/monitoring/github#add-entra-tenant-info-to-github-repos for details." -ForegroundColor Yellow
-            Write-Host ""
+            Write-MtGitHubSecretsManualInstruction -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository -ClientId $app.AppId -TenantId $tenantId
         }
 
         return $createdCredential

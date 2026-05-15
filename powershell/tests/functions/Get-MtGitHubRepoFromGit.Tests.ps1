@@ -75,5 +75,43 @@ Describe 'Get-MtGitHubRepoFromGit' {
                 Get-MtGitHubRepoFromGit | Should -BeNullOrEmpty
             }
         }
+
+        It 'Returns $null for a lookalike host that ends with github.com (e.g. evilgithub.com)' {
+            InModuleScope -ModuleName 'Maester' {
+                Mock Get-Command { @{ Name = 'git' } } -ParameterFilter { $Name -eq 'git' }
+                Mock git { 'https://evilgithub.com/owner/repo.git' }
+
+                Get-MtGitHubRepoFromGit | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Returns $null for a host that has github.com as a subdomain prefix (e.g. github.com.attacker.com)' {
+            InModuleScope -ModuleName 'Maester' {
+                Mock Get-Command { @{ Name = 'git' } } -ParameterFilter { $Name -eq 'git' }
+                Mock git { 'https://github.com.attacker.com/owner/repo.git' }
+
+                Get-MtGitHubRepoFromGit | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Returns $null for a hyphenated lookalike (e.g. my-github.com)' {
+            InModuleScope -ModuleName 'Maester' {
+                Mock Get-Command { @{ Name = 'git' } } -ParameterFilter { $Name -eq 'git' }
+                Mock git { 'https://my-github.com/owner/repo.git' }
+
+                Get-MtGitHubRepoFromGit | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Parses an HTTPS GitHub URL with www. prefix' {
+            InModuleScope -ModuleName 'Maester' {
+                Mock Get-Command { @{ Name = 'git' } } -ParameterFilter { $Name -eq 'git' }
+                Mock git { 'https://www.github.com/contoso/repo.git' }
+
+                $result = Get-MtGitHubRepoFromGit
+                $result.Organization | Should -Be 'contoso'
+                $result.Repository   | Should -Be 'repo'
+            }
+        }
     }
 }

@@ -55,7 +55,9 @@
 
     foreach ($name in $secrets.Keys) {
         $value = $secrets[$name]
-        $output = & gh secret set $name --repo $GitHubRepository --body $value 2>&1
+        # Pipe the value via stdin so the secret never appears on the gh command line
+        # (process listings, audit logs, shell history would otherwise capture it).
+        $output = $value | & gh secret set $name --repo $GitHubRepository 2>&1
         if ($LASTEXITCODE -ne 0) {
             Write-Warning "Failed to set $name on $GitHubRepository : $output"
             return $false

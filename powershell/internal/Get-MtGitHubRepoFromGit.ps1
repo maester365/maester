@@ -47,8 +47,9 @@ function Get-MtGitHubRepoFromGit {
         return $null
     }
 
-    # Match HTTPS, SSH, and scp-style GitHub URLs.
-    $pattern = '^(?:https?://[^/]*github\.com/|git@github\.com:|ssh://git@github\.com/)([^/]+)/([^/]+?)(?:\.git)?/?\s*$'
+    # Match HTTPS, SSH, and scp-style GitHub URLs. Host anchored to github.com (optional 'www.')
+    # so lookalikes such as 'evilgithub.com' or 'github.com.attacker.com' do not match.
+    $pattern = '^(?:https?://(?:www\.)?github\.com/|git@github\.com:|ssh://git@github\.com/)([^/]+)/([^/]+?)(?:\.git)?/?\s*$'
     if ($remoteUrl -notmatch $pattern) {
         Write-Verbose "Remote URL '$remoteUrl' is not a recognised GitHub URL."
         return $null

@@ -38,12 +38,15 @@
     Enable end-to-end GitHub Actions setup. Creates a federated identity credential
     after granting permissions, and auto-detects the GitHub organization/repository
     from the local git remote ('origin') when -GitHubOrganization/-GitHubRepository
-    are not explicitly supplied.
+    are not explicitly supplied. This is the recommended entry point for the GitHub
+    flow.
 
     .PARAMETER SetGitHubSecrets
-    Together with -GitHubActions, also pushes AZURE_CLIENT_ID and AZURE_TENANT_ID
-    to the target repository's Actions secrets via the GitHub CLI ('gh'). Falls back
-    to printing manual instructions when 'gh' is unavailable or not authenticated.
+    Pushes AZURE_CLIENT_ID and AZURE_TENANT_ID to the target repository's Actions
+    secrets via the GitHub CLI ('gh'). Falls back to printing manual instructions
+    when 'gh' is unavailable or not authenticated. Passing -SetGitHubSecrets on its
+    own implicitly enables the GitHub Actions flow, so -GitHubActions does not need
+    to be specified alongside it.
 
     .EXAMPLE
     New-MtMaesterApp
@@ -118,14 +121,19 @@
     $useGitHubFlow = $GitHubActions -or $SetGitHubSecrets -or $GitHubOrganization -or $GitHubRepository
 
     if ($useGitHubFlow) {
-        # Auto-detect from local git remote when org/repo not explicitly provided.
-        if (-not $GitHubOrganization -or -not $GitHubRepository) {
+        # Auto-detect from local git remote only when BOTH are omitted. Mixing an explicit
+        # value with auto-detection of the other is ambiguous (which repo did the caller
+        # really mean?) so we require both-or-neither.
+        if (-not $GitHubOrganization -and -not $GitHubRepository) {
             $detected = Get-MtGitHubRepoFromGit
             if ($detected) {
-                if (-not $GitHubOrganization) { $GitHubOrganization = $detected.Organization }
-                if (-not $GitHubRepository)   { $GitHubRepository   = $detected.Repository }
+                $GitHubOrganization = $detected.Organization
+                $GitHubRepository   = $detected.Repository
                 Write-Host "Auto-detected GitHub repository from git remote: $GitHubOrganization/$GitHubRepository" -ForegroundColor Cyan
             }
+        } elseif (-not $GitHubOrganization -or -not $GitHubRepository) {
+            Write-Error "Specify both -GitHubOrganization and -GitHubRepository, or omit both to auto-detect from the local git remote."
+            return
         }
 
         if (-not $GitHubOrganization -or -not $GitHubRepository) {
