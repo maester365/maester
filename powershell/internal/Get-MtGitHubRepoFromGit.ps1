@@ -9,10 +9,12 @@ function Get-MtGitHubRepoFromGit {
     when running the command from inside a git working tree whose `origin` remote
     points at GitHub.
 
-    Supports both HTTPS and SSH remote URL formats:
+    Supports HTTPS, scp-style SSH, and ssh:// remote URL formats:
         https://github.com/owner/repo.git
         https://github.com/owner/repo
+        https://www.github.com/owner/repo.git
         git@github.com:owner/repo.git
+        ssh://git@github.com/owner/repo.git
 
     Returns $null when:
         * git is not installed / not on PATH

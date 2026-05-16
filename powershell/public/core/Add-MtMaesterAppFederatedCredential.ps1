@@ -157,13 +157,25 @@
         }
 
         if ($duplicateName -or $duplicateSubject) {
-            if($duplicateSubject) {
+            # duplicateSubject = an existing credential already grants the requested
+            # repo/branch. That is not a failure - the desired end state already exists,
+            # so we treat re-runs as idempotent (and continue to secrets setup when asked).
+            #
+            # duplicateName without duplicateSubject = the name is taken by a credential
+            # for a DIFFERENT repo/branch. The requested credential cannot be created,
+            # so this remains a hard error so callers / automation detect the failure.
+            if ($duplicateSubject) {
                 Write-Warning "A federated credential for this repository already exists:"
                 $duplicateCred = $duplicateSubject
             }
-            elseif($duplicateName) {
-                Write-Warning "A federated credential with this name already exists:"
-                $duplicateCred = $duplicateName
+            elseif ($duplicateName) {
+                Write-Error "A federated credential with the name '$Name' already exists for a different repository or branch. Choose a different -Name or remove the existing credential."
+                $duplicateName | ForEach-Object {
+                    Write-Host "  Name: $($_.name)" -ForegroundColor Yellow
+                    Write-Host "  Subject: $($_.subject)" -ForegroundColor Yellow
+                    Write-Host ""
+                }
+                return
             }
 
             $duplicateCred | ForEach-Object {
@@ -180,7 +192,7 @@
                 $tenantId = (Get-AzContext).Tenant.Id
                 $secretsConfigured = Set-MtGitHubActionsSecret -GitHubRepository "$GitHubOrganization/$GitHubRepository" -ClientId $app.AppId -TenantId $tenantId
                 if (-not $secretsConfigured) {
-                    Write-MtGitHubSecretsManualInstruction -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository -ClientId $app.AppId -TenantId $tenantId
+                    Write-MtGitHubSecretsManualInstruction -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository -ClientId $app.AppId -TenantId $tenantId -AttemptedAutomatic
                 }
                 return $duplicateSubject
             }
@@ -217,7 +229,14 @@
         }
 
         if (-not $secretsConfigured) {
-            Write-MtGitHubSecretsManualInstruction -GitHubOrganization $GitHubOrganization -GitHubRepository $GitHubRepository -ClientId $app.AppId -TenantId $tenantId
+            $manualParams = @{
+                GitHubOrganization = $GitHubOrganization
+                GitHubRepository   = $GitHubRepository
+                ClientId           = $app.AppId
+                TenantId           = $tenantId
+            }
+            if ($SetGitHubSecrets) { $manualParams['AttemptedAutomatic'] = $true }
+            Write-MtGitHubSecretsManualInstruction @manualParams
         }
 
         return $createdCredential

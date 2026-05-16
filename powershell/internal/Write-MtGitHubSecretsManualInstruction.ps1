@@ -11,7 +11,13 @@ function Write-MtGitHubSecretsManualInstruction {
         [Parameter(Mandatory = $true)] [string] $GitHubOrganization,
         [Parameter(Mandatory = $true)] [string] $GitHubRepository,
         [Parameter(Mandatory = $true)] [string] $ClientId,
-        [Parameter(Mandatory = $true)] [string] $TenantId
+        [Parameter(Mandatory = $true)] [string] $TenantId,
+
+        # When $true the caller already attempted -SetGitHubSecrets and the gh CLI path
+        # failed (missing / unauthenticated / call failure). In that case suggesting the
+        # user re-run with the same switch is misleading - show a `gh` troubleshooting tip
+        # instead.
+        [switch] $AttemptedAutomatic
     )
 
     $githubSecretsUrl = "https://github.com/$GitHubOrganization/$GitHubRepository/settings/secrets/actions"
@@ -28,7 +34,13 @@ function Write-MtGitHubSecretsManualInstruction {
     Write-Host "   Name: AZURE_TENANT_ID" -ForegroundColor Cyan
     Write-Host "    Value: $TenantId" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "Tip: re-run with -SetGitHubSecrets to push these via the GitHub CLI automatically." -ForegroundColor DarkGray
+    if ($AttemptedAutomatic) {
+        Write-Host "Tip: -SetGitHubSecrets was requested but the GitHub CLI ('gh') was unavailable or" -ForegroundColor DarkGray
+        Write-Host "     failed. Install gh from https://cli.github.com/, run 'gh auth login', then re-run" -ForegroundColor DarkGray
+        Write-Host "     this command to push the secrets automatically." -ForegroundColor DarkGray
+    } else {
+        Write-Host "Tip: re-run with -SetGitHubSecrets to push these via the GitHub CLI automatically." -ForegroundColor DarkGray
+    }
     Write-Host "See https://maester.dev/docs/monitoring/github#add-entra-tenant-info-to-github-repos for details." -ForegroundColor Yellow
     Write-Host ""
 }
