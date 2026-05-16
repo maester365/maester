@@ -28,22 +28,27 @@
         Write-Verbose 'Get domain details the password expiry period'
         $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
 
-        Write-Verbose 'Get verified domains where passwords are set to expire'
+        Write-Verbose 'Get verified and managed domains where passwords are set to expire'
 
         $noPasswordExpiryPeriodInDays = [int]::MaxValue
 
         $result = $domains | Where-Object {
+            # Filter out domains that are not 'managed' or not verified, as password policies do not apply to them
             if (($_.authenticationType -ne "Managed") -or ($_.isVerified -ne $true)) {
                 return $false
             }
+
             $passwordValidityPeriodInDays = 0
-            $rawPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
-            if (($null -eq $rawPasswordValidityPeriodInDays) -or ($rawPasswordValidityPeriodInDays -is [bool])) {
+            $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
+            # If null or a boolean, the password expiry period is not set, and passwords do not expire.
+            # Return false to indicate this domain does not fail the test.
+            if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
                 return $false
             }
-            if (-not [int]::TryParse($rawPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
+            if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
                 return $false
             }
+            # If valid integer, check if equal to the value that indicates no password expiry (MaxValue).
             return $passwordValidityPeriodInDays -ne $noPasswordExpiryPeriodInDays
         }
 
