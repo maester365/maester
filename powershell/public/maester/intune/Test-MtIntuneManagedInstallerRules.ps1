@@ -22,13 +22,16 @@
     - Reduces false positives while maintaining security
 
     The test passes if at least one App Control policy is in **enforce mode** (audit mode disabled) AND has
-    the "Trust apps from managed installer" setting enabled. Managed Installer enabled on an audit-only
-    policy does not actively trust deployed apps because the underlying App Control policy is not enforcing.
+    the "Trust apps from managed installer" setting enabled AND has an **active control** (built-in controls
+    selected OR a non-empty uploaded XML payload). Managed Installer enabled on an audit-only policy, or on
+    an enforce-mode upload policy with an empty XML payload, does not actively trust deployed apps because
+    the underlying App Control policy is not blocking anything. This mirrors the active-control gate used by
+    MT.1179.
 
     .EXAMPLE
     Test-MtIntuneManagedInstallerRules
 
-    Returns true if at least one enforcing App Control policy has Managed Installer enabled.
+    Returns true if at least one enforcing App Control policy has Managed Installer enabled and an active control.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtIntuneManagedInstallerRules
@@ -63,6 +66,10 @@
         }
 
         $managedInstallerId = 'device_vendor_msft_policy_config_applicationcontrolv2_trustappsfrommanagedinstaller'
+        $buildOptionsId    = 'device_vendor_msft_policy_config_applicationcontrolv2_buildoptions'
+        $auditModeId       = 'device_vendor_msft_policy_config_applicationcontrolv2_auditmode'
+        # When 'Custom policy upload' is selected, the XML payload is delivered in a simpleSettingValue child setting.
+        $policyXmlId       = 'device_vendor_msft_policy_config_applicationcontrolv2_policy'
 
         $policyResults = [System.Collections.Generic.List[hashtable]]::new()
 
@@ -73,37 +80,64 @@
 
             $policyDetail = @{
                 Name              = $policy.name
+                BuildOptions      = 'Not configured'
+                PolicyXml         = 'N/A'
                 ManagedInstaller  = 'Not configured'
                 AuditMode         = 'Not configured'
                 MIEnabled         = $false
                 Enforcing         = $false
+                HasActiveControl  = $false
             }
 
             foreach ($setting in $settingsResponse) {
                 $defId = $setting.settingInstance.settingDefinitionId
 
-                if ($defId -eq 'device_vendor_msft_policy_config_applicationcontrolv2_buildoptions') {
+                if ($defId -eq $buildOptionsId) {
+                    $val = $setting.settingInstance.choiceSettingValue.value
+                    $isBuiltIn = $val -like '*built_in_controls_selected'
+                    $isUpload  = $val -like '*upload_policy_selected'
+                    if ($isBuiltIn) {
+                        $policyDetail.BuildOptions = 'Built-in controls'
+                        $policyDetail.HasActiveControl = $true
+                    } elseif ($isUpload) {
+                        $policyDetail.BuildOptions = 'Custom policy upload'
+                        # HasActiveControl is set later only if a non-empty XML payload is present.
+                    }
+                    Write-Verbose "  BuildOptions: $($policyDetail.BuildOptions)"
+
                     foreach ($child in $setting.settingInstance.choiceSettingValue.children) {
-                        if ($child.settingDefinitionId -eq $managedInstallerId) {
-                            $childVal = $child.choiceSettingValue.value
-                            if ($childVal -like '*_enabled') {
-                                $policyDetail.ManagedInstaller = 'Enabled'
-                                $policyDetail.MIEnabled = $true
-                            } else {
-                                $policyDetail.ManagedInstaller = 'Disabled'
+                        switch ($child.settingDefinitionId) {
+                            $managedInstallerId {
+                                $childVal = $child.choiceSettingValue.value
+                                if ($childVal -like '*_enabled') {
+                                    $policyDetail.ManagedInstaller = 'Enabled'
+                                    $policyDetail.MIEnabled = $true
+                                } else {
+                                    $policyDetail.ManagedInstaller = 'Disabled'
+                                }
+                                Write-Verbose "  ManagedInstaller: $($policyDetail.ManagedInstaller)"
                             }
-                            Write-Verbose "  ManagedInstaller: $($policyDetail.ManagedInstaller)"
-                        }
-                        if ($child.settingDefinitionId -eq 'device_vendor_msft_policy_config_applicationcontrolv2_auditmode') {
-                            $childVal = $child.choiceSettingValue.value
-                            if ($childVal -like '*_enabled') {
-                                $policyDetail.AuditMode = 'Audit'
-                                $policyDetail.Enforcing = $false
-                            } else {
-                                $policyDetail.AuditMode = 'Enforce'
-                                $policyDetail.Enforcing = $true
+                            $auditModeId {
+                                $childVal = $child.choiceSettingValue.value
+                                if ($childVal -like '*_enabled') {
+                                    $policyDetail.AuditMode = 'Audit'
+                                    $policyDetail.Enforcing = $false
+                                } else {
+                                    $policyDetail.AuditMode = 'Enforce'
+                                    $policyDetail.Enforcing = $true
+                                }
+                                Write-Verbose "  AuditMode: $($policyDetail.AuditMode)"
                             }
-                            Write-Verbose "  AuditMode: $($policyDetail.AuditMode)"
+                            $policyXmlId {
+                                $xmlVal = $child.simpleSettingValue.value
+                                if (-not [string]::IsNullOrWhiteSpace($xmlVal)) {
+                                    $policyDetail.PolicyXml = "Present ($($xmlVal.Length) chars)"
+                                    if ($isUpload) { $policyDetail.HasActiveControl = $true }
+                                } else {
+                                    $policyDetail.PolicyXml = 'Empty'
+                                }
+                                Write-Verbose "  PolicyXml: $($policyDetail.PolicyXml)"
+                            }
                         }
                     }
                 }
@@ -112,32 +146,39 @@
             $policyResults.Add($policyDetail)
         }
 
-        # Pass: at least one enforcing App Control policy with Managed Installer enabled.
-        $enforcingMI = @($policyResults | Where-Object { $_.MIEnabled -and $_.Enforcing })
+        # Pass: at least one enforcing App Control policy with Managed Installer enabled AND an active control
+        # (built-in controls selected OR a non-empty uploaded XML payload). An enforce-mode policy with an empty
+        # XML payload is not actively blocking anything, so Managed Installer on it does not represent real
+        # trust enforcement. This mirrors the active-control gate used by MT.1179.
+        $enforcingMI = @($policyResults | Where-Object { $_.MIEnabled -and $_.Enforcing -and $_.HasActiveControl })
         $hasEnforcingMI = $enforcingMI.Count -gt 0
 
         # Build result markdown
         $testResultMarkdown = "Found $($appControlPolicies.Count) App Control for Business policy/policies in Intune.`n`n"
-        $testResultMarkdown += "**Pass criteria:** At least one App Control policy must be in **Enforce** mode AND have **Managed Installer** enabled.`n`n"
-        $testResultMarkdown += "| Policy | Managed Installer | Enforcement Mode |`n"
-        $testResultMarkdown += "| --- | --- | --- |`n"
+        $testResultMarkdown += "**Pass criteria:** At least one App Control policy must be in **Enforce** mode AND have **Managed Installer** enabled AND have an active control (built-in controls selected OR a non-empty uploaded XML payload).`n`n"
+        $testResultMarkdown += "| Policy | Build Options | Policy XML | Managed Installer | Enforcement Mode |`n"
+        $testResultMarkdown += "| --- | --- | --- | --- | --- |`n"
         foreach ($p in $policyResults) {
-            $testResultMarkdown += "| $($p.Name) | $($p.ManagedInstaller) | $($p.AuditMode) |`n"
+            $testResultMarkdown += "| $($p.Name) | $($p.BuildOptions) | $($p.PolicyXml) | $($p.ManagedInstaller) | $($p.AuditMode) |`n"
         }
 
         if ($hasEnforcingMI) {
-            $testResultMarkdown += "`n**Result:** Well done. $($enforcingMI.Count) App Control policy/policies are in **Enforce** mode with **Managed Installer** enabled."
+            $testResultMarkdown += "`n**Result:** Well done. $($enforcingMI.Count) App Control policy/policies are in **Enforce** mode with **Managed Installer** enabled and an active control."
             $testResultMarkdown += " Applications deployed through Intune/SCCM will be automatically trusted."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $true
         } else {
-            $auditMI = @($policyResults | Where-Object { $_.MIEnabled -and -not $_.Enforcing })
-            $testResultMarkdown += "`n**Result:** No App Control policies have **Managed Installer** enabled in **Enforce** mode.`n`n"
+            $auditMI    = @($policyResults | Where-Object { $_.MIEnabled -and -not $_.Enforcing })
+            $emptyXmlMI = @($policyResults | Where-Object { $_.MIEnabled -and $_.Enforcing -and -not $_.HasActiveControl })
+            $testResultMarkdown += "`n**Result:** No App Control policies have **Managed Installer** enabled in **Enforce** mode with an active control.`n`n"
             if ($auditMI.Count -gt 0) {
                 $testResultMarkdown += "$($auditMI.Count) policy/policies have Managed Installer enabled but the underlying App Control policy is in **Audit** mode, so deployed apps are not actively trusted.`n`n"
             }
-            $testResultMarkdown += "> **Risk:** Without Managed Installer on an enforcing App Control policy, applications deployed via Intune may be blocked once App Control transitions to Enforce mode. "
-            $testResultMarkdown += "This leads to false positives and help desk tickets. Enable 'Trust apps from managed installer' on an enforcing policy to automatically trust IT-deployed software."
+            if ($emptyXmlMI.Count -gt 0) {
+                $testResultMarkdown += "$($emptyXmlMI.Count) policy/policies are in **Enforce** mode with Managed Installer enabled, but the uploaded XML payload is empty so the App Control policy is not actively blocking anything.`n`n"
+            }
+            $testResultMarkdown += "> **Risk:** Without Managed Installer on an enforcing App Control policy that has an active control, applications deployed via Intune may be blocked once App Control transitions to active enforcement. "
+            $testResultMarkdown += "This leads to false positives and help desk tickets. Enable 'Trust apps from managed installer' on an enforcing policy with built-in controls or a non-empty uploaded XML to automatically trust IT-deployed software."
             Add-MtTestResultDetail -Result $testResultMarkdown
             return $false
         }

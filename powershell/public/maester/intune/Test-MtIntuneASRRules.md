@@ -17,7 +17,15 @@ Each ASR rule can operate in one of four modes:
 - **Warn**: Warns the user before allowing the behavior to proceed
 - **Disabled**: Rule is not active
 
-The test passes if at least one ASR policy has at least one rule configured in **Block** or **Audit** mode. **Warn** is a supported ASR rule state, but it does not satisfy this control's pass criteria. Policies with all rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
+The test passes if **every rule in the Microsoft Defender ASR Standard Protection baseline** is configured in **Block** or **Audit** mode across the union of all ASR policies in the tenant. The Standard Protection baseline is the minimum recommended set Microsoft publishes for initial ASR deployment:
+
+1. Block abuse of exploited vulnerable signed drivers
+2. Block credential stealing from LSASS
+3. Block persistence through WMI event subscription
+
+See the [Microsoft Defender ASR rules deployment guide](https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement) for the canonical baseline definition.
+
+Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result. **Warn** is a supported ASR rule state but does not satisfy the baseline. Baseline rules in **Audit** mode will trigger an informational note recommending a transition to **Block** mode.
 
 #### Remediation action:
 

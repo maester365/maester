@@ -32,16 +32,7 @@
     .EXAMPLE
     Test-MtIntuneASRRules
 
-    Returns true if every Standard Protection baseline rule is configured (Block or Audit) in at least one ASR policy
-
-    See https://learn.microsoft.com/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules-deployment-implement
-
-    Additional ASR rules detected in tenant policies are reported for visibility but do not affect the pass/fail result.
-
-    .EXAMPLE
-    Test-MtIntuneASRRules
-
-    Returns true if every Standard Protection baseline rule is configured (Block or Audit) in at least one ASR policy.
+    Returns true if every Standard Protection baseline rule is configured in Block or Audit mode across the union of all ASR policies in the tenant.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtIntuneASRRules

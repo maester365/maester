@@ -14,7 +14,7 @@ When Managed Installer is enabled in an App Control for Business policy, applica
 - Reduces false positives while maintaining security against unauthorized software
 - Simplifies ongoing policy maintenance
 
-The test passes if at least one App Control for Business policy has the **Trust apps from managed installer** setting enabled.
+The test passes if **at least one App Control for Business policy is in Enforce mode** (audit mode disabled) **AND** has **Trust apps from managed installer** enabled **AND** has an active control (built-in controls selected OR a non-empty uploaded XML payload). Managed Installer enabled on an audit-only App Control, or on an enforce-mode upload policy with an empty XML payload, does not actively trust deployed apps because the underlying App Control policy is not blocking anything. This mirrors the active-control gate used by MT.1179.
 
 #### Remediation action:
 
