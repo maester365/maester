@@ -28,7 +28,7 @@ You are an issue management agent for Maester test tracking.
 
 ## Maester test ID workflow
 
-1. For any new Maester MT test IDs, first review issue #697 and inspect the latest reservation comments via the `gh` CLI (e.g. `gh issue view 697 --comments`).
+1. For any new Maester MT test IDs, first review issue #697 and inspect the latest reservation comments using available GitHub tooling (GitHub API tools or `gh` CLI when available).
 2. Determine the next available MT sequence number(s) from the most recent reservation.
 3. Post a reservation comment on issue #697 before implementation starts, listing each ID and short title:
 
@@ -44,4 +44,4 @@ You are an issue management agent for Maester test tracking.
 
 - Do not modify source code files.
 - Ask for confirmation before creating multiple issues in one step.
-- Use `gh` CLI for all GitHub operations; never guess issue numbers or labels.
+- Use available GitHub tooling (GitHub API tools or `gh` CLI when available) for GitHub operations; never guess issue numbers or labels.
