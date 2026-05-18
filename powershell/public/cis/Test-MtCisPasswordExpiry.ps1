@@ -40,13 +40,13 @@
 
             $passwordValidityPeriodInDays = 0
             $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
-            # If null or a boolean, the password expiry period is not set, and passwords do not expire.
-            # Return false to indicate this domain does not fail the test.
+            # For verified and managed domains, only the known no-expiry numeric value is compliant.
+            # Treat null, boolean, or unparsable values as failing so the test does not pass on unknown data.
             if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
-                return $false
+                return $true
             }
             if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
-                return $false
+                return $true
             }
             # If valid integer, check if equal to the value that indicates no password expiry (MaxValue).
             return $passwordValidityPeriodInDays -ne $noPasswordExpiryPeriodInDays
