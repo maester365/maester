@@ -129,8 +129,10 @@
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'PnP.PowerShell')
-   switch ($OrderedImport.Name) {
+   # Use an explicit module processing order so Microsoft Graph always connects before PnP.PowerShell.
+   # This avoids relying on Get-ModuleImportOrder, which may reorder modules by bundled DLL version.
+   $OrderedImport = @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'PnP.PowerShell')
+   switch ($OrderedImport) {
 
       'Az.Accounts' {
          if ($Service -contains 'Azure' -or $Service -contains 'Dataverse' -or $Service -contains 'All') {
