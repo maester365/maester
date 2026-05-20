@@ -32,21 +32,28 @@
 
         $noPasswordExpiryPeriodInDays = [int]::MaxValue
 
-        $result = $domains | Where-Object {
-            # Filter out domains that are not 'managed' or not verified, as password policies do not apply to them
-            if (($_.authenticationType -ne "Managed") -or ($_.isVerified -ne $true)) {
-                return $false
+        $excludedDomains = @()
+        $applicableDomains = @()
+        foreach ($domain in $domains) {
+            # Password policy checks apply only to managed and verified domains.
+            if (($domain.authenticationType -ne "Managed") -or ($domain.isVerified -ne $true)) {
+                $excludedDomains += $domain
+                continue
             }
 
+            $applicableDomains += $domain
+        }
+
+        $result = $applicableDomains | Where-Object {
             $passwordValidityPeriodInDays = 0
             $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
-            # For verified and managed domains, only the known no-expiry numeric value is compliant.
-            # Treat null, boolean, or unparsable values as failing so the test does not pass on unknown data.
+            # If null or a boolean, the password expiry period is not set, and passwords do not expire.
+            # Return false to indicate this domain does not fail the test.
             if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
-                return $true
+                return $false
             }
             if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
-                return $true
+                return $false
             }
             # If valid integer, check if equal to the value that indicates no password expiry (MaxValue).
             return $passwordValidityPeriodInDays -ne $noPasswordExpiryPeriodInDays
@@ -64,7 +71,9 @@
         $resultMd += "| --- | --- |`n"
         foreach ($item in $domains) {
             $itemResult = '❌ Fail'
-            if ($item.id -notin $result.id) {
+            if ($item.id -in $excludedDomains.id) {
+                $itemResult = '⏭️ Skip'
+            } elseif ($item.id -notin $result.id) {
                 $itemResult = '✅ Pass'
             }
             $resultMd += "| $($item.Id) | $($itemResult) |`n"
