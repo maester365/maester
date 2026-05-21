@@ -33,7 +33,7 @@ function Test-MtCaReferencedObjectsExist {
         $policies = Get-MtConditionalAccessPolicy
 
         # Collect all referenced objects
-        $allUsers = $policies.conditions.users.includeUsers + $policies.conditions.users.excludeUsers | Where-Object { $_ -ne 'All' -and $_ -ne 'GuestsOrExternalUsers' -and $_ -ne $null -and $_ -ne '' } | Select-Object -Unique
+        $allUsers = $policies.conditions.users.includeUsers + $policies.conditions.users.excludeUsers | Where-Object { $_ -ne 'All' -and $_ -ne 'GuestsOrExternalUsers' -and $_ -ne 'None' -and $_ -ne $null -and $_ -ne '' } | Select-Object -Unique
         $allGroups = $policies.conditions.users.includeGroups + $policies.conditions.users.excludeGroups | Where-Object { $_ -ne $null -and $_ -ne '' } | Select-Object -Unique
         $allRoles = $policies.conditions.users.includeRoles + $policies.conditions.users.excludeRoles | Where-Object { $_ -ne $null -and $_ -ne '' } | Select-Object -Unique
 
