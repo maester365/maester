@@ -62,9 +62,9 @@
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire on all your 'managed' domains:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire on all your 'managed' and 'verified' domains:`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant has 1 or more 'managed' domains which expire passwords:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has 1 or more 'managed' and 'verified' domains which expire passwords:`n`n%TestResult%"
         }
 
         $resultMd = "| Domain | Result |`n"
