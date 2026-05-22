@@ -1,4 +1,4 @@
-﻿function Test-MtCisGlobalAdminCount {
+function Test-MtCisGlobalAdminCount {
     <#
     .SYNOPSIS
     Checks if the number of Global Admins is between 2 and 4
@@ -21,6 +21,11 @@
 
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    if (-not (Test-MtHasPermission -TestId 'MT.1032')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
         return $null
     }
     

@@ -1,4 +1,4 @@
-﻿function Test-MtAppManagementPolicyEnabled {
+function Test-MtAppManagementPolicyEnabled {
     <#
     .Synopsis
     Checks if the default app management policy is enabled.
@@ -15,6 +15,11 @@
   [CmdletBinding()]
   [OutputType([bool])]
   param()
+
+  if (-not (Test-MtHasPermission -TestId 'MT.1002')) {
+    Add-MtTestResultDetail -SkippedBecause LimitedPermissions
+    return $null
+  }
 
   try {
     $defaultAppManagementPolicy = Invoke-MtGraphRequest -RelativeUri 'policies/defaultAppManagementPolicy'

@@ -1,4 +1,4 @@
-﻿function Test-MtCaLicenseUtilization {
+function Test-MtCaLicenseUtilization {
     <#
     .SYNOPSIS
     Test Conditional Access License Utilization and return stats on usage for the specific license.
@@ -35,6 +35,11 @@
         } elseif ($License -eq 'P2') {
             Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
         }
+        return $null
+    }
+
+    if (-not (Test-MtHasPermission -TestId 'MT.1022')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
         return $null
     }
 

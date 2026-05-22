@@ -1,4 +1,4 @@
-﻿function Test-MtCaMfaForAdmin {
+function Test-MtCaMfaForAdmin {
     <#
     .Synopsis
     Checks if the tenant has at least one conditional access policy requiring MFA for admins
@@ -22,6 +22,11 @@
 
     if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
+    if (-not (Test-MtHasPermission -TestId 'MT.1006')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
         return $null
     }
 

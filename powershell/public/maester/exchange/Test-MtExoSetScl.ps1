@@ -1,4 +1,4 @@
-﻿function Test-MtExoSetScl {
+function Test-MtExoSetScl {
     <#
     .SYNOPSIS
     Checks if Spam confidence level (SCL) is configured in mail transport rules with specific domains
@@ -25,6 +25,11 @@
         return $null
     }
 
+    if (-not (Test-MtHasPermission -TestId 'MT.1043')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
+        return $null
+    }
+
     try {
         $portalLink_TransportRules = "https://admin.exchange.microsoft.com/#/transportrules"
 
@@ -42,10 +47,9 @@
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return !$result
     } catch {
         Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $null
     }
-
-    return !$result
 }

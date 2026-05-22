@@ -152,7 +152,12 @@
     {
       "Id": "CISA.MS.AAD.2.3",
       "Severity": "High",
-      "Title": "Sign-ins detected as high risk SHALL be blocked."
+      "Title": "Sign-ins detected as high risk SHALL be blocked.",
+      "RequiredPermissions": {
+        "Graph": [
+          "Policy.Read.All"
+        ]
+      }
     },
     {
       "Id": "CISA.MS.AAD.3.1",
@@ -722,12 +727,23 @@
     {
       "Id": "MT.1001",
       "Severity": "Medium",
-      "Title": "At least one Conditional Access policy is configured with device compliance."
+      "Title": "At least one Conditional Access policy is configured with device compliance.",
+      "RequiredPermissions": {
+        "Graph": [
+          "Policy.Read.ConditionalAccess",
+          "Application.Read.All"
+        ]
+      }
     },
     {
       "Id": "MT.1002",
       "Severity": "High",
-      "Title": "App management restrictions on applications and service principals is configured and enabled."
+      "Title": "App management restrictions on applications and service principals is configured and enabled.",
+      "RequiredPermissions": {
+        "Graph": [
+          "Policy.Read.All"
+        ]
+      }
     },
     {
       "Id": "MT.1003",
@@ -747,7 +763,13 @@
     {
       "Id": "MT.1006",
       "Severity": "High",
-      "Title": "At least one Conditional Access policy is configured to require MFA for admins."
+      "Title": "At least one Conditional Access policy is configured to require MFA for admins.",
+      "RequiredPermissions": {
+        "Graph": [
+          "Policy.Read.ConditionalAccess",
+          "Directory.Read.All"
+        ]
+      }
     },
     {
       "Id": "MT.1007",
@@ -827,7 +849,17 @@
     {
       "Id": "MT.1022",
       "Severity": "Medium",
-      "Title": "All users utilizing a P1 license should be licensed."
+      "Title": "All users utilizing a P1 license should be licensed.",
+      "RequiredPermissions": {
+        "Graph": [
+          "Organization.Read.All"
+        ],
+        "EntraRoles": [
+          "Global Reader",
+          "Security Reader",
+          "Global Administrator"
+        ]
+      }
     },
     {
       "Id": "MT.1023",
@@ -872,7 +904,17 @@
     {
       "Id": "MT.1032",
       "Severity": "High",
-      "Title": "Limited number of Global Admins are assigned."
+      "Title": "Limited number of Global Admins are assigned.",
+      "RequiredPermissions": {
+        "Graph": [
+          "RoleManagement.Read.Directory"
+        ],
+        "EntraRoles": [
+          "Global Reader",
+          "Security Reader",
+          "Global Administrator"
+        ]
+      }
     },
     {
       "Id": "MT.1033.0",
@@ -962,7 +1004,12 @@
     {
       "Id": "MT.1043",
       "Severity": "Medium",
-      "Title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains"
+      "Title": "Ensure Spam confidence level (SCL) is configured in mail transport rules with specific domains",
+      "RequiredPermissions": {
+        "ExchangeOnline": [
+          "View-Only Configuration"
+        ]
+      }
     },
     {
       "Id": "MT.1044",
@@ -1057,12 +1104,24 @@
     {
       "Id": "MT.1063",
       "Severity": "High",
-      "Title": "All app registration owners should have MFA registered"
+      "Title": "All app registration owners should have MFA registered",
+      "RequiredPermissions": {
+        "Graph": [
+          "Application.Read.All",
+          "User.Read.All"
+        ]
+      }
     },
     {
       "Id": "MT.1064",
       "Severity": "High",
-      "Title": "Management group creation should be limited to users with explicit write access"
+      "Title": "Management group creation should be limited to users with explicit write access",
+      "RequiredPermissions": {
+        "Azure": [
+          "Owner",
+          "User Access Administrator"
+        ]
+      }
     },
     {
       "Id": "MT.1065",
@@ -1477,7 +1536,12 @@
     {
       "Id": "ORCA.100",
       "Severity": "Medium",
-      "Title": "Bulk Complaint Level threshold is between 4 and 6."
+      "Title": "Bulk Complaint Level threshold is between 4 and 6.",
+      "RequiredPermissions": {
+        "ExchangeOnline": [
+          "View-Only Configuration"
+        ]
+      }
     },
     {
       "Id": "ORCA.101",
@@ -1797,7 +1861,13 @@
     {
       "Id": "ORCA.242",
       "Severity": "High",
-      "Title": "Important protection alerts responsible for AIR activities are enabled."
+      "Title": "Important protection alerts responsible for AIR activities are enabled.",
+      "RequiredPermissions": {
+        "ExchangeOnline": [
+          "View-Only Configuration",
+          "Security Reader"
+        ]
+      }
     },
     {
       "Id": "ORCA.243",

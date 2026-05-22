@@ -25,6 +25,7 @@ $__MtSession = @{
 	DataverseApiBase = $null       # Resolved Dataverse OData API base URL (e.g. https://org123.api.crm.dynamics.com/api/data/v9.2)
 	DataverseResourceUrl = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
 	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
+	Authorization = $null
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

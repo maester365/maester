@@ -1,4 +1,4 @@
-﻿function Test-MtAppRegistrationOwnersWithoutMFA {
+function Test-MtAppRegistrationOwnersWithoutMFA {
     <#
     .SYNOPSIS
     Tests if app registration owners have Multi-Factor Authentication (MFA) enabled.
@@ -23,6 +23,11 @@
     # Early exit if Graph connection is not available
     if (-not (Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    if (-not (Test-MtHasPermission -TestId 'MT.1063')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
         return $null
     }
 
@@ -214,12 +219,11 @@
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown
+        return $testPassed
 
     } catch {
         Write-Error $_.Exception.Message
-        Add-MtTestResultDetail -Result "**Error** checking app registration owners: $($_.Exception.Message)"
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         return $false
     }
-
-    return $testPassed
 }

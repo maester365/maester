@@ -1,4 +1,4 @@
-﻿function Test-MtCaDeviceComplianceExists {
+function Test-MtCaDeviceComplianceExists {
     <#
     .Synopsis
     Checks if the tenant has at least one conditional access policy requiring device compliance.
@@ -22,6 +22,11 @@
 
   if ( ( Get-MtLicenseInformation EntraID ) -eq 'Free' ) {
     Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+    return $null
+  }
+
+  if (-not (Test-MtHasPermission -TestId 'MT.1001')) {
+    Add-MtTestResultDetail -SkippedBecause LimitedPermissions
     return $null
   }
 

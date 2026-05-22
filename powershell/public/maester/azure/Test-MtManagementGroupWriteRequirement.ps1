@@ -1,4 +1,4 @@
-﻿function Test-MtManagementGroupWriteRequirement {
+function Test-MtManagementGroupWriteRequirement {
     <#
     .SYNOPSIS
     Checks if write permissions are required to create new management groups
@@ -24,16 +24,21 @@
         return $null
     }
 
-    # Get all management groups in the tenant and filter the tenant root management group by id
-    $rootManagementGroup = Get-MtAzureManagementGroup | Where-Object { $_.id -match "$($_.properties.tenantid)$" }
-
-    if (!$rootManagementGroup) {
-        Write-Verbose "Tenant Root Group not found in management groups."
-        Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Tenant Root Group not found"
+    if (-not (Test-MtHasPermission -TestId 'MT.1064')) {
+        Add-MtTestResultDetail -SkippedBecause LimitedPermissions
         return $null
     }
 
     try {
+        # Get all management groups in the tenant and filter the tenant root management group by id
+        $rootManagementGroup = Get-MtAzureManagementGroup | Where-Object { $_.id -match "$($_.properties.tenantid)$" }
+
+        if (!$rootManagementGroup) {
+            Write-Verbose "Tenant Root Group not found in management groups."
+            Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Tenant Root Group not found"
+            return $null
+        }
+
         # Query the management group settings to check authorization requirements
         $settingResponse = Invoke-MtAzureRequest `
             -RelativeUri "/providers/Microsoft.Management/managementGroups/$($rootManagementGroup.name)/settings/default" `

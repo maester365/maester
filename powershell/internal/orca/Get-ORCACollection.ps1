@@ -42,7 +42,11 @@ Function Get-ORCACollection
     if($SCC -and $Collection["Services"] -band [ORCAService]::MDO)
     {
         Write-Verbose "$(Get-Date) Getting Protection Alerts"
-        $Collection["ProtectionAlert"] = Get-ProtectionAlert | Where-Object {$_.IsSystemRule}
+        if (Test-MtHasPermission -RequiredPermissions @{ ExchangeOnline = @('View-Only Configuration') }) {
+            $Collection["ProtectionAlert"] = Get-ProtectionAlert | Where-Object {$_.IsSystemRule}
+        } else {
+            Write-Verbose "$(Get-Date) Skipping Protection Alerts due to missing 'View-Only Configuration' role."
+        }
     }
 
     Write-Verbose "$(Get-Date) Getting EOP Preset Policy Settings"

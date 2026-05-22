@@ -327,6 +327,9 @@
     # Initialize MtSession after Graph connected.
     Initialize-MtSession
 
+    # Gathers available permissions for connected services.
+    Get-MtAuthorization | Out-Null
+
     if ($isWebUri) {
         # Check if TeamChannelWebhookUri is a valid URL.
         $urlPattern = '^(https)://[^\s/$.?#].[^\s]*$'
