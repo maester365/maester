@@ -11,9 +11,9 @@ Describe 'Get-MtGraphScope' {
 
     It 'Keeps EntitlementManagement.Read.All in sorted position between DirectoryRecommendations and IdentityRiskEvent' {
         $scopes = Get-MtGraphScope
-        $directoryRecommendationsIndex = $scopes.IndexOf('DirectoryRecommendations.Read.All')
-        $entitlementManagementIndex = $scopes.IndexOf('EntitlementManagement.Read.All')
-        $identityRiskEventIndex = $scopes.IndexOf('IdentityRiskEvent.Read.All')
+        $directoryRecommendationsIndex = [array]::IndexOf($scopes, 'DirectoryRecommendations.Read.All')
+        $entitlementManagementIndex = [array]::IndexOf($scopes, 'EntitlementManagement.Read.All')
+        $identityRiskEventIndex = [array]::IndexOf($scopes, 'IdentityRiskEvent.Read.All')
 
         $directoryRecommendationsIndex | Should -BeLessThan $entitlementManagementIndex
         $entitlementManagementIndex | Should -BeLessThan $identityRiskEventIndex
