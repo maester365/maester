@@ -67,7 +67,7 @@
             $testResultMarkdown = "Your tenant has 1 or more 'managed' domains which expire passwords:`n`n%TestResult%"
         }
 
-        $resultMd = "| Display Name | Domain |`n"
+        $resultMd = "| Domain | Result |`n"
         $resultMd += "| --- | --- |`n"
         foreach ($item in $domains) {
             $itemResult = '❌ Fail'
