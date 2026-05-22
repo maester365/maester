@@ -499,6 +499,13 @@ test.json
 .claude/**
 !.claude/agents/**
 
+# Gemini CLI
+.gemini/**
+GEMINI.md
+
+# Graphify
+graphify-out/**
+
 # Don't allow Maester test results in the main branch
 test-results
 
