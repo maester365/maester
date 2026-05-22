@@ -1,0 +1,47 @@
+name: 🤖 Update Test Metadata (AI)
+
+on:
+  pull_request:
+    paths:
+      - 'powershell/public/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: update-test-metadata
+  cancel-in-progress: false
+
+jobs:
+  update-metadata:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Generate Test Metadata
+        shell: pwsh
+        run: |
+          ./build/aitools/test-metadata/Update-TestMetadata.ps1
+        env:
+          GeminiApiKey: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- tests/maester-config.json; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add tests/maester-config.json
+          git commit -m "chore: update test metadata (AI generated permissions/severity)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

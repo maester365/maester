@@ -24,13 +24,31 @@ function Test-MtHasPermission {
 
     Write-Verbose "Checking permissions for TestId: $TestId"
 
+    # 1. Check Global Bypass (CLI switch -SkipPermissionCheck)
+    if ($__MtSession.SkipPermissionCheck) {
+        Write-Verbose "Permission check skipped globally via CLI."
+        return $true
+    }
+
+    # 2. Check Global Bypass (Config GlobalSettings.SkipPermissionCheck)
+    if ($__MtSession.MaesterConfig.GlobalSettings.SkipPermissionCheck) {
+        Write-Verbose "Permission check skipped globally via Maester config."
+        return $true
+    }
+
     if (-not $RequiredPermissions -and [string]::IsNullOrEmpty($TestId)) {
         return $true
     }
 
-    if (-not $RequiredPermissions) {
+    $testSetting = $null
+    if (-not $RequiredPermissions -and ![string]::IsNullOrEmpty($TestId)) {
         $testSetting = Get-MtMaesterConfigTestSetting -TestId $TestId
         if ($null -ne $testSetting) {
+            # 3. Check Per-Test Bypass (Config TestSettings[].SkipPermissionCheck)
+            if ($testSetting.SkipPermissionCheck) {
+                Write-Verbose "Permission check skipped for test $TestId via Maester config."
+                return $true
+            }
             $RequiredPermissions = $testSetting.RequiredPermissions
         }
     }

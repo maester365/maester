@@ -1,12 +1,64 @@
 # Instructions
 
-Based on the five severity levels below, tell me the severity level that should be used for the test in the testInfo.json file.
+Based on the test information and the PowerShell code provided below, determine:
+1. The **Severity** level (Critical, High, Medium, Low, Info).
+2. The **RequiredPermissions** needed to run this test across different services.
 
-In the result, only include one of the severity levels (Critical, High, Medium, Low, Info) . Do not include any other text or characters (e.g. quotes, brackets, new line, etc.).
+Output your response ONLY as a valid JSON object with the following keys: `Severity`, `RequiredPermissions`. 
+Do not include markdown fences or any other text.
+
+Example output:
+{
+  "Severity": "High",
+  "RequiredPermissions": {
+    "Graph": ["Policy.Read.All", "User.Read.All"],
+    "EntraRoles": ["Global Reader"],
+    "ExchangeOnline": ["View-Only Configuration"],
+    "Azure": ["Reader"]
+  }
+}
 
 ---
 testInfo.json
 %TEST_INFO_JSON%
+
+---
+PowerShell Code
+%TEST_CODE%
+
+---
+
+## Permission Mapping Rules
+
+Analyze the PowerShell code to identify which APIs and services are being called. 
+
+### Microsoft Graph (Graph)
+- If `Invoke-MtGraphRequest` is used, look at the `-RelativeUri`. 
+  - `/policies/conditionalAccessPolicies` -> `Policy.Read.ConditionalAccess` or `Policy.Read.All`
+  - `/users` -> `User.Read.All` or `Directory.Read.All`
+  - `/applications` -> `Application.Read.All`
+  - `/groups` -> `Group.Read.All`
+  - `/directoryRoles` -> `RoleManagement.Read.Directory`
+- Map other endpoints to their documented Graph permissions. 
+- Always prefer `.Read` permissions over `.ReadWrite` unless the code is performing a POST/PATCH/DELETE.
+
+### Entra ID Directory Roles (EntraRoles)
+- If the test queries privileged data (like Global Admins, PIM assignments, or CA policies), specify at least one role that would grant this access, such as:
+  - `Global Reader`
+  - `Security Reader`
+  - `Global Administrator` (only if highly privileged access is needed)
+
+### Exchange Online (ExchangeOnline)
+- If `Get-MtExo` or `Get-EXO*` cmdlets are used, identify the required Management Role:
+  - `View-Only Configuration` (most common for reading settings)
+  - `Security Reader`
+  - `View-Only Recipients`
+
+### Azure RBAC (Azure)
+- If `Invoke-MtAzureRequest` or `Get-Az*` cmdlets are used, identify the required Azure role:
+  - `Reader`
+  - `Security Reader`
+  - `Owner` / `Contributor` (if write access is needed)
 
 ---
 

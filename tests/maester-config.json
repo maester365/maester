@@ -1,7 +1,8 @@
 {
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
-    "DataverseEnvironmentUrl": ""
+    "DataverseEnvironmentUrl": "",
+    "SkipPermissionCheck": false
   },
   "TestSettings": [
     {
