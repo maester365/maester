@@ -87,16 +87,18 @@ Install the PnP PowerShell module if you haven't already:
 Install-Module PnP.PowerShell -Scope CurrentUser
 ```
 
+A dedicated Entra ID app registration configured for PnP interactive login is required. See [Grant permissions to SharePoint Online](../sections/create-entra-app.md) for how to create or reuse one.
+
 Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
 
 ```powershell
-Connect-Maester -Service Graph,SharePointOnline
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
 ```
 
 If auto-discovery does not work (e.g. in government or custom-domain tenants), supply the admin URL explicitly:
 
 ```powershell
-Connect-Maester -Service Graph,SharePointOnline -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
 ```
 
 If the PnP PowerShell module is not installed or there is no active connection, all SharePoint Online tests are skipped automatically.

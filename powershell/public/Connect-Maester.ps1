@@ -123,8 +123,19 @@
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
       [string]$GraphClientId,
 
-      # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline. Create the app using Register-PnPEntraIDAppForInteractiveLogin.
-      [string]$SharePointClientId
+      # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline.
+      # Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
+      # registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
+      [string]$SharePointClientId,
+
+      # The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g. https://contoso-admin.sharepoint.com).
+      # If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
+      [string]$SharePointAdminUrl,
+
+      # The certificate thumbprint for app-only authentication to SharePoint Online.
+      # Use together with -SharePointClientId and -TenantId for non-interactive/automation scenarios.
+      # The certificate must be installed in the current user's certificate store.
+      [string]$SharePointCertificateThumbprint
    )
 
    $__MtSession.Connections = $Service
@@ -368,25 +379,39 @@
             Write-Verbose 'Connecting to SharePoint Online via PnP'
 
             if (-not $SharePointClientId) {
-               Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. Create a PnP app registration using Register-PnPEntraIDAppForInteractiveLogin.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
+               Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.Read delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
             } else {
                try {
-                  # Resolve the SharePoint admin URL from the tenant's initial domain
-                  $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
-                  $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
-                  $tenantPrefix = ($initialDomain -split '\.')[0]
-                  $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
-                  Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+                  # Use the provided admin URL or auto-discover from the tenant's initial domain
+                  if ($SharePointAdminUrl) {
+                     $spoAdminUrl = $SharePointAdminUrl
+                     Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
+                  } else {
+                     $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+                     $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
+                     $tenantPrefix = ($initialDomain -split '\.')[0]
+                     $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
+                     Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+                  }
                   Import-Module PnP.PowerShell -ErrorAction Stop
                   $pnpParams = @{
                      Url      = $spoAdminUrl
                      ClientId = $SharePointClientId
                   }
-                  if ($UseDeviceCode) {
-                     $pnpParams['DeviceLogin'] = $true
-                  }
-                  if ($TenantId) {
-                     $pnpParams['Tenant'] = $TenantId
+                  if ($SharePointCertificateThumbprint) {
+                     if (-not $TenantId) {
+                        Write-Host "`nThe -TenantId parameter is required when using -SharePointCertificateThumbprint." -ForegroundColor Red
+                     } else {
+                        $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
+                        $pnpParams['Tenant'] = $TenantId
+                     }
+                  } else {
+                     if ($UseDeviceCode) {
+                        $pnpParams['DeviceLogin'] = $true
+                     }
+                     if ($TenantId) {
+                        $pnpParams['Tenant'] = $TenantId
+                     }
                   }
                   Connect-PnPOnline @pnpParams
                } catch [Management.Automation.CommandNotFoundException] {
