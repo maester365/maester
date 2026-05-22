@@ -25,7 +25,7 @@
     }
 
     try {
-        Write-Verbose 'Get domain details the password expiry period'
+        Write-Verbose 'Get domain details for the password expiry period'
         $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
 
         Write-Verbose 'Get verified and managed domains where passwords are set to expire'
