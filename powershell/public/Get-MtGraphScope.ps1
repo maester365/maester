@@ -57,6 +57,7 @@
         'DeviceManagementServiceConfig.Read.All'
         'Directory.Read.All'
         'DirectoryRecommendations.Read.All'
+        'EntitlementManagement.Read.All'
         'IdentityRiskEvent.Read.All'
         'OnPremDirectorySynchronization.Read.All'
         'OrgSettings-AppsAndServices.Read.All'
