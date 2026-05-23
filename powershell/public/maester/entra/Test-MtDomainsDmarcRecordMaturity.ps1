@@ -47,16 +47,16 @@
     $dmarcRecords = @()
     $seen = @{}
     $severityRank = @{
-        ''       = 0
-        'Info'   = 1
-        'Low'    = 2
-        'Medium' = 3
-        'High'   = 4
+        ''         = 0
+        'Info'     = 1
+        'Low'      = 2
+        'Medium'   = 3
+        'High'     = 4
         'Critical' = 5
     }
     $maxSeverity = ''
 
-    foreach($domain in ($verifiedManagedDomains | Sort-Object -Property id -Unique)){
+    foreach ($domain in ($verifiedManagedDomains | Sort-Object -Property id -Unique)) {
         $domainName = Get-MtRegistrableDomain -DomainName $domain.id
 
         if ($seen[$domainName]) {
@@ -72,49 +72,40 @@
         if ($domain.isInitial) {
             $dmarcRecord.pass = 'Skipped'
             $dmarcRecord.reason = 'Initial domain'
-        }
-        elseif ($domainName -eq 'onmicrosoft.com') {
+        } elseif ($domainName -eq 'onmicrosoft.com') {
             $dmarcRecord.pass = 'Skipped'
             $dmarcRecord.reason = 'Not applicable'
-        }
-        elseif ($dmarcRecord.dmarcRecord -is [string] -and $dmarcRecord.dmarcRecord -like '*not available*') {
+        } elseif ($dmarcRecord.dmarcRecord -is [string] -and $dmarcRecord.dmarcRecord -like '*not available*') {
             $dmarcRecord.pass = 'Skipped'
             $dmarcRecord.reason = $dmarcRecord.dmarcRecord
-        }
-        elseif ($dmarcRecord.dmarcRecord -and $dmarcRecord.dmarcRecord.GetType().Name -eq 'DMARCRecord') {
+        } elseif ($dmarcRecord.dmarcRecord -and $dmarcRecord.dmarcRecord.GetType().Name -eq 'DMARCRecord') {
             $policy = [string]$dmarcRecord.dmarcRecord.policy
             $pct = [int]$dmarcRecord.dmarcRecord.percentage
 
             if ($policy -eq 'reject' -and $pct -eq 100) {
                 $dmarcRecord.pass = 'Passed'
                 $dmarcRecord.reason = 'Mature DMARC policy (p=reject, pct=100) is published'
-            }
-            elseif ($policy -eq 'none') {
+            } elseif ($policy -eq 'none') {
                 $dmarcRecord.pass = 'Failed'
                 $dmarcRecord.severity = 'Medium'
                 $dmarcRecord.reason = 'Policy is none'
-            }
-            elseif ($policy -eq 'quarantine' -or $pct -lt 100) {
+            } elseif ($policy -eq 'quarantine' -or $pct -lt 100) {
                 $dmarcRecord.pass = 'Failed'
                 $dmarcRecord.severity = 'Low'
 
                 if ($policy -eq 'quarantine' -and $pct -lt 100) {
                     $dmarcRecord.reason = 'Policy is quarantine and pct is below 100'
-                }
-                elseif ($policy -eq 'quarantine') {
+                } elseif ($policy -eq 'quarantine') {
                     $dmarcRecord.reason = 'Policy is quarantine'
-                }
-                else {
+                } else {
                     $dmarcRecord.reason = 'pct is below 100'
                 }
-            }
-            else {
+            } else {
                 $dmarcRecord.pass = 'Failed'
                 $dmarcRecord.severity = 'Low'
                 $dmarcRecord.reason = 'Unexpected DMARC policy or pct value'
             }
-        }
-        else {
+        } else {
             $dmarcRecord.pass = 'Failed'
             $dmarcRecord.severity = 'High'
             $dmarcRecord.reason = [string]$dmarcRecord.dmarcRecord
@@ -130,8 +121,7 @@
     if ('Failed' -notin $dmarcRecords.pass -and 'Passed' -notin $dmarcRecords.pass) {
         if ($dmarcRecords.reason -like '*not available*') {
             Add-MtTestResultDetail -SkippedBecause NotSupported
-        }
-        else {
+        } else {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason ("Skipped for " + ($dmarcRecords.reason -join ', '))
         }
         return $null
@@ -141,8 +131,7 @@
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant domains have mature DMARC records (p=reject, pct=100).`n`n%TestResult%"
-    }
-    else {
+    } else {
         $testResultMarkdown = "Some tenant domains do not have mature DMARC records (p=reject, pct=100).`n`n%TestResult%"
     }
 
@@ -165,10 +154,8 @@
         if ($item.dmarcRecord -and $item.dmarcRecord.GetType().Name -eq 'DMARCRecord') {
             $policyText = if ([string]::IsNullOrEmpty([string]$item.dmarcRecord.policy)) { '-' } else { [string]$item.dmarcRecord.policy }
             $pctText = [string][int]$item.dmarcRecord.percentage
-        }
-        else {
+        } else {
             $policyText = '-'
-            $subPolicyText = '-'
             $pctText = '-'
         }
 
@@ -179,8 +166,7 @@
 
     if ([string]::IsNullOrEmpty($maxSeverity)) {
         Add-MtTestResultDetail -Result $testResultMarkdown
-    }
-    else {
+    } else {
         Add-MtTestResultDetail -Result $testResultMarkdown -Severity $maxSeverity
     }
 
