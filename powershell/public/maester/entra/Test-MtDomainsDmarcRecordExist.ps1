@@ -1,4 +1,4 @@
-﻿function Test-MtDomainsDmarcRecordExists {
+﻿function Test-MtDomainsDmarcRecordExist {
     <#
     .SYNOPSIS
     Checks state of DMARC records for all Entra registered domains
@@ -7,12 +7,12 @@
      A DMARC policy SHALL be published for every managed and verified domain in the Entra tenant.
 
     .EXAMPLE
-    Test-MtDomainsDmarcRecordExists
+    Test-MtDomainsDmarcRecordExist
 
     Returns true if DMARC record exists for every managed and verified domain
 
     .LINK
-    https://maester.dev/docs/commands/Test-MtDomainsDmarcRecordExists
+    https://maester.dev/docs/commands/Test-MtDomainsDmarcRecordExist
     #>
     [CmdletBinding()]
     [OutputType([bool])]
