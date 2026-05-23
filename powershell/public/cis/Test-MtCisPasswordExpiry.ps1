@@ -25,19 +25,26 @@
     }
 
     try {
-        Write-Verbose 'Get domain details the password expiry period'
+        Write-Verbose 'Get domain details for the password expiry period'
         $domains = Invoke-MtGraphRequest -RelativeUri 'domains'
 
         Write-Verbose 'Get verified and managed domains where passwords are set to expire'
 
         $noPasswordExpiryPeriodInDays = [int]::MaxValue
 
-        $result = $domains | Where-Object {
-            # Filter out domains that are not 'managed' or not verified, as password policies do not apply to them
-            if (($_.authenticationType -ne "Managed") -or ($_.isVerified -ne $true)) {
-                return $false
+        $excludedDomains = @()
+        $applicableDomains = @()
+        foreach ($domain in $domains) {
+            # Password policy checks apply only to managed and verified domains.
+            if (($domain.authenticationType -ne "Managed") -or ($domain.isVerified -ne $true)) {
+                $excludedDomains += $domain
+                continue
             }
 
+            $applicableDomains += $domain
+        }
+
+        $result = $applicableDomains | Where-Object {
             $passwordValidityPeriodInDays = 0
             $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
             # If null or a boolean, the password expiry period is not set, and passwords do not expire.
@@ -55,16 +62,18 @@
         $testResult = ($result | Measure-Object).Count -eq 0
 
         if ($testResult) {
-            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire on all your 'managed' domains:`n`n%TestResult%"
+            $testResultMarkdown = "Well done. Your tenant passwords are not set to expire on all your 'managed' and 'verified' domains:`n`n%TestResult%"
         } else {
-            $testResultMarkdown = "Your tenant has 1 or more 'managed' domains which expire passwords:`n`n%TestResult%"
+            $testResultMarkdown = "Your tenant has 1 or more 'managed' and 'verified' domains which expire passwords:`n`n%TestResult%"
         }
 
-        $resultMd = "| Display Name | Domain |`n"
+        $resultMd = "| Domain | Result |`n"
         $resultMd += "| --- | --- |`n"
         foreach ($item in $domains) {
             $itemResult = '❌ Fail'
-            if ($item.id -notin $result.id) {
+            if ($item.id -in $excludedDomains.id) {
+                $itemResult = '⏭️ Skip'
+            } elseif ($item.id -notin $result.id) {
                 $itemResult = '✅ Pass'
             }
             $resultMd += "| $($item.Id) | $($itemResult) |`n"
