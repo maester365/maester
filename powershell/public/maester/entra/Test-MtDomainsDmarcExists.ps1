@@ -33,18 +33,10 @@
         return $null
     }
 
-    <# REAL EXIST CASE
-
-    foreach($domain in ($verifiedManagedDomains | Sort-Object -Property DomainName -Unique)){
-        #This regex does NOT capture for third level domain scenarios
-        #e.g., example.co.uk; example.ny.us;
-        $matchDomain = "(?:^|\.)(?'second'[\w-]+\.[\w-]+$)"
-        $dmarcMatch = $domain.domainname -match $matchDomain
-        if($dmarcMatch){
-            $domainName = $Matches.second
-        }else{
-            $domainName = $domain.domainname
-        }
+    $dmarcRecords = @()
+    $seen = @{}
+    foreach($domain in ($verifiedManagedDomains | Sort-Object -Property id -Unique)){
+        $domainName = Get-MtRegistrableDomain -DomainName $domain.id
 
         if ($seen[$domainName]) {
             continue
@@ -57,10 +49,7 @@
 
         if($dmarcRecord.dmarcRecord.GetType().Name -eq "DMARCRecord"){
             $dmarcRecord.pass = "Passed"
-        }elseif($domain.IsCoexistenceDomain){
-            $dmarcRecord.pass = "Skipped"
-            $dmarcRecord.reason = "Coexistence domain"
-        }elseif($domain.InitialDomain){
+        }elseif($domain.isInitial){
             $dmarcRecord.pass = "Skipped"
             $dmarcRecord.reason = "Initial domain"
         }elseif($dmarcRecord.dmarcRecord -like "*not available"){
@@ -75,29 +64,29 @@
 
         $dmarcRecords += $dmarcRecord
     }
-#>
+
     if ("Failed" -notin $dmarcRecords.pass -and "Passed" -notin $dmarcRecords.pass) {
         if ($dmarcRecords.reason -like "*not available") {
             Add-MtTestResultDetail -SkippedBecause NotSupported
-            return $null
         } else {
             Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Skipped for $($dmarcRecords.reason)"
         }
+        return $null
     } else {
-        $testResult = $true
+        $testResult = "Failed" -notin $dmarcRecords.pass
     }
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant's domains have a DMARC record. Review report targets.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant's second level domains do not have a DMARC record.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant's registered domains do not have a DMARC record.`n`n%TestResult%"
     }
 
     $passResult = "✅ Pass"
     $failResult = "❌ Fail"
     $skipResult = "🗄️ Skip"
-    $result = "| Domain | Result | Reason | Policy | Subdomain Policy |`n"
-    $result += "| --- | --- | --- | --- | --- |`n"
+    $result = "| Domain | Result | Reason |`n"
+    $result += "| --- | --- | --- |`n"
     foreach ($item in $dmarcRecords) {
         switch ($item.pass) {
             "Passed" { $itemResult = $passResult }
@@ -105,7 +94,7 @@
             "Failed" { $itemResult = $failResult }
         }
 
-        $result += "| $($item.domain) | $($itemResult) | $($item.reason) | $($item.dmarcRecord.policy) | $($item.dmarcRecord.policySubdomain) |`n"
+        $result += "| $($item.domain) | $($itemResult) | $($item.reason) |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
