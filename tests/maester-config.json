@@ -1475,6 +1475,10 @@
       "Title": "Sample Submission should send safe samples automatically"
     },
     {
+      "Id": "MT.1177",
+      "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."

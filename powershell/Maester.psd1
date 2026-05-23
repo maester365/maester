@@ -138,7 +138,7 @@
         'Test-MtCisWeakAuthenticationMethodsDisabled', 'Test-MtCisZAP', 'Test-MtConditionalAccessWhatIf', 'Test-MtConnection',
         'Test-MtDeviceComplianceSettings', 'Test-MtDeviceRegistrationLocalAdminsGlobalAdmin',
         'Test-MtDeviceRegistrationLocalAdminsRegisteringUser', 'Test-MtDeviceRegistrationMfaConflict',
-        'Test-MtDomainsDmarcRecordExist', 'Test-MtEidscaControl',
+        'Test-MtDomainsDmarcRecordMaturity', 'Test-MtEidscaControl',
         'Test-MtEntitlementManagementDeletedGroups', 'Test-MtEntitlementManagementInactivePolicies',
         'Test-MtEntitlementManagementOrphanedResources', 'Test-MtEntitlementManagementValidApprovers',
         'Test-MtEntitlementManagementValidResourceRoles', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtEntraIDConnectSsso',

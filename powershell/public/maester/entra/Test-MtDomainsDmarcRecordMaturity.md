@@ -1,6 +1,9 @@
-A DMARC policy SHALL be published for every verified and managed domain in the Entra tenent.
+A DMARC policy SHALL be published with reject policy for every verified and managed domain in the Entra tenent.
 
 Rationale: Without a DMARC policy available for each domain, recipients may improperly handle SPF and DKIM failures, possibly enabling spoofed emails to reach end users' mailboxes. Publishing DMARC records protects the domains and all subdomains.
+`reject` policy with `pct=100` is the recommended policy value that should be set after some time and results in a passed test.
+Any policy with `pct` < 100 or `quarantine` will result in a "Low" severity fail.
+`none` results in a failed test with "Medium" severity, assuming that only fully missing DMARC entry results in a "High" severity.
 
 #### Remediation action:
 
