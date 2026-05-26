@@ -202,7 +202,7 @@ Pass the certificate thumbprint directly to `Connect-Maester` using `-SharePoint
 
 ```powershell
 $params = @{
-  Service = "Graph,SharePointOnline"
+  Service = @('Graph', 'SharePointOnline')
   SharePointClientId = "<App Client ID>"
   SharePointCertificateThumbprint = "<Certificate Thumbprint>"
   TenantId = "<Tenant ID or domain>"

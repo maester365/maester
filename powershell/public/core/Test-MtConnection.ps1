@@ -149,15 +149,15 @@
         #endregion Teams
 
         #region SharePoint
-        if ($Service -contains 'SharePoint' -or $Service -contains 'All') {
+        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
             $IsConnected = $false
             try {
                 $MtConnections.SharePoint = Get-PnPConnection
                 $IsConnected = $null -ne ($MtConnections.SharePoint)
             } catch {
-                Write-Debug "SharePoint: $false"
+                Write-Debug "SharePointOnline: $false"
             }
-            Write-Verbose "SharePoint: $IsConnected"
+            Write-Verbose "SharePointOnline: $IsConnected"
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion SharePoint

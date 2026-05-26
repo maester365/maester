@@ -77,6 +77,10 @@
 
    Connects to Microsoft Graph and SharePoint Online. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
 
+.EXAMPLE
+   Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+
+   Connects to SharePoint Online using the specified client ID and admin URL.
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -379,19 +383,27 @@
             Write-Verbose 'Connecting to SharePoint Online via PnP'
 
             if (-not $SharePointClientId) {
-               Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.Read delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
+               Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.FullControl delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
             } else {
                try {
                   # Use the provided admin URL or auto-discover from the tenant's initial domain
                   if ($SharePointAdminUrl) {
                      $spoAdminUrl = $SharePointAdminUrl
                      Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
+                  } elseif ($Service -notcontains 'Graph' -and $Service -notcontains 'All') {
+                     Write-Host "`nSharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)." -ForegroundColor Red
+                     return
                   } else {
                      $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
                      $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
                      $tenantPrefix = ($initialDomain -split '\.')[0]
                      $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
                      Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+                  }
+                  if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
+                     Write-Host "`nThe PnP.PowerShell module is not installed. Please install the module using the following command.`nFor more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
+                     Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+                     return
                   }
                   Import-Module PnP.PowerShell -ErrorAction Stop
                   $pnpParams = @{
@@ -414,9 +426,6 @@
                      }
                   }
                   Connect-PnPOnline @pnpParams
-               } catch [Management.Automation.CommandNotFoundException] {
-                  Write-Host "`nThe PnP.PowerShell module is not installed. Please install the module using the following command.`nFor more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
-                  Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
                } catch {
                   Write-Host "`nFailed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
                }
