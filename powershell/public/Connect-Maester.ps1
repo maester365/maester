@@ -384,6 +384,7 @@
 
             if (-not $SharePointClientId) {
                Write-Host "`nSharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.FullControl delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
+               return
             } else {
                try {
                   # Use the provided admin URL or auto-discover from the tenant's initial domain

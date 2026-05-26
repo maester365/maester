@@ -28,7 +28,7 @@
     $return = $true
     try {
         $spoTenant = Get-MtSpo
-        if ($spoTenant.B2BIntegration.EnableAzureADB2BIntegration) {
+        if ($spoTenant.EnableAzureADB2BIntegration) {
             $testResult = "Well done. Your SharePoint tenant is integrated with Microsoft Entra B2B."
         } else {
             $testResult = "Your SharePoint tenant is not integrated with Microsoft Entra B2B."
