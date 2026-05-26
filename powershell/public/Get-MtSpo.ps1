@@ -32,13 +32,13 @@
         Write-Verbose "SPO cache cleared."
     }
 
-    if ($null -eq $__MtSession.SpoCache.SpoTenant) {
+    if ($null -eq $__MtSession.SpoCache['SpoTenant']) {
         Write-Verbose "SPO tenant settings not in cache, requesting."
         $response = Get-PnPTenant -ErrorAction Stop
-        $__MtSession.SpoCache.SpoTenant = $response
+        $__MtSession.SpoCache['SpoTenant'] = $response
     } else {
         Write-Verbose "SPO tenant settings in cache."
-        $response = $__MtSession.SpoCache.SpoTenant
+        $response = $__MtSession.SpoCache['SpoTenant']
     }
 
     return $response
