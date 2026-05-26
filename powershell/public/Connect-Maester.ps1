@@ -413,10 +413,10 @@
                   if ($SharePointCertificateThumbprint) {
                      if (-not $TenantId) {
                         Write-Host "`nThe -TenantId parameter is required when using -SharePointCertificateThumbprint." -ForegroundColor Red
-                     } else {
-                        $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
-                        $pnpParams['Tenant'] = $TenantId
+                        return
                      }
+                     $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
+                     $pnpParams['Tenant'] = $TenantId
                   } else {
                      if ($UseDeviceCode) {
                         $pnpParams['DeviceLogin'] = $true
