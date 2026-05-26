@@ -1,0 +1,111 @@
+# MS.EXO: Checks state of baseline CISA rules for DLP in EXO
+
+## Overview
+
+**Function Name:** `Test-MtCisaDlpBaselineRule`
+**Category:** CISA/Exchange
+**Test Tag:** `MS.EXO`
+
+## Description
+
+At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.
+
+## Workflow
+
+```mermaid
+flowchart TD
+    A[Start] --> B{Prerequisites Check}
+    B -->|Connection Required| C{Check Connections}
+    C -->|Exchange Online, Security & Compliance| D{License Check}
+    D -->|No specific license| E[Data Collection]
+    E --> F[Compliance Validation]
+    F --> G{Return Result}
+    G -->|Pass| I[Return True]
+    G -->|Fail| J[Return False]
+    B -->|Not Connected| K[Return Null - Skipped]
+```
+
+## Phase Details
+
+### Phase 1: Prerequisites Check
+
+**Required Connections:**
+- Exchange Online
+- Security & Compliance
+
+### Phase 2: Data Collection
+
+**Exchange Online Requests:**
+- `DlpComplianceRule`
+- `DlpCompliancePolicy`
+
+### Phase 3: Compliance Validation
+
+**Properties Checked:**
+
+| Property | Expected Value |
+| --- | --- |
+| `Mode` | `Enforce` |
+| `BlockAccessScope` | `All` |
+| `NotifyPolicyTipDisplayOption` | `Tip` |
+
+### Phase 4: Return Result
+
+| Return Value | Meaning |
+| --- | --- |
+| `$true` | Compliant |
+| `$false` | Non-Compliant |
+| `$null` | Skipped (missing prerequisites, license, or error) |
+
+## Original Documentation
+
+At a minimum, the DLP solution SHALL restrict sharing credit card numbers, U.S. Individual Taxpayer Identification Numbers (ITIN), and U.S. Social Security numbers (SSN) via email.
+
+> Reference your organization's policy defining restricted information.
+
+Rationale: Users may inadvertently share sensitive information with others who should not have access to it. Data loss prevention policies provide a way for agencies to detect and prevent unauthorized disclosures.
+
+#### Remediation action:
+
+1. Sign in to the **Microsoft Purview compliance portal**.
+2. Under the **Solutions** section, select **Data loss prevention**.
+3. Select [**Policies**](https://purview.microsoft.com/datalossprevention/policies) from the left menu.
+4. Select **Create policy**.
+5. From the **Categories** list, select **Custom**.
+6. From the **Templates** list, select **Custom policy** and then click **Next**.
+7. Edit the name and description of the policy if desired, then click **Next**.
+8. Under **Choose locations to apply the policy**, set **Status** to **On** for at least the Exchange email, OneDrive accounts, SharePoint sites, Teams chat and channel messages, and Devices locations, then click **Next**.
+9. Under **Define policy settings**, select **Create or customize advanced DLP rules**, and then click **Next**.
+10. Click **Create rule**. Assign the rule an appropriate name and description.
+11. Click **Add condition**, then **Content contains**.
+12. Click **Add**, then **Sensitive info types**.
+13. Add information types that protect information sensitive to the agency.
+
+    At a minimum, the agency should protect:
+    - Credit card numbers
+    - U.S. Individual Taxpayer Identification Numbers (ITIN)
+    - U.S. Social Security Numbers (SSN)
+    - All agency-defined PII and sensitive information
+
+14. Click **Add**.
+15. Under **Actions**, click **Add an action**.
+16. Check **Restrict Access or encrypt the content in Microsoft 365 locations**.
+17. Under this action, select **Block Everyone**.
+18. Under **User notifications**, turn on **Use notifications to inform your users and help educate them on the proper use of sensitive info**.
+19. Under **Microsoft 365 services**, a section that appears after user notifications are turned on, check the box next to **Notify users in Office 365 service with a policy tip**.
+20. Click **Save**, then **Next**.
+21. Select **Turn it on right away**, then click **Next**.
+22. Click **Submit**.
+
+#### Related links
+
+* [Purview admin center - Data loss prevention policies](https://purview.microsoft.com/datalossprevention/policies)
+* [CISA 8 Data Loss Prevention Solutions - MS.EXO.8.4](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/exo.md#msexo84v1)
+* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/EXOConfig.rego#L468)
+
+<!--- Results --->
+%TestResult%
+
+## Standalone Function
+
+See the standalone compliance check function: [`Test-MtCisaDlpBaselineRuleCompliance.ps1`](../../standalone-functions/CISA/Exchange/Test-MtCisaDlpBaselineRuleCompliance.ps1)

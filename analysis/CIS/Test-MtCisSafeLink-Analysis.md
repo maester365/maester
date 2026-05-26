@@ -1,0 +1,157 @@
+# CIS.M365.2.1.1: Checks if safe links for office applications are Enabled
+
+## Overview
+
+**Function Name:** `Test-MtCisSafeLink`
+**Category:** CIS
+**Test Tag:** `CIS.M365.2.1.1`
+
+## Description
+
+Safe links should be enabled for office applications (Exchange Teams Office 365 Apps)
+    CIS Microsoft 365 Foundations Benchmark v6.0.1
+
+## Workflow
+
+```mermaid
+flowchart TD
+    A[Start] --> B{Prerequisites Check}
+    B -->|Connection Required| C{Check Connections}
+    C -->|Exchange Online, Security & Compliance| D{License Check}
+    D -->|Microsoft Defender for Office 365 P1| E[Data Collection]
+    E --> F[Compliance Validation]
+    F --> G{Return Result}
+    G -->|Pass| I[Return True]
+    G -->|Fail| J[Return False]
+    B -->|Not Connected| K[Return Null - Skipped]
+```
+
+## Phase Details
+
+### Phase 1: Prerequisites Check
+
+**Required Connections:**
+- Exchange Online
+- Security & Compliance
+
+**Required Licenses:**
+- Microsoft Defender for Office 365 P1
+
+### Phase 2: Data Collection
+
+**Exchange Online Requests:**
+- `SafeLinksPolicy`
+- `SafeLinksRule`
+
+### Phase 3: Compliance Validation
+
+**Properties Checked:**
+
+| Property | Expected Value |
+| --- | --- |
+| `EnableSafeLinksForEmail` | `True` |
+| `EnableSafeLinksForTeams` | `True` |
+| `EnableSafeLinksForOffice` | `True` |
+| `TrackClicks` | `True` |
+| `AllowClickThrough` | `False` |
+| `ScanUrls` | `True` |
+| `EnableForInternalSenders` | `True` |
+| `DeliverMessageAfterScan` | `True` |
+| `DisableUrlRewrite` | `False` |
+
+### Phase 4: Return Result
+
+| Return Value | Meaning |
+| --- | --- |
+| `$true` | Compliant |
+| `$false` | Non-Compliant |
+| `$null` | Skipped (missing prerequisites, license, or error) |
+
+## Original Documentation
+
+2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled
+
+Enabling Safe Links policy for Office applications allows URL's that exist inside of Office documents and email applications opened by Office, Office Online and Office mobile to be processed against Defender for Office time-of-click verification and rewritten if required.
+
+>Note: E5 Licensing includes a number of Built-in Protection policies. When auditing policies note which policy you are viewing, and keep in mind CIS recommendations often extend the Default or Built-in Policies provided by MS. In order to Pass the highest priority policy must match all settings recommended.
+
+#### Rationale
+
+Safe Links for Office applications extends phishing protection to documents and emails that contain hyperlinks, even after they have been delivered to a user.
+
+#### Impact
+
+User impact associated with this change is minor - users may experience a very short delay when clicking on URLs in Office documents before being directed to the requested site. Users should be informed of the change as, in the event a link is unsafe and blocked, they will receive a message that it has been blocked.
+
+#### Remediation action:
+
+To create a Safe Links policy:
+
+1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
+2. Under **Email & collaboration** select **Policies & rules**
+3. Select **Threat policies** then **Safe Links**
+4. Click on **+Create**
+5. Name the policy then click **Next**
+6. In **Domains** select all valid domains for the organization and **Next**
+7. Ensure the following **URL & click protection settings** are defined:
+
+**Email**
+* Checked **On: Safe Links checks a list of known, malicious links when users click links in email. URLs are rewritten by default**
+* Checked **Apply Safe Links to email messages sent within the organization**
+* Checked **Apply real-time URL scanning for suspicious links and links that point to files**
+* Checked **Wait for URL scanning to complete before delivering the message**
+* Unchecked **Do not rewrite URLs, do checks via Safe Links API only**.
+
+**Teams**
+* Checked **On: Safe Links checks a list of known, malicious links when users click links in Microsoft Teams. URLs are not rewritten**.
+
+**Office 365 Apps**
+* Checked On: **Safe Links checks a list of known, malicious links when users click links in Microsoft Office apps. URLs are not rewritten**
+
+**Click protection settings**
+* Checked: **Track user clicks**
+* Unchecked: **Let users click through the original URL**
+* There is no recommendation for organization branding
+8. Click **Next** twice and finally **Submit**.
+
+
+##### PowerShell
+
+1. Connect using `Connect-ExchangeOnline`.
+2. Run the following PowerShell script to create a policy at highest priority that will apply to all valid domains on the tenant:
+
+```powershell
+# Create the Policy
+$params = @{
+    Name                     = "CIS SafeLinks Policy"
+    EnableSafeLinksForEmail  = $true
+    EnableSafeLinksForTeams  = $true
+    EnableSafeLinksForOffice = $true
+    TrackClicks              = $true
+    AllowClickThrough        = $false
+    ScanUrls                 = $true
+    EnableForInternalSenders = $true
+    DeliverMessageAfterScan  = $true
+    DisableUrlRewrite        = $false
+
+}
+New-SafeLinksPolicy @params
+# Create the rule for all users in all valid domains and associate with Policy
+New-SafeLinksRule -Name "CIS SafeLinks" -SafeLinksPolicy "CIS SafeLinks Policy" -RecipientDomainIs (Get-AcceptedDomain).Name -Priority 0
+
+```
+
+#### Related links
+
+* [Microsoft 365 Admin Center](https://admin.microsoft.com)
+* [Set-SafeLinksPolicy](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/set-safelinkspolicy?view=exchange-ps)
+* [Set up Safe Links policies in Microsoft Defender for Office 365](https://learn.microsoft.com/en-us/defender-office-365/safe-links-policies-configure?view=o365-worldwide)
+* [Preset security policies in cloud organizations](https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies?view=o365-worldwide)
+* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 73](https://www.cisecurity.org/benchmark/microsoft_365)
+
+<!--- Results --->
+%TestResult%
+
+## Standalone Function
+
+See the standalone compliance check function: [`Test-MtCisSafeLinkCompliance.ps1`](../../standalone-functions/CIS/Test-MtCisSafeLinkCompliance.ps1)
