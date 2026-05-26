@@ -52,7 +52,7 @@
             Graph                    = $null
             ExchangeOnline           = $null
             ExchangeOnlineProtection = $null
-            SharePoint               = $null
+            SharePointOnline         = $null
             Teams                    = $null
             AllConnected             = $false
         }
@@ -152,8 +152,8 @@
         if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
             $IsConnected = $false
             try {
-                $MtConnections.SharePoint = Get-PnPConnection
-                $IsConnected = $null -ne ($MtConnections.SharePoint)
+                $MtConnections.SharePointOnline = Get-PnPConnection
+                $IsConnected = $null -ne ($MtConnections.SharePointOnline)
             } catch {
                 Write-Debug "SharePointOnline: $false"
             }

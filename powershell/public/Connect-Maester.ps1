@@ -383,7 +383,7 @@
             Write-Verbose 'Connecting to SharePoint Online via PnP'
 
             if (-not $SharePointClientId) {
-               Write-Error "SharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.FullControl delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ErrorAction Stop
+               Write-Host "SharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.FullControl delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
             } else {
                try {
                   # Use the provided admin URL or auto-discover from the tenant's initial domain
@@ -391,7 +391,7 @@
                      $spoAdminUrl = $SharePointAdminUrl
                      Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
                   } elseif ($Service -notcontains 'Graph' -and $Service -notcontains 'All') {
-                     Write-Error "SharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)." -ErrorAction Stop
+                     Write-Host "SharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)." -ForegroundColor Red
                   } else {
                      $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
                      $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
@@ -401,7 +401,7 @@
                   }
                   if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
                      Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
-                     Write-Error "The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html" -ErrorAction Stop
+                     Write-Host "The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
                   }
                   Import-Module PnP.PowerShell -ErrorAction Stop
                   $pnpParams = @{
@@ -410,7 +410,7 @@
                   }
                   if ($SharePointCertificateThumbprint) {
                      if (-not $TenantId) {
-                        Write-Error "The -TenantId parameter is required when using -SharePointCertificateThumbprint." -ErrorAction Stop
+                        Write-Host "The -TenantId parameter is required when using -SharePointCertificateThumbprint." -ForegroundColor Red
                      }
                      $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
                      $pnpParams['Tenant'] = $TenantId
@@ -426,7 +426,7 @@
                   }
                   Connect-PnPOnline @pnpParams
                } catch {
-                  Write-Error "Failed to connect to SharePoint Online: $($_.Exception.Message)" -ErrorAction Stop
+                  Write-Host "Failed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
                }
             }
          }
