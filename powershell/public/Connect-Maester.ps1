@@ -73,9 +73,9 @@
    Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
 .EXAMPLE
-   Connect-Maester -Service Graph,SharePointOnline
+   Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
 
-   Connects to Microsoft Graph and SharePoint Online. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
+   Connects to Microsoft Graph and SharePoint Online using the specified PnP app registration. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
 
 .EXAMPLE
    Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
@@ -421,6 +421,8 @@
                   } else {
                      if ($UseDeviceCode) {
                         $pnpParams['DeviceLogin'] = $true
+                     } else {
+                        $pnpParams['Interactive'] = $true
                      }
                      if ($TenantId) {
                         $pnpParams['Tenant'] = $TenantId
