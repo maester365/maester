@@ -42,8 +42,10 @@ The test passes if **at least one App Control for Business policy is in Enforce 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Application control**.
 3. Edit an existing App Control for Business policy (or create a new one).
-4. Under **App Control for Business**, select **Built-in controls**.
-5. Set **Trust apps from managed installer** to **Enabled**.
+4. Under **App Control for Business**:
+   - Set **Trust apps from managed installer** to **Enabled**.
+   - Ensure the policy provides an active control by selecting **Built-in controls** (recommended) or, if you upload a custom XML policy, that the XML payload is not empty.
+5. Under **Audit only**, set the toggle to **Disabled** (or omit the setting) so the policy runs in **Enforce** mode. Managed Installer on an audit-only policy does not actively trust deployed apps.
 6. Save and assign the policy to your device groups.
 
 > **Note:** Managed Installer works by tagging files written by the Intune Management Extension (IME) process. The App Control policy then trusts any file that was installed by a tagged managed installer process. This is transparent to end users.
