@@ -67,29 +67,6 @@ The test passes if **at least one LAPS policy** meets **all** of the criteria ab
 | PowerShell test | [Test-MtIntuneLAPSConfiguration](/docs/commands/Test-MtIntuneLAPSConfiguration) |
 | Tags | Intune, Maester, MT.1177 |
 
-## Remediation
-
-1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
-2. Go to **Endpoint security** > **Account protection**.
-3. Click **+ Create policy**.
-4. Set **Platform** to **Windows 10 and later** and **Profile** to **Local admin password solution (Windows LAPS)**.
-5. Enter a policy name (e.g., "LAPS - Entra ID Backup").
-6. Configure the following settings:
-   - **Backup Directory**: **Azure AD only**
-   - **Password Complexity**: **Large letters + small letters + numbers + special characters**
-   - **Password Length**: **21** (or at least 14)
-   - **Post-Authentication Actions**: **Reset password and logoff**
-   - **Post-Authentication Reset Delay**: **1 hour**
-   - **Administrator Account Name**: Leave default or specify custom account
-7. Assign the policy to your device groups and click **Create**.
-
-## Related Links
-
-- [Microsoft Intune - Endpoint Security Account Protection](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/accountprotection)
-- [Microsoft Learn - Windows LAPS with Microsoft Intune](https://learn.microsoft.com/en-us/mem/intune/protect/windows-laps-overview)
-- [Microsoft Learn - Windows LAPS CSP reference](https://learn.microsoft.com/en-us/windows/client-management/mdm/laps-csp)
-- [CIS Benchmark - Ensure LAPS is configured for local admin accounts](https://www.cisecurity.org/benchmark/microsoft_intune_for_windows)
-
 ## Source
 
 - Pester test: `tests\Maester\Intune\Test-MtIntunePlatform.Tests.ps1`

@@ -66,24 +66,6 @@ The test passes if **at least one App Control for Business policy is in Enforce 
 | PowerShell test | [Test-MtIntuneManagedInstallerRules](/docs/commands/Test-MtIntuneManagedInstallerRules) |
 | Tags | Intune, Maester, MT.1180 |
 
-## Remediation
-
-1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
-2. Go to **Endpoint security** > **Application control**.
-3. Edit an existing App Control for Business policy (or create a new one).
-4. Under **App Control for Business**, select **Built-in controls**.
-5. Set **Trust apps from managed installer** to **Enabled**.
-6. Save and assign the policy to your device groups.
-
-> **Note:** Managed Installer works by tagging files written by the Intune Management Extension (IME) process. The App Control policy then trusts any file that was installed by a tagged managed installer process. This is transparent to end users.
-
-## Related Links
-
-- [Microsoft Intune - Application Control](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/applicationControl)
-- [Microsoft Learn - Configure Managed Installer in Intune](https://learn.microsoft.com/en-us/mem/intune/protect/endpoint-security-app-control-policy)
-- [Microsoft Learn - Automatically allow apps deployed by a managed installer](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/design/configure-appcontrol-managed-installer)
-- [Microsoft Learn - App Control for Business overview](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/appcontrol)
-
 ## Source
 
 - Pester test: `tests\Maester\Intune\Test-MtIntunePlatform.Tests.ps1`

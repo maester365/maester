@@ -7,7 +7,7 @@ Key settings this test evaluates:
 - **Backup Directory**: Must be set to **Azure AD only** (Entra ID) to store passwords in the cloud where they can be retrieved by authorized admins.
 - **Password Complexity**: Must be `Large + small + numbers + special` (`_4`) or improved (`_8`).
 - **Password Length**: Must be **>= 14** characters.
-- **Post-Authentication Actions**: Must be set to a defined action (`_1` reset / `_3` reset+logoff / `_5` reset+reboot / `_11` disabled-with-rotation) so the password rotates after use.
+- **Post-Authentication Actions**: Must be set to a defined action (`_1` reset password / `_3` reset password + logoff / `_5` reset password + reboot / `_11` reset password + logoff + terminate processes) so the password rotates after use.
 - **Automatic Account Management**: Whether LAPS auto-manages the local admin account lifecycle (informational).
 
 The test passes if **at least one LAPS policy** meets **all** of the criteria above (Entra backup AND complexity >= `_4` AND length >= 14 AND a defined post-auth action). A policy that only sets Backup Directory is no longer sufficient.
