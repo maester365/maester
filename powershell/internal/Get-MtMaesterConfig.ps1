@@ -150,8 +150,16 @@ function Get-MtMaesterConfig {
             $mainTestSetting = $maesterConfig.TestSettingsHash[$customSetting.Id]
             if ($mainTestSetting) {
                 Write-Verbose "Updating TestSetting with Id $($customSetting.Id) from custom config."
-                # Update the existing properties (right now only Severity is supported)
-                $mainTestSetting.Severity = $customSetting.Severity
+                # Update all properties from custom setting into the main setting
+                foreach ($property in $customSetting.PSObject.Properties) {
+                    if ($mainTestSetting.PSObject.Properties.Name -contains $property.Name) {
+                        Write-Verbose "Updating TestSetting property '$($property.Name)' for Id $($customSetting.Id) from custom config."
+                        $mainTestSetting.$($property.Name) = $property.Value
+                    } else {
+                        Write-Verbose "Adding TestSetting property '$($property.Name)' for Id $($customSetting.Id) from custom config."
+                        Add-Member -InputObject $mainTestSetting -MemberType NoteProperty -Name $property.Name -Value $property.Value
+                    }
+                }
             }
         }
     } else {
