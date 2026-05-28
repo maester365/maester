@@ -201,3 +201,35 @@ Contoso's company policy requires that all users have a manager assigned to them
 Running the test should now show the markdown content in the test results.
 
 ![ContosoUsersMissingManagers](img/advanced-concepts-split-markdown.png)
+
+## Making a test configurable
+
+Maester provides the option to make a test configurable. Test specific configurations can be made in the `maester-config.json`. You can find more information about that in the [article about configuration](../configuration/overview.md).
+
+### Step 1: Define test specific options in the config file
+
+To retrieve user defined test specific option, they have to be defined first. For example you could add an option called `ApprovedGroupIds` to your test with the Id `CIS.M365.1.2.1`:
+
+```json
+{
+  "TestSettings": [
+    {
+      "Id": "CIS.M365.1.2.1",
+      "Severity": "Medium",
+      "Title": "(L2) Ensure that only organizationally managed/approved public groups exist",
+      "ApprovedGroupIds": [
+        "5a16f545-0606-4cf8-867d-74fea1084b97",
+        "d1b9c8e7-5a3e-4c8b-9f0e-2a1b2c3d4e5f"
+      ]
+    }
+  ]
+}
+```
+
+### Step 2: Use test specific options in your test
+
+To actually use the test specific options in your test, you can use `Get-MtMaesterConfigTestSetting`.
+
+```powershell
+$testSettings = Get-MtMaesterConfigTestSetting -TestId 'CIS.M365.1.2.1'
+```
