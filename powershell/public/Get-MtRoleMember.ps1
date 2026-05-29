@@ -148,7 +148,7 @@ function Get-MtRoleMember {
                 $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
             }
         }
-        if ($Eligible) {
+        if ($pim -and $Eligible) {
             $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
             $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
         }
