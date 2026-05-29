@@ -37,6 +37,13 @@
     [OutputType([bool])]
     param()
 
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     try {
         # Get all access packages
         $accessPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
