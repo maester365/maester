@@ -407,6 +407,7 @@
                   Write-Host "The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
                   break
                }
+
                Import-Module PnP.PowerShell -ErrorAction Stop
                $pnpParams = @{
                   Url      = $spoAdminUrl
