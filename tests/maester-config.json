@@ -1475,6 +1475,11 @@
       "Title": "Sample Submission should send safe samples automatically"
     },
     {
+      "Id": "MT.1181",
+      "Severity": "High",
+      "Title": "Check if a Conditional Access policy is present that blocks high agent risk signins"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
