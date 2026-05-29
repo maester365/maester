@@ -1477,7 +1477,7 @@
     {
       "Id": "MT.1181",
       "Severity": "High",
-      "Title": "Check if a Conditional Access policy is present that blocks high agent risk signins"
+      "Title": "Conditional Access policy is present that blocks high agent risk signins"
     },
     {
       "Id": "ORCA.100",
