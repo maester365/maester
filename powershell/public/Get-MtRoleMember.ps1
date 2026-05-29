@@ -46,10 +46,10 @@ function Get-MtRoleMember {
                 param($commandName, $parameterName, $wordToComplete)
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 $roleNames |
-                    Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
-                    Sort-Object | ForEach-Object {
-                        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                    }
+                Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
+                Sort-Object | ForEach-Object {
+                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+                }
             })]
         [ValidateScript({
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
