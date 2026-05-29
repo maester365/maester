@@ -107,9 +107,9 @@
 
                 # Filter cached packages to only those in this catalog
                 $packageArray = @($allPackageArray | Where-Object {
-                    $pkgCatalogId = if ($_.catalogId) { $_.catalogId } else { $_.PSObject.Properties['catalogId'].Value }
-                    $pkgCatalogId -eq $catalogId
-                })
+                        $pkgCatalogId = if ($_.catalogId) { $_.catalogId } else { $_.PSObject.Properties['catalogId'].Value }
+                        $pkgCatalogId -eq $catalogId
+                    })
 
                 Write-Verbose "Catalog '$catalogName' has $($packageArray.Count) access package(s)"
 
@@ -183,9 +183,9 @@
                         Write-Verbose "Found unused resource: $resourceDisplayName (ID: $resourceOriginId, Type: $resourceType)"
 
                         $unusedResourcesFound += [PSCustomObject]@{
-                            CatalogId = $catalogId
-                            CatalogName = $catalogName
-                            ResourceId = $resourceOriginId
+                            CatalogId    = $catalogId
+                            CatalogName  = $catalogName
+                            ResourceId   = $resourceOriginId
                             ResourceName = $resourceDisplayName
                             ResourceType = $resourceType
                         }
