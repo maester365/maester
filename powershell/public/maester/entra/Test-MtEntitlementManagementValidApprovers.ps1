@@ -113,11 +113,11 @@
                     $approvalStages = $requestApprovalSettings.approvalStages
                     if ($null -eq $approvalStages -or $approvalStages.Count -eq 0) {
                         $invalidApproversFound += [PSCustomObject]@{
-                            PackageId = $packageId
-                            PackageName = $packageName
-                            PolicyName = $policyName
-                            Issue = "No approval stages"
-                            ApproverType = "N/A"
+                            PackageId       = $packageId
+                            PackageName     = $packageName
+                            PolicyName      = $policyName
+                            Issue           = "No approval stages"
+                            ApproverType    = "N/A"
                             ApproverDetails = "Approval required but no stages defined"
                         }
                         continue
@@ -128,11 +128,11 @@
                         $primaryApprovers = $stage.primaryApprovers
                         if ($null -eq $primaryApprovers -or $primaryApprovers.Count -eq 0) {
                             $invalidApproversFound += [PSCustomObject]@{
-                                PackageId = $packageId
-                                PackageName = $packageName
-                                PolicyName = $policyName
-                                Issue = "No primary approvers"
-                                ApproverType = "N/A"
+                                PackageId       = $packageId
+                                PackageName     = $packageName
+                                PolicyName      = $policyName
+                                Issue           = "No primary approvers"
+                                ApproverType    = "N/A"
                                 ApproverDetails = "Stage has no approvers"
                             }
                             continue
@@ -150,11 +150,11 @@
 
                                     if ([string]::IsNullOrEmpty($userId)) {
                                         $invalidApproversFound += [PSCustomObject]@{
-                                            PackageId = $packageId
-                                            PackageName = $packageName
-                                            PolicyName = $policyName
-                                            Issue = "User has no ID"
-                                            ApproverType = "User"
+                                            PackageId       = $packageId
+                                            PackageName     = $packageName
+                                            PolicyName      = $policyName
+                                            Issue           = "User has no ID"
+                                            ApproverType    = "User"
                                             ApproverDetails = "Invalid configuration"
                                         }
                                         continue
@@ -165,32 +165,32 @@
 
                                         if ($null -eq $user) {
                                             $invalidApproversFound += [PSCustomObject]@{
-                                                PackageId = $packageId
-                                                PackageName = $packageName
-                                                PolicyName = $policyName
-                                                Issue = "User not found"
-                                                ApproverType = "User"
+                                                PackageId       = $packageId
+                                                PackageName     = $packageName
+                                                PolicyName      = $policyName
+                                                Issue           = "User not found"
+                                                ApproverType    = "User"
                                                 ApproverDetails = "ID: $userId"
                                             }
                                         } elseif ($user.accountEnabled -eq $false) {
                                             $userName = if ($user.displayName) { $user.displayName } else { $user.userPrincipalName }
                                             $invalidApproversFound += [PSCustomObject]@{
-                                                PackageId = $packageId
-                                                PackageName = $packageName
-                                                PolicyName = $policyName
-                                                Issue = "User disabled"
-                                                ApproverType = "User"
+                                                PackageId       = $packageId
+                                                PackageName     = $packageName
+                                                PolicyName      = $policyName
+                                                Issue           = "User disabled"
+                                                ApproverType    = "User"
                                                 ApproverDetails = "$userName"
                                             }
                                         }
                                     } catch {
                                         if ($_.Exception.Message -like "*404*" -or $_.Exception.Message -like "*not found*") {
                                             $invalidApproversFound += [PSCustomObject]@{
-                                                PackageId = $packageId
-                                                PackageName = $packageName
-                                                PolicyName = $policyName
-                                                Issue = "User deleted"
-                                                ApproverType = "User"
+                                                PackageId       = $packageId
+                                                PackageName     = $packageName
+                                                PolicyName      = $policyName
+                                                Issue           = "User deleted"
+                                                ApproverType    = "User"
                                                 ApproverDetails = "ID: $userId"
                                             }
                                         }
@@ -204,11 +204,11 @@
 
                                     if ([string]::IsNullOrEmpty($groupId)) {
                                         $invalidApproversFound += [PSCustomObject]@{
-                                            PackageId = $packageId
-                                            PackageName = $packageName
-                                            PolicyName = $policyName
-                                            Issue = "Group has no ID"
-                                            ApproverType = "Group"
+                                            PackageId       = $packageId
+                                            PackageName     = $packageName
+                                            PolicyName      = $policyName
+                                            Issue           = "Group has no ID"
+                                            ApproverType    = "Group"
                                             ApproverDetails = "Invalid configuration"
                                         }
                                         continue
@@ -219,11 +219,11 @@
 
                                         if ($null -eq $group) {
                                             $invalidApproversFound += [PSCustomObject]@{
-                                                PackageId = $packageId
-                                                PackageName = $packageName
-                                                PolicyName = $policyName
-                                                Issue = "Group not found"
-                                                ApproverType = "Group"
+                                                PackageId       = $packageId
+                                                PackageName     = $packageName
+                                                PolicyName      = $policyName
+                                                Issue           = "Group not found"
+                                                ApproverType    = "Group"
                                                 ApproverDetails = "ID: $groupId"
                                             }
                                             continue
@@ -245,11 +245,11 @@
                                             if ($memberCount -eq 0) {
                                                 $groupName = if ($group.displayName) { $group.displayName } else { "Unknown" }
                                                 $invalidApproversFound += [PSCustomObject]@{
-                                                    PackageId = $packageId
-                                                    PackageName = $packageName
-                                                    PolicyName = $policyName
-                                                    Issue = "Group has no members"
-                                                    ApproverType = "Group"
+                                                    PackageId       = $packageId
+                                                    PackageName     = $packageName
+                                                    PolicyName      = $policyName
+                                                    Issue           = "Group has no members"
+                                                    ApproverType    = "Group"
                                                     ApproverDetails = $groupName
                                                 }
                                             }
@@ -259,11 +259,11 @@
                                     } catch {
                                         if ($_.Exception.Message -like "*404*" -or $_.Exception.Message -like "*not found*") {
                                             $invalidApproversFound += [PSCustomObject]@{
-                                                PackageId = $packageId
-                                                PackageName = $packageName
-                                                PolicyName = $policyName
-                                                Issue = "Group deleted"
-                                                ApproverType = "Group"
+                                                PackageId       = $packageId
+                                                PackageName     = $packageName
+                                                PolicyName      = $policyName
+                                                Issue           = "Group deleted"
+                                                ApproverType    = "Group"
                                                 ApproverDetails = "ID: $groupId"
                                             }
                                         }
