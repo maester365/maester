@@ -161,11 +161,11 @@
                     if ($issues.Count -gt 0) {
                         $inactivePoliciesFound += [PSCustomObject]@{
                             PackageName = $packageName
-                            PackageId = $packageId
-                            PolicyName = $policyName
-                            PolicyId = $policyId
-                            ScopeType = $policy.requestorSettings.scopeType
-                            Issues = $issues
+                            PackageId   = $packageId
+                            PolicyName  = $policyName
+                            PolicyId    = $policyId
+                            ScopeType   = $policy.requestorSettings.scopeType
+                            Issues      = $issues
                         }
                     }
                 }
