@@ -4,7 +4,6 @@ function Test-MtCaAgentRiskBlockPolicy {
     Checks if the tenant has at least one conditional access policy that blocks agent identities based on their risk level.
 
     .Description
-
     Organizations should block agent identities that are detected as high risk by Microsoft Entra ID Protection to helping prevent potentially compromised AI agents from accessing your organization's resources.
 
     Learn more:
@@ -27,8 +26,7 @@ function Test-MtCaAgentRiskBlockPolicy {
         $result = $false
 
         foreach ($policy in $policies) {
-            if ($policy.conditions.agentIdRiskLevels -match 'high' -and $policy.grantControls.builtInControls -match 'block'
-                ){
+            if ($policy.conditions.agentIdRiskLevels -match 'high' -and $policy.grantControls.builtInControls -match 'block'){
                 $result = $true
                 $policiesResult.Add($policy) | Out-Null
             } else {
