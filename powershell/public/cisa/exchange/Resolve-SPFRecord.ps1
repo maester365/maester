@@ -56,9 +56,7 @@ function Resolve-SPFRecord {
         [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             Position = 2)]
-        # Do not validate that a non mandatory parameter is not null or empty,
-        # as it may be left blank to use the system's default DNS server.
-        # [ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$Server,
 
         # Provide a referrer to build valid objects during recursive calls of the function.
