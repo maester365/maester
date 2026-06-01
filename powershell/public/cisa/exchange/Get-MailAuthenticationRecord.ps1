@@ -28,6 +28,7 @@
         [string]$DomainName,
 
         # DNS-server to use for lookup.
+        [ValidateNotNullOrEmpty()]
         [ipaddress]$DnsServerIpAddress,
 
         # DKIM DNS record Name to retrieve.
@@ -115,7 +116,11 @@
                         $recordSet.spfLookups = $mtDnsCache.spfLookups
                     } else {
                         Write-Verbose "SPF Lookups records not in cache, querying"
-                        $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName -Server $DnsServerIpAddress
+                        if ($DnsServerIpAddress) {
+                            $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName -Server $DnsServerIpAddress
+                        } else {
+                            $recordSet.spfLookups = Resolve-SPFRecord -Name $DomainName
+                        }
                         ($__MtSession.DnsCache | Where-Object { $_.domain -eq $DomainName }).spfLookups = $recordSet.spfLookups
                     }
                 }
