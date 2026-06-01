@@ -38,7 +38,12 @@
 
     $managedDomains = $verifiedDomains | Where-Object authenticationType -eq "Managed"
 
-    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -ge 36500
+    # where supportedServices contains "SharePoint" then this is a very old domain used when M365 offered public webhosting
+    $managedDomains = $managedDomains | Where-Object supportedServices -notcontains "SharePoint"
+
+    $compliantDomains = $managedDomains | Where-Object {
+    	$_.PasswordValidityPeriodInDays -ge 36500 -or $null -eq $_.PasswordValidityPeriodInDays
+	}
 
     $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
@@ -70,6 +75,8 @@
             $testValue = $pass
         }elseif($domain.authenticationType -eq "Federated"){
             $testValue = $skip
+        }elseif($domain.supportedServices -eq "SharePoint"){
+            $testValue = $skip        
         }elseif($isVerified -eq "Unverified"){
             $testValue = $skip
         }else{
