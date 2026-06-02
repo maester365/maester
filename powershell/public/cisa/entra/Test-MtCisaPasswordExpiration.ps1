@@ -38,17 +38,23 @@
 
     $managedDomains = $verifiedDomains | Where-Object authenticationType -eq "Managed"
 
-    # where supportedServices contains "SharePoint" then this is a very old domain used when M365 offered public webhosting
+    # remove domains from the managedDomains list where supportedServices contains "SharePoint" then this is a very old domain used when M365 offered public webhosting
     $managedDomains = $managedDomains | Where-Object supportedServices -notcontains "SharePoint"
 
-    $compliantDomains = $managedDomains | Where-Object {
-    	$_.PasswordValidityPeriodInDays -ge 36500 -or $null -eq $_.PasswordValidityPeriodInDays
-	}
+	# If password never expires is set in M365 Admin Center then the PasswordValidityPeriodInDays will be 2147483647
+    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -le 2147483000 
 
+	# If authenticationType = Managed and the PasswordValidityPeriodInDays is null then these domains where once Federated and the tenant password policy has not been reapplied to them
+	$oldFederatedDomains = $managedDomains | Where-Object {
+    	$_.authenticationType -eq "Managed" -and $null -eq $_.PasswordValidityPeriodInDays
+	}
+	
     $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%TestResult%"
+	} elseif ($oldFederatedDomains.Count -gt 0) {
+		$testResultMarkdown = "Your tenant has " + $oldFederatedDomains.Count + " previously federated domains that do not have password expiration set to never expire. Reapply the password expiration policy in the M365 Admin Center to fix.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%TestResult%"
     }
@@ -58,8 +64,8 @@
     $skip = "🗄️ Skipped"
     $default = "✔️"
 
-    $resultDetails = "| Domain (Default) | Verified | Type | Validation |`n"
-    $resultDetails += "| --- | --- | --- | --- |`n"
+    $resultDetails = "| Domain (Default) | Verified | Type | Legacy | Validation |`n"
+    $resultDetails += "| --- | --- | --- | --- | --- |`n"
     foreach($domain in $result){
         if($domain.isDefault){
             $isDefault = "$($domain.id) ($default)"
@@ -71,6 +77,11 @@
         }else{
             $isVerified = "Unverified"
         }
+        if($domain.supportedServices -eq "SharePoint"){
+            $isLegacy = "Legacy"
+        }else{
+            $isLegacy = ""
+        }		
         if($domain.id -in $compliantDomains.id){
             $testValue = $pass
         }elseif($domain.authenticationType -eq "Federated"){
@@ -83,7 +94,7 @@
             $testValue = $fail
         }
 
-        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue |`n"
+        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $isLegacy | $testValue |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultDetails
