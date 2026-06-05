@@ -18,6 +18,15 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]
     param ()
 
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+    if ((Get-MtLicenseInformation EntraID) -eq 'Free') {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
+
     Write-Verbose 'Checking for Conditional Access policies that explicitly include Azure DevOps...'
 
     $azureDevOpsAppId = '499b84ac-1321-427f-aa17-267ca6975798'
