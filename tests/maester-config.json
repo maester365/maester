@@ -1495,6 +1495,11 @@
       "Title": "Ensure Managed Installer Rules are configured correctly"
     },
     {
+      "Id": "MT.1181",
+      "Severity": "High",
+      "Title": "Conditional Access policy is present that blocks high agent risk signins"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
