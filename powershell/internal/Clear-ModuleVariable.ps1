@@ -21,5 +21,8 @@
     Clear-MtExoCache
     $__MtSession.AIAgentInfo = $null
     $__MtSession.AzureDevOpsConnection = $null
+    # Do not clear GitHubConnection or GitHubAuthHeader — the user calls Connect-MtGitHub before
+    # Invoke-Maester; the session must persist across runs. Only the per-run cache is reset.
+    $__MtSession.GitHubCache = @{}
     # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
 }

@@ -28,6 +28,10 @@ Describe 'Validating the module manifest' -ForEach @{ moduleRoot = $moduleRoot; 
             $files = Get-ChildItem "$moduleRoot/internal" -Recurse -File -Filter '*.ps1'
             $files | Where-Object BaseName -In $manifest.FunctionsToExport | Should -BeNullOrEmpty
         }
+
+        It 'Keeps GitHub cache key helper internal' {
+            $manifest.FunctionsToExport | Should -Not -Contain 'Get-MtGitHubCacheKey'
+        }
     }
 
     Context 'Testing tags' {

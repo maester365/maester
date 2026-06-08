@@ -7,7 +7,9 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'Graph'.
+
+    GitHub requires an explicit Connect-MtGitHub call before testing - unlike other services it has no auto-detection. When checked via -Service All, GitHub is evaluated only after Connect-MtGitHub has been called in the current session; otherwise GitHub is skipped and does not affect the result.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -15,17 +17,23 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a Boolean value.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only after Connect-MtGitHub has been called in the current session). Returns a Boolean value.
 
     .EXAMPLE
     Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), Microsoft Teams, and GitHub (only after Connect-MtGitHub has been called in the current session). Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
 
     Checks if the current session is connected to Azure and returns a Boolean result.
+
+    .EXAMPLE
+    Test-MtConnection -Service GitHub
+
+    Checks if the current session is connected to GitHub and returns a Boolean result.
+    Returns $false if Connect-MtGitHub has not been called in this session.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtConnection
@@ -35,7 +43,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -49,6 +57,7 @@
             PSTypeName  = 'Maester.Connections'
             Azure = $null
             AzureDevOps = $null
+            GitHub = $null
             Graph = $null
             ExchangeOnline = $null
             ExchangeOnlineProtection = $null
@@ -180,6 +189,27 @@
             if (!$IsConnected) { $ConnectionState = $false }
         }
         #endregion AzureDevOps
+
+        #region GitHub
+        if ($Service -contains 'GitHub' -or (
+            $Service -contains 'All' -and
+            $null -ne $__MtSession.GitHubConnection -and
+            $__MtSession.GitHubConnection.FailureReason -ne 'NotCalled'
+        )) {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.GitHubConnection) {
+                if ($__MtSession.GitHubConnection.Connected -eq $true) {
+                    $MtConnections.GitHub = $__MtSession.GitHubConnection
+                    $IsConnected = $true
+                }
+            } else {
+                # No session state — GitHub requires explicit Connect-MtGitHub (no module auto-detect)
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
+            }
+            Write-Verbose "GitHub: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion GitHub
 
         $MtConnections.AllConnected = $ConnectionState
 

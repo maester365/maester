@@ -1,0 +1,72 @@
+---
+sidebar_class_name: hidden
+description: "CIS.GH.1.2.4: Ensure issue deletion is limited to specific users."
+id: Test-MtCisGitHubIssueDeletionLimited
+title: Test-MtCisGitHubIssueDeletionLimited
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisGitHubIssueDeletionLimited.ps1
+---
+
+## SYNOPSIS
+
+CIS.GH.1.2.4: Ensure issue deletion is limited to specific users.
+
+## SYNTAX
+
+```powershell
+Test-MtCisGitHubIssueDeletionLimited [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+CIS GitHub Benchmark v1.2.0 section 1.2.4 marks this recommendation as
+Manual.
+This test collects organization setting evidence from
+GET /orgs/\{org\} and marks the result as Investigate because CIS GH 1.2.4
+still requires a manual trust review for either repository administrators
+or organization owners.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCisGitHubIssueDeletionLimited
+```
+
+Returns Investigate when the GitHub organization setting is available.
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited](https://maester.dev/docs/commands/Test-MtCisGitHubIssueDeletionLimited)
