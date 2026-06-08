@@ -1,4 +1,6 @@
 {
+  "ModuleVersion": "2.0.0",
+  "ConfigVersion": "",
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
     "DataverseEnvironmentUrl": ""
