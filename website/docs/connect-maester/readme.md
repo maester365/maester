@@ -89,6 +89,8 @@ Install-Module PnP.PowerShell -Scope CurrentUser
 
 A dedicated Entra ID app registration configured for PnP interactive login is required. See [Grant permissions to SharePoint Online](../sections/create-entra-app.md) for how to create or reuse one.
 
+For compatibility, you can use `-UseLegacySpoClientIdFallback` to fall back to the Microsoft.Online.SharePoint.PowerShell first-party client ID when `-SharePointClientId` is not provided.
+
 Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
 
 ```powershell
@@ -107,7 +109,9 @@ If the PnP PowerShell module is not installed or there is no active connection, 
 
 `Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance and Microsoft Teams.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance, Microsoft Teams, and SharePoint Online.
+
+If `-SharePointClientId` is not provided, the SharePoint Online connection is skipped with a warning to preserve backward compatibility. To include SharePoint Online without providing a client ID, use `-UseLegacySpoClientIdFallback`.
 
 ```powershell
 Connect-Maester -Service All

@@ -18,7 +18,7 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
  [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>] [[-SharePointClientId] <String>]
- [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
+ [[-UseLegacySpoClientIdFallback]] [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -152,6 +152,14 @@ Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c0
 ```
 
 Connects to SharePoint Online using the specified client ID and admin URL.
+
+### EXAMPLE 15
+
+```powershell
+Connect-Maester -Service SharePointOnline -UseLegacySpoClientIdFallback
+```
+
+Uses the Microsoft.Online.SharePoint.PowerShell first-party client ID as a compatibility fallback when `-SharePointClientId` is not provided.
 
 ## PARAMETERS
 
@@ -346,7 +354,8 @@ Accept wildcard characters: False
 ### -SharePointClientId
 
 The Client ID of the PnP Entra ID app for SharePoint Online.
-Required when Service includes SharePointOnline.
+Required when Service explicitly includes SharePointOnline.
+If SharePointOnline is only included by `-Service All` and this value is omitted, Maester skips SharePoint connection with a warning.
 Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
 registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
 
@@ -358,6 +367,22 @@ Aliases:
 Required: False
 Position: 8
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UseLegacySpoClientIdFallback
+
+If specified and `-SharePointClientId` is omitted, uses the Microsoft.Online.SharePoint.PowerShell first-party client ID as a compatibility fallback.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -374,7 +399,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -392,7 +417,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
