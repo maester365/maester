@@ -162,3 +162,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1169](../MT.1169) | Catch-up Full Scan should be disabled | High | Defender |
 | [MT.1170](../MT.1170) | Catch-up Quick Scan should be disabled | High | Defender |
 | [MT.1171](../MT.1171) | Sample Submission should send safe samples automatically | High | Defender |
+| [MT.1177](../MT.1177) | Ensure LAPS Configuration Policy is properly set | High | Intune |
+| [MT.1178](../MT.1178) | Ensure ASR Rules are configured correctly | High | Intune |
+| [MT.1179](../MT.1179) | Ensure App Control for Business is enabled | High | Intune |
+| [MT.1180](../MT.1180) | Ensure Managed Installer Rules are configured correctly | Medium | Intune |
