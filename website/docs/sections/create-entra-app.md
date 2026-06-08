@@ -230,13 +230,6 @@ For device code flow (e.g. non-interactive sessions):
 Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>" -UseDeviceCode
 ```
 
-For temporary backward compatibility, you can omit `-SharePointClientId` and use:
-
-```powershell
-Connect-Maester -Service Graph,SharePointOnline -UseLegacySpoClientIdFallback
-```
-
-This uses the Microsoft.Online.SharePoint.PowerShell first-party client ID. Prefer a tenant-managed app registration for long-term use.
 
 </details>
 

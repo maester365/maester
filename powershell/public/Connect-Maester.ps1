@@ -82,10 +82,6 @@
 
    Connects to SharePoint Online using the specified client ID and admin URL.
 
-.EXAMPLE
-   Connect-Maester -Service SharePointOnline -UseLegacySpoClientIdFallback
-
-   Uses the Microsoft.Online.SharePoint.PowerShell first-party client ID as a compatibility fallback when -SharePointClientId is not provided.
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -136,10 +132,6 @@
       # Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
       # registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
       [string]$SharePointClientId,
-
-      # If specified and -SharePointClientId is omitted, use the Microsoft.Online.SharePoint.PowerShell first-party client ID
-      # as a compatibility fallback for SharePoint Online connection.
-      [switch]$UseLegacySpoClientIdFallback,
 
       # The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g. https://contoso-admin.sharepoint.com).
       # If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
@@ -391,21 +383,11 @@
          if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
             Write-Verbose 'Connecting to SharePoint Online via PnP'
 
-            $sharePointRequestedExplicitly = $Service -contains 'SharePointOnline'
-            $sharePointRequestedViaAll = $Service -contains 'All'
             $resolvedSharePointClientId = $SharePointClientId
 
             if (-not $resolvedSharePointClientId) {
-               if ($UseLegacySpoClientIdFallback) {
-                  $resolvedSharePointClientId = 'c731c8f4-3877-43e3-8ef7-562ea09b2055'
-                  Write-Warning "Using Microsoft.Online.SharePoint.PowerShell fallback client ID. For production, prefer a tenant-managed -SharePointClientId."
-               } elseif ($sharePointRequestedViaAll -and -not $sharePointRequestedExplicitly) {
-                  Write-Warning "SharePointOnline is included by -Service All, but no -SharePointClientId was provided. Skipping SharePoint Online connection. To enable it, provide -SharePointClientId or use -UseLegacySpoClientIdFallback."
-                  break
-               } else {
-                  Write-Host "SharePointOnline requires the -SharePointClientId parameter. You can use a dedicated PnP app (Register-PnPEntraIDAppForInteractiveLogin) or add an http://localhost redirect URI and AllSites.FullControl delegated permission to your existing Maester app registration.`nFor more information see https://maester.dev/docs/sections/create-entra-app" -ForegroundColor Red
-                  break
-               }
+               Write-Warning "SharePoint Online connection skipped because -SharePointClientId was not provided."
+               break
             }
 
             try {
