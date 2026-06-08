@@ -21,6 +21,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Resolve latest release tag
+        id: release_tag
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = '${{ github.event.release.tag_name }}'
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            $tag = (gh release view --repo $env:GITHUB_REPOSITORY --json tagName -q .tagName)
+          }
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            throw "Could not resolve a release tag for the stamp step."
+          }
+          "tag=$tag" | Out-File -Append -FilePath $env:GITHUB_OUTPUT
+
+      - name: Stamp maester-config.json version fields
+        shell: pwsh
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion '${{ steps.release_tag.outputs.tag }}'
       - name: Publish to maester-tests
         id: push_directory
         uses: cpina/github-action-push-to-another-repository@3fc9348237c8c6954ff88e58719af8a88af543f7
