@@ -28,10 +28,12 @@ To learn more about the `Invoke-Maester` cmdlet including how to filter tests, a
 
 Maester includes optional [CISA](tests/cisa/) tests that require additional permissions and modules to run. These optional tests are skipped if the modules are not installed or there is no active connection.
 
-### Installing Azure, Exchange Online, and Teams modules
+> Also see [Create-entra-app](sections/create-entra-app.md)
+
+### Installing Azure, Exchange Online, Teams and PnP.PowerShell modules
 
 ```powershell
-Install-Module Az.Accounts, ExchangeOnlineManagement, MicrosoftTeams -Scope CurrentUser
+Install-Module Az.Accounts, ExchangeOnlineManagement, MicrosoftTeams, PnP.PowerShell -Scope CurrentUser
 ```
 
 > The Security & Compliance PowerShell module is dependent on the ExchangeOnlineManagement `Connect-IPPSSession` cmdlet.
