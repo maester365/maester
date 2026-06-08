@@ -45,7 +45,9 @@ if (-not $PSBoundParameters.ContainsKey('ConfigVersion')) {
         throw "Could not determine ConfigVersion: $ConfigPath is not inside a git repository."
     }
     $repoRoot = $repoRoot.Trim()
-    $repoRelative = [System.IO.Path]::GetRelativePath($repoRoot, $resolvedConfigPath).Replace('\', '/')
+    # Compute relative path in a way that works on all .NET versions
+    $repoRelative = $resolvedConfigPath -replace "^$([regex]::Escape($repoRoot))[\\/]?", ''
+    $repoRelative = $repoRelative.Replace('\', '/')
     $commitTimestamps = @(& git -C $repoRoot log --format=%ct -- $repoRelative)
     if ($LASTEXITCODE -ne 0 -or $commitTimestamps.Count -eq 0) {
         throw "Could not determine ConfigVersion: no git history found for $repoRelative in $repoRoot."
