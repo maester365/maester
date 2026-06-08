@@ -1,11 +1,15 @@
+- **AuditLog.Read.All**
 - **DeviceManagementConfiguration.Read.All**
 - **DeviceManagementManagedDevices.Read.All**
 - **DeviceManagementRBAC.Read.All**
 - **DeviceManagementServiceConfig.Read.All**
 - **Directory.Read.All**
 - **DirectoryRecommendations.Read.All**
+- **EntitlementManagement.Read.All**
 - **IdentityRiskEvent.Read.All**
 - **OnPremDirectorySynchronization.Read.All**
+- **OrgSettings-AppsAndServices.Read.All**
+- **OrgSettings-Forms.Read.All**
 - **Policy.Read.All**
 - **Policy.Read.ConditionalAccess**
 - **PrivilegedAccess.Read.AzureAD**
