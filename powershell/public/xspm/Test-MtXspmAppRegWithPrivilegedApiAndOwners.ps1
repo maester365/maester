@@ -22,8 +22,8 @@
 
     $UnifiedIdentityInfoExecutable = Get-MtXspmUnifiedIdentityInfo -ValidateRequiredTablesOnly
     if ( $UnifiedIdentityInfoExecutable -eq $false) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables. Check https://maester.dev/docs/tests/MT.1077/#Prerequisites for more information.'
-            return $null
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables. Check https://maester.dev/docs/tests/MT.1077/#Prerequisites for more information.'
+        return $null
     }
 
     try {
@@ -34,7 +34,7 @@
         return $null
     }
 
-    $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
+    $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object { $_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" } | sort-object AccountDisplayName
     $SensitiveApiRolesOnAppsWithOwners = $HighPrivilegedAppsByApiPermissions | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
     if ($return -or [string]::IsNullOrEmpty($SensitiveApiRolesOnAppsWithOwners) ) {
@@ -47,14 +47,18 @@
         $result = "| ApplicationName | Ownership | Tier Breach | Sensitive App Role |`n"
         $result += "| --- | --- | --- | ---  |`n"
         foreach ($SensitiveApp in $SensitiveApiRolesOnAppsWithOwners) {
-            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High" } | Select-Object AppDisplayName, AppRoleDisplayName, Classification
+            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High" } | Select-Object TargetAppDisplayName, PermissionValue, PermissionType, Classification
             $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
             $SensitiveApp.OwnedBy | ForEach-Object {
                 $Owner = $_
-                $XspmIdentifiers = ($Owner.EntityIds | Where-Object {$_.type -eq "AadObjectId"}).id
+                $XspmIdentifiers = ($Owner.EntityIds | Where-Object { $_.type -eq "AadObjectId" }).id
                 if ($XspmIdentifiers -match 'objectid=([0-9a-fA-F\-]{36})') {
                     $MatchedObjectId = $matches[1]
-                    $MatchedOwner = $UnifiedIdentityInfo | Where-Object {$_.AccountObjectId -eq $MatchedObjectId}
+                    $MatchedOwner = $UnifiedIdentityInfo | Where-Object { $_.AccountObjectId -eq $MatchedObjectId }
+                    if ($null -eq $MatchedOwner) {
+                        # In case owner is missing in Defender XDR tables
+                        $MatchedOwner = [PSCustomObject]@{ Classification = "Unknown"; Type = "Unknown"; AccountObjectId = $MatchedObjectId; AppId = $null; AccountDisplayName = "Unknown" }
+                    }
                     $OwnerAdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $MatchedOwner.Classification
                     if ($MatchedOwner.Type -eq "Workload") {
                         $OwnerLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
@@ -69,14 +73,15 @@
                 }
 
                 # Summary of App roles in one column (as workaround for missing support of simple linebreak in one call)
-                $AppRolesSummary = $filteredApiPermissions | Select-Object -Unique AppDisplayName | ForEach-Object {
-                    $AppDisplayName = $_.AppDisplayName
-                    $AppRoles = $filteredApiPermissions | Where-Object {$_.AppDisplayName -eq $AppDisplayName} | Select-Object AppRoleDisplayName
-                    "$AppDisplayName" + ": " + "$($AppRoles| ForEach-Object { '`' + $_.AppRoleDisplayName + '`' })"
+                $ApiPermissionSummary = $filteredApiPermissions | Select-Object -Unique TargetAppDisplayName, PermissionType | ForEach-Object {
+                    $TargetAppDisplayName = $_.TargetAppDisplayName
+                    $PermissionType = $_.PermissionType
+                    $ApiPermissions = $filteredApiPermissions | Where-Object { $_.TargetAppDisplayName -eq $TargetAppDisplayName -and $_.PermissionType -eq $PermissionType } | Select-Object PermissionValue
+                    "$TargetAppDisplayName ($PermissionType)" + ": " + "$($ApiPermissions| ForEach-Object { '`' + $_.PermissionValue + '`' })"
                 }
 
                 $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/$($SensitiveApp.AppId)/isMSAApp~/false)"
-                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($AppRolesSummary) |`n"
+                $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($Owner) | $($TierBreach) | $($ApiPermissionSummary) |`n"
             }
         }
         $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
