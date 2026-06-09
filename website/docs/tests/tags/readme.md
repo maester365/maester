@@ -147,7 +147,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | CISA.MS.SHAREPOINT.1.3 | 1 | [CISA.MS.SHAREPOINT.1.3](../CISA.MS.SHAREPOINT.1.3) |
 | CopilotStudio | 10 | [MT.1113](../MT.1113), [MT.1114](../MT.1114), [MT.1115](../MT.1115), [MT.1116](../MT.1116), [MT.1117](../MT.1117), [MT.1118](../MT.1118), [MT.1119](../MT.1119), [MT.1120](../MT.1120), ... |
 | Defender | 25 | [MT.1059](../MT.1059), [MT.1148](../MT.1148), [MT.1149](../MT.1149), [MT.1150](../MT.1150), [MT.1151](../MT.1151), [MT.1152](../MT.1152), [MT.1153](../MT.1153), [MT.1154](../MT.1154), ... |
-| Deprecated | 1 | [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
+| Deprecated | 3 | [CISA.MS.AAD.5.4](../CISA.MS.AAD.5.4), [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1), [CISA.MS.EXO.17.2](../CISA.MS.EXO.17.2) |
 | Device | 7 | [MT.1070](../MT.1070), [MT.1086](../MT.1086), [MT.1087](../MT.1087), [MT.1088](../MT.1088), [MT.1089](../MT.1089), [MT.1090](../MT.1090), [MT.1091](../MT.1091) |
 | EIDSCA | 44 | [EIDSCA.AF01](../EIDSCA.AF01), [EIDSCA.AF02](../EIDSCA.AF02), [EIDSCA.AF03](../EIDSCA.AF03), [EIDSCA.AF04](../EIDSCA.AF04), [EIDSCA.AF05](../EIDSCA.AF05), [EIDSCA.AF06](../EIDSCA.AF06), [EIDSCA.AG01](../EIDSCA.AG01), [EIDSCA.AG02](../EIDSCA.AG02), ... |
 | EIDSCA.AF01 | 1 | [EIDSCA.AF01](../EIDSCA.AF01) |
@@ -205,11 +205,11 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | Graph | 16 | [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1073](../MT.1073), [MT.1075](../MT.1075), [MT.1077](../MT.1077), [MT.1078](../MT.1078), ... |
 | Group | 2 | [MT.1055](../MT.1055), [MT.1069](../MT.1069) |
 | Hybrid | 3 | [MT.1073](../MT.1073), [MT.1084](../MT.1084), [MT.1147](../MT.1147) |
-| Intune | 16 | [MT.1053](../MT.1053), [MT.1054](../MT.1054), [MT.1092](../MT.1092), [MT.1093](../MT.1093), [MT.1094](../MT.1094), [MT.1095](../MT.1095), [MT.1096](../MT.1096), [MT.1097](../MT.1097), ... |
+| Intune | 20 | [MT.1053](../MT.1053), [MT.1054](../MT.1054), [MT.1092](../MT.1092), [MT.1093](../MT.1093), [MT.1094](../MT.1094), [MT.1095](../MT.1095), [MT.1096](../MT.1096), [MT.1097](../MT.1097), ... |
 | L1 | 22 | [CIS.M365.1.1.1](../CIS.M365.1.1.1), [CIS.M365.1.1.3](../CIS.M365.1.1.3), [CIS.M365.1.2.2](../CIS.M365.1.2.2), [CIS.M365.1.3.1](../CIS.M365.1.3.1), [CIS.M365.1.3.4](../CIS.M365.1.3.4), [CIS.M365.1.3.5](../CIS.M365.1.3.5), [CIS.M365.2.1.2](../CIS.M365.2.1.2), [CIS.M365.2.1.3](../CIS.M365.2.1.3), ... |
 | L2 | 12 | [CIS.M365.1.2.1](../CIS.M365.1.2.1), [CIS.M365.1.3.3](../CIS.M365.1.3.3), [CIS.M365.1.3.6](../CIS.M365.1.3.6), [CIS.M365.1.3.7](../CIS.M365.1.3.7), [CIS.M365.2.1.1](../CIS.M365.2.1.1), [CIS.M365.2.1.4](../CIS.M365.2.1.4), [CIS.M365.2.1.5](../CIS.M365.2.1.5), [CIS.M365.2.1.11](../CIS.M365.2.1.11), ... |
 | LongRunning | 19 | [MT.1033](../MT.1033), [MT.1034](../MT.1034), [MT.1050](../MT.1050), [MT.1051](../MT.1051), [MT.1057](../MT.1057), [MT.1058](../MT.1058), [MT.1063](../MT.1063), [MT.1075](../MT.1075), ... |
-| Maester | 100 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
+| Maester | 119 | [MT.1001](../MT.1001), [MT.1002](../MT.1002), [MT.1003](../MT.1003), [MT.1004](../MT.1004), [MT.1005](../MT.1005), [MT.1006](../MT.1006), [MT.1007](../MT.1007), [MT.1008](../MT.1008), ... |
 | MDI | 1 | [MT.1059](../MT.1059) |
 | MS.AAD | 30 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1), [CISA.MS.AAD.2.1](../CISA.MS.AAD.2.1), [CISA.MS.AAD.2.2](../CISA.MS.AAD.2.2), [CISA.MS.AAD.2.3](../CISA.MS.AAD.2.3), [CISA.MS.AAD.3.1](../CISA.MS.AAD.3.1), [CISA.MS.AAD.3.2](../CISA.MS.AAD.3.2), [CISA.MS.AAD.3.3](../CISA.MS.AAD.3.3), [CISA.MS.AAD.3.4](../CISA.MS.AAD.3.4), ... |
 | MS.AAD.1.1 | 1 | [CISA.MS.AAD.1.1](../CISA.MS.AAD.1.1) |
@@ -431,6 +431,10 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | MT.1169 | 1 | [MT.1169](../MT.1169) |
 | MT.1170 | 1 | [MT.1170](../MT.1170) |
 | MT.1171 | 1 | [MT.1171](../MT.1171) |
+| MT.1177 | 1 | [MT.1177](../MT.1177) |
+| MT.1178 | 1 | [MT.1178](../MT.1178) |
+| MT.1179 | 1 | [MT.1179](../MT.1179) |
+| MT.1180 | 1 | [MT.1180](../MT.1180) |
 | ORCA | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
 | ORCA.100 | 1 | [ORCA.100](../ORCA.100) |
 | ORCA.101 | 1 | [ORCA.101](../ORCA.101) |
