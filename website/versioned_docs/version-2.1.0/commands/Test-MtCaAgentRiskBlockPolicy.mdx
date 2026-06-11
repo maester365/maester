@@ -1,0 +1,68 @@
+---
+sidebar_class_name: hidden
+description: "Checks if the tenant has at least one conditional access policy that blocks agent identities based on their risk level."
+id: Test-MtCaAgentRiskBlockPolicy
+title: Test-MtCaAgentRiskBlockPolicy
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCaAgentRiskBlockPolicy.ps1
+---
+
+## SYNOPSIS
+
+Checks if the tenant has at least one conditional access policy that blocks agent identities based on their risk level.
+
+## SYNTAX
+
+```powershell
+Test-MtCaAgentRiskBlockPolicy [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Organizations should block agent identities that are detected as high risk by Microsoft Entra ID Protection to helping prevent potentially compromised AI agents from accessing your organization's resources.
+
+Learn more:
+https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-agent-block-high-risk
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Test-MtCaAgentRiskBlockPolicy
+```
+
+## PARAMETERS
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.Boolean
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Test-MtCaAgentRiskBlockPolicy](https://maester.dev/docs/commands/Test-MtCaAgentRiskBlockPolicy)
