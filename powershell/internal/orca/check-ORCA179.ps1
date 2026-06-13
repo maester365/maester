@@ -62,6 +62,13 @@ class ORCA179 : ORCACheck
       
         ForEach($Policy in $Config["SafeLinksPolicy"]) 
         {
+            # Built-in policy is ignored in this check, as stated in the Importance description.
+            # The PolicyInfo class exposes this via the BuiltIn property.
+            if($Config["PolicyStates"][$Policy.Guid.ToString()].BuiltIn)
+            {
+                Continue
+            }
+
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $EnableForInternalSenders = $($Policy.EnableForInternalSenders)
 
@@ -71,7 +78,6 @@ class ORCA179 : ORCACheck
             {
                 $PolicyCount++
             }
-            
 
             # Check objects
             $ConfigObject = [ORCACheckConfig]::new()
