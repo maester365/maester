@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
+description: "Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online."
 id: Connect-Maester
 title: Connect-Maester
 hide_title: false
@@ -17,7 +17,8 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 ```powershell
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
- [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>]
+ [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>] [[-SharePointClientId] <String>]
+ [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -132,6 +133,25 @@ Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
 ```
 
 Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
+
+### EXAMPLE 13
+
+```powershell
+'
+```
+
+Connects to Microsoft Graph and SharePoint Online using the specified PnP app registration.
+The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API.
+Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g.
+for custom domain or government cloud tenants).
+
+### EXAMPLE 14
+
+```powershell
+Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+```
+
+Connects to SharePoint Online using the specified client ID and admin URL.
 
 ## PARAMETERS
 
@@ -274,7 +294,7 @@ Accept wildcard characters: False
 
 ### -Service
 
-The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO.
+The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, and SharePoint Online.
 Default is Graph.
 
 ```yaml
@@ -318,6 +338,61 @@ Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SharePointClientId
+
+The Client ID of the PnP Entra ID app for SharePoint Online.
+Required when Service includes SharePointOnline.
+Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
+registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SharePointAdminUrl
+
+The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g.
+https://contoso-admin.sharepoint.com).
+If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SharePointCertificateThumbprint
+
+The certificate thumbprint for app-only authentication to SharePoint Online.
+Use together with -SharePointClientId and -TenantId for non-interactive/automation scenarios.
+The certificate must be installed in the current user's certificate store.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
