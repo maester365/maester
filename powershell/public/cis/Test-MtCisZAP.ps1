@@ -24,7 +24,7 @@
         return $null
     }
 
-    if ((Get-MtLicenseInformation -Product Mdo) -ne 'Mdo') {
+    if (-not (Get-MtLicenseInformation -Product Mdo)) {
         Add-MtTestResultDetail -SkippedBecause NotLicensedMdo
         return $null
     }
