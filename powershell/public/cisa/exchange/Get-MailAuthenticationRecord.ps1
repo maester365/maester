@@ -74,7 +74,6 @@
 
         $splat = @{
             DomainName         = $DomainName
-            DnsServerIpAddress = $DnsServerIpAddress
             QuickTimeout       = $QuickTimeout
             NoHostsFile        = $NoHostsFile
         }
