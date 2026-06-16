@@ -77,11 +77,40 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
+### Connect to SharePoint Online (optional)
+
+Maester includes SharePoint Online security tests that use the [PnP PowerShell](https://pnp.github.io/powershell/) module.
+
+Install the PnP PowerShell module if you haven't already:
+
+```powershell
+Install-Module PnP.PowerShell -Scope CurrentUser
+```
+
+A dedicated Entra ID app registration configured for PnP interactive login is required. See [Grant permissions to SharePoint Online](../sections/create-entra-app.md) for how to create or reuse one.
+
+
+Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
+```
+
+If auto-discovery does not work (e.g. in government or custom-domain tenants), supply the admin URL explicitly:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+```
+
+If the PnP PowerShell module is not installed or there is no active connection, all SharePoint Online tests are skipped automatically.
+
 ### Connect to Azure, Exchange Online, Copilot Studio and Teams
 
 `Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance and Microsoft Teams.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance, Microsoft Teams, and SharePoint Online.
+
+If `-SharePointClientId` is not provided, the SharePoint Online connection is skipped with a warning.
 
 ```powershell
 Connect-Maester -Service All

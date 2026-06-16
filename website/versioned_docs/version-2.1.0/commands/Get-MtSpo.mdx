@@ -1,0 +1,91 @@
+---
+sidebar_class_name: hidden
+description: "Retrieves SharePoint Online tenant settings via PnP with session caching."
+id: Get-MtSpo
+title: Get-MtSpo
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtSpo.ps1
+---
+
+## SYNOPSIS
+
+Retrieves SharePoint Online tenant settings via PnP with session caching.
+
+## SYNTAX
+
+```powershell
+Get-MtSpo [-ClearCache] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Returns the full SPO tenant configuration from Get-PnPTenant.
+Results are cached in $__MtSession.SpoCache for the duration of the session.
+Use -ClearCache to force a fresh retrieval.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtSpo
+```
+
+Returns the cached (or freshly retrieved) SPO tenant settings.
+
+### EXAMPLE 2
+
+```powershell
+Get-MtSpo -ClearCache
+```
+
+Clears the cached settings and retrieves fresh data from Get-PnPTenant.
+
+## PARAMETERS
+
+### -ClearCache
+
+Clear the cached SPO tenant settings and retrieve fresh data.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtSpo](https://maester.dev/docs/commands/Get-MtSpo)
