@@ -219,27 +219,6 @@
 
     function ValidateAndSetOutputFiles($out) {
         $result = $null
-        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
-                $result = 'The OutputHtmlFile parameter must have an .html extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
-                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
-            if ($out.OutputMarkdownSummaryFile.EndsWith('.md') -eq $false) {
-                $result = 'The OutputMarkdownSummaryFile parameter must have an .md extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
-                $result = 'The OutputJsonFile parameter must have a .json extension.'
-            }
-        }
-
         $someOutputFileHasValue = ![string]::IsNullOrEmpty($out.OutputHtmlFile) -or `
             ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile) -or `
             ![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)
@@ -271,6 +250,28 @@
                 $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
             }
         }
+
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
+                $result = 'The OutputHtmlFile parameter must have an .html extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            if ($out.OutputMarkdownSummaryFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownSummaryFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
+                $result = 'The OutputJsonFile parameter must have a .json extension.'
+            }
+        }
+
         return $result
     }
 
@@ -347,14 +348,14 @@
     }
 
     $out = [PSCustomObject]@{
-        OutputFolder         = $OutputFolder
-        OutputFolderFileName = $OutputFolderFileName
-        OutputHtmlFile       = $OutputHtmlFile
-        OutputMarkdownFile   = $OutputMarkdownFile
+        OutputFolder              = $OutputFolder
+        OutputFolderFileName      = $OutputFolderFileName
+        OutputHtmlFile            = $OutputHtmlFile
+        OutputMarkdownFile        = $OutputMarkdownFile
         OutputMarkdownSummaryFile = $OutputMarkdownSummaryFile
-        OutputJsonFile       = $OutputJsonFile
-        OutputCsvFile        = $null
-        OutputExcelFile      = $null
+        OutputJsonFile            = $OutputJsonFile
+        OutputCsvFile             = $null
+        OutputExcelFile           = $null
     }
 
     $result = ValidateAndSetOutputFiles $out
