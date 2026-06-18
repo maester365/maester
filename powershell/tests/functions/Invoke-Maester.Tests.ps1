@@ -82,8 +82,8 @@
 
         $summaryContent = Get-Content -Path $summaryPath -Raw
         $summaryContent | Should -BeLike '*| Metric | Count |*'
-        $summaryContent | Should -BeLike '*| Passed |*'
-        $summaryContent | Should -BeLike '*| Failed |*'
-        $summaryContent | Should -BeLike '*| Total |*'
+        $summaryContent | Should -Match '\|\s*Passed\b[^|]*\|'
+        $summaryContent | Should -Match '\|\s*Failed\b[^|]*\|'
+        $summaryContent | Should -Match '\|\s*Total\b[^|]*\|'
     }
 }
