@@ -37,26 +37,37 @@
     $verifiedDomains = $result | Where-Object isVerified
 
     $managedDomains = $verifiedDomains | Where-Object authenticationType -eq "Managed"
+    $legacyManagedDomains = $managedDomains | Where-Object {
+        $supportedServices = @($_.supportedServices)
+        ($supportedServices.Count -eq 1) -and ($supportedServices -contains "SharePoint")
+    }
+    $applicableManagedDomains = $managedDomains | Where-Object {
+        $_.id -notin $legacyManagedDomains.id
+    }
+    $noPasswordExpiryPeriodInDays = [int]::MaxValue
 
-    # remove domains from the managedDomains list where supportedServices contains "SharePoint" then this is a very old domain used when M365 offered public webhosting
-    $managedDomains = $managedDomains | Where-Object supportedServices -notcontains "SharePoint"
+    # Password expiration is compliant only when it is explicitly set to never expire.
+    $compliantDomains = $applicableManagedDomains | Where-Object {
+        $passwordValidityPeriodInDays = 0
+        $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
 
-	# If password never expires is set in M365 Admin Center then the PasswordValidityPeriodInDays will be 2147483647
-    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -le 2147483000 
+        if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
+            return $false
+        }
 
-	# If authenticationType = Managed and the PasswordValidityPeriodInDays is null then these domains where once Federated and the tenant password policy has not been reapplied to them
-	$oldFederatedDomains = $managedDomains | Where-Object {
-    	$_.authenticationType -eq "Managed" -and $null -eq $_.PasswordValidityPeriodInDays
-	}
-	
-    $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
+        if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
+            return $false
+        }
+
+        return $passwordValidityPeriodInDays -eq $noPasswordExpiryPeriodInDays
+    }
+
+    $testResult = ($applicableManagedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%TestResult%"
-	} elseif ($oldFederatedDomains.Count -gt 0) {
-		$testResultMarkdown = "Your tenant has " + $oldFederatedDomains.Count + " previously federated domains that do not have password expiration set to never expire. Reapply the password expiration policy in the M365 Admin Center to fix.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has 1 or more managed domains where password expiration is not explicitly set to never expire.`n`n%TestResult%"
     }
 
     $pass = "✅ Pass"
@@ -64,7 +75,7 @@
     $skip = "🗄️ Skipped"
     $default = "✔️"
 
-    $resultDetails = "| Domain (Default) | Verified | Type | Legacy | Validation |`n"
+    $resultDetails = "| Domain (Default) | Verified | Type | Validation | Reason |`n"
     $resultDetails += "| --- | --- | --- | --- | --- |`n"
     foreach($domain in $result){
         if($domain.isDefault){
@@ -77,24 +88,24 @@
         }else{
             $isVerified = "Unverified"
         }
-        if($domain.supportedServices -eq "SharePoint"){
-            $isLegacy = "Legacy"
-        }else{
-            $isLegacy = ""
-        }		
         if($domain.id -in $compliantDomains.id){
             $testValue = $pass
+            $reason = ""
         }elseif($domain.authenticationType -eq "Federated"){
             $testValue = $skip
-        }elseif($domain.supportedServices -eq "SharePoint"){
-            $testValue = $skip        
+            $reason = "Federated domain"
+        }elseif($domain.id -in $legacyManagedDomains.id){
+            $testValue = $skip
+            $reason = "Legacy SharePoint-only domain"
         }elseif($isVerified -eq "Unverified"){
             $testValue = $skip
+            $reason = "Unverified domain"
         }else{
             $testValue = $fail
+            $reason = "Password expiration is not explicitly set to never expire"
         }
 
-        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $isLegacy | $testValue |`n"
+        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue | $reason |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultDetails
