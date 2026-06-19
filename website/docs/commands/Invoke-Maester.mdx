@@ -16,7 +16,7 @@ This is the main Maester command that runs the tests and generates a report of t
 
 ```powershell
 Invoke-Maester [[-Path] <String>] [-Tag <String[]>] [-ExcludeTag <String[]>] [-IncludeLongRunning]
- [-IncludePreview] [-OutputHtmlFile <String>] [-OutputMarkdownFile <String>] [-OutputJsonFile <String>]
+ [-IncludePreview] [-OutputHtmlFile <String>] [-OutputMarkdownFile <String>] [-OutputMarkdownSummaryFile <String>] [-OutputJsonFile <String>]
  [-OutputFolder <String>] [-OutputFolderFileName <String>] [-PesterConfiguration <PesterConfiguration>]
  [-Verbosity <String>] [-NonInteractive] [-PassThru] [-MailRecipient <String[]>] [-MailTestResultsUri <String>]
  [-MailUserId <String>] [-TeamId <String>] [-TeamChannelId <String>] [-TeamChannelWebhookUri <String>]
@@ -264,6 +264,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutputMarkdownSummaryFile
+
+The path to the file to save a compact markdown summary with only result counters.
+The filename should include a .md extension.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -OutputJsonFile
 
 The path to the file to save the test results in json format.
@@ -285,7 +302,7 @@ Accept wildcard characters: False
 
 The folder to save the test results in.
 If no -Output* is set, defaults to ./test-results.
-If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json) with a timestamp and saved in the folder.
+If set, other -Output* parameters are ignored and all formats will be generated (markdown, markdown summary, html, json) with a timestamp and saved in the folder.
 
 ```yaml
 Type: String
