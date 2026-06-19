@@ -47,10 +47,10 @@ function Get-MtRoleMember {
                 Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 $roleNames |
-                    Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
-                    Sort-Object | ForEach-Object {
-                        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                    }
+                Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
+                Sort-Object | ForEach-Object {
+                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+                }
             })]
         [ValidateScript({
                 Initialize-MtRoleDefinition
@@ -155,7 +155,7 @@ function Get-MtRoleMember {
                 $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
             }
         }
-        if ($Eligible) {
+        if ($pim -and $Eligible) {
             $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
             $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
         }
