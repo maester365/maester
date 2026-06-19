@@ -127,11 +127,14 @@
         # The path to the file to save the test results in markdown format. The filename should include a .md extension.
         [string] $OutputMarkdownFile,
 
+        # The path to the file to save a compact markdown summary with only result counters. The filename should include a .md extension.
+        [string] $OutputMarkdownSummaryFile,
+
         # The path to the file to save the test results in json format. The filename should include a .json extension.
         [string] $OutputJsonFile,
 
         # The folder to save the test results in. If no -Output* is set, defaults to ./test-results.
-        # If set, other -Output* parameters are ignored and all formats will be generated (markdown, html, json) with a timestamp and saved in the folder.
+        # If set, other -Output* parameters are ignored and all formats will be generated (markdown, markdown summary, html, json) with a timestamp and saved in the folder.
         [string] $OutputFolder,
 
         # The filename prefix to use for all the files in the output folder. e.g. 'TestResults' will generate TestResults.html, TestResults.md, TestResults.json.
@@ -216,24 +219,9 @@
 
     function ValidateAndSetOutputFiles($out) {
         $result = $null
-        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
-            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
-                $result = 'The OutputHtmlFile parameter must have an .html extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
-            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
-                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
-            }
-        }
-        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
-            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
-                $result = 'The OutputJsonFile parameter must have a .json extension.'
-            }
-        }
-
         $someOutputFileHasValue = ![string]::IsNullOrEmpty($out.OutputHtmlFile) -or `
-            ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile)
+            ![string]::IsNullOrEmpty($out.OutputMarkdownFile) -or ![string]::IsNullOrEmpty($out.OutputJsonFile) -or `
+            ![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)
 
         if ([string]::IsNullOrEmpty($out.OutputFolder) -and !$someOutputFileHasValue) {
             # No outputs specified. Set default folder.
@@ -252,6 +240,7 @@
 
             $out.OutputHtmlFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).html"
             $out.OutputMarkdownFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).md"
+            $out.OutputMarkdownSummaryFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName)-summary.md"
             $out.OutputJsonFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).json"
 
             if ($ExportCsv.IsPresent) {
@@ -261,6 +250,28 @@
                 $out.OutputExcelFile = Join-Path $out.OutputFolder "$($out.OutputFolderFileName).xlsx"
             }
         }
+
+        if (![string]::IsNullOrEmpty($out.OutputHtmlFile)) {
+            if ($out.OutputHtmlFile.EndsWith('.html') -eq $false) {
+                $result = 'The OutputHtmlFile parameter must have an .html extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownFile)) {
+            if ($out.OutputMarkdownFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            if ($out.OutputMarkdownSummaryFile.EndsWith('.md') -eq $false) {
+                $result = 'The OutputMarkdownSummaryFile parameter must have an .md extension.'
+            }
+        }
+        if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
+            if ($out.OutputJsonFile.EndsWith('.json') -eq $false) {
+                $result = 'The OutputJsonFile parameter must have a .json extension.'
+            }
+        }
+
         return $result
     }
 
@@ -337,13 +348,14 @@
     }
 
     $out = [PSCustomObject]@{
-        OutputFolder         = $OutputFolder
-        OutputFolderFileName = $OutputFolderFileName
-        OutputHtmlFile       = $OutputHtmlFile
-        OutputMarkdownFile   = $OutputMarkdownFile
-        OutputJsonFile       = $OutputJsonFile
-        OutputCsvFile        = $null
-        OutputExcelFile      = $null
+        OutputFolder              = $OutputFolder
+        OutputFolderFileName      = $OutputFolderFileName
+        OutputHtmlFile            = $OutputHtmlFile
+        OutputMarkdownFile        = $OutputMarkdownFile
+        OutputMarkdownSummaryFile = $OutputMarkdownSummaryFile
+        OutputJsonFile            = $OutputJsonFile
+        OutputCsvFile             = $null
+        OutputExcelFile           = $null
     }
 
     $result = ValidateAndSetOutputFiles $out
@@ -484,6 +496,12 @@
             Write-MtProgress -Activity 'Creating markdown report'
             $output = Get-MtMarkdownReport -MaesterResults $maesterResults
             $output | Out-File -FilePath $out.OutputMarkdownFile -Encoding UTF8
+        }
+
+        if (![string]::IsNullOrEmpty($out.OutputMarkdownSummaryFile)) {
+            Write-MtProgress -Activity 'Creating markdown summary report'
+            $output = Get-MtMarkdownSummaryReport -MaesterResults $maesterResults
+            $output | Out-File -FilePath $out.OutputMarkdownSummaryFile -Encoding UTF8
         }
 
         if (![string]::IsNullOrEmpty($out.OutputCsvFile)) {
