@@ -28,7 +28,6 @@
         [string]$DomainName,
 
         # DNS-server to use for lookup.
-        [ValidateNotNullOrEmpty()]
         [ipaddress]$DnsServerIpAddress,
 
         # DKIM DNS record Name to retrieve.
@@ -78,7 +77,7 @@
             NoHostsFile  = $NoHostsFile
         }
         # Add the `DnsServerIpAddress` parameter IF it has been specified by the user.
-        if ($PSBoundParameters.ContainsKey('DnsServerIpAddress')) {
+        if ($DnsServerIpAddress) {
             $splat.DnsServerIpAddress = $DnsServerIpAddress
         }
 
