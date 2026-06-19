@@ -27,6 +27,8 @@
             $script:SkippedBecause = $null
             $script:SkippedCustomReason = $null
 
+            Mock -ModuleName Maester Test-MtConnection { return $true }
+            Mock -ModuleName Maester Get-MtLicenseInformation { return 'P1' }
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @() }
             Mock -ModuleName Maester Add-MtTestResultDetail {
                 param($SkippedBecause, $SkippedCustomReason)
@@ -44,6 +46,8 @@
 
     Context 'Azure DevOps app is available in tenant' {
         BeforeEach {
+            Mock -ModuleName Maester Test-MtConnection { return $true }
+            Mock -ModuleName Maester Get-MtLicenseInformation { return 'P1' }
             Mock -ModuleName Maester Invoke-MtGraphRequest { return @{ id = 'sp-id' } }
         }
 
