@@ -331,6 +331,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
 | [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
 | [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
+| [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100) | Maester |  | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

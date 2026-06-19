@@ -435,6 +435,7 @@ Tags are discovered from Pester test metadata and can be used to find related Ma
 | MT.1178 | 1 | [MT.1178](../MT.1178) |
 | MT.1179 | 1 | [MT.1179](../MT.1179) |
 | MT.1180 | 1 | [MT.1180](../MT.1180) |
+| MT.1182 | 1 | [MT.1182](../MT.1182) |
 | ORCA | 67 | [ORCA.100](../ORCA.100), [ORCA.101](../ORCA.101), [ORCA.102](../ORCA.102), [ORCA.103](../ORCA.103), [ORCA.104](../ORCA.104), [ORCA.105](../ORCA.105), [ORCA.106](../ORCA.106), [ORCA.107](../ORCA.107), ... |
 | ORCA.100 | 1 | [ORCA.100](../ORCA.100) |
 | ORCA.101 | 1 | [ORCA.101](../ORCA.101) |
