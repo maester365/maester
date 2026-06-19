@@ -23,10 +23,10 @@ Impact associated with this change is highly dependent upon current practices in
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "Application.ReadWrite.All"`
 2. Run the following script:
 ```powershell
-$SP = Get-MgServicePrincipal -Filter "appId eq 'c1f33bc0-bdb4-4248-ba9b096807ddb43e'"
+$SP = Get-MgServicePrincipal -Filter "appId eq 'c1f33bc0-bdb4-4248-ba9b-096807ddb43e'"
 # If the service principal doesn't exist then create it first.
 if (-not $SP) {
-    $SP = New-MgServicePrincipal -AppId "c1f33bc0-bdb4-4248-ba9b096807ddb43e"
+    $SP = New-MgServicePrincipal -AppId "c1f33bc0-bdb4-4248-ba9b-096807ddb43e"
 }
 Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
 ```

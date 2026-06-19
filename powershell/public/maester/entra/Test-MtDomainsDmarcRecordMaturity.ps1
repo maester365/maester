@@ -40,7 +40,7 @@
     $verifiedManagedDomains = $domains | Where-Object { $_.isVerified -eq $true -and $_.authenticationType -eq "Managed" }
 
     if (!$verifiedManagedDomains) {
-        Add-MtTestResultDetail -SkippedBecause "No verified and managed domains found in tenant"
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No verified and managed domains found in tenant'
         return $null
     }
 

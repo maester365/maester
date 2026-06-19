@@ -1,5 +1,5 @@
 ﻿function Disconnect-Maester {
-    <#
+   <#
     .Synopsis
     Helper method to sign out of the current Microsoft Graph session. Alternate for Disconnect-MgGraph.
 
@@ -27,12 +27,12 @@
    [CmdletBinding()]
    param()
 
-   if($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All"){
+   if ($__MtSession.Connections -contains "Graph" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Graph."
       Disconnect-MgGraph
    }
 
-   if($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All"){
+   if ($__MtSession.Connections -contains "Azure" -or $__MtSession.Connections -contains "Dataverse" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Azure."
       try {
          Disconnect-AzAccount -ErrorAction Stop | Out-Null
@@ -41,11 +41,22 @@
       }
    }
 
-   if($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All"){
+   if ($__MtSession.Connections -contains "ExchangeOnline" -or $__MtSession.Connections -contains "SecurityCompliance" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
       Disconnect-ExchangeOnline
    }
-   if($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All"){
+
+   if ($__MtSession.Connections -contains "SharePointOnline" -or $__MtSession.Connections -contains "All") {
+      Write-Verbose -Message "Disconnecting from SharePoint Online (PnP)."
+      try {
+         Disconnect-PnPOnline -ErrorAction Stop
+      } catch {
+         Write-Verbose "Disconnect-PnPOnline encountered an error: $($_.Exception.Message)"
+      }
+      $__MtSession.SpoCache = @{}
+   }
+
+   if ($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
       Disconnect-MicrosoftTeams
    }
