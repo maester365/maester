@@ -69,5 +69,5 @@ The test passes if **at least one App Control for Business policy is enforcing**
 
 ## Source
 
-- Pester test: `tests\Maester\Intune\Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell\public\maester\intune\Test-MtIntuneAppControl.ps1`
+- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
+- PowerShell source: `powershell/public/maester/intune/Test-MtIntuneAppControl.ps1`

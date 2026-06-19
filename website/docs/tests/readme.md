@@ -18,10 +18,10 @@ This section is generated from the Maester test source. Each page includes the t
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 148 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 149 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 38 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 44 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
@@ -60,6 +60,12 @@ This section is generated from the Maester test source. Each page includes the t
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | Ensure that guest user access is restricted | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.2.3.5](./CIS.M365.5.2.3.5) | Ensure weak authentication methods are disabled | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.6.5.3](./CIS.M365.6.5.3) | Ensure additional storage providers are restricted in Outlook on the web | CIS | Unknown | CIS E3 Level 2 |
+| [CIS.M365.7.2.11](./CIS.M365.7.2.11) | Ensure the SharePoint default sharing link permission is set | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.2](./CIS.M365.7.2.2) | Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.5](./CIS.M365.7.2.5) | Ensure that SharePoint guest users cannot share items they don | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.7](./CIS.M365.7.2.7) | Ensure link sharing is restricted in SharePoint and OneDrive | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.2.9](./CIS.M365.7.2.9) | Ensure guest access to a site or OneDrive will expire automatically | CIS | Unknown | SharePoint Online |
+| [CIS.M365.7.3.1](./CIS.M365.7.3.1) | Ensure Office 365 SharePoint infected files are disallowed for download | CIS | Unknown | SharePoint Online |
 | [CIS.M365.8.1.1](./CIS.M365.8.1.1) | (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services | CIS | Medium | CIS M365 v6.0.1 |
 | [CIS.M365.8.2.2](./CIS.M365.8.2.2) | (L1) Ensure communication with unmanaged Teams users is disabled | CIS | Medium | CIS M365 v6.0.1 |
 | [CIS.M365.8.2.3](./CIS.M365.8.2.3) | Ensure external Teams users cannot initiate conversations | CIS | Unknown | CIS M365 v6.0.1 |
@@ -327,11 +333,11 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1169](./MT.1169) | Catch-up Full Scan should be disabled | Maester | High | Defender |
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled | Maester | High | Defender |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically | Maester | High | Defender |
-| [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set | Maester | High | Intune |
+| [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set | Maester | Unknown | Intune |
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
 | [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
 | [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
-| [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100) | Maester |  | Entra |
+| [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Maester | Unknown | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

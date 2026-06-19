@@ -83,7 +83,7 @@ The test validates:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementValidApprovers](/docs/commands/Test-MtEntitlementManagementValidApprovers) |
-| Tags | AccessPackages, Entra, Governance, MT.1109 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1109 |
 
 ## Source
 

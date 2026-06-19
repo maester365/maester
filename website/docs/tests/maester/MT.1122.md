@@ -39,7 +39,7 @@ Learn more: [Agent Registry in the Microsoft 365 admin center](https://learn.mic
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentOrphaned](/docs/commands/Test-MtAIAgentOrphaned) |
-| Tags | AIAgent, CopilotStudio, MT.1122 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1122 |
 
 ## Source
 
