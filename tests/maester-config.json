@@ -1477,9 +1477,8 @@
       "Title": "Sample Submission should send safe samples automatically"
     },
     {
-      "Id": "MT.1177",
-      "Severity": "High",
-      "Title": "Ensure LAPS Configuration Policy is properly set"
+      "Id": "MT.1182",
+      "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
     },
     {
       "Id": "MT.1178",
