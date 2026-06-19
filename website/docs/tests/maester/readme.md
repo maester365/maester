@@ -166,3 +166,4 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1178](../MT.1178) | Ensure ASR Rules are configured correctly | High | Intune |
 | [MT.1179](../MT.1179) | Ensure App Control for Business is enabled | High | Intune |
 | [MT.1180](../MT.1180) | Ensure Managed Installer Rules are configured correctly | Medium | Intune |
+| [MT.1182](../MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100) |  | Entra |
