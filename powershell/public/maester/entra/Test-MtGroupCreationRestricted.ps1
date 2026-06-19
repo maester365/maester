@@ -25,13 +25,14 @@
     try {
         $settings = Invoke-MtGraphRequest -RelativeUri 'settings' -ApiVersion 'beta'
 
+        # Default tenant behavior: if the setting is absent, group creation is NOT restricted.
         $groupCreationRestricted = $false
 
         $enableGroupCreation = $settings.values | Where-Object { $_.name -eq 'EnableGroupCreation' }
-
         if ($null -ne $enableGroupCreation) {
-            # If the setting is not found, it means that group creation is not restricted.
-            $groupCreationRestricted = ($enableGroupCreation.value -eq 'false')
+            # EnableGroupCreation = 'False' -> restricted to approved users
+            # EnableGroupCreation = 'True'  -> any user can create groups
+            $groupCreationRestricted = ($enableGroupCreation.value -eq 'False')
         }
 
         if ($groupCreationRestricted) {
