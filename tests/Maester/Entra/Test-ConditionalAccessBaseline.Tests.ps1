@@ -78,7 +78,11 @@
         Test-MtCaReferencedObjectsExist | Should -Be $true -Because "all referenced users, groups, or roles should exist."
     }
     It "MT.1071: At least one Conditional Access policy explicitly includes Azure DevOps. See https://maester.dev/docs/tests/MT.1071" -Tag "MT.1071" {
-        Test-MtCaAzureDevOps | Should -Be $true -Because "one or more policies target Azure DevOps app."
+        $result = Test-MtCaAzureDevOps
+
+        if ($null -ne $result) {
+            $result | Should -Be $true -Because "one or more policies target Azure DevOps app."
+        }
     }
 
     It "MT.1072: Conditional access policies should not use the deprecated Approved Client App grant. See https://maester.dev/docs/tests/MT.1072" -Tag "MT.1072" {

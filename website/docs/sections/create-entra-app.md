@@ -43,6 +43,7 @@ The Exchange Online Role Based Access Control (RBAC) implementation utilizes ser
 New-ServicePrincipal -AppId <Application ID> -ObjectId <Object ID> -DisplayName <Name>
 New-ManagementRoleAssignment -Role "View-Only Configuration" -App <DisplayName from previous command>
 ```
+
 </details>
 
 <details>
@@ -75,6 +76,7 @@ The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resou
 > The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
 
 The following PowerShell script will enable you, with a Global Administrator role assignment, to:
+
 - Identify the Service Principal Object ID that will be authorized as a Reader (Enterprise app Object ID)
 - Install the necessary Az module and prompt for connection
 - Elevate your account access to the root scope
@@ -100,6 +102,135 @@ New-AzRoleAssignment -ObjectId $servicePrincipal -Scope "/providers/Microsoft.aa
 $assignment = Get-AzRoleAssignment -RoleDefinitionId 18d7d88d-d35e-4fb5-a5c3-7773c20a72d9|?{$_.Scope -eq "/" -and $_.SignInName -eq (Get-AzContext).Account.Id}
 $deleteAssignment = Invoke-AzRestMethod -Path "$($assignment.RoleAssignmentId)?api-version=2018-07-01" -Method DELETE
 ```
+
+</details>
+
+<details>
+  <summary>(Optional) Grant permissions to SharePoint Online</summary>
+### (Optional) Grant permissions to SharePoint Online
+
+SharePoint Online tests require the **PnP.PowerShell** module and an Entra ID app registration configured for interactive login with SharePoint delegated permissions.
+
+> The SharePoint Online permissions are necessary to support tests that validate [SharePoint Online configurations](https://maester.dev/docs/tests/cisa/spo), such as the CISA SharePoint baseline controls.
+
+#### Install PnP.PowerShell
+
+```powershell
+Install-Module PnP.PowerShell -Scope CurrentUser
+```
+
+#### Option A — Automatically create a new PnP app registration
+
+PnP provides a built-in cmdlet to create a dedicated app registration for interactive login:
+
+```powershell
+Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "Maester PnP" -Tenant [yourtenant].onmicrosoft.com -SharePointDelegatePermissions "AllSites.FullControl"
+```
+
+This will:
+
+- Create an Entra ID app registration with the required delegated permissions
+- Configure `http://localhost` as the redirect URI automatically
+- Prompt you to authenticate and provide consent
+- Output the **Client ID** you will need for `Connect-Maester`
+
+> **Note:** Maester's SharePoint tests are read-only. `AllSites.FullControl` (delegated) is sufficient.
+>
+> **Important:** After registering the app, open a **new PowerShell session** before running `Connect-Maester`, as the registration process loads PnP assemblies that can conflict with Microsoft Graph.
+
+#### Option B — Reuse the existing Maester app registration
+
+If you prefer not to create a separate app, you can update the Maester app registration you created earlier to also support PnP PowerShell interactive login.
+
+**1. Add the localhost redirect URI**
+
+- Open your Maester app registration in the [Entra admin center](https://entra.microsoft.com)
+- Select **Authentication** > **Add a platform** > **Mobile and desktop applications**
+- In the **Custom redirect URIs** field, enter `http://localhost` (note: `http`, not `https`)
+- Select **Configure**
+
+**2. Add SharePoint delegated permissions**
+
+- Select **API permissions** > **Add a permission**
+- Select **SharePoint** > **Delegated permissions**
+- Search for and check `AllSites.FullControl`
+- Select **Add permissions**
+- Select **Grant admin consent for [your organization]** and confirm
+
+**3. Connect using the existing Client ID**
+
+You can retrieve the Client ID of your Maester app from Graph without looking it up manually. First connect to Graph, then query for the app by its display name:
+
+```powershell
+# Connect to Graph first
+Connect-Maester -Service Graph
+
+# Retrieve the Client ID of the Maester app registration
+$clientId = (Get-MgApplication -Filter "displayName eq 'Maester DevOps Account'").AppId
+```
+
+Then connect to SharePoint Online in a new session using the retrieved Client ID. The SharePoint admin URL is auto-discovered from your tenant — no need to specify it manually:
+
+```powershell
+# Open a new PowerShell session, then:
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId $clientId
+```
+
+> **Important:** After registering the app, open a **new PowerShell session** before running `Connect-Maester`, as PnP assemblies loaded during the session can conflict with Microsoft Graph.
+
+#### Option C — App-only access (automation / non-interactive)
+
+For unattended runs (CI pipelines, scheduled tasks) where interactive login is not possible, use application permissions with certificate-based authentication.
+
+**1. Add SharePoint application permission**
+
+- Open your app registration in the [Entra admin center](https://entra.microsoft.com)
+- Select **API permissions** > **Add a permission**
+- Select **SharePoint** > **Application permissions**
+- Search for and check `Sites.FullControl.All`
+- Select **Add permissions**
+- Select **Grant admin consent for [your organization]** and confirm
+
+**2. Upload a certificate**
+
+- Select **Certificates & secrets** > **Certificates** > **Upload certificate**
+- Upload the public key (`.cer`) of your certificate
+
+**3. Connect using Connect-Maester**
+
+Pass the certificate thumbprint directly to `Connect-Maester` using `-SharePointCertificateThumbprint`. `-TenantId` is required for thumbprint-based auth:
+
+```powershell
+$params = @{
+  Service = @('Graph', 'SharePointOnline')
+  SharePointClientId = "<App Client ID>"
+  SharePointCertificateThumbprint = "<Certificate Thumbprint>"
+  TenantId = "<Tenant ID or domain>"
+}
+Connect-Maester @params
+```
+
+The certificate must be present in the current user's Windows certificate store. The SharePoint admin URL is auto-discovered — supply `-SharePointAdminUrl` to override it if needed.
+
+Use the Client ID from Option A or Option B when connecting:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>"
+```
+
+The SharePoint admin URL is auto-discovered from your tenant's initial domain. If auto-discovery does not work (e.g. government or custom-domain tenants), supply it explicitly:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>" -SharePointAdminUrl "https://contoso-admin.sharepoint.com"
+```
+
+For device code flow (e.g. non-interactive sessions):
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>" -UseDeviceCode
+```
+
+
 </details>
 
 <details>
