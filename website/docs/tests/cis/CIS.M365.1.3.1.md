@@ -38,7 +38,6 @@ When setting passwords not to expire it is important to have other controls in p
 * Educate users to not reuse organization passwords anywhere else.
 * Enforce Multi-Factor Authentication registration for all users.
 
-
 #### Remediation action:
 
 To set Office 365 passwords are set to never expire:

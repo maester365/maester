@@ -39,7 +39,7 @@ Learn more: [Configure data policies for agents](https://learn.microsoft.com/mic
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentEmailExfiltration](/docs/commands/Test-MtAIAgentEmailExfiltration) |
-| Tags | AIAgent, CopilotStudio, MT.1116 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1116 |
 
 ## Source
 

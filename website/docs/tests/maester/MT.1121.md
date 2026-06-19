@@ -39,7 +39,7 @@ Learn more: [Create and edit custom instructions](https://learn.microsoft.com/en
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentMissingInstructions](/docs/commands/Test-MtAIAgentMissingInstructions) |
-| Tags | AIAgent, CopilotStudio, MT.1121 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1121 |
 
 ## Source
 

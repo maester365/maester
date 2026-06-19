@@ -101,7 +101,7 @@ Stale resources detected:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementValidResourceRoles](/docs/commands/Test-MtEntitlementManagementValidResourceRoles) |
-| Tags | AccessPackages, Entra, Governance, MT.1106 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1106 |
 
 ## Source
 

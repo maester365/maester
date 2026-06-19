@@ -25,6 +25,16 @@
 # and 7.6.2 on Linux during Invoke-Maester -- not a PowerShell-version regression),
 # leaving the table $null at call time so Get-MtRoleInfo throws "You cannot call a
 # method on a null-valued expression". Initializing inside a function avoids that.
+<#
+.SYNOPSIS
+Initializes the cached Microsoft Entra role definition lookup tables used by Maester.
+
+.DESCRIPTION
+Populates the module-scoped role definition and alias hashtables on first use. This
+helper supports Get-MtRoleInfo and Get-MtRoleMember by loading the auto-generated
+built-in role metadata lazily so the cache remains available across PowerShell
+module import and test execution contexts.
+#>
 function Initialize-MtRoleDefinition {
     [CmdletBinding()]
     param()
