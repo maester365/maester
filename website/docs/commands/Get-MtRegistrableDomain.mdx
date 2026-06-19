@@ -1,0 +1,105 @@
+---
+sidebar_class_name: hidden
+description: "Get the registrable domain for a given domain name."
+id: Get-MtRegistrableDomain
+title: Get-MtRegistrableDomain
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Get-MtRegistrableDomain.ps1
+---
+
+## SYNOPSIS
+
+Get the registrable domain for a given domain name.
+
+## SYNTAX
+
+```powershell
+Get-MtRegistrableDomain [-DomainName] <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+This function retrieves the registrable domain for a given domain name based on the public suffix list.
+Uses a cached version of the public suffix list for performance reasons.
+Public suffix list is sourced from https://publicsuffix.org/ and stored in the Maester powershell assets repository.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Get-MtRegistrableDomain -DomainName "sub.example.co.uk"
+Returns "example.co.uk".
+```
+
+### EXAMPLE 2
+
+```powershell
+Get-MtRegistrableDomain -DomainName "example.co.uk"
+Returns "example.co.uk".
+```
+
+### EXAMPLE 3
+
+```powershell
+Get-MtRegistrableDomain -DomainName "sub.example.com"
+Returns "example.com".
+```
+
+### EXAMPLE 4
+
+```powershell
+Get-MtRegistrableDomain -DomainName "example.com"
+Returns "example.com".
+```
+
+## PARAMETERS
+
+### -DomainName
+
+The domain name for which to retrieve the registrable domain.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+\{\{ Fill ProgressAction Description \}\}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+### System.String
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Get-MtRegistrableDomain](https://maester.dev/docs/commands/Get-MtRegistrableDomain)
