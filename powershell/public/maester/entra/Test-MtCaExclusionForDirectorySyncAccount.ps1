@@ -32,12 +32,33 @@
         $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
 
         $Members = @()
-        $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
-        $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+        # Guard: Get-MtRoleInfo returns $null when $script:MtRoles is uninitialised (module reload issue).
+        # Skip the Get-MtRoleMember call in that case to avoid a mandatory-parameter binding error.
+        if ($null -ne $DirectorySynchronizationAccountsRole) {
+            $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+        }
+        if ($null -ne $OnPremisesDirectorySyncAccountRole) {
+            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+        }
         $Members = @($Members | Where-Object { $null -ne $_ })
 
         if ( $Members.Count -eq 0 ) {
             Add-MtTestResultDetail -Description $testDescription -Result 'This tenant does not have directory synchronization accounts and therefore this test is not applicable.'
+            return $true
+        }
+
+        # Classify members: user accounts (subject to CA policies) vs. service principals (not subject to CA).
+        # As of Microsoft Entra Connect v2.5.76.0, directory sync supports Application-Based Authentication
+        # (ABA), where sync is performed by a registered service principal rather than a dedicated user
+        # account. Service principals are not subject to Conditional Access policies and do not need to be
+        # excluded from them.
+        $userSyncMembers = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' })
+        $spSyncMembers   = @($Members | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.servicePrincipal' })
+
+        if ( $userSyncMembers.Count -eq 0 -and $spSyncMembers.Count -gt 0 ) {
+            $spNames = ( $spSyncMembers | Where-Object { $_.displayName } | ForEach-Object { $_.displayName } ) -join ', '
+            if ( -not $spNames ) { $spNames = 'unknown' }
+            Add-MtTestResultDetail -Description $testDescription -Result "This tenant uses Application-Based Authentication (ABA) for directory synchronization. As of Microsoft Entra Connect v2.5.76.0, sync can be performed by a registered service principal ($spNames) rather than a dedicated user account. Service principals are not subject to Conditional Access policies; no CA exclusions are required."
             return $true
         }
 
@@ -73,8 +94,8 @@
 
             $PolicyIncludesAnyMember = $false
             $PolicyIncludesRole = $false
-            # Excluding service principals, because they cannot be excluded from policies and therefore do not have to be included in the policies to bypass them.
-            $memberIds = @($Members | Where-Object { $_.'@odata.type' -ne '#microsoft.graph.servicePrincipal' } | ForEach-Object { $_.id })
+            # Use the pre-computed $userSyncMembers list (service principals excluded above).
+            $memberIds = @($userSyncMembers | ForEach-Object { $_.id })
 
             foreach ($memberId in $memberIds) {
                 if ( $memberId -in $policy.conditions.users.includeUsers ) {

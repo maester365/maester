@@ -57,7 +57,7 @@ class ORCA113 : ORCACheck
         {    
             # Built-in policy is ignored for this check
 
-            if(!$Config["PolicyStates"][$Policy.Guid.ToString()].IsBuiltIn)
+            if(!$Config["PolicyStates"][$Policy.Guid.ToString()].BuiltIn)
             {
                 $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
                 $AllowClickThrough = $($Policy.AllowClickThrough)
