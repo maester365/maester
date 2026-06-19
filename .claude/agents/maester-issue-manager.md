@@ -4,17 +4,14 @@ description: >-
   Use when the user wants to create, update, or coordinate GitHub issues for
   Maester test tracking — especially when reserving an MT.XXXX sequence on
   issue #697 before a new check is implemented. Does not modify source code.
-user-invocable: false
-tools:
-  - search
-  - github/*
+tools: Read, Glob, Grep, Bash, WebFetch
 ---
 
 <!--
-  SYNC NOTE: This file's body is kept identical to its Claude Code twin at
-  `.claude/agents/maester-issue-manager.md`. Only the YAML frontmatter differs
-  (each tool uses its own tool-name vocabulary). If you edit the body below,
-  copy the same change to the twin file.
+  SYNC NOTE: This file's body is kept identical to its Copilot twin at
+  `.github/agents/maester-issue-manager.agent.md`. Only the YAML frontmatter
+  differs (each tool uses its own tool-name vocabulary). If you edit the
+  body below, copy the same change to the twin file.
 -->
 
 You are an issue management agent for Maester test tracking.

@@ -57,6 +57,7 @@ module.exports = [
     'commands/Get-RelatedPolicy',
     'commands/Import-MtMaesterResult',
     'commands/Import-SingleResultFile',
+    'commands/Initialize-MtRoleDefinition',
     'commands/Install-MaesterTests',
     'commands/Invoke-Maester',
     'commands/Invoke-MtAzureRequest',

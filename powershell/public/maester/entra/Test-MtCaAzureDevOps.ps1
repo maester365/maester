@@ -18,25 +18,46 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Allow')]
     param ()
 
-    Write-Verbose "Checking for Conditional Access policies that explicitly include Azure DevOps..."
+    if (!(Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+    if ((Get-MtLicenseInformation EntraID) -eq 'Free') {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP1
+        return $null
+    }
 
-    $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq "enabled" }
-    $policiesResult = New-Object System.Collections.ArrayList
-    $result = $false
+    Write-Verbose 'Checking for Conditional Access policies that explicitly include Azure DevOps...'
 
     $azureDevOpsAppId = '499b84ac-1321-427f-aa17-267ca6975798'
-    foreach ($policy in $policies) {
-        if ( $azureDevOpsAppId -in ($policy.conditions.applications.includeApplications) ) {
-            $result = $true
-            $policiesResult.Add($policy) | Out-Null
+
+    try {
+        $azureDevOpsServicePrincipal = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion v1.0 -Filter "appId eq '$azureDevOpsAppId'" -Select id
+        if (-not $azureDevOpsServicePrincipal) {
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason "Azure DevOps app (App ID: $azureDevOpsAppId) is not available in this tenant."
+            return $null
         }
+
+        $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
+        $policiesResult = New-Object System.Collections.ArrayList
+        $result = $false
+
+        foreach ($policy in $policies) {
+            if ($azureDevOpsAppId -in $policy.conditions.applications.includeApplications) {
+                $result = $true
+                $policiesResult.Add($policy) | Out-Null
+            }
+        }
+        if (($policiesResult | Measure-Object).Count -ne 0) {
+            $testResult = "Well done! There are conditional access policies that explicitly include Azure DevOps.`n`n%TestResult%"
+            Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
+        } else {
+            $testResult = 'There are no conditional access policies that explicitly target Azure DevOps.'
+            Add-MtTestResultDetail -Result $testResult
+        }
+        return $result
+    } catch {
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+        return $null
     }
-    if (($policiesResult | Measure-Object).Count -ne 0) {
-        $testResult = "Well done! There are conditional access policies that explicitly include Azure DevOps.`n`n%TestResult%"
-        Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
-    } else {
-        $testResult = "There are no conditional access policies that explicitly target Azure DevOps."
-        Add-MtTestResultDetail -Result $testResult
-    }
-    return $result
 }
