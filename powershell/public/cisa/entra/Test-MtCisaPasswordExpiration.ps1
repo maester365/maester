@@ -37,15 +37,37 @@
     $verifiedDomains = $result | Where-Object isVerified
 
     $managedDomains = $verifiedDomains | Where-Object authenticationType -eq "Managed"
+    $legacyManagedDomains = $managedDomains | Where-Object {
+        $supportedServices = @($_.supportedServices)
+        ($supportedServices.Count -eq 1) -and ($supportedServices -contains "SharePoint")
+    }
+    $applicableManagedDomains = $managedDomains | Where-Object {
+        $_.id -notin $legacyManagedDomains.id
+    }
+    $noPasswordExpiryPeriodInDays = [int]::MaxValue
 
-    $compliantDomains = $managedDomains | Where-Object PasswordValidityPeriodInDays -ge 36500
+    # Password expiration is compliant only when it is explicitly set to never expire.
+    $compliantDomains = $applicableManagedDomains | Where-Object {
+        $passwordValidityPeriodInDays = 0
+        $domainPasswordValidityPeriodInDays = $_.PasswordValidityPeriodInDays
 
-    $testResult = ($managedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
+        if (($null -eq $domainPasswordValidityPeriodInDays) -or ($domainPasswordValidityPeriodInDays -is [bool])) {
+            return $false
+        }
+
+        if (-not [int]::TryParse($domainPasswordValidityPeriodInDays.ToString(), [ref]$passwordValidityPeriodInDays)) {
+            return $false
+        }
+
+        return $passwordValidityPeriodInDays -eq $noPasswordExpiryPeriodInDays
+    }
+
+    $testResult = ($applicableManagedDomains | Measure-Object).Count - ($compliantDomains | Measure-Object).Count -eq 0
 
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant password expiration policy is set to never expire.`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have password expiration set to never expire.`n`n%TestResult%"
+        $testResultMarkdown = "Your tenant has 1 or more managed domains where password expiration is not explicitly set to never expire.`n`n%TestResult%"
     }
 
     $pass = "✅ Pass"
@@ -53,8 +75,8 @@
     $skip = "🗄️ Skipped"
     $default = "✔️"
 
-    $resultDetails = "| Domain (Default) | Verified | Type | Validation |`n"
-    $resultDetails += "| --- | --- | --- | --- |`n"
+    $resultDetails = "| Domain (Default) | Verified | Type | Validation | Reason |`n"
+    $resultDetails += "| --- | --- | --- | --- | --- |`n"
     foreach($domain in $result){
         if($domain.isDefault){
             $isDefault = "$($domain.id) ($default)"
@@ -68,15 +90,22 @@
         }
         if($domain.id -in $compliantDomains.id){
             $testValue = $pass
+            $reason = ""
         }elseif($domain.authenticationType -eq "Federated"){
             $testValue = $skip
+            $reason = "Federated domain"
+        }elseif($domain.id -in $legacyManagedDomains.id){
+            $testValue = $skip
+            $reason = "Legacy SharePoint-only domain"
         }elseif($isVerified -eq "Unverified"){
             $testValue = $skip
+            $reason = "Unverified domain"
         }else{
             $testValue = $fail
+            $reason = "Password expiration is not explicitly set to never expire"
         }
 
-        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue |`n"
+        $resultDetails += "| $isDefault | $isVerified | $($domain.authenticationType) | $testValue | $reason |`n"
     }
 
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $resultDetails
