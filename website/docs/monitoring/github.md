@@ -47,6 +47,21 @@ If you’re unable to use more advanced options like certificates stored in Azur
 
 This guide is based on [Use GitHub Actions to connect to Azure](https://learn.microsoft.com/azure/developer/github/connect-from-azure) and uses the maester GitHub action.
 
+:::tip PowerShell shortcut
+
+If you have the `Maester` PowerShell module and the [GitHub CLI](https://cli.github.com/) installed, the next four sections (create Entra app, grant permissions, add federated credentials, set GitHub secrets) can be completed in a single command from inside your `maester-tests` clone:
+
+```powershell
+Connect-Maester -Service Azure
+New-MtMaesterApp -GitHubActions -SetGitHubSecrets
+```
+
+The cmdlet auto-detects the GitHub repository from the local `git remote`, creates the application, grants all required Graph permissions, adds the federated credential, and pushes `AZURE_CLIENT_ID` / `AZURE_TENANT_ID` to the repo's Actions secrets via `gh`.
+
+The portal-based steps below remain fully supported.
+
+:::
+
 ### Pre-requisites Workload identity federation
 
 <CreateEntraApp/>

@@ -44,14 +44,16 @@ function Get-MtRoleMember {
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
         [ArgumentCompleter({
                 param($commandName, $parameterName, $wordToComplete)
+                Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 $roleNames |
-                    Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
-                    Sort-Object | ForEach-Object {
-                        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-                    }
+                Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
+                Sort-Object | ForEach-Object {
+                    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+                }
             })]
         [ValidateScript({
+                Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 if ($_ -in $roleNames) { return $true }
                 throw "Unknown role '$_'. Use tab-completion to see valid role names."
@@ -117,6 +119,11 @@ function Get-MtRoleMember {
         return $assignments
     }
 
+    # Ensure the role lookup tables are built. Guards against the module-load-time
+    # assignment of $script:MtRoles not persisting into the Pester test-execution
+    # context (the cause of the MT.1020 NullReferenceException). See Get-MtRoleInfo.
+    Initialize-MtRoleDefinition
+
     Write-Verbose "Getting members for RoleId: $RoleId, Role: $Role, MemberStatus: $MemberStatus"
     if (-not $MemberStatus -or $MemberStatus -eq 'EligibleAndActive') {
         $Eligible = $Active = $true
@@ -148,7 +155,7 @@ function Get-MtRoleMember {
                 $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Active
             }
         }
-        if ($Eligible) {
+        if ($pim -and $Eligible) {
             $uri = 'roleManagement/directory/roleEligibilityScheduleInstances'
             $assignments += Get-UsersInRole -Uri $uri -RoleId $directoryRoleId -RoleAssignmentType Eligible
         }

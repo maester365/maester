@@ -1,4 +1,6 @@
 {
+  "ModuleVersion": "2.0.0",
+  "ConfigVersion": "",
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
     "DataverseEnvironmentUrl": ""
@@ -1473,6 +1475,31 @@
       "Id": "MT.1171",
       "Severity": "High",
       "Title": "Sample Submission should send safe samples automatically"
+    },
+    {
+      "Id": "MT.1177",
+      "Severity": "High",
+      "Title": "Ensure LAPS Configuration Policy is properly set"
+    },
+    {
+      "Id": "MT.1178",
+      "Severity": "High",
+      "Title": "Ensure ASR Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1179",
+      "Severity": "High",
+      "Title": "Ensure App Control for Business is enabled"
+    },
+    {
+      "Id": "MT.1180",
+      "Severity": "Medium",
+      "Title": "Ensure Managed Installer Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1181",
+      "Severity": "High",
+      "Title": "Conditional Access policy is present that blocks high agent risk signins"
     },
     {
       "Id": "ORCA.100",

@@ -37,6 +37,18 @@
     [OutputType([bool])]
     param()
 
+    if (-not (Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     try {
         # Get all access packages
         $accessPackages = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackages" -ApiVersion beta
@@ -97,20 +109,20 @@
                                             $group = Invoke-MtGraphRequest -RelativeUri "groups/$groupId" -ApiVersion beta -ErrorAction Stop
                                             if ($null -eq $group -or $null -eq $group.id) {
                                                 $deletedGroupsFound += [PSCustomObject]@{
-                                                    Type = "Access Package"
-                                                    Name = $packageName
-                                                    Id = $packageId
+                                                    Type           = "Access Package"
+                                                    Name           = $packageName
+                                                    Id             = $packageId
                                                     DeletedGroupId = $groupId
-                                                    Context = "Approval Stage Primary Approver"
+                                                    Context        = "Approval Stage Primary Approver"
                                                 }
                                             }
                                         } catch {
                                             $deletedGroupsFound += [PSCustomObject]@{
-                                                Type = "Access Package"
-                                                Name = $packageName
-                                                Id = $packageId
+                                                Type           = "Access Package"
+                                                Name           = $packageName
+                                                Id             = $packageId
                                                 DeletedGroupId = $groupId
-                                                Context = "Approval Stage Primary Approver"
+                                                Context        = "Approval Stage Primary Approver"
                                             }
                                         }
                                     }
@@ -165,11 +177,11 @@
 
                         if (-not $groupStillExists) {
                             $deletedGroupsFound += [PSCustomObject]@{
-                                Type = "Access Package"
-                                Name = $packageName
-                                Id = $packageId
-                                DeletedGroupId = $groupId
-                                Context = "Resource Assignment"
+                                Type                = "Access Package"
+                                Name                = $packageName
+                                Id                  = $packageId
+                                DeletedGroupId      = $groupId
+                                Context             = "Resource Assignment"
                                 ResourceDisplayName = $actualGroupName
                             }
                         }
@@ -232,11 +244,11 @@
 
                             if (-not $groupStillExists) {
                                 $deletedGroupsFound += [PSCustomObject]@{
-                                    Type = "Catalog"
-                                    Name = $catalog.displayName
-                                    Id = $catalog.id
-                                    DeletedGroupId = $groupId
-                                    Context = "Catalog Resource"
+                                    Type                = "Catalog"
+                                    Name                = $catalog.displayName
+                                    Id                  = $catalog.id
+                                    DeletedGroupId      = $groupId
+                                    Context             = "Catalog Resource"
                                     ResourceDisplayName = $actualGroupName
                                 }
                             }
