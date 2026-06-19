@@ -11,6 +11,7 @@ Licensing requirement: Microsoft Entra ID P1 or P2 is required. There are no fun
 Unlicensed users may also be impacted.
 Existing Conditional Access policies will be affected, specifically those targeting the Windows Azure Service Management API.
 A small subset of tenants may see the app name as "Microsoft Visual Studio Team Services" instead of "Azure DevOps"—the App ID remains the same.
+If the Azure DevOps app (App ID: 499b84ac-1321-427f-aa17-267ca6975798) is not available in your tenant, this test is skipped.
 
 ## Remediate
 To ensure continued protection of Azure DevOps sign-ins, administrators should:
