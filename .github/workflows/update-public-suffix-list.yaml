@@ -1,0 +1,47 @@
+name: update-public-suffix-list
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: update-public-suffix-list
+  cancel-in-progress: false
+
+jobs:
+  update-public-suffix-list:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Update public suffix list
+        shell: pwsh
+        run: ./build/Update-PublicSuffixList.ps1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore: update public suffix list'
+          branch: 'automation/update-public-suffix-list'
+          delete-branch: true
+          title: 'chore: update public suffix list'
+          body: |
+            Refreshes `powershell/assets/public_domain_suffix_list.dat` from:
+            - https://publicsuffix.org/list/public_suffix_list.dat
