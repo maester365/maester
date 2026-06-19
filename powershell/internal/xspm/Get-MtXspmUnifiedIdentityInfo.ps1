@@ -123,7 +123,7 @@
                 TargetAppId: string,
                 Category: string,
                 EAMTierLevelName: string
-                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/tnh-EnhancedApiSupport/Classification/Classification_ApiPermissions.json'] with (format='multijson');
+                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_ApiPermissions.json'] with (format='multijson');
             let PrivilegedAzureRoles = dynamic(['Owner','Contributor','Access Review Operator Service Role','Azure File Sync Administrator','Role Based Access Control Administrator','User Access Administrator']);
             let PrivilegedArmOperations = externaldata(
                 RoleAction: string
@@ -383,7 +383,7 @@
             | extend RuleName = tostring(CriticalityData)
             | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
             | extend CriticalAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, tostring(CriticalAssetDetail) !contains '''' ) by AccountObjectId = ObjectId
+            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, isnotempty(tostring(CriticalAssetDetail.RuleName))) by AccountObjectId = ObjectId
             ) on AccountObjectId
             | project-reorder AccountObjectId, AccountDisplayName, AccountStatus, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions, AssociatedPrimaryAccount;
         };

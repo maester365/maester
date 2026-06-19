@@ -48,7 +48,15 @@
         $result += "| --- | --- | --- | ---  |`n"
         foreach ($SensitiveApp in $SensitiveApiRolesOnAppsWithOwners) {
             $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High" } | Select-Object TargetAppDisplayName, PermissionValue, PermissionType, Classification
-            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
+            $permissionClassifications = @($filteredApiPermissions.Classification | Where-Object { -not [string]::IsNullOrEmpty($_) } | Sort-Object -Unique)
+            $effectiveClassification = if ($permissionClassifications -contains "ControlPlane") {
+                "ControlPlane"
+            } elseif ($permissionClassifications -contains "ManagementPlane") {
+                "ManagementPlane"
+            } else {
+                "Unknown"
+            }
+            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $effectiveClassification
             $SensitiveApp.OwnedBy | ForEach-Object {
                 $Owner = $_
                 $XspmIdentifiers = ($Owner.EntityIds | Where-Object { $_.type -eq "AadObjectId" }).id
@@ -66,7 +74,7 @@
                         $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
                     }
                     $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
-                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and $MatchedOwner.Classification -ne "$filteredApiPermissions.Classification"
+                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and ($permissionClassifications -notcontains $MatchedOwner.Classification)
                 } else {
                     $Owner = $($_.NodeName) - $($_.NodeLabel)
                     $TierBreach = "Unknown"

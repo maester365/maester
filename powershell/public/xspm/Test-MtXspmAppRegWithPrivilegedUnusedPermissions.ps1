@@ -49,13 +49,13 @@
         Write-Verbose "Found $($SensitiveAppsWithUnusedPermissions.Count) app registrations with unused sensitive API permissions."
 
         foreach ($SensitiveApp in $SensitiveAppsWithUnusedPermissions) {
-            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object AppDisplayName, AppRoleDisplayName, Classification | sort-object Classification, AppDisplayName
-            if($filteredApiPermissions) {
+            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object TargetAppDisplayName, PermissionValue, Classification | Sort-Object Classification, TargetAppDisplayName, PermissionValue
+            if ($filteredApiPermissions) {
                 foreach ($filteredApiPermission in $filteredApiPermissions) {
                     if ($filteredApiPermission.Classification -eq "") { $filteredApiPermission.Classification = "Unknown" }
                     $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
                     $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $SensitiveApp.Classification
-                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.AppRoleDisplayName) | $($filteredApiPermission.AppDisplayName) |`n"
+                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.PermissionValue) | $($filteredApiPermission.TargetAppDisplayName) |`n"
                 }
             }
         }

@@ -50,9 +50,17 @@
 
         foreach ($SensitiveApp in $SensitiveDirectoryRolesOnAppsWithOwners) {
             $filteredRolePrivileges = $SensitiveApp.AssignedEntraRoles | where-object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
+            $roleClassifications = @($filteredRolePrivileges.Classification | Where-Object { -not [string]::IsNullOrEmpty($_) } | Sort-Object -Unique)
             # XSPM supports only Directory scope for now
             $filteredRolePrivileges | Add-Member -MemberType NoteProperty -Name RoleScope -Value "Directory" -Force
-            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $filteredRolePrivileges.Classification
+            $effectiveClassification = if ($roleClassifications -contains "ControlPlane") {
+                "ControlPlane"
+            } elseif ($roleClassifications -contains "ManagementPlane") {
+                "ManagementPlane"
+            } else {
+                "Unknown"
+            }
+            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $effectiveClassification
             $SensitiveApp.OwnedBy | ForEach-Object {
                 $Owner = $_
                 $XspmIdentifiers = ($Owner.EntityIds | Where-Object { $_.type -eq "AadObjectId" }).id
@@ -70,7 +78,7 @@
                         $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
                     }
                     $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
-                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and $MatchedOwner.Classification -ne "$filteredRolePrivileges.Classification"
+                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and ($roleClassifications -notcontains $MatchedOwner.Classification)
                 } else {
                     $Owner = $($_.NodeName) - $($_.NodeLabel)
                     $TierBreach = "Unknown"
