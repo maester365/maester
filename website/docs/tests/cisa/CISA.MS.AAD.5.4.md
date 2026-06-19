@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.5.4 - Group owners SHALL NOT be allowed to consent to applications."
-description: "Group owners SHALL NOT be allowed to consent to applications. Rationale: In M365, group owners and team owners can consent to applications accessing data in the tenant. By requiring consent requests to go through an approval workflow, risk of exposure to malicious applications is reduced. Remediati…"
+description: "**This test is deprecated by CISA as of March 2025 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.** MS.AAD.5.4v1 was removed because Microsoft announced via MC712143 that group owner consent to applications is no longer a c…"
 slug: /tests/CISA.MS.AAD.5.4
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -12,6 +12,7 @@ keywords:
   - "High"
   - "CISA"
   - "Entra ID Free"
+  - "Deprecated"
   - "MS.AAD"
   - "MS.AAD.5.4"
 ---
@@ -21,6 +22,10 @@ keywords:
 # CISA.MS.AAD.5.4 - Group owners SHALL NOT be allowed to consent to applications.
 
 ## Overview
+
+**This test is deprecated by CISA as of March 2025 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.**
+
+MS.AAD.5.4v1 was removed because Microsoft announced via MC712143 that group owner consent to applications is no longer a configurable setting. The setting has been removed from the product entirely, making the policy moot. See [CISA SCuBA Removed Policies — MS.AAD.5.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/removedpolicies.md#msaad54v1).
 
 Group owners SHALL NOT be allowed to consent to applications.
 
@@ -49,7 +54,7 @@ Rationale: In M365, group owners and team owners can consent to applications acc
 | Suite | CISA |
 | Category | Entra ID Free |
 | PowerShell test | [Test-MtCisaAppGroupOwnerConsent](/docs/commands/Test-MtCisaAppGroupOwnerConsent) |
-| Tags | CISA, CISA.MS.AAD.5.4, Entra ID Free, MS.AAD, MS.AAD.5.4 |
+| Tags | CISA, CISA.MS.AAD.5.4, Deprecated, Entra ID Free, MS.AAD, MS.AAD.5.4 |
 
 ## Source
 

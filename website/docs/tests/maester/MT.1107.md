@@ -71,7 +71,7 @@ For any deleted groups found, the test attempts to retrieve the group name from 
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementDeletedGroups](/docs/commands/Test-MtEntitlementManagementDeletedGroups) |
-| Tags | AccessPackages, Entra, Governance, MT.1107 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1107 |
 
 ## Source
 

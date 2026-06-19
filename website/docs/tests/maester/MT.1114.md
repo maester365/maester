@@ -42,7 +42,7 @@ Learn more: [Configure user authentication in Copilot Studio](https://learn.micr
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentNoAuthentication](/docs/commands/Test-MtAIAgentNoAuthentication) |
-| Tags | AIAgent, CopilotStudio, MT.1114 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1114 |
 
 ## Source
 
