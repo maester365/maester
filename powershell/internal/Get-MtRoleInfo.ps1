@@ -193,6 +193,11 @@ function Get-MtRoleInfo {
 
     if ([string]::IsNullOrWhiteSpace($RoleName)) { return $null }
 
+    # $script:MtRoles can be $null if the module was reloaded inside an existing PowerShell session
+    # and the class MtRoleDefinition redefinition failed (classes cannot be redefined in the same
+    # session). The psm1 try/catch swallows that error, leaving the hashtable uninitialised.
+    if ($null -eq $script:MtRoles) { return $null }
+
     if ($script:MtRoles.ContainsKey($RoleName)) {
         return $script:MtRoles[$RoleName]
     }
