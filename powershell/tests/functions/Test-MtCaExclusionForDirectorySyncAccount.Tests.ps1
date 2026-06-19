@@ -87,17 +87,18 @@
         }
     }
 
-    Context 'Service principal-only members (no user members)' {
+    Context 'Service principal-only members (ABA — Application-Based Authentication, Entra Connect v2.5.76.0+)' {
 
         BeforeEach {
-            # Only a service principal is in the role — no users to exclude
+            # Only a service principal is in the role — this is the ABA pattern (Entra Connect v2.5.76.0+).
+            # The new code returns true early (before iterating policies) with an informative ABA message.
             Mock -ModuleName Maester Get-MtRoleMember { return $script:syncServicePrincipal }
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy {
                 return @(New-CaPolicy -ExcludeUsers @() -ExcludeRoles @())
             }
         }
 
-        It 'Should return true because service principals cannot be excluded from CA policies' {
+        It 'Should return true because ABA service principals are not subject to CA policies' {
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
         }
     }
@@ -302,4 +303,26 @@
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeNull
         }
     }
+
+    Context 'Get-MtRoleInfo returns null for both sync roles (module reload / $script:MtRoles uninitialised)' {
+
+        BeforeEach {
+            # Simulate the condition where the module was reloaded in an existing PS session and the
+            # class MtRoleDefinition redefinition failed, leaving $script:MtRoles uninitialised.
+            # Get-MtRoleInfo returns $null; Get-MtRoleMember must NOT be called with a null role ID.
+            Mock -ModuleName Maester Get-MtRoleInfo { return $null }
+            Mock -ModuleName Maester Get-MtRoleMember {}
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+        }
+
+        It 'Should return true and report not applicable (no role members resolvable)' {
+            Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
+        }
+
+        It 'Should not call Get-MtRoleMember when role info is null' {
+            Test-MtCaExclusionForDirectorySyncAccount
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 0 -Exactly
+        }
+    }
+
 }
