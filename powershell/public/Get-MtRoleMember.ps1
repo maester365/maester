@@ -44,6 +44,7 @@ function Get-MtRoleMember {
         [Parameter(ParameterSetName = 'RoleName', Position = 0, Mandatory = $true)]
         [ArgumentCompleter({
                 param($commandName, $parameterName, $wordToComplete)
+                Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 $roleNames |
                     Where-Object { $_.StartsWith($wordToComplete, [System.StringComparison]::OrdinalIgnoreCase) } |
@@ -52,6 +53,7 @@ function Get-MtRoleMember {
                     }
             })]
         [ValidateScript({
+                Initialize-MtRoleDefinition
                 $roleNames = @($script:MtRoles.Keys) + @($script:MtRoleAliases.Keys)
                 if ($_ -in $roleNames) { return $true }
                 throw "Unknown role '$_'. Use tab-completion to see valid role names."
@@ -127,6 +129,13 @@ function Get-MtRoleMember {
     }
 
     if ($Role) {
+        # Build the role lookup tables before resolving names. Guards against the
+        # module-load-time assignment of $script:MtRoles not persisting into the
+        # Pester test-execution context (the MT.1020 NullReferenceException). Only
+        # needed for the RoleName parameter set; RoleId callers skip it. See
+        # Get-MtRoleInfo.
+        Initialize-MtRoleDefinition
+
         # Resolve role names to GUIDs via MtRoleDefinition.ToString(), then explicitly cast to [guid[]]
         # to avoid relying on implicit coercion from MtRoleDefinition through the typed parameter variable.
         $RoleId = [guid[]]($Role | ForEach-Object { (Get-MtRoleInfo -RoleName $_).ToString() })

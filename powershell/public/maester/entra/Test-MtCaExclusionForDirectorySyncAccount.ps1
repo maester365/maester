@@ -32,8 +32,8 @@
         $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
 
         $Members = @()
-        # Guard: Get-MtRoleInfo returns $null when $script:MtRoles is uninitialised (module reload issue).
-        # Skip the Get-MtRoleMember call in that case to avoid a mandatory-parameter binding error.
+        # Defensive guard: if role lookup ever returns $null unexpectedly, avoid
+        # passing a null value into Get-MtRoleMember's mandatory RoleId parameter.
         if ($null -ne $DirectorySynchronizationAccountsRole) {
             $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
         }
