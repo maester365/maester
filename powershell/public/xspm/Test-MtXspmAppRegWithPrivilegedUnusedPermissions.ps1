@@ -43,19 +43,19 @@
     } else {
         $testResultMarkdown = "At least one application has unused sensitive API permissions.`n`n%TestResult%"
 
-        $result = "| ApplicationName | Enterprise Access Level | Sensitive App Role | API Provider |`n"
-        $result += "| --- | --- | --- | --- | `n"
+        $result = "| ApplicationName | Enterprise Access Level | Sensitive App Role | Permission Type | API Provider |`n"
+        $result += "| --- | --- | --- | --- | --- | `n"
 
         Write-Verbose "Found $($SensitiveAppsWithUnusedPermissions.Count) app registrations with unused sensitive API permissions."
 
         foreach ($SensitiveApp in $SensitiveAppsWithUnusedPermissions) {
-            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object TargetAppDisplayName, PermissionValue, Classification | Sort-Object Classification, TargetAppDisplayName, PermissionValue
+            $filteredApiPermissions = $SensitiveApp.ApiPermissions | Where-Object { ($_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.PrivilegeLevel -eq "High") -and $_.InUse -eq $false } | Select-Object TargetAppDisplayName, PermissionValue, PermissionType, Classification | Sort-Object Classification, TargetAppDisplayName, PermissionType, PermissionValue
             if ($filteredApiPermissions) {
                 foreach ($filteredApiPermission in $filteredApiPermissions) {
                     if ($filteredApiPermission.Classification -eq "") { $filteredApiPermission.Classification = "Unknown" }
                     $ServicePrincipalLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($SensitiveApp.AccountObjectId)/appId/$($SensitiveApp.AppId))"
                     $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $SensitiveApp.Classification
-                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.PermissionValue) | $($filteredApiPermission.TargetAppDisplayName) |`n"
+                    $result += "| $($AdminTierLevelIcon) $($ServicePrincipalLink) | $($filteredApiPermission.Classification) | $($filteredApiPermission.PermissionValue) | $($filteredApiPermission.PermissionType) | $($filteredApiPermission.TargetAppDisplayName) |`n"
                 }
             }
         }
