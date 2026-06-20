@@ -15,9 +15,18 @@ Import-Module DnsClient
 $commandsIndexFile = "./website/docs/commands/readme.md"
 $readmeContent = Get-Content $commandsIndexFile  # Backup the readme.md since it will be deleted by New-DocusaurusHelp
 
-# Get all the filenames in the ./powershell/internal folder without the extension
-$internalCommands = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Filter *.ps1 | ForEach-Object { $_.BaseName }
-New-DocusaurusHelp -Module ./powershell/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/ -Exclude $internalCommands
+# Exclude internal script filenames as well as any helper function names declared inside
+# internal script files so multi-function files do not leak private helpers into docs.
+$internalCommandFiles = Get-ChildItem @("./powershell/internal", "./powershell/internal/orca") -Filter *.ps1
+$internalCommands = $internalCommandFiles | ForEach-Object { $_.BaseName }
+$internalFunctionNames = foreach ($file in $internalCommandFiles) {
+    foreach ($match in [regex]::Matches((Get-Content $file.FullName -Raw), '(?m)^\s*function\s+([A-Za-z0-9-]+)\s*\{')) {
+        $match.Groups[1].Value
+    }
+}
+$commandsToExclude = ($internalCommands + $internalFunctionNames) | Sort-Object -Unique
+
+New-DocusaurusHelp -Module ./powershell/Maester.psm1 -DocsFolder ./website/docs -NoPlaceHolderExamples -EditUrl https://github.com/maester365/maester/blob/main/powershell/public/ -Exclude $commandsToExclude
 
 # Update the markdown to include the synopsis as description so it can be displayed correctly in the doc links.
 $cmdMarkdownFiles = Get-ChildItem ./website/docs/commands
@@ -44,6 +53,10 @@ if (Test-Path $versionedDocsRoot) {
         $targetCommands = Join-Path $versionFolder.FullName "commands"
         if (Test-Path $targetCommands) {
             $sourceFiles = Get-ChildItem $sourceCommands -Filter *.mdx
+            $sourceNames = $sourceFiles.Name
+
+            Get-ChildItem $targetCommands -Filter *.mdx | Where-Object { $_.Name -notin $sourceNames } | Remove-Item -Force
+
             foreach ($sourceFile in $sourceFiles) {
                 $targetFile = Join-Path $targetCommands $sourceFile.Name
                 if (-not (Test-Path $targetFile)) {

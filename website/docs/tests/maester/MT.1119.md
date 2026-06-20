@@ -39,7 +39,7 @@ Learn more: [Use environment variables in Power Platform](https://learn.microsof
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentHardCodedCredentials](/docs/commands/Test-MtAIAgentHardCodedCredentials) |
-| Tags | AIAgent, CopilotStudio, MT.1119 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1119 |
 
 ## Source
 

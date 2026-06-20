@@ -95,5 +95,5 @@ Additional ASR rules detected in tenant policies are reported for visibility but
 
 ## Source
 
-- Pester test: `tests\Maester\Intune\Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell\public\maester\intune\Test-MtIntuneASRRules.ps1`
+- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
+- PowerShell source: `powershell/public/maester/intune/Test-MtIntuneASRRules.ps1`

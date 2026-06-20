@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.EXO.2.1 - A list of approved IP addresses for sending mail SHALL be maintained."
-description: "A list of approved IP addresses for sending mail SHALL be maintained. Rationale: Failing to maintain an accurate list of authorized IP addresses may result in spoofed email messages or failure to deliver legitimate messages when SPF is enabled. Maintaining such a list helps ensure that unauthorized…"
+description: "**This test is deprecated by CISA as of May 2024 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.** MS.EXO.2.1v1 was removed because it is not a security configuration that can be audited; it acts as an implementation step fo…"
 slug: /tests/CISA.MS.EXO.2.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -11,7 +11,7 @@ keywords:
   - "CISA.MS.EXO.2.1"
   - "Medium"
   - "CISA"
-  - "exchange"
+  - "Deprecated"
   - "MS.EXO"
   - "MS.EXO.2.1"
 ---
@@ -21,6 +21,10 @@ keywords:
 # CISA.MS.EXO.2.1 - A list of approved IP addresses for sending mail SHALL be maintained.
 
 ## Overview
+
+**This test is deprecated by CISA as of May 2024 and will always be skipped. The content below is retained as a historical archive and will be removed in a future version.**
+
+MS.EXO.2.1v1 was removed because it is not a security configuration that can be audited; it acts as an implementation step for MS.EXO.2.2. Maintaining the list of approved IP addresses has been incorporated into the implementation guidance for MS.EXO.2.2 and removed as a standalone policy. See [CISA SCuBA Removed Policies — MS.EXO.2.1v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/removedpolicies.md#msexo21v1).
 
 A list of approved IP addresses for sending mail SHALL be maintained.
 
@@ -45,9 +49,9 @@ Rationale: Failing to maintain an accurate list of authorized IP addresses may r
 | Test ID | CISA.MS.EXO.2.1 |
 | Severity | Medium |
 | Suite | CISA |
-| Category | exchange |
+| Category | Deprecated |
 | PowerShell test | [Test-MtCisaSpfRestriction](/docs/commands/Test-MtCisaSpfRestriction) |
-| Tags | CISA, CISA.MS.EXO.2.1, MS.EXO, MS.EXO.2.1 |
+| Tags | CISA, CISA.MS.EXO.2.1, Deprecated, MS.EXO, MS.EXO.2.1 |
 
 ## Source
 

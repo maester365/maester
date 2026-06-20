@@ -9,7 +9,7 @@ keywords:
   - "Maester"
   - "Microsoft 365 security"
   - "MT.1177"
-  - "High"
+  - "Unknown"
   - "Intune"
 ---
 
@@ -61,7 +61,7 @@ The test passes if **at least one LAPS policy** meets **all** of the criteria ab
 | Field | Value |
 | --- | --- |
 | Test ID | MT.1177 |
-| Severity | High |
+| Severity | Unknown |
 | Suite | Maester |
 | Category | Intune |
 | PowerShell test | [Test-MtIntuneLAPSConfiguration](/docs/commands/Test-MtIntuneLAPSConfiguration) |
@@ -69,5 +69,5 @@ The test passes if **at least one LAPS policy** meets **all** of the criteria ab
 
 ## Source
 
-- Pester test: `tests\Maester\Intune\Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell\public\maester\intune\Test-MtIntuneLAPSConfiguration.ps1`
+- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
+- PowerShell source: `powershell/public/maester/intune/Test-MtIntuneLAPSConfiguration.ps1`

@@ -74,7 +74,7 @@ Common scenarios detected:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementOrphanedResources](/docs/commands/Test-MtEntitlementManagementOrphanedResources) |
-| Tags | AccessPackages, Entra, Governance, MT.1110 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1110 |
 
 ## Source
 

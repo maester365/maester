@@ -80,7 +80,7 @@ The test validates:
 | Suite | Maester |
 | Category | Governance |
 | PowerShell test | [Test-MtEntitlementManagementInactivePolicies](/docs/commands/Test-MtEntitlementManagementInactivePolicies) |
-| Tags | AccessPackages, Entra, Governance, MT.1108 |
+| Tags | AccessPackages, Entra, Governance, Maester, MT.1108 |
 
 ## Source
 
