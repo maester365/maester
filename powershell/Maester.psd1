@@ -151,7 +151,7 @@
         'Test-MtEntitlementManagementValidResourceRoles', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtEntraIDConnectSsso',
         'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtKrbtgtAzureADNotSynced', 'Test-MtExoDelicensingResiliency',
         'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity', 'Test-MtExoOutlookAddin',
-        'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted', 'Test-MtGsaM365ProfileEnabled',
+        'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted', 'Test-MtGsaM365ProfileEnabled', 'Test-MtGsaSignalingEnabled',
         'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
         'Test-MtIntuneLAPSConfiguration', 'Test-MtIntuneManagedInstallerRules', 'Test-MtIntuneRbacGroupsProtected',
         'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtManagedDeviceCleanupSettings', 'Test-MtManagementGroupWriteRequirement',
