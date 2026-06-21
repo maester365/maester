@@ -1,7 +1,7 @@
 ---
-title: MT.XXXX - The Microsoft 365 traffic forwarding profile in Global Secure Access is enabled
+title: MT.XXX1 - The Microsoft 365 traffic forwarding profile in Global Secure Access is enabled
 description: The Microsoft 365 traffic forwarding profile routes Microsoft 365 traffic through Global Secure Access, unlocking source IP restoration, the Compliant Network signal, Universal Tenant Restrictions, and network access traffic logs.
-slug: /tests/MT.XXXX
+slug: /tests/MT.XXX1
 sidebar_class_name: hidden
 ---
 

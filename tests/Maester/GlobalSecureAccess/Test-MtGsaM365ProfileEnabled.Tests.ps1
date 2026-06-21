@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXXX: The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled. See https://maester.dev/docs/tests/MT.XXXX" -Tag "MT.XXXX", "Preview" {
+    It "MT.XXX1: The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled. See https://maester.dev/docs/tests/MT.XXX1" -Tag "MT.XXX1", "Preview" {
         $result = Test-MtGsaM365ProfileEnabled
 
         if ($null -ne $result) {
