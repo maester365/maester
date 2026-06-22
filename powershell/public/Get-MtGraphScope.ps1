@@ -60,6 +60,7 @@
         'DirectoryRecommendations.Read.All'
         'EntitlementManagement.Read.All'
         'IdentityRiskEvent.Read.All'
+        'NetworkAccess.Read.All'
         'OnPremDirectorySynchronization.Read.All'
         'OrgSettings-AppsAndServices.Read.All'
         'OrgSettings-Forms.Read.All'
