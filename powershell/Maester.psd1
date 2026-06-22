@@ -151,7 +151,7 @@
         'Test-MtEntitlementManagementValidResourceRoles', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtEntraIDConnectSsso',
         'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtKrbtgtAzureADNotSynced', 'Test-MtExoDelicensingResiliency',
         'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity', 'Test-MtExoOutlookAddin',
-        'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted', 'Test-MtGsaConnectorGroupRedundancy', 'Test-MtGsaForwardingProfileAssignmentNotNested', 'Test-MtGsaM365ProfileEnabled',
+        'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted', 'Test-MtGsaCompliantNetworkBreakGlassExcluded', 'Test-MtGsaCompliantNetworkPolicy', 'Test-MtGsaConnectorGroupRedundancy', 'Test-MtGsaForwardingProfileAssignmentNotNested', 'Test-MtGsaM365ProfileEnabled',
         'Test-MtGsaPrivateAccessAppAssignmentNotNested', 'Test-MtGsaPrivateAccessAppCompliantDevice', 'Test-MtGsaPrivateAccessAppMfa',
         'Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup', 'Test-MtGsaSignalingEnabled',
         'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
