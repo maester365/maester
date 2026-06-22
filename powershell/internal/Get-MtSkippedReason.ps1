@@ -34,6 +34,7 @@
         "NotLicensedDefenderXDR" { "This test is for tenants that are licensed for Microsoft Defender XDR. See [Microsoft Defender XDR prerequisites](https://learn.microsoft.com/en-us/defender-xdr/prerequisites#licensing-requirements)"; break }
         "NotLicensedIntune" { "This test is for tenants that are licensed for Microsoft Intune. See [Intune licensing](https://learn.microsoft.com/intune/intune-service/fundamentals/licenses)"; break }
         "NotAuthorized" { "This test was skipped because the user is not authorized to perform the required operation."; break }
+        "NotLicensedEntraIDP2OrGovernance" { "This test requires Entra ID P2 or Entra ID Governance licensing. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }
         "Error" { $SkippedBecause; break }
         default { $SkippedBecause; break }
     }
