@@ -2,16 +2,16 @@
     <#
     .SYNOPSIS
         Checks if guest user access is restricted.
-    
+
     .DESCRIPTION
         Guest user access should be restricted to only necessary resources.
         CIS Microsoft 365 Foundations Benchmark v6.0.1
-    
+
     .EXAMPLE
         Test-MtCisEnsureGuestAccessRestricted
-    
+
         Returns true if guest user access is restricted.
-    
+
     .LINK
         https://maester.dev/docs/commands/Test-MtCisEnsureGuestAccessRestricted
     #>

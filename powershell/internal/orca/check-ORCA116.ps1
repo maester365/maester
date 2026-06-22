@@ -12,7 +12,7 @@ param()
 
 <#
 
-116 - Check MDO Phishing Mailbox Intelligence Protection action is set Move to Junk for recommended and Quarantine for strict 
+116 - Check MDO Phishing Mailbox Intelligence Protection action is set Move to Junk for recommended and Quarantine for strict
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA116 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA116()
@@ -45,24 +45,24 @@ class ORCA116 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-phishing"="https://security.microsoft.com/antiphishing"
             "Set up Microsoft Defender for Office 365 anti-phishing and anti-phishing policies"="https://aka.ms/orca-atpp-docs-9"
             "Recommended settings for EOP and Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-7"
-        }   
+        }
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         <#
-        
+
         This check does not need a default catch all as the default anti-phishing policy cannot be disabled
-        
+
         #>
-       
+
         ForEach($Policy in ($Config["AntiPhishPolicy"] ))
         {
 
@@ -82,25 +82,25 @@ class ORCA116 : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigReadonly=$Policy.IsPreset
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-            
+
             # For standard, this should be MoveToJmf
             If($MailboxIntelligenceProtectionAction -ne "MoveToJmf")
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)       
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)               
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
             }
 
             # For strict, this should be Quarantine
             If($MailboxIntelligenceProtectionAction -ne "Quarantine")
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Fail)        
+                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Fail)
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Pass)                         
+                $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Pass)
             }
 
             # For either Delete or Quarantine we should raise an informational
