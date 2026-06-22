@@ -152,7 +152,7 @@
         'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtKrbtgtAzureADNotSynced', 'Test-MtExoDelicensingResiliency',
         'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity', 'Test-MtExoOutlookAddin',
         'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted', 'Test-MtGsaConnectorGroupRedundancy', 'Test-MtGsaForwardingProfileAssignmentNotNested', 'Test-MtGsaM365ProfileEnabled',
-        'Test-MtGsaPrivateAccessAppCompliantDevice', 'Test-MtGsaPrivateAccessAppMfa',
+        'Test-MtGsaPrivateAccessAppAssignmentNotNested', 'Test-MtGsaPrivateAccessAppCompliantDevice', 'Test-MtGsaPrivateAccessAppMfa',
         'Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup', 'Test-MtGsaSignalingEnabled',
         'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
         'Test-MtIntuneLAPSConfiguration', 'Test-MtIntuneManagedInstallerRules', 'Test-MtIntuneRbacGroupsProtected',
