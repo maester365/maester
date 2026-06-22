@@ -2,7 +2,7 @@
     Import-Module "$PSScriptRoot/../../Maester.psd1" -Force
 }
 
-Describe 'Disconnect-Maester — GitHub cleanup branch' {
+Describe 'Disconnect-Maester - GitHub session lifecycle' {
     BeforeEach {
         InModuleScope Maester {
             $__MtSession.Connections      = @()
@@ -22,7 +22,7 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
     }
 
     Context 'Default name (Disconnect-Maester)' {
-        It 'Clears all three GitHub session keys' {
+        It 'does not clear GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
@@ -30,15 +30,17 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
             }
             Disconnect-Maester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
-                $__MtSession.GitHubCache.Count | Should -Be 0
+                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
+                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
+                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
             }
         }
     }
 
     Context 'Module-qualified invocation (Maester\Disconnect-Maester)' {
-        It 'Clears all three GitHub session keys' {
+        It 'does not clear GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
@@ -46,32 +48,39 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
             }
             Maester\Disconnect-Maester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection  | Should -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader  | Should -BeNullOrEmpty
-                $__MtSession.GitHubCache.Count | Should -Be 0
+                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
+                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
+                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
             }
         }
     }
 
     Context 'Disconnect-MtMaester alias' {
-        It 'Clears GitHub state' {
+        It 'does not clear GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
+                $__MtSession.GitHubCache      = @{ 'foo' = 'bar' }
             }
             Disconnect-MtMaester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
+                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
+                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
             }
         }
     }
 
     Context 'Disconnect-MtGraph alias' {
-        It 'Does NOT clear GitHub state (Graph-only semantic)' {
+        It 'does not clear GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
+                $__MtSession.GitHubCache      = @{ 'foo' = 'bar' }
             }
             Disconnect-MtGraph 6>$null
             InModuleScope Maester {
@@ -79,6 +88,7 @@ Describe 'Disconnect-Maester — GitHub cleanup branch' {
                 $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
                 $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
                 $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
+                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
             }
         }
     }

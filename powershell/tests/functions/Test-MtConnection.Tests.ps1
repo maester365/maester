@@ -5,7 +5,7 @@
     # in the test environment. Track which stubs we created so AfterAll cleans up only
     # those — never touch real cmdlets that were already present.
     $script:createdStubs = @()
-    foreach ($cmd in 'Get-AzContext','Invoke-AzRestMethod','Get-MgContext','Get-CsTenant') {
+    foreach ($cmd in 'Get-AzContext','Invoke-AzRestMethod','Get-MgContext','Get-CsTenant','Get-PnPConnection') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             New-Item -Path "function:global:$cmd" -Value { } | Out-Null
             $script:createdStubs += $cmd
@@ -108,8 +108,8 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
-    Context '-Service All regression — GitHub absence does not flip AllConnected' {
-        It 'Returns AllConnected $true when all MS services are connected and GitHub session is absent' {
+    Context '-Service All - GitHub is required' {
+        It 'Returns AllConnected $false when all other services are connected and GitHub session is absent' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = $null
                 $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
@@ -124,17 +124,19 @@ Describe 'Test-MtConnection — GitHub service' {
                 )
             } -ModuleName Maester
             Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
+            Mock Get-PnPConnection { [PSCustomObject]@{ Url = 'https://contoso.sharepoint.com' } } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
-            $result.AllConnected | Should -BeTrue
+            $result.AllConnected | Should -BeFalse
             $result.GitHub | Should -BeNullOrEmpty
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
+                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
+                $__MtSession.GitHubConnection.FailureReason | Should -Be 'NotCalled'
             }
         }
     }
 
-    Context '-Service All — GitHub skipped when NotCalled sentinel exists' {
-        It 'Does not set the GitHub property' {
+    Context '-Service All - GitHub NotCalled sentinel' {
+        It 'keeps AllConnected $false and does not set the GitHub details property' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
                 $__MtSession.AzureDevOpsConnection = 'NotConnected'
@@ -144,6 +146,7 @@ Describe 'Test-MtConnection — GitHub service' {
             Mock Get-MtExo { $null } -ModuleName Maester
             Mock Get-CsTenant { $null } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
+            $result.AllConnected | Should -BeFalse
             $result.GitHub | Should -BeNullOrEmpty
         }
     }
