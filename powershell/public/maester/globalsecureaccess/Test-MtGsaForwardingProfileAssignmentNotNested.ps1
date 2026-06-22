@@ -50,7 +50,7 @@
                 Where-Object { $_.principalType -eq 'Group' }
 
             foreach ($group in $assignedGroups) {
-                $nestedGroups = Invoke-MtGraphRequest -RelativeUri "groups/$($group.principalId)/members/microsoft.graph.group"
+                $nestedGroups = Get-MtGroupMember -GroupId $group.principalId | Where-Object { $_.'@odata.type' -eq '#microsoft.graph.group' }
                 if ($nestedGroups) {
                     $nestedAssignments += [pscustomobject]@{
                         Profile = $forwardingProfile.displayName
