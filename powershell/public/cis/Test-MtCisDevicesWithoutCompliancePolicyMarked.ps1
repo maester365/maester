@@ -24,6 +24,11 @@
         return $null
     }
 
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
+        return $null
+    }
+
     try {
         Write-Verbose 'Getting settings...'
         $settings = Invoke-MtGraphRequest -RelativeUri "deviceManagement/settings" -DisableCache

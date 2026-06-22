@@ -51,12 +51,14 @@
 
     # Default read-only scopes required for Maester.
     $scopes = @( #IMPORTANT: Read note above before adding any new scopes.
+        'AuditLog.Read.All'
         'DeviceManagementConfiguration.Read.All'
         'DeviceManagementManagedDevices.Read.All'
         'DeviceManagementRBAC.Read.All'
         'DeviceManagementServiceConfig.Read.All'
         'Directory.Read.All'
         'DirectoryRecommendations.Read.All'
+        'EntitlementManagement.Read.All'
         'IdentityRiskEvent.Read.All'
         'OnPremDirectorySynchronization.Read.All'
         'OrgSettings-AppsAndServices.Read.All'
@@ -66,6 +68,7 @@
         'PrivilegedAccess.Read.AzureAD'
         'Reports.Read.All'
         'ReportSettings.Read.All'
+        'RoleEligibilitySchedule.Read.Directory'
         'RoleManagement.Read.All'
         'SecurityIdentitiesSensors.Read.All'
         'SecurityIdentitiesHealth.Read.All'

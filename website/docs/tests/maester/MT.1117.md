@@ -39,7 +39,7 @@ Learn more: [Delete agents programmatically](https://learn.microsoft.com/microso
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentDormant](/docs/commands/Test-MtAIAgentDormant) |
-| Tags | AIAgent, CopilotStudio, MT.1117 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1117 |
 
 ## Source
 

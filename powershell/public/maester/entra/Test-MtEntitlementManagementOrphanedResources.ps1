@@ -38,6 +38,18 @@
     [OutputType([bool])]
     param()
 
+    if (-not (Test-MtConnection Graph)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        return $null
+    }
+
     try {
         # Get all access package catalogs
         $catalogs = Invoke-MtGraphRequest -RelativeUri "identityGovernance/entitlementManagement/accessPackageCatalogs" -ApiVersion beta
@@ -107,9 +119,9 @@
 
                 # Filter cached packages to only those in this catalog
                 $packageArray = @($allPackageArray | Where-Object {
-                    $pkgCatalogId = if ($_.catalogId) { $_.catalogId } else { $_.PSObject.Properties['catalogId'].Value }
-                    $pkgCatalogId -eq $catalogId
-                })
+                        $pkgCatalogId = if ($_.catalogId) { $_.catalogId } else { $_.PSObject.Properties['catalogId'].Value }
+                        $pkgCatalogId -eq $catalogId
+                    })
 
                 Write-Verbose "Catalog '$catalogName' has $($packageArray.Count) access package(s)"
 
@@ -183,9 +195,9 @@
                         Write-Verbose "Found unused resource: $resourceDisplayName (ID: $resourceOriginId, Type: $resourceType)"
 
                         $unusedResourcesFound += [PSCustomObject]@{
-                            CatalogId = $catalogId
-                            CatalogName = $catalogName
-                            ResourceId = $resourceOriginId
+                            CatalogId    = $catalogId
+                            CatalogName  = $catalogName
+                            ResourceId   = $resourceOriginId
                             ResourceName = $resourceDisplayName
                             ResourceType = $resourceType
                         }
