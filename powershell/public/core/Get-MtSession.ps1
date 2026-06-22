@@ -5,10 +5,13 @@ function Get-MtSession {
     These are read-only and should not be modified directly.
 
     .DESCRIPTION
-    The session information can be used to troubleshoot issues with the Maester module.
+    Get-MtSession is intended for troubleshooting and diagnostic display of the current Maester
+    module session. It returns a sanitized copy of the session data rather than the live internal
+    session object.
 
-    For security, the GitHubAuthHeader Authorization value is redacted on output so a copied
-    session dump cannot leak the GitHub PAT. The live session used by internal callers is unchanged.
+    Sensitive values are stripped from the output. For example, the GitHubAuthHeader Authorization
+    value is redacted so copied session output cannot leak the GitHub PAT. The live session used by
+    internal callers is unchanged.
 
     .EXAMPLE
     Get-MtSession
@@ -23,6 +26,8 @@ function Get-MtSession {
 
     Write-Verbose 'Getting the current Maester session information.'
 
+    # Return a sanitized copy so troubleshooting output cannot leak the GitHub PAT;
+    # internal callers continue to use the live $__MtSession values.
     $sessionCopy = @{}
     foreach ($key in $__MtSession.Keys) {
         $sessionCopy[$key] = $__MtSession[$key]
