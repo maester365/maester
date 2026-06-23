@@ -23,7 +23,7 @@ keywords:
 
 Whether the Voice call is enabled in the tenant.
 
-Choose authentication methods with number matching (Authenticator) 
+Choose authentication methods with number matching (Authenticator)
 
 #### Test script
 ```

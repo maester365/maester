@@ -12,7 +12,7 @@ param()
 
 <#
 
-ORCA-229 - Check allowed domains in MDO Anti-phishing policies 
+ORCA-229 - Check allowed domains in MDO Anti-phishing policies
 
 #>
 
@@ -21,9 +21,9 @@ ORCA-229 - Check allowed domains in MDO Anti-phishing policies
 class ORCA229 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA229()
@@ -47,9 +47,9 @@ class ORCA229 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -62,16 +62,16 @@ class ORCA229 : ORCACheck
             $ExcludedDomains = $($Policy.ExcludedDomains)
 
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
-            
+
             <#
-            
+
             Important! Do not apply read only here on preset policies. This can be adjusted.
-            
+
             #>
 
             If(($ExcludedDomains).Count -gt 0)
             {
-                ForEach($Domain in $ExcludedDomains) 
+                ForEach($Domain in $ExcludedDomains)
                 {
                     # Check objects
                     $ConfigObject = [ORCACheckConfig]::new()
@@ -82,10 +82,10 @@ class ORCA229 : ORCACheck
                     $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                     $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-                    $this.AddConfig($ConfigObject)  
+                    $this.AddConfig($ConfigObject)
                 }
             }
-            else 
+            else
             {
                 # Check objects
                 $ConfigObject = [ORCACheckConfig]::new()
@@ -97,9 +97,9 @@ class ORCA229 : ORCACheck
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                 $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
-                $this.AddConfig($ConfigObject)  
+                $this.AddConfig($ConfigObject)
             }
-        }      
+        }
 
     }
 
