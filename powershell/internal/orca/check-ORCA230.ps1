@@ -21,9 +21,9 @@ param()
 class ORCA230 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA230()
@@ -49,15 +49,15 @@ class ORCA230 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
-        ForEach($AcceptedDomain in $Config["AcceptedDomains"]) 
+        ForEach($AcceptedDomain in $Config["AcceptedDomains"])
         {
 
             # Set up the config object
@@ -66,7 +66,7 @@ class ORCA230 : ORCACheck
 
             # Go through each Safe Links Policy
 
-            ForEach($Rule in ($Config["AntiPhishRules"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["AntiPhishRules"] | Sort-Object Priority))
             {
                 if($Rule.State -eq "Enabled")
                 {
@@ -83,10 +83,10 @@ class ORCA230 : ORCACheck
                 }
 
             }
-            ForEach($Rule in ($Config["EOPProtectionPolicyRule"] | Sort-Object Priority)) 
+            ForEach($Rule in ($Config["EOPProtectionPolicyRule"] | Sort-Object Priority))
             {
                 if(($Rule.AntiPhishPolicy -ne "") -and ($null -ne $Rule.AntiPhishPolicy ))
-                { 
+                {
                    if($Rule.State -eq "Enabled")
                    {
                     if($Rule.RecipientDomainIs -contains $AcceptedDomain.Name -and ($Rule.ExceptIfRecipientDomainIs -notcontains $AcceptedDomain.Name) -and ($null -eq $Rule.ExceptIfSentToMemberOf ) -and ($null -eq $Rule.ExceptIfSentTo) )
@@ -98,7 +98,7 @@ class ORCA230 : ORCACheck
                             Priority=$($Rule.Priority)
                             }
 
-                        }   
+                        }
                     }
                 }
             }
@@ -157,11 +157,11 @@ class ORCA230 : ORCACheck
                             $ConfigObject.InfoText = "There are multiple policies that apply to this domain, only the policy with the lowest priority will apply. This policy may not apply based on a lower priority."
                             $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                         }
-                    }    
+                    }
 
                     $this.AddConfig($ConfigObject)
                 }
-            } 
+            }
             elseif($Rules.Count -eq 0)
             {
                 <#
@@ -169,7 +169,7 @@ class ORCA230 : ORCACheck
 
                     For anti-phishing this is OK because we fall back to the default
                 #>
-                
+
                 $ConfigObject = [ORCACheckConfig]::new()
 
                 $ConfigObject.Object=$($AcceptedDomain.Name)

@@ -12,7 +12,7 @@ param()
 
 <#
 
-224 - Check MDO Phishing Similar Users Safety Tips 
+224 - Check MDO Phishing Similar Users Safety Tips
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA224 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA224()
@@ -48,9 +48,9 @@ class ORCA224 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -77,11 +77,11 @@ class ORCA224 : ORCACheck
 
             If($EnableSimilarUsersSafetyTips -eq $false)
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")        
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")                       
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
 
             $this.AddConfig($ConfigObject)
@@ -97,7 +97,7 @@ class ORCA224 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }             
+        }
 
     }
 
