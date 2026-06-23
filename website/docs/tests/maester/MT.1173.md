@@ -13,7 +13,7 @@ Microsoft 365 Copilot only honors and inherits sensitivity labels onto AI-genera
 
 Without a published file-scoped label, Copilot has no labelling signal to apply, the most-restrictive label inheritance behaviour cannot run, and DSPM for AI cannot report on label-based oversharing.
 
-The test passes when at least one label policy is published and at least one label has the `File` scope.
+The test passes when at least one label policy is published, at least one label has the `File` scope, **and** that file-scoped label is included in a published label policy. A file-scoped label that exists but isn't referenced by any published policy does not count as compliant.
 
 ## How to fix
 

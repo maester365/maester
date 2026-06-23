@@ -7,10 +7,11 @@ Microsoft 365 Copilot only:
 
 …**when** sensitivity labels are actually published to users in your tenant. If no label policy is published, or no published label is scoped to files (SharePoint, OneDrive, Office documents), Copilot has no labelling signal to apply, and DSPM for AI cannot report on label-based oversharing risks.
 
-The test passes when:
+The test passes when **all** of the following are true:
 
-- At least one **label policy** is published / enforced (`Get-LabelPolicy`).
+- At least one **label policy** is published / enforced (`Get-LabelPolicy` with `Mode = Enforce`).
 - At least one **label** has the `File` scope (`Get-Label` where `ContentType` includes `File`).
+- That file-scoped label is **included in a published label policy** (a file-scoped label that exists but isn't in any published policy does not count as compliant).
 
 #### Remediation action:
 

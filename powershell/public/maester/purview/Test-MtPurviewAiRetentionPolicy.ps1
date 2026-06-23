@@ -31,6 +31,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Test-MtPurviewAiRetentionPolicy: Checking for Microsoft Purview retention policies targeting Microsoft Copilot interactions."
+
     if (!(Test-MtConnection SecurityCompliance)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedSecurityCompliance
         return $null
