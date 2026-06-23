@@ -15,9 +15,9 @@ param()
 class ORCA142 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA142()
@@ -36,21 +36,21 @@ class ORCA142 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
             "Recommended settings for EOP and Microsoft Defender for Office 365"="https://aka.ms/orca-atpp-docs-6"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-         
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $PhishSpamAction = $($Policy.PhishSpamAction)
@@ -67,32 +67,32 @@ class ORCA142 : ORCACheck
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
             # Fail if PhishSpamAction is not set to Quarantine
-    
-            If($PhishSpamAction -eq "Quarantine") 
+
+            If($PhishSpamAction -eq "Quarantine")
             {
                 $ConfigObject.ConfigData=$($PhishSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            else 
+            else
             {
                 $ConfigObject.ConfigData=$($PhishSpamAction)
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             If($PhishSpamAction -eq "Delete" -or $PhishSpamAction -eq "Redirect")
             {
                 $ConfigObject.ConfigData=$($PhishSpamAction)
-                
+
                 # For either Delete or Quarantine we should raise an informational
                 $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                 $ConfigObject.InfoText = "The $($PhishSpamAction) option may impact the users ability to release emails and may impact user experience."
-            }   
+            }
 
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-            
-        }        
+
+        }
 
     }
 

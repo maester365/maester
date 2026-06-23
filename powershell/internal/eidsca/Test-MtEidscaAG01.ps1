@@ -20,7 +20,7 @@ function Test-MtEidscaAG01 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     $rawValue = $result.policyMigrationState

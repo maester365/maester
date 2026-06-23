@@ -23,7 +23,7 @@
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
-    
+
     try {
         Write-Verbose 'Getting role'
         $role = Get-MtRole | Where-Object {

@@ -15,9 +15,9 @@ param()
 class ORCA120_spam : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA120_spam()
@@ -37,21 +37,21 @@ class ORCA120_spam : ORCACheck
             "Zero-hour auto purge - protection against spam and malware"="https://aka.ms/orca-zha-docs-2"
             "Recommended settings for EOP and Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-6"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $SpamZapEnabled = $($Policy.SpamZapEnabled)
@@ -68,10 +68,10 @@ class ORCA120_spam : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
-            if($SpamZapEnabled -eq $true) 
+            if($SpamZapEnabled -eq $true)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
+            }
             else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
@@ -80,7 +80,7 @@ class ORCA120_spam : ORCACheck
             # Add config to check
             $this.AddConfig($ConfigObject)
 
-        }        
+        }
 
     }
 
