@@ -23,9 +23,9 @@ External in Outlook
 class ORCA240 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA240()
@@ -46,9 +46,9 @@ class ORCA240 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)

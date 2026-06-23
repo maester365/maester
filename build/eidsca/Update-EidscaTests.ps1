@@ -408,8 +408,13 @@ function GetTemplate($folderPath, $templateFileName = "@template.txt") {
     return Get-Content $templateFilePath -Raw
 }
 
+function RemoveTrailingWhitespace($content) {
+    return $content -replace '(?m)[ \t]+$', ''
+}
+
 function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
+    $content = RemoveTrailingWhitespace $content
     $content | Out-File $filePath -Encoding utf8
 }
 
@@ -513,4 +518,5 @@ $discoveryLines += [System.Environment]::NewLine
 $output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
+$output = RemoveTrailingWhitespace $output
 $output | Out-File $TestFilePath -Encoding utf8

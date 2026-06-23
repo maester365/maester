@@ -21,9 +21,9 @@ param()
 class ORCA234 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA234()
@@ -49,9 +49,9 @@ class ORCA234 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -62,15 +62,15 @@ class ORCA234 : ORCACheck
         $ConfigObject.ConfigItem="AllowSafeDocsOpen"
         $ConfigObject.ConfigData=$Config["AtpPolicy"].AllowSafeDocsOpen
         # Determine if click through for SafeDocs inMDOis enabled or not
-        If($Config["AtpPolicy"].AllowSafeDocsOpen -eq $true) 
+        If($Config["AtpPolicy"].AllowSafeDocsOpen -eq $true)
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")   
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
         }
         Else
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")     
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
         }
-        
+
         $this.AddConfig($ConfigObject)
 
     }
