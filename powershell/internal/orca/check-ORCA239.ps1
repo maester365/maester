@@ -23,9 +23,9 @@ Checks Built-In protection exclusions for Safe Links
 class ORCA239 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA239()
@@ -48,9 +48,9 @@ class ORCA239 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -67,7 +67,7 @@ class ORCA239 : ORCACheck
             $ConfigObject.ConfigItem="Recipient"
             $ConfigObject.ConfigData=$Exclusion
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             $this.AddConfig($ConfigObject)
         }
 
@@ -79,7 +79,7 @@ class ORCA239 : ORCACheck
             $ConfigObject.ConfigItem="Group"
             $ConfigObject.ConfigData=$Exclusion
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             $this.AddConfig($ConfigObject)
         }
 
@@ -92,7 +92,7 @@ class ORCA239 : ORCACheck
             $ConfigObject.ConfigItem="Domain"
             $ConfigObject.ConfigData=$Exclusion
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             $this.AddConfig($ConfigObject)
         }
 
@@ -103,7 +103,7 @@ class ORCA239 : ORCACheck
             $ConfigObject.ConfigItem="None"
             $ConfigObject.ConfigData="No exclusions from MDO in-built protections"
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            
+
             $this.AddConfig($ConfigObject)
         }
 

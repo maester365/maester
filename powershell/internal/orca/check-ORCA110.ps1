@@ -12,7 +12,7 @@ param()
 
 <#
 
-ORCA-110 Check if internal malware notification is disabled in malware policies.    
+ORCA-110 Check if internal malware notification is disabled in malware policies.
 
 #>
 
@@ -21,9 +21,9 @@ ORCA-110 Check if internal malware notification is disabled in malware policies.
 class ORCA110 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA110()
@@ -44,16 +44,16 @@ class ORCA110 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["MalwareFilterPolicy"]).Count
         $CountOfPolicies = ($global:MalwarePolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
+
         ForEach($Policy in $Config["MalwareFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
@@ -75,11 +75,11 @@ class ORCA110 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
         }

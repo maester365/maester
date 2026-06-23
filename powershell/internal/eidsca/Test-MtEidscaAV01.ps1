@@ -20,7 +20,7 @@ function Test-MtEidscaAV01 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy/authenticationMethodConfigurations('Voice')" -ApiVersion beta
 
     $rawValue = $result.state

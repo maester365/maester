@@ -15,9 +15,9 @@ param()
 class ORCA100 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA100()
@@ -36,13 +36,13 @@ class ORCA100 : ORCACheck
             "Recommended settings for EOP and Microsoft Defender for Office 365 security"="https://aka.ms/orca-atpp-docs-6"
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -65,7 +65,7 @@ class ORCA100 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Pass)
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,[ORCAResult]::Fail)
             }
@@ -75,14 +75,14 @@ class ORCA100 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Pass)
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,[ORCAResult]::Fail)
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-    
+
         }
 
     }

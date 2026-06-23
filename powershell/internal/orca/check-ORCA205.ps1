@@ -21,9 +21,9 @@ param()
 class ORCA205 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA205()
@@ -48,16 +48,16 @@ class ORCA205 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
         $DefaultFileFormats = @("ace","ani", "apk", "app","appx", "arj", "bat", "cab", "cmd", "com", "deb", "dex", "dll", "docm", "elf", "exe", "hta", "img", "iso", "jar", "jnlp", "kext", "lha", "lib", "library", "lnk", "lzh", "macho", "msc", "msi", "msix", "msp", "mst", "pif", "ppa", "ppam", "reg", "rev", "scf", "scr", "sct", "sys", "uif", "vb", "vbe", "vbs", "vxd", "wsc", "wsf", "wsh", "xll", "xz", "z")
-      
+
         ForEach($Policy in $Config["MalwareFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
@@ -66,7 +66,7 @@ class ORCA205 : ORCACheck
 
             # Fail if EnableFileFilter is not set to true or FileTypes is empty in the policy
 
-            If($EnableFileFilter -eq $false) 
+            If($EnableFileFilter -eq $false)
             {
                 $ConfigObject = [ORCACheckConfig]::new()
                 $ConfigObject.Object=$policyname
@@ -118,12 +118,12 @@ class ORCA205 : ORCACheck
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                     $this.AddConfig($ConfigObject)
                 }
-                
+
             }
 
-            
+
         }
-        
+
     }
 
 }

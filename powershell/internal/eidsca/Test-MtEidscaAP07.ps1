@@ -20,7 +20,7 @@ function Test-MtEidscaAP07 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     $rawValue = $result.guestUserRoleId

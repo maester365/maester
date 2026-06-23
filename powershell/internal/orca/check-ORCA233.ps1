@@ -21,9 +21,9 @@ param()
 class ORCA233 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA233()
@@ -46,9 +46,9 @@ class ORCA233 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -97,7 +97,7 @@ class ORCA233 : ORCACheck
             $EnhancedFiltering = $True
         }
 
-        ForEach($Domain in $Config["AcceptedDomains"]) 
+        ForEach($Domain in $Config["AcceptedDomains"])
         {
 
             # Get the MX record report for this domain

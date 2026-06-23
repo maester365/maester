@@ -15,9 +15,9 @@ param()
 class ORCA118_2 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA118_2()
@@ -41,44 +41,44 @@ class ORCA118_2 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         $Check = "Transport Rule SCL"
-    
+
         # Look through Transport Rule for an action SetSCL -1
-    
-        ForEach($TransportRule in $Config["TransportRules"]) 
+
+        ForEach($TransportRule in $Config["TransportRules"])
         {
-            If($TransportRule.SetSCL -eq "-1") 
+            If($TransportRule.SetSCL -eq "-1")
             {
                 #Rules that apply to the sender domain
                 #From Address notmatch is to include if just domain name is value
                 If($TransportRule.SenderDomainIs -ne $null -or ($TransportRule.FromAddressContainsWords -ne $null -and $TransportRule.FromAddressContainsWords -notmatch ".+@") -or ($TransportRule.FromAddressMatchesPatterns -ne $null -and $TransportRule.FromAddressMatchesPatterns -notmatch ".+@"))
                 {
                     #Look for condition that checks auth results header and its value
-                    If(($TransportRule.HeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.HeaderContainsWords -ne $null) -or ($TransportRule.HeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.HeaderMatchesPatterns -ne $null)) 
+                    If(($TransportRule.HeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.HeaderContainsWords -ne $null) -or ($TransportRule.HeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.HeaderMatchesPatterns -ne $null))
                     {
                         # OK
                     }
-                    #Look for exception that checks auth results header and its value 
-                    elseif(($TransportRule.ExceptIfHeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.ExceptIfHeaderContainsWords -ne $null) -or ($TransportRule.ExceptIfHeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.ExceptIfHeaderMatchesPatterns -ne $null)) 
+                    #Look for exception that checks auth results header and its value
+                    elseif(($TransportRule.ExceptIfHeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.ExceptIfHeaderContainsWords -ne $null) -or ($TransportRule.ExceptIfHeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.ExceptIfHeaderMatchesPatterns -ne $null))
                     {
                         # OK
                     }
-                    elseif($TransportRule.SenderIpRanges -ne $null) 
+                    elseif($TransportRule.SenderIpRanges -ne $null)
                     {
                         # OK
                     }
                     #Look for condition that checks for any other header and its value
-                    else 
+                    else
                     {
 
-                        ForEach($RuleDomain in $($TransportRule.SenderDomainIs)) 
+                        ForEach($RuleDomain in $($TransportRule.SenderDomainIs))
                         {
 
                             # Check objects
@@ -90,10 +90,10 @@ class ORCA118_2 : ORCACheck
 
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
 
-                            $this.AddConfig($ConfigObject)  
+                            $this.AddConfig($ConfigObject)
 
                         }
-                        ForEach($FromAddressContains in $($TransportRule.FromAddressContainsWords)) 
+                        ForEach($FromAddressContains in $($TransportRule.FromAddressContainsWords))
                         {
 
                             # Check objects
@@ -105,10 +105,10 @@ class ORCA118_2 : ORCACheck
 
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
 
-                            $this.AddConfig($ConfigObject)  
+                            $this.AddConfig($ConfigObject)
 
                         }
-                        ForEach($FromAddressMatch in $($TransportRule.FromAddressMatchesPatterns)) 
+                        ForEach($FromAddressMatch in $($TransportRule.FromAddressMatchesPatterns))
                         {
 
                             # Check objects
@@ -119,17 +119,17 @@ class ORCA118_2 : ORCACheck
                             $ConfigObject.ConfigDisabled=$($TransportRule.State -ne "Enabled")
 
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                            
-                            $this.AddConfig($ConfigObject) 
+
+                            $this.AddConfig($ConfigObject)
 
                         }
-    
+
                     }
                 }
                 #No sender domain restriction, so check for IP restriction
-                elseif($null -ne $TransportRule.SenderIpRanges) 
+                elseif($null -ne $TransportRule.SenderIpRanges)
                 {
-                    ForEach($SenderIpRange in $TransportRule.SenderIpRanges) 
+                    ForEach($SenderIpRange in $TransportRule.SenderIpRanges)
                     {
                         # Check objects
                         $ConfigObject = [ORCACheckConfig]::new()
@@ -139,22 +139,22 @@ class ORCA118_2 : ORCACheck
                         $ConfigObject.ConfigDisabled=$($TransportRule.State -ne "Enabled")
 
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                        
-                        $this.AddConfig($ConfigObject) 
+
+                        $this.AddConfig($ConfigObject)
                     }
                 }
                 #No sender restriction, so check for condition that checks auth results header and its value
-                elseif(($TransportRule.HeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.HeaderContainsWords -ne $null) -or ($TransportRule.HeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.HeaderMatchesPatterns -ne $null)) 
+                elseif(($TransportRule.HeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.HeaderContainsWords -ne $null) -or ($TransportRule.HeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.HeaderMatchesPatterns -ne $null))
                 {
                     # OK
                 }
-                #No sender restriction, so check for exception that checks auth results header and its value 
-                elseif(($TransportRule.ExceptIfHeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.ExceptIfHeaderContainsWords -ne $null) -or ($TransportRule.ExceptIfHeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.ExceptIfHeaderMatchesPatterns -ne $null)) 
+                #No sender restriction, so check for exception that checks auth results header and its value
+                elseif(($TransportRule.ExceptIfHeaderContainsMessageHeader -eq 'Authentication-Results' -and $TransportRule.ExceptIfHeaderContainsWords -ne $null) -or ($TransportRule.ExceptIfHeaderMatchesMessageHeader -like '*Authentication-Results*' -and $TransportRule.ExceptIfHeaderMatchesPatterns -ne $null))
                 {
                     # OK
                 }
             }
-        }    
+        }
 
     }
 

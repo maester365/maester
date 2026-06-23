@@ -15,9 +15,9 @@ param()
 class ORCA180 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA180()
@@ -43,15 +43,15 @@ class ORCA180 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-      
-        ForEach($Policy in $Config["AntiPhishPolicy"]) 
+
+        ForEach($Policy in $Config["AntiPhishPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
@@ -88,7 +88,7 @@ class ORCA180 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }       
+        }
 
     }
 

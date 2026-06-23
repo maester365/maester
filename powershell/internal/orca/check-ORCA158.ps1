@@ -21,9 +21,9 @@ param()
 class ORCA158 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA158()
@@ -48,9 +48,9 @@ class ORCA158 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -60,17 +60,17 @@ class ORCA158 : ORCACheck
         $ConfigObject.Object=$Config["AtpPolicy"].Name
         $ConfigObject.ConfigItem="EnableATPForSPOTeamsODB"
         $ConfigObject.ConfigData=$Config["AtpPolicy"].EnableATPForSPOTeamsODB
-        
+
         # Determine if MDO is enabled or not
-        If($Config["AtpPolicy"].EnableATPForSPOTeamsODB -eq $false) 
+        If($Config["AtpPolicy"].EnableATPForSPOTeamsODB -eq $false)
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")   
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
         }
         Else
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")     
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
         }
-        
+
         $this.AddConfig($ConfigObject)
 
     }
