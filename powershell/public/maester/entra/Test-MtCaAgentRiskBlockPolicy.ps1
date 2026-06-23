@@ -21,7 +21,7 @@ function Test-MtCaAgentRiskBlockPolicy {
 
     try {
         $policies =  Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled'}
-        
+
         $policiesResult = New-Object System.Collections.ArrayList
         $result = $false
 

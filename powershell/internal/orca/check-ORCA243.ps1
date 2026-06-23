@@ -15,9 +15,9 @@ param()
 class ORCA243 : ORCACheck
 {
     <#
-    
+
         ARC Trusted Sealers
-    
+
     #>
 
     ORCA243()
@@ -42,9 +42,9 @@ class ORCA243 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -63,7 +63,7 @@ class ORCA243 : ORCACheck
                 $ConfigObject = [ORCACheckConfig]::new()
                 $ConfigObject.Object=$($Domain)
                 $ConfigObject.ConfigItem="Default ARC Config"
-    
+
                 if($HasArcSealer -eq $True)
                 {
                     $ConfigObject.ConfigData=$($ArcTrustedSealers)
@@ -72,11 +72,11 @@ class ORCA243 : ORCACheck
                     $ConfigObject.ConfigData="No Trusted Sealers"
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
-    
+
                 $this.AddConfig($ConfigObject)
-    
+
             }
-        } 
+        }
 
     }
 

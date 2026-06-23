@@ -20,7 +20,7 @@ function Test-MtEidscaCP03 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "settings" -ApiVersion beta
 
     $rawValue = $result.values | where-object name -eq 'BlockUserConsentForRiskyApps' | select-object -expand value
