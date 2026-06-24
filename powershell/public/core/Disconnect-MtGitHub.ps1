@@ -9,8 +9,8 @@
     no GitHub session is active.
 
     Use this when you want to drop the in-memory token, switch organizations, or clean up
-    troubleshooting state. Disconnect-Maester also calls this automatically (Disconnect-MtGraph
-    alias does not, to preserve its narrow Graph-only semantic).
+    troubleshooting state. Disconnect-Maester also clears this state; Disconnect-MtGraph
+    preserves GitHub state.
 
     .EXAMPLE
     Disconnect-MtGitHub

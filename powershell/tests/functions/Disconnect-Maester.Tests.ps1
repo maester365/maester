@@ -22,7 +22,7 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
     }
 
     Context 'Default name (Disconnect-Maester)' {
-        It 'does not clear GitHub session state' {
+        It 'clears GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
@@ -30,17 +30,15 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
             }
             Disconnect-Maester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
-                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
-                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
+                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+                $__MtSession.GitHubCache.Count | Should -Be 0
             }
         }
     }
 
     Context 'Module-qualified invocation (Maester\Disconnect-Maester)' {
-        It 'does not clear GitHub session state' {
+        It 'clears GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
@@ -48,17 +46,15 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
             }
             Maester\Disconnect-Maester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
-                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
-                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
+                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+                $__MtSession.GitHubCache.Count | Should -Be 0
             }
         }
     }
 
     Context 'Disconnect-MtMaester alias' {
-        It 'does not clear GitHub session state' {
+        It 'clears GitHub session state' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
@@ -66,11 +62,9 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
             }
             Disconnect-MtMaester 6>$null
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubConnection.Organization | Should -Be 'myorg'
-                $__MtSession.GitHubAuthHeader | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubAuthHeader['Authorization'] | Should -Be 'Bearer token'
-                $__MtSession.GitHubCache['foo'] | Should -Be 'bar'
+                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+                $__MtSession.GitHubCache.Count | Should -Be 0
             }
         }
     }
@@ -78,6 +72,7 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
     Context 'Disconnect-MtGraph alias' {
         It 'does not clear GitHub session state' {
             InModuleScope Maester {
+                $__MtSession.Connections      = @('GitHub')
                 $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.GitHubAuthHeader = @{ Authorization = 'Bearer token' }
                 $__MtSession.GitHubCache      = @{ 'foo' = 'bar' }

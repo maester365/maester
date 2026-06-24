@@ -14,17 +14,28 @@ function Open-MtBrowserUrl {
         return $false
     }
 
+    $parsedUri = $null
+    if (-not [System.Uri]::TryCreate($Uri, [System.UriKind]::Absolute, [ref]$parsedUri)) {
+        return $false
+    }
+
+    if ($parsedUri.Scheme -ne 'https' -and $parsedUri.Scheme -ne 'http') {
+        return $false
+    }
+
+    $launchUri = $parsedUri.AbsoluteUri
+
     try {
         if ($IsMacOS) {
-            & open $Uri | Out-Null
+            & open $launchUri | Out-Null
         } elseif ($IsLinux) {
             $xdgOpen = Get-Command -Name xdg-open -ErrorAction SilentlyContinue
             if ($null -eq $xdgOpen) {
                 return $false
             }
-            & $xdgOpen.Source $Uri | Out-Null
+            & $xdgOpen.Source $launchUri | Out-Null
         } else {
-            Start-Process -FilePath $Uri | Out-Null
+            Start-Process -FilePath $launchUri | Out-Null
         }
         return $true
     } catch {
