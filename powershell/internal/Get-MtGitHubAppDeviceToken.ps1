@@ -7,6 +7,7 @@ function Get-MtGitHubAppDeviceToken {
     Starts the GitHub App device flow for the Maester CLI GitHub App and polls until
     the user authorizes the app, denies the request, or the device code expires.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Justification = 'Consistent with other Connect-* interactive flows')]
     [CmdletBinding()]
     [OutputType([pscustomobject])]
     param(
