@@ -48,10 +48,10 @@ function Get-MtGitHubAppDeviceToken {
 
     Write-Host ''
     Write-Host 'GitHub authentication required for Maester.' -ForegroundColor Yellow
+    Write-Host "! First copy your one-time code: $($deviceData.user_code)" -ForegroundColor Yellow
+    $null = Read-Host "Press Enter to open $($deviceData.verification_uri) in your browser"
     $openedBrowser = Open-MtBrowserUrl -Uri $deviceData.verification_uri
-    if ($openedBrowser) {
-        Write-Host "Opened $($deviceData.verification_uri) in your browser. Enter code $($deviceData.user_code)" -ForegroundColor Yellow
-    } else {
+    if (-not $openedBrowser) {
         Write-Host "Open $($deviceData.verification_uri) and enter code $($deviceData.user_code)" -ForegroundColor Yellow
     }
     Write-Host 'Waiting for GitHub authorization...' -ForegroundColor DarkGray

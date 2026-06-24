@@ -12,6 +12,7 @@ Describe 'Get-MtGitHubAppDeviceToken' {
                 Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
             }
         }
+        Mock Read-Host -ModuleName Maester { '' }
         Mock Open-MtBrowserUrl -ModuleName Maester { $true }
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
             $script:pollCount++
@@ -36,6 +37,9 @@ Describe 'Get-MtGitHubAppDeviceToken' {
         Should -Invoke Open-MtBrowserUrl -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $Uri -eq 'https://github.com/login/device'
         }
+        Should -Invoke Read-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Prompt -eq 'Press Enter to open https://github.com/login/device in your browser'
+        }
         Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -ParameterFilter {
             $Uri -eq 'https://github.com/login/oauth/access_token' -and
             $Body.client_id -eq 'Iv23liV3mw0hSq0gn957' -and
@@ -51,6 +55,7 @@ Describe 'Get-MtGitHubAppDeviceToken' {
                 Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
             }
         }
+        Mock Read-Host -ModuleName Maester { '' }
         Mock Open-MtBrowserUrl -ModuleName Maester { $true }
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
             [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
@@ -71,6 +76,7 @@ Describe 'Get-MtGitHubAppDeviceToken' {
                 Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
             }
         }
+        Mock Read-Host -ModuleName Maester { '' }
         Mock Open-MtBrowserUrl -ModuleName Maester { $true }
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
             [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
@@ -80,7 +86,8 @@ Describe 'Get-MtGitHubAppDeviceToken' {
             Get-MtGitHubAppDeviceToken -ClientId 'Iv23liV3mw0hSq0gn957' 6>&1 | Out-String
         }
 
-        $output | Should -Match 'Opened https://github\.com/login/device in your browser\. Enter code ABCD-1234'
+        $output | Should -Match '! First copy your one-time code: ABCD-1234'
+        $output | Should -Not -Match 'Opened https://github\.com/login/device in your browser\.'
         $output | Should -Not -Match 'ABCD-1234\.'
     }
 
@@ -91,6 +98,7 @@ Describe 'Get-MtGitHubAppDeviceToken' {
                 Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
             }
         }
+        Mock Read-Host -ModuleName Maester { '' }
         Mock Open-MtBrowserUrl -ModuleName Maester { $false }
         Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
             [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
@@ -100,7 +108,36 @@ Describe 'Get-MtGitHubAppDeviceToken' {
             Get-MtGitHubAppDeviceToken -ClientId 'Iv23liV3mw0hSq0gn957' 6>&1 | Out-String
         }
 
+        $output | Should -Match '! First copy your one-time code: ABCD-1234'
         $output | Should -Match 'Open https://github\.com/login/device and enter code ABCD-1234'
         $output | Should -Not -Match 'ABCD-1234\.'
+    }
+
+    It 'Waits for the user before opening the device sign-in page' {
+        $script:deviceFlowEvents = @()
+
+        Mock Start-Sleep -ModuleName Maester {}
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/device/code' } {
+            [PSCustomObject]@{
+                Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
+            }
+        }
+        Mock Read-Host -ModuleName Maester {
+            $script:deviceFlowEvents += 'prompt'
+            ''
+        }
+        Mock Open-MtBrowserUrl -ModuleName Maester {
+            $script:deviceFlowEvents += 'open'
+            $true
+        }
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
+            [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
+        }
+
+        InModuleScope Maester {
+            Get-MtGitHubAppDeviceToken -ClientId 'Iv23liV3mw0hSq0gn957' 6>$null
+        }
+
+        ($script:deviceFlowEvents -join ',') | Should -Be 'prompt,open'
     }
 }
