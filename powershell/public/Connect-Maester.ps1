@@ -1,10 +1,12 @@
 ﻿function Connect-Maester {
    <#
 .SYNOPSIS
-   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
+   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub.
 
 .DESCRIPTION
-   Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. It attempts to connect to all services by default: Microsoft Graph, Azure, Exchange Online, and Microsoft Teams.
+   Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. By default, it connects to Microsoft Graph. Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
+
+   Non-Microsoft 365 services such as GitHub are not included in -Service All and must be explicitly specified.
 
    This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -15,12 +17,17 @@
 .EXAMPLE
    Connect-Maester
 
-   Connects to all Microsoft services that Maester is able to assess: Microsoft Graph, Azure, Exchange Online, Exchange Online Security & Compliance, and Microsoft Teams.
+   Connects to Microsoft Graph.
 
 .EXAMPLE
    Connect-Maester -Service Graph,Teams
 
    Connects to Microsoft Graph and Microsoft Teams.
+
+.EXAMPLE
+   Connect-Maester -Service Graph,GitHub -GitHubOrganization 'mycompany'
+
+   Connects to Microsoft Graph and GitHub. GitHub sign-in is handled by Connect-MtGitHub using the Maester GitHub App device flow by default, including guided organization app install/approval when required. Automation can still use MAESTER_GITHUB_TOKEN or GH_TOKEN.
 
 .EXAMPLE
    Connect-Maester -Service Azure,Graph
@@ -118,8 +125,8 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, and SharePoint Online. Default is Graph.
-      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
+      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. GitHub is not included in All and must be explicitly specified.
+      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -140,7 +147,10 @@
       # The certificate thumbprint for app-only authentication to SharePoint Online.
       # Use together with -SharePointClientId and -TenantId for non-interactive/automation scenarios.
       # The certificate must be installed in the current user's certificate store.
-      [string]$SharePointCertificateThumbprint
+      [string]$SharePointCertificateThumbprint,
+
+      # The GitHub organization login name to connect to when Service includes GitHub.
+      [string]$GitHubOrganization
    )
 
    $__MtSession.Connections = $Service
@@ -439,5 +449,14 @@
             }
          }
       }
+   }
+
+   if ($Service -contains 'GitHub') {
+      Write-Verbose 'Connecting to GitHub'
+      $connectGitHubParams = @{}
+      if (-not [string]::IsNullOrWhiteSpace($GitHubOrganization)) {
+         $connectGitHubParams['Organization'] = $GitHubOrganization
+      }
+      Connect-MtGitHub @connectGitHubParams
    }
 } # end function Connect-Maester
