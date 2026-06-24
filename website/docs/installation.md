@@ -50,6 +50,17 @@ Run the following command to interactively connect to the Azure, Microsoft Graph
 Connect-Maester -Service All
 ```
 
+### Connecting to GitHub
+
+GitHub is an optional connection for GitHub security tests and is not included in `Connect-Maester -Service All`.
+For interactive sessions, use the Maester GitHub App OAuth flow:
+
+```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization <Name Of GitHub Organization>
+```
+
+See [Connect to GitHub (optional)](connect-maester/readme.md#connect-to-github-optional) for GitHub App install/approval details and token-based automation options.
+
 ### Permissions
 
 Exchange Online implements a [role-based access control model](https://learn.microsoft.com/exchange/permissions-exo/permissions-exo). The controls these cmdlets test require minimum roles of either of the following:
