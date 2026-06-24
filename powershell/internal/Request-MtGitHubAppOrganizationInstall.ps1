@@ -32,8 +32,8 @@ function Request-MtGitHubAppOrganizationInstall {
     Write-Host "If you continue, Maester will open the GitHub App install page: $InstallUrl" -ForegroundColor Yellow
     Write-Host "GitHub will ask you to select '$Organization' and install, request, or approve the app. Maester will retry the connection after you finish." -ForegroundColor Yellow
 
-    $response = Read-Host "Open the GitHub App install page now? (Y/N)"
-    if ($response -notmatch '^(?i:y|yes)$') {
+    $response = Read-Host "Open the GitHub App install page now? [Y/n]"
+    if (-not [string]::IsNullOrWhiteSpace($response) -and $response -notmatch '^(?i:y|yes)$') {
         Write-Host ''
         Write-Host 'No problem. You can use a GitHub token instead of the Maester GitHub App.' -ForegroundColor Yellow
         Write-Host 'Create a classic PAT with admin:org, or a fine-grained token with Organization Members: read and Organization Administration: read.' -ForegroundColor Yellow

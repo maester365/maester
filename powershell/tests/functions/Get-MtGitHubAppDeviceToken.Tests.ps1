@@ -63,4 +63,44 @@ Describe 'Get-MtGitHubAppDeviceToken' {
             $result.FailureReason | Should -Be 'GitHubDeviceFlowDenied'
         }
     }
+
+    It 'Displays the device code without trailing punctuation when the browser opens' {
+        Mock Start-Sleep -ModuleName Maester {}
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/device/code' } {
+            [PSCustomObject]@{
+                Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
+            }
+        }
+        Mock Open-MtBrowserUrl -ModuleName Maester { $true }
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
+            [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
+        }
+
+        $output = InModuleScope Maester {
+            Get-MtGitHubAppDeviceToken -ClientId 'Iv23liV3mw0hSq0gn957' 6>&1 | Out-String
+        }
+
+        $output | Should -Match 'Opened https://github\.com/login/device in your browser\. Enter code ABCD-1234'
+        $output | Should -Not -Match 'ABCD-1234\.'
+    }
+
+    It 'Displays the device code without trailing punctuation when the browser does not open' {
+        Mock Start-Sleep -ModuleName Maester {}
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/device/code' } {
+            [PSCustomObject]@{
+                Content = '{"device_code":"device-code","user_code":"ABCD-1234","verification_uri":"https://github.com/login/device","expires_in":900,"interval":1}'
+            }
+        }
+        Mock Open-MtBrowserUrl -ModuleName Maester { $false }
+        Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -eq 'https://github.com/login/oauth/access_token' } {
+            [PSCustomObject]@{ Content = '{"error":"access_denied"}' }
+        }
+
+        $output = InModuleScope Maester {
+            Get-MtGitHubAppDeviceToken -ClientId 'Iv23liV3mw0hSq0gn957' 6>&1 | Out-String
+        }
+
+        $output | Should -Match 'Open https://github\.com/login/device and enter code ABCD-1234'
+        $output | Should -Not -Match 'ABCD-1234\.'
+    }
 }

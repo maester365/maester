@@ -24,6 +24,27 @@ Describe 'Request-MtGitHubAppOrganizationInstall' {
         Should -Invoke Open-MtBrowserUrl -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
             $Uri -eq 'https://github.com/apps/maester-cli/installations/new'
         }
+        Should -Invoke Read-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Prompt -eq 'Open the GitHub App install page now? [Y/n]'
+        }
+        Should -Invoke Read-Host -ModuleName Maester -Times 2 -Exactly
+    }
+
+    It 'Defaults to opening the browser when the user presses Enter at the confirmation prompt' {
+        Mock Read-Host -ModuleName Maester { '' }
+        Mock Open-MtBrowserUrl -ModuleName Maester { $true }
+
+        InModuleScope Maester {
+            $result = Request-MtGitHubAppOrganizationInstall -Organization 'myorg' -InstallUrl 'https://github.com/apps/maester-cli/installations/new' -Reason 'forbidden' 6>$null
+            $result | Should -BeTrue
+        }
+
+        Should -Invoke Open-MtBrowserUrl -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Uri -eq 'https://github.com/apps/maester-cli/installations/new'
+        }
+        Should -Invoke Read-Host -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+            $Prompt -eq 'Open the GitHub App install page now? [Y/n]'
+        }
         Should -Invoke Read-Host -ModuleName Maester -Times 2 -Exactly
     }
 
