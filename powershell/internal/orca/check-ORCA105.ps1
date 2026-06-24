@@ -15,9 +15,9 @@ param()
 class ORCA105 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA105()
@@ -43,9 +43,9 @@ class ORCA105 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -53,7 +53,7 @@ class ORCA105 : ORCACheck
 
         $EnabledPolicyExists = $False
 
-        ForEach($Policy in ($Config["SafeLinksPolicy"] )) 
+        ForEach($Policy in ($Config["SafeLinksPolicy"] ))
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
@@ -68,9 +68,9 @@ class ORCA105 : ORCACheck
             $policyname = $Config["PolicyStates"][$Policy.Guid.ToString()].Name
 
             <#
-            
+
             DeliverMessageAfterScan
-            
+
             #>
 
                 # Check objects
@@ -84,7 +84,7 @@ class ORCA105 : ORCACheck
                 $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
                 # Determine if DeliverMessageAfterScan is on for this safelinks policy
-                If($DeliverMessageAfterScan -eq $true) 
+                If($DeliverMessageAfterScan -eq $true)
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
 
@@ -93,7 +93,7 @@ class ORCA105 : ORCACheck
                         $AnyEnabled_DeliverMessageAfterScan = $True
                     }
                 }
-                Else 
+                Else
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
@@ -102,9 +102,9 @@ class ORCA105 : ORCACheck
                 $this.AddConfig($ConfigObject)
 
             <#
-            
+
             ScanUrls
-            
+
             #>
 
                 # Check objects
@@ -126,7 +126,7 @@ class ORCA105 : ORCACheck
                         $AnyEnabled_ScanUrls = $True
                     }
                 }
-                Else 
+                Else
                 {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
@@ -144,7 +144,7 @@ class ORCA105 : ORCACheck
             $ConfigObject.ConfigItem="DeliverMessageAfterScan"
             $ConfigObject.ConfigData="False"
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 
@@ -154,7 +154,7 @@ class ORCA105 : ORCACheck
             $ConfigObject.ConfigItem="ScanUrls"
             $ConfigObject.ConfigData="False"
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
         }

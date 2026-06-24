@@ -21,9 +21,9 @@ ORCA-109 Checks if the allowed senders list is empty in Anti-spam policies
 class ORCA109 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA109()
@@ -46,16 +46,16 @@ class ORCA109 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
+
         ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
@@ -78,23 +78,23 @@ class ORCA109 : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
             <#
-            
+
             Important! Do not apply read-only on preset/default policies here.
-            
+
             #>
 
             If(($AllowedSenders).Count -eq 0 -or $AllowedSenders -eq "No Sender Detected")
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-        }        
+        }
     }
 
 }
