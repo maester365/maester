@@ -165,12 +165,12 @@
         #region AzureDevOps
         if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {
             $IsConnected = $false
-            if ($null -ne $__MtSession.AzureDevOpsConnection) {
+            if ($null -ne $__MtSession.AzureDevOpsConnectionCache) {
                 # Use cached probe result to avoid re-running the connection check on every test.
-                if ($__MtSession.AzureDevOpsConnection -is [string] -and $__MtSession.AzureDevOpsConnection -eq 'NotConnected') {
+                if ($__MtSession.AzureDevOpsConnectionCache -is [string] -and $__MtSession.AzureDevOpsConnectionCache -eq 'NotConnected') {
                     $IsConnected = $false
                 } else {
-                    $MtConnections.AzureDevOps = $__MtSession.AzureDevOpsConnection
+                    $MtConnections.AzureDevOps = $__MtSession.AzureDevOpsConnectionCache
                     $IsConnected = $true
                 }
             } else {
@@ -179,7 +179,7 @@
                         $connection = Get-ADOPSConnection
                         if ($null -ne $connection -and $null -ne $connection['Organization']) {
                             $MtConnections.AzureDevOps = $connection
-                            $__MtSession.AzureDevOpsConnection = $connection
+                            $__MtSession.AzureDevOpsConnectionCache = $connection
                             $IsConnected = $true
                         }
                     }
@@ -188,7 +188,7 @@
                 }
                 if (-not $IsConnected) {
                     # Cache negative result so subsequent calls skip the probe.
-                    $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                    $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
                 }
             }
             Write-Verbose "AzureDevOps: $IsConnected"
