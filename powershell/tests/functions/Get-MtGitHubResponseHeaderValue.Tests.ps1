@@ -90,6 +90,8 @@ Describe 'Get-MtGitHubResponseHeaderValue' {
                 $headers = [PSCustomObject]@{}
                 $headers | Add-Member -MemberType ScriptMethod -Name TryGetValues -Value {
                     param([string]$name, [ref]$values)
+                    $null = $name
+                    $null = $values
                     return $false
                 }
                 Get-MtGitHubResponseHeaderValue -Headers $headers -Name 'x-ratelimit-remaining' | Should -BeNullOrEmpty

@@ -3,18 +3,6 @@ BeforeAll {
 }
 
 Describe 'Get-MtGitHubRateLimitMessage' {
-    function New-RateLimitErrorRecord {
-        param(
-            [int] $StatusCode,
-            [hashtable] $Headers
-        )
-        $resp = [PSCustomObject]@{ StatusCode = $StatusCode; Headers = $Headers }
-        $ex = [System.Exception]::new("HTTP $StatusCode")
-        Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $resp
-        # An ErrorRecord wrapping the exception is what the helper expects.
-        [System.Management.Automation.ErrorRecord]::new($ex, "TestId", [System.Management.Automation.ErrorCategory]::NotSpecified, $null)
-    }
-
     Context 'Non-rate-limit responses' {
         It 'Returns $null for status codes outside 403/429' {
             InModuleScope Maester {
