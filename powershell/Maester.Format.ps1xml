@@ -120,6 +120,28 @@
                   }
                 </ScriptBlock>
               </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $null -ne $_.GitHub
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>GitHub</Label>
+                <ScriptBlock>
+                  if ($_.GitHub) {
+                    $connectedText = if ($_.GitHub.Connected) { 'Connected' } else { 'Not connected' }
+                    "$connectedText`n" +
+                    "Organization:                       $($_.GitHub.Organization)`n" +
+                    "Token Login:                        $($_.GitHub.TokenLogin)`n" +
+                    "API Base URI:                       $($_.GitHub.ApiBaseUri)`n" +
+                    "Role:                               $($_.GitHub.Role)`n" +
+                    "Role State:                         $($_.GitHub.RoleState)`n" +
+                    "Administration Permission Verified: $($_.GitHub.AdministrationPermissionVerified)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
             </ListItems>
           </ListEntry>
         </ListEntries>
