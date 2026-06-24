@@ -10,7 +10,7 @@ function Get-MtSession {
     session object.
 
     Sensitive values are stripped from the output. For example, the GitHubAuthHeader Authorization
-    value is redacted so copied session output cannot leak the GitHub PAT. The live session used by
+    value is redacted so copied session output cannot leak the GitHub token. The live session used by
     internal callers is unchanged.
 
     .EXAMPLE
@@ -26,7 +26,7 @@ function Get-MtSession {
 
     Write-Verbose 'Getting the current Maester session information.'
 
-    # Return a sanitized copy so troubleshooting output cannot leak the GitHub PAT;
+    # Return a sanitized copy so troubleshooting output cannot leak the GitHub token;
     # internal callers continue to use the live $__MtSession values.
     $sessionCopy = @{}
     foreach ($key in $__MtSession.Keys) {

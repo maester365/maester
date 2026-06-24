@@ -9,7 +9,7 @@
     .PARAMETER Service
     The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
 
-    GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection. When checked via -Service All, GitHub is treated as required and will return $false if Connect-MtGitHub has not been called.
+    GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection. GitHub is not included in -Service All and must be checked explicitly.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -17,12 +17,12 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), GitHub, SharePoint Online (PnP), and Microsoft Teams. Returns a Boolean value.
+    Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a Boolean value.
 
     .EXAMPLE
     Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), GitHub, SharePoint Online (PnP), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
@@ -206,7 +206,7 @@
         #endregion AzureDevOps
 
         #region GitHub
-        if ($Service -contains 'GitHub' -or $Service -contains 'All') {
+        if ($Service -contains 'GitHub') {
             $IsConnected = $false
             if ($null -ne $__MtSession.GitHubConnection) {
                 if ($__MtSession.GitHubConnection.Connected -eq $true) {

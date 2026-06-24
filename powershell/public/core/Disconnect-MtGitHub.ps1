@@ -4,7 +4,7 @@
     Clears the current GitHub REST session in Maester.
 
     .DESCRIPTION
-    Removes the GitHub PAT-derived auth header, the connection metadata, and the per-session
+    Removes the GitHub auth header, the connection metadata, and the per-session
     REST response cache from the Maester module's session state. Idempotent — safe to call when
     no GitHub session is active.
 

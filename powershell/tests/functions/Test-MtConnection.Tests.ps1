@@ -108,8 +108,8 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
-    Context '-Service All - GitHub is required' {
-        It 'Returns AllConnected $false when all other services are connected and GitHub session is absent' {
+    Context '-Service All - GitHub is not included' {
+        It 'Returns AllConnected $true when all included services are connected and GitHub session is absent' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = $null
                 $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
@@ -126,17 +126,16 @@ Describe 'Test-MtConnection — GitHub service' {
             Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
             Mock Get-PnPConnection { [PSCustomObject]@{ Url = 'https://contoso.sharepoint.com' } } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
-            $result.AllConnected | Should -BeFalse
+            $result.AllConnected | Should -BeTrue
             $result.GitHub | Should -BeNullOrEmpty
             InModuleScope Maester {
-                $__MtSession.GitHubConnection | Should -Not -BeNullOrEmpty
-                $__MtSession.GitHubConnection.FailureReason | Should -Be 'NotCalled'
+                $__MtSession.GitHubConnection | Should -BeNullOrEmpty
             }
         }
     }
 
-    Context '-Service All - GitHub NotCalled sentinel' {
-        It 'keeps AllConnected $false and does not set the GitHub details property' {
+    Context '-Service All - GitHub NotCalled sentinel is ignored' {
+        It 'does not set the GitHub details property' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
                 $__MtSession.AzureDevOpsConnection = 'NotConnected'
@@ -180,8 +179,8 @@ Describe 'Test-MtConnection — GitHub service' {
         }
     }
 
-    Context '-Service All — GitHub included when connected' {
-        It 'Populates the GitHub property' {
+    Context '-Service All — GitHub connected session is ignored' {
+        It 'Does not populate the GitHub property' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
                 $__MtSession.AzureDevOpsConnection = 'NotConnected'
@@ -191,8 +190,7 @@ Describe 'Test-MtConnection — GitHub service' {
             Mock Get-MtExo { $null } -ModuleName Maester
             Mock Get-CsTenant { $null } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
-            $result.GitHub | Should -Not -BeNullOrEmpty
-            $result.GitHub.Connected | Should -BeTrue
+            $result.GitHub | Should -BeNullOrEmpty
         }
     }
 }

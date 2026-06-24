@@ -45,11 +45,117 @@ Describe 'Connect-MtGitHub' {
 
     Context 'Failure: NoToken' {
         It 'Sets FailureReason = NoToken when org is given but no token is available' {
-            # Token env vars are cleared in BeforeEach; no -Token param
+            Mock Get-MtUserInteractive -ModuleName Maester { $false }
+
+            # Token env vars are cleared in BeforeEach; no -Token param; non-interactive sessions cannot device-auth.
             Connect-MtGitHub -Organization 'myorg'
             InModuleScope Maester {
                 $__MtSession.GitHubConnection.Connected     | Should -BeFalse
                 $__MtSession.GitHubConnection.FailureReason | Should -Be 'NoToken'
+            }
+        }
+    }
+
+    Context 'Maester GitHub App device flow' {
+        BeforeEach {
+            Mock Get-MtUserInteractive -ModuleName Maester { $true }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg","plan":{"name":"enterprise"}}' }
+            }
+        }
+
+        It 'Uses the Maester GitHub App client ID when no token is supplied' {
+            $expiresAt = [datetime]'2030-01-01T00:00:00Z'
+            Mock Get-MtGitHubAppDeviceToken -ModuleName Maester -ParameterFilter { $ClientId -eq 'Iv23liV3mw0hSq0gn957' } {
+                [PSCustomObject]@{ AccessToken = 'ghu_device'; ExpiresAt = $expiresAt; FailureReason = $null }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            Should -Invoke Get-MtGitHubAppDeviceToken -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $ClientId -eq 'Iv23liV3mw0hSq0gn957'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 4 -ParameterFilter {
+                $Headers['Authorization'] -eq 'Bearer ghu_device'
+            }
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected          | Should -BeTrue
+                $__MtSession.GitHubConnection.AuthenticationType | Should -Be 'GitHubAppDeviceFlow'
+                $__MtSession.GitHubConnection.TokenExpiresAt     | Should -Be ([datetime]'2030-01-01T00:00:00Z')
+                $__MtSession.GitHubAuthHeader.Authorization      | Should -Be 'Bearer ghu_device'
+            }
+        }
+
+        It 'Records the device flow failure reason and does not retain an auth header' {
+            Mock Get-MtGitHubAppDeviceToken -ModuleName Maester {
+                [PSCustomObject]@{ AccessToken = $null; ExpiresAt = $null; FailureReason = 'GitHubDeviceFlowDenied' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected     | Should -BeFalse
+                $__MtSession.GitHubConnection.FailureReason | Should -Be 'GitHubDeviceFlowDenied'
+                $__MtSession.GitHubAuthHeader               | Should -BeNullOrEmpty
+            }
+        }
+    }
+
+    Context 'Maester GitHub App organization install retry' {
+        BeforeEach {
+            $script:membershipProbeCount = 0
+
+            Mock Get-MtUserInteractive -ModuleName Maester { $true }
+            Mock Get-MtGitHubAppDeviceToken -ModuleName Maester {
+                [PSCustomObject]@{ AccessToken = 'ghu_device'; ExpiresAt = $null; FailureReason = $null }
+            }
+            Mock Request-MtGitHubAppOrganizationInstall -ModuleName Maester { $true }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg","plan":{"name":"enterprise"}}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                $script:membershipProbeCount++
+                if ($script:membershipProbeCount -eq 1) {
+                    $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+                    $ex = [System.Exception]::new('You do not have access to this organization membership.')
+                    Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+                    throw $ex
+                }
+
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+        }
+
+        It 'Prompts for org app install once and retries the membership probe' {
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            Should -Invoke Request-MtGitHubAppOrganizationInstall -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                $Organization -eq 'myorg' -and
+                $InstallUrl -eq 'https://github.com/apps/maester-cli/installations/new' -and
+                $Reason -match 'organization membership'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 2 -Exactly -ParameterFilter {
+                $Uri -eq 'https://api.github.com/user/memberships/orgs/myorg'
+            }
+            InModuleScope Maester {
+                $__MtSession.GitHubConnection.Connected          | Should -BeTrue
+                $__MtSession.GitHubConnection.AuthenticationType | Should -Be 'GitHubAppDeviceFlow'
+                $__MtSession.GitHubAuthHeader.Authorization      | Should -Be 'Bearer ghu_device'
             }
         }
     }
@@ -229,7 +335,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg","plan":{"name":"enterprise"}}' }
             }
         }
@@ -264,7 +370,7 @@ Describe 'Connect-MtGitHub' {
                 $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg'
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
-                $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg/memberships/testuser'
+                $Uri -eq 'https://api.octocorp.ghe.com/user/memberships/orgs/myorg'
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 1 -ParameterFilter {
                 $Uri -eq 'https://api.octocorp.ghe.com/orgs/myorg/actions/permissions'
@@ -281,7 +387,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
         }
@@ -374,7 +480,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
         }
@@ -466,7 +572,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
         }
@@ -477,6 +583,7 @@ Describe 'Connect-MtGitHub' {
             Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
             Mock Get-MtGitHubErrorStatusCode -ModuleName Maester { 403 }
             Mock Get-MtGitHubErrorMessage    -ModuleName Maester { 'Insufficient permissions to read membership.' }
+            Mock Request-MtGitHubAppOrganizationInstall -ModuleName Maester { throw 'Token-based auth must not prompt for GitHub App installation.' }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } { throw $ex }
 
             Connect-MtGitHub -Organization 'myorg' 6>$null
@@ -622,7 +729,7 @@ Describe 'Connect-MtGitHub' {
             }
             $ex = [System.Exception]::new('Too Many Requests')
             Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } { throw $ex }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } { throw $ex }
 
             Connect-MtGitHub -Organization 'myorg' 6>$null
 
@@ -639,7 +746,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
             $fakeResp = [PSCustomObject]@{
@@ -665,7 +772,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
@@ -792,7 +899,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
 
@@ -815,7 +922,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
 
@@ -837,7 +944,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
 
@@ -863,7 +970,7 @@ Describe 'Connect-MtGitHub' {
                 $c = $__MtSession.GitHubConnection
                 $c.Connected     | Should -BeFalse
                 $c.FailureReason | Should -Be 'InvalidApiBaseUri'
-                # Security property: PAT must never be sent to non-GitHub hosts; auth header must be cleared.
+                # Security property: GitHub tokens must never be sent to non-GitHub hosts; auth header must be cleared.
                 $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
             }
             Should -Invoke Invoke-WebRequest -ModuleName Maester -Times 0
@@ -926,7 +1033,7 @@ Describe 'Connect-MtGitHub' {
         }
 
         It 'Allowlisted host with extra path component is rejected' {
-            # api.github.com/api/v3 has the right host but a non-root path; reject so the PAT isn't
+            # api.github.com/api/v3 has the right host but a non-root path; reject so the GitHub token isn't
             # sent to an unexpected endpoint that could be a proxy or path-rewriting middleware.
             Mock Invoke-WebRequest -ModuleName Maester { throw 'Invoke-WebRequest must not be called when ApiBaseUri has a non-root path' }
 
@@ -962,7 +1069,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"config-org"}' }
             }
 
@@ -999,7 +1106,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"lazy-org"}' }
             }
         }
@@ -1135,7 +1242,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
 
@@ -1162,7 +1269,7 @@ Describe 'Connect-MtGitHub' {
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
                 [PSCustomObject]@{ Content = '{"login":"testuser"}' }
             }
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
             }
         }
