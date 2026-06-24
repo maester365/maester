@@ -15,9 +15,9 @@ param()
 class ORCA108 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA108()
@@ -39,9 +39,9 @@ class ORCA108 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -63,19 +63,19 @@ class ORCA108 : ORCACheck
             $this.CheckFailed = $true
             $this.CheckFailureReason = "Resolve-DnsName is not found on ORCA computer and is required for DNS checks."
         }
-        else 
+        else
         {
             # Check DKIM is enabled
-        
-            ForEach($AcceptedDomain in $Config["AcceptedDomains"]) 
+
+            ForEach($AcceptedDomain in $Config["AcceptedDomains"])
             {
                 $HasMailbox = $false
-                
+
                 try
                 {
-                    
-                    If($AcceptedDomain.Name -notlike "*.onmicrosoft.com") 
-                { 
+
+                    If($AcceptedDomain.Name -notlike "*.onmicrosoft.com")
+                {
                     $mailbox = Resolve-DnsName -Name $($AcceptedDomain.Name) -Type MX -ErrorAction:Stop
                     if($null -ne $mailbox -and $mailbox.Count -gt 0)
                         {
@@ -84,16 +84,16 @@ class ORCA108 : ORCACheck
                     }
                 }
                 Catch{}
-                If($HasMailbox) 
+                If($HasMailbox)
                 {
-        
+
                     # Check objects
                     $ConfigObject = [ORCACheckConfig]::new()
                     $ConfigObject.ConfigItem=$($AcceptedDomain.Name)
 
                     # Get matching DKIM signing configuration
                     $DkimSigningConfig = $Config["DkimSigningConfig"] | Where-Object {$_.Name -eq $AcceptedDomain.Name}
-        
+
                     If($DkimSigningConfig)
                     {
                         $ConfigObject.ConfigData=$($DkimSigningConfig.Enabled)
@@ -102,7 +102,7 @@ class ORCA108 : ORCACheck
                         {
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                         }
-                        Else 
+                        Else
                         {
                             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                         }
@@ -115,13 +115,13 @@ class ORCA108 : ORCACheck
 
                     # Add config to check
                     $this.AddConfig($ConfigObject)
-        
+
                 }
-        
-            }         
+
+            }
         }
 
-  
+
 
     }
 

@@ -12,7 +12,7 @@ param()
 
 <#
 
-221 - Check MDO Phishing Mailbox Intelligence is enabled 
+221 - Check MDO Phishing Mailbox Intelligence is enabled
 
 #>
 
@@ -21,9 +21,9 @@ param()
 class ORCA221 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA221()
@@ -48,23 +48,23 @@ class ORCA221 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-        
+
         <#
-        
+
         This check does not need a default fail if no policies exist, as there is always a default AP policy.
-        
+
         #>
-      
+
         ForEach($Policy in ($Config["AntiPhishPolicy"] | Where-Object {$_.Enabled -eq $True}))
         {
-                  
+
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
 
             $EnableMailboxIntelligence = $($Policy.EnableMailboxIntelligence)
@@ -85,13 +85,13 @@ class ORCA221 : ORCACheck
 
             If($EnableMailboxIntelligence -eq $false)
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")        
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            Else 
+            Else
             {
-                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")                      
+                $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            
+
             $this.AddConfig($ConfigObject)
 
         }
@@ -104,8 +104,8 @@ class ORCA221 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }     
-  
+        }
+
 
     }
 
