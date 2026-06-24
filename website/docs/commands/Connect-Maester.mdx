@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online."
+description: "Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub."
 id: Connect-Maester
 title: Connect-Maester
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
+Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub.
 
 ## SYNTAX
 
@@ -19,13 +19,16 @@ Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
  [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>] [[-SharePointClientId] <String>]
  [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-GitHubOrganization] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess.
-It attempts to connect to all services by default: Microsoft Graph, Azure, Exchange Online, and Microsoft Teams.
+By default, it connects to Microsoft Graph.
+Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
+
+Non-Microsoft 365 services such as GitHub are not included in -Service All and must be explicitly specified.
 
 This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -41,7 +44,7 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 Connect-Maester
 ```
 
-Connects to all Microsoft services that Maester is able to assess: Microsoft Graph, Azure, Exchange Online, Exchange Online Security & Compliance, and Microsoft Teams.
+Connects to Microsoft Graph.
 
 ### EXAMPLE 2
 
@@ -54,12 +57,22 @@ Connects to Microsoft Graph and Microsoft Teams.
 ### EXAMPLE 3
 
 ```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization 'mycompany'
+```
+
+Connects to Microsoft Graph and GitHub.
+GitHub sign-in is handled by Connect-MtGitHub using the Maester GitHub App device flow by default, including guided organization app install/approval when required.
+Automation can still use MAESTER_GITHUB_TOKEN or GH_TOKEN.
+
+### EXAMPLE 4
+
+```powershell
 Connect-Maester -Service Azure,Graph
 ```
 
 Connects to Microsoft Graph and Azure.
 
-### EXAMPLE 4
+### EXAMPLE 5
 
 ```powershell
 Connect-Maester -Service Dataverse,Graph
@@ -69,7 +82,7 @@ Connects to Microsoft Graph and the Dataverse API for Copilot Studio security te
 The Dataverse connection uses the Az.Accounts module.
 The Copilot Studio environment is auto-discovered via the Global Discovery Service, or can be explicitly set with DataverseEnvironmentUrl in maester-config.json.
 
-### EXAMPLE 5
+### EXAMPLE 6
 
 ```powershell
 Connect-Maester -UseDeviceCode
@@ -78,7 +91,7 @@ Connect-Maester -UseDeviceCode
 Connects to Microsoft Graph and Azure using the device code flow.
 This will open a browser window to prompt for authentication.
 
-### EXAMPLE 6
+### EXAMPLE 7
 
 ```powershell
 Connect-Maester -SendMail
@@ -86,7 +99,7 @@ Connect-Maester -SendMail
 
 Connects to Microsoft Graph with the Mail.Send scope.
 
-### EXAMPLE 7
+### EXAMPLE 8
 
 ```powershell
 Connect-Maester -SendTeamsMessage
@@ -94,7 +107,7 @@ Connect-Maester -SendTeamsMessage
 
 Connects to Microsoft Graph with the ChannelMessage.Send scope.
 
-### EXAMPLE 8
+### EXAMPLE 9
 
 ```powershell
 Connect-Maester -Privileged
@@ -102,7 +115,7 @@ Connect-Maester -Privileged
 
 Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
 
-### EXAMPLE 9
+### EXAMPLE 10
 
 ```powershell
 Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
@@ -110,7 +123,7 @@ Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -Exchange
 
 Connects to US Government environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 10
+### EXAMPLE 11
 
 ```powershell
 Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovDoD
@@ -118,7 +131,7 @@ Connect-Maester -Environment USGovDoD -AzureEnvironment AzureUSGovernment -Excha
 
 Connects to US Department of Defense (DoD) environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 11
+### EXAMPLE 12
 
 ```powershell
 Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEnvironmentName O365China
@@ -126,7 +139,7 @@ Connect-Maester -Environment China -AzureEnvironment AzureChinaCloud -ExchangeEn
 
 Connects to China environments for Microsoft Graph, Azure, and Exchange Online.
 
-### EXAMPLE 12
+### EXAMPLE 13
 
 ```powershell
 Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
@@ -134,7 +147,7 @@ Connect-Maester -GraphClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216'
 
 Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
-### EXAMPLE 13
+### EXAMPLE 14
 
 ```powershell
 '
@@ -145,7 +158,7 @@ The SharePoint admin URL is auto-discovered from the tenant's initial domain via
 Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g.
 for custom domain or government cloud tenants).
 
-### EXAMPLE 14
+### EXAMPLE 15
 
 ```powershell
 Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
@@ -294,8 +307,9 @@ Accept wildcard characters: False
 
 ### -Service
 
-The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, and SharePoint Online.
+The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online.
 Default is Graph.
+GitHub is not included in All and must be explicitly specified.
 
 ```yaml
 Type: String[]
@@ -393,6 +407,22 @@ Aliases:
 
 Required: False
 Position: 10
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GitHubOrganization
+
+The GitHub organization login name to connect to when Service includes GitHub.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

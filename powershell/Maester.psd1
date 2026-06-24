@@ -57,9 +57,9 @@
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport    = @(
         'Add-MtMaesterAppFederatedCredential', 'Add-MtTestResultDetail', 'Clear-MtDnsCache', 'Clear-MtExoCache',
-        'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester', 'Convert-MtResultsToFlatObject',
+        'Clear-MtGraphCache', 'Compare-MtJsonObject', 'Compare-MtTestResult', 'Connect-Maester', 'Connect-MtGitHub', 'Convert-MtResultsToFlatObject',
         'ConvertFrom-MailAuthenticationRecordDkim', 'ConvertFrom-MailAuthenticationRecordDmarc',
-        'ConvertFrom-MailAuthenticationRecordMx', 'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester',
+        'ConvertFrom-MailAuthenticationRecordMx', 'ConvertFrom-MailAuthenticationRecordSpf', 'Disconnect-Maester', 'Disconnect-MtGitHub',
         'Get-MailAuthenticationRecord', 'Get-MtAdminPortalUrl', 'Get-MtAuthenticationMethodPolicyConfig',
         'Get-MtAzureManagementGroup', 'Get-MtConditionalAccessPolicy', 'Get-MtExo', 'Get-MtExoThreatPolicyMalware',
         'Get-MtGraphScope', 'Get-MtGroupMember', 'Get-MtHtmlReport', 'Get-MtLicenseInformation', 'Get-MtMaesterApp', 'Get-MtRegistrableDomain', 'Get-MtRole',
