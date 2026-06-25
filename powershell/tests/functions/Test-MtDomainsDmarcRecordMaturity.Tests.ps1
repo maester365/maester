@@ -13,18 +13,21 @@ Describe 'Test-MtDomainsDmarcRecordMaturity' {
         $script:skipCustomReason = $null
         $script:testResultMarkdown = $null
         $script:testSeverity = $null
+        $script:testName = $null
 
         Mock -ModuleName Maester Test-MtConnection { return $true }
         Mock -ModuleName Maester Add-MtTestResultDetail {
             param(
                 $Result,
                 $Severity,
+                $TestName,
                 $SkippedBecause,
                 $SkippedCustomReason
             )
 
             $script:testResultMarkdown = $Result
             $script:testSeverity = $Severity
+            $script:testName = $TestName
             $script:skipCustomReason = $SkippedCustomReason
         }
     }
@@ -59,7 +62,7 @@ Describe 'Test-MtDomainsDmarcRecordMaturity' {
             }
         }
 
-        Test-MtDomainsDmarcRecordMaturity | Should -BeFalse
+        Test-MtDomainsDmarcRecordMaturity -TestName 'MT.1182: DMARC maturity test' | Should -BeFalse
 
         $script:testResultMarkdown | Should -Match 'Some tenant domains do not have mature DMARC records'
         $script:testResultMarkdown | Should -Match 'contoso\.com'
@@ -68,5 +71,6 @@ Describe 'Test-MtDomainsDmarcRecordMaturity' {
         $script:testResultMarkdown | Should -Match '100'
         $script:testResultMarkdown | Should -Match 'Policy is none'
         $script:testSeverity | Should -Be 'Medium'
+        $script:testName | Should -Be 'MT.1182: DMARC maturity test'
     }
 }
