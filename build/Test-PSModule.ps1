@@ -33,7 +33,7 @@ Import-Module "$PSScriptRoot\CommonFunctions.psm1" -Force -WarningAction Silentl
 ## Restore Module Dependencies
 &$PSScriptRoot\Restore-PSModuleDependencies.ps1 -ModuleManifestPath $ModuleManifestPath -PSModuleCacheDirectory $PSModuleCacheDirectoryInfo.FullName | Out-Null
 
-Import-Module Pester -MinimumVersion 5.0.0
+Import-Module Pester -RequiredVersion 6.0.0
 #$PSModule = Import-Module $ModulePath -PassThru -Force
 
 $PesterConfiguration = New-PesterConfiguration (Import-PowerShellDataFile $PesterConfigurationFileInfo.FullName)
