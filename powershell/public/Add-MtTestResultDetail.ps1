@@ -66,7 +66,7 @@
         # Pester test name
         # Use the test name from the Pester context by default
         [Parameter(Mandatory = $false)]
-        [string] $TestName = $____Pester.CurrentTest.ExpandedName,
+        [string] $TestName,
 
         # A custom title for the test in the format of "MT.XXXX: <TestName>. Used in data driven tests like Entra recommendations 1024"
         [Parameter(Mandatory = $false)]
@@ -101,6 +101,26 @@
     )
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
+
+    if ([string]::IsNullOrEmpty($TestName)) {
+        if ($____Pester -and $____Pester.CurrentTest) {
+            $TestName = $____Pester.CurrentTest.ExpandedName
+        }
+
+        if ([string]::IsNullOrEmpty($TestName)) {
+            try {
+                $pesterModule = Get-Module Pester | Select-Object -First 1
+                if ($pesterModule) {
+                    $currentTest = & $pesterModule { Get-CurrentTest }
+                    if ($currentTest) {
+                        $TestName = $currentTest.ExpandedName
+                    }
+                }
+            } catch {
+                Write-Verbose "Unable to resolve current Pester test name: $($_.Exception.Message)"
+            }
+        }
+    }
 
     if ($SkippedBecause) {
         if ($SkippedBecause -eq 'Custom') {
@@ -173,7 +193,7 @@
 
     if ([string]::IsNullOrEmpty($TestTitle)) {
         # If no test title is provided, use the test name
-        $TestTitle = $____Pester.CurrentTest.ExpandedName
+        $TestTitle = $TestName
     }
 
     if ([string]::IsNullOrEmpty($Severity)) {
