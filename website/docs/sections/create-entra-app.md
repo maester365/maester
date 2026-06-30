@@ -119,9 +119,13 @@ SharePoint Online tests require the **PnP.PowerShell** module and an Entra ID ap
 Install-Module PnP.PowerShell -Scope CurrentUser
 ```
 
+The easiest way to create the required app registration is to follow the official PnP PowerShell guide:
+
+- [Register an Entra ID Application to use with PnP PowerShell](https://pnp.github.io/powershell/articles/registerapplication.html)
+
 #### Option A — Automatically create a new PnP app registration
 
-PnP provides a built-in cmdlet to create a dedicated app registration for interactive login:
+PnP provides a built-in cmdlet to create a dedicated app registration for interactive login. This is the quickest option and the one recommended in the PnP docs:
 
 ```powershell
 Register-PnPEntraIDAppForInteractiveLogin -ApplicationName "Maester PnP" -Tenant [yourtenant].onmicrosoft.com -SharePointDelegatePermissions "AllSites.FullControl"
@@ -133,6 +137,8 @@ This will:
 - Configure `http://localhost` as the redirect URI automatically
 - Prompt you to authenticate and provide consent
 - Output the **Client ID** you will need for `Connect-Maester`
+
+If you prefer to start from the exact example in the PnP docs, run their default command first and then add the SharePoint delegated permission needed by Maester.
 
 > **Note:** Maester's SharePoint tests are read-only. `AllSites.FullControl` (delegated) is sufficient.
 >
