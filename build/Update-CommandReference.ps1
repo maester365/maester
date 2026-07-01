@@ -4,7 +4,7 @@
 
 if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable)) { Install-Module Alt3.Docusaurus.Powershell -Scope CurrentUser -Force -SkipPublisherCheck }
 if (-not (Get-Module PlatyPS -ListAvailable)) { Install-Module PlatyPS -Scope CurrentUser -Force -SkipPublisherCheck }
-if (-not (Get-Module Pester -ListAvailable | Where-Object { $_.Version -eq '6.0.0' })) { Install-Module Pester -RequiredVersion 6.0.0-rc1 -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck }
+if (-not (Get-Module Pester -ListAvailable | Where-Object { $_.Version -eq '6.0.0' })) { Install-Module Pester -RequiredVersion 6.0.0-rc4 -AllowPrerelease -Scope CurrentUser -Force -SkipPublisherCheck }
 
 Import-Module Alt3.Docusaurus.Powershell
 Import-Module PlatyPS
