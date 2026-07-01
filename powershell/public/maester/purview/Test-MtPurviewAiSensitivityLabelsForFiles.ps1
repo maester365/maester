@@ -11,7 +11,7 @@
     content if labels are actually published to users. When no label is published or no published label targets
     files, Copilot has no labelling signal to apply and DSPM for AI cannot report on label-based oversharing.
 
-    The test passes if at least one published label policy exists AND at least one label has the File scope.
+    The test passes if at least one label policy is published AND at least one file-scoped label is included in a published label policy.
 
     .EXAMPLE
     Test-MtPurviewAiSensitivityLabelsForFiles
