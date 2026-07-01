@@ -41,9 +41,9 @@ jobs:
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
-          # Pester 5.7.1+ is required for the coverage configuration used in pester.ps1.
+          # Pester 6.0.0-rc4 is installed explicitly because prereleases are not selected by -MinimumVersion.
           # Installed on every leg so behavior stays consistent across the matrix.
-          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module Pester -RequiredVersion 6.0.0-rc4 -AllowPrerelease -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
