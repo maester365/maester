@@ -19,7 +19,7 @@
 *.psd1 text
 *.ps1xml text
 
-# Binary files.
+# Binary files (and other non-source assets).
 *.png binary
 *.jpg binary
 *.jpeg binary
