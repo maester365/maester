@@ -38,7 +38,7 @@
     param(
         # The path to install the Maester tests to, defaults to the current directory.
         [Parameter(Mandatory = $false)]
-        [string] $Path = ".\",
+        [string] $Path = '.\',
 
         # Skip automatic installation of Pester
         [Parameter(Mandatory = $false)]
@@ -51,15 +51,15 @@
     [version]$MinPesterVersion = '5.5.0'
     # The default action installs the minimum required version of Pester if not present. Opt out with -SkipPesterCheck.
     if ( $PSBoundParameters.ContainsKey('SkipPesterCheck') ) {
-        Write-Verbose "Skipping Pester version check."
+        Write-Verbose 'Skipping Pester version check.'
     } else {
         if ( ((Get-Module -Name 'Pester' -ListAvailable).Version | Sort-Object -Descending | Select-Object -First 1) -lt $MinPesterVersion ) {
-            Write-Host "The minimum required version of Pester is not installed." -ForegroundColor Yellow
+            Write-Host 'The minimum required version of Pester is not installed.' -ForegroundColor Yellow
             Write-Host "Installing Pester version $MinPesterVersion..." -ForegroundColor Yellow
             Install-Module -Name 'Pester' -MinimumVersion $MinPesterVersion -SkipPublisherCheck -Force -Scope CurrentUser
             Import-Module -Name 'Pester'
         } else {
-            Write-Verbose "The minimum required version of Pester is already installed."
+            Write-Verbose 'The minimum required version of Pester is already installed.'
         }
     }
 
@@ -75,7 +75,7 @@
         $message = "`nThe folder $Path is not empty.`nWe recommend installing the tests in an empty folder.`nDo you want to continue with this folder? (y/n): "
         $continue = Get-MtConfirmation $message
         if (!$continue) {
-            Write-Host "Maester tests not installed." -ForegroundColor Red
+            Write-Host 'Maester tests not installed.' -ForegroundColor Red
             return
         }
     }
