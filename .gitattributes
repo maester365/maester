@@ -13,8 +13,8 @@
 *.md text eol=lf
 *.svg text eol=lf
 
-# PowerShell files: stored with LF in the repository, platform-default endings
-# in the working tree so Windows contributors keep a native experience.
+# PowerShell files: stored with LF in the repository; working tree EOL follows each user’s Git settings
+# (e.g., core.autocrlf) so Windows contributors can keep a native experience.
 *.ps1 text
 *.psm1 text
 *.psd1 text
