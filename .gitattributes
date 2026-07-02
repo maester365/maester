@@ -1,0 +1,33 @@
+# Normalize line endings: text files are stored with LF in the repository.
+* text=auto
+
+# Files that must always use LF, both in the repository and in the working tree.
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+
+# PowerShell files: stored with LF in the repository, platform-default endings
+# in the working tree so Windows contributors keep a native experience.
+*.ps1 text
+*.psm1 text
+*.psd1 text
+*.ps1xml text
+
+# Binary files.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
