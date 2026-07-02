@@ -162,7 +162,7 @@ npm install
 
 #### Starting the site
 
-While in the ./website folder, run the following command to start the site locally. This will start a local server and open the site in your default browser to <http://localhost:3000/>
+While in the ./website folder, run the following command to start the site locally. This will start a local server and open the site in your default browser to [http://localhost:3000/](http://localhost:3000/)
 
 ```shell
 npm start
@@ -185,8 +185,8 @@ There are two versions of the Maester website:
 
 | Environment | URL | Branch | Update Trigger |
 | --- | --- | --- | --- |
-| Production | <https://maester.dev> | website-prod | New Maester module release |
-| Preview | <https://preview.maester.dev> | main | Every commit to the main branch |
+| Production | [https://maester.dev](https://maester.dev) | website-prod | New Maester module release |
+| Preview | [https://preview.maester.dev](https://preview.maester.dev) | main | Every commit to the main branch |
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
 
