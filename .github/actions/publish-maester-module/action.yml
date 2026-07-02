@@ -1,0 +1,51 @@
+name: Build and publish Maester module
+description: >-
+  Builds the Maester module with Build-MaesterModule.ps1, validates the build
+  output, publishes it to the PowerShell Gallery, and zips it for the GitHub
+  release. The ./module directory is a build artifact produced by the build
+  script; it is ignored by git and must never be committed to source control.
+
+inputs:
+  expected-version:
+    description: Version the built module manifest must declare (may include a prerelease suffix).
+    required: true
+  gallery-api-key:
+    description: PowerShell Gallery API key used by Publish-Module.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Build Maester module
+      shell: pwsh
+      run: ./build/Build-MaesterModule.ps1
+
+    - name: Install PowerShell module dependencies
+      shell: pwsh
+      # Minimum versions match the RequiredModules constraints in Maester.psd1
+      # (Microsoft.Graph.Authentication 2.27.0) and the Pester baseline used in
+      # build-validation.yaml (5.7.1).
+      run: |
+        Install-Module Pester -MinimumVersion 5.7.1 -Force -Scope CurrentUser -AllowClobber
+        Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Force -Scope CurrentUser -AllowClobber
+
+    - name: Validate built module
+      shell: pwsh
+      env:
+        EXPECTED_VERSION: ${{ inputs.expected-version }}
+      run: ./build/Test-MaesterModuleOutput.ps1 -ModulePath ./module -ExpectedVersion $env:EXPECTED_VERSION
+
+    - name: Publish module to the PowerShell Gallery
+      shell: pwsh
+      env:
+        GALLERY_API_KEY: ${{ inputs.gallery-api-key }}
+      run: |
+        # Publish-Module requires the module folder name to match the module name,
+        # so stage the built ./module output in a folder named Maester first.
+        New-Item -ItemType Directory -Path ./publish -Force | Out-Null
+        Copy-Item ./module -Recurse -Destination ./publish/Maester -Force
+        Publish-Module -Path ./publish/Maester -NuGetApiKey $env:GALLERY_API_KEY
+
+    - name: Build PowerShell module zip for GitHub release
+      shell: pwsh
+      run: Compress-Archive -Path ./publish/Maester/* -DestinationPath ./maester.zip

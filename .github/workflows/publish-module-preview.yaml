@@ -53,20 +53,12 @@ jobs:
 
       # ./module/ is a build artifact produced by Build-MaesterModule.ps1.
       # It is ignored by git and must never be committed to source control.
-      - name: Build Maester module
-        id: build-module
-        shell: pwsh
-        run: ./build/Build-MaesterModule.ps1
-
-      - name: Install PowerShell module dependencies
-        id: install-dependencies
-        shell: pwsh
-        run: Install-Module Pester, Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-
-      - name: Validate built module
-        id: validate-module
-        shell: pwsh
-        run: ./build/Test-MaesterModuleOutput.ps1 -ModulePath '${{ github.workspace }}/module' -ExpectedVersion '${{ steps.moduleversion.outputs.tag }}'
+      - name: Build, validate, and publish Maester module
+        id: publish-module
+        uses: ./.github/actions/publish-maester-module
+        with:
+          expected-version: ${{ steps.moduleversion.outputs.tag }}
+          gallery-api-key: ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Archive PowerShell build
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -74,22 +66,6 @@ jobs:
           name: maester-module
           path: |
             ${{ github.workspace }}/module
-
-      - name: Publish module to the PowerShell Gallery
-        id: publish-to-gallery
-        shell: pwsh
-        run: |
-          # Publish-Module requires the module folder name to match the module name,
-          # so stage the built ./module output in a folder named Maester first.
-          New-Item -ItemType Directory -Path '${{ github.workspace }}/publish' -Force | Out-Null
-          Copy-Item '${{ github.workspace }}/module' -Recurse -Destination '${{ github.workspace }}/publish/Maester' -Force
-          Publish-Module -Path '${{ github.workspace }}/publish/Maester' -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
-
-      - name: Build PowerShell module zip for GitHub release
-        id: module-creation
-        shell: pwsh
-        run: |
-          Compress-Archive -Path '${{ github.workspace }}/publish/Maester/*' -DestinationPath '${{ github.workspace }}/maester.zip'
 
       - name: Create release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0

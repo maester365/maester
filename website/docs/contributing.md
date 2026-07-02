@@ -47,7 +47,7 @@ The publishable Maester module is produced by a build script that consolidates t
 - Use 4-space indentation. No tabs.
 - Save all `.ps1` and `.psm1` files as UTF-8 with BOM (`utf8BOM`).
 - Use approved PowerShell verbs only. Run `Get-Verb` for the authoritative list.
-- Avoid trailing whitespace and end every file with a single newline.
+- Avoid trailing whitespace. End every file with one blank line (a single trailing newline).
 - Place comment-based help inside the function body (immediately after the opening brace), not above the `function` keyword.
 
 ### File organization
@@ -58,8 +58,8 @@ The publishable Maester module is produced by a build script that consolidates t
 
 ### Pester Tests
 
-- Tests for the Maester module are at /powershell/tests
-- When making changes to the module you can run the test locally by running `/powershell/tests/pester.ps1`
+- QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
+- When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 

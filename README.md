@@ -110,4 +110,4 @@ The `module/` folder is a build artifact — it is ignored by git and never comm
 
 ## Contributing
 
-Contributions are welcome! If you want to contribute new tests or improve existing ones, please refer to the [contribution guide](https://preview.maester.dev/docs/contributing).
+Contributions are welcome! If you want to contribute new tests or improve existing ones, please refer to the [contribution guide](https://maester.dev/docs/contributing).
