@@ -138,7 +138,7 @@ This will:
 - Prompt you to authenticate and provide consent
 - Output the **Client ID** you will need for `Connect-Maester`
 
-If you prefer to start from the exact example in the PnP docs, run their default command first and then add the SharePoint delegated permission needed by Maester.
+If you prefer to start from the exact example in the PnP docs, run `Register-PnPEntraIDAppForInteractiveLogin` with their default parameters and add `-SharePointDelegatePermissions "AllSites.FullControl"` for Maester's SharePoint tests.
 
 > **Note:** Maester's SharePoint tests are read-only. `AllSites.FullControl` (delegated) is sufficient.
 >
