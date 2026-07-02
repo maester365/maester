@@ -24,10 +24,37 @@ Follow the guide below to set up Maester for development on your local machine, 
 
 ### Manual editing
 
-- Load the PowerShell module. This needs to be done anytime you make changes to the code in `./powershell`.
+- Source files live in `./powershell` (module functions) and `./tests` (bundled test suites). Never edit files in `./module` — it is generated build output.
+- For quick iteration, load the PowerShell module directly from source. This needs to be done anytime you make changes to the code in `./powershell`.
   - `Import-Module ./powershell/Maester.psd1 -Force`
 - Run Maester
   - `Invoke-Maester`
+
+### Building the module
+
+The publishable Maester module is produced by a build script that consolidates the source files into an optimized module for faster import:
+
+- Run `./build/Build-MaesterModule.ps1` to produce the publishable module in `./module`.
+- Test your changes against the built output by importing it: `Import-Module ./module/Maester.psd1 -Force`.
+- `./module` is a build artifact: it is ignored by git and never committed to source control. Built modules are attached to GitHub Releases and published to the PowerShell Gallery from CI.
+- The `FunctionsToExport` list in the built `Maester.psd1` is auto-generated at build time from the public source files. Do not edit the built manifest manually.
+- The bundled test files in `./module/maester-tests` are copied at build time from `./tests`. Do not edit build output manually.
+
+### Code style
+
+- Use the One True Brace Style (OTBS): the opening brace goes on the same line as the statement.
+- Use Pascal Case for all variable and parameter names.
+- Use 4-space indentation. No tabs.
+- Save all `.ps1` and `.psm1` files as UTF-8 with BOM (`utf8BOM`).
+- Use approved PowerShell verbs only. Run `Get-Verb` for the authoritative list.
+- Avoid trailing whitespace and end every file with a single newline.
+- Place comment-based help inside the function body (immediately after the opening brace), not above the `function` keyword.
+
+### File organization
+
+- Public (exported) functions go in `./powershell/public`. One function per file, and the filename must match the function name exactly.
+- Internal helper functions go in `./powershell/internal`. These are never exported.
+- Pester test suite files go in `./tests/<SuiteName>`.
 
 ### Pester Tests
 
