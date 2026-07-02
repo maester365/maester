@@ -39,7 +39,7 @@ Learn more: [Control how agents are shared](https://learn.microsoft.com/microsof
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentBroadSharing](/docs/commands/Test-MtAIAgentBroadSharing) |
-| Tags | AIAgent, CopilotStudio, MT.1113 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1113 |
 
 ## Source
 

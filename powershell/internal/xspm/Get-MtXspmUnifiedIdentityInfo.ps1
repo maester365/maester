@@ -24,7 +24,14 @@
         $Query = "
         // Define the UnifiedIdentityInfo function
         let Int_PrivilegedIdentityInfo = (UserPrincipalName:string='', ObjectId:string='', EntraRoleDefinitionName:string='', EntraRolePermission:string='', LookbackTimestamp:datetime=datetime(now)) {
-            let SensitiveEntraDirectoryRoles = externaldata(RoleName: string, RoleId: string, isPrivileged: bool, Categories:string, Classification: dynamic, RolePermissions: dynamic)['https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with(format='multijson')
+            let SensitiveEntraDirectoryRoles = externaldata(
+                RoleName: string,
+                RoleId: string,
+                isPrivileged: bool,
+                Categories: string,
+                Classification: dynamic,
+                RolePermissions: dynamic
+                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
             | project RoleDefinitionName = RoleName, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
             let IdentityInfoUpdateInterval = -14;
             let IdentityInfoLookbackWindow = datetime_add('day', IdentityInfoUpdateInterval, LookbackTimestamp);
@@ -92,18 +99,35 @@
             )
         };
         let Int_WorkloadIdentityInfoXdr = (ServicePrincipalName:string='', ServicePrincipalObjectId:guid=guid(null)) {
-            let FirstPartyApps = externaldata(AppId: string, AppDisplayName: string, AppOwnerOrganizationId: string, Source:string)
-                ['https://raw.githubusercontent.com/merill/microsoft-info/main/_info/MicrosoftApps.json'] with(format='multijson')
+            let FirstPartyApps = externaldata(
+                AppId: string,
+                AppDisplayName: string,
+                AppOwnerOrganizationId: string,
+                Source: string
+                ) [@'https://raw.githubusercontent.com/merill/microsoft-info/main/_info/MicrosoftApps.json'] with (format='multijson')
                 | project OAuthAppId = AppId, AppOwnerTenantId = AppOwnerOrganizationId;
-            let SensitiveEntraDirectoryRoles = externaldata(RoleName: string, RoleId: string, isPrivileged: bool, Categories:string, Classification: dynamic, RolePermissions: dynamic)
-                ['https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with(format='multijson')
+            let SensitiveEntraDirectoryRoles = externaldata(
+                RoleName: string,
+                RoleId: string,
+                isPrivileged: bool,
+                Categories: string,
+                Classification: dynamic,
+                RolePermissions: dynamic
+                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json'] with (format='multijson')
                 | project RoleDefinitionName = RoleName, RoleId, RoleIsPrivileged = isPrivileged, Classification, RoleCategories = Categories, RolePermissions;
-            let SensitiveMsGraphPermissions = externaldata(AppRoleDisplayName: string, AppRoleId: string, AppId: string, EAMTierLevelName: string, Category: string)
-                ['https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_AppRoles.json'] with(format='multijson');
+            let SensitiveApiPermissions = externaldata(
+                PermissionId: string,
+                PermissionValue: string,
+                PermissionType: string,
+                TargetAppDisplayName: string,
+                TargetAppId: string,
+                Category: string,
+                EAMTierLevelName: string
+                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_ApiPermissions.json'] with (format='multijson');
             let PrivilegedAzureRoles = dynamic(['Owner','Contributor','Access Review Operator Service Role','Azure File Sync Administrator','Role Based Access Control Administrator','User Access Administrator']);
-            let PrivilegedArmOperations = (externaldata(RoleAction:string)
-                [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'] with (format='csv', ignoreFirstRecord=true)
-            );
+            let PrivilegedArmOperations = externaldata(
+                RoleAction: string
+                ) [@'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/refs/heads/main/PrivilegedOperations/ArmApiRequest.csv'] with (format='csv', ignoreFirstRecord=true);
             let PrivilegedArmOperationsPattern = @'Microsoft\.Authorization/.*/action';
             let PrivilegedGroupMinCriticalLevel = 2;
             IdentityInfo
@@ -127,17 +151,17 @@
                     | where tolower(AppName) contains tolower(ServicePrincipalName) and ServicePrincipalId contains tostring(ServicePrincipalObjectId)
                     | summarize arg_max(Timestamp, *) by ServicePrincipalId
                     | mv-expand parse_json(Permissions)
-                    | extend AppId = tostring(parse_json(Permissions)['TargetAppId'])
-                    | extend AppDisplayName = tostring(parse_json(Permissions)['TargetAppDisplayName'])
-                    | extend AppRoleDisplayName = tostring(parse_json(Permissions)['PermissionValue'])
+                    | extend TargetAppId = tostring(parse_json(Permissions)['TargetAppId'])
+                    | extend TargetAppDisplayName = tostring(parse_json(Permissions)['TargetAppDisplayName'])
+                    | extend PermissionValue = tostring(parse_json(Permissions)['PermissionValue'])
                     | extend PermissionType = tostring(parse_json(Permissions)['PermissionType'])
                     | extend InUse = tostring(parse_json(Permissions)['InUse'])
                     | extend PrivilegeLevel = tostring(parse_json(Permissions)['PrivilegeLevel'])
                     | join kind = leftouter (
-                        SensitiveMsGraphPermissions
-                    ) on AppId, AppRoleDisplayName
+                        SensitiveApiPermissions
+                    ) on PermissionValue, PermissionType, TargetAppId
                     | project-rename Classification = EAMTierLevelName
-                    | extend ApiPermission = bag_pack_columns(AppId, AppDisplayName, AppRoleId, AppRoleDisplayName, InUse, PrivilegeLevel, Category, Classification)
+                    | extend ApiPermission = bag_pack_columns(PermissionId, PermissionValue, PermissionType, TargetAppId, TargetAppDisplayName, InUse, PrivilegeLevel, Category, Classification)
                     | summarize ApiPermissions = make_set(ApiPermission) by ServicePrincipalId
             ) on ServicePrincipalId
             | project-away Permissions
@@ -335,7 +359,7 @@
                         | where IsPrimary == true
                         | project IdentityId, AccountObjectId = SourceProviderAccountId, AccountUpn, AccountStatus
                 ) on IdentityId
-                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, IdentityLinkType, IdentityId, AccountStatus)
+                | extend AssociatedPrimaryAccount = bag_pack_columns(AccountObjectId, AccountUpn, AccountStatus, IdentityLinkType, IdentityId)
                 | project AccountObjectId = SourceProviderAccountId, AssociatedPrimaryAccount, PrimaryAccountObjectId = AccountObjectId
             ) on AccountObjectId
             | project-away AccountObjectId1
@@ -359,7 +383,7 @@
             | extend RuleName = tostring(CriticalityData)
             | extend ObjectId = iff(EntityType['type'] == 'AadObjectId', tolower(tostring(extract('objectid=([\\w-]+)', 1, tostring(parse_json(EntityIds)['id'])))), tolower(tostring(EntityType['id'])))
             | extend CriticalAssetDetail = bag_pack_columns(CriticalityLevel, RuleName)
-            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, isnotempty(CriticalAssetDetail)) by AccountObjectId = ObjectId
+            | summarize CriticalAssetDetails = make_set_if(CriticalAssetDetail, isnotempty(tostring(CriticalAssetDetail.RuleName))) by AccountObjectId = ObjectId
             ) on AccountObjectId
             | project-reorder AccountObjectId, AccountDisplayName, AccountStatus, Type, CriticalityLevel, CriticalAssetDetails, Classification, AssignedAzureRoles, AssignedEntraRoles, ApiPermissions, AssociatedPrimaryAccount;
         };

@@ -39,7 +39,7 @@ Learn more: [Configure data policies for agents](https://learn.microsoft.com/mic
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentRiskyHttpConfig](/docs/commands/Test-MtAIAgentRiskyHttpConfig) |
-| Tags | AIAgent, CopilotStudio, MT.1115 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1115 |
 
 ## Source
 

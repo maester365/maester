@@ -2,16 +2,16 @@
     <#
     .SYNOPSIS
         Checks if devices without a compliance policy assigned are marked "not compliant".
-    
+
     .DESCRIPTION
         Devices without a compliance policy assigned should be marked "not compliant".
         CIS Microsoft 365 Foundations Benchmark v6.0.1
-    
+
     .EXAMPLE
         Test-MtCisDevicesWithoutCompliancePolicyMarked
-    
+
         Returns true if devices without a compliance policy assigned are marked "not compliant".
-    
+
     .LINK
         https://maester.dev/docs/commands/Test-MtCisDevicesWithoutCompliancePolicyMarked
     #>
@@ -21,6 +21,11 @@
 
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
+        return $null
+    }
+
+    if (-not (Get-MtLicenseInformation -Product Intune)) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedIntune
         return $null
     }
 

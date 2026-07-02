@@ -49,7 +49,7 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.AAD.8.2](../CISA.MS.AAD.8.2) | Only users with the Guest Inviter role SHOULD be able to invite guest users. | High | Entra ID Free |
 | [CISA.MS.AAD.8.3](../CISA.MS.AAD.8.3) | Guest invites SHOULD only be allowed to specific external domains that have been authorized by the agency for legitimate business purposes. | Medium | Entra ID Free |
 | [CISA.MS.EXO.1.1](../CISA.MS.EXO.1.1) | Automatic forwarding to external domains SHALL be disabled. | High | exchange |
-| [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1) | A list of approved IP addresses for sending mail SHALL be maintained. | Medium | exchange |
+| [CISA.MS.EXO.2.1](../CISA.MS.EXO.2.1) | A list of approved IP addresses for sending mail SHALL be maintained. | Medium | Deprecated |
 | [CISA.MS.EXO.2.2](../CISA.MS.EXO.2.2) | An SPF policy SHALL be published for each domain, designating only these addresses as approved senders. | Medium | exchange |
 | [CISA.MS.EXO.3.1](../CISA.MS.EXO.3.1) | DKIM SHOULD be enabled for all domains. | Medium | exchange |
 | [CISA.MS.EXO.4.1](../CISA.MS.EXO.4.1) | A DMARC policy SHALL be published for every second-level domain. | Medium | exchange |

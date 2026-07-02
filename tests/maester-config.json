@@ -1,7 +1,12 @@
 {
+  "ModuleVersion": "2.0.0",
+  "ConfigVersion": "",
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
-    "DataverseEnvironmentUrl": ""
+    "DataverseEnvironmentUrl": "",
+    "GitHubOrganization": "",
+    "GitHubApiBaseUri": "https://api.github.com",
+    "GitHubApiVersion": "2022-11-28"
   },
   "TestSettings": [
     {
@@ -1473,6 +1478,30 @@
       "Id": "MT.1171",
       "Severity": "High",
       "Title": "Sample Submission should send safe samples automatically"
+    },
+    {
+      "Id": "MT.1182",
+      "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
+    },
+    {
+      "Id": "MT.1178",
+      "Severity": "High",
+      "Title": "Ensure ASR Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1179",
+      "Severity": "High",
+      "Title": "Ensure App Control for Business is enabled"
+    },
+    {
+      "Id": "MT.1180",
+      "Severity": "Medium",
+      "Title": "Ensure Managed Installer Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1181",
+      "Severity": "High",
+      "Title": "Conditional Access policy is present that blocks high agent risk signins"
     },
     {
       "Id": "ORCA.100",

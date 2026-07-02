@@ -495,9 +495,23 @@ test.json
 ## Custom Entries for Maester ##
 ## ========================== ##
 
-# Claude Code
-.claude/**
+# Claude Code — ignore everything by default, then re-include the
+# committed pieces (agents, skills, commands, hooks). gitignore can
+# only re-include from a non-excluded parent, so list each dir level.
+.claude/*
+!.claude/agents/
+.claude/agents/*
 !.claude/agents/**
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/**
+!.claude/commands/
+.claude/commands/*
+!.claude/commands/**
+!.claude/hooks/
+.claude/hooks/*
+!.claude/hooks/**
+.claude/settings.local.json
 
 # Don't allow Maester test results in the main branch
 test-results

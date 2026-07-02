@@ -39,7 +39,7 @@ Learn more: [Use MCP servers in Copilot Studio](https://learn.microsoft.com/en-u
 | Suite | Maester |
 | Category | AIAgent |
 | PowerShell test | [Test-MtAIAgentMcpTools](/docs/commands/Test-MtAIAgentMcpTools) |
-| Tags | AIAgent, CopilotStudio, MT.1120 |
+| Tags | AIAgent, CopilotStudio, Maester, MT.1120 |
 
 ## Source
 

@@ -9,7 +9,7 @@
 
     This function will be called for each fresh run of Invoke-Maester.
     #>
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Module variables used in other functions.')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Module variables used in other functions.')]
     param()
 
     Clear-MtGraphCache
@@ -21,5 +21,9 @@
     Clear-MtExoCache
     $__MtSession.AIAgentInfo = $null
     $__MtSession.AzureDevOpsConnection = $null
+    # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.
+    # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.
+    $__MtSession.GitHubCache = @{}
+    $__MtSession.SpoCache = @{}
     # $__MtSession.Connections = @() # Do not clear connections as they are used to track the connection state. This module variable should only be set by Connect-Maester and Disconnect-Maester.
 }

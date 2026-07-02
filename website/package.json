@@ -22,7 +22,7 @@
     "@docusaurus/plugin-google-tag-manager": "^3.10.1",
     "@docusaurus/preset-classic": "^3.10.1",
     "@docusaurus/theme-mermaid": "^3.10.1",
-    "@easyops-cn/docusaurus-search-local": "^0.55.1",
+    "@easyops-cn/docusaurus-search-local": "^0.55.2",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
@@ -33,7 +33,7 @@
     "posthog-docusaurus": "^2.0.5",
     "prism-react-renderer": "^2.1.0",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.1",

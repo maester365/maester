@@ -12,7 +12,7 @@ param()
 
 <#
 
-Checks MDO Anti-phishing policy Advanced phishing thresholds 
+Checks MDO Anti-phishing policy Advanced phishing thresholds
 
 #>
 
@@ -21,9 +21,9 @@ Checks MDO Anti-phishing policy Advanced phishing thresholds
 class ORCA220 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA220()
@@ -47,16 +47,16 @@ class ORCA220 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
 
 
-        ForEach($Policy in $Config["AntiPhishPolicy"]) 
+        ForEach($Policy in $Config["AntiPhishPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $PhishThresholdLevel = $($Policy.PhishThresholdLevel)
@@ -74,11 +74,11 @@ class ORCA220 : ORCACheck
 
             # Standard
 
-            If($PhishThresholdLevel -eq 3)  
+            If($PhishThresholdLevel -eq 3)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            Else 
+            }
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
@@ -88,8 +88,8 @@ class ORCA220 : ORCACheck
             If($PhishThresholdLevel -eq 4)
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Pass")
-            } 
-            Else 
+            }
+            Else
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Strict,"Fail")
             }
@@ -98,7 +98,7 @@ class ORCA220 : ORCACheck
 
 
         }
-        
+
         If($Config["AnyPolicyState"][[PolicyType]::Antiphish] -eq $False)
         {
             $ConfigObject = [ORCACheckConfig]::new()
@@ -106,7 +106,7 @@ class ORCA220 : ORCACheck
             $ConfigObject.ConfigData=""
             $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             $this.AddConfig($ConfigObject)
-        }       
+        }
 
     }
 
