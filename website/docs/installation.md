@@ -56,7 +56,7 @@ GitHub is an optional connection for GitHub security tests and is not included i
 For interactive sessions, use the Maester GitHub App OAuth flow:
 
 ```powershell
-Connect-Maester -Service Graph,GitHub -GitHubOrganization <Name Of GitHub Organization>
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
 ```
 
 See [Connect to GitHub (optional)](connect-maester/readme.md#connect-to-github-optional) for GitHub App install/approval details and token-based automation options.
