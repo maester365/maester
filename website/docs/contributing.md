@@ -107,7 +107,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 - Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
-- If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has supression tags at the beginning of the function).
+- If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
 
 ### Updating EIDSCA tests and documentation
 
@@ -156,15 +156,15 @@ Follow this guide if you want to run the documentation locally and view changes 
 
 When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
 
-```
+```shell
 npm install
 ```
 
 #### Starting the site
 
-While in the ./website folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
+While in the ./website folder, run the following command to start the site locally. This will start a local server and open the site in your default browser to <http://localhost:3000/>
 
-```
+```shell
 npm start
 ```
 
@@ -183,10 +183,10 @@ There are two versions of the Maester website:
 - [Production](https://maester.dev) - This is the live version of the site that is updated whenever a new version of the Maester module is released.
 - [Preview](https://preview.maester.dev) - This is the version of the site that is updated with every commit to the main branch. This allows you to see changes before they are published to production.
 
-| Environment | URL                          | Branch       |  Update Trigger                    |
-|-------------|------------------------------|--------------| -----------------------------------|
-| Production  | https://maester.dev          | website-prod | New Maester module release         |
-| Preview     | https://preview.maester.dev  | main         | Every commit to the main branch    |
+| Environment | URL | Branch | Update Trigger |
+| --- | --- | --- | --- |
+| Production | <https://maester.dev> | website-prod | New Maester module release |
+| Preview | <https://preview.maester.dev> | main | Every commit to the main branch |
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
 
