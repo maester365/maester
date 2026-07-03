@@ -204,17 +204,18 @@ Describe 'Test-MtConnection AzureDevOps cache' {
     }
 
     AfterEach {
-        Remove-Item -Path function:global:Get-ADOPSConnection -ErrorAction SilentlyContinue
         InModuleScope Maester {
+            Remove-Item -Path function:Get-ADOPSConnection -ErrorAction SilentlyContinue
             $__MtSession.AzureDevOpsConnectionCache = $null
             $__MtSession.Remove('AzureDevOpsConnection')
         }
     }
 
     It 'caches a successful Azure DevOps probe under a cache-specific key' {
-        Set-Item -Path function:global:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } }
-
-        $result = Test-MtConnection -Service AzureDevOps -Details
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
 
         $result.AllConnected | Should -BeTrue
         $result.AzureDevOps['Organization'] | Should -Be 'ado-org'
@@ -225,9 +226,10 @@ Describe 'Test-MtConnection AzureDevOps cache' {
     }
 
     It 'caches a failed Azure DevOps probe as NotConnected' {
-        Set-Item -Path function:global:Get-ADOPSConnection -Value { $null }
-
-        $result = Test-MtConnection -Service AzureDevOps -Details
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { $null } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
 
         $result.AllConnected | Should -BeFalse
         $result.AzureDevOps | Should -BeNullOrEmpty
@@ -241,9 +243,10 @@ Describe 'Test-MtConnection AzureDevOps cache' {
         InModuleScope Maester {
             $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'cached-org' }
         }
-        Set-Item -Path function:global:Get-ADOPSConnection -Value { throw 'Get-ADOPSConnection should not be called when cache exists.' }
-
-        $result = Test-MtConnection -Service AzureDevOps -Details
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { throw 'Get-ADOPSConnection should not be called when cache exists.' } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
 
         $result.AllConnected | Should -BeTrue
         $result.AzureDevOps['Organization'] | Should -Be 'cached-org'
