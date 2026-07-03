@@ -15,9 +15,9 @@ param()
 class ORCA114 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA114()
@@ -39,32 +39,32 @@ class ORCA114 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
-    
+
         $CountOfPolicies = ($Config["HostedConnectionFilterPolicy"]).Count
-        ForEach($HostedConnectionFilterPolicy in $Config["HostedConnectionFilterPolicy"]) 
+        ForEach($HostedConnectionFilterPolicy in $Config["HostedConnectionFilterPolicy"])
         {
             $IsBuiltIn = $false
             $policyname = $($HostedConnectionFilterPolicy.Name)
             $IPAllowList = $($HostedConnectionFilterPolicy.IPAllowList)
 
             <#
-            
+
             Important! Do not apply read-only to preset policies here.
-            
+
             #>
 
             # Check if IPAllowList < 0 and return inconclusive for manual checking of size
             If($IPAllowList.Count -gt 0)
             {
                 # IP Allow list present
-                ForEach($IPAddr in @($IPAllowList)) 
+                ForEach($IPAddr in @($IPAllowList))
                 {
                     # Check objects
                     $ConfigObject = [ORCACheckConfig]::new()
@@ -74,11 +74,11 @@ class ORCA114 : ORCACheck
                     $ConfigObject.ConfigDisabled = $Config["PolicyStates"][$HostedConnectionFilterPolicy.Guid.ToString()].Disabled
                     $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$HostedConnectionFilterPolicy.Guid.ToString()].Applies
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                    $this.AddConfig($ConfigObject)  
+                    $this.AddConfig($ConfigObject)
                 }
-    
-            } 
-            else 
+
+            }
+            else
             {
                 # Check objects
                 $ConfigObject = [ORCACheckConfig]::new()
@@ -89,9 +89,9 @@ class ORCA114 : ORCACheck
                 $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$HostedConnectionFilterPolicy.Guid.ToString()].Applies
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
 
-                $this.AddConfig($ConfigObject) 
+                $this.AddConfig($ConfigObject)
             }
-        }        
+        }
 
     }
 

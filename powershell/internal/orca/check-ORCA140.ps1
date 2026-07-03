@@ -15,9 +15,9 @@ param()
 class ORCA140 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA140()
@@ -35,20 +35,20 @@ class ORCA140 : ORCACheck
         $this.Links= @{
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
             "Recommended settings for EOP and Microsoft Defender for Office 365"="https://aka.ms/orca-atpp-docs-6"
-        }  
+        }
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
     GetResults($Config)
     {
-        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count  
+        #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $HighConfidenceSpamAction = $($Policy.HighConfidenceSpamAction)
@@ -63,15 +63,15 @@ class ORCA140 : ORCACheck
             $ConfigObject.ConfigDisabled = $Config["PolicyStates"][$Policy.Guid.ToString()].Disabled
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
-            
+
             # Fail if HighConfidenceSpamAction is not set to Quarantine
-    
-            If($HighConfidenceSpamAction -eq "Quarantine") 
+
+            If($HighConfidenceSpamAction -eq "Quarantine")
             {
                 $ConfigObject.ConfigData=$HighConfidenceSpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.ConfigData=$HighConfidenceSpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
@@ -81,15 +81,15 @@ class ORCA140 : ORCACheck
             If($HighConfidenceSpamAction -eq "Delete" -or $HighConfidenceSpamAction -eq "Redirect")
             {
                 $ConfigObject.ConfigData=$HighConfidenceSpamAction
-    
+
                 $ConfigObject.SetResult([ORCAConfigLevel]::Informational,"Fail")
                 $ConfigObject.InfoText = "The $(HighConfidenceSpamAction) option may impact the users ability to release emails and may impact user experience."
             }
 
             # Add config to check
             $this.AddConfig($ConfigObject)
-            
-        }        
+
+        }
 
     }
 

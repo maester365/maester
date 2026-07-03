@@ -15,9 +15,9 @@ param()
 class ORCA121 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA121()
@@ -38,21 +38,21 @@ class ORCA121 : ORCACheck
             "Microsoft 365 Defender Portal - Anti-spam settings"="https://security.microsoft.com/antispam"
             "Zero-hour auto purge - protection against spam and malware"="https://aka.ms/orca-zha-docs-2"
         }
-    
+
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
     {
         #$CountOfPolicies = ($Config["HostedContentFilterPolicy"]).Count
         $CountOfPolicies = ($global:HostedContentPolicyStatus| Where-Object {$_.IsEnabled -eq $True}).Count
-       
-        ForEach($Policy in $Config["HostedContentFilterPolicy"]) 
+
+        ForEach($Policy in $Config["HostedContentFilterPolicy"])
         {
             $IsPolicyDisabled = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $SpamAction = $($Policy.SpamAction)
@@ -72,17 +72,17 @@ class ORCA121 : ORCACheck
             $ConfigObject.ConfigWontApply = !$Config["PolicyStates"][$Policy.Guid.ToString()].Applies
             $ConfigObject.ConfigPolicyGuid=$Policy.Guid.ToString()
 
-            If($SpamAction -eq "MoveToJmf" -or $SpamAction -eq "Redirect" -or $SpamAction -eq "Delete" -or $SpamAction -eq "Quarantine") 
+            If($SpamAction -eq "MoveToJmf" -or $SpamAction -eq "Redirect" -or $SpamAction -eq "Delete" -or $SpamAction -eq "Quarantine")
             {
                 $ConfigObject.ConfigData=$SpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.ConfigData=$SpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             $this.AddConfig($ConfigObject)
 
             # Check requirement of Phish ZAP - MoveToJmf, redirect, delete, quarantine
@@ -99,16 +99,16 @@ class ORCA121 : ORCACheck
             {
                 $ConfigObject.ConfigData=$PhishSpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
-            } 
-            else 
+            }
+            else
             {
                 $ConfigObject.ConfigData=$PhishSpamAction
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
             }
-            
+
             $this.AddConfig($ConfigObject)
-    
-        }        
+
+        }
 
     }
 

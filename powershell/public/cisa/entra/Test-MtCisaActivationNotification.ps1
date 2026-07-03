@@ -27,37 +27,32 @@
         [switch]$GlobalAdminOnly
     )
 
-    if(!(Test-MtConnection Graph)){
+    if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
-    }else{
-        $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
-        if($EntraIDPlan -notin @("P2","Governance")){
-            if($EntraIDPlan -ne "P2"){
-                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
-                return $null
-            }elseif($EntraIDPlan -ne "Governance"){
-                #This will not currently be hit
-                Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDGovernance
-                return $null
-            }
-        }
+    }
+
+    $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
+    $hasLicense = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
+    if (-not $hasLicense) {
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
+        return $null
     }
 
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
-    if($GlobalAdminOnly){
+    if ($GlobalAdminOnly) {
         $roles = $roles | Where-Object {`
-            $_.id -eq "62e90394-69f5-4237-9190-012177145e10"
+                $_.id -eq "62e90394-69f5-4237-9190-012177145e10"
         }
-    }else{
+    } else {
         $roles = $roles | Where-Object {`
-            $_.id -ne "62e90394-69f5-4237-9190-012177145e10"
+                $_.id -ne "62e90394-69f5-4237-9190-012177145e10"
         }
     }
 
     $rolePolicies = @()
 
-    foreach($role in $roles){
+    foreach ($role in $roles) {
         $rolePolicy = [PSCustomObject]@{
             role             = $role.displayName
             activationNotify = $false
@@ -73,8 +68,8 @@
         $policy = Invoke-MtGraphRequest @policySplat
 
         $activationNotify = $policy.policy.rules | Where-Object {`
-            $_.id -eq "Notification_Admin_EndUser_Assignment" -and `
-            $_.notificationRecipients
+                $_.id -eq "Notification_Admin_EndUser_Assignment" -and `
+                $_.notificationRecipients
         }
         $rolePolicy.activationNotify = -not $null -eq $activationNotify
 
@@ -82,10 +77,10 @@
     }
 
     $misconfigured = $rolePolicies | Where-Object {`
-        -not $_.activationNotify
+            -not $_.activationNotify
     }
 
-    $testResult = ($misconfigured|Measure-Object).Count -eq 0
+    $testResult = ($misconfigured | Measure-Object).Count -eq 0
 
     $link = "https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles"
     $resultFail = "❌ Fail"
@@ -102,7 +97,7 @@
 
     foreach ($item in $rolePolicies) {
         $itemResult = $resultFail
-        if($item.activationNotify){
+        if ($item.activationNotify) {
             $itemResult = $resultPass
         }
         $result += "| $($item.role) | $($itemResult) |`n"
