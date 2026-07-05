@@ -1482,7 +1482,7 @@
     {
       "Id": "MT.1172",
       "Severity": "High",
-      "Title": "Unified audit log ingestion is enabled for AI activity"
+      "Title": "Unified audit log ingestion is enabled"
     },
     {
       "Id": "MT.1173",

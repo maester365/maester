@@ -1,17 +1,17 @@
 ---
-title: MT.1172 - Unified audit log ingestion is enabled for AI activity
-description: Ensures the Microsoft 365 unified audit log is enabled so Microsoft 365 Copilot, Security Copilot and other AI app prompts and responses are captured for downstream Purview AI controls.
+title: MT.1172 - Unified audit log ingestion is enabled
+description: Ensures the Microsoft 365 unified audit log is enabled so tenant activity across Exchange, SharePoint, OneDrive, Teams, Entra ID, Microsoft 365 Copilot and other workloads is captured for Microsoft Purview.
 slug: /tests/MT.1172
 sidebar_class_name: hidden
 ---
 
-# Unified audit log ingestion is enabled for AI activity
+# Unified audit log ingestion is enabled
 
 ## Description
 
-Microsoft Purview Data Security Posture Management (DSPM) for AI, the Risky AI usage Insider Risk Management template, eDiscovery searches that include Copilot interactions, and Communication Compliance policies for Copilot all depend on the **unified audit log** being enabled.
+The **unified audit log** is the foundation for Microsoft Purview Audit, eDiscovery, Insider Risk Management, Communication Compliance, and the DSPM for AI activity explorer. Copilot prompt/response activity is one of many signals that flow into it — along with mailbox access, file operations, admin actions, sign-ins and every other workload event.
 
-When `UnifiedAuditLogIngestionEnabled` is `False`, Microsoft 365 Copilot prompts and responses are not captured anywhere in the tenant — DSPM for AI activity explorer is empty, Risky AI usage policies cannot fire alerts, and eDiscovery cannot find Copilot transcripts.
+When `UnifiedAuditLogIngestionEnabled` is `False`, tenant activity is not captured anywhere in Purview — audit search returns no results, eDiscovery cannot find user or workload activity, Insider Risk and Communication Compliance policies cannot fire, and DSPM for AI activity explorer is empty.
 
 The test passes when `Get-AdminAuditLogConfig` returns `UnifiedAuditLogIngestionEnabled = True`.
 
@@ -32,5 +32,6 @@ Connect-Maester -Service ExchangeOnline
 ## Learn more
 
 - [Turn auditing on or off](https://learn.microsoft.com/en-us/purview/audit-log-enable-disable)
+- [Search the audit log](https://learn.microsoft.com/en-us/purview/audit-search)
 - [Audit logs for Microsoft 365 Copilot interactions](https://learn.microsoft.com/en-us/purview/audit-copilot)
 - [Data Security Posture Management for AI](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)

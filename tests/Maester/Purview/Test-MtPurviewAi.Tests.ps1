@@ -1,8 +1,8 @@
 Describe "Maester/Purview" -Tag "Maester", "Purview" {
-    It "MT.1172: Unified audit log ingestion is enabled for AI activity. See https://maester.dev/docs/tests/MT.1172" -Tag "MT.1172" {
-        $result = Test-MtPurviewAiAuditLogIngestion
+    It "MT.1172: Unified audit log ingestion is enabled. See https://maester.dev/docs/tests/MT.1172" -Tag "MT.1172" {
+        $result = Test-MtPurviewAuditLogIngestion
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "the unified audit log is enabled so Microsoft 365 Copilot prompts and responses are captured."
+            $result | Should -Be $true -Because "the unified audit log is enabled so tenant activity is captured for Microsoft Purview."
         }
     }
 
