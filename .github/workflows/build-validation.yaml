@@ -32,6 +32,7 @@ jobs:
         with:
           filters: |
             pwshmodule:
+              - 'build/**'
               - 'powershell/**'
               - 'report/**'
               - 'tests/**'
@@ -43,13 +44,16 @@ jobs:
         run: |
           # Pester 5.7.1+ is required for the coverage configuration used in pester.ps1.
           # Installed on every leg so behavior stays consistent across the matrix.
+          # -SkipPublisherCheck is required only for Pester: Windows images ship an inbox
+          # Pester 3.4.0 signed by a different publisher, and installing a newer version
+          # over it fails the Authenticode publisher match without the switch.
           Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSFramework -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module PSModuleDevelopment -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
-          Install-Module Microsoft.Graph.Authentication -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module PSFramework -Force -Scope CurrentUser -AllowClobber
+          Install-Module PSModuleDevelopment -Force -Scope CurrentUser -AllowClobber
+          Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Force -Scope CurrentUser -AllowClobber
           if ($env:RUNNER_OS -ne 'Windows') {
             try {
-              Install-Module Microsoft.PowerShell.PSResourceGet -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber -ErrorAction Stop
+              Install-Module Microsoft.PowerShell.PSResourceGet -Force -Scope CurrentUser -AllowClobber -ErrorAction Stop
             }
             catch {
               Write-Warning "Unable to install Microsoft.PowerShell.PSResourceGet: $($_.Exception.Message)"
@@ -78,6 +82,14 @@ jobs:
           Remove-Item -Path TestResults -Recurse -Force -ErrorAction SilentlyContinue
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
+
+      - name: Build module and validate output
+        if: steps.filter.outputs.pwshmodule == 'true'
+        shell: pwsh
+        run: |
+          # ./module/ is a build artifact and is never committed to source control.
+          ./build/Build-MaesterModule.ps1
+          ./build/Test-MaesterModuleOutput.ps1
 
       - name: Publish coverage summary
         # Only the Linux leg produces a JaCoCo coverage report (see PESTER_COVERAGE above).
