@@ -51,24 +51,14 @@ jobs:
         shell: pwsh
         run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion '${{ steps.moduleversion.outputs.tag }}'
 
-      - name: Package ./tests to PowerShell module
-        id: package-tests
-        shell: pwsh
-        run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
-
-      - name: Update PowerShell Module to PowerShell Gallery
-        id: publish-to-gallery
-        shell: pwsh
-        run: |
-          # Copy to maester folder to avoid issues when publishing
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
-          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
-
-      - name: Build PowerShell module for GitHub
-        id: module-creation
-        shell: pwsh
-        run: |
-          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
+      # ./module/ is a build artifact produced by Build-MaesterModule.ps1.
+      # It is ignored by git and must never be committed to source control.
+      - name: Build, validate, and publish Maester module
+        id: publish-module
+        uses: ./.github/actions/publish-maester-module
+        with:
+          expected-version: ${{ steps.moduleversion.outputs.tag }}
+          gallery-api-key: ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Create release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
@@ -97,7 +87,7 @@ jobs:
         run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ steps.moduleversion.outputs.tag }}
 
       - name: Commit website release version
-        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 #v5
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d #v5
         with:
           commit_message: 'ci(docs): update website release version ${{ steps.moduleversion.outputs.tag }}'
           file_pattern: |

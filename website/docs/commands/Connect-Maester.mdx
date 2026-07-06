@@ -1,6 +1,6 @@
 ---
 sidebar_class_name: hidden
-description: "Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub."
+description: "Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, SharePoint Online, Dataverse, Teams, and GitHub."
 id: Connect-Maester
 title: Connect-Maester
 hide_title: false
@@ -10,7 +10,7 @@ custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/publ
 
 ## SYNOPSIS
 
-Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub.
+Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, SharePoint Online, Dataverse, Teams, and GitHub.
 
 ## SYNTAX
 
@@ -18,17 +18,17 @@ Helper method to connect to Microsoft Graph using Connect-MgGraph with the requi
 Connect-Maester [-SendMail] [-SendTeamsMessage] [-Privileged] [-UseDeviceCode] [[-Environment] <String>]
  [[-AzureEnvironment] <String>] [[-ExchangeEnvironmentName] <String>] [[-TeamsEnvironmentName] <String>]
  [[-Service] <String[]>] [[-TenantId] <String>] [[-GraphClientId] <String>] [[-SharePointClientId] <String>]
- [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>]
- [[-GitHubOrganization] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-SharePointAdminUrl] <String>] [[-SharePointCertificateThumbprint] <String>] [[-GitHubOrganization] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
 Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess.
-By default, it connects to Microsoft Graph.
-Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
+By default, it connects to Microsoft Graph. Use `-Service All` to connect to Microsoft 365 services such as Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
 
-Non-Microsoft 365 services such as GitHub are not included in -Service All and must be explicitly specified.
+Non-Microsoft 365 services such as GitHub are optional and must be explicitly specified with `-Service GitHub`.
+For interactive GitHub sign-in, Maester uses the Maester GitHub App OAuth device flow by default so users do not need to create or paste personal access tokens.
 
 This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -44,7 +44,7 @@ Connect-MgGraph -Scopes (Get-MtGraphScope)
 Connect-Maester
 ```
 
-Connects to Microsoft Graph.
+Connects only to Microsoft Graph by default.
 
 ### EXAMPLE 2
 
@@ -165,6 +165,14 @@ Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c0
 ```
 
 Connects to SharePoint Online using the specified client ID and admin URL.
+
+### EXAMPLE 15
+
+```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization 'contoso'
+```
+
+Connects to Microsoft Graph and GitHub. GitHub sign-in uses the Maester GitHub App OAuth device flow by default for interactive sessions. If the app is not installed or approved for the organization, Maester guides the user through the GitHub App install or approval step. Automation can use `MAESTER_GITHUB_TOKEN` or `GH_TOKEN`.
 
 ## PARAMETERS
 
@@ -307,7 +315,7 @@ Accept wildcard characters: False
 
 ### -Service
 
-The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online.
+The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, Graph, SecurityCompliance, Teams, and SharePoint Online.
 Default is Graph.
 GitHub is not included in All and must be explicitly specified.
 
@@ -361,6 +369,7 @@ Accept wildcard characters: False
 
 The Client ID of the PnP Entra ID app for SharePoint Online.
 Required when Service includes SharePointOnline.
+The easiest setup path is the official PnP guide: https://pnp.github.io/powershell/articles/registerapplication.html
 Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
 registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
 
@@ -414,7 +423,8 @@ Accept wildcard characters: False
 
 ### -GitHubOrganization
 
-The GitHub organization login name to connect to when Service includes GitHub.
+The GitHub organization login name to connect to when `-Service` includes `GitHub`.
+If omitted, Maester looks for `GitHubOrganization` in `maester-config.json`.
 
 ```yaml
 Type: String
@@ -430,7 +440,7 @@ Accept wildcard characters: False
 
 ### -ProgressAction
 
-\{\{ Fill ProgressAction Description \}\}
+Determines how PowerShell responds to progress updates generated by a script, cmdlet, or provider, such as the progress bars generated by Write-Progress.
 
 ```yaml
 Type: ActionPreference

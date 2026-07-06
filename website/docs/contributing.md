@@ -24,15 +24,42 @@ Follow the guide below to set up Maester for development on your local machine, 
 
 ### Manual editing
 
-- Load the PowerShell module. This needs to be done anytime you make changes to the code in `./powershell`.
+- Source files live in `./powershell` (module functions) and `./tests` (bundled test suites). Never edit files in `./module` — it is generated build output.
+- For quick iteration, load the PowerShell module directly from source. This needs to be done anytime you make changes to the code in `./powershell`.
   - `Import-Module ./powershell/Maester.psd1 -Force`
 - Run Maester
   - `Invoke-Maester`
 
+### Building the module
+
+The publishable Maester module is produced by a build script that consolidates the source files into an optimized module for faster import:
+
+- Run `./build/Build-MaesterModule.ps1` to produce the publishable module in `./module`.
+- Test your changes against the built output by importing it: `Import-Module ./module/Maester.psd1 -Force`.
+- `./module` is a build artifact: it is ignored by git and never committed to source control. Built modules are attached to GitHub Releases and published to the PowerShell Gallery from CI.
+- The `FunctionsToExport` list in the built `Maester.psd1` is auto-generated at build time from the public source files. Do not edit the built manifest manually.
+- The bundled test files in `./module/maester-tests` are copied at build time from `./tests`. Do not edit build output manually.
+
+### Code style
+
+- Use the One True Brace Style (OTBS): the opening brace goes on the same line as the statement.
+- Use Pascal Case for all variable and parameter names.
+- Use 4-space indentation. No tabs.
+- Save all `.ps1` and `.psm1` files as UTF-8 with BOM (`utf8BOM`).
+- Use approved PowerShell verbs only. Run `Get-Verb` for the authoritative list.
+- Avoid trailing whitespace. End every file with one blank line (a single trailing newline).
+- Place comment-based help inside the function body (immediately after the opening brace), not above the `function` keyword.
+
+### File organization
+
+- Public (exported) functions go in `./powershell/public`. One function per file, and the filename must match the function name exactly.
+- Internal helper functions go in `./powershell/internal`. These are never exported.
+- Pester test suite files go in `./tests/<SuiteName>`.
+
 ### Pester Tests
 
-- Tests for the Maester module are at /powershell/tests
-- When making changes to the module you can run the test locally by running `/powershell/tests/pester.ps1`
+- QA tests for the Maester module framework itself are at `./powershell/tests`. These are distinct from the bundled security test suites in `./tests`.
+- When making changes to the module you can run the QA tests locally by running `./powershell/tests/pester.ps1`
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
 - The tests are run automatically on PRs and commits to the main branch and will fail if the tests do not pass
 
@@ -80,7 +107,7 @@ When in doubt always check the existing tests for the conventions used, feel fre
 - Before you submit the PR, run the tests locally by running `/powershell/tests/pester.ps1`
 - Fix any issues that are reported. If you need help see the `Common Pester test failures and how to fix` section below. Reach out on Discord if you need help.
 - The **PSScriptAnalyzer**, **PSFramework** and **PSModuleDevelopment** modules are required to run the tests, install them with `Install-Module PSFramework, PSModuleDevelopment, PSScriptAnalyzer`
-- If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has supression tags at the beginning of the function).
+- If a test is not applicable (e.g. it says not to use plural but the product name is AzureDevOps then you can add a `SuppressMessageAttribute` tag (see Invoke-Maester.ps1 which has suppression tags at the beginning of the function).
 
 ### Updating EIDSCA tests and documentation
 
@@ -129,15 +156,15 @@ Follow this guide if you want to run the documentation locally and view changes 
 
 When running the documentation for the first time, you will need to install the dependencies. This can be done by running the following command in ./website folder.
 
-```
+```shell
 npm install
 ```
 
 #### Starting the site
 
-While in the ./website folder run the following command to start the site locally. This will start a local server and open the site in your default browser to http://localhost:3000/
+While in the ./website folder, run the following command to start the site locally. This will start a local server and open the site in your default browser to [http://localhost:3000/](http://localhost:3000/)
 
-```
+```shell
 npm start
 ```
 
@@ -156,10 +183,10 @@ There are two versions of the Maester website:
 - [Production](https://maester.dev) - This is the live version of the site that is updated whenever a new version of the Maester module is released.
 - [Preview](https://preview.maester.dev) - This is the version of the site that is updated with every commit to the main branch. This allows you to see changes before they are published to production.
 
-| Environment | URL                          | Branch       |  Update Trigger                    |
-|-------------|------------------------------|--------------| -----------------------------------|
-| Production  | https://maester.dev          | website-prod | New Maester module release         |
-| Preview     | https://preview.maester.dev  | main         | Every commit to the main branch    |
+| Environment | URL | Branch | Update Trigger |
+| --- | --- | --- | --- |
+| Production | [https://maester.dev](https://maester.dev) | website-prod | New Maester module release |
+| Preview | [https://preview.maester.dev](https://preview.maester.dev) | main | Every commit to the main branch |
 
 When a new version of the Maester module is released, the documentation will be updated to reflect the changes in that version.
 
