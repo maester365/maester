@@ -17,7 +17,7 @@
 .EXAMPLE
    Connect-Maester
 
-   Connects to Microsoft Graph.
+   Connects only to Microsoft Graph by default.
 
 .EXAMPLE
    Connect-Maester -Service Graph,Teams

@@ -23,14 +23,14 @@ Describe 'Test-MtConnection — GitHub service' {
     BeforeEach {
         InModuleScope Maester {
             $__MtSession.GitHubConnection      = $null
-            $__MtSession.AzureDevOpsConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
         }
     }
 
     AfterEach {
         InModuleScope Maester {
             $__MtSession.GitHubConnection      = $null
-            $__MtSession.AzureDevOpsConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
         }
     }
 
@@ -112,7 +112,7 @@ Describe 'Test-MtConnection — GitHub service' {
         It 'Returns AllConnected $true when all included services are connected and GitHub session is absent' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = $null
-                $__MtSession.AzureDevOpsConnection = [PSCustomObject]@{ Organization = 'ado-org' }
+                $__MtSession.AzureDevOpsConnectionCache = [PSCustomObject]@{ Organization = 'ado-org' }
             }
             Mock Get-AzContext { [PSCustomObject]@{ Account = 'test@contoso.com' } } -ModuleName Maester
             Mock Invoke-AzRestMethod { [PSCustomObject]@{} } -ModuleName Maester
@@ -138,7 +138,7 @@ Describe 'Test-MtConnection — GitHub service' {
         It 'does not set the GitHub details property' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
-                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
             }
             Mock Get-AzContext { $null } -ModuleName Maester
             Mock Get-MgContext { $null } -ModuleName Maester
@@ -183,7 +183,7 @@ Describe 'Test-MtConnection — GitHub service' {
         It 'Does not populate the GitHub property' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
-                $__MtSession.AzureDevOpsConnection = 'NotConnected'
+                $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
             }
             Mock Get-AzContext { $null } -ModuleName Maester
             Mock Get-MgContext { $null } -ModuleName Maester
@@ -191,6 +191,75 @@ Describe 'Test-MtConnection — GitHub service' {
             Mock Get-CsTenant { $null } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
             $result.GitHub | Should -BeNullOrEmpty
+        }
+    }
+}
+
+Describe 'Test-MtConnection AzureDevOps cache' {
+    BeforeEach {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = $null
+            $__MtSession.Remove('AzureDevOpsConnection')
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            Remove-Item -Path function:Get-ADOPSConnection -ErrorAction SilentlyContinue
+            $__MtSession.AzureDevOpsConnectionCache = $null
+            $__MtSession.Remove('AzureDevOpsConnection')
+        }
+    }
+
+    It 'caches a successful Azure DevOps probe under a cache-specific key' {
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { @{ Organization = 'ado-org' } } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
+
+        $result.AllConnected | Should -BeTrue
+        $result.AzureDevOps['Organization'] | Should -Be 'ado-org'
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache['Organization'] | Should -Be 'ado-org'
+            $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
+        }
+    }
+
+    It 'caches a failed Azure DevOps probe as NotConnected' {
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { $null } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
+
+        $result.AllConnected | Should -BeFalse
+        $result.AzureDevOps | Should -BeNullOrEmpty
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache | Should -Be 'NotConnected'
+            $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
+        }
+    }
+
+    It 'uses the cached Azure DevOps probe result without re-querying the external command' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'cached-org' }
+        }
+        $result = InModuleScope Maester {
+            New-Item -Path function:Get-ADOPSConnection -Value { throw 'Get-ADOPSConnection should not be called when cache exists.' } -Force | Out-Null
+            Test-MtConnection -Service AzureDevOps -Details
+        }
+
+        $result.AllConnected | Should -BeTrue
+        $result.AzureDevOps['Organization'] | Should -Be 'cached-org'
+    }
+
+    It 'clears the Azure DevOps probe cache during module-variable reset' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = @{ Organization = 'cached-org' }
+
+            Clear-ModuleVariable
+
+            $__MtSession.AzureDevOpsConnectionCache | Should -BeNullOrEmpty
+            $__MtSession.ContainsKey('AzureDevOpsConnection') | Should -BeFalse
         }
     }
 }
