@@ -62,7 +62,7 @@ Describe 'Test-MtDomainsDmarcRecordMaturity' {
             }
         }
 
-        Test-MtDomainsDmarcRecordMaturity -TestName 'MT.1182: DMARC maturity test' | Should -BeFalse
+        Test-MtDomainsDmarcRecordMaturity | Should -BeFalse
 
         $script:testResultMarkdown | Should -Match 'Some tenant domains do not have mature DMARC records'
         $script:testResultMarkdown | Should -Match 'contoso\.com'
@@ -71,6 +71,6 @@ Describe 'Test-MtDomainsDmarcRecordMaturity' {
         $script:testResultMarkdown | Should -Match '100'
         $script:testResultMarkdown | Should -Match 'Policy is none'
         $script:testSeverity | Should -Be 'Medium'
-        $script:testName | Should -Be 'MT.1182: DMARC maturity test'
+        $script:testName | Should -BeNullOrEmpty
     }
 }

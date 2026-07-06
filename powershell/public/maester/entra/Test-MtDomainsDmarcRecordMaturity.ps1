@@ -22,26 +22,15 @@
 
     Returns true if all DMARC records for managed and verified domains have a policy of reject and a percentage value of 100%. Otherwise, returns false with details on the maturity status of each domain's DMARC record.
 
-    .PARAMETER TestName
-    Internal test name used to attach Maester result details to the active Pester test.
-
     .LINK
     https://maester.dev/docs/commands/Test-MtDomainsDmarcRecordMaturity
     #>
     [CmdletBinding()]
     [OutputType([bool])]
-    param(
-        [Parameter(DontShow)]
-        [string] $TestName
-    )
-
-    $testResultDetailSplat = @{}
-    if (![string]::IsNullOrEmpty($TestName)) {
-        $testResultDetailSplat['TestName'] = $TestName
-    }
+    param()
 
     if (!(Test-MtConnection Graph)) {
-        Add-MtTestResultDetail @testResultDetailSplat -SkippedBecause NotConnectedGraph
+        Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
 
@@ -50,7 +39,7 @@
     $verifiedManagedDomains = $domains | Where-Object { $_.isVerified -eq $true -and $_.authenticationType -eq "Managed" }
 
     if (!$verifiedManagedDomains) {
-        Add-MtTestResultDetail @testResultDetailSplat -SkippedBecause Custom -SkippedCustomReason 'No verified and managed domains found in tenant'
+        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'No verified and managed domains found in tenant'
         return $null
     }
 
@@ -130,9 +119,9 @@
 
     if ('Failed' -notin $dmarcRecords.pass -and 'Passed' -notin $dmarcRecords.pass) {
         if ($dmarcRecords.reason -like '*not available*') {
-            Add-MtTestResultDetail @testResultDetailSplat -SkippedBecause NotSupported
+            Add-MtTestResultDetail -SkippedBecause NotSupported
         } else {
-            Add-MtTestResultDetail @testResultDetailSplat -SkippedBecause Custom -SkippedCustomReason ("Skipped for " + ($dmarcRecords.reason -join ', '))
+            Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason ("Skipped for " + ($dmarcRecords.reason -join ', '))
         }
         return $null
     }
@@ -175,9 +164,9 @@
     $testResultMarkdown = $testResultMarkdown -replace '%TestResult%', $result
 
     if ([string]::IsNullOrEmpty($maxSeverity)) {
-        Add-MtTestResultDetail @testResultDetailSplat -Result $testResultMarkdown
+        Add-MtTestResultDetail -Result $testResultMarkdown
     } else {
-        Add-MtTestResultDetail @testResultDetailSplat -Result $testResultMarkdown -Severity $maxSeverity
+        Add-MtTestResultDetail -Result $testResultMarkdown -Severity $maxSeverity
     }
 
     return $testResult
