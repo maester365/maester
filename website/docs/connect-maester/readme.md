@@ -87,7 +87,7 @@ Install the PnP PowerShell module if you haven't already:
 Install-Module PnP.PowerShell -Scope CurrentUser
 ```
 
-A dedicated Entra ID app registration configured for PnP interactive login is required. See [Grant permissions to SharePoint Online](../sections/create-entra-app.md) for how to create or reuse one.
+A dedicated Entra ID app registration configured for PnP interactive login is required. The easiest way to create one is to follow the official [PnP app registration guide](https://pnp.github.io/powershell/articles/registerapplication.html) and run `Register-PnPEntraIDAppForInteractiveLogin`, which outputs the **Client ID** you will supply to `-SharePointClientId`. For the Maester-specific SharePoint permission setup, see [Grant permissions to SharePoint Online](../sections/create-entra-app.md).
 
 
 Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
