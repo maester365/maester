@@ -15,6 +15,7 @@
     Clear-MtGraphCache
     $__MtSession.GraphBaseUri = $null
     $__MtSession.TestResultDetail = @{}
+    $__MtSession.TestResultDetailPending = @()
     $__MtSession.MaesterConfig = $null
     $__MtSession.AdminPortalUrl = @{}
     Clear-MtDnsCache

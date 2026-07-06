@@ -255,6 +255,7 @@
 
     $mtTests = @()
     $sortedTests = GetTestsSorted
+    $pendingTestResultDetails = @($__MtSession.TestResultDetailPending)
 
     $testIndex = 0
 
@@ -262,7 +263,29 @@
         $testIndex++
 
         $name = $test.ExpandedName
-        $testCustomName = $__MtSession.TestResultDetail[$test.ExpandedName].TestTitle
+        $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
+        if ($null -eq $testResultDetail -and $pendingTestResultDetails.Count -gt 0) {
+            $matchedPendingDetail = $null
+
+            if ($test.ExecutedAt) {
+                $testWindowStart = $test.ExecutedAt
+                $testWindowEnd = $test.ExecutedAt.Add($test.Duration)
+                $matchedPendingDetail = @($pendingTestResultDetails | Where-Object {
+                        $_.CapturedAt -ge $testWindowStart -and $_.CapturedAt -le $testWindowEnd
+                    }) | Select-Object -Last 1
+            }
+
+            if ($null -eq $matchedPendingDetail -and $sortedTests.Count -eq 1 -and $pendingTestResultDetails.Count -eq 1) {
+                $matchedPendingDetail = $pendingTestResultDetails[0]
+            }
+
+            if ($null -ne $matchedPendingDetail) {
+                $testResultDetail = $matchedPendingDetail.Detail
+                $pendingTestResultDetails = @($pendingTestResultDetails | Where-Object { $_ -ne $matchedPendingDetail })
+            }
+        }
+
+        $testCustomName = $testResultDetail.TestTitle
         if (![string]::IsNullOrEmpty($testCustomName)) {
             # Use the custom title if it's been provided.
             $name = $testCustomName
@@ -290,8 +313,6 @@
         } else {
             Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
         }
-        $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
-
         # Add the other test metadata to the test result
         $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
         $severity = $testResultDetail.Severity # Default to the test result severity

@@ -102,24 +102,10 @@
 
     $hasGraphResults = $GraphObjects -and $GraphObjectType
 
-    if ([string]::IsNullOrEmpty($TestName)) {
-        if ($____Pester -and $____Pester.CurrentTest) {
-            $TestName = $____Pester.CurrentTest.ExpandedName
-        }
+    $testDetailCapturedAt = Get-Date
 
-        if ([string]::IsNullOrEmpty($TestName)) {
-            try {
-                $pesterModule = Get-Module Pester | Select-Object -First 1
-                if ($pesterModule) {
-                    $currentTest = & $pesterModule { Get-CurrentTest }
-                    if ($currentTest) {
-                        $TestName = $currentTest.ExpandedName
-                    }
-                }
-            } catch {
-                Write-Verbose "Unable to resolve current Pester test name: $($_.Exception.Message)"
-            }
-        }
+    if ([string]::IsNullOrEmpty($TestName) -and $____Pester -and $____Pester.CurrentTest) {
+        $TestName = $____Pester.CurrentTest.ExpandedName
     }
 
     if ($SkippedBecause) {
@@ -238,6 +224,15 @@
 
             # Check if the test name is already in the session and display a warning
             $__MtSession.TestResultDetail[$testName] = $testInfo
+        } else {
+            if (!$__MtSession.ContainsKey('TestResultDetailPending') -or $null -eq $__MtSession.TestResultDetailPending) {
+                $__MtSession.TestResultDetailPending = @()
+            }
+
+            $__MtSession.TestResultDetailPending += [PSCustomObject]@{
+                CapturedAt = $testDetailCapturedAt
+                Detail     = $testInfo
+            }
         }
     }
 
