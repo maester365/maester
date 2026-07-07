@@ -858,12 +858,16 @@ Describe 'Connect-MtGitHub' {
                 [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
             }
             Mock Get-MtGitHubCacheKey -ModuleName Maester {
+                param(
+                    [string] $ApiVersion,
+                    [string] $AbsoluteUri
+                )
                 "$ApiVersion|$AbsoluteUri"
             }
         }
 
         It 'Seeds the connected organization response with the exact Invoke-MtGitHubRequest cache key' {
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/acme-co-2024$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/acme-co-2024$' } {
                 [PSCustomObject]@{ Content = '{"login":"acme-co-2024","plan":{"name":"enterprise"}}' }
             }
 
@@ -890,7 +894,7 @@ Describe 'Connect-MtGitHub' {
         }
 
         It 'Probe 2 malformed JSON returns OrgAccessFailed without seeding cache or auth state' {
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = 'not-json{' }
             }
 
@@ -928,8 +932,11 @@ Describe 'Connect-MtGitHub' {
         }
 
         It 'Probe 4 failure still connects and still seeds the organization cache' {
-            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
                 [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user/memberships/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
             }
             $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
             $ex = [System.Exception]::new('Forbidden')

@@ -37,9 +37,9 @@ Describe 'Test-MtConnection — GitHub service' {
     Context 'Help' {
         It 'Documents the -Service All GitHub explicit connection behavior' {
             $help = Get-Help Test-MtConnection -Detailed | Out-String
-            $help | Should -Match 'after Connect-MtGitHub has been called'
+            $help | Should -Match 'not included in -Service All'
             $help | Should -Not -Match 'NotCalled sentinel'
-            $help | Should -Match 'skipped and does not affect the result'
+            $help | Should -Match 'must be checked explicitly'
         }
     }
 
