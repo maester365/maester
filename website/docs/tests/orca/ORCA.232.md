@@ -27,7 +27,7 @@ Check your malware filter policies for duplicate rules. Some policies and settin
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-malware policies](https://security.microsoft.com/antimalwarev2) 
+* [Microsoft 365 Defender Portal - Anti-malware policies](https://security.microsoft.com/antimalwarev2)
 * [Order and precedence of email protection](https://aka.ms/orca-atpp-docs-4)
 
 ## Test Metadata

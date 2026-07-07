@@ -27,7 +27,7 @@ Remove exclusions from the built-in protection policies.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2) 
+* [Microsoft 365 Defender Portal - Safe links](https://security.microsoft.com/safelinksv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365](https://aka.ms/orca-atpp-docs-7)
 
 ## Test Metadata

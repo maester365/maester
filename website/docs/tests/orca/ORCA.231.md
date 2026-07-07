@@ -27,7 +27,7 @@ Check your anti-spam policies for duplicate rules. Some policies and settings ma
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam policies](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam policies](https://security.microsoft.com/antispam)
 * [Order and precedence of email protection](https://aka.ms/orca-antispam-docs-5)
 
 ## Test Metadata

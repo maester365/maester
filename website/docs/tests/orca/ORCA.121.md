@@ -27,7 +27,7 @@ Change filter policy action to support Zero Hour Auto Purge.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam) 
+* [Microsoft 365 Defender Portal - Anti-spam settings](https://security.microsoft.com/antispam)
 * [Zero-hour auto purge - protection against spam and malware](https://aka.ms/orca-zha-docs-2)
 
 ## Test Metadata
