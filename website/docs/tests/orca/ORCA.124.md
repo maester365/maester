@@ -27,7 +27,7 @@ Set Safe attachments unknown malware response to block messages.
 
 #### Related Links
 
-* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2) 
+* [Microsoft 365 Defender Portal - Safe attachments](https://security.microsoft.com/safeattachmentv2)
 * [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-7)
 
 ## Test Metadata

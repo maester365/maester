@@ -27,7 +27,7 @@ Set the anti-spam policy to mark bulk mail as spam.
 
 #### Related Links
 
-* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6) 
+* [Recommended settings for EOP and Microsoft Defender for Office 365 security](https://aka.ms/orca-atpp-docs-6)
 * [Set-HostedContentFilterPolicy](https://aka.ms/orca-antispam-docs-9)
 
 ## Test Metadata
