@@ -45,11 +45,9 @@ jobs:
           echo "This usually means the pull request did not modify build/report/test-related files."
           echo "Skipping test report parsing."
 
-      # fail-on-error is set to false so that PRs which don't touch the path-filtered
-      # files (build/**, powershell/**, report/**, tests/**) — and bot-created PRs where
-      # GITHUB_TOKEN suppresses workflow triggers — don't get stuck waiting for an artifact
-      # that will never be uploaded. Trade-off: if tests *should* have run but the upload
-      # step failed silently, this check will report neutral instead of failing.
+      # The reporter is gated on artifact detection, so PRs without path-filtered file
+      # changes skip this step entirely. fail-on-error is set to false so parsing
+      # problems in an existing artifact report neutral instead of failing the job.
       - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
         if: steps.test-results.outputs.found == 'true'
         with:
