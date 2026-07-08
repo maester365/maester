@@ -30,3 +30,12 @@ An objective of the Maester project is to minimize duplication of effort, provid
 Maester should remain a community-driven project, not a company-owned control point.
 
 Commercial organizations should be able to build services around Maester without needing permission from one vendor. The healthiest version of Maester is one where many people and organizations contribute to the open core, build on it, and help improve it.
+
+Jozra is Merill's company, and it will be one of the commercial participants building around Maester. I (Merill) will continue investing heavily in the open project while also building hosted services that make Maester easier to run and use, providing paid support, and offering commercial licensing for organizations that cannot use open source software. The open framework itself should stand on its own as a community asset.
+
+* If you are an individual admin or a small team, Maester should be something you can use without asking for budget.
+* If you are a large enterprise, vendor, MSP, or services organization building value on top of Maester, I hope you will help fund this initiative through sponsorship, contribution, or commercial support.
+
+The mission is simple: 
+ 
+**Make security testing open, reusable, and available to everyone.**
