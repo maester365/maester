@@ -281,18 +281,18 @@ unit-test tree in Phase 4.
 
 ### Phase 1 — Orphans · rating: **safe** · effort: S
 
-1. `powershell/examples/multi-tenant-pipeline.yml`: its full YAML is **already
-   embedded** as a fenced code block in
-   `website/docs/multi-tenant/azure-devops-pipeline.md` (lines 103–300). Diff the two
-   copies, fold any drift into the docs page, then `git rm -r powershell/examples`.
-   **No bare `.yml` file goes into `website/docs/`** — and to answer the question
-   directly: the Docusaurus docs plugin only routes `.md`/`.mdx`, so an unlinked YAML
-   file there would be inert dead weight (not rendered, not served); if it were
-   relative-linked from a page it would ship as a bundled asset, but that is not this
-   repo's convention. Every existing pipeline sample (`website/docs/monitoring/*.md`,
-   the multi-tenant page) embeds YAML in fenced blocks. If a raw downloadable file is
-   ever wanted, `website/static/` is the correct home (served verbatim at the site
-   root), not `website/docs/`.
+1. `git mv powershell/examples/multi-tenant-pipeline.yml docs/examples/` — keep the
+   sample as a standalone, tracked example rather than deleting it. A near-equivalent
+   copy is already embedded as a fenced code block in
+   `website/docs/multi-tenant/azure-devops-pipeline.md` (lines 103–300), but the two
+   have **drifted**: the standalone retains an Azure DevOps/ADOPS integration path the
+   docs page omits, while the docs page adds per-tenant disconnects the standalone
+   lacks. Preserving the file under `docs/examples/` avoids losing that content. This
+   introduces a repo-root `docs/examples/` landing zone for standalone example
+   artifacts — distinct from the Docusaurus site under `website/`, which continues to
+   embed pipeline samples as fenced blocks in `.md` pages (the docs plugin only routes
+   `.md`/`.mdx`; a raw downloadable file, if ever wanted *on the site*, would belong in
+   `website/static/`, not `website/docs/`).
 2. `git mv tools powershell/tools` — `Save-MaesterOffline.ps1` is an optional
    **user-facing** script, not a build script, so `build/` is the wrong home; parking
    it under `powershell/` groups it with the rest of the PowerShell deliverables and
@@ -414,7 +414,7 @@ Run this **after** Phase 3 so the dev sentinel already keys on `./maester-tests`
 
 | Move | Rating |
 | --- | --- |
-| Remove pipeline example (content already in docs) + move `tools/` → `powershell/tools/` | safe |
+| Move pipeline example → `docs/examples/` + move `tools/` → `powershell/tools/` | safe |
 | Framework/suites split (incl. `portal/` fold, `core/` → `framework/`) | safe (shipped output identical) |
 | `tests/` → `maester-tests/` | safe with shim |
 | Keeping the old `./tests` heuristic branch, then removing it | needs-deprecation-period |
