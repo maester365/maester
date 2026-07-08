@@ -12,7 +12,6 @@ jobs:
       contents: read
       actions: read
       pull-requests: read
-      checks: write
     runs-on: ubuntu-latest
     steps:
       - name: Detect report-related file changes
@@ -51,25 +50,11 @@ jobs:
 
             core.setOutput('should-run-reporter', hasRelevantChanges ? 'true' : 'false');
 
-      - name: Mark report as skipped when not relevant
+      - name: Skip report parsing when not relevant
         if: steps.changed-files.outputs.should-run-reporter != 'true'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        with:
-          script: |
-            await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: 'Maester Test Results',
-              head_sha: context.payload.workflow_run.head_sha,
-              status: 'completed',
-              conclusion: 'success',
-              output: {
-                title: 'Maester Test Results (skipped)',
-                summary: 'No build/report-related files were modified in this pull request, so report parsing was skipped.',
-              },
-            });
-
-            core.info('Skipped test report parsing because no report-related files were modified.');
+        run: |
+          echo "No build/report-related files were modified in this pull request."
+          echo "Skipping test report parsing."
 
       # fail-on-error is set to false so that PRs which don't touch the path-filtered
       # files (build/**, powershell/**, report/**, tests/**) — and bot-created PRs where
