@@ -15,8 +15,10 @@ function Write-OrcaGeneratedContent {
         [string] $Value
     )
 
+    $newLine = $Value -match "`r`n" ? "`r`n" : "`n"
     $cleanValue = $Value -replace '(?m)[ \t]+$', ''
-    Set-Content -Path $Path -Value $cleanValue -Force
+    $cleanValue = $cleanValue -replace '(\r?\n)+$', ''
+    [System.IO.File]::WriteAllText($Path, "$cleanValue$newLine", [System.Text.UTF8Encoding]::new($false))
 }
 
 # Get orca remote repo
