@@ -87,7 +87,7 @@ Install the PnP PowerShell module if you haven't already:
 Install-Module PnP.PowerShell -Scope CurrentUser
 ```
 
-A dedicated Entra ID app registration configured for PnP interactive login is required. See [Grant permissions to SharePoint Online](../sections/create-entra-app.md) for how to create or reuse one.
+A dedicated Entra ID app registration configured for PnP interactive login is required. The easiest way to create one is to follow the official [PnP app registration guide](https://pnp.github.io/powershell/articles/registerapplication.html) and run `Register-PnPEntraIDAppForInteractiveLogin`, which outputs the **Client ID** you will supply to `-SharePointClientId`. For the Maester-specific SharePoint permission setup, see [Grant permissions to SharePoint Online](../sections/create-entra-app.md).
 
 
 Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
@@ -131,6 +131,51 @@ Connect-Maester -Service Graph,Dataverse
 ```
 
 This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`.
+
+### Connect to GitHub (optional)
+
+Maester includes optional GitHub security tests that require an active GitHub organization connection. GitHub is not included in `Connect-Maester -Service All` because it is not a Microsoft 365 service. Add `GitHub` explicitly when you want to run GitHub tests.
+
+For interactive sessions, the preferred option is the [Maester GitHub App](https://github.com/apps/maester-cli). It uses GitHub OAuth device flow, so you do not need to create, paste, or store a personal access token for day-to-day interactive use.
+
+```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
+```
+
+You can also connect only to GitHub:
+
+```powershell
+Connect-Maester -Service GitHub -GitHubOrganization '<github-organization>'
+```
+
+The first time you connect, Maester opens the GitHub device authorization page and shows a code to enter. If the Maester GitHub App is not installed or approved for the organization, Maester explains why the app is needed and asks before opening the [install page](https://github.com/apps/maester-cli/installations/new). A GitHub organization owner may need to install or approve the app for the organization.
+
+You can avoid typing the organization every time by setting `GitHubOrganization` in `maester-config.json`:
+
+```json
+{
+  "GlobalSettings": {
+    "GitHubOrganization": "contoso"
+  }
+}
+```
+
+Then connect with:
+
+```powershell
+Connect-Maester -Service Graph,GitHub
+```
+
+For automation, use a GitHub token instead of the interactive GitHub App device flow. `Connect-Maester` checks `MAESTER_GITHUB_TOKEN` first and then `GH_TOKEN`.
+
+```powershell
+$env:MAESTER_GITHUB_TOKEN = '<token>'
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
+```
+
+Use a token that can read organization membership and organization administration settings. For example, use a classic PAT with `admin:org`, or a fine-grained token with **Organization Members: read** and **Organization Administration: read**.
+
+Use `Disconnect-Maester` or `Disconnect-MtGitHub` to clear the in-memory GitHub session when you are finished.
 
 ### Connect to Azure DevOps (optional)
 

@@ -20,7 +20,7 @@
     Clear-MtDnsCache
     Clear-MtExoCache
     $__MtSession.AIAgentInfo = $null
-    $__MtSession.AzureDevOpsConnection = $null
+    $__MtSession.AzureDevOpsConnectionCache = $null
     # Invoke-Maester resets the per-run cache but preserves the existing GitHub session.
     # Disconnect-MtGitHub, including through Disconnect-Maester, owns clearing GitHubConnection and GitHubAuthHeader.
     $__MtSession.GitHubCache = @{}
