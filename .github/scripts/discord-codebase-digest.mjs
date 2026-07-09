@@ -14,53 +14,140 @@ const sinceHours = parseSinceHours(process.env.DIGEST_SINCE_HOURS ?? process.env
 const webhookUrl = process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL;
 const avatarUrl = process.env.DISCORD_AVATAR_URL;
 const now = new Date(process.env.DIGEST_NOW || Date.now());
+const mode = process.env.DIGEST_MODE || "daily";
 
 if (!token) {
   fail("GITHUB_TOKEN is required.");
 }
 
-if (!dryRun && !forcePost && melbourneHour(now) !== 9) {
-  console.log(`Skipping: local time in ${TIME_ZONE} is ${formatMelbourne(now)}, not 9am.`);
-  process.exit(0);
-}
-
-const until = now;
-const since = new Date(until.getTime() - sinceHours * 60 * 60 * 1000);
 const [owner, repo] = REPOSITORY.split("/");
 
 if (!owner || !repo) {
   fail(`GITHUB_REPOSITORY must be owner/repo. Received: ${REPOSITORY}`);
 }
 
-console.log(`Building digest for ${REPOSITORY}@${DEFAULT_BRANCH}`);
-console.log(`Window: ${since.toISOString()} to ${until.toISOString()} (${TIME_ZONE})`);
-console.log(`Mode: ${dryRun ? "dry run" : "post"}${forcePost ? " (forced)" : ""}`);
-
-const commits = await fetchCommits({ owner, repo, branch: DEFAULT_BRANCH, since, until });
-const digest = await buildDigest({ owner, repo, commits });
-
-if (digest.total === 0) {
-  console.log("No qualifying human codebase updates found. Nothing to post.");
-  process.exit(0);
+if (mode === "monthly-backfill") {
+  await runMonthlyBackfill({ owner, repo });
+} else if (mode === "daily") {
+  await runDailyDigest({ owner, repo });
+} else {
+  fail(`Unsupported DIGEST_MODE: ${mode}`);
 }
 
-const chunks = buildDiscordChunks(digest, { since, until });
-
-if (dryRun) {
-  console.log(`Dry run generated ${chunks.length} Discord post(s).`);
-  for (const [index, chunk] of chunks.entries()) {
-    console.log(`\n--- Discord post ${index + 1}/${chunks.length} (${chunk.length} chars) ---\n${chunk}`);
+async function runDailyDigest({ owner, repo }) {
+  if (!dryRun && !forcePost && melbourneHour(now) !== 9) {
+    console.log(`Skipping: local time in ${TIME_ZONE} is ${formatMelbourne(now)}, not 9am.`);
+    process.exit(0);
   }
-  process.exit(0);
+
+  const until = now;
+  const since = new Date(until.getTime() - sinceHours * 60 * 60 * 1000);
+
+  console.log(`Building digest for ${REPOSITORY}@${DEFAULT_BRANCH}`);
+  console.log(`Window: ${since.toISOString()} to ${until.toISOString()} (${TIME_ZONE})`);
+  console.log(`Mode: ${dryRun ? "dry run" : "post"}${forcePost ? " (forced)" : ""}`);
+
+  const commits = await fetchCommits({ owner, repo, branch: DEFAULT_BRANCH, since, until });
+  const digest = await buildDigest({ owner, repo, commits });
+
+  if (digest.total === 0) {
+    console.log("No qualifying human codebase updates found. Nothing to post.");
+    process.exit(0);
+  }
+
+  const chunks = buildDiscordChunks(digest, {
+    title: "Maester codebase update",
+    label: formatMelbourneDate(until),
+  });
+
+  await outputDiscordChunks(chunks);
 }
 
-if (!webhookUrl) {
-  fail("DISCORD_CODEBASE_WEBHOOK_URL is required when not running in dry-run mode.");
+async function runMonthlyBackfill({ owner, repo }) {
+  const startMonth = parseMonthKey(process.env.DIGEST_BACKFILL_START_MONTH || "2023-11", "DIGEST_BACKFILL_START_MONTH");
+  const endMonthValue = process.env.DIGEST_BACKFILL_END_MONTH || currentMonthKey(now);
+  const endMonth = parseMonthKey(endMonthValue, "DIGEST_BACKFILL_END_MONTH");
+  const months = enumerateMonths(startMonth, endMonth);
+  const shouldPrintChunks = parseBoolean(process.env.DIGEST_PRINT_CHUNKS, months.length <= 2);
+
+  if (months.length === 0) {
+    fail(`Backfill start month must be before or equal to end month. Received ${startMonth.key} to ${endMonth.key}.`);
+  }
+
+  if (!dryRun && process.env.DIGEST_BACKFILL_CONFIRM !== "POST HISTORICAL BACKFILL") {
+    fail("Set DIGEST_BACKFILL_CONFIRM='POST HISTORICAL BACKFILL' to post the monthly historical backfill.");
+  }
+
+  if (!dryRun && !webhookUrl) {
+    fail("DISCORD_CODEBASE_WEBHOOK_URL is required when not running in dry-run mode.");
+  }
+
+  console.log(`Building monthly backfill for ${REPOSITORY}@${DEFAULT_BRANCH}`);
+  console.log(`Months: ${startMonth.key} to ${endMonth.key}`);
+  console.log(`Mode: ${dryRun ? "dry run" : "post"}`);
+
+  let totalUpdates = 0;
+  let totalPosts = 0;
+  let monthsWithUpdates = 0;
+
+  for (const month of months) {
+    const since = monthStart(month);
+    const until = nextMonthStart(month);
+    const commits = await fetchCommits({ owner, repo, branch: DEFAULT_BRANCH, since, until });
+    const digest = await buildDigest({ owner, repo, commits: [...commits].reverse() });
+
+    if (digest.total === 0) {
+      console.log(`${month.key}: no qualifying human updates.`);
+      continue;
+    }
+
+    const chunks = buildDiscordChunks(digest, {
+      title: "Maester historical codebase update",
+      label: formatMonthLabel(since),
+    });
+
+    totalUpdates += digest.total;
+    totalPosts += chunks.length;
+    monthsWithUpdates += 1;
+
+    console.log(`${month.key}: ${digest.total} update(s), ${chunks.length} Discord post(s).`);
+
+    if (dryRun) {
+      if (shouldPrintChunks) {
+        for (const [index, chunk] of chunks.entries()) {
+          console.log(`\n--- ${month.key} Discord post ${index + 1}/${chunks.length} (${chunk.length} chars) ---\n${chunk}`);
+        }
+      }
+      continue;
+    }
+
+    for (const [index, chunk] of chunks.entries()) {
+      await postDiscord(chunk);
+      console.log(`${month.key}: posted Discord backfill chunk ${index + 1}/${chunks.length}.`);
+      await sleep(750);
+    }
+  }
+
+  console.log(`Backfill complete: ${totalUpdates} update(s) across ${monthsWithUpdates} month(s), ${totalPosts} Discord post(s).`);
 }
 
-for (const [index, chunk] of chunks.entries()) {
-  await postDiscord(chunk);
-  console.log(`Posted Discord digest chunk ${index + 1}/${chunks.length}.`);
+async function outputDiscordChunks(chunks) {
+  if (dryRun) {
+    console.log(`Dry run generated ${chunks.length} Discord post(s).`);
+    for (const [index, chunk] of chunks.entries()) {
+      console.log(`\n--- Discord post ${index + 1}/${chunks.length} (${chunk.length} chars) ---\n${chunk}`);
+    }
+    return;
+  }
+
+  if (!webhookUrl) {
+    fail("DISCORD_CODEBASE_WEBHOOK_URL is required when not running in dry-run mode.");
+  }
+
+  for (const [index, chunk] of chunks.entries()) {
+    await postDiscord(chunk);
+    console.log(`Posted Discord digest chunk ${index + 1}/${chunks.length}.`);
+  }
 }
 
 async function buildDigest({ owner, repo, commits }) {
@@ -196,10 +283,10 @@ async function postDiscord(content) {
   throw new Error("Discord webhook failed after retrying rate limits.");
 }
 
-function buildDiscordChunks(digest, { since, until }) {
+function buildDiscordChunks(digest, { title, label }) {
   const entries = [];
 
-  entries.push({ text: `_${formatMelbourneDate(until)}_` });
+  entries.push({ text: `_${label}_` });
   entries.push({ text: "" });
 
   if (digest.mergedPrs.length > 0) {
@@ -223,16 +310,16 @@ function buildDiscordChunks(digest, { since, until }) {
     }
   }
 
-  return splitPosts(entries);
+  return splitPosts(entries, title);
 }
 
-function splitPosts(entries) {
-  let chunks = splitWithHeader(entries, (page, total) => header(page, total));
+function splitPosts(entries, title) {
+  let chunks = splitWithHeader(entries, (page, total) => header(title, page, total));
   let previousCount = 0;
 
   while (chunks.length !== previousCount) {
     previousCount = chunks.length;
-    chunks = splitWithHeader(entries, (page) => header(page, previousCount));
+    chunks = splitWithHeader(entries, (page) => header(title, page, previousCount));
   }
 
   return chunks;
@@ -269,12 +356,12 @@ function splitWithHeader(entries, makeHeader) {
   return chunks;
 }
 
-function header(page, total) {
+function header(title, page, total) {
   if (total > 1) {
-    return `**Maester codebase update (${page}/${total})**`;
+    return `**${title} (${page}/${total})**`;
   }
 
-  return "**Maester codebase update**";
+  return `**${title}**`;
 }
 
 function extractPullRequestNumber(title) {
@@ -296,15 +383,19 @@ function isMergedToBranch(pr, branch) {
 }
 
 function isExcludedCommit(commit, title) {
-  return isBotLogin(commit.author?.login)
-    || isBotLogin(commit.committer?.login)
+  return isBotAccount(commit.author)
+    || isBotAccount(commit.committer)
     || isBotName(commit.commit?.author?.name)
     || isBotName(commit.commit?.committer?.name)
     || isDependencyUpdate(title);
 }
 
 function isExcludedPullRequest(pr) {
-  return isBotLogin(pr.user?.login) || isDependencyUpdate(pr.title);
+  return isBotAccount(pr.user) || isDependencyUpdate(pr.title);
+}
+
+function isBotAccount(account) {
+  return isBotLogin(account?.login) || account?.type === "Bot";
 }
 
 function isBotLogin(login) {
@@ -414,6 +505,64 @@ function parseSinceHours(value) {
   return parsed;
 }
 
+function parseMonthKey(value, name) {
+  const match = String(value).match(/^(\d{4})-(\d{2})$/);
+  if (!match) {
+    fail(`${name} must use YYYY-MM format. Received: ${value}`);
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (month < 1 || month > 12) {
+    fail(`${name} month must be between 01 and 12. Received: ${value}`);
+  }
+
+  return {
+    year,
+    month,
+    key: `${match[1]}-${match[2]}`,
+  };
+}
+
+function enumerateMonths(start, end) {
+  const months = [];
+  let year = start.year;
+  let month = start.month;
+
+  while (year < end.year || (year === end.year && month <= end.month)) {
+    months.push({ year, month, key: `${year}-${String(month).padStart(2, "0")}` });
+    month += 1;
+    if (month > 12) {
+      year += 1;
+      month = 1;
+    }
+  }
+
+  return months;
+}
+
+function monthStart(month) {
+  return new Date(Date.UTC(month.year, month.month - 1, 1, 0, 0, 0));
+}
+
+function nextMonthStart(month) {
+  return month.month === 12
+    ? new Date(Date.UTC(month.year + 1, 0, 1, 0, 0, 0))
+    : new Date(Date.UTC(month.year, month.month, 1, 0, 0, 0));
+}
+
+function currentMonthKey(date) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(date);
+
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  return `${year}-${month}`;
+}
+
 function melbourneHour(date) {
   const parts = new Intl.DateTimeFormat("en-AU", {
     timeZone: TIME_ZONE,
@@ -436,6 +585,14 @@ function formatMelbourneDate(date) {
   return new Intl.DateTimeFormat("en-AU", {
     timeZone: TIME_ZONE,
     dateStyle: "medium",
+  }).format(date);
+}
+
+function formatMonthLabel(date) {
+  return new Intl.DateTimeFormat("en-AU", {
+    timeZone: TIME_ZONE,
+    month: "long",
+    year: "numeric",
   }).format(date);
 }
 
