@@ -5,6 +5,7 @@ const REPOSITORY = process.env.GITHUB_REPOSITORY || "maester365/maester";
 const DEFAULT_BRANCH = process.env.DIGEST_BRANCH || "main";
 const TIME_ZONE = "Australia/Melbourne";
 const DISCORD_LIMIT = 1800;
+const DISCORD_SUPPRESS_EMBEDS = 1 << 2;
 
 const token = process.env.GITHUB_TOKEN;
 const dryRun = parseBoolean(process.env.DIGEST_DRY_RUN ?? process.env.DRY_RUN, false);
@@ -161,6 +162,7 @@ async function postDiscord(content) {
     username: "Maester bot",
     content,
     allowed_mentions: { parse: [] },
+    flags: DISCORD_SUPPRESS_EMBEDS,
   };
 
   if (avatarUrl) {
