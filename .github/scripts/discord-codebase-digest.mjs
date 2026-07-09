@@ -199,7 +199,7 @@ async function postDiscord(content) {
 function buildDiscordChunks(digest, { since, until }) {
   const entries = [];
 
-  entries.push({ text: `_${formatMelbourne(since)} - ${formatMelbourne(until)}_` });
+  entries.push({ text: `_${formatMelbourneDate(until)}_` });
   entries.push({ text: "" });
 
   if (digest.mergedPrs.length > 0) {
@@ -429,6 +429,13 @@ function formatMelbourne(date) {
     timeZone: TIME_ZONE,
     dateStyle: "medium",
     timeStyle: "short",
+  }).format(date);
+}
+
+function formatMelbourneDate(date) {
+  return new Intl.DateTimeFormat("en-AU", {
+    timeZone: TIME_ZONE,
+    dateStyle: "medium",
   }).format(date);
 }
 
