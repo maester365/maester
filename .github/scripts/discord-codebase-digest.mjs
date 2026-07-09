@@ -5,14 +5,13 @@ const REPOSITORY = process.env.GITHUB_REPOSITORY || "maester365/maester";
 const DEFAULT_BRANCH = process.env.DIGEST_BRANCH || "main";
 const TIME_ZONE = "Australia/Melbourne";
 const DISCORD_LIMIT = 1800;
-const DEFAULT_AVATAR_URL = "https://maester.dev/img/maester.png";
 
 const token = process.env.GITHUB_TOKEN;
 const dryRun = parseBoolean(process.env.DIGEST_DRY_RUN ?? process.env.DRY_RUN, false);
 const forcePost = parseBoolean(process.env.DIGEST_FORCE_POST ?? process.env.FORCE_POST, false);
 const sinceHours = parseSinceHours(process.env.DIGEST_SINCE_HOURS ?? process.env.SINCE_HOURS ?? "24");
 const webhookUrl = process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL;
-const avatarUrl = process.env.DISCORD_AVATAR_URL || DEFAULT_AVATAR_URL;
+const avatarUrl = process.env.DISCORD_AVATAR_URL;
 const now = new Date(process.env.DIGEST_NOW || Date.now());
 
 if (!token) {
@@ -160,10 +159,13 @@ async function githubJson(path) {
 async function postDiscord(content) {
   const payload = {
     username: "Maester bot",
-    avatar_url: avatarUrl,
     content,
     allowed_mentions: { parse: [] },
   };
+
+  if (avatarUrl) {
+    payload.avatar_url = avatarUrl;
+  }
 
   for (let attempt = 1; attempt <= 5; attempt++) {
     const response = await fetch(webhookUrl, {

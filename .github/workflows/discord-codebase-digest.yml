@@ -48,7 +48,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           DISCORD_CODEBASE_WEBHOOK_URL: ${{ secrets.DISCORD_CODEBASE_WEBHOOK_URL }}
-          DISCORD_AVATAR_URL: "https://maester.dev/img/maester.png"
           DIGEST_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           DIGEST_FORCE_POST: ${{ github.event_name == 'workflow_dispatch' && inputs.force_post || false }}
           DIGEST_SINCE_HOURS: ${{ github.event_name == 'workflow_dispatch' && inputs.since_hours || '24' }}
