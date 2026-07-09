@@ -7,6 +7,7 @@ const DEFAULT_BRANCH = process.env.DIGEST_BRANCH || "main";
 const TIME_ZONE = "Australia/Melbourne";
 const DISCORD_LIMIT = 1800;
 const DISCORD_SUPPRESS_EMBEDS = 1 << 2;
+const MAX_COMMIT_PAGES = 100;
 
 const token = process.env.GITHUB_TOKEN;
 const dryRun = parseBoolean(process.env.DIGEST_DRY_RUN ?? process.env.DRY_RUN, false);
@@ -196,7 +197,7 @@ async function buildDigest({ owner, repo, commits }) {
 async function fetchCommits({ owner, repo, branch, since, until }) {
   const all = [];
 
-  for (let page = 1; page <= 10; page++) {
+  for (let page = 1; page <= MAX_COMMIT_PAGES; page++) {
     const pageItems = await githubJson(githubCommitsPath({
       owner,
       repo,
@@ -210,6 +211,10 @@ async function fetchCommits({ owner, repo, branch, since, until }) {
     if (pageItems.length < 100) {
       break;
     }
+
+    if (page === MAX_COMMIT_PAGES) {
+      fail(`Commit pagination exceeded ${MAX_COMMIT_PAGES * 100} commits; narrow the digest window.`);
+    }
   }
 
   return all;
@@ -219,8 +224,12 @@ async function fetchPullRequest({ owner, repo, number }) {
   try {
     return await githubJson(githubPullRequestPath({ owner, repo, number }));
   } catch (error) {
-    console.warn(`Warning: could not fetch PR #${number}: ${error.message}`);
-    return null;
+    if (error.status === 404) {
+      console.warn(`Warning: PR #${number} was not found; treating commit as a direct commit.`);
+      return null;
+    }
+
+    throw error;
   }
 }
 
@@ -235,7 +244,7 @@ async function githubJson(path) {
   });
 
   if (!response.ok) {
-    throw new Error(`GitHub API ${path} failed (${response.status}): ${response.body}`);
+    throw githubApiError(path, response);
   }
 
   return JSON.parse(response.body);
@@ -653,6 +662,12 @@ function parseJson(value, fallback) {
   }
 }
 
+function githubApiError(path, response) {
+  const error = new Error(`GitHub API ${path} failed (${response.status}): ${response.body}`);
+  error.status = response.status;
+  return error;
+}
+
 function parseMonthKey(value, name) {
   const match = String(value).match(/^(\d{4})-(\d{2})$/);
   if (!match) {
@@ -690,13 +705,20 @@ function enumerateMonths(start, end) {
 }
 
 function monthStart(month) {
-  return new Date(Date.UTC(month.year, month.month - 1, 1, 0, 0, 0));
+  return melbourneLocalTimeToUtc({
+    year: month.year,
+    month: month.month,
+    day: 1,
+    hour: 0,
+    minute: 0,
+    second: 0,
+  });
 }
 
 function nextMonthStart(month) {
   return month.month === 12
-    ? new Date(Date.UTC(month.year + 1, 0, 1, 0, 0, 0))
-    : new Date(Date.UTC(month.year, month.month, 1, 0, 0, 0));
+    ? monthStart({ year: month.year + 1, month: 1 })
+    : monthStart({ year: month.year, month: month.month + 1 });
 }
 
 function currentMonthKey(date) {
@@ -709,6 +731,60 @@ function currentMonthKey(date) {
   const year = parts.find((part) => part.type === "year")?.value;
   const month = parts.find((part) => part.type === "month")?.value;
   return `${year}-${month}`;
+}
+
+function melbourneLocalTimeToUtc(target) {
+  let utc = new Date(Date.UTC(
+    target.year,
+    target.month - 1,
+    target.day,
+    target.hour,
+    target.minute,
+    target.second,
+  ));
+  const targetUtc = Date.UTC(
+    target.year,
+    target.month - 1,
+    target.day,
+    target.hour,
+    target.minute,
+    target.second,
+  );
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const parts = melbourneParts(utc);
+    const actualUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+    const diff = actualUtc - targetUtc;
+    if (diff === 0) {
+      return utc;
+    }
+
+    utc = new Date(utc.getTime() - diff);
+  }
+
+  return utc;
+}
+
+function melbourneParts(date) {
+  const parts = new Intl.DateTimeFormat("en-AU", {
+    timeZone: TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  return {
+    year: Number(parts.find((part) => part.type === "year")?.value),
+    month: Number(parts.find((part) => part.type === "month")?.value),
+    day: Number(parts.find((part) => part.type === "day")?.value),
+    hour: Number(parts.find((part) => part.type === "hour")?.value),
+    minute: Number(parts.find((part) => part.type === "minute")?.value),
+    second: Number(parts.find((part) => part.type === "second")?.value),
+  };
 }
 
 function melbourneHour(date) {
