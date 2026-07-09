@@ -87,6 +87,7 @@ async function buildDigest({ owner, repo, commits }) {
             url: pr.html_url,
             commitSha: commit.sha,
             commitUrl: commit.html_url,
+            contributor: contributorFromPullRequest(pr),
           });
         }
         continue;
@@ -97,6 +98,7 @@ async function buildDigest({ owner, repo, commits }) {
       title: sanitizeTitle(title),
       sha: commit.sha,
       url: commit.html_url,
+      contributor: contributorFromCommit(commit),
     });
   }
 
@@ -204,7 +206,7 @@ function buildDiscordChunks(digest, { since, until }) {
     entries.push({ text: "**Merged PRs**", section: "Merged PRs", heading: true });
     for (const pr of digest.mergedPrs) {
       entries.push({
-        text: `- [\`${shortSha(pr.commitSha)}\`](${pr.commitUrl}) ${truncate(pr.title)} ([#${pr.number}](${pr.url}))`,
+        text: `- [\`${shortSha(pr.commitSha)}\`](${pr.commitUrl}) ${truncate(pr.title)} by ${formatContributor(pr.contributor)} ([#${pr.number}](${pr.url}))`,
         section: "Merged PRs",
       });
     }
@@ -215,7 +217,7 @@ function buildDiscordChunks(digest, { since, until }) {
     entries.push({ text: "**Direct commits**", section: "Direct commits", heading: true });
     for (const commit of digest.directCommits) {
       entries.push({
-        text: `- [\`${shortSha(commit.sha)}\`](${commit.url}) ${truncate(commit.title)}`,
+        text: `- [\`${shortSha(commit.sha)}\`](${commit.url}) ${truncate(commit.title)} by ${formatContributor(commit.contributor)}`,
         section: "Direct commits",
       });
     }
@@ -331,6 +333,43 @@ function isDependencyUpdate(title) {
     || /\bbump\b.+\bfrom\b.+\bto\b/i.test(title);
 }
 
+function contributorFromPullRequest(pr) {
+  if (pr.user?.login) {
+    return {
+      name: pr.user.login,
+      url: pr.user.html_url || `https://github.com/${pr.user.login}`,
+    };
+  }
+
+  return { name: "unknown" };
+}
+
+function contributorFromCommit(commit) {
+  if (commit.author?.login) {
+    return {
+      name: commit.author.login,
+      url: commit.author.html_url || `https://github.com/${commit.author.login}`,
+    };
+  }
+
+  return {
+    name: sanitizeTitle(commit.commit?.author?.name || "unknown"),
+  };
+}
+
+function formatContributor(contributor) {
+  if (!contributor?.name) {
+    return "unknown";
+  }
+
+  const name = escapeMarkdown(contributor.name);
+  if (contributor.url) {
+    return `[${name}](${contributor.url})`;
+  }
+
+  return name;
+}
+
 function commitTitle(commit) {
   return sanitizeTitle(commit.commit?.message?.split("\n")[0] || commit.sha);
 }
@@ -340,6 +379,10 @@ function sanitizeTitle(value) {
     .replace(/[\r\n]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function escapeMarkdown(value) {
+  return String(value).replace(/([\\`*_{}[\]()#+.!|-])/g, "\\$1");
 }
 
 function truncate(value, maxLength = 240) {
