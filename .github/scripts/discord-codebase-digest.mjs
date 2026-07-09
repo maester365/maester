@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const GITHUB_API_ORIGIN = "https://api.github.com";
+import { request } from "node:https";
+
 const REPOSITORY = process.env.GITHUB_REPOSITORY || "maester365/maester";
 const DEFAULT_BRANCH = process.env.DIGEST_BRANCH || "main";
 const TIME_ZONE = "Australia/Melbourne";
@@ -11,7 +12,7 @@ const token = process.env.GITHUB_TOKEN;
 const dryRun = parseBoolean(process.env.DIGEST_DRY_RUN ?? process.env.DRY_RUN, false);
 const forcePost = parseBoolean(process.env.DIGEST_FORCE_POST ?? process.env.FORCE_POST, false);
 const sinceHours = parseSinceHours(process.env.DIGEST_SINCE_HOURS ?? process.env.SINCE_HOURS ?? "24");
-const webhookUrl = parseDiscordWebhookUrl(process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL);
+const discordWebhook = parseDiscordWebhookUrl(process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL);
 const avatarUrl = process.env.DISCORD_AVATAR_URL;
 const now = new Date(process.env.DIGEST_NOW || Date.now());
 const mode = process.env.DIGEST_MODE || "daily";
@@ -74,7 +75,7 @@ async function runMonthlyBackfill({ owner, repo }) {
     fail("Set DIGEST_BACKFILL_CONFIRM='POST HISTORICAL BACKFILL' to post the monthly historical backfill.");
   }
 
-  if (!dryRun && !webhookUrl) {
+  if (!dryRun && !discordWebhook) {
     fail("DISCORD_CODEBASE_WEBHOOK_URL is required when not running in dry-run mode.");
   }
 
@@ -136,7 +137,7 @@ async function outputDiscordChunks(chunks) {
     return;
   }
 
-  if (!webhookUrl) {
+  if (!discordWebhook) {
     fail("DISCORD_CODEBASE_WEBHOOK_URL is required when not running in dry-run mode.");
   }
 
@@ -196,15 +197,14 @@ async function fetchCommits({ owner, repo, branch, since, until }) {
   const all = [];
 
   for (let page = 1; page <= 10; page++) {
-    const params = new URLSearchParams({
-      sha: branch,
-      since: since.toISOString(),
-      until: until.toISOString(),
-      per_page: "100",
-      page: String(page),
-    });
-
-    const pageItems = await githubJson(`/repos/${owner}/${repo}/commits?${params}`);
+    const pageItems = await githubJson(githubCommitsPath({
+      owner,
+      repo,
+      branch,
+      since,
+      until,
+      page,
+    }));
     all.push(...pageItems);
 
     if (pageItems.length < 100) {
@@ -217,7 +217,7 @@ async function fetchCommits({ owner, repo, branch, since, until }) {
 
 async function fetchPullRequest({ owner, repo, number }) {
   try {
-    return await githubJson(`/repos/${owner}/${repo}/pulls/${number}`);
+    return await githubJson(githubPullRequestPath({ owner, repo, number }));
   } catch (error) {
     console.warn(`Warning: could not fetch PR #${number}: ${error.message}`);
     return null;
@@ -225,7 +225,7 @@ async function fetchPullRequest({ owner, repo, number }) {
 }
 
 async function githubJson(path) {
-  const response = await fetch(githubApiUrl(path), {
+  const response = await githubRequest(path, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
@@ -235,11 +235,10 @@ async function githubJson(path) {
   });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`GitHub API ${path} failed (${response.status}): ${body}`);
+    throw new Error(`GitHub API ${path} failed (${response.status}): ${response.body}`);
   }
 
-  return response.json();
+  return JSON.parse(response.body);
 }
 
 async function postDiscord(content) {
@@ -255,22 +254,20 @@ async function postDiscord(content) {
   }
 
   for (let attempt = 1; attempt <= 5; attempt++) {
-    const response = await fetch(webhookUrl, {
-      method: "POST",
+    const response = await discordWebhookRequest(discordWebhook.path, {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
     if (response.status === 429) {
-      const rateLimit = await response.json().catch(() => ({ retry_after: 1 }));
+      const rateLimit = parseJson(response.body, { retry_after: 1 });
       const delayMs = Math.ceil((rateLimit.retry_after ?? 1) * 1000);
       await sleep(delayMs);
       continue;
     }
 
     if (!response.ok) {
-      const body = await response.text();
-      throw new Error(`Discord webhook failed (${response.status}): ${body}`);
+      throw new Error(`Discord webhook failed (${response.status}): ${response.body}`);
     }
 
     return;
@@ -510,17 +507,110 @@ function parseRepository(value) {
   return normalized.split("/");
 }
 
-function githubApiUrl(path) {
-  if (typeof path !== "string" || !path.startsWith("/")) {
-    fail(`GitHub API path must start with /. Received: ${path}`);
+function githubCommitsPath({ owner, repo, branch, since, until, page }) {
+  const params = new URLSearchParams({
+    sha: branch,
+    since: since.toISOString(),
+    until: until.toISOString(),
+    per_page: "100",
+    page: String(page),
+  });
+
+  return `/repos/${pathSegment(owner)}/${pathSegment(repo)}/commits?${params}`;
+}
+
+function githubPullRequestPath({ owner, repo, number }) {
+  if (!Number.isSafeInteger(number) || number <= 0) {
+    fail(`Pull request number must be a positive integer. Received: ${number}`);
   }
 
-  const url = new URL(path, GITHUB_API_ORIGIN);
-  if (url.origin !== GITHUB_API_ORIGIN) {
-    fail(`Refusing to call non-GitHub API URL: ${url.origin}`);
+  return `/repos/${pathSegment(owner)}/${pathSegment(repo)}/pulls/${number}`;
+}
+
+function pathSegment(value) {
+  return encodeURIComponent(value);
+}
+
+function isGithubApiPath(path) {
+  return typeof path === "string"
+    && path.startsWith("/repos/")
+    && !path.startsWith("//")
+    && !path.includes("\\")
+    && !/[\r\n]/.test(path);
+}
+
+function githubRequest(path, { headers }) {
+  if (!isGithubApiPath(path)) {
+    fail(`Refusing to call invalid GitHub API path: ${path}`);
   }
 
-  return url;
+  return new Promise((resolve, reject) => {
+    const req = request({
+      protocol: "https:",
+      hostname: "api.github.com",
+      method: "GET",
+      path,
+      headers,
+    }, (res) => {
+      let body = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        body += chunk;
+      });
+      res.on("end", () => {
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          body,
+        });
+      });
+    });
+
+    req.setTimeout(30000, () => {
+      req.destroy(new Error("GitHub API request timed out."));
+    });
+    req.on("error", reject);
+    req.end();
+  });
+}
+
+function discordWebhookRequest(path, { headers, body }) {
+  if (!isDiscordWebhookPath(path)) {
+    fail("Refusing to call invalid Discord webhook path.");
+  }
+
+  return new Promise((resolve, reject) => {
+    const req = request({
+      protocol: "https:",
+      hostname: "discord.com",
+      method: "POST",
+      path,
+      headers: {
+        ...headers,
+        "Content-Length": Buffer.byteLength(body),
+      },
+    }, (res) => {
+      let responseBody = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        responseBody += chunk;
+      });
+      res.on("end", () => {
+        resolve({
+          ok: res.statusCode >= 200 && res.statusCode < 300,
+          status: res.statusCode,
+          body: responseBody,
+        });
+      });
+    });
+
+    req.setTimeout(30000, () => {
+      req.destroy(new Error("Discord webhook request timed out."));
+    });
+    req.on("error", reject);
+    req.write(body);
+    req.end();
+  });
 }
 
 function parseDiscordWebhookUrl(value) {
@@ -544,7 +634,23 @@ function parseDiscordWebhookUrl(value) {
     fail("Discord webhook URL must be a Discord /api/webhooks/ URL without credentials, query, or fragment.");
   }
 
-  return url;
+  return { path: url.pathname };
+}
+
+function isDiscordWebhookPath(path) {
+  return typeof path === "string"
+    && path.startsWith("/api/webhooks/")
+    && !path.startsWith("//")
+    && !path.includes("\\")
+    && !/[\r\n]/.test(path);
+}
+
+function parseJson(value, fallback) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
 }
 
 function parseMonthKey(value, name) {
