@@ -414,7 +414,11 @@ function RemoveTrailingWhitespace($content) {
 
 function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
-    $newLine = $content -match "`r`n" ? "`r`n" : "`n"
+    if ($content -match "`r`n") {
+        $newLine = "`r`n"
+    } else {
+        $newLine = "`n"
+    }
     $content = RemoveTrailingWhitespace $content
     $content = $content -replace '(\r?\n)+$', ''
     [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($false))
@@ -520,7 +524,11 @@ $discoveryLines += [System.Environment]::NewLine
 $output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
-$newLine = $output -match "`r`n" ? "`r`n" : "`n"
+if ($output -match "`r`n") {
+    $newLine = "`r`n"
+} else {
+    $newLine = "`n"
+}
 $output = RemoveTrailingWhitespace $output
 $output = $output -replace '(\r?\n)+$', ''
 [System.IO.File]::WriteAllText($TestFilePath, "$output$newLine", [System.Text.UTF8Encoding]::new($false))

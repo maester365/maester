@@ -32,7 +32,8 @@ BeforeAll {
             }
 
             $functionText = $functionDefinition.Extent.Text -replace "^function\s+$([regex]::Escape($name))\b", "function script:$name"
-            Invoke-Expression $functionText
+            $functionScriptBlock = [scriptblock]::Create($functionText)
+            . $functionScriptBlock
         }
     }
 
