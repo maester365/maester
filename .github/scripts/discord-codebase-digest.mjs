@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const API_ROOT = process.env.GITHUB_API_URL || "https://api.github.com";
+const GITHUB_API_ORIGIN = "https://api.github.com";
 const REPOSITORY = process.env.GITHUB_REPOSITORY || "maester365/maester";
 const DEFAULT_BRANCH = process.env.DIGEST_BRANCH || "main";
 const TIME_ZONE = "Australia/Melbourne";
@@ -11,7 +11,7 @@ const token = process.env.GITHUB_TOKEN;
 const dryRun = parseBoolean(process.env.DIGEST_DRY_RUN ?? process.env.DRY_RUN, false);
 const forcePost = parseBoolean(process.env.DIGEST_FORCE_POST ?? process.env.FORCE_POST, false);
 const sinceHours = parseSinceHours(process.env.DIGEST_SINCE_HOURS ?? process.env.SINCE_HOURS ?? "24");
-const webhookUrl = process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL;
+const webhookUrl = parseDiscordWebhookUrl(process.env.DISCORD_CODEBASE_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL);
 const avatarUrl = process.env.DISCORD_AVATAR_URL;
 const now = new Date(process.env.DIGEST_NOW || Date.now());
 const mode = process.env.DIGEST_MODE || "daily";
@@ -20,11 +20,7 @@ if (!token) {
   fail("GITHUB_TOKEN is required.");
 }
 
-const [owner, repo] = REPOSITORY.split("/");
-
-if (!owner || !repo) {
-  fail(`GITHUB_REPOSITORY must be owner/repo. Received: ${REPOSITORY}`);
-}
+const [owner, repo] = parseRepository(REPOSITORY);
 
 if (mode === "monthly-backfill") {
   await runMonthlyBackfill({ owner, repo });
@@ -229,7 +225,7 @@ async function fetchPullRequest({ owner, repo, number }) {
 }
 
 async function githubJson(path) {
-  const response = await fetch(`${API_ROOT}${path}`, {
+  const response = await fetch(githubApiUrl(path), {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
@@ -503,6 +499,52 @@ function parseSinceHours(value) {
   }
 
   return parsed;
+}
+
+function parseRepository(value) {
+  const normalized = String(value);
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(normalized)) {
+    fail(`GITHUB_REPOSITORY must be owner/repo. Received: ${value}`);
+  }
+
+  return normalized.split("/");
+}
+
+function githubApiUrl(path) {
+  if (typeof path !== "string" || !path.startsWith("/")) {
+    fail(`GitHub API path must start with /. Received: ${path}`);
+  }
+
+  const url = new URL(path, GITHUB_API_ORIGIN);
+  if (url.origin !== GITHUB_API_ORIGIN) {
+    fail(`Refusing to call non-GitHub API URL: ${url.origin}`);
+  }
+
+  return url;
+}
+
+function parseDiscordWebhookUrl(value) {
+  if (!value) {
+    return null;
+  }
+
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    fail("Discord webhook URL is not a valid URL.");
+  }
+
+  const allowedHosts = new Set(["discord.com", "discordapp.com"]);
+  if (url.protocol !== "https:" || !allowedHosts.has(url.hostname.toLowerCase())) {
+    fail("Discord webhook URL must use https://discord.com or https://discordapp.com.");
+  }
+
+  if (!url.pathname.startsWith("/api/webhooks/") || url.username || url.password || url.search || url.hash) {
+    fail("Discord webhook URL must be a Discord /api/webhooks/ URL without credentials, query, or fragment.");
+  }
+
+  return url;
 }
 
 function parseMonthKey(value, name) {
