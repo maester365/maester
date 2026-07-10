@@ -37,7 +37,7 @@
         $result = "| Policy | Value | Status |`n"
         $result += "| --- | --- | --- |`n"
 
-        # Currently the CIS test 8.4.1 is On or less permissive meaning anything basicly goes for Microsoft Apps i will leave the checks as is but changed all to pass since the CIS test is not concerned with Microsoft Apps
+        # CIS test 8.4.1 is "On or less permissive" for Microsoft Apps, so all Microsoft Apps states pass. The checks are retained for display purposes but do not affect the overall result.
         if (($appPermPolicy.DefaultCatalogAppsType -eq 'BlockedAppList') -and (-not $appPermPolicy.DefaultCatalogApps)) {
             # Microsoft apps
             $result += "| Microsoft apps | Allow all apps | $passResult |`n"
