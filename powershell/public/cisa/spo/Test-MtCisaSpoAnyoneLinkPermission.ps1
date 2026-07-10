@@ -4,7 +4,7 @@
     Checks state of Anyone link permissions for SharePoint Online
 
     .DESCRIPTION
-    Anyone link permissions SHOULD be limited to View only.
+    Anyone link permissions SHALL be limited to View only.
 
     .EXAMPLE
     Test-MtCisaSpoAnyoneLinkPermission

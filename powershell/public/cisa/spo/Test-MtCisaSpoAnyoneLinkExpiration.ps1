@@ -4,7 +4,7 @@
     Checks state of Anyone link expiration for SharePoint Online
 
     .DESCRIPTION
-    An expiration date SHOULD be set for Anyone links.
+    An expiration date SHALL be set for Anyone links.
 
     .EXAMPLE
     Test-MtCisaSpoAnyoneLinkExpiration
