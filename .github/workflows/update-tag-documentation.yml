@@ -3,9 +3,9 @@ name: 🏷️ Update Tag Documentation
 on:
   push:
     paths:
-      - "tests/**"
-      - "build/Update-TagsDocumentation.ps1"
-      - ".github/workflows/update-tags.yml"
+      - 'tests/**'
+      - 'build/Update-TagsDocumentation.ps1'
+      - '.github/workflows/update-tags.yml'
 
 permissions: {}
 
