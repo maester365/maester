@@ -32,13 +32,14 @@ Follow the guide below to set up Maester for development on your local machine, 
 
 ### Building the module
 
-The publishable Maester module is produced by a build script that consolidates the source files into an optimized module for faster import:
+Maester has two generated module outputs:
 
-- Run `./build/Build-MaesterModule.ps1` to produce the publishable module in `./module`.
-- Test your changes against the built output by importing it: `Import-Module ./module/Maester.psd1 -Force`.
-- `./module` is a build artifact: it is ignored by git and never committed to source control. Built modules are attached to GitHub Releases and published to the PowerShell Gallery from CI.
-- The `FunctionsToExport` list in the built `Maester.psd1` is auto-generated at build time from the public source files. Do not edit the built manifest manually.
-- The bundled test files in `./module/maester-tests` are copied at build time from `./tests`. Do not edit build output manually.
+- Run `./build/Build-MaesterModule.ps1` to produce the consolidated optimization artifact in `./module`, then import it with `Import-Module ./module/Maester.psd1 -Force`.
+- Run `./build/Build-MaesterPackage.ps1` to produce the scope-safe source-layout release package in `./publish/Maester`, then import it with `Import-Module ./publish/Maester/Maester.psd1 -Force`.
+- CI validates both outputs. The package under `./publish/Maester` is attached to GitHub Releases and published to the PowerShell Gallery.
+- `./module` and `./publish` are ignored by git and never committed to source control. Do not edit generated output manually.
+- The consolidated manifest's `FunctionsToExport` list is generated from the public source files. The release package preserves the reviewed source manifest and individual function files.
+- Bundled test files are copied from `./tests` into `maester-tests` in both generated outputs.
 
 ### Code style
 

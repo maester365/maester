@@ -5,6 +5,12 @@ This document describes a set of targeted build-time and structural optimization
 installed function-file count while preserving Pester test behavior, user-facing behavior,
 and bundled tests.
 
+> **Current release packaging:** The consolidated `./module` artifact is retained for
+> optimization validation only. Releases are built with `Build-MaesterPackage.ps1` into
+> `./publish/Maester` so individual script files preserve their PowerShell scope boundaries.
+> References below to publishing `./module` describe the original rollout plan and are
+> superseded by the scope-safe package build.
+
 All changes are **build-time transformations only**. The source tree stays as individual files
 for developer ergonomics. The published artifact changes.
 

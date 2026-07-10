@@ -12,7 +12,7 @@ For PowerShell coding conventions and rationale, please also review the [PowerSh
 
 ## Build Process
 
-Maester source code lives in `./powershell` (module functions) and `./tests` (bundled test suites). The publishable module is produced by running `./build/Build-MaesterModule.ps1`, which writes a consolidated build artifact to `./module`. The `./module` directory is generated output: it is ignored by git and must never be edited or committed. See the [Maester Contributing Guide](https://maester.dev/docs/contributing) for the full build and development workflow.
+Maester source code lives in `./powershell` (module functions) and `./tests` (bundled test suites). `./build/Build-MaesterModule.ps1` writes a consolidated optimization artifact to `./module`, while `./build/Build-MaesterPackage.ps1` creates the scope-safe source-layout package under `./publish/Maester` that is released to users. Both directories are generated output: they are ignored by git and must never be edited or committed. See the [Maester Contributing Guide](https://maester.dev/docs/contributing) for the full build and development workflow.
 
 ## Recommended PowerShell Practices
 

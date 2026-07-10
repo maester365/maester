@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Builds the Maester PowerShell module into a consolidated, publishable artifact.
+    Builds the Maester PowerShell module into a consolidated optimization artifact.
 
 .DESCRIPTION
     Consolidates all source files from powershell/internal/ and powershell/public/ into

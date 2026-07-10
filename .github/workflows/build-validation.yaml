@@ -87,13 +87,15 @@ jobs:
           # Run Pester tests on Windows PowerShell
           ./powershell/tests/pester.ps1
 
-      - name: Build module and validate output
+      - name: Build module and validate outputs
         if: steps.filter.outputs.pwshmodule == 'true'
         shell: pwsh
         run: |
           # ./module/ is a build artifact and is never committed to source control.
           ./build/Build-MaesterModule.ps1
           ./build/Test-MaesterModuleOutput.ps1
+          ./build/Build-MaesterPackage.ps1 -OutputRoot ./publish/Maester
+          ./build/Test-MaesterPackageOutput.ps1 -ModulePath ./publish/Maester
 
       - name: Publish coverage summary
         # Only the Linux leg produces a JaCoCo coverage report (see PESTER_COVERAGE above).

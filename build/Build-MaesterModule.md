@@ -1,7 +1,10 @@
 # Build-MaesterModule
 
-Builds the Maester PowerShell module into a consolidated, publishable artifact
+Builds the Maester PowerShell module into a consolidated optimization artifact
 under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
+
+The released module is created separately by `Build-MaesterPackage.ps1`, which
+preserves individual source files and their PowerShell scope boundaries.
 
 ## Usage
 
