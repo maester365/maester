@@ -16,7 +16,7 @@ import {
   BookOpen,
   MessageCircle,
   Building2,
-} from "lucide-react"
+} from "lucide-react "
 import { RiGithubFill } from "@remixicon/react"
 import { Link, useLocation } from "react-router-dom"
 import React, { useState, createContext, useContext, useRef, useEffect } from "react"
