@@ -6,7 +6,7 @@ Rationale: Anyone links that do not expire or have excessively long expiration p
 
 1. Sign in to the [SharePoint admin center](https://go.microsoft.com/fwlink/?linkid=2185219).
 2. Select Policies > Sharing.
-3. Under Advanced settings for  Anyone links, check **These links must expire within this many days** and set to **30** days or less.
+3. Under Advanced settings for Anyone links, check **These links must expire within this many days** and set to **30** days or less.
 4. Select Save.
 
 #### Related links
