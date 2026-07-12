@@ -51,7 +51,7 @@ jobs:
           # -SkipPublisherCheck is required only for Pester: Windows images ship an inbox
           # Pester 3.4.0 signed by a different publisher, and installing a newer version
           # over it fails the Authenticode publisher match without the switch.
-          Install-Module Pester -MinimumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
+          Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser -AllowClobber
           Install-Module PSFramework -Force -Scope CurrentUser -AllowClobber
           Install-Module PSModuleDevelopment -Force -Scope CurrentUser -AllowClobber
           Install-Module Microsoft.Graph.Authentication -MinimumVersion 2.27.0 -Force -Scope CurrentUser -AllowClobber
