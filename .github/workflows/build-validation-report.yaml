@@ -14,13 +14,42 @@ jobs:
       checks: write
     runs-on: ubuntu-latest
     steps:
-      # fail-on-error is set to false so that PRs which don't touch the path-filtered
-      # files (powershell/**, report/**, tests/**) — and bot-created PRs where GITHUB_TOKEN
-      # suppresses workflow triggers — don't get stuck waiting for an artifact that will
-      # never be uploaded. Trade-off: if tests *should* have run but the upload step failed
-      # silently, this check will report neutral instead of failing. Consider moving to a
-      # fan-in required-status-check pattern (Option 3) for a more robust long-term solution.
+      - name: Detect test results artifact
+        id: test-results
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        with:
+          script: |
+            const artifacts = await github.paginate(
+              github.rest.actions.listWorkflowRunArtifacts,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: context.payload.workflow_run.id,
+                per_page: 100,
+              },
+            );
+
+            const hasTestResults = artifacts.some((artifact) =>
+              artifact.name === 'test-results-Windows' && !artifact.expired,
+            );
+
+            core.info(hasTestResults
+              ? 'Found test-results-Windows artifact; running test report parsing.'
+              : 'No test-results-Windows artifact was uploaded; skipping test report parsing.');
+            core.setOutput('found', hasTestResults ? 'true' : 'false');
+
+      - name: Skip report parsing when no results were uploaded
+        if: steps.test-results.outputs.found != 'true'
+        run: |
+          echo "No test-results-Windows artifact was uploaded by build-validation."
+          echo "This usually means the pull request did not modify build/report/test-related files."
+          echo "Skipping test report parsing."
+
+      # The reporter is gated on artifact detection, so PRs without path-filtered file
+      # changes skip this step entirely. fail-on-error is set to false so parsing
+      # problems in an existing artifact report neutral instead of failing the job.
       - uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+        if: steps.test-results.outputs.found == 'true'
         with:
           artifact: test-results-Windows
           name: Maester Test Results

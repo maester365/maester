@@ -24,7 +24,7 @@ jobs:
 
       - name: Set up PowerShell modules
         run: |
-          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck"
+          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck"
 
       - name: Generate tags document
         run: pwsh -NoLogo -NoProfile -File build/Update-TagsDocumentation.ps1

@@ -31,7 +31,7 @@ interface SidebarContextType {
 
 const SidebarContext = createContext<SidebarContextType>({
   isCollapsed: false,
-  setIsCollapsed: () => {},
+  setIsCollapsed: () => { },
 })
 
 export const useSidebar = () => useContext(SidebarContext)
@@ -174,7 +174,7 @@ export function Sidebar() {
   return (
     <div
       className={cx(
-        "relative flex h-full flex-col border-r border-gray-200 bg-white transition-all duration-300 dark:border-gray-800 dark:bg-black",
+        "relative flex h-full max-h-screen flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 dark:border-gray-800 dark:bg-black",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
@@ -205,11 +205,11 @@ export function Sidebar() {
 
       {/* Tenant Selector (multi-tenant only) */}
       {isMultiTenant && !isCollapsed && (
-        <div className="border-b border-gray-200 p-3 dark:border-gray-800">
+        <div className="shrink-0 border-b border-gray-200 p-3 dark:border-gray-800">
           <div className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500">
             Tenants
           </div>
-          <div className="space-y-0.5">
+          <div className="max-h-64 space-y-0.5 overflow-y-auto pr-1">
             {tenants.map((tenant, index) => (
               <button
                 key={tenant.TenantId || index}
@@ -231,22 +231,24 @@ export function Sidebar() {
 
       {/* Tenant Selector (collapsed, multi-tenant only) */}
       {isMultiTenant && isCollapsed && (
-        <div className="border-b border-gray-200 p-2 dark:border-gray-800">
-          {tenants.map((tenant, index) => (
-            <button
-              key={tenant.TenantId || index}
-              onClick={() => setSelectedIndex(index)}
-              title={tenant.TenantName || tenant.TenantId || `Tenant ${index + 1}`}
-              className={cx(
-                "flex w-full items-center justify-center rounded-md p-2 transition-all duration-100",
-                index === selectedIndex
-                  ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-              )}
-            >
-              <Building2 className="size-[18px]" />
-            </button>
-          ))}
+        <div className="shrink-0 border-b border-gray-200 p-2 dark:border-gray-800">
+          <div className="max-h-48 space-y-0.5 overflow-y-auto">
+            {tenants.map((tenant, index) => (
+              <button
+                key={tenant.TenantId || index}
+                onClick={() => setSelectedIndex(index)}
+                title={tenant.TenantName || tenant.TenantId || `Tenant ${index + 1}`}
+                className={cx(
+                  "flex w-full items-center justify-center rounded-md p-2 transition-all duration-100",
+                  index === selectedIndex
+                    ? "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                )}
+              >
+                <Building2 className="size-[18px]" />
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

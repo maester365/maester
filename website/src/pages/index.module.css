@@ -232,6 +232,12 @@
   transform: translateY(-1px);
 }
 
+.buttonIcon {
+  width: 17px;
+  height: 17px;
+  flex: none;
+}
+
 /* ---------- Hero showcase (demo GIF) ---------- */
 
 .heroShowcase {
@@ -411,6 +417,112 @@
   align-items: center;
 }
 
+/* ---------- Manifesto ---------- */
+
+.manifestoSection {
+  padding: 1rem 0 4rem;
+}
+
+.manifestoCard {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2rem;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4rem);
+  border: 1px solid var(--home-border-strong);
+  border-radius: 24px;
+  background:
+    radial-gradient(70% 180% at 0% 50%, var(--home-glow-violet), transparent 70%),
+    radial-gradient(60% 160% at 100% 20%, var(--home-glow-blue), transparent 70%),
+    var(--home-surface-2);
+  box-shadow: var(--home-shadow-card);
+}
+
+.manifestoCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.035) 50%,
+    transparent 100%
+  );
+}
+
+.manifestoMark {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  border: 1px solid var(--home-border-strong);
+  border-radius: 24px;
+  background: rgba(5, 6, 8, 0.55);
+  color: var(--home-text);
+  box-shadow: var(--home-shadow-card);
+}
+
+.manifestoMark img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.manifestoContent {
+  max-width: 760px;
+}
+
+.manifestoTitle {
+  max-width: 24ch;
+  margin: 0 0 0.9rem;
+  color: var(--home-text);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.manifestoText {
+  max-width: 64ch;
+  margin: 0 0 1.25rem;
+  color: var(--home-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.manifestoLink {
+  color: var(--home-text);
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.manifestoLink:hover {
+  color: #8ed4ff;
+}
+
+@media (max-width: 640px) {
+  .manifestoCard {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .manifestoMark {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+  }
+
+  .manifestoMark img {
+    width: 48px;
+    height: 48px;
+  }
+}
+
 /* ---------- Feature grid ---------- */
 
 .featureGrid {
@@ -541,10 +653,57 @@
   letter-spacing: 0.04em;
 }
 
+.cloudCallout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--home-border);
+  border-radius: 14px;
+  background: var(--home-surface-2);
+}
+
+.cloudCallout div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cloudCallout strong {
+  color: var(--home-text);
+  font-size: 0.95rem;
+}
+
+.cloudCallout span {
+  color: var(--home-text-subtle);
+  font-size: 0.85rem;
+}
+
+.cloudLink {
+  flex: none;
+  color: var(--home-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.cloudLink:hover {
+  color: #8ed4ff;
+}
+
+@media (max-width: 640px) {
+  .cloudCallout {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 /* ---------- CTA band ---------- */
 
 .ctaBand {
-  margin: 2rem 0 5rem;
+  margin: 2rem 0 1rem;
   padding: 3rem 2rem;
   border-radius: 22px;
   border: 1px solid var(--home-border);
