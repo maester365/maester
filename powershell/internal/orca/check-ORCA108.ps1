@@ -126,4 +126,3 @@ class ORCA108 : ORCACheck
     }
 
 }
-
