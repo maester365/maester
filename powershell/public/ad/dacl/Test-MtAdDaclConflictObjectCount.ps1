@@ -55,5 +55,3 @@
     Write-Verbose "Completed Test-MtAdDaclConflictObjectCount"
     return $testResult
 }
-
-

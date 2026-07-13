@@ -23,6 +23,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoChangedBefore2020Count"
+
     # Get AD GPO state data (uses cached data if available)
     $gpoState = Get-MtADGpoState
 
@@ -69,6 +71,3 @@
 
     return $testResult
 }
-
-
-

@@ -1,0 +1,61 @@
+name: update-public-suffix-list
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions: {}
+
+concurrency:
+  group: update-public-suffix-list
+  cancel-in-progress: false
+
+jobs:
+  update-public-suffix-list:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Update public suffix list
+        shell: pwsh
+        run: ./build/Update-PublicSuffixList.ps1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          commit-message: 'chore: update public suffix list'
+          branch: 'automation/update-public-suffix-list'
+          delete-branch: true
+          title: 'chore: update public suffix list'
+          body: |
+            Refreshes `powershell/assets/public_domain_suffix_list.dat` from the Public Suffix List published at `https://publicsuffix.org/list/public_suffix_list.dat`.
+
+            The Public Suffix List is maintained by Mozilla volunteers and registry submissions. Reviewer background: https://publicsuffix.org/learn/
+
+            Why this matters in Maester:
+            - `powershell/public/Get-MtRegistrableDomain.ps1` uses this list to determine the registrable domain boundary.
+            - `powershell/public/maester/entra/Test-MtDomainsDmarcRecordMaturity.ps1` uses that registrable domain to decide which domain should be evaluated for DMARC.
+
+            Why some domains are excluded or skipped for DMARC checks:
+            - The list helps Maester distinguish registry-controlled suffixes from customer-manageable registrable domains.
+            - That avoids false positives where DMARC would otherwise be evaluated against a public suffix or another non-applicable domain boundary instead of the actual registrable domain.
+            - Domains such as `onmicrosoft.com` remain explicitly skipped as not applicable because the tenant does not control the base public suffix used for that shared namespace.
+
+            Reviewer note:
+            - If this list update changes DMARC results, the generated test output already includes the reason in the `Reason` column, so the impact should be visible in the test result details.

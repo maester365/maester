@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoPermissionsDetails {
+﻿function Test-MtAdGpoNoPermissionsDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports missing permissions.
@@ -106,6 +106,3 @@ function Test-MtAdGpoNoPermissionsDetails {
     Write-Verbose "Completed Test-MtAdGpoNoPermissionsDetails"
     return $testResult
 }
-
-
-

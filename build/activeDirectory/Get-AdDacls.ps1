@@ -40,7 +40,7 @@ If ($SchemaPath)
     $objSearcherPath = New-Object System.DirectoryServices.DirectorySearcher ([ADSI] "LDAP://$($SchemaPath.replace("Schema","Extended-Rights"))")
     $objSearcherPath.PageSize = 200
     $objSearcherPath.filter = "(objectClass=controlAccessRight)"
-            
+
     Try
     {
         $RightsSearcher = $objSearcherPath.FindAll()

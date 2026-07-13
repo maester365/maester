@@ -7,7 +7,9 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'ExchangeOnline', 'Graph', 'SecurityCompliance' (or 'EOP'), and 'Teams'. Default is 'All'.
+    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
+
+    GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection. GitHub is not included in -Service All and must be checked explicitly.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -15,17 +17,23 @@
     .EXAMPLE
     Test-MtConnection -Service All
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a Boolean value.
+    Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a Boolean value.
 
     .EXAMPLE
-    Test-MtConnection -Details
+    Test-MtConnection -Service All -Details
 
-    Checks if the current session is connected to all services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
 
     Checks if the current session is connected to Azure and returns a Boolean result.
+
+    .EXAMPLE
+    Test-MtConnection -Service GitHub
+
+    Checks if the current session is connected to GitHub and returns a Boolean result.
+    Returns $false if Connect-MtGitHub has not been called in this session.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtConnection
@@ -35,7 +43,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'ExchangeOnline', 'EOP', 'Graph', 'SecurityCompliance', 'Teams')]
+        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -46,13 +54,16 @@
 
     begin {
         $MtConnections = [PSCustomObject]@{
-            PSTypeName  = 'Maester.Connections'
-            Azure = $null
-            Graph = $null
-            ExchangeOnline = $null
+            PSTypeName               = 'Maester.Connections'
+            Azure                    = $null
+            AzureDevOps              = $null
+            GitHub                   = $null
+            Graph                    = $null
+            ExchangeOnline           = $null
             ExchangeOnlineProtection = $null
-            Teams = $null
-            AllConnected = $false
+            SharePointOnline         = $null
+            Teams                    = $null
+            AllConnected             = $false
         }
 
         # This can potentially be replaced by $MtConnections.AllConnected but all functions that reference this function would need to be updated.
@@ -146,9 +157,72 @@
         }
         #endregion Teams
 
-        if ($IsConnected) {
-            $MtConnections.AllConnected = $true
+        #region SharePoint
+        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            $IsConnected = $false
+            try {
+                $MtConnections.SharePointOnline = Get-PnPConnection
+                $IsConnected = $null -ne ($MtConnections.SharePointOnline)
+            } catch {
+                Write-Debug "SharePointOnline: $false"
+            }
+            Write-Verbose "SharePointOnline: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
         }
+        #endregion SharePoint
+
+        #region AzureDevOps
+        if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.AzureDevOpsConnectionCache) {
+                # Use cached probe result to avoid re-running the connection check on every test.
+                if ($__MtSession.AzureDevOpsConnectionCache -is [string] -and $__MtSession.AzureDevOpsConnectionCache -eq 'NotConnected') {
+                    $IsConnected = $false
+                } else {
+                    $MtConnections.AzureDevOps = $__MtSession.AzureDevOpsConnectionCache
+                    $IsConnected = $true
+                }
+            } else {
+                try {
+                    if ($null -ne (Get-Command -Name Get-ADOPSConnection -ErrorAction Stop)) {
+                        $connection = Get-ADOPSConnection
+                        if ($null -ne $connection -and $null -ne $connection['Organization']) {
+                            $MtConnections.AzureDevOps = $connection
+                            $__MtSession.AzureDevOpsConnectionCache = $connection
+                            $IsConnected = $true
+                        }
+                    }
+                } catch {
+                    Write-Debug "AzureDevOps: $false"
+                }
+                if (-not $IsConnected) {
+                    # Cache negative result so subsequent calls skip the probe.
+                    $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+                }
+            }
+            Write-Verbose "AzureDevOps: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion AzureDevOps
+
+        #region GitHub
+        if ($Service -contains 'GitHub') {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.GitHubConnection) {
+                if ($__MtSession.GitHubConnection.Connected -eq $true) {
+                    $MtConnections.GitHub = $__MtSession.GitHubConnection
+                    $IsConnected = $true
+                }
+            } else {
+                # No session state — GitHub requires explicit Connect-MtGitHub (no module auto-detect)
+                $__MtSession.GitHubConnection = [PSCustomObject]@{ Connected = $false; FailureReason = 'NotCalled' }
+            }
+            Write-Verbose "GitHub: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion GitHub
+
+        $MtConnections.AllConnected = $ConnectionState
 
     }
 

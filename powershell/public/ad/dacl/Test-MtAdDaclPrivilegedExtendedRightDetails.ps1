@@ -93,5 +93,3 @@
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightDetails"
     return $testResult
 }
-
-

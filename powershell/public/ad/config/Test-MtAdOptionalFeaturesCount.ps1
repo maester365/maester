@@ -19,6 +19,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdOptionalFeaturesCount"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -50,5 +52,3 @@
 
     return $testResult
 }
-
-

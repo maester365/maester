@@ -56,5 +56,3 @@ function Test-MtAdDaclNonInheritedAceCount {
     Write-Verbose "Completed Test-MtAdDaclNonInheritedAceCount"
     return $testResult
 }
-
-

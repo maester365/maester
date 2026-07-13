@@ -118,6 +118,3 @@
     Write-Verbose "Completed Test-MtAdGpoNoDomainComputersCount"
     return $testResult
 }
-
-
-

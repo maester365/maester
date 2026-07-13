@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDnsRootServerIncorrectDetails"
+
     # Define correct root server IP addresses (as of 2024)
     $rootServers = @{
         "a.root-servers.net" = "198.41.0.4"
@@ -126,6 +128,3 @@
 
     return $testResult
 }
-
-
-

@@ -21,6 +21,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclUnresolvedSidCount"
+
     $adState = Get-MtADDomainState
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -58,5 +60,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-

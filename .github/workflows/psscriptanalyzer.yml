@@ -1,0 +1,61 @@
+name: "PSScriptAnalyzer"
+
+permissions: {}
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**/*.ps1'
+      - '**/*.psm1'
+      - '**/*.psd1'
+      - '**/*.ps1xml'
+      - '.github/workflows/psscriptanalyzer.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**/*.ps1'
+      - '**/*.psm1'
+      - '**/*.psd1'
+      - '**/*.ps1xml'
+      - '.github/workflows/psscriptanalyzer.yml'
+  schedule:
+    - cron: '28 13 * * 2'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: Analyze PowerShell
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      # Scans the entire repository recursively. PSScriptAnalyzer only
+      # analyzes files with PowerShell extensions (.ps1, .psm1, .psd1, .ps1xml),
+      # so non-PowerShell content under powershell/, tools/, build/, etc. is
+      # automatically ignored. This avoids per-directory invocations and
+      # transparently picks up any future PowerShell files added to the repo.
+      - name: Run PSScriptAnalyzer
+        uses: microsoft/psscriptanalyzer-action@6b2948b1944407914a58661c49941824d149734f # v1.1
+        with:
+          path: .
+          recurse: true
+          output: results.sarif
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@1a818fd5f97ed0ee9a823421bd5b171add01227f # v4.36.2
+        with:
+          sarif_file: results.sarif
+          category: psscriptanalyzer

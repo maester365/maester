@@ -61,5 +61,3 @@ function Test-MtAdGpoOwnerDistinctCount {
     Write-Verbose "Completed Test-MtAdGpoOwnerDistinctCount"
     return $testResult
 }
-
-

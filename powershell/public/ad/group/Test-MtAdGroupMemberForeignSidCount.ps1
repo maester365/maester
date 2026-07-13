@@ -126,5 +126,3 @@
 
     return $testResult
 }
-
-

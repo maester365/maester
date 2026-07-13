@@ -56,5 +56,3 @@
     Write-Verbose "Completed Test-MtAdDaclDenyAceCount"
     return $testResult
 }
-
-

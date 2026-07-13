@@ -74,5 +74,3 @@
     Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeDetails"
     return $testResult
 }
-
-

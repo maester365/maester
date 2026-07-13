@@ -78,5 +78,3 @@
     Write-Verbose "Completed Test-MtAdDaclIdentityAceDistribution"
     return $testResult
 }
-
-

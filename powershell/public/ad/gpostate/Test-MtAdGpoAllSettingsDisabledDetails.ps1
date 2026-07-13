@@ -97,6 +97,3 @@ function Test-MtAdGpoAllSettingsDisabledDetails {
     Write-Verbose "Completed Test-MtAdGpoAllSettingsDisabledDetails"
     return $testResult
 }
-
-
-

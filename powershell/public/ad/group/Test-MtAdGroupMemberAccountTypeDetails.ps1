@@ -98,5 +98,3 @@
 
     return $testResult
 }
-
-

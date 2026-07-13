@@ -69,6 +69,3 @@ function Test-MtAdGpoDisabledLinkDetails {
     Write-Verbose "Completed Test-MtAdGpoDisabledLinkDetails"
     return $testResult
 }
-
-
-

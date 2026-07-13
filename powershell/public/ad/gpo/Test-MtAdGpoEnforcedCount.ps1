@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoEnforcedCount"
+
     $gpoState = Get-MtADGpoState
 
     if ($null -eq $gpoState) {
@@ -71,6 +73,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-
-

@@ -66,5 +66,3 @@
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightCount"
     return $testResult
 }
-
-

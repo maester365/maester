@@ -98,6 +98,3 @@ function Test-MtAdGpoUserSettingsDisabledDetails {
     Write-Verbose "Completed Test-MtAdGpoUserSettingsDisabledDetails"
     return $testResult
 }
-
-
-

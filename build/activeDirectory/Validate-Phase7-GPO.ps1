@@ -54,7 +54,7 @@ Write-Host ""
 # Function to simulate Get-MtADGpoState
 function Get-MtADGpoState {
     param([switch]$Refresh)
-    
+
     try {
         $rootDSE = Get-ADRootDSE
         $configurationNC = $rootDSE.configurationNamingContext
@@ -96,7 +96,7 @@ try {
     $gpos = $gpoState.GPOs
     $totalCount = ($gpos | Measure-Object).Count
     $testResult = $totalCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Total GPOs: $totalCount" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPO-01: GpoTotalCount"; Status = "PASS"; Details = "Count: $totalCount" }
@@ -120,7 +120,7 @@ try {
     $oldCount = ($oldGpos | Measure-Object).Count
     $totalCount = ($gpos | Measure-Object).Count
     $testResult = $totalCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - GPOs created before 2020: $oldCount / $totalCount" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPO-02: GpoCreatedBefore2020Count"; Status = "PASS"; Details = "$oldCount / $totalCount" }
@@ -144,7 +144,7 @@ try {
     $staleCount = ($staleGpos | Measure-Object).Count
     $totalCount = ($gpos | Measure-Object).Count
     $testResult = $totalCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - GPOs changed before 2020: $staleCount / $totalCount" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPO-03: GpoChangedBefore2020Count"; Status = "PASS"; Details = "$staleCount / $totalCount" }
@@ -164,7 +164,7 @@ Write-Host "Test AD-GPO-04: GpoUnlinkedCount" -ForegroundColor Yellow
 try {
     $gpos = $gpoState.GPOs
     $gpoLinks = $gpoState.GPOLinks
-    
+
     # Get all linked GPO GUIDs
     $linkedGuids = @()
     foreach ($link in $gpoLinks) {
@@ -175,12 +175,12 @@ try {
             }
         }
     }
-    
+
     $unlinkedGpos = $gpos | Where-Object { $linkedGuids -notcontains $_.Id.Guid }
     $unlinkedCount = ($unlinkedGpos | Measure-Object).Count
     $totalCount = ($gpos | Measure-Object).Count
     $testResult = $totalCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Unlinked GPOs: $unlinkedCount / $totalCount" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPO-04: GpoUnlinkedCount"; Status = "PASS"; Details = "$unlinkedCount / $totalCount" }
@@ -200,7 +200,7 @@ Write-Host "Test AD-GPO-05: GpoUnlinkedDetails" -ForegroundColor Yellow
 try {
     $gpos = $gpoState.GPOs
     $gpoLinks = $gpoState.GPOLinks
-    
+
     # Get all linked GPO GUIDs
     $linkedGuids = @()
     foreach ($link in $gpoLinks) {
@@ -211,11 +211,11 @@ try {
             }
         }
     }
-    
+
     $unlinkedGpos = $gpos | Where-Object { $linkedGuids -notcontains $_.Id.Guid }
     $unlinkedCount = ($unlinkedGpos | Measure-Object).Count
     $testResult = $unlinkedCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Unlinked GPOs found: $unlinkedCount" -ForegroundColor Green
         if ($unlinkedCount -gt 0) {
@@ -241,7 +241,7 @@ Write-Host "Test AD-GPOL-01: GpoLinkedCount" -ForegroundColor Yellow
 try {
     $gpos = $gpoState.GPOs
     $gpoLinks = $gpoState.GPOLinks
-    
+
     # Get all linked GPO GUIDs
     $linkedGuids = @()
     foreach ($link in $gpoLinks) {
@@ -252,12 +252,12 @@ try {
             }
         }
     }
-    
+
     $uniqueLinkedGuids = $linkedGuids | Select-Object -Unique
     $linkedCount = $uniqueLinkedGuids.Count
     $totalCount = ($gpos | Measure-Object).Count
     $testResult = $totalCount -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Linked GPOs: $linkedCount / $totalCount" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-01: GpoLinkedCount"; Status = "PASS"; Details = "$linkedCount / $totalCount" }
@@ -276,7 +276,7 @@ try {
 Write-Host "Test AD-GPOL-02: GpoDisabledLinkCount" -ForegroundColor Yellow
 try {
     $gpoLinks = $gpoState.GPOLinks
-    
+
     $totalLinks = 0
     $disabledLinks = 0
     $enabledLinks = 0
@@ -298,9 +298,9 @@ try {
             }
         }
     }
-    
+
     $testResult = $totalLinks -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Total: $totalLinks, Enabled: $enabledLinks, Disabled: $disabledLinks, Enforced: $enforcedLinks" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-02: GpoDisabledLinkCount"; Status = "PASS"; Details = "Disabled: $disabledLinks" }
@@ -319,18 +319,18 @@ try {
 Write-Host "Test AD-GPOL-03: GpoUnlinkedTargetCount" -ForegroundColor Yellow
 try {
     $gpoLinks = $gpoState.GPOLinks
-    
+
     # Get all OUs
     $allOUs = Get-ADOrganizationalUnit -Filter *
     $totalOUs = ($allOUs | Measure-Object).Count
-    
+
     # Count OUs with links
     $linkedOUs = $allOUs | Where-Object { $_.gPLink -and $_.gPLink -ne '' }
     $linkedOUCount = ($linkedOUs | Measure-Object).Count
     $unlinkedOUCount = $totalOUs - $linkedOUCount
-    
+
     $testResult = $totalOUs -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - OUs without GPO links: $unlinkedOUCount / $totalOUs" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-03: GpoUnlinkedTargetCount"; Status = "PASS"; Details = "$unlinkedOUCount / $totalOUs" }
@@ -349,7 +349,7 @@ try {
 Write-Host "Test AD-GPOL-04: GpoEnforcedCount" -ForegroundColor Yellow
 try {
     $gpoLinks = $gpoState.GPOLinks
-    
+
     $totalLinks = 0
     $enforcedLinks = 0
 
@@ -367,9 +367,9 @@ try {
             }
         }
     }
-    
+
     $testResult = $totalLinks -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - Enforced links: $enforcedLinks / $totalLinks" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-04: GpoEnforcedCount"; Status = "PASS"; Details = "$enforcedLinks / $totalLinks" }
@@ -389,12 +389,12 @@ Write-Host "Test AD-GPOL-05: GpoBlockedInheritanceCount" -ForegroundColor Yellow
 try {
     $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gpOptions
     $totalOUs = ($allOUs | Measure-Object).Count
-    
+
     $blockedOUs = $allOUs | Where-Object { $_.gpOptions -eq 1 }
     $blockedCount = ($blockedOUs | Measure-Object).Count
-    
+
     $testResult = $totalOUs -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - OUs with blocked inheritance: $blockedCount / $totalOUs" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-05: GpoBlockedInheritanceCount"; Status = "PASS"; Details = "$blockedCount / $totalOUs" }
@@ -414,12 +414,12 @@ Write-Host "Test AD-GPOL-06: GpoLinkedOUCount" -ForegroundColor Yellow
 try {
     $allOUs = Get-ADOrganizationalUnit -Filter * -Properties gPLink
     $totalOUs = ($allOUs | Measure-Object).Count
-    
+
     $linkedOUs = $allOUs | Where-Object { $_.gPLink -and $_.gPLink -ne '' }
     $linkedOUCount = ($linkedOUs | Measure-Object).Count
-    
+
     $testResult = $totalOUs -ge 0
-    
+
     if ($testResult) {
         Write-Host "  ✓ PASS - OUs with GPO links: $linkedOUCount / $totalOUs" -ForegroundColor Green
         $ValidationResults += [PSCustomObject]@{ Test = "AD-GPOL-06: GpoLinkedOUCount"; Status = "PASS"; Details = "$linkedOUCount / $totalOUs" }

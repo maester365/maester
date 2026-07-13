@@ -30,12 +30,12 @@
         $organizationConfig = Get-MtExo -Request OrganizationConfig
         $portalLink_SecureScore = "$($__MtSession.AdminPortalUrl.Security)securescore"
 
-        $result = $organizationConfig.OAuth2ClientProfileEnabled
+        $result = $organizationConfig.OAuth2ClientProfileEnabled -eq $true
 
         if ($result) {
-            $testResultMarkdown = "Well done. ``OAuth2ClientProfileEnabled`` is ``$($result)```n`n"
+            $testResultMarkdown = "Well done. ``OAuth2ClientProfileEnabled`` is ``True```n`n"
         } else {
-            $testResultMarkdown = "``OAuth2ClientProfileEnabled`` should be ``True`` and is ``$($result)`` in [SecureScore]($portalLink_SecureScore)`n`n"
+            $testResultMarkdown = "``OAuth2ClientProfileEnabled`` should be ``True`` and is ``$($organizationConfig.OAuth2ClientProfileEnabled)`` in [SecureScore]($portalLink_SecureScore)`n`n"
         }
 
         Add-MtTestResultDetail -Result $testResultMarkdown

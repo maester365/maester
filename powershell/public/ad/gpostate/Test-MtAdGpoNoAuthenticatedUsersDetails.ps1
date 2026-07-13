@@ -1,4 +1,4 @@
-function Test-MtAdGpoNoAuthenticatedUsersDetails {
+﻿function Test-MtAdGpoNoAuthenticatedUsersDetails {
     <#
     .SYNOPSIS
     Returns details of GPO reports without Authenticated Users.
@@ -105,6 +105,3 @@ function Test-MtAdGpoNoAuthenticatedUsersDetails {
     Write-Verbose "Completed Test-MtAdGpoNoAuthenticatedUsersDetails"
     return $testResult
 }
-
-
-

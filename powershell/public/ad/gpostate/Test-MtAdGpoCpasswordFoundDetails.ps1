@@ -69,6 +69,3 @@ function Test-MtAdGpoCpasswordFoundDetails {
     Write-Verbose "Completed Test-MtAdGpoCpasswordFoundDetails"
     return $testResult
 }
-
-
-

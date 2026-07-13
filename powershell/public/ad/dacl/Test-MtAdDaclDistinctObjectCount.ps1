@@ -62,5 +62,3 @@
     Write-Verbose "Completed Test-MtAdDaclDistinctObjectCount"
     return $testResult
 }
-
-

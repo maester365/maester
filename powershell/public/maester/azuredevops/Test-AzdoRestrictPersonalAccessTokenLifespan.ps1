@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Returns a boolean depending on the configuration.
 
@@ -24,9 +24,10 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
     [OutputType([bool])]
     param()
 
-    if ($null -eq (Get-ADOPSConnection)['Organization']) {
-        Write-Verbose 'Not connected to Azure DevOps'
-        Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason 'Not connected to Azure DevOps'
+    Write-Verbose "Running Test-AzdoRestrictPersonalAccessTokenLifespan"
+
+    if (-not (Test-MtConnection AzureDevOps)) {
+        Add-MtTestResultDetail -SkippedBecause NotConnectedAzureDevOps
         return $null
     }
 
@@ -51,9 +52,9 @@ function Test-AzdoRestrictPersonalAccessTokenLifespan {
         else {
             $resultMarkdown = "Your tenant does not have Personal Access Token lifespan restrictions enabled."
         }
-    
+
         Add-MtTestResultDetail -Result $resultMarkdown
-    
+
         return $result
     }
 }

@@ -20680,9 +20680,9 @@ export const testResults = {
       "PassedCount": 31,
       "ErrorCount": 2,
       "SkippedCount": 1,
-      "InvestigateCount": 0,
+      "InvestigateCount": 10,
       "NotRunCount": 10,
-      "TotalCount": 74,
+      "TotalCount": 84,
       "Tag": [
         "Maester",
         "App",

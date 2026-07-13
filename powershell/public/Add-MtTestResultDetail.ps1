@@ -77,7 +77,7 @@
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
-            'NotLicensedCustomerLockbox','NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory'
+            'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory', 'NotConnectedGitHub', 'NotConnectedSharePoint', 'NotLicensedEntraIDP2OrGovernance'
         )]
         [string] $SkippedBecause,
 
@@ -197,14 +197,14 @@
     $TestInvestigate = $Investigate.IsPresent
 
     $testInfo = @{
-        TestTitle           = $TestTitle
-        TestDescription     = $Description
-        TestResult          = $Result
-        TestSkipped         = $SkippedBecause
-        SkippedReason       = $SkippedReason
-        TestInvestigate     = $TestInvestigate
-        Severity            = $Severity
-        Service             = $Service
+        TestTitle       = $TestTitle
+        TestDescription = $Description
+        TestResult      = $Result
+        TestSkipped     = $SkippedBecause
+        SkippedReason   = $SkippedReason
+        TestInvestigate = $TestInvestigate
+        Severity        = $Severity
+        Service         = $Service
     }
 
     Write-MtProgress -Activity "Running tests" -Status $testName
@@ -226,4 +226,3 @@
         Set-ItResult -Skipped -Because $SkippedReason
     }
 }
-

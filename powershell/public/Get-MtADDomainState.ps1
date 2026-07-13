@@ -181,33 +181,33 @@ function Get-MtADDomainState {
             try {
                 Write-Verbose "Collecting DACL information from Active Directory objects"
                 $daclEntries = @()
-                
+
                 # Get the domain DN for searching
                 $domainDN = $domainState.Domain.DistinguishedName
-                
+
                 # Use DirectorySearcher to get objects with their security descriptors
                 $searcher = New-Object System.DirectoryServices.DirectorySearcher
                 $searcher.SearchRoot = [ADSI]"LDAP://$domainDN"
                 $searcher.PageSize = 1000
                 $searcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl
-                
+
                 # Search filter for OUs, Containers, and other important objects
                 $searcher.Filter = "(|(objectClass=organizationalUnit)(objectClass=container)(objectClass=groupPolicyContainer)(objectClass=domainDNS)(objectClass=computer)(objectClass=user)(objectClass=group))"
-                
+
                 # Properties to load
                 $searcher.PropertiesToLoad.Add("distinguishedName") | Out-Null
                 $searcher.PropertiesToLoad.Add("objectClass") | Out-Null
                 $searcher.PropertiesToLoad.Add("name") | Out-Null
                 $searcher.PropertiesToLoad.Add("objectSid") | Out-Null
                 $searcher.PropertiesToLoad.Add("ntsecuritydescriptor") | Out-Null
-                
+
                 $results = $searcher.FindAll()
-                
+
                 foreach ($result in $results) {
                     $objectDN = $result.Properties["distinguishedName"][0]
                     $objectClass = $result.Properties["objectClass"]
                     $objectName = $result.Properties["name"][0]
-                    
+
                     # Safely get objectSid
                     $objectSid = $null
                     try {
@@ -218,17 +218,17 @@ function Get-MtADDomainState {
                     } catch {
                         $objectSid = $null
                     }
-                    
+
                     # Get the security descriptor - it's returned as a ResultPropertyValueCollection
                     $sdProperty = $result.Properties["ntsecuritydescriptor"]
                     if ($sdProperty -and $sdProperty.Count -gt 0) {
                         $securityDescriptor = $sdProperty[0]
-                        
+
                         if ($securityDescriptor -and $securityDescriptor.Length -gt 0) {
                             try {
                                 $sd = New-Object System.DirectoryServices.ActiveDirectorySecurity
                                 $sd.SetSecurityDescriptorBinaryForm($securityDescriptor)
-                                
+
                                 foreach ($ace in $sd.GetAccessRules($true, $true, [System.Security.Principal.SecurityIdentifier])) {
                                     $daclEntry = [PSCustomObject]@{
                                         ObjectDN = $objectDN
@@ -252,7 +252,7 @@ function Get-MtADDomainState {
                         }
                     }
                 }
-                
+
                 $searcher.Dispose()
                 $domainState['DaclEntries'] = $daclEntries
                 Write-Verbose "Collected $($daclEntries.Count) DACL entries from Active Directory"

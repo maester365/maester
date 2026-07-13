@@ -53,5 +53,3 @@ function Test-MtAdGpoStateTotalCount {
     Write-Verbose "Completed Test-MtAdGpoStateTotalCount"
     return $testResult
 }
-
-

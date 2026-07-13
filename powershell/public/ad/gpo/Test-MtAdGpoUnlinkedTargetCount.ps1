@@ -6,7 +6,7 @@
     .DESCRIPTION
     This test identifies policy deployment gaps by counting Active Directory targets
     (organizational units, the domain root, and site link objects) that have no GPO links.
-    
+
     Targets without GPO links may indicate incomplete security policy coverage and can lead
     to inconsistent enforcement of security baselines.
 
@@ -22,6 +22,8 @@
     [CmdletBinding()]
     [OutputType([bool])]
     param()
+
+    Write-Verbose "Starting Test-MtAdGpoUnlinkedTargetCount"
 
     # Get AD GPO state data (uses cached data if available)
     $gpoState = Get-MtADGpoState
@@ -193,6 +195,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-
-

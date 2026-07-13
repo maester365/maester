@@ -21,9 +21,9 @@ param()
 class ORCA225 : ORCACheck
 {
     <#
-    
+
         CONSTRUCTOR with Check Header Data
-    
+
     #>
 
     ORCA225()
@@ -49,9 +49,9 @@ class ORCA225 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -63,15 +63,15 @@ class ORCA225 : ORCACheck
         $ConfigObject.ConfigData=$Config["AtpPolicy"].EnableSafeDocs
 
         # Determine if SafeDocs in MDO is enabled or not
-        If($Config["AtpPolicy"].EnableSafeDocs -eq $false) 
+        If($Config["AtpPolicy"].EnableSafeDocs -eq $false)
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")   
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
         }
         Else
         {
-            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")     
+            $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
         }
-        
+
         $this.AddConfig($ConfigObject)
 
     }

@@ -71,7 +71,7 @@ $failed = 0
 
 foreach ($test in $tests) {
     Write-Host "Testing $($test.Name) [$($test.ID)]..." -NoNewline
-    
+
     try {
         if ($test.Name -eq "Get-MtADGpoState") {
             $result = Get-MtADGpoState
@@ -80,7 +80,7 @@ foreach ($test in $tests) {
             $result = & $test.Name
             $success = ($result -eq $true)
         }
-        
+
         if ($success) {
             Write-Host " PASS" -ForegroundColor Green
             $passed++

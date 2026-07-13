@@ -20,6 +20,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdNtAuthCertificatesCount"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -52,5 +54,3 @@
 
     return $testResult
 }
-
-

@@ -15,9 +15,9 @@ param()
 class ORCA241 : ORCACheck
 {
     <#
-    
+
         Check for first contact safety tip
-    
+
     #>
 
     ORCA241()
@@ -42,9 +42,9 @@ class ORCA241 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -54,7 +54,7 @@ class ORCA241 : ORCACheck
         $LegacyTRRuleName = "";
 
         # Look for transport rule
-        ForEach($TransportRule in $Config["TransportRules"]) 
+        ForEach($TransportRule in $Config["TransportRules"])
         {
             if($TransportRule.Mode -eq "Enforce" -and $TransportRule.State -eq "Enabled" -and $TransportRule.SetHeaderName -eq "X-MS-Exchange-EnableFirstContactSafetyTip" -and $TransportRule.SetHeaderValue -eq "enable")
             {
@@ -65,7 +65,7 @@ class ORCA241 : ORCACheck
                     $LegacyTRRuleName = $TransportRule.Name
                 }
             }
-    
+
         }
 
         ForEach ($Policy in $Config["AntiPhishPolicy"])
@@ -89,7 +89,7 @@ class ORCA241 : ORCACheck
             {
                 $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
             }
-            Else 
+            Else
             {
                 if($LegacyTRRule -eq $true)
                 {
@@ -100,9 +100,9 @@ class ORCA241 : ORCACheck
                 } else {
                     $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
                 }
-                
+
             }
-            
+
             # Add config to check
             $this.AddConfig($ConfigObject)
 

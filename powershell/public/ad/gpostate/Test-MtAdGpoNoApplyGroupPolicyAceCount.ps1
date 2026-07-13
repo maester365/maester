@@ -56,5 +56,3 @@ function Test-MtAdGpoNoApplyGroupPolicyAceCount {
     Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceCount"
     return $testResult
 }
-
-

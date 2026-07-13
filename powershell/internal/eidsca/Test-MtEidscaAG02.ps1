@@ -20,7 +20,7 @@ function Test-MtEidscaAG02 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authenticationMethodsPolicy" -ApiVersion beta
 
     $rawValue = $result.reportSuspiciousActivitySettings.state
@@ -39,4 +39,3 @@ function Test-MtEidscaAG02 {
 
     return $tenantValue
 }
-

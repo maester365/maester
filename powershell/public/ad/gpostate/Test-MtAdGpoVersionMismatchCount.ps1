@@ -57,5 +57,3 @@ function Test-MtAdGpoVersionMismatchCount {
     Write-Verbose "Completed Test-MtAdGpoVersionMismatchCount"
     return $testResult
 }
-
-

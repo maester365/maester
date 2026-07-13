@@ -22,6 +22,8 @@ function Test-MtAdDaclUnresolvedSidDetails {
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDaclUnresolvedSidDetails"
+
     $adState = Get-MtADDomainState
     if ($null -eq $adState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -75,5 +77,3 @@ function Test-MtAdDaclUnresolvedSidDetails {
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-

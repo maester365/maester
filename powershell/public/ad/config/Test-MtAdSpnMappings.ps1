@@ -20,6 +20,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdSpnMappings"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -58,6 +60,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-
-

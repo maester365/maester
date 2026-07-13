@@ -20,6 +20,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoUnlinkedCount"
+
     # Get AD GPO state data (uses cached data if available)
     $gpoState = Get-MtADGpoState
 
@@ -112,6 +114,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-
-

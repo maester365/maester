@@ -5,12 +5,17 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: publish-module-manualversionupdate
+  cancel-in-progress: false
+
 jobs:
   build-validation:
     uses: ./.github/workflows/build-validation.yaml
     permissions:
       contents: read
       actions: read
+      pull-requests: read
 
   build-report:
     uses: ./.github/workflows/build-maester-report-template.yaml
@@ -26,7 +31,9 @@ jobs:
       actions: read
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
 
       - name: Download updated report template
         if: needs.build-report.outputs.report-updated == 'true'
@@ -35,29 +42,23 @@ jobs:
           name: updated-report-template
           path: powershell/assets/
 
-      - name: Package ./tests to PowerShell module
-        id: package-tests
-        shell: pwsh
-        run: ./build/Copy-MaesterTestsToPSModule.ps1 -Force
-
       - name: Get current module  version
         id: moduleversion
         shell: pwsh
         run: ./.github/workflows/get-version.ps1
 
-      - name: Update PowerShell Module to PowerShell Gallery
-        id: publish-to-gallery
+      - name: Stamp maester-config.json version fields
         shell: pwsh
-        run: |
-          # Copy to maester folder to avoid issues when publishing
-          Copy-Item ${{ github.workspace }}/powershell -Recurse -Destination ${{ github.workspace }}/maester/ -Force
-          Publish-Module -Path ${{ github.workspace }}/maester -NuGetApiKey ${{ secrets.PS_GALLERY_KEY }}
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion '${{ steps.moduleversion.outputs.tag }}'
 
-      - name: Build PowerShell module for GitHub
-        id: module-creation
-        shell: pwsh
-        run: |
-          Compress-Archive -Path ${{ github.workspace }}/maester/* -DestinationPath ${{ github.workspace }}/maester.zip
+      # ./module/ is a build artifact produced by Build-MaesterModule.ps1.
+      # It is ignored by git and must never be committed to source control.
+      - name: Build, validate, and publish Maester module
+        id: publish-module
+        uses: ./.github/actions/publish-maester-module
+        with:
+          expected-version: ${{ steps.moduleversion.outputs.tag }}
+          gallery-api-key: ${{ secrets.PS_GALLERY_KEY }}
 
       - name: Create release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
@@ -70,3 +71,29 @@ jobs:
           prerelease: false
           tag: ${{ steps.moduleversion.outputs.tag }}
           commit: ${{ github.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.x
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install website dependencies
+        working-directory: website
+        run: npm ci
+
+      - name: Update website release version
+        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ steps.moduleversion.outputs.tag }}
+
+      - name: Commit website release version
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d #v5
+        with:
+          commit_message: 'ci(docs): update website release version ${{ steps.moduleversion.outputs.tag }}'
+          file_pattern: |
+            build/Update-WebsiteReleaseVersion.mjs
+            website/docusaurus.config.js
+            website/version-config.js
+            website/versions.json
+            website/versioned_docs/
+            website/versioned_sidebars/

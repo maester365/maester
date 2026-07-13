@@ -79,6 +79,3 @@ function Test-MtAdGpoWmiFilterDetails {
     Write-Verbose "Completed Test-MtAdGpoWmiFilterDetails"
     return $testResult
 }
-
-
-

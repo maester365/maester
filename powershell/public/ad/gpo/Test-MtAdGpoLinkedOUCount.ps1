@@ -72,7 +72,3 @@
 
     return $testResult
 }
-
-
-
-

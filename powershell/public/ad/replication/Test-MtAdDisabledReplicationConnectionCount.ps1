@@ -26,6 +26,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDisabledReplicationConnectionCount"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -58,5 +60,3 @@
 
     return $testResult
 }
-
-

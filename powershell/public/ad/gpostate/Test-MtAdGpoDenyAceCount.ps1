@@ -119,6 +119,3 @@
     Write-Verbose "Completed Test-MtAdGpoDenyAceCount"
     return $testResult
 }
-
-
-

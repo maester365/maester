@@ -77,11 +77,40 @@ The `-DeviceCode` switch allows you to sign in using the device code flow. This 
 Connect-Maester -UseDeviceCode
 ```
 
+### Connect to SharePoint Online (optional)
+
+Maester includes SharePoint Online security tests that use the [PnP PowerShell](https://pnp.github.io/powershell/) module.
+
+Install the PnP PowerShell module if you haven't already:
+
+```powershell
+Install-Module PnP.PowerShell -Scope CurrentUser
+```
+
+A dedicated Entra ID app registration configured for PnP interactive login is required. The easiest way to create one is to follow the official [PnP app registration guide](https://pnp.github.io/powershell/articles/registerapplication.html) and run `Register-PnPEntraIDAppForInteractiveLogin`, which outputs the **Client ID** you will supply to `-SharePointClientId`. For the Maester-specific SharePoint permission setup, see [Grant permissions to SharePoint Online](../sections/create-entra-app.md).
+
+
+Connect to SharePoint Online together with Microsoft Graph (the admin URL is auto-discovered from your tenant's initial domain):
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
+```
+
+If auto-discovery does not work (e.g. in government or custom-domain tenants), supply the admin URL explicitly:
+
+```powershell
+Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+```
+
+If the PnP PowerShell module is not installed or there is no active connection, all SharePoint Online tests are skipped automatically.
+
 ### Connect to Azure, Exchange Online, Copilot Studio and Teams
 
 `Connect-Maester` also provides options to connect to Azure, Copilot Studio (via the Dataverse API), Exchange Online and Teams for running tests that use the Azure PowerShell, Dataverse OData API, Exchange Online PowerShell or Teams PowerShell modules.
 
-The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance and Microsoft Teams.
+The `-All` switch can be used to connect to all the services used by the Maester tests. This includes Microsoft Graph, Azure, Copilot Studio (Dataverse), Exchange Online, Security Compliance, Microsoft Teams, and SharePoint Online.
+
+If `-SharePointClientId` is not provided, the SharePoint Online connection is skipped with a warning.
 
 ```powershell
 Connect-Maester -Service All
@@ -102,6 +131,67 @@ Connect-Maester -Service Graph,Dataverse
 ```
 
 This uses `Az.Accounts` to authenticate and obtain a Dataverse access token for the Copilot Studio environment configured in `maester-config.json`.
+
+### Connect to GitHub (optional)
+
+Maester includes optional GitHub security tests that require an active GitHub organization connection. GitHub is not included in `Connect-Maester -Service All` because it is not a Microsoft 365 service. Add `GitHub` explicitly when you want to run GitHub tests.
+
+For interactive sessions, the preferred option is the [Maester GitHub App](https://github.com/apps/maester-cli). It uses GitHub OAuth device flow, so you do not need to create, paste, or store a personal access token for day-to-day interactive use.
+
+```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
+```
+
+You can also connect only to GitHub:
+
+```powershell
+Connect-Maester -Service GitHub -GitHubOrganization '<github-organization>'
+```
+
+The first time you connect, Maester opens the GitHub device authorization page and shows a code to enter. If the Maester GitHub App is not installed or approved for the organization, Maester explains why the app is needed and asks before opening the [install page](https://github.com/apps/maester-cli/installations/new). A GitHub organization owner may need to install or approve the app for the organization.
+
+You can avoid typing the organization every time by setting `GitHubOrganization` in `maester-config.json`:
+
+```json
+{
+  "GlobalSettings": {
+    "GitHubOrganization": "contoso"
+  }
+}
+```
+
+Then connect with:
+
+```powershell
+Connect-Maester -Service Graph,GitHub
+```
+
+For automation, use a GitHub token instead of the interactive GitHub App device flow. `Connect-Maester` checks `MAESTER_GITHUB_TOKEN` first and then `GH_TOKEN`.
+
+```powershell
+$env:MAESTER_GITHUB_TOKEN = '<token>'
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
+```
+
+Use a token that can read organization membership and organization administration settings. For example, use a classic PAT with `admin:org`, or a fine-grained token with **Organization Members: read** and **Organization Administration: read**.
+
+Use `Disconnect-Maester` or `Disconnect-MtGitHub` to clear the in-memory GitHub session when you are finished.
+
+### Connect to Azure DevOps (optional)
+
+Maester includes an *optional* set of Azure DevOps security tests (AZDO.*).
+These tests require the community [`ADOPS`](https://www.powershellgallery.com/packages/ADOPS) PowerShell module and an active connection to your Azure DevOps organization.
+
+Connecting to Azure DevOps is **not** part of `Connect-Maester` and must be done separately:
+
+```powershell
+Install-Module ADOPS -Scope CurrentUser
+Connect-ADOPS -Organization <your-organization>
+```
+
+If the `ADOPS` module is not installed or there is no active connection, the Azure DevOps tests are skipped automatically.
+
+See the [installation guide](../installation.md#installing-azure-devops-powershell-module) for prerequisites and permissions, and the [Azure DevOps tests for Maester](/blog/azuredevops-tests-for-maester) blog post for the full list of available tests.
 
 ### Connect to US Government, US DoD, China and Germany and other clouds
 

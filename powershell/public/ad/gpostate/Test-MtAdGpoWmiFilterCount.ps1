@@ -64,5 +64,3 @@ function Test-MtAdGpoWmiFilterCount {
     Write-Verbose "Completed Test-MtAdGpoWmiFilterCount"
     return $testResult
 }
-
-

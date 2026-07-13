@@ -1,9 +1,39 @@
 {
+  "ModuleVersion": "2.0.0",
+  "ConfigVersion": "",
   "GlobalSettings": {
     "EmergencyAccessAccounts": [],
-    "DataverseEnvironmentUrl": ""
+    "DataverseEnvironmentUrl": "",
+    "GitHubOrganization": "",
+    "GitHubApiBaseUri": "https://api.github.com",
+    "GitHubApiVersion": "2022-11-28"
   },
   "TestSettings": [
+    {
+      "Id": "CIS.GH.1.2.2",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure repository creation is limited to specific members"
+    },
+    {
+      "Id": "CIS.GH.1.2.3",
+      "Severity": "High",
+      "Title": "(L1) Ensure repository deletion is limited to specific users"
+    },
+    {
+      "Id": "CIS.GH.1.2.4",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure issue deletion is limited to specific users"
+    },
+    {
+      "Id": "CIS.GH.1.3.2",
+      "Severity": "Medium",
+      "Title": "(L1) Ensure team creation is limited to specific members"
+    },
+    {
+      "Id": "CIS.GH.1.3.8",
+      "Severity": "High",
+      "Title": "(L1) Ensure strict base permissions are set for repositories"
+    },
     {
       "Id": "CIS.M365.1.1.1",
       "Severity": "High",
@@ -1348,6 +1378,180 @@
       "Id": "MT.1123",
       "Severity": "High",
       "Title": "Ensure BitLocker full disk encryption is configured via Intune"
+    },
+    {
+      "Id": "MT.1147",
+      "Severity": "High",
+      "Title": "Do not sync krbtgt_AzureAD to Entra ID"
+    },
+    {
+      "Id": "MT.1148",
+      "Severity": "High",
+      "Title": "Archive Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1149",
+      "Severity": "High",
+      "Title": "Behavior Monitoring should be enabled"
+    },
+    {
+      "Id": "MT.1150",
+      "Severity": "High",
+      "Title": "Cloud Protection should be enabled"
+    },
+    {
+      "Id": "MT.1151",
+      "Severity": "High",
+      "Title": "Email Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1152",
+      "Severity": "High",
+      "Title": "Script Scanning should be enabled"
+    },
+    {
+      "Id": "MT.1153",
+      "Severity": "High",
+      "Title": "Real-time Monitoring should be enabled"
+    },
+    {
+      "Id": "MT.1154",
+      "Severity": "High",
+      "Title": "Full Scan Removable Drives should be enabled"
+    },
+    {
+      "Id": "MT.1155",
+      "Severity": "High",
+      "Title": "Full Scan Mapped Drives should be disabled for performance"
+    },
+    {
+      "Id": "MT.1156",
+      "Severity": "High",
+      "Title": "Scanning Network Files should be enabled"
+    },
+    {
+      "Id": "MT.1157",
+      "Severity": "High",
+      "Title": "CPU Load Factor should be optimized (20-30%)"
+    },
+    {
+      "Id": "MT.1158",
+      "Severity": "High",
+      "Title": "Scan should be scheduled"
+    },
+    {
+      "Id": "MT.1159",
+      "Severity": "High",
+      "Title": "Quick Scan Time configuration is not required"
+    },
+    {
+      "Id": "MT.1160",
+      "Severity": "High",
+      "Title": "Signatures should be checked before scan"
+    },
+    {
+      "Id": "MT.1161",
+      "Severity": "High",
+      "Title": "Cloud Block Level should be High or higher"
+    },
+    {
+      "Id": "MT.1162",
+      "Severity": "High",
+      "Title": "Cloud Extended Timeout should be 30-50 seconds"
+    },
+    {
+      "Id": "MT.1163",
+      "Severity": "High",
+      "Title": "Signature Update Interval should be 1-4 hours"
+    },
+    {
+      "Id": "MT.1164",
+      "Severity": "High",
+      "Title": "PUA Protection should be enabled"
+    },
+    {
+      "Id": "MT.1165",
+      "Severity": "High",
+      "Title": "Network Protection should be enabled"
+    },
+    {
+      "Id": "MT.1166",
+      "Severity": "High",
+      "Title": "Local Admin Merge should be disabled"
+    },
+    {
+      "Id": "MT.1167",
+      "Severity": "High",
+      "Title": "Real-Time Scan Direction should cover both directions"
+    },
+    {
+      "Id": "MT.1168",
+      "Severity": "High",
+      "Title": "Cleaned Malware should be retained for at least 30 days"
+    },
+    {
+      "Id": "MT.1169",
+      "Severity": "High",
+      "Title": "Catch-up Full Scan should be disabled"
+    },
+    {
+      "Id": "MT.1170",
+      "Severity": "High",
+      "Title": "Catch-up Quick Scan should be disabled"
+    },
+    {
+      "Id": "MT.1171",
+      "Severity": "High",
+      "Title": "Sample Submission should send safe samples automatically"
+    },
+    {
+      "Id": "MT.1172",
+      "Severity": "High",
+      "Title": "Unified audit log ingestion is enabled"
+    },
+    {
+      "Id": "MT.1173",
+      "Severity": "Medium",
+      "Title": "Sensitivity labels are published for files used by Microsoft 365 Copilot"
+    },
+    {
+      "Id": "MT.1174",
+      "Severity": "Medium",
+      "Title": "Insider Risk Management policy for Risky AI usage is enabled"
+    },
+    {
+      "Id": "MT.1175",
+      "Severity": "High",
+      "Title": "DLP policy is configured for the Microsoft 365 Copilot location"
+    },
+    {
+      "Id": "MT.1176",
+      "Severity": "Medium",
+      "Title": "Retention policy is configured for the Microsoft Copilot location"
+    },
+    {
+      "Id": "MT.1182",
+      "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
+    },
+    {
+      "Id": "MT.1178",
+      "Severity": "High",
+      "Title": "Ensure ASR Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1179",
+      "Severity": "High",
+      "Title": "Ensure App Control for Business is enabled"
+    },
+    {
+      "Id": "MT.1180",
+      "Severity": "Medium",
+      "Title": "Ensure Managed Installer Rules are configured correctly"
+    },
+    {
+      "Id": "MT.1181",
+      "Severity": "High",
+      "Title": "Conditional Access policy is present that blocks high agent risk signins"
     },
     {
       "Id": "ORCA.100",

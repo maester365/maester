@@ -15,7 +15,7 @@ Import-Module GroupPolicy -ErrorAction SilentlyContinue
 
 # Source the functions
 $functionPath = "/tmp/maester-powershell/public"
-Get-ChildItem "$functionPath" -Recurse -Filter "*.ps1" | ForEach-Object { 
+Get-ChildItem "$functionPath" -Recurse -Filter "*.ps1" | ForEach-Object {
     try {
         . $_.FullName
     } catch {
@@ -80,7 +80,7 @@ $tests = @(
 foreach ($test in $tests) {
     Write-Host "Testing $($test.Name)..." -NoNewline
     $testResult = @{ TestName = $test.Name; TestID = $test.ID; Result = "FAIL"; Details = "" }
-    
+
     try {
         $result = & $test.Name
         if ($result -eq $true) {
@@ -98,7 +98,7 @@ foreach ($test in $tests) {
         Write-Host " FAIL ($_))" -ForegroundColor Red
         $testResult.Details = "Error: $_"
     }
-    
+
     $results += $testResult
 }
 

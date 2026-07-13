@@ -100,5 +100,3 @@
 
     return $testResult
 }
-
-

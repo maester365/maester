@@ -99,6 +99,3 @@ Review these GPOs to ensure computer-side policy delivery is intentionally disab
     Write-Verbose "Completed Test-MtAdGpoComputerSettingsDisabledDetails"
     return $testResult
 }
-
-
-

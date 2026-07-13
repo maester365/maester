@@ -23,6 +23,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdTrustDetails"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -76,6 +78,3 @@
 
     return $testResult
 }
-
-
-

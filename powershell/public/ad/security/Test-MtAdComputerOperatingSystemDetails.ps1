@@ -82,5 +82,3 @@
 
     return $testResult
 }
-
-

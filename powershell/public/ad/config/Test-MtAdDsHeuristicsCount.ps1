@@ -20,6 +20,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDsHeuristicsCount"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -49,5 +51,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-

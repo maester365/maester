@@ -21,6 +21,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerSpnUnknownCount"
+
     # Known SPN service classes (based on Microsoft documentation and common applications)
     $knownSpns = @(
         'HOST', 'HTTP', 'HTTPS', 'LDAP', 'GC', 'DNS', 'CIFS', 'RPC', 'SMB',
@@ -109,7 +111,3 @@
 
     return $testResult
 }
-
-
-
-

@@ -26,6 +26,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdOptionalFeatureEnabledDetails"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -61,5 +63,3 @@
 
     return $testResult
 }
-
-

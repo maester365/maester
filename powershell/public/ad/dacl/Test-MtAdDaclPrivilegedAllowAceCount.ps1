@@ -84,5 +84,3 @@
     Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceCount"
     return $testResult
 }
-
-

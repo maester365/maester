@@ -118,6 +118,3 @@
     Write-Verbose "Completed Test-MtAdGpoNoEnterpriseDcCount"
     return $testResult
 }
-
-
-

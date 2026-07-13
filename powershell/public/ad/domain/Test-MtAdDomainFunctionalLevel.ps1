@@ -21,6 +21,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDomainFunctionalLevel"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -54,5 +56,3 @@
 
     return $testResult
 }
-
-

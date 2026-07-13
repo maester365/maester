@@ -57,5 +57,3 @@ function Test-MtAdGpoDefaultPasswordFoundCount {
     Write-Verbose "Completed Test-MtAdGpoDefaultPasswordFoundCount"
     return $testResult
 }
-
-

@@ -30,6 +30,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdRootDseSynchronizedStatus"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -61,5 +63,3 @@
 
     return $testResult
 }
-
-

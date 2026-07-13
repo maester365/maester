@@ -115,5 +115,3 @@ function Test-MtAdDaclPrivilegedExtendedRightIdentity {
     Write-Verbose "Completed Test-MtAdDaclPrivilegedExtendedRightIdentity"
     return $testResult
 }
-
-

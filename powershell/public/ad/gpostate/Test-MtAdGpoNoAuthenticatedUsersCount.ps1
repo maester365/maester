@@ -119,6 +119,3 @@
     Write-Verbose "Completed Test-MtAdGpoNoAuthenticatedUsersCount"
     return $testResult
 }
-
-
-

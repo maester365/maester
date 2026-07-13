@@ -65,5 +65,3 @@
     Write-Verbose "Completed Test-MtAdDaclInheritedObjectTypeCount"
     return $testResult
 }
-
-

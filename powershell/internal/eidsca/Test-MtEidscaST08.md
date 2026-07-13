@@ -14,5 +14,7 @@ https://graph.microsoft.com/beta/settings
 - [directorySetting resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting)
 
 
+
+
 <!--- Results --->
 %TestResult%

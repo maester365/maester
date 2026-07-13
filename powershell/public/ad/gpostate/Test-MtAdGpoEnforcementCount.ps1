@@ -57,5 +57,3 @@ function Test-MtAdGpoEnforcementCount {
     Write-Verbose "Completed Test-MtAdGpoEnforcementCount"
     return $testResult
 }
-
-

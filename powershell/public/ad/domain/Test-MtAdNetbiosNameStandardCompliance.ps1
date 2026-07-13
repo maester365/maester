@@ -21,6 +21,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdNetbiosNameStandardCompliance"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -31,7 +33,7 @@
     }
 
     $domain = $adState.Domain
-    
+
     # Collect NetBIOS names from domain and forest
     $netbiosNames = @()
     if ($domain.NetBIOSName) {
@@ -77,6 +79,3 @@
 
     return $testResult
 }
-
-
-

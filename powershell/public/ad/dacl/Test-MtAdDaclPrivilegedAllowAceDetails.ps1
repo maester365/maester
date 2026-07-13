@@ -125,5 +125,3 @@
     Write-Verbose "Completed Test-MtAdDaclPrivilegedAllowAceDetails"
     return $testResult
 }
-
-

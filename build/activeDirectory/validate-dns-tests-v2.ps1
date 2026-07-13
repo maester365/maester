@@ -101,10 +101,10 @@ $skipped = 0
 
 foreach ($testName in $dnsTests) {
     Write-Host "Testing: $testName" -NoNewline
-    
+
     try {
         $result = & $testName -ErrorAction Stop
-        
+
         if ($null -eq $result) {
             Write-Host " [SKIPPED]" -ForegroundColor Yellow
             $skipped++

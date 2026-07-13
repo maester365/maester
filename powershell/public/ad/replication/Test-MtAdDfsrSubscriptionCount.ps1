@@ -31,6 +31,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdDfsrSubscriptionCount"
+
     $adState = Get-MtADDomainState
 
     if ($null -eq $adState) {
@@ -85,5 +87,3 @@
 
     return $testResult
 }
-
-

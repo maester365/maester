@@ -1,10 +1,12 @@
 ﻿function Connect-Maester {
    <#
 .SYNOPSIS
-   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure and Exchange Online.
+   Helper method to connect to Microsoft Graph using Connect-MgGraph with the required permission scopes as well as other services such as Azure, Exchange Online, and GitHub.
 
 .DESCRIPTION
-   Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. It attempts to connect to all services by default: Microsoft Graph, Azure, Exchange Online, and Microsoft Teams.
+   Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. By default, it connects to Microsoft Graph. Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
+
+   Non-Microsoft 365 services such as GitHub are not included in -Service All and must be explicitly specified.
 
    This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -15,12 +17,17 @@
 .EXAMPLE
    Connect-Maester
 
-   Connects to all Microsoft services that Maester is able to assess: Microsoft Graph, Azure, Exchange Online, Exchange Online Security & Compliance, and Microsoft Teams.
+   Connects only to Microsoft Graph by default.
 
 .EXAMPLE
    Connect-Maester -Service Graph,Teams
 
    Connects to Microsoft Graph and Microsoft Teams.
+
+.EXAMPLE
+   Connect-Maester -Service Graph,GitHub -GitHubOrganization 'mycompany'
+
+   Connects to Microsoft Graph and GitHub. GitHub sign-in is handled by Connect-MtGitHub using the Maester GitHub App device flow by default, including guided organization app install/approval when required. Automation can still use MAESTER_GITHUB_TOKEN or GH_TOKEN.
 
 .EXAMPLE
    Connect-Maester -Service Azure,Graph
@@ -72,6 +79,16 @@
 
    Connects using a custom application with client ID f45ec3ad-32f0-4c06-8b69-47682afe0216
 
+.EXAMPLE
+   Connect-Maester -Service Graph,SharePointOnline -SharePointClientId '<Client ID>'
+
+   Connects to Microsoft Graph and SharePoint Online using the specified PnP app registration. The SharePoint admin URL is auto-discovered from the tenant's initial domain via the Graph API. Optionally, specify -SharePointAdminUrl to override the auto-discovered URL (e.g. for custom domain or government cloud tenants).
+
+.EXAMPLE
+   Connect-Maester -Service SharePointOnline -SharePointClientId 'f45ec3ad-32f0-4c06-8b69-47682afe0216' -SharePointAdminUrl 'https://contoso-admin.sharepoint.com'
+
+   Connects to SharePoint Online using the specified client ID and admin URL.
+
 .LINK
    https://maester.dev/docs/commands/Connect-Maester
 #>
@@ -108,21 +125,40 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), and EXO. Default is Graph.
-      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'Graph', 'SecurityCompliance', 'Teams')]
+      # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. GitHub is not included in All and must be explicitly specified.
+      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
 
       # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
-      [string]$GraphClientId
+      [string]$GraphClientId,
+
+      # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline.
+      # Use Register-PnPEntraIDAppForInteractiveLogin to create a dedicated app, or reuse an existing Maester app
+      # registration by adding an http://localhost redirect URI and AllSites.FullControl delegated SharePoint permission.
+      [string]$SharePointClientId,
+
+      # The SharePoint admin center URL to connect to when using the SharePointOnline service (e.g. https://contoso-admin.sharepoint.com).
+      # If not specified, the URL is auto-discovered from the tenant's initial domain via the Microsoft Graph API.
+      [string]$SharePointAdminUrl,
+
+      # The certificate thumbprint for app-only authentication to SharePoint Online.
+      # Use together with -SharePointClientId and -TenantId for non-interactive/automation scenarios.
+      # The certificate must be installed in the current user's certificate store.
+      [string]$SharePointCertificateThumbprint,
+
+      # The GitHub organization login name to connect to when Service includes GitHub.
+      [string]$GitHubOrganization
    )
 
    $__MtSession.Connections = $Service
 
-   $OrderedImport = Get-ModuleImportOrder -Name @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams')
-   switch ($OrderedImport.Name) {
+   # Use an explicit module processing order so Microsoft Graph always connects before PnP.PowerShell.
+   # This avoids relying on Get-ModuleImportOrder, which may reorder modules by bundled DLL version.
+   $OrderedImport = @('Az.Accounts', 'ExchangeOnlineManagement', 'Microsoft.Graph.Authentication', 'MicrosoftTeams', 'PnP.PowerShell')
+   switch ($OrderedImport) {
 
       'Az.Accounts' {
          if ($Service -contains 'Azure' -or $Service -contains 'Dataverse' -or $Service -contains 'All') {
@@ -225,27 +261,27 @@
 
          if ($Service -contains 'SecurityCompliance' -or $Service -contains 'All') {
             $Environments = @{
-               'O365China'         = @{
+               'O365China'        = @{
                   ConnectionUri    = 'https://ps.compliance.protection.partner.outlook.cn/powershell-liveid'
                   AuthZEndpointUri = 'https://login.chinacloudapi.cn/common'
                }
-               'O365GermanyCloud'  = @{
+               'O365GermanyCloud' = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
-               'O365Default'       = @{
+               'O365Default'      = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
-               'O365USGovGCCHigh'  = @{
+               'O365USGovGCCHigh' = @{
                   ConnectionUri    = 'https://ps.compliance.protection.office365.us/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.us/common'
                }
-               'O365USGovDoD'      = @{
+               'O365USGovDoD'     = @{
                   ConnectionUri    = 'https://l5.ps.compliance.protection.office365.us/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.us/common'
                }
-               Default             = @{
+               Default            = @{
                   ConnectionUri    = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                   AuthZEndpointUri = 'https://login.microsoftonline.com/common'
                }
@@ -288,8 +324,8 @@
                   # Remove the broken cmdlet and re-import the working EXO one.
                   Remove-Item -Path 'Function:\Get-AdminAuditLogConfig' -Force -ErrorAction SilentlyContinue
                   $ExchangeConnectionInformation | Where-Object { $_.IsEopSession -ne $true -and $_.State -eq 'Connected' } |
-                     Select-Object -ExpandProperty ModuleName |
-                        Import-Module -Function 'Get-AdminAuditLogConfig' > $null
+                  Select-Object -ExpandProperty ModuleName |
+                  Import-Module -Function 'Get-AdminAuditLogConfig' > $null
                } catch {
                   Write-Error "Failed to restore Get-AdminAuditLogConfig cmdlet: $($_.Exception.Message)"
                }
@@ -334,52 +370,121 @@
          }
       }
 
-       'MicrosoftTeams' {
-          if ($Service -contains 'Teams' -or $Service -contains 'All') {
-             Write-Verbose 'Connecting to Microsoft Teams'
-             try {
-                if ($UseDeviceCode) {
-                   Connect-MicrosoftTeams -UseDeviceAuthentication
-                } elseif ($TeamsEnvironmentName) {
-                   Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName > $null
-                } else {
-                   Connect-MicrosoftTeams > $null
-                }
-             } catch [Management.Automation.CommandNotFoundException] {
-                Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
-                Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
-             }
-          }
-       }
-    } # end switch OrderedImport
+      'MicrosoftTeams' {
+         if ($Service -contains 'Teams' -or $Service -contains 'All') {
+            Write-Verbose 'Connecting to Microsoft Teams'
+            try {
+               if ($UseDeviceCode) {
+                  Connect-MicrosoftTeams -UseDeviceAuthentication
+               } elseif ($TeamsEnvironmentName) {
+                  Connect-MicrosoftTeams -TeamsEnvironmentName $TeamsEnvironmentName > $null
+               } else {
+                  Connect-MicrosoftTeams > $null
+               }
+            } catch [Management.Automation.CommandNotFoundException] {
+               Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
+               Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
+            }
+         }
+      }
 
-    # Active Directory connection validation (separate from OrderedImport as it has no module conflicts)
-    if ($Service -contains 'ActiveDirectory' -or $Service -contains 'All') {
-       Write-Verbose 'Validating Active Directory connectivity'
-       try {
-          $adRootDSE = Get-ADRootDSE -ErrorAction Stop
-          $__MtSession.ADConnection = @{
-             Connected                  = $true
-             DefaultNamingContext       = $adRootDSE.defaultNamingContext
-             ConfigurationNamingContext = $adRootDSE.configurationNamingContext
-             SchemaNamingContext        = $adRootDSE.schemaNamingContext
-             DomainController           = $adRootDSE.dnsHostName
-          }
-          Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
-       } catch [Management.Automation.CommandNotFoundException] {
-          $__MtSession.ADConnection = @{
-             Connected = $false
-             Error     = 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
-          }
-          Write-Error 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
-       } catch {
-          $__MtSession.ADConnection = @{
-             Connected = $false
-             Error     = $_.Exception.Message
-          }
-          Write-Error "Failed to connect to Active Directory: $($_.Exception.Message)"
-       }
-    }
+      'PnP.PowerShell' {
+         # SharePoint Online via PnP — must run AFTER Graph to avoid Microsoft.Graph.Core DLL conflict
+         if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+            Write-Verbose 'Connecting to SharePoint Online via PnP'
 
+            $resolvedSharePointClientId = $SharePointClientId
+
+            if (-not $resolvedSharePointClientId) {
+               Write-Warning "SharePoint Online connection skipped because -SharePointClientId was not provided."
+               break
+            }
+
+            try {
+               # Use the provided admin URL or auto-discover from the tenant's initial domain
+               if ($SharePointAdminUrl) {
+                  $spoAdminUrl = $SharePointAdminUrl
+                  Write-Verbose "Using provided SharePoint admin URL: $spoAdminUrl"
+               } elseif ($Service -notcontains 'Graph' -and $Service -notcontains 'All') {
+                  Write-Host "SharePoint admin URL auto-discovery requires a Microsoft Graph connection. Either include 'Graph' in -Service or supply -SharePointAdminUrl explicitly (e.g. https://contoso-admin.sharepoint.com)." -ForegroundColor Red
+                  break
+               } else {
+                  $domains = Invoke-MtGraphRequest -RelativeUri "domains" -ApiVersion "v1.0"
+                  $initialDomain = ($domains | Where-Object { $_.isInitial -eq $true }).id
+                  $tenantPrefix = ($initialDomain -split '\.')[0]
+                  $spoAdminUrl = "https://$tenantPrefix-admin.sharepoint.com"
+                  Write-Verbose "Resolved SharePoint admin URL: $spoAdminUrl"
+               }
+               if (-not (Get-Module -ListAvailable -Name PnP.PowerShell)) {
+                  Write-Host "`nInstall-Module PnP.PowerShell -Scope CurrentUser`n" -ForegroundColor Yellow
+                  Write-Host "The PnP.PowerShell module is not installed. For more information see https://pnp.github.io/powershell/articles/installation.html" -ForegroundColor Red
+                  break
+               }
+
+               Import-Module PnP.PowerShell -ErrorAction Stop
+               $pnpParams = @{
+                  Url      = $spoAdminUrl
+                  ClientId = $resolvedSharePointClientId
+               }
+               if ($SharePointCertificateThumbprint) {
+                  if (-not $TenantId) {
+                     Write-Host "The -TenantId parameter is required when using -SharePointCertificateThumbprint." -ForegroundColor Red
+                     break
+                  }
+                  $pnpParams['Thumbprint'] = $SharePointCertificateThumbprint
+                  $pnpParams['Tenant'] = $TenantId
+               } else {
+                  if ($UseDeviceCode) {
+                     $pnpParams['DeviceLogin'] = $true
+                  } else {
+                     $pnpParams['Interactive'] = $true
+                  }
+                  if ($TenantId) {
+                     $pnpParams['Tenant'] = $TenantId
+                  }
+               }
+               Connect-PnPOnline @pnpParams
+            } catch {
+               Write-Host "Failed to connect to SharePoint Online: $($_.Exception.Message)" -ForegroundColor Red
+            }
+         }
+      }
+   }
+
+   if ($Service -contains 'GitHub') {
+      Write-Verbose 'Connecting to GitHub'
+      $connectGitHubParams = @{}
+      if (-not [string]::IsNullOrWhiteSpace($GitHubOrganization)) {
+         $connectGitHubParams['Organization'] = $GitHubOrganization
+      }
+      Connect-MtGitHub @connectGitHubParams
+   }
+
+   # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
+   if ($Service -contains 'ActiveDirectory' -or $Service -contains 'All') {
+      Write-Verbose 'Validating Active Directory connectivity'
+      try {
+         $adRootDSE = Get-ADRootDSE -ErrorAction Stop
+         $__MtSession.ADConnection = @{
+            Connected                  = $true
+            DefaultNamingContext       = $adRootDSE.defaultNamingContext
+            ConfigurationNamingContext = $adRootDSE.configurationNamingContext
+            SchemaNamingContext        = $adRootDSE.schemaNamingContext
+            DomainController           = $adRootDSE.dnsHostName
+         }
+         Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
+      } catch [Management.Automation.CommandNotFoundException] {
+         $__MtSession.ADConnection = @{
+            Connected = $false
+            Error     = 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
+         }
+         Write-Error 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
+      } catch {
+         $__MtSession.ADConnection = @{
+            Connected = $false
+            Error     = $_.Exception.Message
+         }
+         Write-Error "Failed to connect to Active Directory: $($_.Exception.Message)"
+      }
+   }
 } # end function Connect-Maester
-

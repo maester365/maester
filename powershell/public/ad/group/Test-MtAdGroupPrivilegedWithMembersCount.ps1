@@ -36,7 +36,7 @@
     }
 
     $groups = $adState.Groups
-    
+
     # Well-known privileged group RIDs
     $privilegedRIDs = @{
         '512' = 'Domain Admins'
@@ -121,6 +121,3 @@
     Add-MtTestResultDetail -Result $testResultMarkdown
     return $testResult
 }
-
-
-

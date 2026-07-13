@@ -89,5 +89,3 @@
 
     return $__MtSession.ADCache[$cacheKey]
 }
-
-

@@ -82,6 +82,3 @@ function Test-MtAdGpoOwnerDetails {
     Write-Verbose "Completed Test-MtAdGpoOwnerDetails"
     return $testResult
 }
-
-
-

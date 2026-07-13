@@ -26,6 +26,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerNonStandardGroup"
+
     # Standard computer primary group IDs
     $standardGroupIds = @(515, 516, 521)
 
@@ -80,5 +82,3 @@
 
     return $testResult
 }
-
-

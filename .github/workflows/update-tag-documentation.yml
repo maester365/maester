@@ -9,6 +9,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: update-tag-documentation
+  cancel-in-progress: false
+
 jobs:
   update-tags:
     runs-on: ubuntu-latest
@@ -16,11 +20,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Set up PowerShell modules
         run: |
-          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck"
+          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck"
 
       - name: Generate tags document
         run: pwsh -NoLogo -NoProfile -File build/Update-TagsDocumentation.ps1

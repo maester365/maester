@@ -26,7 +26,7 @@
     $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
     $pim = $EntraIDPlan -eq "P2" -or $EntraIDPlan -eq "Governance"
     if (-not $pim) {
-        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2
+        Add-MtTestResultDetail -SkippedBecause NotLicensedEntraIDP2OrGovernance
         return $null
     }
 

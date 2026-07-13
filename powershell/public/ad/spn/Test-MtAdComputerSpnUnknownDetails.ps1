@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdComputerSpnUnknownDetails"
+
     # Known SPN service classes
     $knownSpns = @(
         'HOST', 'HTTP', 'HTTPS', 'LDAP', 'GC', 'DNS', 'CIFS', 'RPC', 'SMB',
@@ -125,8 +127,3 @@
 
     return $testResult
 }
-
-
-
-
-

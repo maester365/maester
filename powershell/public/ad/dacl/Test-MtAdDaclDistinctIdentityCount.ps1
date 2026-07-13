@@ -73,5 +73,3 @@
     Write-Verbose "Completed Test-MtAdDaclDistinctIdentityCount"
     return $testResult
 }
-
-

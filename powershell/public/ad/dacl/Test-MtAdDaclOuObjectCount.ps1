@@ -56,5 +56,3 @@
     Write-Verbose "Completed Test-MtAdDaclOuObjectCount"
     return $testResult
 }
-
-

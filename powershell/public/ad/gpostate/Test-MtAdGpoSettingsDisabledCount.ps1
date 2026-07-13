@@ -86,5 +86,3 @@ function Test-MtAdGpoSettingsDisabledCount {
     Write-Verbose "Completed Test-MtAdGpoSettingsDisabledCount"
     return $testResult
 }
-
-

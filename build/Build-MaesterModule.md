@@ -103,9 +103,9 @@ Merges the ORCA class hierarchy into a single `OrcaClasses.ps1`:
 
 1. **Base classes and enums** from `orcaClass.psm1` (preamble preserved since
    this file runs standalone via `ScriptsToProcess`)
-2. **Derived check classes** from each `check-ORCA*.ps1` file, with preambles
-   stripped and `using module` directives removed (the base classes are now
-   defined inline above)
+2. **Derived check classes** from each recursive `check-ORCA*.ps1` file, with
+   preambles stripped and `using module` directives removed (the base classes
+   are now defined inline above)
 
 This file is registered as `ScriptsToProcess` in the manifest so that class
 definitions are available before the module's `.psm1` loads.
@@ -136,7 +136,10 @@ All other manifest fields (version, GUID, `RequiredModules`,
 ### Phase G — Copy test suites
 
 Copies the `tests/` directory to `maester-tests/` in the output. Tests are
-copied as-is and not consolidated.
+copied as-is and not consolidated. This intentionally preserves each authored
+Pester file as a separate discovery container because per-suite consolidation
+can change `BeforeDiscovery`, `BeforeAll`, and dynamic test-generation
+semantics.
 
 ### Phase H — Build profiling (optional)
 
@@ -164,14 +167,16 @@ module/
 - **Source is never modified.** The build reads from `powershell/` and `tests/`
   and writes exclusively to the output directory.
 - **Deterministic output.** Files are sorted by full path before concatenation.
-  The `FunctionsToExport` list is sorted alphabetically. Repeated builds from
-  the same source produce identical output.
+  The `FunctionsToExport` list is sorted alphabetically. PowerShell 7.4 or
+  later is the preferred and validated build host for release artifacts.
 - **Encoding.** All generated PowerShell files use UTF-8 with BOM (`utf8BOM`),
   matching the project convention.
 - **Preamble stripping is position-aware.** Only lines in the file-level
   preamble region (before the first function/class definition) are stripped.
   Identical attributes inside function bodies are preserved.
 - **The hardcoded PSM1 preamble** (module header, `#Requires`,
-  `$__MtSession`) is extracted from the source `Maester.psm1`. If new session
+  `$__MtSession`) currently mirrors the source `Maester.psm1`. If new session
   variables are added to the source, they must also be added to the build
-  script's preamble.
+  script's preamble. Replacing this duplication with source preamble extraction
+  is tracked as follow-up work for
+  [issue #1559](https://github.com/maester365/maester/issues/1559).

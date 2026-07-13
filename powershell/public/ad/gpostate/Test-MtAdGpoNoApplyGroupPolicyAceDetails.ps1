@@ -59,5 +59,3 @@ function Test-MtAdGpoNoApplyGroupPolicyAceDetails {
     Write-Verbose "Completed Test-MtAdGpoNoApplyGroupPolicyAceDetails"
     return $testResult
 }
-
-

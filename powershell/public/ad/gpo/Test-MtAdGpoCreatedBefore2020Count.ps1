@@ -24,6 +24,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdGpoCreatedBefore2020Count"
+
     $gpoState = Get-MtADGpoState
     if ($null -eq $gpoState) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedActiveDirectory
@@ -58,5 +60,3 @@
 
     return $testResult
 }
-
-

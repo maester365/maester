@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param()
 
+    Write-Verbose "Starting Test-MtAdUpnSuffixesCount"
+
     # Get AD domain state data (uses cached data if available)
     $adState = Get-MtADDomainState
 
@@ -61,5 +63,3 @@
 
     return $testResult
 }
-
-

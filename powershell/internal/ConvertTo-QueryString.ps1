@@ -29,7 +29,7 @@
             Write-Output ''
             return
         }
-        
+
         foreach ($InputObject in @($InputObjects)) {
             if ($null -eq $InputObject) {
                 Write-Output ''

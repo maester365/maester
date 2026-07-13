@@ -47,13 +47,13 @@ function Get-MtADGpoState {
             try {
                 Write-Verbose "Collecting GPO reports for security analysis..."
                 $gpoReports = @()
-                
+
                 foreach ($gpo in $gpos) {
                     try {
                         # Get GPO report as XML
                         $reportXml = Get-GPOReport -Guid $gpo.Id -ReportType Xml -ErrorAction Stop
                         [xml]$xml = $reportXml
-                        
+
                         $gpoReport = [PSCustomObject]@{
                             GPOId = $gpo.Id
                             GPOName = $gpo.DisplayName
@@ -65,45 +65,45 @@ function Get-MtADGpoState {
                             HasDenyAce = $false
                             EnforcementEnabled = $false
                         }
-                        
+
                         # Check for disabled links in GPO settings
                         if ($xml.GPO.LinksTo) {
                             $links = $xml.GPO.LinksTo | Where-Object { $_.SOMPath }
                             $gpoReport.DisabledLinks = @($links | Where-Object { $_.Enabled -eq 'false' }).Count
                             $gpoReport.EnforcementEnabled = [bool]($links | Where-Object { $_.NoOverride -eq 'true' })
                         }
-                        
+
                         # Check for version mismatch (comparing AD version to SYSVOL version)
                         $adVersion = [int]$xml.GPO.Computer.VersionDirectory + [int]$xml.GPO.User.VersionDirectory
                         $sysvolVersion = [int]$xml.GPO.Computer.VersionSysvol + [int]$xml.GPO.User.VersionSysvol
                         $gpoReport.HasVersionMismatch = ($adVersion -ne $sysvolVersion)
-                        
+
                         # Check for cpassword in GPO settings (indicates insecure password storage)
                         $gpoXmlString = $reportXml.ToString()
                         $gpoReport.CpasswordFound = $gpoXmlString -match 'cpassword|Cpassword|CPASSWORD'
-                        
+
                         # Check for default passwords
-                        $gpoReport.DefaultPasswordFound = $gpoXmlString -match 'default.*password|password.*default' -or 
+                        $gpoReport.DefaultPasswordFound = $gpoXmlString -match 'default.*password|password.*default' -or
                                                           $gpoXmlString -match 'DefaultPassword|defaultPassword'
-                        
+
                         # Check permissions from SecurityDescriptor
                         if ($xml.GPO.SecurityDescriptor.Permissions.TrusteePermissions) {
                             $permissions = $xml.GPO.SecurityDescriptor.Permissions.TrusteePermissions
-                            $gpoReport.HasApplyGroupPolicyAce = [bool]($permissions | Where-Object { 
+                            $gpoReport.HasApplyGroupPolicyAce = [bool]($permissions | Where-Object {
                                 $_.Standard.GPOApply -eq 'true' -and $_.Type -eq 'Allow'
                             })
-                            $gpoReport.HasDenyAce = [bool]($permissions | Where-Object { 
+                            $gpoReport.HasDenyAce = [bool]($permissions | Where-Object {
                                 $_.Type -eq 'Deny'
                             })
                         }
-                        
+
                         $gpoReports += $gpoReport
                     }
                     catch {
                         Write-Verbose "Could not process GPO report for $($gpo.DisplayName): $($_.Exception.Message)"
                     }
                 }
-                
+
                 $gpoState['GPOReports'] = $gpoReports
                 Write-Verbose "Collected $($gpoReports.Count) GPO reports"
             }
@@ -116,10 +116,10 @@ function Get-MtADGpoState {
             try {
                 Write-Verbose "Collecting GPO links from OUs, domain root, and sites..."
                 $allGpoLinks = @()
-                
+
                 # Get domain DN for OU and domain root searches
                 $domainDN = (Get-ADDomain).DistinguishedName
-                
+
                 # Collect GPO links from OUs
                 try {
                     $ous = Get-ADOrganizationalUnit -Filter * -Properties DistinguishedName, gPLink
@@ -136,7 +136,7 @@ function Get-MtADGpoState {
                 } catch {
                     Write-Verbose "Could not collect OU GPO links: $($_.Exception.Message)"
                 }
-                
+
                 # Collect GPO links from domain root
                 try {
                     $domainRoot = Get-ADObject -Identity $domainDN -Properties DistinguishedName, gPLink
@@ -151,7 +151,7 @@ function Get-MtADGpoState {
                 } catch {
                     Write-Verbose "Could not collect domain root GPO links: $($_.Exception.Message)"
                 }
-                
+
                 # Collect GPO links from sites
                 try {
                     $sitesContainer = "CN=Sites,$configurationNC"
@@ -173,7 +173,7 @@ function Get-MtADGpoState {
                     Write-Verbose "Could not collect site GPO links: $($_.Exception.Message)"
                     $gpoState['SiteContainers'] = @()
                 }
-                
+
                 $gpoState['GPOLinks'] = $allGpoLinks
                 Write-Verbose "Collected $($allGpoLinks.Count) total GPO link entries"
             }
