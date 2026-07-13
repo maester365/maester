@@ -24,28 +24,40 @@ $BuildScript = Join-Path $PSScriptRoot 'Build-MaesterModule.ps1'
 $ValidationScript = Join-Path $PSScriptRoot 'Test-MaesterModuleOutput.ps1'
 $ModulePath = Join-Path $PSScriptRoot '../module'
 $ModuleManifestPath = Join-Path $ModulePath 'Maester.psd1'
+$ProgressActivity = 'Preparing local Maester module'
 
-Get-Module -Name Maester -All | Remove-Module -Force -ErrorAction SilentlyContinue
+try {
+    Write-Progress -Activity $ProgressActivity -Status 'Building module' -PercentComplete 10
 
-& $BuildScript
-& $ValidationScript -ModulePath $ModulePath
+    Get-Module -Name Maester -All | Remove-Module -Force -ErrorAction SilentlyContinue
+    & $BuildScript 1>$null 3>$null 4>$null 5>$null 6>$null
 
-$ImportedModules = @(Import-Module $ModuleManifestPath -Force -Global -PassThru -ErrorAction Stop)
-$ImportedModule = $ImportedModules |
-    Where-Object { $_.Name -eq 'Maester' } |
-    Select-Object -First 1
+    Write-Progress -Activity $ProgressActivity -Status 'Validating build' -PercentComplete 70
+    & $ValidationScript -ModulePath $ModulePath 1>$null 3>$null 4>$null 5>$null 6>$null
 
-if (-not $ImportedModule) {
-    throw 'Import-Module did not return the locally built Maester module.'
-}
+    Write-Progress -Activity $ProgressActivity -Status 'Loading local module' -PercentComplete 90
+    $ImportedModules = @(
+        Import-Module $ModuleManifestPath -Force -Global -PassThru -ErrorAction Stop `
+            3>$null 4>$null 5>$null 6>$null
+    )
+    $ImportedModule = $ImportedModules |
+        Where-Object { $_.Name -eq 'Maester' } |
+        Select-Object -First 1
 
-$ExpectedModuleBase = (Resolve-Path -LiteralPath $ModulePath).Path
-if ($ImportedModule.ModuleBase -ne $ExpectedModuleBase) {
-    throw "Expected to import Maester from '$ExpectedModuleBase', but imported it from '$($ImportedModule.ModuleBase)'."
+    if (-not $ImportedModule) {
+        throw 'Import-Module did not return the locally built Maester module.'
+    }
+
+    $ExpectedModuleBase = (Resolve-Path -LiteralPath $ModulePath).Path
+    if ($ImportedModule.ModuleBase -ne $ExpectedModuleBase) {
+        throw "Expected to import Maester from '$ExpectedModuleBase', but imported it from '$($ImportedModule.ModuleBase)'."
+    }
+} finally {
+    Write-Progress -Activity $ProgressActivity -Completed
 }
 
 Write-Host ''
 Write-Host 'Local Maester module ready' -ForegroundColor Green
-Write-Host "   Module: $($ImportedModule.ModuleBase)"
-Write-Host "   Tests:  $(Join-Path $ImportedModule.ModuleBase 'maester-tests')"
+Write-Host "   Built:  Maester v$($ImportedModule.Version)"
+Write-Host "   Loaded: $($ImportedModule.ModuleBase)"
 Write-Host ''
