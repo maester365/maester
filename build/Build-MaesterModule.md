@@ -6,6 +6,9 @@ under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
 ## Usage
 
 ```powershell
+# Build, validate, and import for local development
+./build/Build-LocalMaester.ps1
+
 # Standard build
 ./build/Build-MaesterModule.ps1
 
