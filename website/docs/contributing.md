@@ -17,25 +17,51 @@ Follow the guide below to set up Maester for development on your local machine, 
 
 ## Maester PowerShell module dev guide
 
-### Simple debugging
+### Build and load Maester locally
 
-- Set a breakpoint anywhere in the code and hit F5
-- The launch.json has been configured to re-load the module
+After changing files under `./powershell` or `./tests`, run the following command
+from the repository root:
 
-### Manual editing
+```powershell
+./build/Build-LocalMaester.ps1
+```
+
+This command:
+
+- Builds the consolidated, publishable module in `./module`.
+- Generates the companion test metadata used by reports.
+- Validates the build output.
+- Unloads any other Maester module and imports the local build into the current PowerShell session.
+
+Run the packaged tests with `Invoke-Maester -Path ./module/maester-tests`. Run
+`Build-LocalMaester.ps1` again whenever you change module or test source.
+
+### Build and load with VS Code
+
+Press F5 with the **PowerShell: Build and Load Local Maester** launch
+configuration selected. VS Code runs `Build-LocalMaester.ps1` and leaves the
+local build loaded in its interactive PowerShell session.
+
+The consolidated module is the closest match to the artifact published in a
+release. If you specifically need source-file breakpoints, use the source-only
+workflow below; source breakpoints do not map to the generated
+`./module/Maester.psm1` file.
+
+### Source-only debugging
 
 - Source files live in `./powershell` (module functions) and `./tests` (bundled test suites). Never edit files in `./module` — it is generated build output.
-- For quick iteration, load the PowerShell module directly from source. This needs to be done anytime you make changes to the code in `./powershell`.
+- For source-level breakpoints or quick iteration, load the PowerShell module directly from source. This needs to be done anytime you make changes to the code in `./powershell`.
   - `Import-Module ./powershell/Maester.psd1 -Force`
 - Run Maester
   - `Invoke-Maester`
+- Before submitting a change, use `./build/Build-LocalMaester.ps1` to verify the consolidated module.
 
 ### Building the module
 
 The publishable Maester module is produced by a build script that consolidates the source files into an optimized module for faster import:
 
-- Run `./build/Build-MaesterModule.ps1` to produce the publishable module in `./module`.
-- Test your changes against the built output by importing it: `Import-Module ./module/Maester.psd1 -Force`.
+- For normal development, run `./build/Build-LocalMaester.ps1` to build, validate, and import the publishable module in one step.
+- To produce the artifact without validating or importing it, run `./build/Build-MaesterModule.ps1`.
 - `./module` is a build artifact: it is ignored by git and never committed to source control. Built modules are attached to GitHub Releases and published to the PowerShell Gallery from CI.
 - The `FunctionsToExport` list in the built `Maester.psd1` is auto-generated at build time from the public source files. Do not edit the built manifest manually.
 - The bundled test files in `./module/maester-tests` are copied at build time from `./tests`. Do not edit build output manually.

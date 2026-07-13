@@ -5,10 +5,10 @@
   "version": "0.2.1",
   "configurations": [
     {
-      "name": "PowerShell: Module Interactive Session",
+      "name": "PowerShell: Build and Load Local Maester",
       "type": "PowerShell",
       "request": "launch",
-      "script": "Import-Module -Force '${workspaceFolder}/powershell/Maester.psd1'"
+      "script": "& '${workspaceFolder}/build/Build-LocalMaester.ps1'"
     }
   ]
 }
