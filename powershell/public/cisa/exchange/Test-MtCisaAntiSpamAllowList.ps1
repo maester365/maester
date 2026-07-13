@@ -33,7 +33,6 @@
 
     $portalLink = "https://security.microsoft.com/antispam"
 
-    $result = ''
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant does not have any [Anti-spam IP allow lists]($portalLink)."
     } else {

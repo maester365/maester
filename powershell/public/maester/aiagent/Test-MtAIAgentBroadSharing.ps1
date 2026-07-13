@@ -33,7 +33,6 @@ function    Test-MtAIAgentBroadSharing {
 
     $failedAgents = $agents | Where-Object { $_.AccessControlPolicy -eq "Any" -or $_.AccessControlPolicy -eq "Any multitenant" }
 
-    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents are shared broadly."
     } else {

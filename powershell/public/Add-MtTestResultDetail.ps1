@@ -133,36 +133,33 @@
         # the report (see #1924).
         try {
             $cmdletPath = $MyInvocation.PSCommandPath
-            $isFunctionScript = -not [string]::IsNullOrEmpty($cmdletPath) -and
-                $cmdletPath.EndsWith('.ps1', [System.StringComparison]::OrdinalIgnoreCase) -and
-                -not $cmdletPath.EndsWith('.psm1', [System.StringComparison]::OrdinalIgnoreCase)
-
-            if ($isFunctionScript) {
+            $markdownPath = $null
+            if ([System.IO.Path]::GetExtension($cmdletPath) -eq '.ps1') {
                 $markdownPath = [System.IO.Path]::ChangeExtension($cmdletPath, '.md')
-                if ((Test-Path -LiteralPath $markdownPath) -and ($markdownPath -ne $cmdletPath)) {
-                    # Read the content and split it into description and result with "<!--- Results --->" as the separator
-                    $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
-                    $splitContent = $content -split '<!--- Results --->'
-                    $mdDescription = $splitContent[0]
-                    $mdResult = $splitContent[1]
+            }
+            if ($markdownPath -and (Test-Path -LiteralPath $markdownPath)) {
+                # Read the content and split it into description and result with "<!--- Results --->" as the separator
+                $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
+                $splitContent = $content -split "<!--- Results --->"
+                $mdDescription = $splitContent[0]
+                $mdResult = $splitContent[1]
 
-                    if (![string]::IsNullOrEmpty($Result)) {
-                        # If a result was provided in the parameter insert it into the markdown content
-                        try {
-                            if ($mdResult -match '%TestResult%') {
-                                $mdResult = $mdResult -replace '%TestResult%', $Result
-                            } else {
-                                $mdResult = $Result
-                            }
-                        } catch {
-                            Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
+                if (![string]::IsNullOrEmpty($Result)) {
+                    # If a result was provided in the parameter insert it into the markdown content
+                    try {
+                        if ($mdResult -match "%TestResult%") {
+                            $mdResult = $mdResult -replace "%TestResult%", $Result
+                        } else {
                             $mdResult = $Result
-                        } # End of try-catch for result replacement in the markdown template.
-                    }
-
-                    $Description = $mdDescription
-                    $Result = $mdResult
+                        }
+                    } catch {
+                        Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
+                        $mdResult = $Result
+                    } # End of try-catch for result replacement in the markdown template.
                 }
+
+                $Description = $mdDescription
+                $Result = $mdResult
             }
         } catch {
             Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"

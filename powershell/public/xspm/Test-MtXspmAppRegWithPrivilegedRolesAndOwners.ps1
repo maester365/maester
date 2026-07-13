@@ -38,7 +38,6 @@
     $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object { $_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
     $SensitiveDirectoryRolesOnAppsWithOwners = $HighPrivilegedAppsByEntraRoles | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
-    $result = ''
     if ($return -or [string]::IsNullOrEmpty($SensitiveDirectoryRolesOnAppsWithOwners)) {
         $testResultMarkdown = "Well done. No application and workload identity has a privileged directory role with an owner."
     } else {

@@ -70,7 +70,6 @@ function Test-MtAIAgentEmailExfiltration {
         }
     }
 
-    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents have email-sending capabilities with AI-controlled inputs."
     } else {

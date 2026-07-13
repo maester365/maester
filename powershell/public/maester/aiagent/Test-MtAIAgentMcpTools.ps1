@@ -69,7 +69,6 @@ function Test-MtAIAgentMcpTools {
         }
     }
 
-    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents are configured with MCP server tools."
     } else {

@@ -45,7 +45,6 @@
 
     $Severity = "Medium"
 
-    $result = ''
     if ([string]::IsNullOrEmpty($EnabledPrivUsersToDisabledAccounts)) {
         $testResultMarkdown = "Well done. No enabled privileged or critical users linked to disabled identity."
     } else {

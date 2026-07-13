@@ -37,7 +37,6 @@
     $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object { $_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" } | sort-object AccountDisplayName
     $SensitiveApiRolesOnAppsWithOwners = $HighPrivilegedAppsByApiPermissions | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
-    $result = ''
     if ($return -or [string]::IsNullOrEmpty($SensitiveApiRolesOnAppsWithOwners) ) {
         $testResultMarkdown = "Well done. No app registrations with privileged API permission has assigned to owner."
     } else {

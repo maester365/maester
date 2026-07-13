@@ -85,7 +85,6 @@ function Test-MtAIAgentAuthorAuthentication {
         }
     }
 
-    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents are using author (maker) authentication for their connections."
     } else {

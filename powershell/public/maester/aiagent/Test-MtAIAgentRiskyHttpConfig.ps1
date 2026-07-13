@@ -85,7 +85,6 @@ function Test-MtAIAgentRiskyHttpConfig {
         }
     }
 
-    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents have risky HTTP configurations."
     } else {

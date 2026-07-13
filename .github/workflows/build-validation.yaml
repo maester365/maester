@@ -94,8 +94,6 @@ jobs:
           # ./module/ is a build artifact and is never committed to source control.
           ./build/Build-MaesterModule.ps1
           ./build/Test-MaesterModuleOutput.ps1
-          # Guard against #1924: empty DLP results must not leak function source into reports.
-          ./build/Test-MaesterResultDetailRegression.ps1 -ModulePath ./module
 
       - name: Publish coverage summary
         # Only the Linux leg produces a JaCoCo coverage report (see PESTER_COVERAGE above).

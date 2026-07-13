@@ -27,7 +27,6 @@
 
     $testResult = (-not $config.AuditDisabled)
 
-    $result = ''
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has mailbox auditing enabled.`n`n%TestResult%"
         $result = "✅ Pass"

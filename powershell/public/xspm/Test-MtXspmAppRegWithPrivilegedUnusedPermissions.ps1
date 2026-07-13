@@ -38,7 +38,6 @@
     $HighPrivilegedAppsByApiPermissions = $UnifiedIdentityInfo | where-object {$_.ApiPermissions.Classification -eq "ControlPlane" -or $_.ApiPermissions.Classification -eq "ManagementPlane" -or $_.ApiPermissions.PrivilegeLevel -eq "High" }
     $SensitiveAppsWithUnusedPermissions = $HighPrivilegedAppsByApiPermissions | Where-Object { $_.ApiPermissions.InUse -eq $false }
 
-    $result = ''
     if ($return -or [string]::IsNullOrEmpty($SensitiveAppsWithUnusedPermissions)) {
         $testResultMarkdown = "Well done. No application and workload identity has a privileged API permission which are unused"
     } else {

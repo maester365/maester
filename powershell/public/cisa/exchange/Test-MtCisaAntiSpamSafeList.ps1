@@ -39,7 +39,6 @@
         $testResultMarkdown = "[Safe List]($portalLink) is enabled in your tenant."
     }
 
-    $result = ''
     $testResultMarkdown = $testResultMarkdown -replace "%TestResult%", $result
 
     Add-MtTestResultDetail -Result $testResultMarkdown
