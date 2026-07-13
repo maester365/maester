@@ -614,7 +614,7 @@ Write-Host '   Validated: OrcaClasses.ps1 syntax'
 #           manifest update so that FormatsToProcess references can be validated)
 # ──────────────────────────────────────────────────────────────────────────────
 
-Write-Host '── Phase E: Generating test metadata and copying static assets' -ForegroundColor Cyan
+Write-Information '── Phase E: Generating test metadata and copying static assets' -InformationAction Continue
 
 # Companion Markdown is authored next to individual function files, but those
 # functions are consolidated into Maester.psm1 in the published module. Bundle
@@ -646,7 +646,7 @@ foreach ($MarkdownFile in $MarkdownFiles) {
 $TestMetadataPath = Join-Path $OutputRoot 'Maester.TestMetadata.json'
 $TestMetadataJson = $TestMetadata | ConvertTo-Json -Depth 3
 Set-Utf8BomContent -Path $TestMetadataPath -Value $TestMetadataJson
-Write-Host "   Generated: Maester.TestMetadata.json ($($TestMetadata.Count) entries)"
+Write-Information "   Generated: Maester.TestMetadata.json ($($TestMetadata.Count) entries)" -InformationAction Continue
 
 # Assets directory
 $AssetsSource = Join-Path $SourceRoot 'assets'
@@ -730,7 +730,7 @@ Write-Host ''
 Write-Host '── Build complete' -ForegroundColor Green
 Write-Host "   Output directory: $OutputRoot"
 Write-Host '   Consolidated PSM1: Maester.psm1'
-Write-Host '   Test metadata:     Maester.TestMetadata.json'
+Write-Information '   Test metadata:     Maester.TestMetadata.json' -InformationAction Continue
 Write-Host '   ORCA classes:      OrcaClasses.ps1'
 Write-Host "   Public functions:  $($ExportFunctionList.Count)"
 Write-Host ''

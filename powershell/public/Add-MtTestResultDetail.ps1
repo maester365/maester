@@ -137,7 +137,7 @@
                 # If a result was provided in the parameter insert it into the markdown content
                 try {
                     if ($mdResult -match "%TestResult%") {
-                        $mdResult = $mdResult -replace "%TestResult%", $Result
+                        $mdResult = $mdResult.Replace("%TestResult%", $Result)
                     } else {
                         $mdResult = $Result
                     }

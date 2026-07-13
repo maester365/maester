@@ -305,9 +305,14 @@
                     Select-Object -Unique)
             $testMetadata = Get-MtTestResultTemplate -CommandName $commandNames -TestId $testId
             $testResultDetail = [PSCustomObject]@{
+                TestTitle       = $null
                 TestDescription = if ($testMetadata) { $testMetadata.Description } else { 'This test was not run.' }
-                TestResult = 'This test was not run.'
-                Severity = $null
+                TestResult      = 'This test was not run.'
+                TestSkipped     = $null
+                SkippedReason   = $null
+                TestInvestigate = $false
+                Severity        = $null
+                Service         = $null
             }
         }
 

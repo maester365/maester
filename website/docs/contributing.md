@@ -50,7 +50,7 @@ workflow below; source breakpoints do not map to the generated
 ### Source-only debugging
 
 - Source files live in `./powershell` (module functions) and `./tests` (bundled test suites). Never edit files in `./module` — it is generated build output.
-- For source-level breakpoints or quick iteration, load the PowerShell module directly from source. This needs to be done anytime you make changes to the code in `./powershell`.
+- For source-level breakpoints or quick iteration, load the PowerShell module directly from source. Repeat this whenever you change code in `./powershell`.
   - `Import-Module ./powershell/Maester.psd1 -Force`
 - Run Maester
   - `Invoke-Maester`
