@@ -1,0 +1,57 @@
+name: Daily Discord codebase digest
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and log the Discord payload without posting."
+        required: false
+        default: true
+        type: boolean
+      force_post:
+        description: "Post even when it is not 9am in Australia/Melbourne."
+        required: false
+        default: false
+        type: boolean
+      since_hours:
+        description: "How many hours of main branch activity to include."
+        required: false
+        default: "24"
+        type: string
+  schedule:
+    - cron: "0 22 * * *"
+    - cron: "0 23 * * *"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: daily-discord-codebase-digest
+  cancel-in-progress: false
+
+jobs:
+  post-digest:
+    name: Post daily Discord digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: "24.x"
+
+      - name: Build and post digest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DISCORD_CODEBASE_WEBHOOK_URL: ${{ secrets.DISCORD_CODEBASE_WEBHOOK_URL }}
+          DIGEST_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          DIGEST_FORCE_POST: ${{ github.event_name == 'workflow_dispatch' && inputs.force_post || false }}
+          DIGEST_SINCE_HOURS: ${{ github.event_name == 'workflow_dispatch' && inputs.since_hours || '24' }}
+        run: node .github/scripts/discord-codebase-digest.mjs

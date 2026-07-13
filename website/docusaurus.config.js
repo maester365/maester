@@ -141,6 +141,7 @@ const config = {
             position: "left",
             label: "Commands",
           },
+          { to: 'manifesto', label: 'Manifesto', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",
@@ -184,6 +185,10 @@ const config = {
           {
             title: "More",
             items: [
+              {
+                label: "Manifesto",
+                to: "/manifesto",
+              },
               {
                 label: "Bluesky",
                 href: "https://bsky.app/profile/maester.dev",
