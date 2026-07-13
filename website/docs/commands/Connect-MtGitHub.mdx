@@ -78,6 +78,20 @@ or admin-probe failure still connect but emit warnings indicating limited CIS
 coverage.
 Non-active membership states do not connect at all.
 
+A non-rate-limited HTTP 403 from GET /user aborts with FailureReason =
+'TokenForbidden'.
+Common causes include SAML SSO enforcement, IP allowlists,
+token/account blocking, or other authorization policies.
+A rate-limited 403
+is still classified as FailureReason = 'RateLimited'.
+
+A malformed JSON response from GET /orgs/\{org\} aborts with FailureReason =
+'OrgAccessFailed' and identifies the response parsing problem instead of
+blaming the PAT scope, organization name, or API base URI.
+
+The successful GET /orgs/\{org\} response is cached only after the full
+connection succeeds, so failed connection attempts do not seed org data.
+
 Token resolution order:
   1.
 -Token parameter (SecureString)
