@@ -42,6 +42,7 @@ function Test-MtAIAgentNoAuthentication {
     if ($noAuthAgents) { $failedAgents += $noAuthAgents }
     if ($optionalAuthAgents) { $failedAgents += $optionalAuthAgents }
 
+    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. All AI agents require user authentication with sign-in enforced."
     } else {

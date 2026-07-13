@@ -127,33 +127,42 @@
     }
 
     if ([string]::IsNullOrEmpty($Description)) {
-        # Check if a markdown file exists for the cmdlet and parse the content
+        # Load companion .md next to individual function files (source layout).
+        # Never treat the consolidated module file (*.psm1) as markdown: Test-Path would
+        # succeed on Maester.psm1 and Get-Content would load the entire module source into
+        # the report (see #1924).
         try {
             $cmdletPath = $MyInvocation.PSCommandPath
-            $markdownPath = $cmdletPath -replace '.ps1', '.md'
-            if (Test-Path $markdownPath) {
-                # Read the content and split it into description and result with "<!--- Results --->" as the separator
-                $content = Get-Content $markdownPath -Raw -ErrorAction Stop
-                $splitContent = $content -split "<!--- Results --->"
-                $mdDescription = $splitContent[0]
-                $mdResult = $splitContent[1]
+            $isFunctionScript = -not [string]::IsNullOrEmpty($cmdletPath) -and
+                $cmdletPath.EndsWith('.ps1', [System.StringComparison]::OrdinalIgnoreCase) -and
+                -not $cmdletPath.EndsWith('.psm1', [System.StringComparison]::OrdinalIgnoreCase)
 
-                if (![string]::IsNullOrEmpty($Result)) {
-                    # If a result was provided in the parameter insert it into the markdown content
-                    try {
-                        if ($mdResult -match "%TestResult%") {
-                            $mdResult = $mdResult -replace "%TestResult%", $Result
-                        } else {
+            if ($isFunctionScript) {
+                $markdownPath = [System.IO.Path]::ChangeExtension($cmdletPath, '.md')
+                if ((Test-Path -LiteralPath $markdownPath) -and ($markdownPath -ne $cmdletPath)) {
+                    # Read the content and split it into description and result with "<!--- Results --->" as the separator
+                    $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
+                    $splitContent = $content -split '<!--- Results --->'
+                    $mdDescription = $splitContent[0]
+                    $mdResult = $splitContent[1]
+
+                    if (![string]::IsNullOrEmpty($Result)) {
+                        # If a result was provided in the parameter insert it into the markdown content
+                        try {
+                            if ($mdResult -match '%TestResult%') {
+                                $mdResult = $mdResult -replace '%TestResult%', $Result
+                            } else {
+                                $mdResult = $Result
+                            }
+                        } catch {
+                            Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
                             $mdResult = $Result
-                        }
-                    } catch {
-                        Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
-                        $mdResult = $Result
-                    } # End of try-catch for result replacement in the markdown template.
-                }
+                        } # End of try-catch for result replacement in the markdown template.
+                    }
 
-                $Description = $mdDescription
-                $Result = $mdResult
+                    $Description = $mdDescription
+                    $Result = $mdResult
+                }
             }
         } catch {
             Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"

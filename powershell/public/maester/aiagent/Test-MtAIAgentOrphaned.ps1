@@ -61,6 +61,7 @@ function Test-MtAIAgentOrphaned {
         }
     }
 
+    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. All AI agents have active owners."
     } else {

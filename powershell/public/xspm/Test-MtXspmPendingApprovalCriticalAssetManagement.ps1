@@ -33,6 +33,7 @@
 
     $Severity = "Medium"
 
+    $result = ''
     if ($return -or [string]::IsNullOrEmpty($PendingApprovals)) {
         $testResultMarkdown = "Well done. No pending approvals for Critical Asset Management are found."
     } else {

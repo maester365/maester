@@ -77,6 +77,7 @@ function Test-MtAIAgentMissingInstructions {
         }
     }
 
+    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. All AI agents with generative orchestration have custom instructions."
     } else {

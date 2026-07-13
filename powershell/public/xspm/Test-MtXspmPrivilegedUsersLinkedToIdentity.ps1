@@ -54,6 +54,7 @@
 
     $Severity = "Low"
 
+    $result = ''
     if ([string]::IsNullOrEmpty($UnlinkedPrivilegedUsers)) {
         $testResultMarkdown = "Well done. No privileged users unlinked to identity."
     } else {

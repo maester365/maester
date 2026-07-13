@@ -39,6 +39,7 @@
 
     $Severity = "Medium"
 
+    $result = ''
     if ($return -or [string]::IsNullOrEmpty($HighPrivilegedHybridUsers)) {
         $testResultMarkdown = "Well done. No hybrid users with sensitive directory roles."
     } else {

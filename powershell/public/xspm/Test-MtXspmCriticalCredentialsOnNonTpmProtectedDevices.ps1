@@ -86,6 +86,7 @@
 
     $Severity = "Medium"
 
+    $result = ''
     if ($return -or [string]::IsNullOrEmpty($Devices)) {
         $testResultMarkdown = "Well done. All devices with critical credentials stored are protected by TPM."
     } else {

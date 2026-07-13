@@ -70,6 +70,7 @@
 
     $Severity = "Low"
 
+    $result = ''
     if ([string]::IsNullOrEmpty($Devices)) {
         $testResultMarkdown = "Well done. No devices with shared critical and non-critical user credentials are found."
     } else {

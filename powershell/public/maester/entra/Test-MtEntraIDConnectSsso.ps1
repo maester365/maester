@@ -130,6 +130,7 @@ IdentityLogonEvents
         return $null
     }
 
+    $result = ''
     try {
         if ($DomainsWithSsso.Count -gt 0) {
             $return = $false

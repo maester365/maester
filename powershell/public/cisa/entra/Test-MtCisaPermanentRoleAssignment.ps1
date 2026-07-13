@@ -63,6 +63,7 @@
         $testResultMarkdown = "Your tenant has active assignments without expiration to privileged roles.`n`n%TestResult%"
     }
 
+    $result = ''
     if (-not $testResult) {
         $result = "| Role | Principal Type | Display Name | Status |`n"
         $result += "| --- | --- | --- | --- |`n"

@@ -37,6 +37,7 @@
 
     $Severity = "Medium"
 
+    $result = ''
     if ($return -or [string]::IsNullOrEmpty($ExposedAuthArtifactsFromRiskyDevice)) {
         $testResultMarkdown = "Well done. No authentication artifacts seems to be exposed on vulnerable endpoints."
     } else {

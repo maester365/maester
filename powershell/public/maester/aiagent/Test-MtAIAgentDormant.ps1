@@ -41,6 +41,7 @@ function Test-MtAIAgentDormant {
         [datetime]$_.LastModifiedTime -lt $threshold
     }
 
+    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No dormant AI agents found (threshold: $thresholdDays days)."
     } else {

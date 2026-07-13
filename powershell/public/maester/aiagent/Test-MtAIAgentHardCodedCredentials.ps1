@@ -81,6 +81,7 @@ function Test-MtAIAgentHardCodedCredentials {
         }
     }
 
+    $result = ''
     if ($failedAgents.Count -eq 0) {
         $testResultMarkdown = "Well done. No AI agents have hard-coded credentials in topic definitions."
     } else {
