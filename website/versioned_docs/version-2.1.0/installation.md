@@ -5,7 +5,7 @@ title: Installation guide
 - Install the **Maester** PowerShell module, Pester, and the out-of-the-box tests.
 
 ```powershell
-Install-Module Pester -SkipPublisherCheck -Force -Scope CurrentUser
+Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -SkipPublisherCheck -Force -Scope CurrentUser
 Install-Module Maester -Scope CurrentUser
 
 md maester-tests

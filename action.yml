@@ -101,7 +101,7 @@ runs:
     - name: Run Maester 🔥
       id: maester
       # Set the action version to a specific version, to keep using that exact version.
-      uses: maester365/maester-action@v1.1.0
+      uses: maester365/maester-action@v1.2.0
       with:
         tenant_id: ${{ inputs.tenant_id }}
         client_id: ${{ inputs.client_id }}
