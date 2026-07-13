@@ -56,8 +56,5 @@ try {
     Write-Progress -Activity $ProgressActivity -Completed
 }
 
-Write-Host ''
-Write-Host 'Local Maester module ready' -ForegroundColor Green
-Write-Host "   Built:  Maester v$($ImportedModule.Version)"
-Write-Host "   Loaded: $($ImportedModule.ModuleBase)"
-Write-Host ''
+$ReadyEmoji = [char]::ConvertFromUtf32(0x1F525)
+Write-Host "$ReadyEmoji Local Maester built and loaded: $($ImportedModule.ModuleBase)" -ForegroundColor Green
