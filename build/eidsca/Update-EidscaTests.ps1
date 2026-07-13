@@ -414,8 +414,14 @@ function RemoveTrailingWhitespace($content) {
 
 function CreateFile($folderPath, $fileName, $content) {
     $filePath = Join-Path $folderPath $fileName
+    if ($content -match "`r`n") {
+        $newLine = "`r`n"
+    } else {
+        $newLine = "`n"
+    }
     $content = RemoveTrailingWhitespace $content
-    $content | Out-File $filePath -Encoding utf8
+    $content = $content -replace '(\r?\n)+$', ''
+    [System.IO.File]::WriteAllText($filePath, "$content$newLine", [System.Text.UTF8Encoding]::new($false))
 }
 
 function GetEidscaPsFunctionName($checkId) {
@@ -518,5 +524,11 @@ $discoveryLines += [System.Environment]::NewLine
 $output = $output.Replace('<DiscoveryFromJson>', $discoveryLines)
 
 $output += $sb.ToString()
+if ($output -match "`r`n") {
+    $newLine = "`r`n"
+} else {
+    $newLine = "`n"
+}
 $output = RemoveTrailingWhitespace $output
-$output | Out-File $TestFilePath -Encoding utf8
+$output = $output -replace '(\r?\n)+$', ''
+[System.IO.File]::WriteAllText($TestFilePath, "$output$newLine", [System.Text.UTF8Encoding]::new($false))
