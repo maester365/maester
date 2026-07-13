@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: "Checks state of SharePoint Online sharing"
-id: Test-MtCisaSpoSharingAllowedDomain
-title: Test-MtCisaSpoSharingAllowedDomain
+description: "Checks state of Anyone link expiration for SharePoint Online"
+id: Test-MtCisaSpoAnyoneLinkExpiration
+title: Test-MtCisaSpoAnyoneLinkExpiration
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoSharingAllowedDomain.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoAnyoneLinkExpiration.ps1
 ---
 
 ## SYNOPSIS
 
-Checks state of SharePoint Online sharing
+Checks state of Anyone link expiration for SharePoint Online
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaSpoAnyoneLinkExpiration [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
+An expiration date SHALL be set for Anyone links.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain
+Test-MtCisaSpoAnyoneLinkExpiration
 ```
 
-Returns true if sharing uses restricted domains
+Returns true if Anyone links have an expiration set
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain](https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain)
+[https://maester.dev/docs/commands/Test-MtCisaSpoAnyoneLinkExpiration](https://maester.dev/docs/commands/Test-MtCisaSpoAnyoneLinkExpiration)

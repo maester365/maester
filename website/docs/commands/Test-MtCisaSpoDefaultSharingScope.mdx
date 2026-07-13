@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: "Checks state of SharePoint Online sharing"
-id: Test-MtCisaSpoSharingAllowedDomain
-title: Test-MtCisaSpoSharingAllowedDomain
+description: "Checks state of default SharePoint Online sharing scope"
+id: Test-MtCisaSpoDefaultSharingScope
+title: Test-MtCisaSpoDefaultSharingScope
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoSharingAllowedDomain.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoDefaultSharingScope.ps1
 ---
 
 ## SYNOPSIS
 
-Checks state of SharePoint Online sharing
+Checks state of default SharePoint Online sharing scope
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaSpoDefaultSharingScope [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
+Default sharing scope SHOULD be set to Specific People (Only the people the user specifies).
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain
+Test-MtCisaSpoDefaultSharingScope
 ```
 
-Returns true if sharing uses restricted domains
+Returns true if default sharing scope is restricted to specific people
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain](https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain)
+[https://maester.dev/docs/commands/Test-MtCisaSpoDefaultSharingScope](https://maester.dev/docs/commands/Test-MtCisaSpoDefaultSharingScope)
