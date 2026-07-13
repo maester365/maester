@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: "Checks state of SharePoint Online sharing"
-id: Test-MtCisaSpoSharingAllowedDomain
-title: Test-MtCisaSpoSharingAllowedDomain
+description: "Checks state of verification code reauthentication for SharePoint Online"
+id: Test-MtCisaSpoVerificationCodeReauth
+title: Test-MtCisaSpoVerificationCodeReauth
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoSharingAllowedDomain.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoVerificationCodeReauth.ps1
 ---
 
 ## SYNOPSIS
 
-Checks state of SharePoint Online sharing
+Checks state of verification code reauthentication for SharePoint Online
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaSpoVerificationCodeReauth [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
+Reauthentication with verification code SHOULD be required after thirty days or less.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain
+Test-MtCisaSpoVerificationCodeReauth
 ```
 
-Returns true if sharing uses restricted domains
+Returns true if verification code reauthentication is required within 30 days or less
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain](https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain)
+[https://maester.dev/docs/commands/Test-MtCisaSpoVerificationCodeReauth](https://maester.dev/docs/commands/Test-MtCisaSpoVerificationCodeReauth)

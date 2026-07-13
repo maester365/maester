@@ -1,36 +1,36 @@
 ---
 sidebar_class_name: hidden
-description: "Checks state of SharePoint Online sharing"
-id: Test-MtCisaSpoSharingAllowedDomain
-title: Test-MtCisaSpoSharingAllowedDomain
+description: "Checks state of Anyone link permissions for SharePoint Online"
+id: Test-MtCisaSpoAnyoneLinkPermission
+title: Test-MtCisaSpoAnyoneLinkPermission
 hide_title: false
 hide_table_of_contents: false
-custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoSharingAllowedDomain.ps1
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Test-MtCisaSpoAnyoneLinkPermission.ps1
 ---
 
 ## SYNOPSIS
 
-Checks state of SharePoint Online sharing
+Checks state of Anyone link permissions for SharePoint Online
 
 ## SYNTAX
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Test-MtCisaSpoAnyoneLinkPermission [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs.
+Anyone link permissions SHALL be limited to View only.
 
 ## EXAMPLES
 
 ### EXAMPLE 1
 
 ```powershell
-Test-MtCisaSpoSharingAllowedDomain
+Test-MtCisaSpoAnyoneLinkPermission
 ```
 
-Returns true if sharing uses restricted domains
+Returns true if Anyone links are limited to View
 
 ## PARAMETERS
 
@@ -64,4 +64,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain](https://maester.dev/docs/commands/Test-MtCisaSpoSharingAllowedDomain)
+[https://maester.dev/docs/commands/Test-MtCisaSpoAnyoneLinkPermission](https://maester.dev/docs/commands/Test-MtCisaSpoAnyoneLinkPermission)
