@@ -801,6 +801,160 @@ Describe 'Connect-MtGitHub' {
         }
     }
 
+    Context 'Failure: TokenForbidden' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+        }
+
+        It '/user 403 with x-ratelimit-remaining=0 remains RateLimited' {
+            $fakeResp = [PSCustomObject]@{
+                StatusCode = 403
+                Headers    = @{ 'x-ratelimit-remaining' = '0'; 'x-ratelimit-reset' = '9999999999' }
+            }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'RateLimited'
+                $c.FailureReason | Should -Not -Be 'TokenForbidden'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It '/user 403 without rate-limit headers sets FailureReason = TokenForbidden' {
+            $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'TokenForbidden'
+                $c.FailureReason | Should -Not -Be 'RateLimited'
+                $c.FailureReason | Should -Not -Be 'TokenInvalid'
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+    }
+
+    Context 'Cache seeding' {
+        BeforeEach {
+            $env:MAESTER_GITHUB_TOKEN = 'valid-token'
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user$' } {
+                [PSCustomObject]@{ Content = '{"login":"testuser"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } {
+                [PSCustomObject]@{ Content = '{"enabled_repositories":"all"}'; StatusCode = 200 }
+            }
+            Mock Get-MtGitHubCacheKey -ModuleName Maester {
+                param(
+                    [string] $ApiVersion,
+                    [string] $AbsoluteUri
+                )
+                "$ApiVersion|$AbsoluteUri"
+            }
+        }
+
+        It 'Seeds the connected organization response with the exact Invoke-MtGitHubRequest cache key' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/acme-co-2024$' } {
+                [PSCustomObject]@{ Content = '{"login":"acme-co-2024","plan":{"name":"enterprise"}}' }
+            }
+
+            Connect-MtGitHub -Organization 'acme-co-2024' 3>$null
+
+            InModuleScope Maester {
+                # Literal-key assertion protects the encoding contract; GitHub org logins are ASCII.
+                $__MtSession.GitHubCache.ContainsKey('2022-11-28|https://api.github.com/orgs/acme-co-2024') | Should -BeTrue
+                $__MtSession.GitHubCache.Count | Should -Be 1
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 4
+            Should -Invoke Get-MtGitHubCacheKey -ModuleName Maester -Exactly -Times 1 -ParameterFilter {
+                $ApiVersion -eq '2022-11-28' -and $AbsoluteUri -eq 'https://api.github.com/orgs/acme-co-2024'
+            }
+
+            InModuleScope Maester {
+                $org = Get-MtGitHubOrganization
+                $org.login | Should -Be 'acme-co-2024'
+            }
+            Should -Invoke Invoke-WebRequest -ModuleName Maester -Exactly -Times 4
+            Should -Invoke Get-MtGitHubCacheKey -ModuleName Maester -Exactly -Times 2 -ParameterFilter {
+                $ApiVersion -eq '2022-11-28' -and $AbsoluteUri -eq 'https://api.github.com/orgs/acme-co-2024'
+            }
+        }
+
+        It 'Probe 2 malformed JSON returns OrgAccessFailed without seeding cache or auth state' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = 'not-json{' }
+            }
+
+            $info = @()
+            Connect-MtGitHub -Organization 'myorg' -InformationAction SilentlyContinue -InformationVariable info
+
+            ($info -join ' ') | Should -Match 'could not be parsed as JSON|proxy is modifying response bodies'
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgAccessFailed'
+                $c.FailureReason | Should -Not -Be 'ApiBaseUriFailed'
+                $__MtSession.GitHubCache.Count | Should -Be 0
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Probe 3 failure leaves cache empty and auth state unset' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/memberships/' } {
+                [PSCustomObject]@{ Content = 'not-json{' }
+            }
+
+            Connect-MtGitHub -Organization 'myorg' 6>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected     | Should -BeFalse
+                $c.FailureReason | Should -Be 'OrgMembershipFailed'
+                $__MtSession.GitHubCache.Count | Should -Be 0
+                $__MtSession.GitHubAuthHeader | Should -BeNullOrEmpty
+            }
+        }
+
+        It 'Probe 4 failure still connects and still seeds the organization cache' {
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '^https?://[^/]+/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"login":"myorg"}' }
+            }
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/user/memberships/orgs/[^/]+$' } {
+                [PSCustomObject]@{ Content = '{"state":"active","role":"admin"}' }
+            }
+            $fakeResp = [PSCustomObject]@{ StatusCode = 403; Headers = @{} }
+            $ex = [System.Exception]::new('Forbidden')
+            Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
+            Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } { throw $ex }
+
+            Connect-MtGitHub -Organization 'myorg' 3>$null
+
+            InModuleScope Maester {
+                $c = $__MtSession.GitHubConnection
+                $c.Connected | Should -BeTrue
+                $c.AdministrationPermissionVerified | Should -BeFalse
+                $__MtSession.GitHubCache.ContainsKey('2022-11-28|https://api.github.com/orgs/myorg') | Should -BeTrue
+                $__MtSession.GitHubCache.Count | Should -Be 1
+            }
+        }
+    }
+
     Context 'Failure: InvalidApiBaseUri' {
         BeforeEach {
             $env:MAESTER_GITHUB_TOKEN = 'valid-token'

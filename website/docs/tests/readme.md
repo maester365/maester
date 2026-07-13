@@ -21,13 +21,18 @@ This section is generated from the Maester test source. Each page includes the t
 | [Maester](./maester) | 149 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 44 | CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests. |
+| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
 
 | Test ID | Title | Suite | Severity | Category |
 | --- | --- | --- | --- | --- |
+| [CIS.GH.1.2.2](./CIS.GH.1.2.2) | (L1) Ensure repository creation is limited to specific members | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.2.3](./CIS.GH.1.2.3) | (L1) Ensure repository deletion is limited to specific users | CIS | High | CIS GH Level 1 |
+| [CIS.GH.1.2.4](./CIS.GH.1.2.4) | (L1) Ensure issue deletion is limited to specific users | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.3.2](./CIS.GH.1.3.2) | (L1) Ensure team creation is limited to specific members | CIS | Medium | CIS GH Level 1 |
+| [CIS.GH.1.3.8](./CIS.GH.1.3.8) | (L1) Ensure strict base permissions are set for repositories | CIS | High | CIS GH Level 1 |
 | [CIS.M365.1.1.1](./CIS.M365.1.1.1) | (L1) Ensure Administrative accounts are cloud-only | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.1.3](./CIS.M365.1.1.3) | (L1) Ensure that between two and four global admins are designated | CIS | High | CIS E3 Level 1 |
 | [CIS.M365.1.2.1](./CIS.M365.1.2.1) | (L2) Ensure that only organizationally managed/approved public groups exist | CIS | Medium | CIS E3 Level 2 |
