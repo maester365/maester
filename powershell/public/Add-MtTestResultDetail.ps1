@@ -127,67 +127,12 @@
     }
 
     if ([string]::IsNullOrEmpty($Description)) {
-        $mdDescription = $null
-        $mdResult = $null
-        $metadataFound = $false
+        $callStack = @(Get-PSCallStack)
+        $callerName = if ($callStack.Count -gt 1) { $callStack[1].Command } else { $null }
+        $metadata = Get-MtTestResultTemplate -CommandName $callerName
 
-        # Published builds contain one generated metadata bundle because individual
-        # function files are consolidated into Maester.psm1. Load it once and cache it
-        # for subsequent test result lookups.
-        try {
-            $metadataCache = Get-Variable -Name MtTestMetadataCache -Scope Script -ErrorAction SilentlyContinue
-            if (-not $metadataCache) {
-                $script:MtTestMetadataCache = $false
-                $moduleBase = $MyInvocation.MyCommand.Module.ModuleBase
-                if ($moduleBase) {
-                    $metadataPath = Join-Path $moduleBase 'Maester.TestMetadata.json'
-                    if (Test-Path -LiteralPath $metadataPath) {
-                        $script:MtTestMetadataCache = Get-Content -LiteralPath $metadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
-                    }
-                }
-            }
-
-            if ($script:MtTestMetadataCache) {
-                $callStack = @(Get-PSCallStack)
-                if ($callStack.Count -gt 1) {
-                    $callerName = $callStack[1].Command
-                    $metadataProperty = $script:MtTestMetadataCache.PSObject.Properties[$callerName]
-                    if ($metadataProperty) {
-                        $mdDescription = $metadataProperty.Value.Description
-                        $mdResult = $metadataProperty.Value.Result
-                        $metadataFound = $true
-                    }
-                }
-            }
-        } catch {
-            $script:MtTestMetadataCache = $false
-            Write-Warning "Failed to read test metadata bundle: $($_.Exception.Message)"
-        }
-
-        # Source checkouts keep companion Markdown next to each function for a simple
-        # authoring experience. Fall back to that layout when the generated bundle or
-        # the caller's entry is unavailable.
-        if (-not $metadataFound) {
-            try {
-                $cmdletPath = $MyInvocation.PSCommandPath
-                $markdownPath = $null
-                if ([System.IO.Path]::GetExtension($cmdletPath) -eq '.ps1') {
-                    $markdownPath = [System.IO.Path]::ChangeExtension($cmdletPath, '.md')
-                }
-                if ($markdownPath -and (Test-Path -LiteralPath $markdownPath)) {
-                    # Split the content into description and result at the template separator.
-                    $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
-                    $splitContent = $content -split '<!--- Results --->', 2
-                    $mdDescription = $splitContent[0]
-                    $mdResult = $splitContent[1]
-                    $metadataFound = $true
-                }
-            } catch {
-                Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
-            }
-        }
-
-        if ($metadataFound) {
+        if ($metadata) {
+            $mdResult = $metadata.Result
             if (![string]::IsNullOrEmpty($Result)) {
                 # If a result was provided in the parameter insert it into the markdown content
                 try {
@@ -202,7 +147,7 @@
                 }
             }
 
-            $Description = $mdDescription
+            $Description = $metadata.Description
             $Result = $mdResult
         }
     }

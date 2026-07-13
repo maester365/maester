@@ -292,6 +292,25 @@
         }
         $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
 
+        # Filtered tests never execute Add-MtTestResultDetail. Resolve their
+        # authored metadata from the commands in the discovered Pester test so
+        # reports show the test description instead of raw PowerShell source.
+        if (-not $testResultDetail -and $test.Result -eq 'NotRun') {
+            $commandNames = @($test.ScriptBlock.Ast.FindAll({
+                        param($node)
+                        $node -is [System.Management.Automation.Language.CommandAst]
+                    }, $true) |
+                    ForEach-Object { $_.GetCommandName() } |
+                    Where-Object { $_ } |
+                    Select-Object -Unique)
+            $testMetadata = Get-MtTestResultTemplate -CommandName $commandNames -TestId $testId
+            $testResultDetail = [PSCustomObject]@{
+                TestDescription = if ($testMetadata) { $testMetadata.Description } else { 'This test was not run.' }
+                TestResult = 'This test was not run.'
+                Severity = $null
+            }
+        }
+
         # Add the other test metadata to the test result
         $testSetting = Get-MtMaesterConfigTestSetting -TestId $testId
         $severity = $testResultDetail.Severity # Default to the test result severity
