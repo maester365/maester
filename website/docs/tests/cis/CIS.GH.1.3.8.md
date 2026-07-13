@@ -14,6 +14,7 @@ keywords:
   - "CIS GH Level 1"
   - "CIS GH"
   - "CIS GitHub v1.2.0"
+  - "GitHub"
   - "L1"
 ---
 
@@ -75,7 +76,7 @@ This test verifies the organization default repository permission only. It does 
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubStrictBasePermission](/docs/commands/Test-MtCisGitHubStrictBasePermission) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.8, L1 |
+| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.8, GitHub, L1 |
 
 ## Source
 

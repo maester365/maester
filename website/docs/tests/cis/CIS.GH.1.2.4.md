@@ -14,6 +14,7 @@ keywords:
   - "CIS GH Level 1"
   - "CIS GH"
   - "CIS GitHub v1.2.0"
+  - "GitHub"
   - "L1"
 ---
 
@@ -77,7 +78,7 @@ This test verifies the organization setting only. It does not enumerate reposito
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubIssueDeletionLimited](/docs/commands/Test-MtCisGitHubIssueDeletionLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.4, L1 |
+| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.4, GitHub, L1 |
 
 ## Source
 

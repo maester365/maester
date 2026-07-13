@@ -14,6 +14,7 @@ keywords:
   - "CIS GH Level 1"
   - "CIS GH"
   - "CIS GitHub v1.2.0"
+  - "GitHub"
   - "L1"
 ---
 
@@ -82,7 +83,7 @@ This test uses the granular repository creation fields because GitHub is replaci
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubRepositoryCreationLimited](/docs/commands/Test-MtCisGitHubRepositoryCreationLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.2, L1 |
+| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.2.2, GitHub, L1 |
 
 ## Source
 

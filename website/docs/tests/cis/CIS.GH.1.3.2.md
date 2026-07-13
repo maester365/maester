@@ -14,6 +14,7 @@ keywords:
   - "CIS GH Level 1"
   - "CIS GH"
   - "CIS GitHub v1.2.0"
+  - "GitHub"
   - "L1"
 ---
 
@@ -75,7 +76,7 @@ This test verifies the organization-level team creation setting. It does not rev
 | Suite | CIS |
 | Category | CIS GH Level 1 |
 | PowerShell test | [Test-MtCisGitHubTeamCreationLimited](/docs/commands/Test-MtCisGitHubTeamCreationLimited) |
-| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.2, L1 |
+| Tags | CIS, CIS GH, CIS GH Level 1, CIS GitHub v1.2.0, CIS.GH.1.3.2, GitHub, L1 |
 
 ## Source
 

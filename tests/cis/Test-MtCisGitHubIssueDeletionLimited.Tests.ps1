@@ -1,4 +1,4 @@
-﻿Describe "CIS" -Tag "CIS.GH.1.2.4", "L1", "CIS GH Level 1", "CIS GH", "CIS", "CIS GitHub v1.2.0" {
+﻿Describe "CIS" -Tag "CIS.GH.1.2.4", "L1", "CIS GH Level 1", "CIS GH", "GitHub", "CIS", "CIS GitHub v1.2.0" {
     It "CIS.GH.1.2.4: Ensure issue deletion is limited to specific users" {
         $result = Test-MtCisGitHubIssueDeletionLimited
 

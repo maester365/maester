@@ -943,8 +943,7 @@ Describe 'Connect-MtGitHub' {
             Add-Member -InputObject $ex -MemberType NoteProperty -Name Response -Value $fakeResp
             Mock Invoke-WebRequest -ModuleName Maester -ParameterFilter { $Uri -match '/actions/permissions$' } { throw $ex }
 
-            $warns = @()
-            Connect-MtGitHub -Organization 'myorg' -WarningAction SilentlyContinue -WarningVariable warns 3>$null
+            Connect-MtGitHub -Organization 'myorg' 3>$null
 
             InModuleScope Maester {
                 $c = $__MtSession.GitHubConnection
