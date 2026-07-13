@@ -6,6 +6,7 @@
     Runs post-build validation checks against the built module directory:
 
     - Confirms all expected files and directories are present.
+    - Confirms the generated test metadata bundle is valid and populated.
     - Optionally confirms the manifest ModuleVersion matches an expected version.
     - Imports the built module and confirms the exported command count meets a minimum.
     - Confirms comment-based help survived consolidation for a sample of functions.
@@ -61,6 +62,7 @@ Write-Host "── Validating built module at $ModulePath" -ForegroundColor Cyan
 $ExpectedItems = @(
     'Maester.psd1'
     'Maester.psm1'
+    'Maester.TestMetadata.json'
     'OrcaClasses.ps1'
     'Maester.Format.ps1xml'
     'assets'
@@ -77,7 +79,19 @@ foreach ($Item in $ExpectedItems) {
 Write-Host "   Verified: $($ExpectedItems.Count) expected files and directories present"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Check 2 — Manifest version matches the expected (stamped) version
+# Check 2 — Test metadata bundle is valid and populated
+# ──────────────────────────────────────────────────────────────────────────────
+
+$TestMetadataPath = Join-Path $ModulePath 'Maester.TestMetadata.json'
+$TestMetadata = Get-Content -LiteralPath $TestMetadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+$TestMetadataCount = @($TestMetadata.PSObject.Properties).Count
+if ($TestMetadataCount -eq 0) {
+    throw 'Test metadata bundle does not contain any entries.'
+}
+Write-Host "   Verified: test metadata bundle contains $TestMetadataCount entries"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Check 3 — Manifest version matches the expected (stamped) version
 # ──────────────────────────────────────────────────────────────────────────────
 
 $ManifestPath = Join-Path $ModulePath 'Maester.psd1'
@@ -95,7 +109,7 @@ if ($ExpectedVersion) {
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Check 3 — Module imports and exports the expected number of commands
+# Check 4 — Module imports and exports the expected number of commands
 # ──────────────────────────────────────────────────────────────────────────────
 
 $ImportedModules = @(Import-Module $ManifestPath -Force -PassThru -ErrorAction Stop)
@@ -111,7 +125,7 @@ if ($CommandCount -lt $MinimumCommandCount) {
 Write-Host "   Verified: module imports and exports $CommandCount commands"
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Check 4 — Comment-based help survived consolidation for a sample of functions
+# Check 5 — Comment-based help survived consolidation for a sample of functions
 # ──────────────────────────────────────────────────────────────────────────────
 
 $SampleFunctions = @('Invoke-Maester', 'Connect-Maester', 'Get-MtRole', 'Add-MtTestResultDetail')

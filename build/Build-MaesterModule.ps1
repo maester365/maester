@@ -5,8 +5,8 @@
 .DESCRIPTION
     Consolidates all source files from powershell/internal/ and powershell/public/ into
     a single Maester.psm1, consolidates ORCA class definitions into OrcaClasses.ps1,
-    auto-generates the FunctionsToExport list via AST parsing, and copies static assets
-    and tests into the output directory.
+    auto-generates the FunctionsToExport list and companion Markdown metadata, and
+    copies static assets and tests into the output directory.
 
     The source tree is never modified. All output goes to the OutputRoot directory.
 
@@ -610,11 +610,43 @@ $null = Get-PowerShellAst -Path $OutputOrcaClasses
 Write-Host '   Validated: OrcaClasses.ps1 syntax'
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Phase E — Copy static assets (must run before manifest update so that
-#           FormatsToProcess references can be validated)
+# Phase E — Generate test metadata and copy static assets (must run before
+#           manifest update so that FormatsToProcess references can be validated)
 # ──────────────────────────────────────────────────────────────────────────────
 
-Write-Host '── Phase E: Copying static assets' -ForegroundColor Cyan
+Write-Host '── Phase E: Generating test metadata and copying static assets' -ForegroundColor Cyan
+
+# Companion Markdown is authored next to individual function files, but those
+# functions are consolidated into Maester.psm1 in the published module. Bundle
+# each paired .ps1/.md file by function name so runtime lookups do not depend on
+# the source directory layout.
+$TestMetadata = [ordered]@{}
+$MarkdownFiles = @(Get-ChildItem -Path "$SourceRoot/internal", "$SourceRoot/public" -Filter '*.md' -Recurse |
+        Sort-Object -Property FullName)
+
+foreach ($MarkdownFile in $MarkdownFiles) {
+    $ScriptPath = [System.IO.Path]::ChangeExtension($MarkdownFile.FullName, '.ps1')
+    if (-not (Test-Path -LiteralPath $ScriptPath)) {
+        continue
+    }
+
+    $FunctionName = $MarkdownFile.BaseName
+    if ($TestMetadata.Contains($FunctionName)) {
+        throw "Duplicate companion Markdown metadata key '$FunctionName' found at '$($MarkdownFile.FullName)'."
+    }
+
+    $Content = Get-Content -LiteralPath $MarkdownFile.FullName -Raw -ErrorAction Stop
+    $SplitContent = $Content -split '<!--- Results --->', 2
+    $TestMetadata[$FunctionName] = [ordered]@{
+        Description = $SplitContent[0]
+        Result = if ($SplitContent.Count -gt 1) { $SplitContent[1] } else { $null }
+    }
+}
+
+$TestMetadataPath = Join-Path $OutputRoot 'Maester.TestMetadata.json'
+$TestMetadataJson = $TestMetadata | ConvertTo-Json -Depth 3
+Set-Utf8BomContent -Path $TestMetadataPath -Value $TestMetadataJson
+Write-Host "   Generated: Maester.TestMetadata.json ($($TestMetadata.Count) entries)"
 
 # Assets directory
 $AssetsSource = Join-Path $SourceRoot 'assets'
@@ -698,6 +730,7 @@ Write-Host ''
 Write-Host '── Build complete' -ForegroundColor Green
 Write-Host "   Output directory: $OutputRoot"
 Write-Host '   Consolidated PSM1: Maester.psm1'
+Write-Host '   Test metadata:     Maester.TestMetadata.json'
 Write-Host '   ORCA classes:      OrcaClasses.ps1'
 Write-Host "   Public functions:  $($ExportFunctionList.Count)"
 Write-Host ''

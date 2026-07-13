@@ -127,44 +127,84 @@
     }
 
     if ([string]::IsNullOrEmpty($Description)) {
-        # Load companion .md next to individual function files (source layout).
-        # Never treat the consolidated module file (*.psm1) as markdown: Test-Path would
-        # succeed on Maester.psm1 and Get-Content would load the entire module source into
-        # the report (see #1924).
+        $mdDescription = $null
+        $mdResult = $null
+        $metadataFound = $false
+
+        # Published builds contain one generated metadata bundle because individual
+        # function files are consolidated into Maester.psm1. Load it once and cache it
+        # for subsequent test result lookups.
         try {
-            $cmdletPath = $MyInvocation.PSCommandPath
-            $markdownPath = $null
-            if ([System.IO.Path]::GetExtension($cmdletPath) -eq '.ps1') {
-                $markdownPath = [System.IO.Path]::ChangeExtension($cmdletPath, '.md')
-            }
-            if ($markdownPath -and (Test-Path -LiteralPath $markdownPath)) {
-                # Read the content and split it into description and result with "<!--- Results --->" as the separator
-                $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
-                $splitContent = $content -split "<!--- Results --->"
-                $mdDescription = $splitContent[0]
-                $mdResult = $splitContent[1]
-
-                if (![string]::IsNullOrEmpty($Result)) {
-                    # If a result was provided in the parameter insert it into the markdown content
-                    try {
-                        if ($mdResult -match "%TestResult%") {
-                            $mdResult = $mdResult -replace "%TestResult%", $Result
-                        } else {
-                            $mdResult = $Result
-                        }
-                    } catch {
-                        Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
-                        $mdResult = $Result
-                    } # End of try-catch for result replacement in the markdown template.
+            $metadataCache = Get-Variable -Name MtTestMetadataCache -Scope Script -ErrorAction SilentlyContinue
+            if (-not $metadataCache) {
+                $script:MtTestMetadataCache = $false
+                $moduleBase = $MyInvocation.MyCommand.Module.ModuleBase
+                if ($moduleBase) {
+                    $metadataPath = Join-Path $moduleBase 'Maester.TestMetadata.json'
+                    if (Test-Path -LiteralPath $metadataPath) {
+                        $script:MtTestMetadataCache = Get-Content -LiteralPath $metadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+                    }
                 }
+            }
 
-                $Description = $mdDescription
-                $Result = $mdResult
+            if ($script:MtTestMetadataCache) {
+                $callStack = @(Get-PSCallStack)
+                if ($callStack.Count -gt 1) {
+                    $callerName = $callStack[1].Command
+                    $metadataProperty = $script:MtTestMetadataCache.PSObject.Properties[$callerName]
+                    if ($metadataProperty) {
+                        $mdDescription = $metadataProperty.Value.Description
+                        $mdResult = $metadataProperty.Value.Result
+                        $metadataFound = $true
+                    }
+                }
             }
         } catch {
-            Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
-            # Continue without markdown content
-        } # End of try-catch for markdown file reading
+            $script:MtTestMetadataCache = $false
+            Write-Warning "Failed to read test metadata bundle: $($_.Exception.Message)"
+        }
+
+        # Source checkouts keep companion Markdown next to each function for a simple
+        # authoring experience. Fall back to that layout when the generated bundle or
+        # the caller's entry is unavailable.
+        if (-not $metadataFound) {
+            try {
+                $cmdletPath = $MyInvocation.PSCommandPath
+                $markdownPath = $null
+                if ([System.IO.Path]::GetExtension($cmdletPath) -eq '.ps1') {
+                    $markdownPath = [System.IO.Path]::ChangeExtension($cmdletPath, '.md')
+                }
+                if ($markdownPath -and (Test-Path -LiteralPath $markdownPath)) {
+                    # Split the content into description and result at the template separator.
+                    $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
+                    $splitContent = $content -split '<!--- Results --->', 2
+                    $mdDescription = $splitContent[0]
+                    $mdResult = $splitContent[1]
+                    $metadataFound = $true
+                }
+            } catch {
+                Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
+            }
+        }
+
+        if ($metadataFound) {
+            if (![string]::IsNullOrEmpty($Result)) {
+                # If a result was provided in the parameter insert it into the markdown content
+                try {
+                    if ($mdResult -match "%TestResult%") {
+                        $mdResult = $mdResult -replace "%TestResult%", $Result
+                    } else {
+                        $mdResult = $Result
+                    }
+                } catch {
+                    Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
+                    $mdResult = $Result
+                }
+            }
+
+            $Description = $mdDescription
+            $Result = $mdResult
+        }
     }
 
     if ($hasGraphResults) {
