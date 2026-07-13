@@ -1505,6 +1505,31 @@
       "Title": "Sample Submission should send safe samples automatically"
     },
     {
+      "Id": "MT.1172",
+      "Severity": "High",
+      "Title": "Unified audit log ingestion is enabled"
+    },
+    {
+      "Id": "MT.1173",
+      "Severity": "Medium",
+      "Title": "Sensitivity labels are published for files used by Microsoft 365 Copilot"
+    },
+    {
+      "Id": "MT.1174",
+      "Severity": "Medium",
+      "Title": "Insider Risk Management policy for Risky AI usage is enabled"
+    },
+    {
+      "Id": "MT.1175",
+      "Severity": "High",
+      "Title": "DLP policy is configured for the Microsoft 365 Copilot location"
+    },
+    {
+      "Id": "MT.1176",
+      "Severity": "Medium",
+      "Title": "Retention policy is configured for the Microsoft Copilot location"
+    },
+    {
       "Id": "MT.1182",
       "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
     },
