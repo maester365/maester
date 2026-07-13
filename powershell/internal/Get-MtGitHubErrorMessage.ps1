@@ -1,4 +1,12 @@
 ﻿function Get-MtGitHubErrorMessage {
+    <#
+    .SYNOPSIS
+    Internal: Extracts the most useful GitHub API error message from an ErrorRecord.
+
+    .DESCRIPTION
+    Prefers a JSON ErrorDetails.Message `message` property when present, falls back to
+    the raw error-details string, then to the exception message or full ErrorRecord text.
+    #>
     param([Parameter(Mandatory)] $ErrorRecord)
     if (-not [string]::IsNullOrEmpty($ErrorRecord.ErrorDetails.Message)) {
         try {

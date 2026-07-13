@@ -40,11 +40,11 @@ const suiteConfig = {
   },
   cis: {
     label: "CIS",
-    title: "CIS Microsoft 365 Foundations Benchmark Tests",
+    title: "CIS Benchmark Tests",
     sidebarLabel: "🌀 CIS",
-    description: "CIS Microsoft 365 Foundations Benchmark controls implemented as Maester tests.",
+    description: "CIS Benchmark controls implemented as Maester tests.",
     overview:
-      "These tests verify Microsoft 365 tenant configuration against CIS Microsoft 365 Foundations Benchmark recommendations.",
+      "These tests verify tenant and organization configuration against CIS Benchmark recommendations.",
   },
   orca: {
     label: "ORCA",
