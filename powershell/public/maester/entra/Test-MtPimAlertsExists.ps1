@@ -4,7 +4,7 @@
     Checks if PIM alerts exists
 
     .Description
-    GET /beta/identityGovernance/roleManagementAlerts/alerts/{unifiedRoleManagementAlertId}
+    GET `/beta/identityGovernance/roleManagementAlerts/alerts/{unifiedRoleManagementAlertId}`
 
     .Example
     Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
