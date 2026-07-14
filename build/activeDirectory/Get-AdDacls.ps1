@@ -4,7 +4,6 @@ $DnBases = @(
 )
 
 $GUIDs = @{'00000000-0000-0000-0000-000000000000' = 'All'}
-$ADDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
 $ADForest = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest()
 $SchemaPath = $ADForest.Schema.Name
 Remove-Variable ADForest
@@ -65,7 +64,7 @@ If ($SchemaPath)
 $path="$env:USERPROFILE\Desktop\Get-Acls-$(Get-Date -Format yyyyMMdd-HHmm).csv"
 foreach ($DnBase in $DnBases)
 {
-    Write-Host "[*] Starting DN Base [$(Get-Date -Format HHmm)]: $DnBase"
+    Write-Verbose "[*] Starting DN Base [$(Get-Date -Format HHmm)]: $DnBase"
     # Get the Domain, OUs, Root Containers, GPO, User, Computer and Group objects.
     $Objs = @()
     Write-Verbose "[*] Enumerating Domain, OU, GPO, User, Computer and Group Objects"
@@ -113,12 +112,12 @@ foreach ($DnBase in $DnBases)
     if ($Objs)
     {
         $i=1
-        Write-Host "[*] Object [$(Get-Date -Format HHmm)]: $i/$($objs.Length)"
+        Write-Verbose "[*] Object [$(Get-Date -Format HHmm)]: $i/$($objs.Length)"
         foreach ($obj in $objs)
         {
             if ($i % 1000 -eq 0)
             {
-                Write-Host "[*] Object [$(Get-Date -Format HHmm)]: $i/$($objs.Length)"
+                Write-Verbose "[*] Object [$(Get-Date -Format HHmm)]: $i/$($objs.Length)"
             }
             $aces = ([adsi]$obj.Path).ObjectSecurity.Access
 
