@@ -20,7 +20,7 @@
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
     [ValidateSet('RedundantAssignmentAlert', 'RolesAssignedOutsidePimAlert', 'SequentialActivationRenewalsAlert', 'TooManyGlobalAdminsAssignedToTenantAlert', 'StaleSignInAlert')]
     # ID for the alert to test.
-    [string[]]$AlertId,
+    [string]$AlertId,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Position = 1)]
     [ValidateSet('ControlPlane', 'ManagementPlane')]
