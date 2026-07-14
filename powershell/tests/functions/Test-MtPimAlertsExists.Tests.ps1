@@ -1,6 +1,7 @@
 Describe 'Test-MtPimAlertsExists' {
     BeforeAll {
         function New-PimAlert {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [string] $AlertId = 'RedundantAssignmentAlert',
                 [bool] $IsActive = $true,
@@ -27,6 +28,7 @@ Describe 'Test-MtPimAlertsExists' {
         }
 
         function New-PimAlertIncident {
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'Test helper creates an in-memory fixture and has no external side effects.')]
             param(
                 [string] $AssigneeId,
                 [string] $AssigneeDisplayName,
