@@ -128,8 +128,10 @@
 
     if ([string]::IsNullOrEmpty($Description)) {
         $callStack = @(Get-PSCallStack)
-        $callerName = if ($callStack.Count -gt 1) { $callStack[1].Command } else { $null }
-        $metadata = Get-MtTestResultTemplate -CommandName $callerName
+        $callerFrame = if ($callStack.Count -gt 1) { $callStack[1] } else { $null }
+        $callerName = if ($callerFrame) { $callerFrame.Command } else { $null }
+        $callerFile = if ($callerFrame) { $callerFrame.ScriptName } else { $null }
+        $metadata = Get-MtTestResultTemplate -CommandName $callerName -SourceFile $callerFile
 
         if ($metadata) {
             $mdResult = $metadata.Result
@@ -155,7 +157,7 @@
     if ($hasGraphResults) {
         try {
             $graphResultMarkdown = Get-GraphObjectMarkdown -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType
-            $Result = $Result -replace "%TestResult%", $graphResultMarkdown
+            $Result = $Result.Replace("%TestResult%", $graphResultMarkdown)
         } catch {
             Write-Warning "Failed to generate graph object markdown: $($_.Exception.Message)"
             # Continue with original result without graph object markdown

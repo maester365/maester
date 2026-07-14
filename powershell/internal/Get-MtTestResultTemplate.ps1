@@ -5,7 +5,10 @@ function Get-MtTestResultTemplate {
         [string[]] $CommandName,
 
         [Parameter()]
-        [string] $TestId
+        [string] $TestId,
+
+        [Parameter()]
+        [string] $SourceFile
     )
 
     $candidateNames = [System.Collections.Generic.List[string]]::new()
@@ -20,10 +23,6 @@ function Get-MtTestResultTemplate {
         if ($name -and -not $candidateNames.Contains($name)) {
             $candidateNames.Add($name)
         }
-    }
-
-    if ($candidateNames.Count -eq 0) {
-        return $null
     }
 
     $metadataCache = Get-Variable -Name MtTestMetadataCache -Scope Script -ErrorAction SilentlyContinue
@@ -72,6 +71,23 @@ function Get-MtTestResultTemplate {
                 } catch {
                     Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
                 }
+            }
+        }
+    }
+
+    if ($SourceFile -and [System.IO.Path]::GetExtension($SourceFile) -eq '.ps1') {
+        $markdownPath = [System.IO.Path]::ChangeExtension($SourceFile, '.md')
+        if (Test-Path -LiteralPath $markdownPath) {
+            try {
+                $content = Get-Content -LiteralPath $markdownPath -Raw -ErrorAction Stop
+                $splitContent = $content -split '<!--- Results --->', 2
+                return [PSCustomObject]@{
+                    CommandName = $null
+                    Description = $splitContent[0]
+                    Result = if ($splitContent.Count -gt 1) { $splitContent[1] } else { $null }
+                }
+            } catch {
+                Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
             }
         }
     }
