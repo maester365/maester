@@ -61,7 +61,7 @@
       # Filtering based on (EntraOps) Enterprise Access Model Tiering
       if ($null -ne $FilteredAccessLevel) {
         Write-Verbose 'Filtering based on Enterprise Access Model Tiering'
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
+        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json
         $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
       }
@@ -100,7 +100,7 @@ $($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
         }
       }
 
-      if ($Alert.Count -gt '0' -and $AffectedRoleAssignments.Count -gt 0) {
+      if ($null -ne $Alert -and @($AffectedRoleAssignments).Count -gt 0) {
         $testResult = "$($Alert.alertDescription)`n`n
 $($AffectedRoleAssignmentSummary)
 Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
