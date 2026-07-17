@@ -6,6 +6,9 @@ under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
 ## Usage
 
 ```powershell
+# Build, validate, and import for local development
+./build/Build-LocalMaester.ps1
+
 # Standard build
 ./build/Build-MaesterModule.ps1
 
@@ -37,7 +40,7 @@ flowchart TD
     B["Phase B\nAST-parse public functions"]
     C["Phase C\nConsolidate Maester.psm1"]
     D["Phase D\nConsolidate OrcaClasses.ps1"]
-    E["Phase E\nCopy static assets"]
+    E["Phase E\nGenerate test metadata\nand copy static assets"]
     F["Phase F\nUpdate module manifest"]
     G["Phase G\nCopy test suites"]
     H{"Profile?"}
@@ -113,7 +116,12 @@ definitions are available before the module's `.psm1` loads.
 When `-Format` is specified, each derived check class file is also passed
 through `Invoke-Formatter` for indentation normalization.
 
-### Phase E — Copy static assets
+### Phase E — Generate test metadata and copy static assets
+
+Generates `Maester.TestMetadata.json` from companion `.ps1`/`.md` pairs under
+`powershell/internal/` and `powershell/public/`. The published module uses this
+bundle to resolve test descriptions after the function files are consolidated.
+Source checkouts continue to use the adjacent Markdown files directly.
 
 Copies unchanged files to the output directory:
 
@@ -159,6 +167,7 @@ module/
 ├── Maester.Format.ps1xml      # Type formatting definitions
 ├── Maester.psd1               # Updated module manifest
 ├── Maester.psm1               # Consolidated module script
+├── Maester.TestMetadata.json  # Generated companion Markdown metadata
 └── OrcaClasses.ps1            # Consolidated ORCA class definitions
 ```
 
