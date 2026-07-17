@@ -19,7 +19,7 @@ Users will no longer be able to retrieve their own BitLocker recovery key(s) fro
 
 Alternatively, use Microsoft Graph PowerShell:
 
-```
+```powershell
 Connect-MgGraph -Scopes Policy.ReadWrite.Authorization
 $params = @{
 	defaultUserRolePermissions = @{
