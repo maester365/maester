@@ -12,12 +12,12 @@ To check and disable the temporary bypass using Graph PowerShell:
 
 1. Connect to Graph using **Connect-MgGraph -Scopes "OnPremDirectorySynchronization.ReadWrite.All"**.
 2. Run the following PowerShell command to review the current value:
-```
+```powershell
 $onPremSync = Get-MgDirectoryOnPremiseSynchronization
 $onPremSync.Features | fl
 ```
 3. If `AllowOnPremUpdateOfOnPremisesObjectIdentifierEnabled` is `$true` and remediation is complete, disable it:
-```
+```powershell
 $onPremSync = Get-MgDirectoryOnPremiseSynchronization
 $onPremSync.Features.AllowOnPremUpdateOfOnPremisesObjectIdentifierEnabled = $false
 Update-MgDirectoryOnPremiseSynchronization `
