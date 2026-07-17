@@ -42,7 +42,7 @@
         Write-Verbose "Checking if the user $UserId is blocked from using legacy authentication"
         return $Result
     } catch {
-        Add-MtTestResultDetail -Error $_ -GraphObjectType ConditionalAccess
+        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
         Write-Verbose "An error occurred while checking if the user $UserId is blocked from using legacy authentication"
         return $false
     }
