@@ -41,11 +41,11 @@
         $result = ( $untargetedPolicies | Measure-Object ).Count -eq 0
 
         if ($result) {
-            $testResult = 'Well done! All Conditional Access policies are targeted to at least one resource (apps, user actions, or authentication context).'
+            $testResult = 'Well done! All Conditional Access policies are targeted to at least one resource (cloud apps/resources, user actions, or authentication context).'
         } else {
             $testResult = "These Conditional Access policies aren't targeted to any resource, so they have no effect even if enabled:`n`n"
             $testResult += Get-GraphObjectMarkdown -GraphObjects $untargetedPolicies -GraphObjectType ConditionalAccess
-            $testResult += "`n`nOpen each policy and either configure a target under **Target resources** (cloud apps, user actions, or global secure access) or delete the policy if it's no longer needed."
+            $testResult += "`n`nOpen each policy and either configure a target under **Target resources** (cloud apps/resources, user actions, or authentication context) or delete the policy if it's no longer needed."
         }
 
         Add-MtTestResultDetail -Result $testResult
