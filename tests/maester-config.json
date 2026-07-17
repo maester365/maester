@@ -1534,6 +1534,11 @@
       "Title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100)."
     },
     {
+      "Id": "MT.1184",
+      "Severity": "Medium",
+      "Title": "Conditional Access policy without any target resources configured"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"

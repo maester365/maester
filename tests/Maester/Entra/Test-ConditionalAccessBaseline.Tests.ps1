@@ -89,6 +89,10 @@
         Test-MtCaApprovedClientApp | Should -Be $true -Because "no policy use the deprecated Approved Client App grant."
     }
 
+    It "MT.1184: Conditional Access policy without any target resources configured. See https://maester.dev/docs/tests/MT.1184" -Tag "MT.1184" {
+        Test-MtCaUntargetedPolicy | Should -Be $true -Because "there are one or more policies not targeted to any resource."
+    }
+
     Context "Maester/Entra" -Tag "Entra", "License" {
         It "MT.1022: All users utilizing a P1 license should be licensed. See https://maester.dev/docs/tests/MT.1022" -Tag "MT.1022" {
             $LicenseReport = Test-MtCaLicenseUtilization -License "P1"
