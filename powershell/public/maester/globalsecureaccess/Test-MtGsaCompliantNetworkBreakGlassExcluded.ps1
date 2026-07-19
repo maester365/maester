@@ -37,7 +37,7 @@
     try {
         $compliantNetworkPolicies = Get-MtCompliantNetworkPolicy
         if (-not $compliantNetworkPolicies) {
-            Add-MtTestResultDetail -Result 'No enabled Compliant Network enforcement policy was found, so there is nothing to evaluate (see Test-MtGsaCompliantNetworkPolicy).'
+            Add-MtTestResultDetail -Result 'No enabled Compliant Network enforcement policy was found, so there is nothing to evaluate.'
             return $null
         }
 
