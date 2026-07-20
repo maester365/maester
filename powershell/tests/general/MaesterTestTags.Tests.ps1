@@ -74,7 +74,7 @@ BeforeDiscovery {
 
             [pscustomobject]@{
                 TestId             = $testId
-                RelativePath       = [System.IO.Path]::GetRelativePath($repoRoot, $testFile.FullName)
+                RelativePath       = $testFile.FullName.Substring($repoRoot.Length).TrimStart([System.IO.Path]::DirectorySeparatorChar)
                 Line               = $testCommand.Extent.StartLineNumber
                 HasMaesterSuiteTag = $ancestorTags -contains 'Maester'
             }
