@@ -102,9 +102,12 @@ The GitHub Action is moved to a new [repository](https://github.com/maester365/m
 Maester's source code lives in the `powershell/` and `tests/` folders. To produce the publishable module locally, run the build script from the repository root:
 
 ```powershell
-./build/Build-MaesterModule.ps1
-Import-Module ./module/Maester.psd1 -Force
+./build/Build-LocalMaester.ps1
 ```
+
+This builds and validates the module, unloads any other Maester module, and
+imports the local build into the current PowerShell session. Run its packaged
+tests with `Invoke-Maester -Path ./module/maester-tests`.
 
 The `module/` folder is a build artifact — it is ignored by git and never committed to source control. Built modules are attached to each [GitHub Release](https://github.com/maester365/maester/releases) and published to the PowerShell Gallery from CI. See the [contributing guide](https://maester.dev/docs/contributing) for full details.
 
