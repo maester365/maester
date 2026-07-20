@@ -6,6 +6,7 @@
     .DESCRIPTION
     Collects ACLs from AD objects including domains, OUs, GPOs, users, computers, and groups.
     Results are cached for the session to avoid repeated queries.
+    Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 
     .PARAMETER DnBase
     The distinguished name base(s) to search. Defaults to the domain root.
@@ -16,7 +17,7 @@
     .EXAMPLE
     Get-MtADDacls
 
-    Returns cached DACLs or collects if not already cached.
+    Returns cached DACLs or collects if not already cached. Returns no data unless Active Directory was explicitly connected through Connect-Maester.
 
     .EXAMPLE
     Get-MtADDacls -Refresh
@@ -37,6 +38,11 @@
         [string[]]$DnBase,
         [switch]$Refresh
     )
+
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        Write-Verbose 'Active Directory is not connected. Run Connect-Maester -Service ActiveDirectory before collecting ACLs.'
+        return $null
+    }
 
     $cacheKey = 'Dacls'
 

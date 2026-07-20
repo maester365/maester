@@ -5,8 +5,8 @@ function Disconnect-Maester {
 
     .Description
     Use this cmdlet to sign out of the services connected through Connect-Maester.
-    It also clears Maester GitHub session state. Use Disconnect-MtGraph when you
-    only want to disconnect Microsoft Graph.
+    It also clears Maester Active Directory and GitHub session state. Use
+    Disconnect-MtGraph when you only want to disconnect Microsoft Graph.
 
     .Example
     Disconnect-MtGraph
@@ -57,13 +57,13 @@ function Disconnect-Maester {
       Disconnect-MicrosoftTeams
    }
 
-   if ($__MtSession.Connections -contains "ActiveDirectory" -or $__MtSession.Connections -contains "All") {
-      Write-Verbose -Message "Clearing Active Directory connection data."
-      $__MtSession.ADConnection = $null
-      Clear-MtADCache
-   }
-
    if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {
+      if ($null -ne $__MtSession.ADConnection) {
+         Write-Verbose -Message "Clearing Active Directory connection data."
+         $__MtSession.ADConnection = $null
+         Clear-MtADCache
+      }
+
       Write-Verbose -Message "Disconnecting from GitHub."
       Disconnect-MtGitHub
    }

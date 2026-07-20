@@ -17,7 +17,7 @@ function Get-MtSkippedReason {
         "NotConnectedGitHub" { "Not connected to GitHub. Call Connect-MtGitHub with an organization name to sign in with the Maester GitHub App, or provide a valid automation token. See [Connect-MtGitHub](https://maester.dev/docs/commands/Connect-MtGitHub)"; break }
         "NotConnectedGraph" { "Not connected to Graph. See [Connect-Maester](https://maester.dev/docs/commands/Connect-Maester#examples)"; break }
         "NotConnectedSharePoint" { "Not connected to SharePoint Online. See [Connecting to SharePoint Online](https://maester.dev/docs/connect-maester/#connect-to-sharepoint-online-optional)"; break }
-        "NotConnectedActiveDirectory" { "Not connected to Active Directory. This test requires the ActiveDirectory module and access to a domain controller."; break }
+        "NotConnectedActiveDirectory" { "Not connected to Active Directory. Run ``Connect-Maester -Service ActiveDirectory`` before running Active Directory tests."; break }
         "NotDotGovDomain" { "This test is only for federal, executive branch, departments and agencies. To override use [Test-MtCisaDmarcAggregateCisa -Force](https://maester.dev/docs/commands/Test-MtCisaDmarcAggregateCisa)"; break }
         "NotLicensedEntraIDP1" { "This test is for tenants that are licensed for Entra ID P1. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }
         "NotLicensedEntraIDP2" { "This test is for tenants that are licensed for Entra ID P2. See [Entra ID licensing](https://learn.microsoft.com/entra/fundamentals/licensing)"; break }

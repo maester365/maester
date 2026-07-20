@@ -6,6 +6,7 @@ function Get-MtADGpoState {
     .DESCRIPTION
     Collects GPO data including GPO objects, reports, permissions, and SYSVOL data.
     Results are cached for the session to avoid repeated queries.
+    Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
@@ -13,7 +14,7 @@ function Get-MtADGpoState {
     .EXAMPLE
     Get-MtADGpoState
 
-    Returns cached GPO state or collects if not already cached.
+    Returns cached GPO state or collects if not already cached. Returns no data unless Active Directory was explicitly connected through Connect-Maester.
 
     .EXAMPLE
     Get-MtADGpoState -Refresh
@@ -27,6 +28,11 @@ function Get-MtADGpoState {
     param(
         [switch]$Refresh
     )
+
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        Write-Verbose 'Active Directory is not connected. Run Connect-Maester -Service ActiveDirectory before collecting Group Policy state.'
+        return $null
+    }
 
     $cacheKey = 'GpoState'
 

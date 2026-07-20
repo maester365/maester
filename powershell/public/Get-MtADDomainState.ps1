@@ -7,6 +7,7 @@ function Get-MtADDomainState {
     Collects comprehensive domain state including domain info, forest info,
     computers, users, groups, domain controllers, replication sites, etc.
     Results are cached for the session to avoid repeated queries.
+    Connect-Maester -Service ActiveDirectory must complete successfully before this command can collect or return data.
 
     .PARAMETER Refresh
     Forces a refresh of the data from Active Directory, bypassing the cache.
@@ -14,7 +15,7 @@ function Get-MtADDomainState {
     .EXAMPLE
     Get-MtADDomainState
 
-    Returns cached domain state or collects if not already cached.
+    Returns cached domain state or collects if not already cached. Returns no data unless Active Directory was explicitly connected through Connect-Maester.
 
     .EXAMPLE
     Get-MtADDomainState -Refresh
@@ -28,6 +29,11 @@ function Get-MtADDomainState {
     param(
         [switch]$Refresh
     )
+
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        Write-Verbose 'Active Directory is not connected. Run Connect-Maester -Service ActiveDirectory before collecting domain state.'
+        return $null
+    }
 
     $cacheKey = 'DomainState'
 
