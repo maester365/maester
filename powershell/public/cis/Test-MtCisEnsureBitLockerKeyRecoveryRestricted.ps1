@@ -1,4 +1,4 @@
-﻿function Test-MtCisEnsureBitlockerKeyRecoveryRestricted {
+﻿function Test-MtCisEnsureBitLockerKeyRecoveryRestricted {
     <#
     .SYNOPSIS
         Checks if non-admin users are restricted from recovering BitLocker keys for their owned devices.
@@ -8,12 +8,12 @@
         CIS Microsoft 365 Foundations Benchmark v6.0.1
 
     .EXAMPLE
-        Test-MtCisEnsureBitlockerKeyRecoveryRestricted
+        Test-MtCisEnsureBitLockerKeyRecoveryRestricted
 
         Returns true if non-admin users are restricted from recovering their own BitLocker keys.
 
     .LINK
-        https://maester.dev/docs/commands/Test-MtCisEnsureBitlockerKeyRecoveryRestricted
+        https://maester.dev/docs/commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted
     #>
     [CmdletBinding()]
     [OutputType([bool])]

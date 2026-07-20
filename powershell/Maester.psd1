@@ -127,7 +127,7 @@
         'Test-MtCisaWeakFactor', 'Test-MtCisCalendarSharing', 'Test-MtCisCloudAdmin',
         'Test-MtCisCommunicateInitiateExternalTeamsUsers', 'Test-MtCisCommunicateWithUnmanagedTeamsUsers',
         'Test-MtCisConnectionFilterSafeList', 'Test-MtCisCreateTenantDisallowed', 'Test-MtCisCustomerLockBox',
-        'Test-MtCisDevicesWithoutCompliancePolicyMarked', 'Test-MtCisDkim', 'Test-MtCisEnsureBitlockerKeyRecoveryRestricted',
+        'Test-MtCisDevicesWithoutCompliancePolicyMarked', 'Test-MtCisDkim', 'Test-MtCisEnsureBitLockerKeyRecoveryRestricted',
         'Test-MtCisEnsureGuestAccessRestricted',
         'Test-MtCisEnsureGuestUserDynamicGroup', 'Test-MtCisEnsureUserConsentToAppsDisallowed', 'Test-MtCisExoAdditionalStorageProvider',
         'Test-MtCisFormsPhishingProtectionEnabled', 'Test-MtCisGitHubIssueDeletionLimited',

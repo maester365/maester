@@ -26,7 +26,7 @@ $params = @{
 		allowedToReadBitlockerKeysForOwnedDevice = $false
 	}
 }
-Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/policies/authorizationPolicy/authorizationPolicy" -Body $params
+Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/policies/authorizationPolicy" -Body $params
 ```
 
 #### Related links
