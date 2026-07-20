@@ -15,13 +15,13 @@ Checks if PIM alerts exists
 ## SYNTAX
 
 ```powershell
-Test-MtPimAlertsExists [-AlertId] <String[]> [[-FilteredAccessLevel] <String[]>]
+Test-MtPimAlertsExists [-AlertId] <String> [[-FilteredAccessLevel] <String[]>]
  [[-FilteredBreakGlass] <Object[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
+GET `/beta/identityGovernance/roleManagementAlerts/alerts/\{unifiedRoleManagementAlertId\}`
 
 ## EXAMPLES
 
@@ -38,7 +38,7 @@ Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssign
 ID for the alert to test.
 
 ```yaml
-Type: String[]
+Type: String
 Parameter Sets: (All)
 Aliases:
 
