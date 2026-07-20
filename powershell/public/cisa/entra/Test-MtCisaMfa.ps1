@@ -37,7 +37,8 @@
     $policies = $result | Where-Object {`
         $_.conditions.applications.includeApplications -contains "All" -and `
         $_.conditions.users.includeUsers -contains "All" -and `
-        $_.grantControls.builtInControls -contains "mfa" }
+            ($_.grantControls.builtInControls -contains "mfa" -or `
+            $_.grantControls.authenticationStrength.requirementsSatisfied -contains "mfa" ) }
 
     $testResult = ($policies|Measure-Object).Count -ge 1
 

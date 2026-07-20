@@ -154,6 +154,7 @@
         'Test-MtEntitlementManagementDeletedGroups', 'Test-MtEntitlementManagementInactivePolicies',
         'Test-MtEntitlementManagementOrphanedResources', 'Test-MtEntitlementManagementValidApprovers',
         'Test-MtEntitlementManagementValidResourceRoles', 'Test-MtEntraDeviceJoinRestricted', 'Test-MtEntraIDConnectSsso',
+        'Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked',
         'Test-MtEntraIDConnectSyncSoftHardMatching', 'Test-MtKrbtgtAzureADNotSynced', 'Test-MtExoDelicensingResiliency',
         'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity', 'Test-MtExoOutlookAddin',
         'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted',
