@@ -298,6 +298,129 @@ Describe 'Test-MtConnection — GitHub service' {
     }
 }
 
+Describe 'Test-MtConnection — Microsoft Graph scopes' {
+    It 'Returns included and missing Graph scopes when Details is requested' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId   = 'tenant-id'
+                Environment = 'Global'
+                Account    = 'admin@contoso.com'
+                AuthType   = 'Delegated'
+                Scopes     = @(
+                    'Directory.Read.All'
+                    'Policy.Read.ConditionalAccess'
+                )
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Policy.Read.ConditionalAccess'
+                'Reports.Read.All'
+            )
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        @($Result.Graph.Scopes).Count | Should -Be 2
+        $Result.Graph.Scopes | Should -Contain 'Directory.Read.All'
+        $Result.Graph.Scopes | Should -Contain 'Policy.Read.ConditionalAccess'
+
+        @($Result.Graph.MissingScopes).Count | Should -Be 1
+        $Result.Graph.MissingScopes | Should -Contain 'Reports.Read.All'
+
+        $Result.AllConnected | Should -BeTrue
+    }
+
+    It 'Treats a ReadWrite scope as satisfying the corresponding Read scope' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId   = 'tenant-id'
+                Environment = 'Global'
+                Account    = 'admin@contoso.com'
+                AuthType   = 'Delegated'
+                Scopes     = @(
+                    'Directory.Read.All'
+                    'Policy.ReadWrite.ConditionalAccess'
+                )
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Policy.Read.ConditionalAccess'
+            )
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph.Scopes |
+            Should -Contain 'Policy.ReadWrite.ConditionalAccess'
+
+        $Result.Graph.MissingScopes |
+            Should -Not -Contain 'Policy.Read.ConditionalAccess'
+    }
+
+    It 'Returns disconnected state when no Graph context exists' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph | Should -BeNullOrEmpty
+        $Result.AllConnected | Should -BeFalse
+    }
+
+    It 'Formats included and missing Graph scopes' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId    = 'tenant-id'
+                Environment = 'Global'
+                Account     = 'admin@contoso.com'
+                AuthType    = 'Delegated'
+                Scopes      = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Reports.Read.All'
+            )
+        } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service Graph -Details | Out-String
+
+        $Rendered | Should -Match 'Included scopes:\s+1'
+        $Rendered | Should -Match 'Directory\.Read\.All'
+        $Rendered | Should -Match 'Missing scopes:\s+1'
+        $Rendered | Should -Match 'Reports\.Read\.All'
+    }
+
+    It 'Keeps the Graph connection details when scope evaluation fails' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId    = 'tenant-id'
+                Environment = 'Global'
+                Account     = 'admin@contoso.com'
+                AuthType    = 'Delegated'
+                Scopes      = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            throw 'Unable to retrieve required scopes'
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph | Should -Not -BeNullOrEmpty
+        $Result.Graph.TenantId | Should -Be 'tenant-id'
+        $Result.AllConnected | Should -BeTrue
+    }
+}
+
 Describe 'Test-MtConnection AzureDevOps cache' {
     BeforeEach {
         InModuleScope Maester {

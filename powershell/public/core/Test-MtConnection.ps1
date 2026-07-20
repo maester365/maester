@@ -116,17 +116,49 @@
         #region Graph
         if ($Service -contains 'Graph' -or $Service -contains 'All') {
             $IsConnected = $false
+
             try {
                 $MtConnections.Graph = Get-MgContext
-                $IsConnected = $null -ne ($MtConnections.Graph)
+                $IsConnected = $null -ne $MtConnections.Graph
             } catch {
-                # Re-test
-                Write-Debug "Graph: $false"
+                $MtConnections.Graph = $null
+                Write-Debug "Graph connection check failed: $($_.Exception.Message)"
             }
+
+            if ($IsConnected) {
+                try {
+                    $RequiredScopes = @(Get-MtGraphScope)
+                    $CurrentScopes = @(
+                        $MtConnections.Graph.Scopes |
+                            Where-Object { $_ } |
+                            Sort-Object -Unique
+                    )
+
+                    $MissingScopes = @(
+                        $RequiredScopes |
+                            Where-Object {
+                                $CurrentScopes -notcontains $_ -and
+                                $CurrentScopes -notcontains ($_ -replace '\.Read\.', '.ReadWrite.')
+                            } |
+                            Sort-Object -Unique
+                    )
+
+                    $MtConnections.Graph |
+                        Add-Member `
+                            -NotePropertyName MissingScopes `
+                            -NotePropertyValue $MissingScopes `
+                            -Force
+                } catch {
+                    Write-Debug "Graph scope evaluation failed: $($_.Exception.Message)"
+                }
+            }
+
             Write-Verbose "Graph: $IsConnected"
-            if (!$IsConnected) { $ConnectionState = $false }
+
+            if (!$IsConnected) {
+                $ConnectionState = $false
+            }
         }
-        # To Do: Add checks for required scopes.
         #endregion Graph
 
         #region Exchange Online
