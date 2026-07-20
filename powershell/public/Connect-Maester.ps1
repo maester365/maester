@@ -6,7 +6,7 @@
 .DESCRIPTION
    Use this cmdlet to connect to Microsoft Graph and the Microsoft 365 services that Maester can assess. By default, it connects to Microsoft Graph. Use -Service All to connect to Microsoft 365 services, including Microsoft Graph, Azure, Exchange Online, Security & Compliance, Microsoft Teams, SharePoint Online, and Dataverse.
 
-   Non-Microsoft 365 services such as GitHub are not included in -Service All and must be explicitly specified.
+   Non-Microsoft 365 services such as Active Directory and GitHub are not included in -Service All and must be explicitly specified.
 
    This command is completely optional if you are already connected to Microsoft Graph and other services using Connect-MgGraph with the required scopes.
 
@@ -28,6 +28,11 @@
    Connect-Maester -Service Graph,GitHub -GitHubOrganization 'mycompany'
 
    Connects to Microsoft Graph and GitHub. GitHub sign-in is handled by Connect-MtGitHub using the Maester GitHub App device flow by default, including guided organization app install/approval when required. Automation can still use MAESTER_GITHUB_TOKEN or GH_TOKEN.
+
+.EXAMPLE
+   Connect-Maester -Service ActiveDirectory
+
+   Validates connectivity to the current Active Directory domain. Active Directory must be explicitly selected and is not included in -Service All.
 
 .EXAMPLE
    Connect-Maester -Service Azure,Graph
@@ -125,8 +130,8 @@
       [ValidateSet('TeamsChina', 'TeamsGCCH', 'TeamsDOD')]
       [string]$TeamsEnvironmentName = $null, #ToValidate: Don't use this parameter, this is the default.
 
-      # The services to connect to such as Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. GitHub is not included in All and must be explicitly specified.
-      [ValidateSet('All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
+      # The services to connect to such as Active Directory, Azure, Dataverse (for Copilot Studio tests), EXO, GitHub, and SharePoint Online. Default is Graph. Active Directory and GitHub are not included in All and must be explicitly specified.
+      [ValidateSet('ActiveDirectory', 'All', 'Azure', 'Dataverse', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance', 'Teams', 'SharePointOnline')]
       [string[]]$Service = 'Graph',
 
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
@@ -458,5 +463,33 @@
          $connectGitHubParams['Organization'] = $GitHubOrganization
       }
       Connect-MtGitHub @connectGitHubParams
+   }
+
+   # Active Directory connection validation is separate from OrderedImport because it has no module conflicts.
+   if ($Service -contains 'ActiveDirectory') {
+      Write-Verbose 'Validating Active Directory connectivity'
+      try {
+         $adRootDSE = Get-ADRootDSE -ErrorAction Stop
+         $__MtSession.ADConnection = @{
+            Connected                  = $true
+            DefaultNamingContext       = $adRootDSE.defaultNamingContext
+            ConfigurationNamingContext = $adRootDSE.configurationNamingContext
+            SchemaNamingContext        = $adRootDSE.schemaNamingContext
+            DomainController           = $adRootDSE.dnsHostName
+         }
+         Write-Verbose "Connected to AD: $($adRootDSE.dnsHostName)"
+      } catch [Management.Automation.CommandNotFoundException] {
+         $__MtSession.ADConnection = @{
+            Connected = $false
+            Error     = 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
+         }
+         Write-Error 'The Active Directory module is not installed. Please install RSAT-AD-PowerShell or run on a domain-joined machine.'
+      } catch {
+         $__MtSession.ADConnection = @{
+            Connected = $false
+            Error     = $_.Exception.Message
+         }
+         Write-Error "Failed to connect to Active Directory: $($_.Exception.Message)"
+      }
    }
 } # end function Connect-Maester

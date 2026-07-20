@@ -28,6 +28,9 @@ $__MtSession = @{
 	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
 	SpoCache               = @{}                 # Cache for SharePoint Online tenant settings retrieved via PnP
 	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
+	ADCache                = @{}                 # Active Directory data cache
+	ADConnection           = $null               # Active Directory connection state
+	ADCollectionTime       = $null               # Timestamp of last AD data collection
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

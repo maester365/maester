@@ -1554,6 +1554,11 @@
       "Title": "Conditional Access policy is present that blocks high agent risk signins"
     },
     {
+      "Id": "MT.1183",
+      "Severity": "Medium",
+      "Title": "Temporary bypass for onPremisesObjectIdentifier updates should be disabled"
+    },
+    {
       "Id": "ORCA.100",
       "Severity": "Medium",
       "Title": "Bulk Complaint Level threshold is between 4 and 6."
