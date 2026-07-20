@@ -4,6 +4,8 @@
 
 Describe 'Disconnect-Maester - GitHub session lifecycle' {
     BeforeEach {
+        Mock Disconnect-MgGraph -ModuleName Maester {}
+
         InModuleScope Maester {
             $__MtSession.Connections      = @()
             $__MtSession.GitHubConnection = $null
@@ -92,6 +94,51 @@ Describe 'Disconnect-Maester - GitHub session lifecycle' {
         It 'Produces no GitHub-related host output' {
             $hostOutput = Disconnect-Maester 6>&1 | Out-String
             $hostOutput | Should -Not -Match 'Disconnected from GitHub'
+        }
+    }
+}
+
+Describe 'Disconnect-Maester - Active Directory session lifecycle' {
+    BeforeEach {
+        Mock Disconnect-MgGraph -ModuleName Maester {}
+
+        InModuleScope Maester {
+            $__MtSession.Connections = @()
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected        = $true
+                DomainController = 'dc01.contoso.com'
+            }
+            $__MtSession.ADCache = @{ DomainState = [PSCustomObject]@{ Domain = 'contoso.com' } }
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.Connections = @()
+            $__MtSession.ADConnection = $null
+            $__MtSession.ADCache = @{}
+        }
+    }
+
+    It 'Clears Active Directory state even if another Connect-Maester call replaced the service list' {
+        InModuleScope Maester {
+            $__MtSession.Connections = @('Graph')
+        }
+
+        Disconnect-Maester 6>$null
+
+        InModuleScope Maester {
+            $__MtSession.ADConnection | Should -BeNullOrEmpty
+            $__MtSession.ADCache.Count | Should -Be 0
+        }
+    }
+
+    It 'Preserves Active Directory state when only Disconnect-MtGraph is requested' {
+        Disconnect-MtGraph 6>$null
+
+        InModuleScope Maester {
+            $__MtSession.ADConnection.Connected | Should -BeTrue
+            $__MtSession.ADCache.Count | Should -Be 1
         }
     }
 }

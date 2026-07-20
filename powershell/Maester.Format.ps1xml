@@ -14,6 +14,25 @@
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
+                    $null -ne $_.ActiveDirectory
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>Active Directory</Label>
+                <ScriptBlock>
+                  if ($_.ActiveDirectory) {
+                    "Connected`n" +
+                    "Domain Controller:       $($_.ActiveDirectory.DomainController)`n" +
+                    "Default Naming Context:  $($_.ActiveDirectory.DefaultNamingContext)`n" +
+                    "Configuration Context:   $($_.ActiveDirectory.ConfigurationNamingContext)`n" +
+                    "Schema Naming Context:   $($_.ActiveDirectory.SchemaNamingContext)`n"
+                  } else {
+                    ''
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
                     $null -ne $_.Azure
                   </ScriptBlock>
                 </ItemSelectionCondition>
