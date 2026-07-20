@@ -348,6 +348,7 @@ module.exports = [
     'commands/Test-MtEntitlementManagementValidResourceRoles',
     'commands/Test-MtEntraDeviceJoinRestricted',
     'commands/Test-MtEntraIDConnectSsso',
+    'commands/Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked',
     'commands/Test-MtEntraIDConnectSyncSoftHardMatching',
     'commands/Test-MtExoDelicensingResiliency',
     'commands/Test-MtExoMailTip',
