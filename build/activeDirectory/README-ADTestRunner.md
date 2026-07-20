@@ -10,10 +10,10 @@ From the repository root on a domain controller:
 
 ```powershell
 # Run all AD tests and copy reports to build/activeDirectory
-.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory
 
 # With verbose output
-.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -Verbose
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -Verbose
 ```
 
 ### Option 2: Run Specific AD Test Categories
@@ -22,21 +22,27 @@ From the repository root on a domain controller:
 # Import Maester module first
 Import-Module .\powershell\Maester.psd1 -Force
 
+# Explicitly validate the Active Directory connection
+Connect-Maester -Service ActiveDirectory
+
 # Run only GPO State tests
-Invoke-Maester -Path ".\tests\Maester\ad\gpostate" -OutputFolder ".\build\activeDirectory" -NonInteractive
+Invoke-Maester -Path ".\tests\ad\gpostate" -OutputFolder ".\build\activeDirectory" -SkipGraphConnect -NonInteractive
 
 # Run only Domain tests
-Invoke-Maester -Path ".\tests\Maester\ad\domain" -OutputFolder ".\build\activeDirectory" -NonInteractive
+Invoke-Maester -Path ".\tests\ad\domain" -OutputFolder ".\build\activeDirectory" -SkipGraphConnect -NonInteractive
 
 # Run only Security tests
-Invoke-Maester -Path ".\tests\Maester\ad\security" -OutputFolder ".\build\activeDirectory" -NonInteractive
+Invoke-Maester -Path ".\tests\ad\security" -OutputFolder ".\build\activeDirectory" -SkipGraphConnect -NonInteractive
 ```
 
 ### Option 3: Manual Copy After Running Tests
 
 ```powershell
+# Explicitly validate the Active Directory connection
+Connect-Maester -Service ActiveDirectory
+
 # Run tests with default output
-Invoke-Maester -Path ".\tests" -OutputFolder ".\test-results" -NonInteractive
+Invoke-Maester -Path ".\tests\ad" -Tag "AD" -OutputFolder ".\test-results" -SkipGraphConnect -NonInteractive
 
 # Copy the latest reports to build/activeDirectory
 $latestReports = Get-ChildItem -Path ".\test-results" -Filter "TestResults-*" | Sort-Object LastWriteTime -Descending | Select-Object -First 3
@@ -49,17 +55,17 @@ The AD tests are organized into the following categories:
 
 | Category | Path | Description |
 |----------|------|-------------|
-| GPO State | `tests/Maester/ad/gpostate` | GPO configuration and state tests |
-| Domain | `tests/Maester/ad/domain` | Domain configuration tests |
-| Security | `tests/Maester/ad/security` | Security-related AD tests |
-| User | `tests/Maester/ad/user` | User account tests |
-| Group | `tests/Maester/ad/group` | Group configuration tests |
-| Computer | `tests/Maester/ad/computer` | Computer account tests |
-| GPO | `tests/Maester/ad/gpo` | Group Policy Object tests |
-| Password Policy | `tests/Maester/ad/passwordpolicy` | Password policy tests |
-| Replication | `tests/Maester/ad/replication` | AD replication tests |
-| DACL | `tests/Maester/ad/dacl` | Discretionary Access Control List tests |
-| Domain Controller | `tests/Maester/ad/domaincontroller` | DC-specific tests |
+| GPO State | `tests/ad/gpostate` | GPO configuration and state tests |
+| Domain | `tests/ad/domain` | Domain configuration tests |
+| Security | `tests/ad/security` | Security-related AD tests |
+| User | `tests/ad/user` | User account tests |
+| Group | `tests/ad/group` | Group configuration tests |
+| Computer | `tests/ad/computer` | Computer account tests |
+| GPO | `tests/ad/gpo` | Group Policy Object tests |
+| Password Policy | `tests/ad/passwordpolicy` | Password policy tests |
+| Replication | `tests/ad/replication` | AD replication tests |
+| DACL | `tests/ad/dacl` | Discretionary Access Control List tests |
+| Domain Controller | `tests/ad/domaincontroller` | DC-specific tests |
 | DNS | `tests/ad/dns` | DNS-related tests |
 | OU | `tests/ad/ou` | Organizational Unit tests |
 | Site | `tests/ad/site` | AD site topology tests |
@@ -74,6 +80,7 @@ The AD tests are organized into the following categories:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
+| `ConnectActiveDirectory` | Required | Explicitly authorize AD connection validation and test execution |
 | `MaesterModulePath` | `..\..\powershell` | Path to Maester PowerShell module |
 | `TestPath` | `..\..\tests` | Path to test files |
 | `OutputFolder` | `..\..\test-results` | Temporary output folder |
@@ -122,23 +129,26 @@ After running tests, the following files are generated:
 
 ### Example 1: Full AD Test Suite
 ```powershell
-.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -Verbose
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -Verbose
 ```
 
 ### Example 2: Quick GPO Validation Only
 ```powershell
 Import-Module .\powershell\Maester.psd1 -Force
-Invoke-Maester -Path ".\tests\Maester\ad\gpostate" -OutputFolder ".\build\activeDirectory" -NonInteractive
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path ".\tests\ad\gpostate" -OutputFolder ".\build\activeDirectory" -SkipGraphConnect -NonInteractive
 ```
 
 ### Example 3: Export to CSV and Excel
 ```powershell
-Invoke-Maester -Path ".\tests\Maester\ad" -OutputFolder ".\build\activeDirectory" -ExportCsv -ExportExcel -NonInteractive
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path ".\tests\ad" -OutputFolder ".\build\activeDirectory" -ExportCsv -ExportExcel -SkipGraphConnect -NonInteractive
 ```
 
 ### Example 4: Run with Specific Tags
 ```powershell
-Invoke-Maester -Path ".\tests\Maester\ad" -Tag "AD-GPOS" -OutputFolder ".\build\activeDirectory" -NonInteractive
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path ".\tests\ad" -Tag "AD.GPOState" -OutputFolder ".\build\activeDirectory" -SkipGraphConnect -NonInteractive
 ```
 
 ## See Also

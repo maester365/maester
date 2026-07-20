@@ -1,4 +1,4 @@
-#Requires -RunAsAdministrator
+﻿#Requires -RunAsAdministrator
 <#
 .SYNOPSIS
     Runs all Active Directory tests using Invoke-Maester on a domain controller and copies report files to build/activeDirectory folder.
@@ -6,8 +6,12 @@
 .DESCRIPTION
     This script:
     1. Imports the Maester PowerShell module
-    2. Runs all AD tests using Invoke-Maester
-    3. Copies the generated report files (HTML, Markdown, JSON) to the build/activeDirectory folder
+    2. Requires explicit authorization to connect to Active Directory
+    3. Runs all AD tests using Invoke-Maester
+    4. Copies the generated report files (HTML, Markdown, JSON) to the build/activeDirectory folder
+
+.PARAMETER ConnectActiveDirectory
+    Explicitly authorizes the script to validate an Active Directory connection. This switch is required; without it, the script exits before connecting to AD or running AD tests.
 
 .PARAMETER MaesterModulePath
     Path to the Maester PowerShell module. Defaults to the local powershell folder.
@@ -22,17 +26,25 @@
     Target folder where reports will be copied. Defaults to build/activeDirectory.
 
 .EXAMPLE
-    .\Run-ADTests-And-CopyReports.ps1
+    .\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory
 
     Runs all AD tests and copies reports to build/activeDirectory.
 
 .EXAMPLE
-    .\Run-ADTests-And-CopyReports.ps1 -MaesterModulePath "C:\Maester\powershell" -Verbose
+    .\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -MaesterModulePath "C:\Maester\powershell" -Verbose
 
     Runs tests using a specific Maester module path with verbose output.
 #>
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+    'PSAvoidUsingWriteHost',
+    '',
+    Justification = 'This interactive validation runner uses colored console status output.'
+)]
 [CmdletBinding()]
 param (
+    [Parameter()]
+    [switch]$ConnectActiveDirectory,
+
     [Parameter()]
     [string]$MaesterModulePath = (Join-Path $PSScriptRoot "..\..\powershell"),
 
@@ -45,6 +57,11 @@ param (
     [Parameter()]
     [string]$TargetFolder = $PSScriptRoot
 )
+
+if (-not $ConnectActiveDirectory.IsPresent) {
+    Write-Error "Active Directory testing is opt-in. Re-run this script with -ConnectActiveDirectory to explicitly connect to AD and run its tests."
+    exit 1
+}
 
 #region Initialization
 $ErrorActionPreference = "Stop"
@@ -94,7 +111,7 @@ try {
 Write-Host "`n[Step 2] Checking pre-requisites..." -ForegroundColor Yellow
 
 # Check if running on a domain-joined machine or DC
-$computerInfo = Get-WmiObject -Class Win32_ComputerSystem
+$computerInfo = Get-CimInstance -ClassName Win32_ComputerSystem
 if (-not $computerInfo.PartOfDomain) {
     Write-Warning "This computer is not domain-joined. AD tests may fail."
 }
@@ -113,6 +130,18 @@ foreach ($moduleName in $requiredModules) {
     } else {
         Write-Warning "  ✗ $moduleName module not available"
     }
+}
+
+# Validate the explicit Active Directory connection before any tests run.
+try {
+    Connect-Maester -Service ActiveDirectory
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        throw "Connect-Maester did not establish an Active Directory connection."
+    }
+    Write-Host "  ✓ Active Directory connection validated" -ForegroundColor Green
+} catch {
+    Write-Error "Failed to connect to Active Directory: $_"
+    exit 1
 }
 
 # Verify AD test paths
@@ -156,7 +185,8 @@ try {
 
     # Run Invoke-Maester for AD tests
     $invokeParams = @{
-        Path = $TestPath
+        Path = $validTestPaths[0]
+        Tag = 'AD'
         OutputFolder = $OutputFolder
         OutputFolderFileName = $fileName
         NonInteractive = $true

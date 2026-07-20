@@ -205,4 +205,50 @@ Describe 'Active Directory test source safety' {
         $adCommandFiles.Count | Should -BeGreaterThan 0
         $issues | Should -BeNullOrEmpty
     }
+
+    It 'Requires explicit authorization before the standalone AD runner connects or invokes tests' {
+        $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+        $runnerPath = Join-Path $repositoryRoot 'build/activeDirectory/Run-ADTests-And-CopyReports.ps1'
+        $runnerContent = Get-Content -Path $runnerPath -Raw
+
+        $authorizationGuardOffset = $runnerContent.IndexOf('if (-not $ConnectActiveDirectory.IsPresent)')
+        $importOffset = $runnerContent.IndexOf('Import-Module $manifestPath')
+        $connectOffset = $runnerContent.IndexOf('Connect-Maester -Service ActiveDirectory')
+        $invokeOffset = $runnerContent.IndexOf('$results = Invoke-Maester')
+
+        $authorizationGuardOffset | Should -BeGreaterOrEqual 0
+        $importOffset | Should -BeGreaterThan $authorizationGuardOffset
+        $connectOffset | Should -BeGreaterThan $importOffset
+        $invokeOffset | Should -BeGreaterThan $connectOffset
+    }
+
+    It 'Includes the explicit AD connection in every documented AD invocation block' {
+        $repositoryRoot = Resolve-Path (Join-Path $PSScriptRoot '../../..')
+        $documentationPaths = @(
+            (Join-Path $repositoryRoot 'build/activeDirectory/README-ADTestRunner.md')
+            (Join-Path $repositoryRoot 'website/blog/2026-04-25-active-directory-security-testing/index.md')
+        )
+        $issues = @()
+
+        foreach ($documentationPath in $documentationPaths) {
+            $content = Get-Content -Path $documentationPath -Raw
+            $codeBlocks = [regex]::Matches($content, '(?ms)```(?:powershell|yaml)\s*(.*?)```')
+
+            foreach ($codeBlock in $codeBlocks) {
+                $code = $codeBlock.Groups[1].Value
+
+                if ($code -match '(?:Invoke-Maester|Test-MtAd[\w-]*)' -and
+                    $code -notmatch 'Connect-Maester\s+-Service\s+ActiveDirectory') {
+                    $issues += "$documentationPath contains an AD invocation block without an explicit Active Directory connection."
+                }
+
+                if ($code -match 'Run-ADTests-And-CopyReports\.ps1' -and
+                    $code -notmatch '-ConnectActiveDirectory') {
+                    $issues += "$documentationPath contains an AD runner example without explicit authorization."
+                }
+            }
+        }
+
+        $issues | Should -BeNullOrEmpty
+    }
 }

@@ -89,7 +89,8 @@ Identify risky user configurations that could lead to compromise:
 
 ```powershell
 # Run all user security tests
-Invoke-Maester -Path "./tests/Maester/ad/user"
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path "./ad/user" -SkipGraphConnect
 ```
 
 **Sample Tests:**
@@ -105,7 +106,8 @@ Analyze GPO configurations for security issues:
 
 ```powershell
 # Run GPO security tests
-Invoke-Maester -Path "./tests/Maester/ad/gpostate"
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path "./ad/gpostate" -SkipGraphConnect
 ```
 
 **Sample Tests:**
@@ -120,7 +122,8 @@ Deep-dive into Access Control Lists:
 
 ```powershell
 # Run DACL analysis tests
-Invoke-Maester -Path "./tests/Maester/ad/dacl"
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path "./ad/dacl" -SkipGraphConnect
 ```
 
 **Sample Tests:**
@@ -140,6 +143,8 @@ Invoke-Maester -Path "./tests/Maester/ad/dacl"
 - ActiveDirectory and GroupPolicy PowerShell modules
 - Domain Admin or equivalent permissions (for full coverage)
 
+Active Directory testing is always opt-in. `Connect-Maester -Service All` does not connect to AD, and `Invoke-Maester` excludes every AD-tagged test until `Connect-Maester -Service ActiveDirectory` succeeds in the current PowerShell session.
+
 ### Installation
 
 ```powershell
@@ -158,15 +163,18 @@ Install-MaesterTests
 # Import the Maester module
 Import-Module Maester -Force
 
+# Explicitly validate the Active Directory connection
+Connect-Maester -Service ActiveDirectory
+
 # Run all AD tests
-Invoke-Maester -Path "./tests/Maester/ad" -OutputFolder "./ad-results" -NonInteractive
+Invoke-Maester -Path "./ad" -OutputFolder "./ad-results" -SkipGraphConnect -NonInteractive
 
 # Run specific categories
-Invoke-Maester -Path "./tests/Maester/ad/user" -OutputFolder "./ad-results" -NonInteractive
-Invoke-Maester -Path "./tests/Maester/ad/gpostate" -OutputFolder "./ad-results" -NonInteractive
+Invoke-Maester -Path "./ad/user" -OutputFolder "./ad-results" -SkipGraphConnect -NonInteractive
+Invoke-Maester -Path "./ad/gpostate" -OutputFolder "./ad-results" -SkipGraphConnect -NonInteractive
 
 # Run with specific tags
-Invoke-Maester -Tag "AD-User", "AD-Security" -OutputFolder "./ad-results" -NonInteractive
+Invoke-Maester -Tag "AD.User" -OutputFolder "./ad-results" -SkipGraphConnect -NonInteractive
 ```
 
 ### Using the AD Test Runner
@@ -175,10 +183,10 @@ For convenience, use the included test runner script:
 
 ```powershell
 # From the repository root on a domain controller
-.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory
 
 # With verbose output
-.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -Verbose
+.\build\activeDirectory\Run-ADTests-And-CopyReports.ps1 -ConnectActiveDirectory -Verbose
 ```
 
 ---
@@ -199,6 +207,8 @@ Tests return standardized results:
 
 ```powershell
 # Example: Password Policy Test
+Connect-Maester -Service ActiveDirectory
+
 Test-MtAdPasswordComplexityRequired
 # Returns: $true (complexity enabled - good)
 
@@ -214,7 +224,8 @@ Test-MtAdAccountLockoutThreshold
 Generate professional HTML reports for stakeholders:
 
 ```powershell
-Invoke-Maester -Path "./tests/Maester/ad" -OutputFolder "./reports" -NonInteractive
+Connect-Maester -Service ActiveDirectory
+Invoke-Maester -Path "./ad" -OutputFolder "./reports" -SkipGraphConnect -NonInteractive
 # Open ./reports/TestResults-*.html
 ```
 
@@ -252,7 +263,7 @@ Based on AD test results, consider these best practices:
 
 ## 🔄 Integration with CI/CD
 
-Run AD tests in your automation pipelines:
+Run AD tests in your automation pipelines from a self-hosted Windows agent that can reach a domain controller and has the required RSAT modules installed. Cloud-hosted runners do not have access to your AD environment.
 
 ### GitHub Actions
 
@@ -264,14 +275,17 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: [self-hosted, windows, ad-connected]
     steps:
       - name: Run Maester AD Tests
         shell: pwsh
         run: |
           Install-Module Maester -Force
           Import-Module Maester
-          Invoke-Maester -Path "./tests/Maester/ad" -NonInteractive
+          $testPath = Join-Path $env:RUNNER_TEMP 'maester-tests'
+          Install-MaesterTests -Path $testPath -SkipPesterCheck
+          Connect-Maester -Service ActiveDirectory
+          Invoke-Maester -Path (Join-Path $testPath 'ad') -Tag 'AD' -SkipGraphConnect -NonInteractive
 ```
 
 ### Azure DevOps
@@ -281,7 +295,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'windows-latest'
+  name: 'AD-connected Windows agents'
 
 steps:
 - task: PowerShell@2
@@ -290,7 +304,10 @@ steps:
     script: |
       Install-Module Maester -Force
       Import-Module Maester
-      Invoke-Maester -Path "./tests/Maester/ad" -OutputFolder "$(Build.ArtifactStagingDirectory)" -NonInteractive
+      $testPath = Join-Path $env:AGENT_TEMPDIRECTORY 'maester-tests'
+      Install-MaesterTests -Path $testPath -SkipPesterCheck
+      Connect-Maester -Service ActiveDirectory
+      Invoke-Maester -Path (Join-Path $testPath 'ad') -Tag 'AD' -OutputFolder "$(Build.ArtifactStagingDirectory)" -SkipGraphConnect -NonInteractive
 ```
 
 ---
@@ -355,8 +372,11 @@ Update-Module Maester -Force
 cd ~/maester-tests
 Update-MaesterTests
 
+# Explicitly validate the Active Directory connection
+Connect-Maester -Service ActiveDirectory
+
 # Run AD tests on your domain controller
-Invoke-Maester -Path "./tests/Maester/ad" -NonInteractive
+Invoke-Maester -Path "./ad" -SkipGraphConnect -NonInteractive
 ```
 
 ---
