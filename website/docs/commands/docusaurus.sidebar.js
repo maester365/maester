@@ -254,6 +254,7 @@ module.exports = [
     'commands/Test-MtCisCustomerLockBox',
     'commands/Test-MtCisDevicesWithoutCompliancePolicyMarked',
     'commands/Test-MtCisDkim',
+    'commands/Test-MtCisEnsureBitLockerKeyRecoveryRestricted',
     'commands/Test-MtCisEnsureGuestAccessRestricted',
     'commands/Test-MtCisEnsureGuestUserDynamicGroup',
     'commands/Test-MtCisEnsureUserConsentToAppsDisallowed',
