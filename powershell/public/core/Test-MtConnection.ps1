@@ -138,7 +138,7 @@
                         $RequiredScopes |
                             Where-Object {
                                 $CurrentScopes -notcontains $_ -and
-                                $CurrentScopes -notcontains ($_ -replace '\.Read\.', '.ReadWrite.')
+                                $CurrentScopes -notcontains ($_ -replace '\.Read\b', '.ReadWrite')
                             } |
                             Sort-Object -Unique
                     )

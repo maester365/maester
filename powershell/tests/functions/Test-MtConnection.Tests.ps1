@@ -343,6 +343,7 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
                 Scopes     = @(
                     'Directory.Read.All'
                     'Policy.ReadWrite.ConditionalAccess'
+                    'User.ReadWrite'
                 )
             }
         } -ModuleName Maester
@@ -351,6 +352,7 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
             @(
                 'Directory.Read.All'
                 'Policy.Read.ConditionalAccess'
+                'User.Read'
             )
         } -ModuleName Maester
 
@@ -359,8 +361,14 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Result.Graph.Scopes |
             Should -Contain 'Policy.ReadWrite.ConditionalAccess'
 
+        $Result.Graph.Scopes |
+            Should -Contain 'User.ReadWrite'
+
         $Result.Graph.MissingScopes |
             Should -Not -Contain 'Policy.Read.ConditionalAccess'
+
+        $Result.Graph.MissingScopes |
+            Should -Not -Contain 'User.Read'
     }
 
     It 'Returns disconnected state when no Graph context exists' {
