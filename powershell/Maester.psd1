@@ -206,7 +206,7 @@
         'Test-MtCaGroupsRestricted', 'Test-MtCaLicenseUtilization', 'Test-MtCaMfaForAdmin', 'Test-MtCaMfaForAdminManagement',
         'Test-MtCaMfaForAllUsers', 'Test-MtCaMfaForGuest', 'Test-MtCaMfaForRiskySignIn', 'Test-MtCaMisconfiguredIDProtection',
         'Test-MtCaReferencedGroupsExist', 'Test-MtCaReferencedObjectsExist', 'Test-MtCaRequirePasswordChangeForHighUserRisk',
-        'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCaAgentRiskBlockPolicy', 'Test-MtCertificateConnectors',
+        'Test-MtCaSecureSecurityInfoRegistration', 'Test-MtCaUntargetedPolicy', 'Test-MtCaWIFBlockLegacyAuthentication', 'Test-MtCaAgentRiskBlockPolicy', 'Test-MtCertificateConnectors',
         'Test-MtCis365PublicGroup', 'Test-MtCisaActivationNotification', 'Test-MtCisaAntiSpamAllowList',
         'Test-MtCisaAntiSpamSafeList', 'Test-MtCisaAppAdminConsent', 'Test-MtCisaAppGroupOwnerConsent',
         'Test-MtCisaAppRegistration', 'Test-MtCisaAppUserConsent', 'Test-MtCisaAssignmentNotification',
