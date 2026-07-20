@@ -36,7 +36,9 @@ BeforeDiscovery {
     $script:maesterTagTestCases = foreach ($testFile in Get-ChildItem -Path $maesterTestsPath -Filter '*.Tests.ps1' -File -Recurse) {
         $tokens = $null
         $parseErrors = $null
-        $ast = [System.Management.Automation.Language.Parser]::ParseFile(
+        $testFileContent = [System.IO.File]::ReadAllText($testFile.FullName, [System.Text.Encoding]::UTF8)
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput(
+            $testFileContent,
             $testFile.FullName,
             [ref] $tokens,
             [ref] $parseErrors
