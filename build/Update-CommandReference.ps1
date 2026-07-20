@@ -2,12 +2,16 @@
 # * This command needs to be run from the root of the project. e.g. ./build/Build-CommandReference.ps1
 # * If running the docusaurus site locally you will need to stop and start Docusaurus to clear the 'Module not found' errors after running this command
 
-if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable)) { Install-Module Alt3.Docusaurus.Powershell -Scope CurrentUser -Force -SkipPublisherCheck }
-if (-not (Get-Module PlatyPS -ListAvailable)) { Install-Module PlatyPS -Scope CurrentUser -Force -SkipPublisherCheck }
+# Alt3 2.x requires Microsoft.PowerShell.PlatyPS, whose YamlDotNet assembly conflicts with legacy PlatyPS.
+$alt3DocusaurusVersion = "1.0.37"
+$platyPSVersion = "0.14.2"
+
+if (-not (Get-Module Alt3.Docusaurus.Powershell -ListAvailable | Where-Object { $_.Version -eq $alt3DocusaurusVersion })) { Install-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion -Scope CurrentUser -Force -SkipPublisherCheck }
+if (-not (Get-Module PlatyPS -ListAvailable | Where-Object { $_.Version -eq $platyPSVersion })) { Install-Module PlatyPS -RequiredVersion $platyPSVersion -Scope CurrentUser -Force -SkipPublisherCheck }
 if (-not (Get-Module Pester -ListAvailable)) { Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck }
 
-Import-Module Alt3.Docusaurus.Powershell
-Import-Module PlatyPS
+Import-Module Alt3.Docusaurus.Powershell -RequiredVersion $alt3DocusaurusVersion
+Import-Module PlatyPS -RequiredVersion $platyPSVersion
 Import-Module Pester
 Import-Module DnsClient
 
