@@ -54,6 +54,14 @@ Checks if the current session is connected to Azure and returns a Boolean result
 ### EXAMPLE 4
 
 ```powershell
+Test-MtConnection -Service ActiveDirectory
+```
+
+Checks whether Connect-Maester -Service ActiveDirectory completed successfully in this session.
+
+### EXAMPLE 5
+
+```powershell
 Test-MtConnection -Service GitHub
 ```
 
@@ -65,11 +73,13 @@ Returns $false if Connect-MtGitHub has not been called in this session.
 ### -Service
 
 The service to check the connection for.
-Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'.
+Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'.
 Default is 'Graph'.
 
-GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection.
-GitHub is not included in -Service All and must be checked explicitly.
+Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection.
+Active Directory is not included in -Service All.
+GitHub is not included in -Service All.
+Each service must be checked explicitly.
 
 ```yaml
 Type: String[]
