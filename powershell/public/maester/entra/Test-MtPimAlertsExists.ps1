@@ -4,7 +4,7 @@
     Checks if PIM alerts exists
 
     .Description
-    GET /beta/privilegedAccess/aadRoles/resources/$tenantId/alerts
+    GET `/beta/identityGovernance/roleManagementAlerts/alerts/{unifiedRoleManagementAlertId}`
 
     .Example
     Test-MtPimAlertsExists -FilteredAccessLevel "ControlPlane" -AlertId "RolesAssignedOutsidePimAlert"
@@ -20,7 +20,7 @@
     [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
     [ValidateSet('RedundantAssignmentAlert', 'RolesAssignedOutsidePimAlert', 'SequentialActivationRenewalsAlert', 'TooManyGlobalAdminsAssignedToTenantAlert', 'StaleSignInAlert')]
     # ID for the alert to test.
-    [string[]]$AlertId,
+    [string]$AlertId,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Position = 1)]
     [ValidateSet('ControlPlane', 'ManagementPlane')]
@@ -40,25 +40,28 @@
   process {
 
     try {
-      # Get PIM Alerts and store as object to be used in the test
+      # Get the PIM v3 alert and its related definition, configuration, and incidents.
       Write-Verbose 'Getting PIM Alerts'
-      $Alert = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "privilegedAccess/aadRoles/resources/$($tenantId)/alerts" | Where-Object { $_.id -eq $AlertId }
+      $AlertResourceId = "DirectoryRole_$($tenantId)_$AlertId"
+      $Alert = Invoke-MtGraphRequest -ApiVersion 'beta' -RelativeUri "identityGovernance/roleManagementAlerts/alerts/$($AlertResourceId)?`$expand=alertDefinition,alertConfiguration,alertIncidents"
+      $AlertDefinition = $Alert.alertDefinition
+      $AffectedRoleAssignments = if ($Alert.isActive) { @($Alert.alertIncidents) } else { @() }
 
-      if ($Alert.Where({ $_.isActive -eq 'True' }).additionalData) {
-        $AffectedRoleAssignments = $Alert.Where({ $_.isActive -eq 'True' }).additionalData | ForEach-Object {
-          $CurrentItem = $_.item
-          $result = New-Object psobject
-          foreach ($entry in $CurrentItem.GetEnumerator()) {
-            $result | Add-Member -MemberType NoteProperty -Name $entry.key -Value $entry.value -Force
-          }
-          $result
-        }
+      # Preserve the PIM v2 result properties consumed by the Maester tests and cmdlet callers.
+      @{
+        alertName        = $AlertDefinition.displayName
+        alertDescription = $AlertDefinition.description
+        securityImpact   = $AlertDefinition.securityImpact
+        mitigationSteps  = $AlertDefinition.mitigationSteps
+        howToPrevent     = $AlertDefinition.howToPrevent
+      }.GetEnumerator() | ForEach-Object {
+        $Alert | Add-Member -MemberType NoteProperty -Name $_.Key -Value $_.Value -Force
       }
 
       # Filtering based on (EntraOps) Enterprise Access Model Tiering
       if ($null -ne $FilteredAccessLevel) {
         Write-Verbose 'Filtering based on Enterprise Access Model Tiering'
-        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json -Depth 10
+        $EamClassification = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Cloud-Architekt/AzurePrivilegedIAM/main/Classification/Classification_EntraIdDirectoryRoles.json' | ConvertFrom-Json
         $FilteredClassification = ($EamClassification | Where-Object { $_.Classification.EAMTierLevelName -eq $FilteredAccessLevel }).RoleId
         $AffectedRoleAssignments = $AffectedRoleAssignments | Where-Object { $_.RoleTemplateId -in $FilteredClassification }
       }
@@ -72,7 +75,7 @@
       }
 
       # Set number of affected Items to value of filtered items (for example, original alert has two affected items, but all of them are break glass and excluded from the test)
-      $Alert.numberOfAffectedItems = $AffectedRoleAssignments.Count
+      $Alert | Add-Member -MemberType NoteProperty -Name numberOfAffectedItems -Value @($AffectedRoleAssignments).Count -Force
 
       # Create test result and details
       $convertHtmlLinkToMD = '<a.*?href=["'']([^"'']*)["''][^>]*>([^<]*)<\/a>' # Regular expression to detect HTML links
@@ -97,7 +100,7 @@ $($Alert.howToPrevent -replace $convertHtmlLinkToMD, '[$2]($1)')
         }
       }
 
-      if ($Alert.Count -gt '0' -and $AffectedRoleAssignments.Count -gt 0) {
+      if ($null -ne $Alert -and @($AffectedRoleAssignments).Count -gt 0) {
         $testResult = "$($Alert.alertDescription)`n`n
 $($AffectedRoleAssignmentSummary)
 Get more details from the PIM alert [$($Alert.alertName)](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/$($AlertId)/resourceId/$($tenantId)) in the Azure Portal.
