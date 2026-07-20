@@ -434,6 +434,7 @@ module.exports = [
     'commands/Test-MtCaReferencedObjectsExist',
     'commands/Test-MtCaRequirePasswordChangeForHighUserRisk',
     'commands/Test-MtCaSecureSecurityInfoRegistration',
+    'commands/Test-MtCaUntargetedPolicy',
     'commands/Test-MtCaWIFBlockLegacyAuthentication',
     'commands/Test-MtCertificateConnectors',
     'commands/Test-MtCis365PublicGroup',
