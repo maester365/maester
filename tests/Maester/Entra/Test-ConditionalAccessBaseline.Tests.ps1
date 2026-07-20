@@ -105,7 +105,7 @@
     }
 }
 
-Describe "Maester/Entra" -Tag "CA" {
+Describe "Maester/Entra" -Tag "Maester", "CA" {
     It "MT.1021: Security Defaults are enabled. See https://maester.dev/docs/tests/MT.1021" -Tag "MT.1021" {
         $EntraIDPlan = Get-MtLicenseInformation -Product EntraID
         if ($EntraIDPlan -ne "Free") {
