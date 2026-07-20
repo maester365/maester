@@ -7,9 +7,9 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
+    The service to check the connection for. Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
 
-    GitHub requires an explicit Connect-MtGitHub call before testing; unlike other services it has no auto-detection. GitHub is not included in -Service All and must be checked explicitly.
+    Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection. Active Directory is not included in -Service All. GitHub is not included in -Service All. Each service must be checked explicitly.
 
     .PARAMETER Details
     Return the full details of all connections instead of just a boolean value.
@@ -30,6 +30,11 @@
     Checks if the current session is connected to Azure and returns a Boolean result.
 
     .EXAMPLE
+    Test-MtConnection -Service ActiveDirectory
+
+    Checks whether Connect-Maester -Service ActiveDirectory completed successfully in this session.
+
+    .EXAMPLE
     Test-MtConnection -Service GitHub
 
     Checks if the current session is connected to GitHub and returns a Boolean result.
@@ -43,7 +48,7 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', 'AvoidUsingWriteHost', Justification = 'Sending colorful output to host in addition to rich object output.')]
     param(
         # Checks if the current session is connected to the specified service
-        [ValidateSet('All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
+        [ValidateSet('ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'EOP', 'GitHub', 'Graph', 'SecurityCompliance', 'SharePointOnline', 'Teams')]
         [Parameter(Position = 0)]
         [string[]]$Service = 'Graph',
 
@@ -55,6 +60,7 @@
     begin {
         $MtConnections = [PSCustomObject]@{
             PSTypeName               = 'Maester.Connections'
+            ActiveDirectory          = $null
             Azure                    = $null
             AzureDevOps              = $null
             GitHub                   = $null
@@ -71,6 +77,18 @@
     }
 
     process {
+        #region Active Directory
+        if ($Service -contains 'ActiveDirectory') {
+            $IsConnected = $false
+            if ($null -ne $__MtSession.ADConnection -and $__MtSession.ADConnection.Connected -eq $true) {
+                $MtConnections.ActiveDirectory = $__MtSession.ADConnection
+                $IsConnected = $true
+            }
+            Write-Verbose "Active Directory: $IsConnected"
+            if (!$IsConnected) { $ConnectionState = $false }
+        }
+        #endregion Active Directory
+
         #region Azure
         if ($Service -contains 'Azure' -or $Service -contains 'All') {
             $IsConnected = $false

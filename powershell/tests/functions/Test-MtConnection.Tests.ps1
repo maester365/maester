@@ -19,10 +19,89 @@ AfterAll {
     }
 }
 
+Describe 'Test-MtConnection — Active Directory service' {
+    BeforeEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+        }
+    }
+
+    It 'Offers ActiveDirectory as a -Service option' {
+        $serviceParameter = (Get-Command Test-MtConnection).Parameters['Service']
+        $validateSet = $serviceParameter.Attributes |
+            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
+            Select-Object -First 1
+
+        $validateSet.ValidValues | Should -Contain 'ActiveDirectory'
+    }
+
+    It 'Documents that Active Directory requires an explicit connection and is not included in All' {
+        $help = Get-Help Test-MtConnection -Detailed | Out-String
+        $help | Should -Match 'Active Directory and GitHub require an explicit connection'
+        $help | Should -Match 'Active Directory is not included in -Service All'
+    }
+
+    It 'Returns false before Connect-Maester validates Active Directory' {
+        Test-MtConnection -Service ActiveDirectory | Should -BeFalse
+    }
+
+    It 'Returns true after Connect-Maester validates Active Directory' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected            = $true
+                DomainController     = 'dc01.contoso.com'
+                DefaultNamingContext = 'DC=contoso,DC=com'
+            }
+        }
+
+        Test-MtConnection -Service ActiveDirectory | Should -BeTrue
+    }
+
+    It 'Returns Active Directory details only when explicitly requested' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected        = $true
+                DomainController = 'dc01.contoso.com'
+            }
+        }
+
+        $result = Test-MtConnection -Service ActiveDirectory -Details
+
+        $result.ActiveDirectory.Connected | Should -BeTrue
+        $result.ActiveDirectory.DomainController | Should -Be 'dc01.contoso.com'
+        $result.AllConnected | Should -BeTrue
+    }
+
+    It 'Formats Active Directory connection details' {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = [PSCustomObject]@{
+                Connected                  = $true
+                DomainController           = 'dc01.contoso.com'
+                DefaultNamingContext       = 'DC=contoso,DC=com'
+                ConfigurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                SchemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+            }
+        }
+
+        $rendered = Test-MtConnection -Service ActiveDirectory -Details | Out-String
+
+        $rendered | Should -Match 'Active Directory'
+        $rendered | Should -Match 'dc01.contoso.com'
+        $rendered | Should -Match 'DC=contoso,DC=com'
+    }
+}
+
 Describe 'Test-MtConnection — GitHub service' {
     BeforeEach {
         InModuleScope Maester {
             $__MtSession.GitHubConnection      = $null
+            $__MtSession.ADConnection          = $null
             $__MtSession.AzureDevOpsConnectionCache = $null
         }
     }
@@ -30,6 +109,7 @@ Describe 'Test-MtConnection — GitHub service' {
     AfterEach {
         InModuleScope Maester {
             $__MtSession.GitHubConnection      = $null
+            $__MtSession.ADConnection          = $null
             $__MtSession.AzureDevOpsConnectionCache = $null
         }
     }
@@ -195,9 +275,10 @@ Describe 'Test-MtConnection — GitHub service' {
     }
 
     Context '-Service All — GitHub connected session is ignored' {
-        It 'Does not populate the GitHub property' {
+        It 'Does not populate the GitHub or Active Directory properties' {
             InModuleScope Maester {
                 $__MtSession.GitHubConnection      = [PSCustomObject]@{ Connected = $true; Organization = 'myorg' }
+                $__MtSession.ADConnection          = [PSCustomObject]@{ Connected = $true; DomainController = 'dc01.contoso.com' }
                 $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
             }
             Mock Get-AzContext { [PSCustomObject]@{ Account = 'test@contoso.com' } } -ModuleName Maester
@@ -212,6 +293,7 @@ Describe 'Test-MtConnection — GitHub service' {
             Mock Get-CsTenant { [PSCustomObject]@{ TenantId = 'tenant-id' } } -ModuleName Maester
             $result = Test-MtConnection -Service All -Details
             $result.GitHub | Should -BeNullOrEmpty
+            $result.ActiveDirectory | Should -BeNullOrEmpty
         }
     }
 }

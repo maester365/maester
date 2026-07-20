@@ -3,7 +3,7 @@ BeforeAll {
 
     # Keep -Service All tests isolated from optional service modules that may not be installed.
     $script:createdStubs = @()
-    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams') {
+    foreach ($cmd in 'Get-AzContext','Connect-AzAccount','Connect-ExchangeOnline','Connect-IPPSSession','Get-ConnectionInformation','Connect-MgGraph','Connect-MicrosoftTeams','Get-ADRootDSE') {
         if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
             New-Item -Path "function:global:$cmd" -Value { } | Out-Null
             $script:createdStubs += $cmd
@@ -27,6 +27,15 @@ Describe 'Connect-Maester' {
         $validateSet.ValidValues | Should -Contain 'GitHub'
     }
 
+    It 'Offers ActiveDirectory as a -Service option' {
+        $serviceParameter = (Get-Command Connect-Maester).Parameters['Service']
+        $validateSet = $serviceParameter.Attributes |
+            Where-Object { $_ -is [System.Management.Automation.ValidateSetAttribute] } |
+            Select-Object -First 1
+
+        $validateSet.ValidValues | Should -Contain 'ActiveDirectory'
+    }
+
     It 'Offers GitHubOrganization as a parameter' {
         (Get-Command Connect-Maester).Parameters.Keys | Should -Contain 'GitHubOrganization'
     }
@@ -47,7 +56,22 @@ Describe 'Connect-Maester' {
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 1 -Exactly -ParameterFilter { $Organization -eq 'myorg' }
     }
 
-    It 'Does not call Connect-MtGitHub when -Service All is specified without GitHub' {
+    It 'Validates Active Directory when -Service ActiveDirectory is specified' {
+        Mock Get-ADRootDSE -ModuleName Maester {
+            [PSCustomObject]@{
+                defaultNamingContext       = 'DC=contoso,DC=com'
+                configurationNamingContext = 'CN=Configuration,DC=contoso,DC=com'
+                schemaNamingContext        = 'CN=Schema,CN=Configuration,DC=contoso,DC=com'
+                dnsHostName                = 'dc01.contoso.com'
+            }
+        }
+
+        Connect-Maester -Service ActiveDirectory
+
+        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 1 -Exactly
+    }
+
+    It 'Does not call opt-in services when -Service All is specified' {
         Mock Get-AzContext -ModuleName Maester { [PSCustomObject]@{ Account = 'test@contoso.com' } }
         Mock Get-MtDataverseEnvironmentUrl -ModuleName Maester { $null }
         Mock Connect-ExchangeOnline -ModuleName Maester {}
@@ -56,9 +80,11 @@ Describe 'Connect-Maester' {
         Mock Connect-MgGraph -ModuleName Maester {}
         Mock Connect-MicrosoftTeams -ModuleName Maester {}
         Mock Connect-MtGitHub -ModuleName Maester { throw 'Connect-MtGitHub should not be called for -Service All.' }
+        Mock Get-ADRootDSE -ModuleName Maester { throw 'Get-ADRootDSE should not be called for -Service All.' }
 
         Connect-Maester -Service All 3>$null 6>$null
 
         Should -Invoke Connect-MtGitHub -ModuleName Maester -Times 0 -Exactly
+        Should -Invoke Get-ADRootDSE -ModuleName Maester -Times 0 -Exactly
     }
 }

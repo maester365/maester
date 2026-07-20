@@ -8,7 +8,7 @@
 
     For more advanced configuration, you can directly use the Pester module and the Get-MtHtmlReport function.
 
-    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively.
+    By default, Invoke-Maester runs all *.Tests.ps1 files in the current directory and all subdirectories recursively, except Active Directory tests and tests tagged as LongRunning or Preview. Active Directory tests run only after an explicit Connect-Maester -Service ActiveDirectory call succeeds.
 
     .PARAMETER IncludeLongRunning
     Include tests that can take a long time to run in tenants with a large number of objects.
@@ -25,12 +25,12 @@
     .EXAMPLE
     Invoke-Maester
 
-    Runs all the test files under the current folder (except for those tagged as LongRunning and Preview) and generates a report of the results in the ./test-results folder.
+    Runs all the test files under the current folder (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester ./maester-tests
 
-    Runs all the tests in the folder ./tests/Maester (except for those tagged as LongRunning and Preview) and generates a report of the results in the default ./test-results folder.
+    Runs all the tests in the folder ./tests/Maester (except for Active Directory tests and those tagged as LongRunning or Preview) and generates a report of the results in the default ./test-results folder.
 
     .EXAMPLE
     Invoke-Maester -Tag 'CA' -IncludeLongRunning
@@ -95,7 +95,15 @@
     Invoke-Maester -IncludeLongRunning -IncludePreview
     ```
 
-    Connect to all tested services and run all tests, including the long-running and preview tests.
+    Connect to all Microsoft 365 services and run their tests, including the long-running and preview tests. Active Directory tests remain excluded.
+
+    .EXAMPLE
+    ```powershell
+    Connect-Maester -Service ActiveDirectory
+    Invoke-Maester -Tag 'AD' -SkipGraphConnect
+    ```
+
+    Explicitly connect to Active Directory, then run the Active Directory tests without requiring a Microsoft Graph connection.
 
     .LINK
     https://maester.dev/docs/commands/Invoke-Maester
@@ -397,6 +405,17 @@
     }
 
     $pesterConfig = GetPesterConfiguration -Path $Path -Tag $Tag -ExcludeTag $ExcludeTag -PesterConfiguration $PesterConfiguration
+
+    # Active Directory tests are always opt-in. Supplying -Tag AD alone is not sufficient;
+    # the connection must have been explicitly validated by Connect-Maester first.
+    if (-not (Test-MtConnection -Service ActiveDirectory)) {
+        $effectiveExcludeTags = @($pesterConfig.Filter.ExcludeTag.Value)
+        if ('AD' -notin $effectiveExcludeTags) {
+            $pesterConfig.Filter.ExcludeTag = @($effectiveExcludeTags + 'AD')
+        }
+        Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
+    }
+
     $Path = $pesterConfig.Run.Path.value
     Write-Verbose "Merged configuration: $($pesterConfig | ConvertTo-Json -Depth 5 -Compress)"
 
