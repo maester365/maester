@@ -8,7 +8,7 @@ The MSOnline (MSOL) and Azure AD PowerShell modules were retired by Microsoft an
 
 The `blockMsolPowerShell` setting on the tenant's authorization policy lets an admin explicitly block authentication requests from the legacy MSOnline PowerShell module's service principal. This isn't enabled by default for every tenant, so it needs to be checked explicitly rather than assumed to already be in place — leaving it unblocked keeps an unsupported and unmonitored administrative access path open.
 
-#### Remediation action:
+### Remediation action:
 
 1. Connect to Graph using **Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"**.
 2. Run the following PowerShell command to review the current value:
@@ -21,7 +21,7 @@ $authPolicy = Get-MgPolicyAuthorizationPolicy
 Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BlockMsolPowerShell:$true
 ```
 
-#### Related links
+### Related links
 
 * [Authorization policy in Entra ID | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
 * [Update-MgPolicyAuthorizationPolicy | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.signins/update-mgpolicyauthorizationpolicy)
