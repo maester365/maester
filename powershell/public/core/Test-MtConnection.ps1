@@ -125,7 +125,7 @@
                 Write-Debug "Graph connection check failed: $($_.Exception.Message)"
             }
 
-            if ($IsConnected) {
+            if ($IsConnected -and $Details.IsPresent) {
                 try {
                     $RequiredScopes = @(Get-MtGraphScope)
                     $CurrentScopes = @(

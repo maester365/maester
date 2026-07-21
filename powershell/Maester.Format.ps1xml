@@ -80,11 +80,15 @@
                     } else {
                       ''
                     }) +
-                    "Missing scopes:  $($MissingScopes.Count)`n" +
-                    $(if ($MissingScopes.Count -gt 0) {
-                      "Missing:         $($MissingScopes -join ', ')`n"
+                    $(if ($null -ne $_.Graph.PSObject.Properties['MissingScopes']) {
+                      "Missing scopes:  $($MissingScopes.Count)`n" +
+                      $(if ($MissingScopes.Count -gt 0) {
+                        "Missing:         $($MissingScopes -join ', ')`n"
+                      } else {
+                        ''
+                      })
                     } else {
-                      ''
+                      "Missing scopes:  (scope evaluation failed)`n"
                     })
                   } else {
                     ''

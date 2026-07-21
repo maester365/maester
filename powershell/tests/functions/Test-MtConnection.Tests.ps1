@@ -406,6 +406,26 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Rendered | Should -Match 'Reports\.Read\.All'
     }
 
+    It 'Does not evaluate Graph scopes when Details is not requested' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                Scopes = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            throw 'Scope evaluation should not run'
+        } -ModuleName Maester
+
+        Test-MtConnection -Service Graph |
+            Should -BeTrue
+
+        Should -Invoke Get-MtGraphScope `
+            -ModuleName Maester `
+            -Times 0 `
+            -Exactly
+    }
+
     It 'Keeps the Graph connection details when scope evaluation fails' {
         Mock Get-MgContext {
             [PSCustomObject]@{
@@ -426,6 +446,12 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Result.Graph | Should -Not -BeNullOrEmpty
         $Result.Graph.TenantId | Should -Be 'tenant-id'
         $Result.AllConnected | Should -BeTrue
+
+        $Rendered = $Result | Out-String
+
+        $Rendered | Should -Match 'Missing scopes:\s+\(scope evaluation failed\)'
+
+        $Rendered | Should -Not -Match 'Missing scopes:\s+0'
     }
 }
 
