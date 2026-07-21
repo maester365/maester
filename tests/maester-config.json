@@ -1539,6 +1539,11 @@
       "Title": "Conditional Access policy without any target resources configured"
     },
     {
+      "Id": "MT.1185",
+      "Severity": "High",
+      "Title": "Block legacy MSOnline (MSOL) PowerShell module"
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
