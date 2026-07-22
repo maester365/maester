@@ -625,6 +625,7 @@ module.exports = [
     'commands/Test-MtEntraIDConnectSsso',
     'commands/Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked',
     'commands/Test-MtEntraIDConnectSyncSoftHardMatching',
+    'commands/Test-MtEntraMsolPowerShellBlocked',
     'commands/Test-MtExoDelicensingResiliency',
     'commands/Test-MtExoMailTip',
     'commands/Test-MtExoModernAuth',

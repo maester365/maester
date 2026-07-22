@@ -37,11 +37,11 @@ Returns a Boolean value.
 ### EXAMPLE 2
 
 ```powershell
-Test-MtConnection -Service All -Details
+Test-MtConnection -Details
 ```
 
-Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams.
-Returns a custom object that contains the connection details for all services.
+Returns a connection summary for all supported services.
+Default services are listed first, followed by the opt-in Active Directory and GitHub services.
 
 ### EXAMPLE 3
 
@@ -74,12 +74,13 @@ Returns $false if Connect-MtGitHub has not been called in this session.
 
 The service to check the connection for.
 Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'.
-Default is 'Graph'.
+The default Boolean check is for Microsoft Graph.
+When -Details is used without -Service, all services are checked and summarized.
 
 Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection.
 Active Directory is not included in -Service All.
 GitHub is not included in -Service All.
-Each service must be checked explicitly.
+Their current session state is included in the default -Details summary.
 
 ```yaml
 Type: String[]
@@ -95,7 +96,9 @@ Accept wildcard characters: False
 
 ### -Details
 
-Return the full details of all connections instead of just a boolean value.
+Return connection details instead of just a Boolean value.
+When -Service is omitted, the summary includes all default and opt-in services.
+Microsoft Graph details include the scopes in the current context and any required Maester scopes that are missing.
 
 ```yaml
 Type: SwitchParameter
