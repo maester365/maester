@@ -20,7 +20,7 @@ function Test-MtEidscaAP04 {
     [OutputType([bool])]
     param()
 
-    
+
     $result = Invoke-MtGraphRequest -RelativeUri "policies/authorizationPolicy" -ApiVersion beta
 
     $rawValue = $result.allowInvitesFrom
@@ -39,4 +39,3 @@ function Test-MtEidscaAP04 {
 
     return $tenantValue
 }
-

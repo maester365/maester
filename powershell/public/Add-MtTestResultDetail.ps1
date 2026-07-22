@@ -77,7 +77,7 @@
         [ValidateSet('NotConnectedAzure', 'NotConnectedExchange', 'NotConnectedGraph', 'NotDotGovDomain', 'NotLicensedEntraIDP1', 'NotConnectedSecurityCompliance', 'NotConnectedTeams',
             'NotLicensedEntraIDP2', 'NotLicensedEntraIDGovernance', 'NotLicensedEntraWorkloadID', 'NotLicensedExoDlp', "LicensedEntraIDPremium", 'NotSupported', 'Custom',
             'NotLicensedMdo', 'NotLicensedMdoP2', 'NotLicensedMdoP1', 'NotLicensedAdvAudit', 'NotLicensedEop', 'Error', 'NotSupportedAppPermission', 'LimitedPermissions', 'NotLicensedDefenderXDR',
-            'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedSharePoint'
+            'NotLicensedCustomerLockbox', 'NotAuthorized', 'NotLicensedIntune', 'NotConnectedAzureDevOps', 'NotConnectedActiveDirectory', 'NotConnectedGitHub', 'NotConnectedSharePoint', 'NotLicensedEntraIDP2OrGovernance'
         )]
         [string] $SkippedBecause,
 
@@ -127,44 +127,37 @@
     }
 
     if ([string]::IsNullOrEmpty($Description)) {
-        # Check if a markdown file exists for the cmdlet and parse the content
-        try {
-            $cmdletPath = $MyInvocation.PSCommandPath
-            $markdownPath = $cmdletPath -replace '.ps1', '.md'
-            if (Test-Path $markdownPath) {
-                # Read the content and split it into description and result with "<!--- Results --->" as the separator
-                $content = Get-Content $markdownPath -Raw -ErrorAction Stop
-                $splitContent = $content -split "<!--- Results --->"
-                $mdDescription = $splitContent[0]
-                $mdResult = $splitContent[1]
+        $callStack = @(Get-PSCallStack)
+        $callerFrame = if ($callStack.Count -gt 1) { $callStack[1] } else { $null }
+        $callerName = if ($callerFrame) { $callerFrame.Command } else { $null }
+        $callerFile = if ($callerFrame) { $callerFrame.ScriptName } else { $null }
+        $metadata = Get-MtTestResultTemplate -CommandName $callerName -SourceFile $callerFile
 
-                if (![string]::IsNullOrEmpty($Result)) {
-                    # If a result was provided in the parameter insert it into the markdown content
-                    try {
-                        if ($mdResult -match "%TestResult%") {
-                            $mdResult = $mdResult -replace "%TestResult%", $Result
-                        } else {
-                            $mdResult = $Result
-                        }
-                    } catch {
-                        Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
+        if ($metadata) {
+            $mdResult = $metadata.Result
+            if (![string]::IsNullOrEmpty($Result)) {
+                # If a result was provided in the parameter insert it into the markdown content
+                try {
+                    if ($mdResult -match "%TestResult%") {
+                        $mdResult = $mdResult.Replace("%TestResult%", $Result)
+                    } else {
                         $mdResult = $Result
-                    } # End of try-catch for result replacement in the markdown template.
+                    }
+                } catch {
+                    Write-Warning "Failed to process markdown result template: $($_.Exception.Message)"
+                    $mdResult = $Result
                 }
-
-                $Description = $mdDescription
-                $Result = $mdResult
             }
-        } catch {
-            Write-Warning "Failed to read markdown file '$markdownPath': $($_.Exception.Message)"
-            # Continue without markdown content
-        } # End of try-catch for markdown file reading
+
+            $Description = $metadata.Description
+            $Result = $mdResult
+        }
     }
 
     if ($hasGraphResults) {
         try {
             $graphResultMarkdown = Get-GraphObjectMarkdown -GraphObjects $GraphObjects -GraphObjectType $GraphObjectType
-            $Result = $Result -replace "%TestResult%", $graphResultMarkdown
+            $Result = $Result.Replace("%TestResult%", $graphResultMarkdown)
         } catch {
             Write-Warning "Failed to generate graph object markdown: $($_.Exception.Message)"
             # Continue with original result without graph object markdown

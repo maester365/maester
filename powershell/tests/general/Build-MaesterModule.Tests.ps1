@@ -51,6 +51,12 @@ function Get-TestThing {
         }
 
         Write-TestFileContent -Path (Join-Path $SourceRoot 'public/example/Get-TestThing.ps1') -Content $PublicFunctionContent
+        Write-TestFileContent -Path (Join-Path $SourceRoot 'public/example/Get-TestThing.md') -Content @'
+Fixture test description.
+
+<!--- Results --->
+Fixture result: %TestResult%
+'@
         Write-TestFileContent -Path (Join-Path $SourceRoot 'internal/Get-InternalThing.ps1') -Content @'
 function Get-InternalThing {
     return 'internal'
@@ -136,19 +142,24 @@ Describe 'Build-MaesterModule' {
                     -OutputRoot $Fixture.OutputRoot *> $null
 
                 $OutputPsm1 = Join-Path $Fixture.OutputRoot 'Maester.psm1'
+                $OutputTestMetadata = Join-Path $Fixture.OutputRoot 'Maester.TestMetadata.json'
                 $OutputOrcaClasses = Join-Path $Fixture.OutputRoot 'OrcaClasses.ps1'
                 $OutputManifest = Join-Path $Fixture.OutputRoot 'Maester.psd1'
 
                 $OutputPsm1 | Should -Exist
+                $OutputTestMetadata | Should -Exist
                 $OutputOrcaClasses | Should -Exist
                 $OutputManifest | Should -Exist
 
                 $Psm1Content = Get-Content -Path $OutputPsm1 -Raw
+                $TestMetadata = Get-Content -Path $OutputTestMetadata -Raw | ConvertFrom-Json
                 $OrcaContent = Get-Content -Path $OutputOrcaClasses -Raw
                 $Manifest = Import-PowerShellDataFile -Path $OutputManifest
 
                 $Psm1Content | Should -Match 'function Get-TestThing'
                 $Psm1Content | Should -Not -Match '\$Unused'
+                $TestMetadata.'Get-TestThing'.Description | Should -BeLike 'Fixture test description.*'
+                $TestMetadata.'Get-TestThing'.Result | Should -BeLike '*Fixture result: %TestResult%*'
                 $OrcaContent | Should -Match 'class ORCA999 : ORCACheck'
                 $OrcaContent | Should -Not -Match 'using module'
                 $Manifest.FunctionsToExport | Should -Contain 'Get-TestThing'

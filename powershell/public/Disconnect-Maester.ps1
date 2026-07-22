@@ -1,15 +1,12 @@
-﻿function Disconnect-Maester {
+function Disconnect-Maester {
    <#
     .Synopsis
-    Helper method to sign out of the current Microsoft Graph session. Alternate for Disconnect-MgGraph.
+    Disconnects the services connected through Connect-Maester.
 
     .Description
-    Use this cmdlet to sign out of the current Microsoft Graph session.
-
-    This cmdlet is a helper method for running the following command.
-    ```
-    Disconnect-MgGraph
-    ```
+    Use this cmdlet to sign out of the services connected through Connect-Maester.
+    It also clears Maester Active Directory and GitHub session state. Use
+    Disconnect-MtGraph when you only want to disconnect Microsoft Graph.
 
     .Example
     Disconnect-MtGraph
@@ -45,7 +42,6 @@
       Write-Verbose -Message "Disconnecting from Microsoft Exchange Online."
       Disconnect-ExchangeOnline
    }
-
    if ($__MtSession.Connections -contains "SharePointOnline" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from SharePoint Online (PnP)."
       try {
@@ -59,5 +55,16 @@
    if ($__MtSession.Connections -contains "Teams" -or $__MtSession.Connections -contains "All") {
       Write-Verbose -Message "Disconnecting from Microsoft Teams."
       Disconnect-MicrosoftTeams
+   }
+
+   if ($MyInvocation.InvocationName -notmatch '(^|\\)Disconnect-MtGraph$') {
+      if ($null -ne $__MtSession.ADConnection) {
+         Write-Verbose -Message "Clearing Active Directory connection data."
+         $__MtSession.ADConnection = $null
+         Clear-MtADCache
+      }
+
+      Write-Verbose -Message "Disconnecting from GitHub."
+      Disconnect-MtGitHub
    }
 }

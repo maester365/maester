@@ -5,7 +5,7 @@ title: Installation guide
 - Install the **Maester** PowerShell module, Pester, and the out-of-the-box tests.
 
 ```powershell
-Install-Module Pester -SkipPublisherCheck -Force -Scope CurrentUser
+Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -SkipPublisherCheck -Force -Scope CurrentUser
 Install-Module Maester -Scope CurrentUser
 
 md maester-tests
@@ -49,6 +49,17 @@ Run the following command to interactively connect to the Azure, Microsoft Graph
 ```powershell
 Connect-Maester -Service All
 ```
+
+### Connecting to GitHub
+
+GitHub is an optional connection for GitHub security tests and is not included in `Connect-Maester -Service All`.
+For interactive sessions, use the Maester GitHub App OAuth flow:
+
+```powershell
+Connect-Maester -Service Graph,GitHub -GitHubOrganization '<github-organization>'
+```
+
+See [Connect to GitHub (optional)](connect-maester/readme.md#connect-to-github-optional) for GitHub App install/approval details and token-based automation options.
 
 ### Permissions
 

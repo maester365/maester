@@ -48,6 +48,7 @@
         $testResultMarkdown = "Your tenant does not have an external sender warning.`n`n%TestResult%"
     }
 
+    $result = ''
     if ($rules) {
         # Only show table if there are rules
         $result = "| Transport Rule Name | Test Result |`n"

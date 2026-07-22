@@ -26,9 +26,10 @@ jobs:
           app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
           private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
 
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - name: Update public suffix list
         shell: pwsh
@@ -43,5 +44,18 @@ jobs:
           delete-branch: true
           title: 'chore: update public suffix list'
           body: |
-            Refreshes `powershell/assets/public_domain_suffix_list.dat` from:
-            - https://publicsuffix.org/list/public_suffix_list.dat
+            Refreshes `powershell/assets/public_domain_suffix_list.dat` from the Public Suffix List published at `https://publicsuffix.org/list/public_suffix_list.dat`.
+
+            The Public Suffix List is maintained by Mozilla volunteers and registry submissions. Reviewer background: https://publicsuffix.org/learn/
+
+            Why this matters in Maester:
+            - `powershell/public/Get-MtRegistrableDomain.ps1` uses this list to determine the registrable domain boundary.
+            - `powershell/public/maester/entra/Test-MtDomainsDmarcRecordMaturity.ps1` uses that registrable domain to decide which domain should be evaluated for DMARC.
+
+            Why some domains are excluded or skipped for DMARC checks:
+            - The list helps Maester distinguish registry-controlled suffixes from customer-manageable registrable domains.
+            - That avoids false positives where DMARC would otherwise be evaluated against a public suffix or another non-applicable domain boundary instead of the actual registrable domain.
+            - Domains such as `onmicrosoft.com` remain explicitly skipped as not applicable because the tenant does not control the base public suffix used for that shared namespace.
+
+            Reviewer note:
+            - If this list update changes DMARC results, the generated test output already includes the reason in the `Reason` column, so the impact should be visible in the test result details.

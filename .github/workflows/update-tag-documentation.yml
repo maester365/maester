@@ -20,11 +20,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up PowerShell modules
         run: |
-          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck"
+          pwsh -NoLogo -NoProfile -Command "Install-Module Pester -MinimumVersion 5.7.1 -MaximumVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck"
 
       - name: Generate tags document
         run: pwsh -NoLogo -NoProfile -File build/Update-TagsDocumentation.ps1

@@ -17,14 +17,14 @@
     #>
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'This test checks for multiple owners for each application object.')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification='Setting severity variable will set dynamic based on findings')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Setting severity variable will set dynamic based on findings')]
     [OutputType([bool])]
     param()
 
     $UnifiedIdentityInfoExecutable = Get-MtXspmUnifiedIdentityInfo -ValidateRequiredTablesOnly
     if ( $UnifiedIdentityInfoExecutable -eq $false) {
-            Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables. Check https://maester.dev/docs/tests/MT.1078/#Prerequisites for more information.'
-            return $null
+        Add-MtTestResultDetail -SkippedBecause 'Custom' -SkippedCustomReason 'This test requires availability of MDA App Governance and MDI to get data for Defender XDR Advanced Hunting tables. Check https://maester.dev/docs/tests/MT.1078/#Prerequisites for more information.'
+        return $null
     }
 
     try {
@@ -35,7 +35,7 @@
         return $null
     }
 
-    $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object {$_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
+    $HighPrivilegedAppsByEntraRoles = $UnifiedIdentityInfo | where-object { $_.AssignedEntraRoles.Classification -eq "ControlPlane" -or $_.AssignedEntraRoles.Classification -eq "ManagementPlane" -or $_.AssignedEntraRoles.RoleIsPrivileged -eq $True }
     $SensitiveDirectoryRolesOnAppsWithOwners = $HighPrivilegedAppsByEntraRoles | Where-Object { $null -ne $_.OwnedBy -and $_.Type -eq "Workload" }
 
     if ($return -or [string]::IsNullOrEmpty($SensitiveDirectoryRolesOnAppsWithOwners)) {
@@ -49,16 +49,28 @@
         Write-Verbose "Found $($SensitiveDirectoryRolesOnAppsWithOwners.Count) app registrations with directory role assigned to owner."
 
         foreach ($SensitiveApp in $SensitiveDirectoryRolesOnAppsWithOwners) {
-            $filteredApiPermissions = $SensitiveApp.AssignedEntraRoles | where-object {$_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
+            $filteredRolePrivileges = $SensitiveApp.AssignedEntraRoles | where-object { $_.Classification -eq "ControlPlane" -or $_.Classification -eq "ManagementPlane" -or $_.RoleIsPrivileged -eq $True } | Select-Object RoleDefinitionName, Classification
+            $roleClassifications = @($filteredRolePrivileges.Classification | Where-Object { -not [string]::IsNullOrEmpty($_) } | Sort-Object -Unique)
             # XSPM supports only Directory scope for now
-            $filteredApiPermissions | Add-Member -MemberType NoteProperty -Name RoleScope -Value "Directory" -Force
-            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $filteredApiPermissions.Classification
+            $filteredRolePrivileges | Add-Member -MemberType NoteProperty -Name RoleScope -Value "Directory" -Force
+            $effectiveClassification = if ($roleClassifications -contains "ControlPlane") {
+                "ControlPlane"
+            } elseif ($roleClassifications -contains "ManagementPlane") {
+                "ManagementPlane"
+            } else {
+                "Unknown"
+            }
+            $AdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $effectiveClassification
             $SensitiveApp.OwnedBy | ForEach-Object {
                 $Owner = $_
-                $XspmIdentifiers = ($Owner.EntityIds | Where-Object {$_.type -eq "AadObjectId"}).id
+                $XspmIdentifiers = ($Owner.EntityIds | Where-Object { $_.type -eq "AadObjectId" }).id
                 if ($XspmIdentifiers -match 'objectid=([0-9a-fA-F\-]{36})') {
                     $MatchedObjectId = $matches[1]
-                    $MatchedOwner = $UnifiedIdentityInfo | Where-Object {$_.AccountObjectId -eq $MatchedObjectId}
+                    $MatchedOwner = $UnifiedIdentityInfo | Where-Object { $_.AccountObjectId -eq $MatchedObjectId }
+                    if ($null -eq $MatchedOwner) {
+                        # In case owner is missing in Defender XDR tables
+                        $MatchedOwner = [PSCustomObject]@{ Classification = "Unknown"; Type = "Unknown"; AccountObjectId = $MatchedObjectId; AppId = $null; AccountDisplayName = "Unknown" }
+                    }
                     $OwnerAdminTierLevelIcon = Get-MtXspmPrivilegedClassificationIcon -AdminTierLevelName $MatchedOwner.Classification
                     if ($MatchedOwner.Type -eq "Workload") {
                         $OwnerLink = "[$($SensitiveApp.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/$($MatchedOwner.AccountObjectId)/appId/$($MatchedOwner.AppId))"
@@ -66,7 +78,7 @@
                         $OwnerLink = "[$($MatchedOwner.AccountDisplayName)](https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/$($MatchedOwner.AccountObjectId))"
                     }
                     $Owner = "$($OwnerAdminTierLevelIcon) $OwnerLink"
-                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and $MatchedOwner.Classification -ne "$filteredApiPermissions.Classification"
+                    $TierBreach = $MatchedOwner.Classification -ne "ControlPlane" -and ($roleClassifications -notcontains $MatchedOwner.Classification)
                 } else {
                     $Owner = $($_.NodeName) - $($_.NodeLabel)
                     $TierBreach = "Unknown"
@@ -80,9 +92,9 @@
                 }
 
                 # Summary of App roles in one column (as workaround for missing support of simple linebreak in one call)
-                $DirectoryRolesSummary = $filteredApiPermissions | Select-Object -Unique RoleScope | ForEach-Object {
+                $DirectoryRolesSummary = $filteredRolePrivileges | Select-Object -Unique RoleScope | ForEach-Object {
                     $RoleScope = $_.RoleScope
-                    $DirectoryRoles = $filteredApiPermissions | Where-Object {$_.RoleScope -eq $RoleScope} | Select-Object RoleDefinitionName
+                    $DirectoryRoles = $filteredRolePrivileges | Where-Object { $_.RoleScope -eq $RoleScope } | Select-Object RoleDefinitionName
                     "Scope $($RoleScope)" + ": " + "$($DirectoryRoles| ForEach-Object { '`' + $_.RoleDefinitionName + '`' })"
                 }
 

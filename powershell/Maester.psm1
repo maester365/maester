@@ -22,10 +22,15 @@ $__MtSession = @{
 	ExoCache               = @{}
 	OrcaCache              = @{}
 	AIAgentInfo            = $null
+	AzureDevOpsConnectionCache = $null
 	DataverseApiBase       = $null       # Resolved Dataverse OData API base URL (e.g. https://org123.api.crm.dynamics.com/api/data/v9.2)
 	DataverseResourceUrl   = $null   # Dataverse resource URL for token acquisition (e.g. https://org123.crm.dynamics.com)
 	DataverseEnvironmentId = $null # Environment identifier for display (e.g. org123.crm.dynamics.com)
 	SpoCache               = @{}                 # Cache for SharePoint Online tenant settings retrieved via PnP
+	GitHubCache            = @{}                 # Per-session REST response cache; cleared each Invoke-Maester run
+	ADCache                = @{}                 # Active Directory data cache
+	ADConnection           = $null               # Active Directory connection state
+	ADCollectionTime       = $null               # Timestamp of last AD data collection
 }
 New-Variable -Name __MtSession -Value $__MtSession -Scope Script -Force
 

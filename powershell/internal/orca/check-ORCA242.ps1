@@ -15,9 +15,9 @@ param()
 class ORCA242 : ORCACheck
 {
     <#
-    
+
         Check for first contact safety tip
-    
+
     #>
 
     ORCA242()
@@ -41,9 +41,9 @@ class ORCA242 : ORCACheck
     }
 
     <#
-    
+
         RESULTS
-    
+
     #>
 
     GetResults($Config)
@@ -85,8 +85,8 @@ class ORCA242 : ORCACheck
                     if($FoundAlert.Disabled)
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Fail")
-                    } 
-                    else 
+                    }
+                    else
                     {
                         $ConfigObject.SetResult([ORCAConfigLevel]::Standard,"Pass")
                     }
