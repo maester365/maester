@@ -67,10 +67,19 @@
                 Add-MtTestResultDetail -Result $result
             } else {
                 $mgUsers = @()
-                foreach ($mbx in $mbxes) {
-                    $mgUsers += Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $mbx.ExternalDirectoryObjectId
+                $mailboxWithoutExternalDirectoryObjectIdDisplayNames = $mbxes | `
+                    Where-Object { -not $_.ExternalDirectoryObjectId } | `
+                    Select-Object -ExpandProperty DisplayName
+                [array]$mgUsers = foreach ($mbx in $mbxes) {
+                    if ($mbx.ExternalDirectoryObjectId) {
+                        Invoke-MtGraphRequest -RelativeUri "users" -UniqueId $mbx.ExternalDirectoryObjectId
+                    }
                 }
                 $result = "Your tenant has $(($mbxes | Measure-Object).Count) mailboxes using the .onmicrosoft.com domain as primary SMTP address:`n`n%TestResult%"
+                if (($mailboxWithoutExternalDirectoryObjectIdDisplayNames | Measure-Object).Count -ge 1) {
+                    $mailboxWithoutExternalDirectoryObjectIdDisplayNamesResult = $mailboxWithoutExternalDirectoryObjectIdDisplayNames -join "`n+ "
+                    $result += "`n`nThe following mailboxes have no ExternalDirectoryObjectId and could not be looked up in Microsoft Graph:`n+ $mailboxWithoutExternalDirectoryObjectIdDisplayNamesResult"
+                }
                 $return = $false
                 Add-MtTestResultDetail -Result $result -GraphObjects $mgUsers -GraphObjectType Users
             }
