@@ -512,7 +512,7 @@ Describe 'Test-MtConnection — requested service formatting' {
         )
 
         $ExpectedServiceOrder | ForEach-Object {
-            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected\r?$"
         }
 
         for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
@@ -543,8 +543,8 @@ Describe 'Test-MtConnection — requested service formatting' {
         $Rendered = $Result | Out-String
 
         @($Result.ServicesChecked) | Should -Be @('Graph', 'GitHub')
-        $Rendered | Should -Match '(?m)^Microsoft Graph\s+: Not connected$'
-        $Rendered | Should -Match '(?m)^GitHub\s+: Not connected$'
+        $Rendered | Should -Match '(?m)^Microsoft Graph\s+: Not connected\r?$'
+        $Rendered | Should -Match '(?m)^GitHub\s+: Not connected\r?$'
         $Rendered | Should -Not -Match '(?m)^Azure\s+:'
     }
 
@@ -571,7 +571,7 @@ Describe 'Test-MtConnection — requested service formatting' {
         )
 
         $ExpectedServiceOrder | ForEach-Object {
-            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected\r?$"
         }
 
         for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
@@ -594,7 +594,7 @@ Describe 'Test-MtConnection — requested service formatting' {
         $Rendered = Test-MtConnection -Service $Service -Details | Out-String
 
         $Rendered |
-            Should -Match '(?m)^Exchange Online Protection\s+: Not connected$'
+            Should -Match '(?m)^Exchange Online Protection\s+: Not connected\r?$'
     }
 }
 
