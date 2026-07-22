@@ -61,7 +61,7 @@
     } elseif ($checkType -eq "ExchangeOnline") {
         Write-Verbose "Checking if mailboxes use the .onmicrosoft.com domain as primary SMTP address..."
         try {
-            $mbxes = Get-Mailbox -Filter "RecipientTypeDetails -ne 'DiscoveryMailbox'" | Where-Object { $_.PrimarySmtpAddress -like "*@*.onmicrosoft.com" }
+            $mbxes = Get-Mailbox -ResultSize Unlimited -Filter "RecipientTypeDetails -ne 'DiscoveryMailbox'" | Where-Object { $_.PrimarySmtpAddress -like "*@*.onmicrosoft.com" }
             if (($mbxes | Measure-Object).Count -eq 0) {
                 $result = "Well done. No mailbox uses the .onmicrosoft.com domain as primary SMTP address."
                 Add-MtTestResultDetail -Result $result
