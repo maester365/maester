@@ -7,12 +7,12 @@
     Tests the connection for each service and returns $true if the session is connected to the specified service.
 
     .PARAMETER Service
-    The service to check the connection for. Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. Default is 'Graph'.
+    The service to check the connection for. Valid values are 'ActiveDirectory', 'All', 'Azure', 'AzureDevOps', 'ExchangeOnline', 'GitHub', 'Graph', 'SecurityCompliance' (or 'EOP'), 'SharePointOnline', and 'Teams'. The default Boolean check is for Microsoft Graph. When -Details is used without -Service, all services are checked and summarized.
 
-    Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection. Active Directory is not included in -Service All. GitHub is not included in -Service All. Each service must be checked explicitly.
+    Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection. Active Directory is not included in -Service All. GitHub is not included in -Service All. Their current session state is included in the default -Details summary.
 
     .PARAMETER Details
-    Return the full details of all connections instead of just a boolean value. Microsoft Graph details include the scopes in the current context and any required Maester scopes that are missing.
+    Return connection details instead of just a Boolean value. When -Service is omitted, the summary includes all default and opt-in services. Microsoft Graph details include the scopes in the current context and any required Maester scopes that are missing.
 
     .EXAMPLE
     Test-MtConnection -Service All
@@ -20,9 +20,9 @@
     Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a Boolean value.
 
     .EXAMPLE
-    Test-MtConnection -Service All -Details
+    Test-MtConnection -Details
 
-    Checks if the current session is connected to all Microsoft 365 services including Azure, Microsoft Graph, Exchange Online, Exchange Online Protection (SecurityCompliance), SharePoint Online (PnP), and Microsoft Teams. Returns a custom object that contains the connection details for all services.
+    Returns a connection summary for all supported services. Default services are listed first, followed by the opt-in Active Directory and GitHub services.
 
     .EXAMPLE
     Test-MtConnection -Service Azure
@@ -58,8 +58,15 @@
     )
 
     begin {
+        $ServicesToCheck = if ($Details.IsPresent -and -not $PSBoundParameters.ContainsKey('Service')) {
+            @('All', 'ActiveDirectory', 'GitHub')
+        } else {
+            @($Service)
+        }
+
         $MtConnections = [PSCustomObject]@{
             PSTypeName               = 'Maester.Connections'
+            ServicesChecked          = $ServicesToCheck
             ActiveDirectory          = $null
             Azure                    = $null
             AzureDevOps              = $null
@@ -79,7 +86,7 @@
 
     process {
         #region Active Directory
-        if ($Service -contains 'ActiveDirectory') {
+        if ($ServicesToCheck -contains 'ActiveDirectory') {
             $IsConnected = $false
             if ($null -ne $__MtSession.ADConnection -and $__MtSession.ADConnection.Connected -eq $true) {
                 $MtConnections.ActiveDirectory = $__MtSession.ADConnection
@@ -91,7 +98,7 @@
         #endregion Active Directory
 
         #region Azure
-        if ($Service -contains 'Azure' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'Azure' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             try {
                 $MtConnections.Azure = Get-AzContext
@@ -115,7 +122,7 @@
         #endregion Azure
 
         #region Graph
-        if ($Service -contains 'Graph' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'Graph' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
 
             try {
@@ -167,7 +174,7 @@
         #endregion Graph
 
         #region Exchange Online
-        if ($Service -contains 'ExchangeOnline' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'ExchangeOnline' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             try {
                 # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
@@ -182,7 +189,7 @@
         #endregion Exchange Online
 
         #region Exchange Online Protection (EOP)
-        if (($Service -contains 'SecurityCompliance' -or $Service -contains 'EOP') -or $Service -contains 'All') {
+        if (($ServicesToCheck -contains 'SecurityCompliance' -or $ServicesToCheck -contains 'EOP') -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             try {
                 # Cache the connection information to avoid multiple calls to Get-ConnectionInformation. See https://github.com/maester365/maester/pull/1207
@@ -198,7 +205,7 @@
         #endregion Exchange Online Protection (EOP)
 
         #region Teams
-        if ($Service -contains 'Teams' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'Teams' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             try {
                 $MtConnections.Teams = Get-CsTenant
@@ -213,7 +220,7 @@
         #endregion Teams
 
         #region SharePoint
-        if ($Service -contains 'SharePointOnline' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'SharePointOnline' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             try {
                 $MtConnections.SharePointOnline = Get-PnPConnection
@@ -227,7 +234,7 @@
         #endregion SharePoint
 
         #region AzureDevOps
-        if ($Service -contains 'AzureDevOps' -or $Service -contains 'All') {
+        if ($ServicesToCheck -contains 'AzureDevOps' -or $ServicesToCheck -contains 'All') {
             $IsConnected = $false
             if ($null -ne $__MtSession.AzureDevOpsConnectionCache) {
                 # Use cached probe result to avoid re-running the connection check on every test.
@@ -261,7 +268,7 @@
         #endregion AzureDevOps
 
         #region GitHub
-        if ($Service -contains 'GitHub') {
+        if ($ServicesToCheck -contains 'GitHub') {
             $IsConnected = $false
             if ($null -ne $__MtSession.GitHubConnection) {
                 if ($__MtSession.GitHubConnection.Connected -eq $true) {

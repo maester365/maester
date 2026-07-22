@@ -14,26 +14,7 @@
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.ActiveDirectory
-                  </ScriptBlock>
-                </ItemSelectionCondition>
-                <Label>Active Directory</Label>
-                <ScriptBlock>
-                  if ($_.ActiveDirectory) {
-                    "Connected`n" +
-                    "Domain Controller:       $($_.ActiveDirectory.DomainController)`n" +
-                    "Default Naming Context:  $($_.ActiveDirectory.DefaultNamingContext)`n" +
-                    "Configuration Context:   $($_.ActiveDirectory.ConfigurationNamingContext)`n" +
-                    "Schema Naming Context:   $($_.ActiveDirectory.SchemaNamingContext)`n"
-                  } else {
-                    ''
-                  }
-                </ScriptBlock>
-              </ListItem>
-              <ListItem>
-                <ItemSelectionCondition>
-                  <ScriptBlock>
-                    $null -ne $_.Azure
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Azure'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>Azure</Label>
@@ -45,14 +26,30 @@
                     "Account:      $($_.Azure.Account)`n" +
                     "Subscription: $($_.Azure.Subscription)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.Graph
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'AzureDevOps'
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>Azure DevOps</Label>
+                <ScriptBlock>
+                  if ($_.AzureDevOps) {
+                    "Connected`n" +
+                    "Organization: $($_.AzureDevOps.Organization)`n"
+                  } else {
+                    'Not connected'
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Graph'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>Microsoft Graph</Label>
@@ -83,14 +80,14 @@
                       "Missing scopes:  (scope evaluation failed)`n"
                     })
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.ExchangeOnline
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'ExchangeOnline'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>Exchange Online</Label>
@@ -101,14 +98,16 @@
                     "Organization:  $($_.ExchangeOnline.Organization)`n" +
                     "UPN:           $($_.ExchangeOnline.UserPrincipalName)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.ExchangeOnlineProtection
+                    $_.ServicesChecked -contains 'All' -or
+                      $_.ServicesChecked -contains 'EOP' -or
+                      $_.ServicesChecked -contains 'SecurityCompliance'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>Exchange Online Protection</Label>
@@ -119,14 +118,14 @@
                     "Organization:  $($_.ExchangeOnlineProtection.Organization)`n" +
                     "UPN:           $($_.ExchangeOnlineProtection.UserPrincipalName)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.SharePointOnline
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'SharePointOnline'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>SharePoint Online</Label>
@@ -136,14 +135,14 @@
                     "URL:          $($_.SharePointOnline.Url)`n" +
                     "Tenant:       $($_.SharePointOnline.Tenant)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.Teams
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Teams'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>Microsoft Teams</Label>
@@ -154,14 +153,33 @@
                     "Display Name:     $($_.Teams.DisplayName) `n" +
                     "Service Instance: $($_.Teams.ServiceInstance)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $null -ne $_.GitHub
+                    $_.ServicesChecked -contains 'ActiveDirectory'
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>Active Directory</Label>
+                <ScriptBlock>
+                  if ($_.ActiveDirectory) {
+                    "Connected`n" +
+                    "Domain Controller:       $($_.ActiveDirectory.DomainController)`n" +
+                    "Default Naming Context:  $($_.ActiveDirectory.DefaultNamingContext)`n" +
+                    "Configuration Context:   $($_.ActiveDirectory.ConfigurationNamingContext)`n" +
+                    "Schema Naming Context:   $($_.ActiveDirectory.SchemaNamingContext)`n"
+                  } else {
+                    'Not connected'
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $_.ServicesChecked -contains 'GitHub'
                   </ScriptBlock>
                 </ItemSelectionCondition>
                 <Label>GitHub</Label>
@@ -176,7 +194,7 @@
                     "Role State:                         $($_.GitHub.RoleState)`n" +
                     "Administration Permission Verified: $($_.GitHub.AdministrationPermissionVerified)`n"
                   } else {
-                    ''
+                    'Not connected'
                   }
                 </ScriptBlock>
               </ListItem>

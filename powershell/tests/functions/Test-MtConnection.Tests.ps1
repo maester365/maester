@@ -119,7 +119,7 @@ Describe 'Test-MtConnection — GitHub service' {
             $help = Get-Help Test-MtConnection -Detailed | Out-String
             $help | Should -Match 'not included in -Service All'
             $help | Should -Not -Match 'NotCalled sentinel'
-            $help | Should -Match 'must be checked explicitly'
+            $help | Should -Match 'current session state is included in the default -Details summary'
         }
     }
 
@@ -463,6 +463,129 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Rendered | Should -Match 'Missing scopes:\s+\(scope evaluation failed\)'
 
         $Rendered | Should -Not -Match 'Missing scopes:\s+0'
+    }
+}
+
+Describe 'Test-MtConnection — requested service formatting' {
+    BeforeEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+    }
+
+    It 'Shows a complete summary with opt-in services last for the default details request' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+        }
+        Mock Get-AzContext { $null } -ModuleName Maester
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-MtExo { @() } -ModuleName Maester
+        Mock Get-CsTenant { $null } -ModuleName Maester
+        Mock Get-PnPConnection { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Details
+        $Rendered = $Result | Out-String
+
+        @($Result.ServicesChecked) |
+            Should -Be @('All', 'ActiveDirectory', 'GitHub')
+
+        @(
+            'Azure'
+            'Azure DevOps'
+            'Microsoft Graph'
+            'Exchange Online'
+            'Exchange Online Protection'
+            'SharePoint Online'
+            'Microsoft Teams'
+            'Active Directory'
+            'GitHub'
+        ) | ForEach-Object {
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+        }
+
+        $Rendered.IndexOf('Active Directory') |
+            Should -BeGreaterThan $Rendered.IndexOf('Microsoft Teams')
+        $Rendered.IndexOf('GitHub') |
+            Should -BeGreaterThan $Rendered.IndexOf('Active Directory')
+        $Result.AllConnected | Should -BeFalse
+    }
+
+    It 'Keeps the default Boolean check scoped to Microsoft Graph' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-AzContext {
+            throw 'Azure should not be checked by the default Boolean call.'
+        } -ModuleName Maester
+
+        Test-MtConnection | Should -BeFalse
+
+        Should -Invoke Get-AzContext `
+            -ModuleName Maester `
+            -Times 0 `
+            -Exactly
+    }
+
+    It 'Shows each explicitly requested disconnected service and hides unrequested services' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph, GitHub -Details
+        $Rendered = $Result | Out-String
+
+        @($Result.ServicesChecked) | Should -Be @('Graph', 'GitHub')
+        $Rendered | Should -Match '(?m)^Microsoft Graph\s+: Not connected$'
+        $Rendered | Should -Match '(?m)^GitHub\s+: Not connected$'
+        $Rendered | Should -Not -Match '(?m)^Azure\s+:'
+    }
+
+    It 'Shows connection status for every service included by All' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+        }
+        Mock Get-AzContext { $null } -ModuleName Maester
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-MtExo { @() } -ModuleName Maester
+        Mock Get-CsTenant { $null } -ModuleName Maester
+        Mock Get-PnPConnection { $null } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service All -Details | Out-String
+
+        @(
+            'Azure'
+            'Azure DevOps'
+            'Microsoft Graph'
+            'Exchange Online'
+            'Exchange Online Protection'
+            'SharePoint Online'
+            'Microsoft Teams'
+        ) | ForEach-Object {
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+        }
+
+        $Rendered | Should -Not -Match '(?m)^Active Directory\s+:'
+        $Rendered | Should -Not -Match '(?m)^GitHub\s+:'
+    }
+
+    It 'Shows Exchange Online Protection for either service alias' -TestCases @(
+        @{ Service = 'EOP' }
+        @{ Service = 'SecurityCompliance' }
+    ) {
+        param($Service)
+
+        Mock Get-MtExo { @() } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service $Service -Details | Out-String
+
+        $Rendered |
+            Should -Match '(?m)^Exchange Online Protection\s+: Not connected$'
     }
 }
 
