@@ -17,8 +17,12 @@ Get-MgPolicyAuthorizationPolicy | Select-Object BlockMsolPowerShell
 ```
 3. If `BlockMsolPowerShell` is `$false`, block the legacy MSOnline PowerShell module:
 ```powershell
-$authPolicy = Get-MgPolicyAuthorizationPolicy
-Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BlockMsolPowerShell:$true
+# This example uses the cmdlet syntax published in the Microsoft Learn documentation:
+# https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.signins/update-mgpolicyauthorizationpolicy
+$params = @{
+    blockMsolPowerShell = $true
+}
+Update-MgPolicyAuthorizationPolicy -BodyParameter $params
 ```
 
 ### Related links
