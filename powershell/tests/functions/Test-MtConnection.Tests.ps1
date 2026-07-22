@@ -483,7 +483,7 @@ Describe 'Test-MtConnection — requested service formatting' {
         }
     }
 
-    It 'Shows a complete summary with opt-in services last for the default details request' {
+    It 'Shows a complete summary with Microsoft Graph first and opt-in services last' {
         InModuleScope Maester {
             $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
         }
@@ -499,24 +499,26 @@ Describe 'Test-MtConnection — requested service formatting' {
         @($Result.ServicesChecked) |
             Should -Be @('All', 'ActiveDirectory', 'GitHub')
 
-        @(
+        $ExpectedServiceOrder = @(
+            'Microsoft Graph'
             'Azure'
             'Azure DevOps'
-            'Microsoft Graph'
             'Exchange Online'
             'Exchange Online Protection'
             'SharePoint Online'
             'Microsoft Teams'
             'Active Directory'
             'GitHub'
-        ) | ForEach-Object {
+        )
+
+        $ExpectedServiceOrder | ForEach-Object {
             $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
         }
 
-        $Rendered.IndexOf('Active Directory') |
-            Should -BeGreaterThan $Rendered.IndexOf('Microsoft Teams')
-        $Rendered.IndexOf('GitHub') |
-            Should -BeGreaterThan $Rendered.IndexOf('Active Directory')
+        for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
+            $Rendered.IndexOf($ExpectedServiceOrder[$i]) |
+                Should -BeGreaterThan $Rendered.IndexOf($ExpectedServiceOrder[$i - 1])
+        }
         $Result.AllConnected | Should -BeFalse
     }
 
@@ -558,16 +560,23 @@ Describe 'Test-MtConnection — requested service formatting' {
 
         $Rendered = Test-MtConnection -Service All -Details | Out-String
 
-        @(
+        $ExpectedServiceOrder = @(
+            'Microsoft Graph'
             'Azure'
             'Azure DevOps'
-            'Microsoft Graph'
             'Exchange Online'
             'Exchange Online Protection'
             'SharePoint Online'
             'Microsoft Teams'
-        ) | ForEach-Object {
+        )
+
+        $ExpectedServiceOrder | ForEach-Object {
             $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+        }
+
+        for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
+            $Rendered.IndexOf($ExpectedServiceOrder[$i]) |
+                Should -BeGreaterThan $Rendered.IndexOf($ExpectedServiceOrder[$i - 1])
         }
 
         $Rendered | Should -Not -Match '(?m)^Active Directory\s+:'

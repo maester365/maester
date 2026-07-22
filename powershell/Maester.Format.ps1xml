@@ -14,41 +14,6 @@
               <ListItem>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Azure'
-                  </ScriptBlock>
-                </ItemSelectionCondition>
-                <Label>Azure</Label>
-                <ScriptBlock>
-                  if ($_.Azure) {
-                    "Connected`n" +
-                    "Tenant ID:    $($_.Azure.Tenant)`n" +
-                    "Environment:  $($_.Azure.Environment)`n" +
-                    "Account:      $($_.Azure.Account)`n" +
-                    "Subscription: $($_.Azure.Subscription)`n"
-                  } else {
-                    'Not connected'
-                  }
-                </ScriptBlock>
-              </ListItem>
-              <ListItem>
-                <ItemSelectionCondition>
-                  <ScriptBlock>
-                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'AzureDevOps'
-                  </ScriptBlock>
-                </ItemSelectionCondition>
-                <Label>Azure DevOps</Label>
-                <ScriptBlock>
-                  if ($_.AzureDevOps) {
-                    "Connected`n" +
-                    "Organization: $($_.AzureDevOps.Organization)`n"
-                  } else {
-                    'Not connected'
-                  }
-                </ScriptBlock>
-              </ListItem>
-              <ListItem>
-                <ItemSelectionCondition>
-                  <ScriptBlock>
                     $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Graph'
                   </ScriptBlock>
                 </ItemSelectionCondition>
@@ -79,6 +44,41 @@
                     } else {
                       "Missing scopes:  (scope evaluation failed)`n"
                     })
+                  } else {
+                    'Not connected'
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'Azure'
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>Azure</Label>
+                <ScriptBlock>
+                  if ($_.Azure) {
+                    "Connected`n" +
+                    "Tenant ID:    $($_.Azure.Tenant)`n" +
+                    "Environment:  $($_.Azure.Environment)`n" +
+                    "Account:      $($_.Azure.Account)`n" +
+                    "Subscription: $($_.Azure.Subscription)`n"
+                  } else {
+                    'Not connected'
+                  }
+                </ScriptBlock>
+              </ListItem>
+              <ListItem>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+                    $_.ServicesChecked -contains 'All' -or $_.ServicesChecked -contains 'AzureDevOps'
+                  </ScriptBlock>
+                </ItemSelectionCondition>
+                <Label>Azure DevOps</Label>
+                <ScriptBlock>
+                  if ($_.AzureDevOps) {
+                    "Connected`n" +
+                    "Organization: $($_.AzureDevOps.Organization)`n"
                   } else {
                     'Not connected'
                   }
