@@ -119,7 +119,7 @@ Describe 'Test-MtConnection — GitHub service' {
             $help = Get-Help Test-MtConnection -Detailed | Out-String
             $help | Should -Match 'not included in -Service All'
             $help | Should -Not -Match 'NotCalled sentinel'
-            $help | Should -Match 'must be checked explicitly'
+            $help | Should -Match 'current session state is included in the default -Details summary'
         }
     }
 
@@ -295,6 +295,306 @@ Describe 'Test-MtConnection — GitHub service' {
             $result.GitHub | Should -BeNullOrEmpty
             $result.ActiveDirectory | Should -BeNullOrEmpty
         }
+    }
+}
+
+Describe 'Test-MtConnection — Microsoft Graph scopes' {
+    It 'Returns included and missing Graph scopes when Details is requested' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId   = 'tenant-id'
+                Environment = 'Global'
+                Account    = 'admin@contoso.com'
+                AuthType   = 'Delegated'
+                Scopes     = @(
+                    'Directory.Read.All'
+                    'Policy.Read.ConditionalAccess'
+                )
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Policy.Read.ConditionalAccess'
+                'Reports.Read.All'
+            )
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        @($Result.Graph.Scopes).Count | Should -Be 2
+        $Result.Graph.Scopes | Should -Contain 'Directory.Read.All'
+        $Result.Graph.Scopes | Should -Contain 'Policy.Read.ConditionalAccess'
+
+        $Result.Graph.PSObject.Properties['MissingScopes'] |
+            Should -BeNullOrEmpty
+
+        $Result.GraphScopeDetails.EvaluationStatus | Should -Be 'Succeeded'
+        @($Result.GraphScopeDetails.IncludedScopes).Count | Should -Be 2
+        @($Result.GraphScopeDetails.RequiredScopes).Count | Should -Be 3
+        @($Result.GraphScopeDetails.MissingScopes).Count | Should -Be 1
+        $Result.GraphScopeDetails.MissingScopes | Should -Contain 'Reports.Read.All'
+
+        $Result.AllConnected | Should -BeTrue
+    }
+
+    It 'Treats a ReadWrite scope as satisfying the corresponding Read scope' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId   = 'tenant-id'
+                Environment = 'Global'
+                Account    = 'admin@contoso.com'
+                AuthType   = 'Delegated'
+                Scopes     = @(
+                    'Directory.Read.All'
+                    'Policy.ReadWrite.ConditionalAccess'
+                    'User.ReadWrite'
+                )
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Policy.Read.ConditionalAccess'
+                'User.Read'
+            )
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph.Scopes |
+            Should -Contain 'Policy.ReadWrite.ConditionalAccess'
+
+        $Result.Graph.Scopes |
+            Should -Contain 'User.ReadWrite'
+
+        $Result.GraphScopeDetails.MissingScopes |
+            Should -Not -Contain 'Policy.Read.ConditionalAccess'
+
+        $Result.GraphScopeDetails.MissingScopes |
+            Should -Not -Contain 'User.Read'
+    }
+
+    It 'Returns disconnected state when no Graph context exists' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph | Should -BeNullOrEmpty
+        $Result.AllConnected | Should -BeFalse
+    }
+
+    It 'Formats included and missing Graph scopes' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId    = 'tenant-id'
+                Environment = 'Global'
+                Account     = 'admin@contoso.com'
+                AuthType    = 'Delegated'
+                Scopes      = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            @(
+                'Directory.Read.All'
+                'Reports.Read.All'
+            )
+        } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service Graph -Details | Out-String
+
+        $Rendered | Should -Match 'Included scopes:\s+1'
+        $Rendered | Should -Match 'Directory\.Read\.All'
+        $Rendered | Should -Match 'Missing scopes:\s+1'
+        $Rendered | Should -Match 'Reports\.Read\.All'
+    }
+
+    It 'Does not evaluate Graph scopes when Details is not requested' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                Scopes = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            throw 'Scope evaluation should not run'
+        } -ModuleName Maester
+
+        Test-MtConnection -Service Graph |
+            Should -BeTrue
+
+        Should -Invoke Get-MtGraphScope `
+            -ModuleName Maester `
+            -Times 0 `
+            -Exactly
+    }
+
+    It 'Keeps the Graph connection details when scope evaluation fails' {
+        Mock Get-MgContext {
+            [PSCustomObject]@{
+                TenantId    = 'tenant-id'
+                Environment = 'Global'
+                Account     = 'admin@contoso.com'
+                AuthType    = 'Delegated'
+                Scopes      = @('Directory.Read.All')
+            }
+        } -ModuleName Maester
+
+        Mock Get-MtGraphScope {
+            throw 'Unable to retrieve required scopes'
+        } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph -Details
+
+        $Result.Graph | Should -Not -BeNullOrEmpty
+        $Result.Graph.TenantId | Should -Be 'tenant-id'
+        $Result.Graph.PSObject.Properties['MissingScopes'] |
+            Should -BeNullOrEmpty
+        $Result.GraphScopeDetails.EvaluationStatus | Should -Be 'Failed'
+        @($Result.GraphScopeDetails.IncludedScopes).Count | Should -Be 1
+        $Result.GraphScopeDetails.MissingScopes | Should -BeNullOrEmpty
+        $Result.AllConnected | Should -BeTrue
+
+        $Rendered = $Result | Out-String
+
+        $Rendered | Should -Match 'Missing scopes:\s+\(scope evaluation failed\)'
+
+        $Rendered | Should -Not -Match 'Missing scopes:\s+0'
+    }
+}
+
+Describe 'Test-MtConnection — requested service formatting' {
+    BeforeEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+    }
+
+    AfterEach {
+        InModuleScope Maester {
+            $__MtSession.ADConnection = $null
+            $__MtSession.GitHubConnection = $null
+            $__MtSession.AzureDevOpsConnectionCache = $null
+        }
+    }
+
+    It 'Shows a complete summary with Microsoft Graph first and opt-in services last' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+        }
+        Mock Get-AzContext { $null } -ModuleName Maester
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-MtExo { @() } -ModuleName Maester
+        Mock Get-CsTenant { $null } -ModuleName Maester
+        Mock Get-PnPConnection { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Details
+        $Rendered = $Result | Out-String
+
+        @($Result.ServicesChecked) |
+            Should -Be @('All', 'ActiveDirectory', 'GitHub')
+
+        $ExpectedServiceOrder = @(
+            'Microsoft Graph'
+            'Azure'
+            'Azure DevOps'
+            'Exchange Online'
+            'Exchange Online Protection'
+            'SharePoint Online'
+            'Microsoft Teams'
+            'Active Directory'
+            'GitHub'
+        )
+
+        $ExpectedServiceOrder | ForEach-Object {
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+        }
+
+        for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
+            $Rendered.IndexOf($ExpectedServiceOrder[$i]) |
+                Should -BeGreaterThan $Rendered.IndexOf($ExpectedServiceOrder[$i - 1])
+        }
+        $Result.AllConnected | Should -BeFalse
+    }
+
+    It 'Keeps the default Boolean check scoped to Microsoft Graph' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-AzContext {
+            throw 'Azure should not be checked by the default Boolean call.'
+        } -ModuleName Maester
+
+        Test-MtConnection | Should -BeFalse
+
+        Should -Invoke Get-AzContext `
+            -ModuleName Maester `
+            -Times 0 `
+            -Exactly
+    }
+
+    It 'Shows each explicitly requested disconnected service and hides unrequested services' {
+        Mock Get-MgContext { $null } -ModuleName Maester
+
+        $Result = Test-MtConnection -Service Graph, GitHub -Details
+        $Rendered = $Result | Out-String
+
+        @($Result.ServicesChecked) | Should -Be @('Graph', 'GitHub')
+        $Rendered | Should -Match '(?m)^Microsoft Graph\s+: Not connected$'
+        $Rendered | Should -Match '(?m)^GitHub\s+: Not connected$'
+        $Rendered | Should -Not -Match '(?m)^Azure\s+:'
+    }
+
+    It 'Shows connection status for every service included by All' {
+        InModuleScope Maester {
+            $__MtSession.AzureDevOpsConnectionCache = 'NotConnected'
+        }
+        Mock Get-AzContext { $null } -ModuleName Maester
+        Mock Get-MgContext { $null } -ModuleName Maester
+        Mock Get-MtExo { @() } -ModuleName Maester
+        Mock Get-CsTenant { $null } -ModuleName Maester
+        Mock Get-PnPConnection { $null } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service All -Details | Out-String
+
+        $ExpectedServiceOrder = @(
+            'Microsoft Graph'
+            'Azure'
+            'Azure DevOps'
+            'Exchange Online'
+            'Exchange Online Protection'
+            'SharePoint Online'
+            'Microsoft Teams'
+        )
+
+        $ExpectedServiceOrder | ForEach-Object {
+            $Rendered | Should -Match "(?m)^$([regex]::Escape($_))\s+: Not connected$"
+        }
+
+        for ($i = 1; $i -lt $ExpectedServiceOrder.Count; $i++) {
+            $Rendered.IndexOf($ExpectedServiceOrder[$i]) |
+                Should -BeGreaterThan $Rendered.IndexOf($ExpectedServiceOrder[$i - 1])
+        }
+
+        $Rendered | Should -Not -Match '(?m)^Active Directory\s+:'
+        $Rendered | Should -Not -Match '(?m)^GitHub\s+:'
+    }
+
+    It 'Shows Exchange Online Protection for either service alias' -TestCases @(
+        @{ Service = 'EOP' }
+        @{ Service = 'SecurityCompliance' }
+    ) {
+        param($Service)
+
+        Mock Get-MtExo { @() } -ModuleName Maester
+
+        $Rendered = Test-MtConnection -Service $Service -Details | Out-String
+
+        $Rendered |
+            Should -Match '(?m)^Exchange Online Protection\s+: Not connected$'
     }
 }
 
