@@ -12,7 +12,7 @@
     Active Directory and GitHub require an explicit connection before testing; unlike other services they have no auto-detection. Active Directory is not included in -Service All. GitHub is not included in -Service All. Each service must be checked explicitly.
 
     .PARAMETER Details
-    Return the full details of all connections instead of just a boolean value.
+    Return the full details of all connections instead of just a boolean value. Microsoft Graph details include the scopes in the current context and any required Maester scopes that are missing.
 
     .EXAMPLE
     Test-MtConnection -Service All
@@ -65,6 +65,7 @@
             AzureDevOps              = $null
             GitHub                   = $null
             Graph                    = $null
+            GraphScopeDetails        = $null
             ExchangeOnline           = $null
             ExchangeOnlineProtection = $null
             SharePointOnline         = $null
@@ -119,36 +120,40 @@
 
             try {
                 $MtConnections.Graph = Get-MgContext
-                $IsConnected = $null -ne $MtConnections.Graph
+                $IsConnected = $null -ne ($MtConnections.Graph)
             } catch {
                 $MtConnections.Graph = $null
                 Write-Debug "Graph connection check failed: $($_.Exception.Message)"
             }
 
             if ($IsConnected -and $Details.IsPresent) {
+                $IncludedScopes = @()
+
                 try {
+                    $ScopeComparison = Compare-MtGraphScope `
+                        -CurrentScopes $MtConnections.Graph.Scopes
+                    $IncludedScopes = $ScopeComparison.IncludedScopes
+
                     $RequiredScopes = @(Get-MtGraphScope)
-                    $CurrentScopes = @(
-                        $MtConnections.Graph.Scopes |
-                            Where-Object { $_ } |
-                            Sort-Object -Unique
-                    )
+                    $ScopeComparison = Compare-MtGraphScope `
+                        -CurrentScopes $IncludedScopes `
+                        -RequiredScopes $RequiredScopes
 
-                    $MissingScopes = @(
-                        $RequiredScopes |
-                            Where-Object {
-                                $CurrentScopes -notcontains $_ -and
-                                $CurrentScopes -notcontains ($_ -replace '\.Read\b', '.ReadWrite')
-                            } |
-                            Sort-Object -Unique
-                    )
-
-                    $MtConnections.Graph |
-                        Add-Member `
-                            -NotePropertyName MissingScopes `
-                            -NotePropertyValue $MissingScopes `
-                            -Force
+                    $MtConnections.GraphScopeDetails = [PSCustomObject]@{
+                        PSTypeName       = 'Maester.GraphScopeDetails'
+                        EvaluationStatus = 'Succeeded'
+                        IncludedScopes   = $ScopeComparison.IncludedScopes
+                        RequiredScopes   = $ScopeComparison.RequiredScopes
+                        MissingScopes    = $ScopeComparison.MissingScopes
+                    }
                 } catch {
+                    $MtConnections.GraphScopeDetails = [PSCustomObject]@{
+                        PSTypeName       = 'Maester.GraphScopeDetails'
+                        EvaluationStatus = 'Failed'
+                        IncludedScopes   = $IncludedScopes
+                        RequiredScopes   = $null
+                        MissingScopes    = $null
+                    }
                     Write-Debug "Graph scope evaluation failed: $($_.Exception.Message)"
                 }
             }

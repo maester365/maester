@@ -327,8 +327,14 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Result.Graph.Scopes | Should -Contain 'Directory.Read.All'
         $Result.Graph.Scopes | Should -Contain 'Policy.Read.ConditionalAccess'
 
-        @($Result.Graph.MissingScopes).Count | Should -Be 1
-        $Result.Graph.MissingScopes | Should -Contain 'Reports.Read.All'
+        $Result.Graph.PSObject.Properties['MissingScopes'] |
+            Should -BeNullOrEmpty
+
+        $Result.GraphScopeDetails.EvaluationStatus | Should -Be 'Succeeded'
+        @($Result.GraphScopeDetails.IncludedScopes).Count | Should -Be 2
+        @($Result.GraphScopeDetails.RequiredScopes).Count | Should -Be 3
+        @($Result.GraphScopeDetails.MissingScopes).Count | Should -Be 1
+        $Result.GraphScopeDetails.MissingScopes | Should -Contain 'Reports.Read.All'
 
         $Result.AllConnected | Should -BeTrue
     }
@@ -364,10 +370,10 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
         $Result.Graph.Scopes |
             Should -Contain 'User.ReadWrite'
 
-        $Result.Graph.MissingScopes |
+        $Result.GraphScopeDetails.MissingScopes |
             Should -Not -Contain 'Policy.Read.ConditionalAccess'
 
-        $Result.Graph.MissingScopes |
+        $Result.GraphScopeDetails.MissingScopes |
             Should -Not -Contain 'User.Read'
     }
 
@@ -445,6 +451,11 @@ Describe 'Test-MtConnection — Microsoft Graph scopes' {
 
         $Result.Graph | Should -Not -BeNullOrEmpty
         $Result.Graph.TenantId | Should -Be 'tenant-id'
+        $Result.Graph.PSObject.Properties['MissingScopes'] |
+            Should -BeNullOrEmpty
+        $Result.GraphScopeDetails.EvaluationStatus | Should -Be 'Failed'
+        @($Result.GraphScopeDetails.IncludedScopes).Count | Should -Be 1
+        $Result.GraphScopeDetails.MissingScopes | Should -BeNullOrEmpty
         $Result.AllConnected | Should -BeTrue
 
         $Rendered = $Result | Out-String

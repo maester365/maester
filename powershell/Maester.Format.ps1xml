@@ -58,17 +58,9 @@
                 <Label>Microsoft Graph</Label>
                 <ScriptBlock>
                   if ($_.Graph) {
-                    $IncludedScopes = @(
-                      $_.Graph.Scopes |
-                        Where-Object { $_ } |
-                        Sort-Object -Unique
-                    )
-
-                    $MissingScopes = @(
-                      $_.Graph.MissingScopes |
-                        Where-Object { $_ } |
-                        Sort-Object -Unique
-                    )
+                    $ScopeDetails = $_.GraphScopeDetails
+                    $IncludedScopes = @($ScopeDetails.IncludedScopes)
+                    $MissingScopes = @($ScopeDetails.MissingScopes)
 
                     "Connected`n" +
                     "Tenant ID:       $($_.Graph.TenantId)`n" +
@@ -80,7 +72,7 @@
                     } else {
                       ''
                     }) +
-                    $(if ($null -ne $_.Graph.PSObject.Properties['MissingScopes']) {
+                    $(if ($ScopeDetails.EvaluationStatus -eq 'Succeeded') {
                       "Missing scopes:  $($MissingScopes.Count)`n" +
                       $(if ($MissingScopes.Count -gt 0) {
                         "Missing:         $($MissingScopes -join ', ')`n"
