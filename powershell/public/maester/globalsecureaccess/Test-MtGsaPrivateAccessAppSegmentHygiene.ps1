@@ -12,7 +12,11 @@
         - Wildcard FQDN (destinationHost contains '*').
         - Single-label FQDN (destinationType 'fqdn' with no dot, e.g. 'fileserver') - relies on the
           synthetic Global Secure Access suffix and carries a Kerberos SPN risk.
-        - All-IP destinations (0.0.0.0/0 or ::/0).
+        - Broad IP ranges (near-default routes) - the portal's broadest selectable mask is /1, so an
+          exact 0.0.0.0/0 rarely appears; segments broader than /16 are flagged instead, so a /16 -
+          common for 10.x networks - still passes. (Global Secure Access is IPv4-only, so IPv6 segments
+          are not evaluated.) Finer least-privilege CIDR sweeps (e.g. < /24) are intentionally left to
+          the overlapping ZTA segment check this will be merged with.
 
     .EXAMPLE
         Test-MtGsaPrivateAccessAppSegmentHygiene
@@ -24,7 +28,10 @@
     #>
     [CmdletBinding()]
     [OutputType([bool])]
-    param ()
+    param (
+        # A CIDR segment whose prefix length is *below* this value (broader than /16) is flagged as a broad / near-default route. A /16 - common for 10.x networks - and narrower pass. (GSA is IPv4-only, so IPv6 segments are not evaluated.)
+        [int] $BroadIPv4MaskThreshold = 16
+    )
 
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
@@ -55,8 +62,12 @@
                 $reason = 'wildcard FQDN'
             } elseif ($destinationType -eq 'fqdn' -and -not $destinationHost.Contains('.')) {
                 $reason = 'single-label FQDN (synthetic-suffix / Kerberos SPN risk)'
-            } elseif ($destinationHost -in @('0.0.0.0/0', '::/0')) {
-                $reason = 'all-IP destination'
+            } elseif ($destinationHost -match '/(\d+)\s*$' -and -not $destinationHost.Contains(':')) {
+                # GSA is IPv4-only; IPv6 segments are not evaluated.
+                $prefix = [int]$Matches[1]
+                if ($prefix -lt $BroadIPv4MaskThreshold) {
+                    $reason = if ($prefix -eq 0) { 'all-IP destination (default route)' } else { "broad IP range (/$prefix - near-default route)" }
+                }
             }
 
             if ($reason) {

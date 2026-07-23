@@ -49,29 +49,35 @@
             )
         }
 
-        $uncovered = @()
+        $coverage = @()
         foreach ($app in $apps) {
-            $isCovered = $false
+            $coveringPolicy = $null
             foreach ($policy in $compliancePolicies) {
                 $includeApplications = @($policy.conditions.applications.includeApplications)
                 $excludeApplications = @($policy.conditions.applications.excludeApplications)
                 if (($includeApplications -contains 'All' -or $includeApplications -contains $app.appId) -and ($excludeApplications -notcontains $app.appId)) {
-                    $isCovered = $true
+                    # Note whether coverage comes from an app-specific target or a broad 'All cloud apps' policy,
+                    # so a surprising pass (app excluded from one policy but still swept in by a broad one) is visible.
+                    $scope = if ($includeApplications -contains $app.appId) { 'app-specific' } else { 'All cloud apps' }
+                    $coveringPolicy = "$($policy.displayName) ($scope)"
                     break
                 }
             }
-            if (-not $isCovered) {
-                $uncovered += $app
-            }
+            $coverage += [pscustomobject]@{ App = $app.displayName; CoveredBy = $coveringPolicy }
         }
 
+        $uncovered = @($coverage | Where-Object { -not $_.CoveredBy })
         $result = ($uncovered.Count -eq 0)
         if ($result) {
             $testResult = "Well done. All Entra Private Access applications are covered by a Conditional Access policy that requires a managed device.`n`n"
+            $testResult += "| Application | Covered by |`n| --- | --- |`n"
+            foreach ($entry in $coverage) {
+                $testResult += "| $($entry.App) | $($entry.CoveredBy) |`n"
+            }
         } else {
             $testResult = "These Entra Private Access applications are **not** covered by any enabled managed-device Conditional Access policy:`n`n"
-            foreach ($app in $uncovered) {
-                $testResult += "* $($app.displayName)`n"
+            foreach ($entry in $uncovered) {
+                $testResult += "* $($entry.App)`n"
             }
         }
 

@@ -3,7 +3,7 @@ Entra Private Access application segments should target specific destinations. B
 * **`dnsSuffix`** - a broad namespace catch-all that commonly masks a missing or incorrect Private DNS suffix.
 * **Wildcard FQDN** (for example `*.contoso.com`).
 * **Single-label FQDN** (for example `fileserver`) - relies on the synthetic Global Secure Access suffix and carries a Kerberos SPN risk.
-* **All-IP** destinations (`0.0.0.0/0`, `::/0`).
+* **Broad IP ranges** (near-default routes). The portal's broadest selectable mask is `/1`, so segments *broader than* `/16` are flagged - a `/16`, common for 10.x networks, still passes. Global Secure Access is IPv4-only, so IPv6 is not evaluated. Finer least-privilege CIDR checks are left to the overlapping ZTA segment check.
 
 #### Remediation action:
 

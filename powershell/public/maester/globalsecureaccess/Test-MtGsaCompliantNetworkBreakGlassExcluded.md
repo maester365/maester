@@ -1,6 +1,6 @@
 A Conditional Access policy that enforces the Global Secure Access **Compliant Network** control blocks access when the session is not on a compliant network. If such a policy does not exclude the emergency access (break-glass) accounts, it can lock out the very accounts needed to recover the tenant during an outage or misconfiguration.
 
-Every Compliant Network enforcement policy must therefore exclude all break-glass accounts (or the break-glass group). Emergency access accounts are read from the `EmergencyAccessAccounts` setting in `maester-config.json`.
+Every Compliant Network enforcement policy must therefore exclude all break-glass accounts - either directly, or via a group they belong to (nested group membership is honored, as Conditional Access evaluates it). Emergency access accounts are read from the `EmergencyAccessAccounts` setting in `maester-config.json`.
 
 #### Remediation action:
 

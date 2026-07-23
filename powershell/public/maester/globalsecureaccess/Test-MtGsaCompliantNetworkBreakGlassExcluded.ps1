@@ -46,24 +46,51 @@
             Add-MtTestResultDetail -Result 'No emergency access accounts are configured in maester-config.json (EmergencyAccessAccounts), so break-glass exclusion cannot be verified.'
             return $null
         }
-        $emergencyAccountIds = @($emergencyAccounts.ObjectId)
+
+        # Resolve the groups each break-glass *user* belongs to (transitively), so an account excluded
+        # via group membership - not just a direct user/group exclusion - is correctly recognised. This
+        # mirrors how Conditional Access evaluates exclusions, where nested group membership counts.
+        $accountGroupIds = @{}
+        foreach ($account in $emergencyAccounts) {
+            $groupIds = @()
+            if ($account.Type -eq 'user') {
+                try {
+                    $memberOf = Invoke-MtGraphRequest -RelativeUri "users/$($account.ObjectId)/transitiveMemberOf" -Select 'id' -ErrorAction Stop
+                    $groupIds = @($memberOf.id)
+                } catch {
+                    Write-Verbose "Could not resolve group membership for break-glass account $($account.ObjectId): $($_.Exception.Message)"
+                }
+            }
+            $accountGroupIds[$account.ObjectId] = $groupIds
+        }
 
         $policiesMissingExclusion = @()
         foreach ($policy in $compliantNetworkPolicies) {
-            $excludedPrincipals = @($policy.conditions.users.excludeUsers) + @($policy.conditions.users.excludeGroups)
-            $isCovered = @($emergencyAccountIds | Where-Object { $_ -in $excludedPrincipals }).Count -eq $emergencyAccountIds.Count
-            if (-not $isCovered) {
-                $policiesMissingExclusion += $policy
+            $excludeUsers  = @($policy.conditions.users.excludeUsers)
+            $excludeGroups = @($policy.conditions.users.excludeGroups)
+
+            $uncovered = @()
+            foreach ($account in $emergencyAccounts) {
+                $id = $account.ObjectId
+                $directlyExcluded = ($id -in $excludeUsers) -or ($id -in $excludeGroups)
+                $excludedViaGroup = @($accountGroupIds[$id] | Where-Object { $_ -in $excludeGroups }).Count -gt 0
+                if (-not ($directlyExcluded -or $excludedViaGroup)) {
+                    $uncovered += $account.DisplayName
+                }
+            }
+
+            if ($uncovered.Count -gt 0) {
+                $policiesMissingExclusion += [pscustomobject]@{ DisplayName = $policy.displayName; Uncovered = ($uncovered -join ', ') }
             }
         }
 
         $result = ($policiesMissingExclusion.Count -eq 0)
         if ($result) {
-            $testResult = "Well done. Every Compliant Network enforcement policy excludes the emergency access (break-glass) accounts.`n`n"
+            $testResult = "Well done. Every Compliant Network enforcement policy excludes the emergency access (break-glass) accounts (directly or via an excluded group).`n`n"
         } else {
-            $testResult = "These Compliant Network enforcement policies do **not** exclude all break-glass accounts (lock-out risk):`n`n"
+            $testResult = "These Compliant Network enforcement policies do **not** exclude all break-glass accounts (directly or via an excluded group) - lock-out risk:`n`n| Policy | Not excluded |`n| --- | --- |`n"
             foreach ($policy in $policiesMissingExclusion) {
-                $testResult += "* $($policy.displayName)`n"
+                $testResult += "| $($policy.DisplayName) | $($policy.Uncovered) |`n"
             }
         }
 
