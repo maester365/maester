@@ -15,6 +15,7 @@
         Returns the enabled Conditional Access policies that enforce the Compliant Network control.
     #>
     [CmdletBinding()]
+    [OutputType([Object[]])]
     param ()
 
     $namedLocations = Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/namedLocations' -ApiVersion beta
