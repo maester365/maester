@@ -1544,6 +1544,11 @@
       "Title": "Block legacy MSOnline (MSOL) PowerShell module"
     },
     {
+      "Id": "MT.1186",
+      "Severity": "High",
+      "Title": "High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users."
+    },
+    {
       "Id": "MT.1178",
       "Severity": "High",
       "Title": "Ensure ASR Rules are configured correctly"
