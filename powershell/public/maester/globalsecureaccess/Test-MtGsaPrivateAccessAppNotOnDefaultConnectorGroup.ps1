@@ -39,20 +39,12 @@
             return $null
         }
 
+        # Resolve each app and its connector group. Unresolved apps or Graph failures propagate to the
+        # outer catch (indeterminate / skip) rather than being silently treated as "not on Default".
         $onDefault = @()
         foreach ($app in $apps) {
             $appObject = Invoke-MtGraphRequest -RelativeUri 'applications' -Filter "appId eq '$($app.appId)'" -ApiVersion beta | Select-Object -First 1
-            if (-not $appObject) {
-                continue
-            }
-
-            $connectorGroup = $null
-            try {
-                $connectorGroup = Invoke-MtGraphRequest -RelativeUri "applications/$($appObject.id)/connectorGroup" -ApiVersion beta -ErrorAction Stop
-            } catch {
-                # An app without a resolvable connector group is not treated as a finding here.
-                $connectorGroup = $null
-            }
+            $connectorGroup = Invoke-MtGraphRequest -RelativeUri "applications/$($appObject.id)/connectorGroup" -ApiVersion beta -ErrorAction Stop
 
             if ($connectorGroup -and $connectorGroup.isDefault -eq $true) {
                 $onDefault += $app

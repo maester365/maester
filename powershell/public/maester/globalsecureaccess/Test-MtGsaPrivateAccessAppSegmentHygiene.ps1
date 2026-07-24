@@ -44,40 +44,55 @@
     }
 
     try {
-        $segments = Invoke-MtGraphRequest -RelativeUri 'onPremisesPublishingProfiles/applicationProxy/applicationSegments' -ApiVersion beta -QueryParameters @{ '$expand' = 'application' }
-        if (-not $segments) {
-            Add-MtTestResultDetail -Result 'No Entra Private Access application segments were found in this tenant.'
+        $apps = Get-MtPrivateAccessApplication
+        if (-not $apps) {
+            Add-MtTestResultDetail -Result 'No Entra Private Access applications were found in this tenant.'
             return $null
         }
 
+        # Read each application's segments from its own onPremisesPublishing configuration (the documented
+        # per-app endpoint). Graph failures propagate to the outer catch (indeterminate / skip).
         $riskySegments = @()
-        foreach ($segment in $segments) {
-            $destinationHost = [string]$segment.destinationHost
-            $destinationType = [string]$segment.destinationType
-            $reason = $null
+        $segmentCount = 0
+        foreach ($app in $apps) {
+            $appObject = Invoke-MtGraphRequest -RelativeUri 'applications' -Filter "appId eq '$($app.appId)'" -ApiVersion beta | Select-Object -First 1
+            if (-not $appObject) { continue }
 
-            if ($destinationType -eq 'dnsSuffix') {
-                $reason = 'dnsSuffix (broad namespace catch-all; can mask a missing Private DNS suffix)'
-            } elseif ($destinationHost.Contains('*')) {
-                $reason = 'wildcard FQDN'
-            } elseif ($destinationType -eq 'fqdn' -and -not $destinationHost.Contains('.')) {
-                $reason = 'single-label FQDN (synthetic-suffix / Kerberos SPN risk)'
-            } elseif ($destinationHost -match '/(\d+)\s*$' -and -not $destinationHost.Contains(':')) {
-                # GSA is IPv4-only; IPv6 segments are not evaluated.
-                $prefix = [int]$Matches[1]
-                if ($prefix -lt $BroadIPv4MaskThreshold) {
-                    $reason = if ($prefix -eq 0) { 'all-IP destination (default route)' } else { "broad IP range (/$prefix - near-default route)" }
+            $segments = Invoke-MtGraphRequest -RelativeUri "applications/$($appObject.id)/onPremisesPublishing/segmentsConfiguration/microsoft.graph.ipSegmentConfiguration/applicationSegments" -ApiVersion beta -ErrorAction Stop
+            foreach ($segment in $segments) {
+                $segmentCount++
+                $destinationHost = [string]$segment.destinationHost
+                $destinationType = [string]$segment.destinationType
+                $reason = $null
+
+                if ($destinationType -eq 'dnsSuffix') {
+                    $reason = 'dnsSuffix (broad namespace catch-all; can mask a missing Private DNS suffix)'
+                } elseif ($destinationHost.Contains('*')) {
+                    $reason = 'wildcard FQDN'
+                } elseif ($destinationType -eq 'fqdn' -and -not $destinationHost.Contains('.')) {
+                    $reason = 'single-label FQDN (synthetic-suffix / Kerberos SPN risk)'
+                } elseif ($destinationHost -match '/(\d+)\s*$' -and -not $destinationHost.Contains(':')) {
+                    # GSA is IPv4-only; IPv6 segments are not evaluated.
+                    $prefix = [int]$Matches[1]
+                    if ($prefix -lt $BroadIPv4MaskThreshold) {
+                        $reason = if ($prefix -eq 0) { 'all-IP destination (default route)' } else { "broad IP range (/$prefix - near-default route)" }
+                    }
+                }
+
+                if ($reason) {
+                    $riskySegments += [pscustomobject]@{
+                        Application = $app.displayName
+                        Destination = $destinationHost
+                        Type        = $destinationType
+                        Reason      = $reason
+                    }
                 }
             }
+        }
 
-            if ($reason) {
-                $riskySegments += [pscustomobject]@{
-                    Application = $segment.application.displayName
-                    Destination = $destinationHost
-                    Type        = $destinationType
-                    Reason      = $reason
-                }
-            }
+        if ($segmentCount -eq 0) {
+            Add-MtTestResultDetail -Result 'No Entra Private Access application segments were found in this tenant.'
+            return $null
         }
 
         $result = ($riskySegments.Count -eq 0)

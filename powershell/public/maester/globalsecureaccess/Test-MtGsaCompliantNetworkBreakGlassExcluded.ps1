@@ -47,21 +47,16 @@
             return $null
         }
 
-        # Resolve the groups each break-glass *user* belongs to (transitively), so an account excluded
-        # via group membership - not just a direct user/group exclusion - is correctly recognised. This
-        # mirrors how Conditional Access evaluates exclusions, where nested group membership counts.
+        # Resolve the parent groups each break-glass account belongs to (transitively), so an account
+        # excluded via (nested) group membership - not just a direct user/group exclusion - is correctly
+        # recognised. Both user and group accounts are resolved (a break-glass group can itself be a
+        # member of an excluded group). Graph failures propagate to the outer catch so the check reports
+        # an indeterminate result rather than a false pass.
         $accountGroupIds = @{}
         foreach ($account in $emergencyAccounts) {
-            $groupIds = @()
-            if ($account.Type -eq 'user') {
-                try {
-                    $memberOf = Invoke-MtGraphRequest -RelativeUri "users/$($account.ObjectId)/transitiveMemberOf" -Select 'id' -ErrorAction Stop
-                    $groupIds = @($memberOf.id)
-                } catch {
-                    Write-Verbose "Could not resolve group membership for break-glass account $($account.ObjectId): $($_.Exception.Message)"
-                }
-            }
-            $accountGroupIds[$account.ObjectId] = $groupIds
+            $endpoint = if ($account.Type -eq 'group') { "groups/$($account.ObjectId)/transitiveMemberOf" } else { "users/$($account.ObjectId)/transitiveMemberOf" }
+            $memberOf = Invoke-MtGraphRequest -RelativeUri $endpoint -Select 'id' -ErrorAction Stop
+            $accountGroupIds[$account.ObjectId] = @($memberOf.id)
         }
 
         $policiesMissingExclusion = @()

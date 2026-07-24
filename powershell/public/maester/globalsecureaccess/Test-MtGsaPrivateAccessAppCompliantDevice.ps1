@@ -42,10 +42,17 @@
             return $null
         }
 
+        # A policy only *requires* a managed device when a managed-device control is on every satisfiable
+        # grant path. With operator 'AND' a present managed-device control is always required; with 'OR'
+        # any single control satisfies the grant, so managed device is only guaranteed when every control
+        # is a managed-device control (no bypass such as 'mfa').
+        $managedDeviceControls = @('compliantDevice', 'domainJoinedDevice')
         $compliancePolicies = Get-MtConditionalAccessPolicy | Where-Object {
-            $_.state -eq 'enabled' -and (
-                $_.grantControls.builtInControls -contains 'compliantDevice' -or
-                $_.grantControls.builtInControls -contains 'domainJoinedDevice'
+            $controls = @($_.grantControls.builtInControls)
+            $hasManagedDevice  = @($controls | Where-Object { $_ -in $managedDeviceControls }).Count -gt 0
+            $onlyManagedDevice = ($controls.Count -gt 0) -and (@($controls | Where-Object { $_ -notin $managedDeviceControls }).Count -eq 0)
+            $_.state -eq 'enabled' -and $hasManagedDevice -and (
+                ($_.grantControls.operator -eq 'AND') -or $onlyManagedDevice
             )
         }
 

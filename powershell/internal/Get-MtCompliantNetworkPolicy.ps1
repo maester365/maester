@@ -25,12 +25,14 @@
         return @()
     }
 
+    # Require the documented Compliant Network enforcement pattern: include All locations, exclude the
+    # Compliant Network named location, and block. A policy that merely references the CN location in a
+    # narrower scope is not this pattern and must not be evaluated for break-glass exclusions.
     return Get-MtConditionalAccessPolicy | Where-Object {
+        $locations = $_.conditions.locations
         $_.state -eq 'enabled' -and
         $_.grantControls.builtInControls -contains 'block' -and
-        (
-            @($_.conditions.locations.includeLocations | Where-Object { $_ -in $compliantNetworkIds }).Count -gt 0 -or
-            @($_.conditions.locations.excludeLocations | Where-Object { $_ -in $compliantNetworkIds }).Count -gt 0
-        )
+        $locations.includeLocations -contains 'All' -and
+        @($locations.excludeLocations | Where-Object { $_ -in $compliantNetworkIds }).Count -gt 0
     }
 }

@@ -24,6 +24,7 @@
 
     $guidPattern = '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
     $resolved = @()
+    $resolutionFailures = @()
 
     foreach ($account in $emergencyAccessAccounts) {
         $identifier = if ($account.Id) { $account.Id } else { $account.UserPrincipalName }
@@ -42,7 +43,7 @@
                     $object = Invoke-MtGraphRequest -RelativeUri "users/$identifier" -Select id, displayName -ErrorAction Stop
                 }
             } else {
-                Write-Warning "Invalid identifier format for emergency access account: $identifier"
+                $resolutionFailures += "$type`: $identifier (invalid identifier format)"
                 continue
             }
 
@@ -52,10 +53,19 @@
                     DisplayName = $object.displayName
                     Type        = $type
                 }
+            } else {
+                $resolutionFailures += "$type`: $identifier (not found)"
             }
         } catch {
-            Write-Warning "Could not resolve emergency access $type`: $identifier. $($_.Exception.Message)"
+            $resolutionFailures += "$type`: $identifier ($($_.Exception.Message))"
         }
+    }
+
+    # A configured break-glass account that cannot be resolved must not be silently dropped - the
+    # consuming check would then verify only the accounts that happened to resolve (or skip entirely),
+    # which can hide a real lock-out risk. Fail so the check reports an indeterminate result instead.
+    if ($resolutionFailures.Count -gt 0) {
+        throw "Could not resolve configured emergency access object(s): $($resolutionFailures -join '; ')"
     }
 
     return $resolved | Sort-Object Type, ObjectId -Unique

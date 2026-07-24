@@ -24,13 +24,10 @@
         [Switch]$DisableCache
     )
 
-    $privateAccessTags = @('IsAccessibleViaZTNAClient', 'NetworkAccessQuickAccessApplication')
-
     Write-Verbose "Getting Global Secure Access Private Access and Quick Access applications by service principal tag."
-    $servicePrincipals = Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -ApiVersion beta -DisableCache:$DisableCache
-
-    return $servicePrincipals | Where-Object {
-        $servicePrincipal = $_
-        @($privateAccessTags | Where-Object { $servicePrincipal.tags -contains $_ }).Count -gt 0
-    }
+    # Filter server-side by the two known Global Secure Access tags instead of enumerating every service
+    # principal in the tenant. tags/any(...) is an advanced query, so $count=true is required (the
+    # ConsistencyLevel: eventual header is sent by Invoke-MtGraphRequest by default).
+    $filter = "tags/any(t:t eq 'IsAccessibleViaZTNAClient') or tags/any(t:t eq 'NetworkAccessQuickAccessApplication')"
+    return Invoke-MtGraphRequest -RelativeUri 'servicePrincipals' -Filter $filter -Select 'id,appId,displayName,tags' -QueryParameters @{ '$count' = 'true' } -ApiVersion beta -DisableCache:$DisableCache
 }
