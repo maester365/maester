@@ -1,28 +1,30 @@
-# Maester action tenant smoke test
+# Demo tenant Invoke-Maester smoke test
 
 `maester-action-smoke-test.yaml` exercises the published standard
 `maester365/maester-action` on Linux, Windows, and macOS against a real
-Microsoft 365 tenant. It runs one fast, platform-neutral Graph test (`MT.1068`)
-and verifies that Maester produced a complete result for the configured tenant.
-Each operating system's self-contained HTML report is then written directly to
-the private `maester365/maester-smoke-reports` repository for core-maintainer
+Microsoft 365 demo tenant. The same workflow supports two run types:
+
+- **Quick** runs only the fast, platform-neutral Graph check `MT.1068`.
+- **Full** runs all public Graph checks. Exchange, Teams, private, preview, and
+  long-running tests remain disabled.
+
+Each operating system's self-contained HTML report is written directly to the
+private `maester365/maester-smoke-reports` repository for core-maintainer
 review.
 
-The check intentionally accepts either `Passed` or `Failed` for `MT.1068`.
-The test tenant's policy state is not a release gate. Authentication errors,
-Graph errors, skipped/not-run tests, missing results, or the wrong test/tenant/OS
-fail the workflow. Maester may emit more than one result instance for the
-selected check; every executed result must still be `MT.1068` and must complete
-normally.
+The gate intentionally accepts either `Passed` or `Failed` test results because
+the demo tenant's security posture is not a release gate. Authentication,
+Microsoft Graph, action, result-integrity, tenant, or runner errors fail the
+workflow. The full run also accepts intentionally skipped tests but requires at
+least one public Graph check to complete.
 
 ## Protected environment configuration
 
 In `maester365/maester`, create a GitHub Actions environment named exactly
-`maester-smoke-test`. This is the credentials environment used by automatic
-trusted-branch runs. Configure it before adding credentials:
+`maester-smoke-test`. Configure it before adding credentials:
 
-1. Do not configure required reviewers. Runs from `main`, including every merge,
-   must start automatically.
+1. Do not configure required reviewers. Approved-pull-request quick runs and
+   every full run after a merge to `main` must start automatically.
 2. Disable **Allow administrators to bypass configured protection rules**.
 3. Restrict deployment branches and tags to the `main` branch.
 
@@ -30,8 +32,8 @@ Create these **environment secrets** on `maester-smoke-test`:
 
 | Secret | Value |
 | --- | --- |
-| `MAESTER_SMOKE_TENANT_ID` | The Microsoft Entra **Directory (tenant) ID** (GUID) for the test tenant. For the `elapora.com` tenant, use its directory ID rather than the domain name. |
-| `MAESTER_SMOKE_CLIENT_ID` | The **Application (client) ID** (GUID) of the dedicated Entra app registration in that tenant. |
+| `MAESTER_SMOKE_TENANT_ID` | The Microsoft Entra **Directory (tenant) ID** (GUID) for the demo tenant. For the `elapora.com` tenant, use `0817c655-a853-4d8f-9723-3a333b5b9235`. |
+| `MAESTER_SMOKE_CLIENT_ID` | The **Application (client) ID** (GUID) of the dedicated Entra app registration. |
 | `MAESTER_REPORTS_APP_PRIVATE_KEY` | The PEM private key generated for the dedicated `do-not-delete-maester-reports` GitHub App. |
 
 Create this **environment variable** on `maester-smoke-test`:
@@ -41,27 +43,15 @@ Create this **environment variable** on `maester-smoke-test`:
 | `MAESTER_REPORTS_APP_CLIENT_ID` | The GitHub App's Client ID. |
 
 Do not create repository-level copies of these secrets, and remove any that
-already exist there. Do not create a client secret. The published action
-supports workload identity federation and authenticates with GitHub's
-short-lived OIDC token. The GitHub App private key is used only to mint a
-short-lived installation token scoped to the private report repository.
+already exist there. Do not create a client secret. The published action uses
+workload identity federation and GitHub's short-lived OIDC token. The GitHub
+App private key is used only to mint a short-lived installation token scoped to
+the private report repository.
 
-Create a second environment named exactly `maester-smoke-test-pr`. This is an
-approval-only gate and must not contain secrets or variables:
-
-1. Add `maester365/core-module`, the core Maester maintainer GitHub team, as
-   the only required reviewer. Do not add outside collaborators, bots, or broad
-   contributor teams.
-2. Disable **Prevent self-review** so an authorized core maintainer can approve
-   a pull request smoke run they initiated.
-3. Disable **Allow administrators to bypass configured protection rules**.
-4. Restrict deployment branches and tags to the `main` branch.
-
-GitHub evaluates `maester-smoke-test-pr` before starting the approval job for a
-pull request. Only after a core maintainer approves that job can the workflow
-continue to the credentialed matrix. Runs caused by pushes to `main`, the
-schedule, or a manual dispatch from `main` skip the approval environment and
-start automatically.
+The earlier `maester-smoke-test-pr` approval-only environment is no longer used
+and can be deleted after this workflow is deployed. Pull request authorization
+now comes from a current core-maintainer approval and is independently
+revalidated by trusted default-branch code.
 
 ## Private GitHub report storage
 
@@ -98,11 +88,11 @@ data. Store the HTML reports as private release assets instead:
 The public workflow requests an installation token for only
 `maester-smoke-reports`, explicitly reduces it to `contents: write`, and lets
 `actions/create-github-app-token` revoke it when the matrix job ends. Each run
-creates one private prerelease tagged `smoke-<run-id>-<attempt>` containing:
+creates one private prerelease tagged `smoke-<run-id>-<attempt>` containing
+assets named:
 
-- `maester-report-ubuntu.html`
-- `maester-report-windows.html`
-- `maester-report-macos.html`
+- `maester-report-quick-<os>.html`, or
+- `maester-report-full-<os>.html`.
 
 Core maintainers review a result from the private repository's **Releases**
 page: open the source run's prerelease, download the required HTML asset, and
@@ -112,9 +102,9 @@ repository.
 
 ## Microsoft Entra configuration
 
-In the test tenant:
+In the demo tenant:
 
-1. Create a dedicated single-tenant app registration named
+1. Use a dedicated single-tenant app registration named
    `DO NOT DELETE - Maester GitHub Action Smoke Test` and its service principal.
    Set its **Notes** to:
 
@@ -122,9 +112,35 @@ In the test tenant:
    > https://github.com/maester365/maester. Authenticates only through the
    > protected maester-smoke-test GitHub Environment.
 
-2. Grant and admin-consent these Microsoft Graph **application** permissions:
+2. Grant and admin-consent the following Microsoft Graph **application**
+   permissions. These are the default read-only scopes returned by
+   `Get-MtGraphScope`:
+
+   - `AuditLog.Read.All`
+   - `DeviceManagementConfiguration.Read.All`
+   - `DeviceManagementManagedDevices.Read.All`
+   - `DeviceManagementRBAC.Read.All`
+   - `DeviceManagementServiceConfig.Read.All`
    - `Directory.Read.All`
+   - `DirectoryRecommendations.Read.All`
+   - `EntitlementManagement.Read.All`
+   - `IdentityRiskEvent.Read.All`
+   - `OnPremDirectorySynchronization.Read.All`
+   - `OrgSettings-AppsAndServices.Read.All`
+   - `OrgSettings-Forms.Read.All`
    - `Policy.Read.All`
+   - `Policy.Read.ConditionalAccess`
+   - `Reports.Read.All`
+   - `ReportSettings.Read.All`
+   - `RoleEligibilitySchedule.Read.Directory`
+   - `RoleManagement.Read.All`
+   - `RoleManagementAlert.Read.Directory`
+   - `SecurityIdentitiesSensors.Read.All`
+   - `SecurityIdentitiesHealth.Read.All`
+   - `SharePointTenantSettings.Read.All`
+   - `ThreatHunting.Read.All`
+   - `UserAuthenticationMethod.Read.All`
+
 3. Add a federated identity credential to the app registration with:
 
    | Setting | Value |
@@ -133,41 +149,41 @@ In the test tenant:
    | Subject | `repo:maester365/maester:environment:maester-smoke-test` |
    | Audience | `api://AzureADTokenExchange` |
 
-No Azure subscription role, Exchange Online permission/role, Teams role, mail
-permission, or client secret is required for this scoped smoke test. The app
-needs only read access; `MT.1068` may pass or fail without affecting the smoke
-result.
+No Azure subscription role, Exchange Online permission/role, Teams role,
+write permission, mail permission, or client secret is required.
 
-## Trigger and disclosure strategy
+## Trigger and merge-gate strategy
 
-- Every push to `main`, including a merged pull request, starts the
-  cross-platform smoke test automatically.
-- A pull request targeting `main` starts a pending smoke run when it is opened,
-  updated, reopened, or marked ready for review. A core maintainer must approve
-  `maester-smoke-test-pr` before the workflow can access the tenant.
-- A weekly Monday 05:17 UTC run catches action, runner-image, dependency, and
-  tenant-authentication drift automatically.
-- A manual run from `main` can exercise either the `preview` or `latest` module
-  channel without approval. Manual runs from another ref fail in the
-  uncredentialed preflight job without reading secrets.
-- Pull request runs use `pull_request_target`, so GitHub loads the workflow and
-  checkout from the trusted default branch. The workflow never checks out,
-  builds, or executes pull request code. The event associates the published
-  action smoke test with the pull request; it does not test the pull request's
-  unmerged implementation.
-- The federated credential trusts only jobs assigned to the
-  `maester-smoke-test` environment. The environment restricts deployments to
-  `main`; the separate approval-only environment has no tenant or report
-  credentials.
+- An approved review on a ready pull request targeting `main` starts the quick
+  cross-platform run immediately.
+- The secretless `Demo tenant quick approval trigger` workflow only records the
+  review event. A separate `workflow_run` job loaded from the default branch
+  independently confirms that the pull request is open, is still on its
+  approved commit, and that the approving reviewer has `write`, `maintain`, or
+  `admin` repository permission before requesting tenant credentials.
+- The trusted runner creates a check named exactly
+  **`Demo tenant quick smoke`** on the pull request's current test merge commit
+  and marks it successful only when all three operating systems complete. Add
+  that check to the `Protect main` ruleset's required status checks after this
+  workflow has been merged to `main`; enabling it earlier would prevent this
+  pull request from producing the new check.
+- Every push to `main`, including a merged pull request, starts the full
+  cross-platform Graph run automatically.
+- A weekly Monday 05:17 UTC run exercises the full published preview.
+- A manual run from `main` can select quick or full and either the `preview` or
+  `latest` module channel. Manual runs from another ref fail before tenant
+  access.
 
-The workflow has no default token permissions. Only the protected,
-credentialed job receives `contents: read` and `id-token: write`; the
-uncredentialed preflight job cannot mint an OIDC token. No trigger or broader
-permission is needed for the pull request gate.
+Neither workflow checks out or executes pull request code. The credentialed
+workflow always runs trusted default-branch code, and the protected environment
+only permits `main`. The listener has no token permissions or secrets. The
+trusted context job can read actions and pull requests and create the explicit
+merge-gate check, but cannot request an OIDC token. Only the protected matrix
+receives `contents: read` and `id-token: write`.
 
 The action is pinned to the immutable commit for `maester-action` v1.2.0.
 Public result summaries, public artifacts, and telemetry remain disabled.
 After Maester produces a result, the workflow transfers only the HTML report
-directly to the core-only private release repository; no plaintext report is
-uploaded to the public workflow run. The matrix uses `fail-fast: false` so a
-failure on one operating system does not hide the other platform results.
+directly to the core-only private release repository. The matrix uses
+`fail-fast: false` so a failure on one operating system does not hide the other
+platform results.
