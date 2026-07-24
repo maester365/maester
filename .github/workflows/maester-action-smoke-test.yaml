@@ -1,0 +1,202 @@
+name: Maester action tenant smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      maester_version:
+        description: Maester module channel to exercise
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - latest
+  schedule:
+    # Exercise the published preview regularly, even when no module preview was
+    # published during the week.
+    - cron: "17 5 * * 1"
+  workflow_run:
+    # Test each successfully published module preview against a real tenant.
+    workflows: ["publish-module-preview"]
+    types: [completed]
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: maester-action-tenant-smoke-test
+  cancel-in-progress: false
+
+env:
+  SMOKE_MAESTER_VERSION: ${{ inputs.maester_version || 'preview' }}
+
+jobs:
+  preflight:
+    name: Validate trusted ref
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate trusted ref
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "::error title=Untrusted smoke-test ref::Run this workflow from the main branch."
+            exit 1
+          fi
+
+  smoke:
+    name: Run published action (${{ matrix.os }})
+    needs: preflight
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    # Required reviewers on this environment must approve the deployment before
+    # the job starts, its secrets are exposed, or an OIDC token can be requested.
+    environment:
+      name: maester-smoke-test
+    permissions:
+      # azure/login inside the published Maester action exchanges GitHub's OIDC
+      # token for this environment's federated Entra service principal.
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            report_name: ubuntu
+          - os: windows-latest
+            report_name: windows
+          - os: macos-latest
+            report_name: macos
+
+    steps:
+      - name: Validate environment secrets
+        shell: pwsh
+        env:
+          MAESTER_SMOKE_TENANT_ID: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          MAESTER_SMOKE_CLIENT_ID: ${{ secrets.MAESTER_SMOKE_CLIENT_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          try {
+              [void][guid]::Parse($env:MAESTER_SMOKE_TENANT_ID)
+          } catch {
+              throw 'MAESTER_SMOKE_TENANT_ID must be an environment secret containing the Microsoft Entra Directory (tenant) ID.'
+          }
+          try {
+              [void][guid]::Parse($env:MAESTER_SMOKE_CLIENT_ID)
+          } catch {
+              throw 'MAESTER_SMOKE_CLIENT_ID must be an environment secret containing the app registration Application (client) ID.'
+          }
+
+      - name: Check out private report publisher
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Create private report uploader token
+        id: reports-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.MAESTER_REPORTS_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MAESTER_REPORTS_APP_PRIVATE_KEY }}
+          owner: maester365
+          repositories: maester-smoke-reports
+          permission-contents: write
+
+      - name: Run Maester against the test tenant
+        id: maester
+        uses: maester365/maester-action@910da5adbc61adcd6464ee69e3ab15805c1ad213 # v1.2.0
+        with:
+          tenant_id: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          client_id: ${{ secrets.MAESTER_SMOKE_CLIENT_ID }}
+          include_public_tests: true
+          include_private_tests: false
+          include_exchange: false
+          include_teams: false
+          include_longrunning_tests: false
+          include_preview_tests: false
+          include_tags: MT.1068
+          maester_version: ${{ env.SMOKE_MAESTER_VERSION }}
+          pester_verbosity: None
+          step_summary: false
+          artifact_upload: false
+          artifact_upload_html: false
+          disable_telemetry: true
+
+      - name: Verify Maester executed successfully
+        shell: pwsh
+        env:
+          EXPECTED_OS: ${{ runner.os }}
+          EXPECTED_TENANT_ID: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          RESULTS_JSON: ${{ steps.maester.outputs.results_json }}
+          TESTS_TOTAL: ${{ steps.maester.outputs.tests_total }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if ([string]::IsNullOrWhiteSpace($env:RESULTS_JSON) -or
+              -not (Test-Path -LiteralPath $env:RESULTS_JSON -PathType Leaf)) {
+              throw 'The published action did not produce a Maester results JSON file.'
+          }
+
+          $results = Get-Content -LiteralPath $env:RESULTS_JSON -Raw | ConvertFrom-Json
+          $tests = @($results.Tests)
+          $executedTests = @($tests | Where-Object Result -ne 'NotRun')
+          $smokeTests = @($tests | Where-Object Id -eq 'MT.1068')
+
+          if ([int]$env:TESTS_TOTAL -le 0 -or
+              [int]$env:TESTS_TOTAL -ne [int]$results.TotalCount -or
+              [int]$results.TotalCount -ne $tests.Count) {
+              throw "Maester result counts are inconsistent (action=$($env:TESTS_TOTAL), JSON=$($results.TotalCount), tests=$($tests.Count))."
+          }
+          if ($executedTests.Count -ne 1 -or $smokeTests.Count -ne 1 -or
+              $executedTests[0].Id -ne 'MT.1068') {
+              throw "Expected only MT.1068 to execute, but Maester executed $($executedTests.Count) test(s)."
+          }
+          if ($smokeTests[0].Result -notin @('Passed', 'Failed') -or
+              [int]$results.ErrorCount -ne 0) {
+              throw "MT.1068 did not complete normally (result=$($smokeTests[0].Result), errors=$($results.ErrorCount)). Check OIDC trust and Graph application permissions."
+          }
+          if ([string]::IsNullOrWhiteSpace($results.TenantName) -or
+              $results.TenantId -ne $env:EXPECTED_TENANT_ID) {
+              throw 'The Maester result did not identify the configured Microsoft 365 test tenant.'
+          }
+          if ($results.SystemInfo.OSPlatform -ne $env:EXPECTED_OS) {
+              throw "Maester reported OS '$($results.SystemInfo.OSPlatform)' on the '$($env:EXPECTED_OS)' runner."
+          }
+          if ($results.PowerShellInfo.Edition -ne 'Core' -or
+              [string]::IsNullOrWhiteSpace($results.CurrentVersion) -or
+              $results.EndOfJson -ne 'EndOfJson') {
+              throw 'The Maester result metadata is incomplete.'
+          }
+
+          Write-Host "Published Maester action completed MT.1068 on $($env:EXPECTED_OS)."
+
+      - name: Publish private HTML report
+        if: always() && steps.maester.outputs.results_json != ''
+        shell: pwsh
+        env:
+          MAESTER_REPORTS_TOKEN: ${{ steps.reports-token.outputs.token }}
+          REPORT_NAME: ${{ matrix.report_name }}
+          SOURCE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $releaseBody = @"
+          Private reports for [$env:GITHUB_REPOSITORY run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)]($env:SOURCE_RUN_URL).
+
+          Source commit: ``$env:GITHUB_SHA``
+          Maester version: ``$env:SMOKE_MAESTER_VERSION``
+          "@
+
+          ./.github/scripts/Publish-MaesterSmokeReport.ps1 `
+            -Repository 'maester365/maester-smoke-reports' `
+            -Tag "smoke-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" `
+            -ReleaseName "Maester smoke run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)" `
+            -ReleaseBody $releaseBody `
+            -AssetPath 'test-results/test-results.html' `
+            -AssetName "maester-report-$env:REPORT_NAME.html"
