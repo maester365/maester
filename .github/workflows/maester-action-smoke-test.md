@@ -22,7 +22,8 @@ credentials:
 1. Add `maester365/core-module`, the core Maester maintainer GitHub team, as
    the only required reviewer. Do not add outside collaborators, bots, or
    broad contributor teams.
-2. Enable **Prevent self-review**.
+2. Disable **Prevent self-review** so an authorized core maintainer can approve
+   a smoke run they initiated.
 3. Disable **Allow administrators to bypass configured protection rules**.
 4. Restrict deployment branches and tags to the `main` branch.
 
@@ -49,7 +50,9 @@ short-lived installation token scoped to the private report repository.
 GitHub evaluates the environment's required-reviewer and branch rules before
 starting each credentialed matrix job. The job cannot read the environment
 secrets or request an OIDC token until a core maintainer approves the pending
-deployment.
+deployment. Because self-review prevention is disabled, a core maintainer may
+approve a run they initiated; users outside the core team still cannot approve
+it.
 
 ## Private GitHub report storage
 
