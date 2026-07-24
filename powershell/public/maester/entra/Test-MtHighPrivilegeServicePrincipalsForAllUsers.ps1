@@ -68,23 +68,32 @@
             if (-not $spn) {
                 Write-Verbose "Test-MtHighPrivilegeServicePrincipalsForAllUsers: $($app.Name) ($($app.AppId)) is not provisioned in this tenant"
                 [pscustomobject]@{
-                    Name    = $app.Name
-                    AppId   = $app.AppId
-                    Status  = 'Not present in tenant'
-                    IsOpen  = $false
-                    SpnLink = $referenceLink
-                    Reason  = $app.Reason
+                    Name           = $app.Name
+                    AppId          = $app.AppId
+                    Status         = 'Not present in tenant'
+                    NeedsAttention = $false
+                    SpnLink        = $referenceLink
+                    Reason         = $app.Reason
                 }
             } else {
-                $isOpen = $spn.accountEnabled -eq $true -and $spn.appRoleAssignmentRequired -ne $true
-                Write-Verbose "Test-MtHighPrivilegeServicePrincipalsForAllUsers: $($spn.displayName) ($($spn.appId)) open to all users: $isOpen"
+                # Evaluate appRoleAssignmentRequired on its own so a disabled service principal without assignment
+                # configured is never reported as compliant - it would silently become open the moment it's re-enabled.
+                $assignmentRequired = $spn.appRoleAssignmentRequired -eq $true
+                $status = if ($assignmentRequired) {
+                    'Assignment required'
+                } elseif ($spn.accountEnabled -eq $true) {
+                    'Open to all users'
+                } else {
+                    'Disabled (assignment not required)'
+                }
+                Write-Verbose "Test-MtHighPrivilegeServicePrincipalsForAllUsers: $($spn.displayName) ($($spn.appId)) status: $status"
                 [pscustomobject]@{
-                    Name    = $spn.displayName
-                    AppId   = $spn.appId
-                    Status  = if ($isOpen) { 'Open to all users' } else { 'Assignment required' }
-                    IsOpen  = $isOpen
-                    SpnLink = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId)"
-                    Reason  = $app.Reason
+                    Name           = $spn.displayName
+                    AppId          = $spn.appId
+                    Status         = $status
+                    NeedsAttention = -not $assignmentRequired
+                    SpnLink        = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId)"
+                    Reason         = $app.Reason
                 }
             }
         }
@@ -100,18 +109,18 @@
             return $table
         }
 
-        $openRows = $appRows | Where-Object { $_.IsOpen }
-        $openCount = ($openRows | Measure-Object).Count
-        $return = $openCount -eq 0
+        $needsAttentionRows = $appRows | Where-Object { $_.NeedsAttention }
+        $needsAttentionCount = ($needsAttentionRows | Measure-Object).Count
+        $return = $needsAttentionCount -eq 0
 
         if ($return) {
             $testResultMarkdown = "Well done. All monitored high-privilege first-party service principals present in this tenant require explicit user assignment.`n`n"
             $testResultMarkdown += & $buildAppTable $appRows
         } else {
-            $otherRows = $appRows | Where-Object { -not $_.IsOpen }
-            $testResultMarkdown = "You have $openCount high-privilege first-party service principals that can be used by any user.`n`n"
-            $testResultMarkdown += "**Open to all users**`n`n"
-            $testResultMarkdown += & $buildAppTable $openRows
+            $otherRows = $appRows | Where-Object { -not $_.NeedsAttention }
+            $testResultMarkdown = "You have $needsAttentionCount high-privilege first-party service principals that do not require explicit user assignment.`n`n"
+            $testResultMarkdown += "**Needs attention**`n`n"
+            $testResultMarkdown += & $buildAppTable $needsAttentionRows
             $testResultMarkdown += "`n**Other monitored apps**`n`n"
             $testResultMarkdown += & $buildAppTable $otherRows
         }
