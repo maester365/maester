@@ -65,10 +65,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+        include:
+          - os: ubuntu-latest
+            report_name: ubuntu
+          - os: windows-latest
+            report_name: windows
+          - os: macos-latest
+            report_name: macos
 
     steps:
       - name: Validate environment secrets
@@ -89,6 +92,21 @@ jobs:
           } catch {
               throw 'MAESTER_SMOKE_CLIENT_ID must be an environment secret containing the app registration Application (client) ID.'
           }
+
+      - name: Check out private report publisher
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Create private report uploader token
+        id: reports-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.MAESTER_REPORTS_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MAESTER_REPORTS_APP_PRIVATE_KEY }}
+          owner: maester365
+          repositories: maester-smoke-reports
+          permission-contents: write
 
       - name: Run Maester against the test tenant
         id: maester
@@ -157,3 +175,28 @@ jobs:
           }
 
           Write-Host "Published Maester action completed MT.1068 on $($env:EXPECTED_OS)."
+
+      - name: Publish private HTML report
+        if: always() && steps.maester.outputs.results_json != ''
+        shell: pwsh
+        env:
+          MAESTER_REPORTS_TOKEN: ${{ steps.reports-token.outputs.token }}
+          REPORT_NAME: ${{ matrix.report_name }}
+          SOURCE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $releaseBody = @"
+          Private reports for [$env:GITHUB_REPOSITORY run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)]($env:SOURCE_RUN_URL).
+
+          Source commit: ``$env:GITHUB_SHA``
+          Maester version: ``$env:SMOKE_MAESTER_VERSION``
+          "@
+
+          ./.github/scripts/Publish-MaesterSmokeReport.ps1 `
+            -Repository 'maester365/maester-smoke-reports' `
+            -Tag "smoke-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" `
+            -ReleaseName "Maester smoke run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)" `
+            -ReleaseBody $releaseBody `
+            -AssetPath 'test-results/test-results.html' `
+            -AssetName "maester-report-$env:REPORT_NAME.html"
