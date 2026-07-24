@@ -1,7 +1,7 @@
 ---
-title: MT.XXX13 - The baseline Global Secure Access security profile enforces a threat-intelligence floor
+title: MT.1194 - The baseline Global Secure Access security profile enforces a threat-intelligence floor
 description: The baseline security profile should have an enabled threat-intelligence policy linked, providing an always-on malware and phishing floor for all Internet Access traffic.
-slug: /tests/MT.XXX13
+slug: /tests/MT.1194
 sidebar_class_name: hidden
 ---
 

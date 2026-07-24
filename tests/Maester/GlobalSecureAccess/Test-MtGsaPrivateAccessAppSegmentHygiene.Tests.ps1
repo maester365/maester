@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXX11: Entra Private Access application segments should avoid broad or risky destinations. See https://maester.dev/docs/tests/MT.XXX11" -Tag "MT.XXX11", "Preview" {
+    It "MT.1193: Entra Private Access application segments should avoid broad or risky destinations. See https://maester.dev/docs/tests/MT.1193" -Tag "MT.1193", "Preview" {
         $result = Test-MtGsaPrivateAccessAppSegmentHygiene
 
         if ($null -ne $result) {

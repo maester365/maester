@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra", "CA" {
-    It "MT.XXX4: Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device. See https://maester.dev/docs/tests/MT.XXX4" -Tag "MT.XXX4", "Preview" {
+    It "MT.1188: Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device. See https://maester.dev/docs/tests/MT.1188" -Tag "MT.1188", "Preview" {
         $result = Test-MtGsaPrivateAccessAppCompliantDevice
 
         if ($null -ne $result) {

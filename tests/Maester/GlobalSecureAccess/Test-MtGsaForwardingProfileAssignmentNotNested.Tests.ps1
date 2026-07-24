@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXX5: Groups assigned to Global Secure Access traffic forwarding profiles should not be nested. See https://maester.dev/docs/tests/MT.XXX5" -Tag "MT.XXX5", "Preview" {
+    It "MT.1189: Groups assigned to Global Secure Access traffic forwarding profiles should not be nested. See https://maester.dev/docs/tests/MT.1189" -Tag "MT.1189", "Preview" {
         $result = Test-MtGsaForwardingProfileAssignmentNotNested
 
         if ($null -ne $result) {

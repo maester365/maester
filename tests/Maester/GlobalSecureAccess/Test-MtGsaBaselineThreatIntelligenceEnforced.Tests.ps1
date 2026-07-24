@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXX13: The baseline Global Secure Access security profile should enforce a threat-intelligence floor. See https://maester.dev/docs/tests/MT.XXX13" -Tag "MT.XXX13", "Preview" {
+    It "MT.1194: The baseline Global Secure Access security profile should enforce a threat-intelligence floor. See https://maester.dev/docs/tests/MT.1194" -Tag "MT.1194", "Preview" {
         $result = Test-MtGsaBaselineThreatIntelligenceEnforced
 
         if ($null -ne $result) {

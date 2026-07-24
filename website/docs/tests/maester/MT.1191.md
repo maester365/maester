@@ -1,7 +1,7 @@
 ---
-title: MT.XXX10 - Break-glass accounts are excluded from the Compliant Network Conditional Access policy
+title: MT.1191 - Break-glass accounts are excluded from the Compliant Network Conditional Access policy
 description: Every Conditional Access policy that enforces the Global Secure Access Compliant Network control should exclude the emergency access (break-glass) accounts.
-slug: /tests/MT.XXX10
+slug: /tests/MT.1191
 sidebar_class_name: hidden
 ---
 

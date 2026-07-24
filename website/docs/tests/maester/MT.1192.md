@@ -1,7 +1,7 @@
 ---
-title: MT.XXX8 - Groups assigned to Entra Private Access applications are not nested
+title: MT.1192 - Groups assigned to Entra Private Access applications are not nested
 description: Enterprise app assignment grants access to direct group members only, so groups assigned to Private Access and Quick Access applications must use direct membership.
-slug: /tests/MT.XXX8
+slug: /tests/MT.1192
 sidebar_class_name: hidden
 ---
 

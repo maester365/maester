@@ -1,7 +1,7 @@
 ---
-title: MT.XXX6 - Entra Private Access applications do not use the Default connector group
+title: MT.1190 - Entra Private Access applications do not use the Default connector group
 description: Entra Private Access applications should be served through a dedicated connector group, not the Default group that new connectors automatically join.
-slug: /tests/MT.XXX6
+slug: /tests/MT.1190
 sidebar_class_name: hidden
 ---
 

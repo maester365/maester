@@ -1,7 +1,7 @@
 ---
-title: MT.XXX14 - The Quick Access app is not subject to a sign-in frequency Conditional Access control
+title: MT.1195 - The Quick Access app is not subject to a sign-in frequency Conditional Access control
 description: A sign-in frequency control on the Quick Access app re-triggers authentication on Private DNS lookups, causing unexpected prompts - exclude Quick Access from the policy.
-slug: /tests/MT.XXX14
+slug: /tests/MT.1195
 sidebar_class_name: hidden
 ---
 

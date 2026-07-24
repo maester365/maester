@@ -1,7 +1,7 @@
 ---
-title: MT.XXX11 - Entra Private Access application segments avoid broad or risky destinations
+title: MT.1193 - Entra Private Access application segments avoid broad or risky destinations
 description: Private Access application segments should target specific destinations - dnsSuffix, wildcard, single-label FQDN, and all-IP destinations break least-privilege.
-slug: /tests/MT.XXX11
+slug: /tests/MT.1193
 sidebar_class_name: hidden
 ---
 

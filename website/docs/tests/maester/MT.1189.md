@@ -1,7 +1,7 @@
 ---
-title: MT.XXX5 - Groups assigned to Global Secure Access traffic forwarding profiles are not nested
+title: MT.1189 - Groups assigned to Global Secure Access traffic forwarding profiles are not nested
 description: Traffic forwarding profile assignment grants the profile to direct group members only, so groups assigned to a profile must use direct membership.
-slug: /tests/MT.XXX5
+slug: /tests/MT.1189
 sidebar_class_name: hidden
 ---
 

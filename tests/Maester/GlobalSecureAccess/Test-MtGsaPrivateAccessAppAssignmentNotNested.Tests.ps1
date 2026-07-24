@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXX8: Groups assigned to Entra Private Access applications should not be nested. See https://maester.dev/docs/tests/MT.XXX8" -Tag "MT.XXX8", "Preview" {
+    It "MT.1192: Groups assigned to Entra Private Access applications should not be nested. See https://maester.dev/docs/tests/MT.1192" -Tag "MT.1192", "Preview" {
         $result = Test-MtGsaPrivateAccessAppAssignmentNotNested
 
         if ($null -ne $result) {

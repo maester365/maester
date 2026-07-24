@@ -1,7 +1,7 @@
 ---
-title: MT.XXX4 - Entra Private Access applications are covered by a managed-device Conditional Access policy
+title: MT.1188 - Entra Private Access applications are covered by a managed-device Conditional Access policy
 description: Every Entra Private Access application should be protected by an enabled Conditional Access policy that requires a compliant or Microsoft Entra hybrid joined device.
-slug: /tests/MT.XXX4
+slug: /tests/MT.1188
 sidebar_class_name: hidden
 ---
 

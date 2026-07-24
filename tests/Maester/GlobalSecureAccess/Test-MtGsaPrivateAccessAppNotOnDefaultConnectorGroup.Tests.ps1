@@ -1,5 +1,5 @@
 Describe "Maester/Entra" -Tag "Maester", "Entra" {
-    It "MT.XXX6: Entra Private Access applications should not use the Default connector group. See https://maester.dev/docs/tests/MT.XXX6" -Tag "MT.XXX6", "Preview" {
+    It "MT.1190: Entra Private Access applications should not use the Default connector group. See https://maester.dev/docs/tests/MT.1190" -Tag "MT.1190", "Preview" {
         $result = Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup
 
         if ($null -ne $result) {
