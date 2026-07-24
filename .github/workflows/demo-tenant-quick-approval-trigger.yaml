@@ -1,0 +1,27 @@
+name: Demo tenant quick approval trigger
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions: {}
+
+jobs:
+  approved:
+    name: Approved review received
+    if: >-
+      github.event.review.state == 'approved' &&
+      github.event.pull_request.base.ref == 'main' &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Request the trusted quick smoke test
+        shell: bash
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEWER: ${{ github.event.review.user.login }}
+        run: >-
+          echo "Approved review from @${REVIEWER} requested the trusted
+          quick smoke test for pull request #${PULL_REQUEST_NUMBER}."

@@ -1,0 +1,444 @@
+name: Demo tenant Invoke-Maester smoke test
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["Demo tenant quick approval trigger"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_type:
+        description: Smoke-test depth
+        required: true
+        default: quick
+        type: choice
+        options:
+          - quick
+          - full
+      maester_version:
+        description: Maester module channel to exercise
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - latest
+  schedule:
+    # Exercise the full published preview regularly, even when no module preview
+    # was published during the week.
+    - cron: "17 5 * * 1"
+
+permissions: {}
+
+jobs:
+  context:
+    name: Select and validate smoke-test context
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      checks: write
+      contents: read
+      pull-requests: read
+    outputs:
+      check_run_id: ${{ steps.context.outputs.check_run_id }}
+      include_tags: ${{ steps.context.outputs.include_tags }}
+      maester_version: ${{ steps.context.outputs.maester_version }}
+      pull_request_number: ${{ steps.context.outputs.pull_request_number }}
+      run_type: ${{ steps.context.outputs.run_type }}
+
+    steps:
+      - name: Select and validate smoke-test context
+        id: context
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const setContext = ({
+              checkRunId = '',
+              includeTags = '',
+              maesterVersion = 'preview',
+              pullRequestNumber = '',
+              runType = 'none',
+            } = {}) => {
+              core.setOutput('check_run_id', checkRunId);
+              core.setOutput('include_tags', includeTags);
+              core.setOutput('maester_version', maesterVersion);
+              core.setOutput('pull_request_number', pullRequestNumber);
+              core.setOutput('run_type', runType);
+            };
+
+            if (context.eventName !== 'workflow_run') {
+              if (process.env.GITHUB_REF !== 'refs/heads/main') {
+                core.setFailed('Manual and trusted-branch smoke tests must run from main.');
+                setContext();
+                return;
+              }
+
+              const requestedType = context.eventName === 'workflow_dispatch'
+                ? context.payload.inputs?.run_type
+                : 'full';
+              if (!['quick', 'full'].includes(requestedType)) {
+                core.setFailed(`Unsupported smoke-test type '${requestedType}'.`);
+                setContext();
+                return;
+              }
+
+              setContext({
+                includeTags: requestedType === 'quick' ? 'MT.1068' : '',
+                maesterVersion: context.payload.inputs?.maester_version || 'preview',
+                runType: requestedType,
+              });
+              return;
+            }
+
+            const sourceRun = context.payload.workflow_run;
+            const ignore = (message) => {
+              core.notice(`No tenant access requested: ${message}`);
+              setContext();
+            };
+
+            if (sourceRun.name !== 'Demo tenant quick approval trigger' ||
+                sourceRun.event !== 'pull_request_review' ||
+                sourceRun.conclusion !== 'success') {
+              ignore('the source run was not a successful approved-review listener.');
+              return;
+            }
+
+            const sourceJobs = await github.paginate(
+              github.rest.actions.listJobsForWorkflowRun,
+              {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: sourceRun.id,
+                per_page: 100,
+              },
+            );
+            const approvalJob = sourceJobs.find(
+              (job) => job.name === 'Approved review received',
+            );
+            if (approvalJob?.conclusion !== 'success') {
+              ignore('the source event was not an approved review for main.');
+              return;
+            }
+
+            const sourcePullRequests = sourceRun.pull_requests || [];
+            if (sourcePullRequests.length !== 1) {
+              ignore(`the source run referenced ${sourcePullRequests.length} pull requests.`);
+              return;
+            }
+
+            const pullNumber = sourcePullRequests[0].number;
+            const {data: pull} = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+            });
+            if (pull.state !== 'open' || pull.draft || pull.base.ref !== 'main') {
+              ignore('the pull request is not an open, ready-for-review change targeting main.');
+              return;
+            }
+            if (!pull.merge_commit_sha ||
+                sourceRun.head_sha !== pull.merge_commit_sha) {
+              ignore('the approved review no longer matches the current test merge commit.');
+              return;
+            }
+
+            const reviewer = sourceRun.actor?.login;
+            if (!reviewer) {
+              ignore('the source run did not identify a reviewer.');
+              return;
+            }
+
+            const {data: permission} =
+              await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: reviewer,
+              });
+            if (!['admin', 'maintain', 'write'].includes(permission.permission)) {
+              ignore(`@${reviewer} does not have maintainer-level repository permission.`);
+              return;
+            }
+
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+              per_page: 100,
+            });
+            const currentApproval = reviews.find((review) =>
+              review.user?.login?.toLowerCase() === reviewer.toLowerCase() &&
+              review.state === 'APPROVED' &&
+              review.commit_id === pull.head.sha
+            );
+            if (!currentApproval) {
+              ignore(`@${reviewer} has no current approval for ${pull.head.sha}.`);
+              return;
+            }
+
+            const detailsUrl =
+              `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/` +
+              `${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const {data: checkRun} = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'Demo tenant quick smoke',
+              head_sha: pull.merge_commit_sha,
+              details_url: detailsUrl,
+              status: 'in_progress',
+              started_at: new Date().toISOString(),
+              output: {
+                title: 'Running the demo-tenant quick smoke test',
+                summary:
+                  `A current approval from @${reviewer} authorized the ` +
+                  `cross-platform MT.1068 run for pull request #${pullNumber}.`,
+              },
+            });
+            setContext({
+              checkRunId: String(checkRun.id),
+              includeTags: 'MT.1068',
+              pullRequestNumber: String(pullNumber),
+              runType: 'quick',
+            });
+
+  smoke:
+    name: Run ${{ needs.context.outputs.run_type }} published action (${{ matrix.os }})
+    needs: context
+    if: >-
+      needs.context.outputs.run_type == 'quick' ||
+      needs.context.outputs.run_type == 'full'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    environment:
+      name: maester-smoke-test
+    permissions:
+      # azure/login inside the published Maester action exchanges GitHub's OIDC
+      # token for this environment's federated Entra service principal.
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            report_name: ubuntu
+          - os: windows-latest
+            report_name: windows
+          - os: macos-latest
+            report_name: macos
+    env:
+      SMOKE_MAESTER_VERSION: ${{ needs.context.outputs.maester_version }}
+      SMOKE_RUN_TYPE: ${{ needs.context.outputs.run_type }}
+
+    steps:
+      - name: Validate environment secrets
+        shell: pwsh
+        env:
+          MAESTER_SMOKE_TENANT_ID: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          MAESTER_SMOKE_CLIENT_ID: ${{ secrets.MAESTER_SMOKE_CLIENT_ID }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          try {
+              [void][guid]::Parse($env:MAESTER_SMOKE_TENANT_ID)
+          } catch {
+              throw 'MAESTER_SMOKE_TENANT_ID must be an environment secret containing the Microsoft Entra Directory (tenant) ID.'
+          }
+          try {
+              [void][guid]::Parse($env:MAESTER_SMOKE_CLIENT_ID)
+          } catch {
+              throw 'MAESTER_SMOKE_CLIENT_ID must be an environment secret containing the app registration Application (client) ID.'
+          }
+
+      - name: Check out private report publisher
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # All credentialed jobs run from the trusted default branch. Never
+          # check out or execute pull-request code in this workflow.
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Create private report uploader token
+        id: reports-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.MAESTER_REPORTS_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MAESTER_REPORTS_APP_PRIVATE_KEY }}
+          owner: maester365
+          repositories: maester-smoke-reports
+          permission-contents: write
+
+      - name: Run Maester against the demo tenant
+        id: maester
+        uses: maester365/maester-action@910da5adbc61adcd6464ee69e3ab15805c1ad213 # v1.2.0
+        with:
+          tenant_id: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          client_id: ${{ secrets.MAESTER_SMOKE_CLIENT_ID }}
+          include_public_tests: true
+          include_private_tests: false
+          include_exchange: false
+          include_teams: false
+          include_longrunning_tests: false
+          include_preview_tests: false
+          include_tags: ${{ needs.context.outputs.include_tags }}
+          maester_version: ${{ env.SMOKE_MAESTER_VERSION }}
+          pester_verbosity: None
+          step_summary: false
+          artifact_upload: false
+          artifact_upload_html: false
+          disable_telemetry: true
+
+      - name: Verify Maester executed successfully
+        shell: pwsh
+        env:
+          EXPECTED_OS: ${{ runner.os }}
+          EXPECTED_TENANT_ID: ${{ secrets.MAESTER_SMOKE_TENANT_ID }}
+          RESULTS_JSON: ${{ steps.maester.outputs.results_json }}
+          RUN_TYPE: ${{ needs.context.outputs.run_type }}
+          TESTS_TOTAL: ${{ steps.maester.outputs.tests_total }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if ([string]::IsNullOrWhiteSpace($env:RESULTS_JSON) -or
+              -not (Test-Path -LiteralPath $env:RESULTS_JSON -PathType Leaf)) {
+              throw 'The published action did not produce a Maester results JSON file.'
+          }
+
+          $results = Get-Content -LiteralPath $env:RESULTS_JSON -Raw | ConvertFrom-Json
+          $tests = @($results.Tests)
+          $executedTests = @($tests | Where-Object Result -ne 'NotRun')
+          $completedTests = @(
+              $tests | Where-Object Result -In @('Passed', 'Failed')
+          )
+          $unexpectedResults = @(
+              $tests | Where-Object Result -NotIn @('Passed', 'Failed', 'Skipped', 'NotRun')
+          )
+
+          if ([int]$env:TESTS_TOTAL -le 0 -or
+              [int]$env:TESTS_TOTAL -ne [int]$results.TotalCount -or
+              [int]$results.TotalCount -ne $tests.Count) {
+              throw "Maester result counts are inconsistent (action=$($env:TESTS_TOTAL), JSON=$($results.TotalCount), tests=$($tests.Count))."
+          }
+          if ($unexpectedResults.Count -gt 0 -or [int]$results.ErrorCount -ne 0) {
+              throw "Maester did not complete normally (unexpected results=$($unexpectedResults.Count), errors=$($results.ErrorCount)). Check OIDC trust and Graph application permissions."
+          }
+
+          if ($env:RUN_TYPE -eq 'quick') {
+              $smokeTests = @($tests | Where-Object Id -eq 'MT.1068')
+              $unexpectedTests = @($executedTests | Where-Object Id -ne 'MT.1068')
+              $incompleteSmokeTests = @(
+                  $smokeTests | Where-Object Result -NotIn @('Passed', 'Failed')
+              )
+              if ($smokeTests.Count -lt 1 -or $unexpectedTests.Count -gt 0) {
+                  throw "Expected only MT.1068 to execute, but Maester produced $($executedTests.Count) executed result(s), including $($unexpectedTests.Count) unexpected result(s)."
+              }
+              if ($incompleteSmokeTests.Count -gt 0) {
+                  throw "MT.1068 did not complete normally ($($incompleteSmokeTests.Count) incomplete result(s))."
+              }
+          } elseif ($env:RUN_TYPE -eq 'full') {
+              if ($completedTests.Count -lt 1) {
+                  throw 'The full Graph smoke test did not complete any public Maester checks.'
+              }
+          } else {
+              throw "Unsupported smoke-test type '$($env:RUN_TYPE)'."
+          }
+
+          if ([string]::IsNullOrWhiteSpace($results.TenantName) -or
+              $results.TenantId -ne $env:EXPECTED_TENANT_ID) {
+              throw 'The Maester result did not identify the configured Microsoft 365 demo tenant.'
+          }
+          if ($results.SystemInfo.OSPlatform -ne $env:EXPECTED_OS) {
+              throw "Maester reported OS '$($results.SystemInfo.OSPlatform)' on the '$($env:EXPECTED_OS)' runner."
+          }
+          if ($results.PowerShellInfo.Edition -ne 'Core' -or
+              [string]::IsNullOrWhiteSpace($results.CurrentVersion) -or
+              $results.EndOfJson -ne 'EndOfJson') {
+              throw 'The Maester result metadata is incomplete.'
+          }
+
+          Write-Host "Published Maester action completed the $($env:RUN_TYPE) Graph smoke test on $($env:EXPECTED_OS)."
+
+      - name: Publish private HTML report
+        if: always() && steps.maester.outputs.results_json != ''
+        shell: pwsh
+        env:
+          MAESTER_REPORTS_TOKEN: ${{ steps.reports-token.outputs.token }}
+          REPORT_LABEL: ${{ runner.os }}
+          REPORT_NAME: ${{ matrix.report_name }}
+          SOURCE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $tag = "smoke-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $assetName = "maester-report-$env:SMOKE_RUN_TYPE-$env:REPORT_NAME.html"
+          $releaseBody = @"
+          Private $env:SMOKE_RUN_TYPE reports for [$env:GITHUB_REPOSITORY run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)]($env:SOURCE_RUN_URL).
+
+          Source commit: ``$env:GITHUB_SHA``
+          Maester version: ``$env:SMOKE_MAESTER_VERSION``
+          "@
+
+          ./.github/scripts/Publish-MaesterSmokeReport.ps1 `
+            -Repository 'maester365/maester-smoke-reports' `
+            -Tag $tag `
+            -ReleaseName "Maester $env:SMOKE_RUN_TYPE smoke run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)" `
+            -ReleaseBody $releaseBody `
+            -AssetPath 'test-results/test-results.html' `
+            -AssetName $assetName
+
+          $reportUrl = "https://github.com/maester365/maester-smoke-reports/releases/download/$tag/$assetName"
+          $releaseUrl = "https://github.com/maester365/maester-smoke-reports/releases/tag/$tag"
+          $reportSummary = @"
+          ### $env:REPORT_LABEL $env:SMOKE_RUN_TYPE report
+
+          [Open the private HTML report]($reportUrl) · [View the private release]($releaseUrl)
+
+          Access is limited to maintainers who can read ``maester365/maester-smoke-reports``.
+          "@
+          Add-Content `
+            -LiteralPath $env:GITHUB_STEP_SUMMARY `
+            -Value $reportSummary `
+            -Encoding utf8
+
+  finalize-quick-check:
+    name: Finalize pull request quick check
+    needs: [context, smoke]
+    if: always() && needs.context.outputs.check_run_id != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      checks: write
+
+    steps:
+      - name: Complete pull request quick check
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          CHECK_RUN_ID: ${{ needs.context.outputs.check_run_id }}
+          PULL_REQUEST_NUMBER: ${{ needs.context.outputs.pull_request_number }}
+          SMOKE_RESULT: ${{ needs.smoke.result }}
+        with:
+          script: |
+            const succeeded = process.env.SMOKE_RESULT === 'success';
+            const detailsUrl =
+              `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/` +
+              `${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            await github.rest.checks.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              check_run_id: Number(process.env.CHECK_RUN_ID),
+              details_url: detailsUrl,
+              status: 'completed',
+              conclusion: succeeded ? 'success' : 'failure',
+              completed_at: new Date().toISOString(),
+              output: {
+                title: succeeded
+                  ? 'Demo-tenant quick smoke test passed'
+                  : 'Demo-tenant quick smoke test failed',
+                summary:
+                  `The cross-platform MT.1068 run for pull request ` +
+                  `#${process.env.PULL_REQUEST_NUMBER} ` +
+                  `${succeeded ? 'completed successfully.' : 'did not complete successfully.'}`,
+              },
+            });
