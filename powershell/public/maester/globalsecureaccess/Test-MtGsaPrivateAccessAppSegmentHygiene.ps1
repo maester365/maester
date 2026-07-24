@@ -7,11 +7,14 @@
         Reviews the application segments of Entra Private Access (and Quick Access) applications and
         flags destinations that break least-privilege or carry operational risk:
 
-        - destinationType 'dnsSuffix' - a broad namespace catch-all that commonly masks a missing or
-          incorrect Private DNS suffix.
+        - destinationType 'dnsSuffix' that is a bare top-level domain (single label, e.g. 'com' / 'net' /
+          'local') - a TLD-wide catch-all. A normal scoped suffix (e.g. 'contoso.com') is the recommended
+          resolution path and is not flagged.
         - Wildcard FQDN (destinationHost contains '*').
         - Single-label FQDN (destinationType 'fqdn' with no dot, e.g. 'fileserver') - relies on the
           synthetic Global Secure Access suffix and carries a Kerberos SPN risk.
+        - servicePrincipalName segments (Kerberos SPNs such as 'HTTP/*') are a legitimate construct and
+          are not evaluated.
         - Broad IP ranges (near-default routes) - the portal's broadest selectable mask is /1, so an
           exact 0.0.0.0/0 rarely appears; segments broader than /16 are flagged instead, so a /16 -
           common for 10.x networks - still passes. (Global Secure Access is IPv4-only, so IPv6 segments
@@ -65,8 +68,16 @@
                 $destinationType = [string]$segment.destinationType
                 $reason = $null
 
+                # Kerberos SPN segments (e.g. 'HTTP/*') are a legitimate Private Access construct - not evaluated.
+                if ($destinationType -eq 'servicePrincipalName') { continue }
+
                 if ($destinationType -eq 'dnsSuffix') {
-                    $reason = 'dnsSuffix (broad namespace catch-all; can mask a missing Private DNS suffix)'
+                    # A Private DNS suffix is the recommended resolution path; only a bare top-level domain
+                    # (single label, e.g. 'com' / 'net' / 'local') is a dangerously broad catch-all. A
+                    # normal scoped suffix such as 'contoso.com' is not flagged.
+                    if (-not $destinationHost.Contains('.')) {
+                        $reason = 'top-level-domain dnsSuffix (catches an entire TLD namespace)'
+                    }
                 } elseif ($destinationHost.Contains('*')) {
                     $reason = 'wildcard FQDN'
                 } elseif ($destinationType -eq 'fqdn' -and -not $destinationHost.Contains('.')) {
