@@ -98,7 +98,10 @@ Core maintainers review a result from the private repository's **Releases**
 page: open the source run's prerelease, download the required HTML asset, and
 open the self-contained file locally. Release descriptions link to the source
 workflow run and commit without disclosing tenant data in the public
-repository.
+repository. After each successful upload, the corresponding operating-system
+job adds **Open the private HTML report** and **View the private release** links
+to the public workflow run summary. The links disclose no report content and
+resolve only for users who can read the private report repository.
 
 ## Microsoft Entra configuration
 

@@ -364,11 +364,14 @@ jobs:
         shell: pwsh
         env:
           MAESTER_REPORTS_TOKEN: ${{ steps.reports-token.outputs.token }}
+          REPORT_LABEL: ${{ runner.os }}
           REPORT_NAME: ${{ matrix.report_name }}
           SOURCE_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           $ErrorActionPreference = 'Stop'
 
+          $tag = "smoke-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $assetName = "maester-report-$env:SMOKE_RUN_TYPE-$env:REPORT_NAME.html"
           $releaseBody = @"
           Private $env:SMOKE_RUN_TYPE reports for [$env:GITHUB_REPOSITORY run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)]($env:SOURCE_RUN_URL).
 
@@ -378,11 +381,25 @@ jobs:
 
           ./.github/scripts/Publish-MaesterSmokeReport.ps1 `
             -Repository 'maester365/maester-smoke-reports' `
-            -Tag "smoke-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" `
+            -Tag $tag `
             -ReleaseName "Maester $env:SMOKE_RUN_TYPE smoke run $env:GITHUB_RUN_ID (attempt $env:GITHUB_RUN_ATTEMPT)" `
             -ReleaseBody $releaseBody `
             -AssetPath 'test-results/test-results.html' `
-            -AssetName "maester-report-$env:SMOKE_RUN_TYPE-$env:REPORT_NAME.html"
+            -AssetName $assetName
+
+          $reportUrl = "https://github.com/maester365/maester-smoke-reports/releases/download/$tag/$assetName"
+          $releaseUrl = "https://github.com/maester365/maester-smoke-reports/releases/tag/$tag"
+          $reportSummary = @"
+          ### $env:REPORT_LABEL $env:SMOKE_RUN_TYPE report
+
+          [Open the private HTML report]($reportUrl) · [View the private release]($releaseUrl)
+
+          Access is limited to maintainers who can read ``maester365/maester-smoke-reports``.
+          "@
+          Add-Content `
+            -LiteralPath $env:GITHUB_STEP_SUMMARY `
+            -Value $reportSummary `
+            -Encoding utf8
 
   finalize-quick-check:
     name: Finalize pull request quick check
