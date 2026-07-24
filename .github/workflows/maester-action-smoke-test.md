@@ -11,7 +11,9 @@ review.
 The check intentionally accepts either `Passed` or `Failed` for `MT.1068`.
 The test tenant's policy state is not a release gate. Authentication errors,
 Graph errors, skipped/not-run tests, missing results, or the wrong test/tenant/OS
-fail the workflow.
+fail the workflow. Maester may emit more than one result instance for the
+selected check; every executed result must still be `MT.1068` and must complete
+normally.
 
 ## Protected environment configuration
 

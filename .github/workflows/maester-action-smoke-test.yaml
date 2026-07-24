@@ -179,19 +179,21 @@ jobs:
           $tests = @($results.Tests)
           $executedTests = @($tests | Where-Object Result -ne 'NotRun')
           $smokeTests = @($tests | Where-Object Id -eq 'MT.1068')
+          $unexpectedTests = @($executedTests | Where-Object Id -ne 'MT.1068')
+          $incompleteSmokeTests = @(
+              $smokeTests | Where-Object { $_.Result -notin @('Passed', 'Failed') }
+          )
 
           if ([int]$env:TESTS_TOTAL -le 0 -or
               [int]$env:TESTS_TOTAL -ne [int]$results.TotalCount -or
               [int]$results.TotalCount -ne $tests.Count) {
               throw "Maester result counts are inconsistent (action=$($env:TESTS_TOTAL), JSON=$($results.TotalCount), tests=$($tests.Count))."
           }
-          if ($executedTests.Count -ne 1 -or $smokeTests.Count -ne 1 -or
-              $executedTests[0].Id -ne 'MT.1068') {
-              throw "Expected only MT.1068 to execute, but Maester executed $($executedTests.Count) test(s)."
+          if ($smokeTests.Count -lt 1 -or $unexpectedTests.Count -gt 0) {
+              throw "Expected only MT.1068 to execute, but Maester produced $($executedTests.Count) executed result(s), including $($unexpectedTests.Count) unexpected result(s)."
           }
-          if ($smokeTests[0].Result -notin @('Passed', 'Failed') -or
-              [int]$results.ErrorCount -ne 0) {
-              throw "MT.1068 did not complete normally (result=$($smokeTests[0].Result), errors=$($results.ErrorCount)). Check OIDC trust and Graph application permissions."
+          if ($incompleteSmokeTests.Count -gt 0 -or [int]$results.ErrorCount -ne 0) {
+              throw "MT.1068 did not complete normally (incomplete=$($incompleteSmokeTests.Count), errors=$($results.ErrorCount)). Check OIDC trust and Graph application permissions."
           }
           if ([string]::IsNullOrWhiteSpace($results.TenantName) -or
               $results.TenantId -ne $env:EXPECTED_TENANT_ID) {
