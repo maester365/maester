@@ -1,6 +1,11 @@
 name: Maester action tenant smoke test
 
 on:
+  push:
+    branches: [main]
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
   workflow_dispatch:
     inputs:
       maester_version:
@@ -15,31 +20,30 @@ on:
     # Exercise the published preview regularly, even when no module preview was
     # published during the week.
     - cron: "17 5 * * 1"
-  workflow_run:
-    # Test each successfully published module preview against a real tenant.
-    workflows: ["publish-module-preview"]
-    types: [completed]
-    branches: [main]
 
 permissions: {}
 
 concurrency:
-  group: maester-action-tenant-smoke-test
-  cancel-in-progress: false
+  # A pull request waiting for approval must not block trusted main runs.
+  group: maester-action-tenant-smoke-test-${{ github.event.pull_request.number || 'trusted' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request_target' }}
 
 env:
   SMOKE_MAESTER_VERSION: ${{ inputs.maester_version || 'preview' }}
 
 jobs:
   preflight:
-    name: Validate trusted ref
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    name: Validate trusted execution context
+    if: github.event_name != 'pull_request_target' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
     steps:
-      - name: Validate trusted ref
+      - name: Validate trusted execution context
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PULL_REQUEST_BASE: ${{ github.event.pull_request.base.ref || '' }}
         run: |
           set -euo pipefail
 
@@ -47,14 +51,39 @@ jobs:
             echo "::error title=Untrusted smoke-test ref::Run this workflow from the main branch."
             exit 1
           fi
+          if [[ "${EVENT_NAME}" == "pull_request_target" && "${PULL_REQUEST_BASE}" != "main" ]]; then
+            echo "::error title=Unexpected pull request base::Pull request smoke tests must target main."
+            exit 1
+          fi
+
+  approve-pr:
+    name: Approve tenant access for pull request
+    needs: preflight
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: maester-smoke-test-pr
+      deployment: false
+    permissions: {}
+    steps:
+      - name: Record approval
+        shell: bash
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: echo "A core maintainer approved tenant access for pull request #${PULL_REQUEST_NUMBER}."
 
   smoke:
     name: Run published action (${{ matrix.os }})
-    needs: preflight
+    needs: [preflight, approve-pr]
+    if: >-
+      always() &&
+      needs.preflight.result == 'success' &&
+      (needs.approve-pr.result == 'success' || needs.approve-pr.result == 'skipped')
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
-    # Required reviewers on this environment must approve the deployment before
-    # the job starts, its secrets are exposed, or an OIDC token can be requested.
+    # This credentials environment is restricted to main but has no reviewer
+    # gate. Pull request runs pass the approval-only job above before reaching it.
     environment:
       name: maester-smoke-test
     permissions:
@@ -96,6 +125,9 @@ jobs:
       - name: Check out private report publisher
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          # pull_request_target resolves github.sha to trusted default-branch
+          # code. Never check out the pull request head in this privileged job.
+          ref: ${{ github.sha }}
           persist-credentials: false
 
       - name: Create private report uploader token

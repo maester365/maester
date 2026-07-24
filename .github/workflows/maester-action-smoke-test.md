@@ -16,15 +16,13 @@ fail the workflow.
 ## Protected environment configuration
 
 In `maester365/maester`, create a GitHub Actions environment named exactly
-`maester-smoke-test`. Configure its deployment protection rules before adding
-credentials:
+`maester-smoke-test`. This is the credentials environment used by automatic
+trusted-branch runs. Configure it before adding credentials:
 
-1. Add `maester365/core-module`, the core Maester maintainer GitHub team, as
-   the only required reviewer. Do not add outside collaborators, bots, or
-   broad contributor teams.
-2. Enable **Prevent self-review**.
-3. Disable **Allow administrators to bypass configured protection rules**.
-4. Restrict deployment branches and tags to the `main` branch.
+1. Do not configure required reviewers. Runs from `main`, including every merge,
+   must start automatically.
+2. Disable **Allow administrators to bypass configured protection rules**.
+3. Restrict deployment branches and tags to the `main` branch.
 
 Create these **environment secrets** on `maester-smoke-test`:
 
@@ -46,10 +44,22 @@ supports workload identity federation and authenticates with GitHub's
 short-lived OIDC token. The GitHub App private key is used only to mint a
 short-lived installation token scoped to the private report repository.
 
-GitHub evaluates the environment's required-reviewer and branch rules before
-starting each credentialed matrix job. The job cannot read the environment
-secrets or request an OIDC token until a core maintainer approves the pending
-deployment.
+Create a second environment named exactly `maester-smoke-test-pr`. This is an
+approval-only gate and must not contain secrets or variables:
+
+1. Add `maester365/core-module`, the core Maester maintainer GitHub team, as
+   the only required reviewer. Do not add outside collaborators, bots, or broad
+   contributor teams.
+2. Disable **Prevent self-review** so an authorized core maintainer can approve
+   a pull request smoke run they initiated.
+3. Disable **Allow administrators to bypass configured protection rules**.
+4. Restrict deployment branches and tags to the `main` branch.
+
+GitHub evaluates `maester-smoke-test-pr` before starting the approval job for a
+pull request. Only after a core maintainer approves that job can the workflow
+continue to the credentialed matrix. Runs caused by pushes to `main`, the
+schedule, or a manual dispatch from `main` skip the approval environment and
+start automatically.
 
 ## Private GitHub report storage
 
@@ -128,25 +138,30 @@ result.
 
 ## Trigger and disclosure strategy
 
-- A successful `publish-module-preview` run starts the cross-platform smoke
-  test against the newly published preview module, then waits for a core
-  maintainer to approve the protected-environment deployment.
+- Every push to `main`, including a merged pull request, starts the
+  cross-platform smoke test automatically.
+- A pull request targeting `main` starts a pending smoke run when it is opened,
+  updated, reopened, or marked ready for review. A core maintainer must approve
+  `maester-smoke-test-pr` before the workflow can access the tenant.
 - A weekly Monday 05:17 UTC run catches action, runner-image, dependency, and
-  tenant-authentication drift, subject to the same approval.
+  tenant-authentication drift automatically.
 - A manual run from `main` can exercise either the `preview` or `latest` module
-  channel. Use this as the explicit pre-release check; it also requires approval.
-- Pull requests and ordinary pushes are not workflow triggers. Manual runs from
-  another ref fail in the uncredentialed preflight job without requesting
-  approval or reading secrets.
+  channel without approval. Manual runs from another ref fail in the
+  uncredentialed preflight job without reading secrets.
+- Pull request runs use `pull_request_target`, so GitHub loads the workflow and
+  checkout from the trusted default branch. The workflow never checks out,
+  builds, or executes pull request code. The event associates the published
+  action smoke test with the pull request; it does not test the pull request's
+  unmerged implementation.
 - The federated credential trusts only jobs assigned to the
   `maester-smoke-test` environment. The environment restricts deployments to
-  `main` and its only required reviewer is the core maintainer team.
+  `main`; the separate approval-only environment has no tenant or report
+  credentials.
 
 The workflow has no default token permissions. Only the protected,
 credentialed job receives `contents: read` and `id-token: write`; the
 uncredentialed preflight job cannot mint an OIDC token. No trigger or broader
-permission is needed for the environment gate: GitHub applies it to manual,
-scheduled, and `workflow_run` executions before the job starts.
+permission is needed for the pull request gate.
 
 The action is pinned to the immutable commit for `maester-action` v1.2.0.
 Public result summaries, public artifacts, and telemetry remain disabled.
