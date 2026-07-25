@@ -8,6 +8,7 @@ const websiteRoot = join(scriptDir, "..");
 const repoRoot = join(websiteRoot, "..");
 const testsRoot = join(repoRoot, "tests");
 const docsTestsRoot = join(websiteRoot, "docs", "tests");
+const docsCommandsRoot = join(websiteRoot, "docs", "commands");
 const publicRoot = join(repoRoot, "powershell", "public");
 const internalRoot = join(repoRoot, "powershell", "internal");
 const configPath = join(testsRoot, "maester-config.json");
@@ -380,7 +381,7 @@ function buildInventory() {
       markdown: doc.markdown ?? "",
       remediation: doc.remediation ?? "",
       relatedLinks: doc.relatedLinks ?? "",
-      commandLink: functionName ? `/docs/commands/${functionName}` : "",
+      commandLink: functionName && existsSync(join(docsCommandsRoot, `${functionName}.mdx`)) ? `/docs/commands/${functionName}` : "",
     });
   }
   return [...testsById.values()].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
@@ -403,7 +404,10 @@ function renderTestPage(test, contributorData) {
   body.push(`| Severity | ${escapeTable(test.severity)} |`);
   body.push(`| Suite | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} |`);
   body.push(`| Category | ${escapeTable(test.category)} |`);
-  if (test.functionName) body.push(`| PowerShell test | [${test.functionName}](${test.commandLink}) |`);
+  if (test.functionName) {
+    const commandReference = test.commandLink ? `[${test.functionName}](${test.commandLink})` : `\`${test.functionName}\``;
+    body.push(`| PowerShell test | ${commandReference} |`);
+  }
   body.push(`| Tags | ${escapeTable(test.tags.join(", "))} |`, "");
   if (test.remediation && !test.markdown.includes(test.remediation)) {
     body.push("## Remediation", "", test.remediation, "");
