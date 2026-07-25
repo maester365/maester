@@ -4,7 +4,8 @@
 `maester365/maester-action` on Linux, Windows, and macOS against a real
 Microsoft 365 demo tenant. The same workflow supports two run types:
 
-- **Quick** runs only the fast, platform-neutral Graph check `MT.1068`.
+- **Quick** runs only the fast, platform-neutral Graph check `MT.1068` for an
+  approved pull request that changes a PowerShell file.
 - **Full** runs all public Graph checks. Exchange, Teams, private, preview, and
   long-running tests remain disabled.
 
@@ -25,6 +26,8 @@ In `maester365/maester`, create a GitHub Actions environment named exactly
 
 1. Do not configure required reviewers. Approved-pull-request quick runs and
    full runs after PowerShell changes merge to `main` must start automatically.
+   Approved non-PowerShell pull requests complete the quick check without
+   entering this environment.
 2. Disable **Allow administrators to bypass configured protection rules**.
 3. Restrict deployment branches and tags to the `main` branch.
 
@@ -158,18 +161,22 @@ write permission, mail permission, or client secret is required.
 ## Trigger and merge-gate strategy
 
 - An approved review on a ready pull request targeting `main` starts the quick
-  cross-platform run immediately.
+  cross-platform run immediately only when the pull request changes a
+  `*.ps1`, `*.psm1`, or `*.psd1` file.
 - The secretless `Demo tenant quick approval trigger` workflow only records the
   review event. A separate `workflow_run` job loaded from the default branch
   independently confirms that the pull request is open, is still on its
   approved commit, and that the approving reviewer has `write`, `maintain`, or
-  `admin` repository permission before requesting tenant credentials.
+  `admin` repository permission. It then reads the current changed-file list
+  before requesting tenant credentials.
 - The trusted runner creates a check named exactly
   **`Demo tenant quick smoke`** on the pull request's current test merge commit
-  and marks it successful only when all three operating systems complete. Add
-  that check to the `Protect main` ruleset's required status checks after this
-  workflow has been merged to `main`; enabling it earlier would prevent this
-  pull request from producing the new check.
+  and marks it successful only when all three operating systems complete. If
+  no PowerShell file changed, it completes the same check with a `skipped`
+  conclusion without requesting OIDC or tenant credentials. Add that check to
+  the `Protect main` ruleset's required status checks after this workflow has
+  been merged to `main`; enabling it earlier would prevent this pull request
+  from producing the new check.
 - A push to `main` starts the full cross-platform Graph run only when it
   includes a PowerShell script, module, or data-file change matching
   `**/*.ps1`, `**/*.psm1`, or `**/*.psd1`. Documentation-only and other

@@ -184,6 +184,55 @@ jobs:
             const detailsUrl =
               `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/` +
               `${context.repo.repo}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            const pullFiles = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullNumber,
+              per_page: 100,
+            });
+            if (pullFiles.length < pull.changed_files) {
+              core.setFailed(
+                `GitHub returned ${pullFiles.length} of ${pull.changed_files} ` +
+                'changed files; refusing to skip the tenant smoke test.',
+              );
+              setContext();
+              return;
+            }
+
+            const isPowerShellFile = (path) =>
+              /\.(ps1|psd1|psm1)$/.test(path || '');
+            const hasPowerShellChange = pullFiles.some((file) =>
+              isPowerShellFile(file.filename) ||
+              isPowerShellFile(file.previous_filename)
+            );
+            if (!hasPowerShellChange) {
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'Demo tenant quick smoke',
+                head_sha: pull.merge_commit_sha,
+                details_url: detailsUrl,
+                status: 'completed',
+                conclusion: 'skipped',
+                completed_at: new Date().toISOString(),
+                output: {
+                  title: 'Quick smoke skipped — no PowerShell changes',
+                  summary:
+                    `Pull request #${pullNumber} has no changed ` +
+                    '`*.ps1`, `*.psm1`, or `*.psd1` files. No tenant ' +
+                    'credentials were requested.',
+                },
+              });
+              core.notice(
+                'No PowerShell files changed; completed the quick check without tenant access.',
+              );
+              setContext({
+                pullRequestNumber: String(pullNumber),
+              });
+              return;
+            }
+
             const {data: checkRun} = await github.rest.checks.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
