@@ -23,6 +23,8 @@ keywords:
 
 # MT.1112 - Privileged user accounts should not remain enabled when the linked primary account is disabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Reviewing the enabled status of a privileged account when the linked user identity has been disabled is critical to prevent orphaned high‑risk access. If a normal work account is deactivated (for example, because the user left the organization) but the related privileged account remains enabled, an attacker or former employee could still use that privileged identity to access sensitive systems, change security settings, or exfiltrate data unnoticed. Regularly checking and aligning the status of privileged accounts with their primary identities helps enforce least privilege, reduces the attack surface, and ensures that privileges are revoked promptly when a user’s employment or role ends.

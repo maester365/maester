@@ -17,6 +17,8 @@ keywords:
 
 # MT.1178 - Ensure ASR Rules are configured correctly
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/ofirgavish" title="Ofir Gavish · Original author"><img src="https://github.com/OfirGavish.png" alt="Ofir Gavish" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/ofirgavish">Ofir Gavish</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure at least one Intune Attack Surface Reduction (ASR) policy has rules configured in **Block** or **Audit** mode.

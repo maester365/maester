@@ -18,6 +18,8 @@ keywords:
 
 # MT.1065 - Soft Delete should be enabled on all Recovery Services Vaults
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/brianveldman" title="Beerd Veldman · Original author"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/brianveldman">Beerd Veldman</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Soft delete ensures that backup items and recovery points are retained for a period after deletion. This protects against accidental or malicious deletion of backups.
@@ -47,7 +49,7 @@ Note: New vaults typically have soft delete enabled by default.
 | Suite | Maester |
 | Category | Backup |
 | PowerShell test | [Test-MtVaultSoftDelete](/docs/commands/Test-MtVaultSoftDelete) |
-| Tags | Azure, Backup, MT.1065 |
+| Tags | Azure, Backup, Maester, MT.1065 |
 
 ## Source
 

@@ -18,6 +18,8 @@ keywords:
 
 # MT.1070 - Restrict device join to selected users/groups or none.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/marcel-ngn" title="Marcel N. · Original author"><img src="https://github.com/marcel-ngn.png" alt="Marcel N." /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/marcel-ngn">Marcel N.</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 ## Description
@@ -93,7 +95,7 @@ Update-MgPolicyDeviceRegistrationPolicy -BodyParameter $params
 | Suite | Maester |
 | Category | Entra |
 | PowerShell test | [Test-MtEntraDeviceJoinRestricted](/docs/commands/Test-MtEntraDeviceJoinRestricted) |
-| Tags | Device, Entra, MT.1070 |
+| Tags | Device, Entra, Maester, MT.1070 |
 
 ## Source
 

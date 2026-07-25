@@ -17,6 +17,8 @@ keywords:
 
 # MT.1161 - Cloud Block Level should be High or higher
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bdrogja" title="Boris Drogja · Original author"><img src="https://github.com/bdrogja.png" alt="Boris Drogja" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bdrogja">Boris Drogja</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Checks that the cloud block level is set to High or higher in all assigned Microsoft Defender Antivirus policies.

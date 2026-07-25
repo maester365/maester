@@ -17,6 +17,8 @@ keywords:
 
 # MT.1038 - Conditional Access policies should not include or exclude deleted groups.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/weycc81" title="Stefan Wey · Co-contributor"><img src="https://github.com/weyCC81.png" alt="Stefan Wey" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/cloud-architekt" title="Thomas Naunheim · Co-contributor"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/bakkerjan" title="Jan Bakker · Co-contributor"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 5 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks if there are any Conditional Access policies that target deleted security groups.

@@ -51,6 +51,7 @@ const config = {
   ],
 
   plugins: [
+    "./src/plugins/contributor-pages.js",
     [
       "posthog-docusaurus",
       {
@@ -142,6 +143,7 @@ const config = {
             label: "Commands",
           },
           { to: 'manifesto', label: 'Manifesto', position: 'left' },
+          { to: 'contributors', label: 'Contributors', position: 'left' },
           { to: 'blog', label: 'Blog', position: 'left' },
           {
             "aria-label": "GitHub Repository",

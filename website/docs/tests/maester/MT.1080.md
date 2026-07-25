@@ -22,6 +22,8 @@ keywords:
 
 # MT.1080 - Credentials, tokens, or cookies from highly privileged users should not be exposed on vulnerable endpoints
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/cloud-architekt" title="Thomas Naunheim · Original author"><img src="https://github.com/Cloud-Architekt.png" alt="Thomas Naunheim" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/cloud-architekt">Thomas Naunheim</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Exfiltration of authentication artifacts on vulnerable device poses a significant security risk. Attackers who gain access to these credentials (e.g., by infostealer) can impersonate privileged users, bypass Conditional Access, and access sensitive the assigned sensitive roles. Protecting endpoints, especially used by privileged users, is essential to prevent unauthorized access and reduce attack surface.
