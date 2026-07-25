@@ -287,7 +287,7 @@
         if ($titleStart -gt 0) {
             $testId = $name.Substring(0, $titleStart).Trim()
             $testTitle = $name.Substring($titleStart + 1).Trim()
-        } else {
+        } elseif ($test.Result -ne 'NotRun') {
             Write-Warning "Test name does not contain a ':' character. Please use the format 'TestId: TestTitle' → $name"
         }
         $testResultDetail = $__MtSession.TestResultDetail[$test.ExpandedName]
