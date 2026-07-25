@@ -303,6 +303,43 @@
         return $PesterConfiguration
     }
 
+    function AddActiveDirectoryTestExclusions($PesterConfiguration) {
+        $effectiveExcludePaths = [System.Collections.Generic.List[string]]::new()
+        foreach ($excludePath in @($PesterConfiguration.Run.ExcludePath.Value)) {
+            if (-not [string]::IsNullOrWhiteSpace($excludePath)) {
+                $effectiveExcludePaths.Add($excludePath)
+            }
+        }
+
+        foreach ($runPath in @($PesterConfiguration.Run.Path.Value)) {
+            if ([string]::IsNullOrWhiteSpace($runPath)) {
+                continue
+            }
+
+            # Run.ExcludePath does not recursively exclude a directory in Pester 5,
+            # so use a wildcard for each bundled "ad" test directory.
+            $resolvedRunPaths = @(Resolve-Path -Path $runPath -ErrorAction SilentlyContinue)
+            foreach ($resolvedRunPath in $resolvedRunPaths) {
+                if (-not (Test-Path -LiteralPath $resolvedRunPath.Path -PathType Container)) {
+                    continue
+                }
+
+                $activeDirectoryPath = Join-Path -Path $resolvedRunPath.Path -ChildPath 'ad'
+                if (-not (Test-Path -LiteralPath $activeDirectoryPath -PathType Container)) {
+                    continue
+                }
+
+                $activeDirectoryExcludePath = Join-Path -Path $activeDirectoryPath -ChildPath '*'
+                if ($effectiveExcludePaths -notcontains $activeDirectoryExcludePath) {
+                    $effectiveExcludePaths.Add($activeDirectoryExcludePath)
+                    Write-Verbose "Excluding Active Directory test path: $activeDirectoryExcludePath"
+                }
+            }
+        }
+
+        $PesterConfiguration.Run.ExcludePath = $effectiveExcludePaths.ToArray()
+    }
+
     $version = Get-MtModuleVersion
 
     if ( $NonInteractive.IsPresent -or $NoLogo.IsPresent ) {
@@ -413,6 +450,7 @@
         if ('AD' -notin $effectiveExcludeTags) {
             $pesterConfig.Filter.ExcludeTag = @($effectiveExcludeTags + 'AD')
         }
+        AddActiveDirectoryTestExclusions -PesterConfiguration $pesterConfig
         Write-Verbose 'Excluding Active Directory tests. Run Connect-Maester -Service ActiveDirectory to include them.'
     }
 
@@ -505,7 +543,7 @@
             }
         }
 
-        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig
+        $maesterResults = ConvertTo-MtMaesterResult -PesterResults $PesterResults -OutputFiles $out -InvokeMaesterCommand $invokeMaesterCommand -PesterConfiguration $pesterConfig -SkipVersionCheck:$SkipVersionCheck
 
         if (![string]::IsNullOrEmpty($out.OutputJsonFile)) {
             $maesterResults | ConvertTo-Json -Depth 5 -WarningAction SilentlyContinue | Out-File -FilePath $out.OutputJsonFile -Encoding UTF8

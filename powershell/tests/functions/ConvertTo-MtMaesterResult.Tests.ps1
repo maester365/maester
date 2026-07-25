@@ -79,4 +79,25 @@ Describe 'ConvertTo-MtMaesterResult' {
             $result.Tests[0].ResultDetail.TestResult | Should -Match 'Manual review required'
         }
     }
+
+    It 'Does not query PowerShell Gallery when version checks are skipped' {
+        InModuleScope Maester {
+            $pesterResults = [PSCustomObject]@{
+                Tests             = @()
+                Containers        = @()
+                Result            = 'Passed'
+                ExecutedAt        = [DateTime]::UtcNow
+                Duration          = [TimeSpan]::Zero
+                UserDuration      = [TimeSpan]::Zero
+                DiscoveryDuration = [TimeSpan]::Zero
+                FrameworkDuration = [TimeSpan]::Zero
+            }
+
+            $result = ConvertTo-MtMaesterResult -PesterResults $pesterResults -SkipVersionCheck
+
+            $result.LatestVersion | Should -Be 'Unknown'
+        }
+
+        Should -Invoke Get-MtLatestModuleVersion -ModuleName Maester -Exactly 0
+    }
 }

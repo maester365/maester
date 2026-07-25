@@ -36,6 +36,14 @@ This command:
 Run the packaged tests with `Invoke-Maester -Path ./module/maester-tests`. Run
 `Build-LocalMaester.ps1` again whenever you change module or test source.
 
+After changing files under `./report`, include `-BuildReport` to build the report,
+copy its generated template into the PowerShell assets, and include it in the
+local module:
+
+```powershell
+./build/Build-LocalMaester.ps1 -BuildReport
+```
+
 ### Build and load with VS Code
 
 Press F5 with the **PowerShell: Build and Load Local Maester** launch

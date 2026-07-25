@@ -19,8 +19,14 @@
 
         # Optional Pester configuration that was used
         [Parameter(Mandatory = $false)]
-        [psobject] $PesterConfiguration
+        [psobject] $PesterConfiguration,
+
+        # Skip checking PowerShell Gallery for the latest Maester version.
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipVersionCheck
     )
+
+    $shouldSkipVersionCheck = $SkipVersionCheck.IsPresent
 
     function GetTenantName() {
         if (Test-MtConnection Graph) {
@@ -77,6 +83,10 @@
     }
 
     function GetMaesterLatestVersion() {
+        if ($shouldSkipVersionCheck) {
+            return 'Unknown'
+        }
+
         $latestVersion = Get-MtLatestModuleVersion -Name Maester -TimeoutSec 10
         if ($null -ne $latestVersion) {
             return $latestVersion.ToString()

@@ -5,6 +5,7 @@ import SeverityBadge from "./SeverityBadge";
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLinkedTestResultId, getPreferredScrollBehavior, getTestResultAnchorHash, getTestResultAnchorId } from "@/lib/reportLinks";
+import { compareDefaultTestResults } from "@/lib/testSort";
 
 // Lazy load the ResultInfoSheet component
 const ResultInfoSheet = lazy(() => import("./ResultInfoSheet"));
@@ -30,7 +31,7 @@ export default function TestResultsTable(props) {
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedSeverity, setSelectedSeverity] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortColumn, setSortColumn] = useState("Id");
+  const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedItem, setSelectedItem] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -142,7 +143,7 @@ export default function TestResultsTable(props) {
   };
 
   const getSortedData = useCallback((data) => {
-    if (!sortColumn) return data;
+    if (!sortColumn) return [...data].sort(compareDefaultTestResults);
 
     return [...data].sort((a, b) => {
       let valueA, valueB;
