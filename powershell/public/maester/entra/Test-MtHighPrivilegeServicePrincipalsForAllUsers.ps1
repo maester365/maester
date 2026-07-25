@@ -1,16 +1,17 @@
 ﻿function Test-MtHighPrivilegeServicePrincipalsForAllUsers {
     <#
     .SYNOPSIS
-    Checks if any high-privilege first-party Microsoft service principals (e.g. Azure PowerShell, Azure CLI,
-    Microsoft Graph Command Line Tools, Graph Explorer, Azure AD PowerShell, Exchange Online PowerShell,
-    SharePoint Online Management Shell, Teams PowerShell, Power Platform CLI) are open to all users instead of
-    requiring explicit assignment.
+    Checks if any high-privilege first-party Microsoft service principals (e.g. Azure PowerShell, Azure CLI and
+    Azure Developer CLI, Microsoft Graph Command Line Tools, Graph Explorer, Azure AD PowerShell, Exchange Online
+    PowerShell, SharePoint Online Management Shell, Teams PowerShell, Power Platform CLI) are open to all users
+    instead of requiring explicit assignment.
 
     .DESCRIPTION
     A small set of Microsoft first-party applications carry broad, pre-consented delegated permissions to Azure
     Resource Manager and Microsoft Graph and are commonly used to enumerate or exfiltrate tenant data once an
-    attacker has a foothold on any single user account. Unlike third-party apps, these service principals are
-    automatically provisioned in every tenant and easy to overlook when locking down 'Assignment required?'.
+    attacker has a foothold on any single user account. Unlike third-party apps, these Microsoft-owned apps can
+    remain available without a visible service principal in the tenant and are easy to overlook when locking down
+    'Assignment required?'.
 
     .EXAMPLE
     Test-MtHighPrivilegeServicePrincipalsForAllUsers
@@ -38,7 +39,7 @@
 
         $highPrivilegeApps = @(
             [pscustomobject]@{ AppId = '1950a258-227b-4e31-a9cf-717495945fc2'; Name = 'Microsoft Azure PowerShell'; Reason = 'Holds Directory.AccessAsUser.All and Application.ReadWrite.All - full directory and Azure Resource Manager control.' }
-            [pscustomobject]@{ AppId = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'; Name = 'Microsoft Azure CLI'; Reason = 'Holds Directory.AccessAsUser.All and Application.ReadWrite.All - full directory and Azure Resource Manager control.' }
+            [pscustomobject]@{ AppId = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'; Name = 'Microsoft Azure CLI / Azure Developer CLI'; Reason = 'Used by both Azure CLI (az) and Azure Developer CLI (azd); holds Directory.AccessAsUser.All and Application.ReadWrite.All - full directory and Azure Resource Manager control.' }
             [pscustomobject]@{ AppId = '14d82eec-204b-4c2f-b7e8-296a70dab67e'; Name = 'Microsoft Graph Command Line Tools'; Reason = 'Backs Connect-MgGraph and the Microsoft Graph CLI - can be consented with any Graph scope, including tenant-wide admin permissions.' }
             [pscustomobject]@{ AppId = 'de8bc8b5-d9f9-48b1-a8ad-b748da725064'; Name = 'Graph Explorer'; Reason = 'Browser-based, no install required - lowest-friction way to query Microsoft Graph with a signed-in user''s consented scopes.' }
             [pscustomobject]@{ AppId = '1b730954-1685-4b74-9bfd-dac224a7b894'; Name = 'Azure Active Directory PowerShell (legacy)'; Reason = 'Holds Directory.ReadWrite.All - full directory control via the deprecated AzureAD module.' }
@@ -58,9 +59,10 @@
 
         $spns = Invoke-MtGraphRequest @params
 
-        # No dedicated properties blade to deep-link to for apps that aren't provisioned in this tenant, so
-        # fall back to Microsoft's own first-party app reference. The hover title still explains the risk either way.
-        $referenceLink = 'https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/governance/verify-first-party-apps-sign-in'
+        # Apps without a local service principal can still appear in sign-in logs. Creating the service principal
+        # is required before user assignment can be enforced, so absence is a non-compliant state.
+        $referenceLink = 'https://learn.microsoft.com/en-us/entra/identity-platform/howto-restrict-your-app-to-a-set-of-users'
+        $entraPortalUrl = $__MtSession.AdminPortalUrl.Entra
 
         $appRows = foreach ($app in $highPrivilegeApps) {
             $spn = $spns | Where-Object { $_.appId -eq $app.AppId } | Select-Object -First 1
@@ -70,8 +72,8 @@
                 [pscustomobject]@{
                     Name           = $app.Name
                     AppId          = $app.AppId
-                    Status         = 'Not present in tenant'
-                    NeedsAttention = $false
+                    Status         = 'Service principal missing (assignment not enforced)'
+                    NeedsAttention = $true
                     SpnLink        = $referenceLink
                     Reason         = $app.Reason
                 }
@@ -92,7 +94,7 @@
                     AppId          = $spn.appId
                     Status         = $status
                     NeedsAttention = -not $assignmentRequired
-                    SpnLink        = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId)"
+                    SpnLink        = "$($entraPortalUrl)#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Properties/objectId/$($spn.id)/appId/$($spn.appId)"
                     Reason         = $app.Reason
                 }
             }
@@ -118,7 +120,7 @@
             $testResultMarkdown += & $buildAppTable $appRows
         } else {
             $otherRows = $appRows | Where-Object { -not $_.NeedsAttention }
-            $testResultMarkdown = "You have $needsAttentionCount high-privilege first-party service principals that do not require explicit user assignment.`n`n"
+            $testResultMarkdown = "You have $needsAttentionCount high-privilege first-party applications that are not configured to require explicit user assignment.`n`n"
             $testResultMarkdown += "**Needs attention**`n`n"
             $testResultMarkdown += & $buildAppTable $needsAttentionRows
             $testResultMarkdown += "`n**Other monitored apps**`n`n"
