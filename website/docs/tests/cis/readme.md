@@ -50,6 +50,7 @@ These tests verify tenant and organization configuration against CIS Benchmark r
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2.md) | Ensure third party integrated applications are not allowed | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3.md) | Ensure | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1.md) | Ensure a dynamic group for guest users is created | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6.md) | Ensure users are restricted from recovering BitLocker keys | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1.md) | Ensure user consent to apps accessing company data on their behalf is not allowed | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2.md) | Ensure the admin consent workflow is enabled | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2.md) | Ensure that guest user access is restricted | Unknown | CIS E3 Level 1 |

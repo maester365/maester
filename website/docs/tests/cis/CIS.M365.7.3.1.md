@@ -22,6 +22,8 @@ keywords:
 
 # CIS.M365.7.3.1 - Ensure Office 365 SharePoint infected files are disallowed for download
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 7.3.1 (L2) Ensure Office 365 SharePoint infected files are disallowed for download

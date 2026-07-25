@@ -17,6 +17,8 @@ keywords:
 
 # MT.1037 - Only users with Presenter role are allowed to present in Teams meetings
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 This test checks the Org-wide default meeting policy is configured to only allow users in the **Presenter** role to request control and share content during meetings.

@@ -18,6 +18,8 @@ keywords:
 
 # MT.1090 - Global administrator role should not be added as local administrator on the device during Microsoft Entra join
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/nicolonsky" title="Nicola Suter · Original author"><img src="https://github.com/nicolonsky.png" alt="Nicola Suter" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/nicolonsky">Nicola Suter</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 The 'Global administrator role is added as local administrator on the device during Microsoft Entra join' setting determines if Microsoft Entra Global Administrator role is added to the local administrators group. This setting applies only once during the actual registration of the device as Microsoft Entra join.
@@ -41,7 +43,7 @@ To remediate existing devices, you need to create an Intune account policy, over
 | Suite | Maester |
 | Category | Entra |
 | PowerShell test | [Test-MtDeviceRegistrationLocalAdminsGlobalAdmin](/docs/commands/Test-MtDeviceRegistrationLocalAdminsGlobalAdmin) |
-| Tags | Device, Entra, MT.1090 |
+| Tags | Device, Entra, Maester, MT.1090 |
 
 ## Source
 

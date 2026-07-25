@@ -17,6 +17,8 @@ keywords:
 
 # MT.1067 - Authentication methods policies should not reference deleted groups.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/samerde" title="Sam Erde · Original author"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 # Authentication method policies should not reference non-existent groups

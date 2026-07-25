@@ -122,6 +122,9 @@ jobs:
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history so contributor attribution can be derived from git.
+          fetch-depth: 0
 
       - name: Download generated command reference
         if: needs.detect-command-reference-changes.outputs.generate == 'true'
@@ -161,4 +164,8 @@ jobs:
 
       - name: "\U0001F3D7️ Build website"
         working-directory: ${{ inputs.working_directory || 'website' }}
+        env:
+          # Lets the contributor generator resolve new commit emails to GitHub
+          # handles (cached in website/contributors/email-aliases.json).
+          GH_TOKEN: ${{ github.token }}
         run: npm run build

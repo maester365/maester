@@ -90,4 +90,10 @@ These tests verify Microsoft 365 tenant configuration against CISA Secure Cloud 
 | [CISA.MS.EXO.17.2](./CISA.MS.EXO.17.2.md) | Microsoft Purview Audit (Premium) logging SHALL be enabled. | Medium | Deprecated |
 | [CISA.MS.EXO.17.3](./CISA.MS.EXO.17.3.md) | Audit logs SHALL be maintained for at least the minimum duration dictated by OMB M-21-31 (Appendix C). | Medium | exchange |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1.md) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | Medium | spo |
+| [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2.md) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | Unknown | spo |
 | [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3.md) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | High | spo |
+| [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1.md) | File and folder default sharing scope SHALL be set to Specific People. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2.md) | File and folder default sharing permissions SHALL be set to View only. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1.md) | Expiration days for Anyone links SHALL be set to 30 days or less. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2.md) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3.md) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | Unknown | spo |

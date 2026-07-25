@@ -22,6 +22,8 @@ keywords:
 
 # CIS.GH.1.2.4 - (L1) Ensure issue deletion is limited to specific users
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/thetechgy" title="Travis McDade · Original author"><img src="https://github.com/thetechgy.png" alt="Travis McDade" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/thetechgy">Travis McDade</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 1.2.4 (L1) Ensure issue deletion is limited to specific users

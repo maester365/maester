@@ -162,8 +162,17 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1169](./MT.1169.md) | Catch-up Full Scan should be disabled | High | Defender |
 | [MT.1170](./MT.1170.md) | Catch-up Quick Scan should be disabled | High | Defender |
 | [MT.1171](./MT.1171.md) | Sample Submission should send safe samples automatically | High | Defender |
+| [MT.1172](./MT.1172.md) | Unified audit log ingestion is enabled | High | Purview |
+| [MT.1173](./MT.1173.md) | Sensitivity labels are published for files used by Microsoft 365 Copilot | Medium | Purview |
+| [MT.1174](./MT.1174.md) | Insider Risk Management policy for Risky AI usage is enabled | Medium | Purview |
+| [MT.1175](./MT.1175.md) | DLP policy is configured for the Microsoft 365 Copilot location | High | Purview |
+| [MT.1176](./MT.1176.md) | Retention policy is configured for the Microsoft Copilot location | Medium | Purview |
 | [MT.1177](./MT.1177.md) | Ensure LAPS Configuration Policy is properly set | Unknown | Intune |
 | [MT.1178](./MT.1178.md) | Ensure ASR Rules are configured correctly | High | Intune |
 | [MT.1179](./MT.1179.md) | Ensure App Control for Business is enabled | High | Intune |
 | [MT.1180](./MT.1180.md) | Ensure Managed Installer Rules are configured correctly | Medium | Intune |
 | [MT.1182](./MT.1182.md) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Unknown | Entra |
+| [MT.1183](./MT.1183.md) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Medium | Entra |
+| [MT.1184](./MT.1184.md) | Conditional Access policy without any target resources configured | Medium | CA |
+| [MT.1185](./MT.1185.md) | Block legacy MSOnline (MSOL) PowerShell module | High | Entra |
+| [MT.1186](./MT.1186.md) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | High | Entra |

@@ -19,6 +19,8 @@ keywords:
 
 # MT.1089 - Devices with critical credentials should be protected by Credential Guard.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/robbevandendaele" title="Robbe Van den Daele · Original author"><img src="https://github.com/RobbeVandenDaele.png" alt="Robbe Van den Daele" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/robbevandendaele">Robbe Van den Daele</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Devices shown in the output are devices where Credential Guard is not enabled or misconfigured, but contains credentials of critical accounts. When critical credentials are stored on devices without Credential Guard enabled, it is easy for adversaries to steal those credentials when the device is compromised. This is because, without Credential Guard enabled, Kerberos, NTLM, and Credential Manager secrets are stored in the Local Security Authority (LSA) process called `lsass.exe`, which can be dumped with various tools like MimiKatz. With Credential Guard enabled, these secrets are protected and isolated using Virtualization-based security (VBS).

@@ -1,12 +1,14 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { computeContributorData, snapshotPath } from "./contributors.mjs";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
 const repoRoot = join(websiteRoot, "..");
 const testsRoot = join(repoRoot, "tests");
 const docsTestsRoot = join(websiteRoot, "docs", "tests");
+const docsCommandsRoot = join(websiteRoot, "docs", "commands");
 const publicRoot = join(repoRoot, "powershell", "public");
 const internalRoot = join(repoRoot, "powershell", "internal");
 const configPath = join(testsRoot, "maester-config.json");
@@ -82,6 +84,61 @@ function escapeTable(value) {
     .replaceAll("|", "\\|")
     .replaceAll("<br>", "<br />")
     .replaceAll("\n", "<br />");
+}
+
+function jsxText(value) {
+  return String(value ?? "").replace(/[&<>{}]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "{": "&#123;", "}": "&#125;" }[ch]));
+}
+
+function jsxAttr(value) {
+  return jsxText(value).replaceAll('"', "&quot;");
+}
+
+function contributorLinkTarget(profile) {
+  return profile ? `/contributors/${profile.id.toLowerCase()}` : "/contributors";
+}
+
+function renderBylineAvatar(profile, extraClass, roleLabel) {
+  if (!profile) return "";
+  const title = `${profile.name}${roleLabel ? ` · ${roleLabel}` : ""}`;
+  const inner = profile.avatar
+    ? `<img src="${jsxAttr(profile.avatar)}" alt="${jsxAttr(profile.name)}" />`
+    : `<span className="test-byline-initials">${jsxText(profile.initials ?? "?")}</span>`;
+  return `<a className="test-byline-avatar${extraClass}" href="${jsxAttr(contributorLinkTarget(profile))}" title="${jsxAttr(title)}">${inner}</a>`;
+}
+
+function renderContributorByline(test, contributorData) {
+  const attribution = contributorData?.attributions?.[test.id];
+  if (!attribution) return [];
+  const profilesById = contributorData.profilesById;
+  const author = profilesById.get(attribution.author);
+  if (!author) return [];
+  const coContributors = attribution.contributors.map((id) => profilesById.get(id)).filter(Boolean);
+
+  const maxAvatars = 6;
+  const avatarParts = [renderBylineAvatar(author, " test-byline-avatar--author", "Original author")];
+  for (const profile of coContributors.slice(0, maxAvatars - 1)) {
+    avatarParts.push(renderBylineAvatar(profile, "", "Co-contributor"));
+  }
+  const overflow = coContributors.length - (maxAvatars - 1);
+  if (overflow > 0) avatarParts.push(`<span className="test-byline-avatar test-byline-more">+${overflow}</span>`);
+
+  const authorLink = `<a href="${jsxAttr(contributorLinkTarget(author))}">${jsxText(author.name)}</a>`;
+  let coText = "";
+  if (coContributors.length === 1) {
+    coText = ` with <a href="${jsxAttr(contributorLinkTarget(coContributors[0]))}">${jsxText(coContributors[0].name)}</a>`;
+  } else if (coContributors.length > 1) {
+    coText = ` with ${coContributors.length} co-contributors`;
+  }
+
+  return [
+    `<div className="test-byline">` +
+      `<div className="test-byline-avatars">${avatarParts.join("")}</div>` +
+      `<div className="test-byline-meta"><span className="test-byline-text">Contributed by ${authorLink}${coText}</span>` +
+      `<a className="test-byline-link" href="/contributors">All contributors →</a></div>` +
+      `</div>`,
+    "",
+  ];
 }
 
 function normalizeWhitespace(value) {
@@ -324,7 +381,7 @@ function buildInventory() {
       markdown: doc.markdown ?? "",
       remediation: doc.remediation ?? "",
       relatedLinks: doc.relatedLinks ?? "",
-      commandLink: functionName ? `/docs/commands/${functionName}` : "",
+      commandLink: functionName && existsSync(join(docsCommandsRoot, `${functionName}.mdx`)) ? `/docs/commands/${functionName}` : "",
     });
   }
   return [...testsById.values()].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
@@ -334,11 +391,12 @@ function pagePathFor(test) {
   return join(docsTestsRoot, test.suite, `${test.id}.md`);
 }
 
-function renderTestPage(test) {
+function renderTestPage(test, contributorData) {
   const keywords = unique(["Maester", "Microsoft 365 security", test.id, test.severity, suiteConfig[test.suite]?.label, test.category, ...test.tags]);
   const body = [];
   body.push(generatedMarker);
   body.push("", `# ${test.id} - ${test.title}`, "");
+  body.push(...renderContributorByline(test, contributorData));
   body.push("## Overview", "", test.markdown || test.helpDescription || test.description, "");
   body.push("## Test Metadata", "");
   body.push("| Field | Value |", "| --- | --- |");
@@ -346,7 +404,10 @@ function renderTestPage(test) {
   body.push(`| Severity | ${escapeTable(test.severity)} |`);
   body.push(`| Suite | ${escapeTable(suiteConfig[test.suite]?.label ?? test.suite)} |`);
   body.push(`| Category | ${escapeTable(test.category)} |`);
-  if (test.functionName) body.push(`| PowerShell test | [${test.functionName}](${test.commandLink}) |`);
+  if (test.functionName) {
+    const commandReference = test.commandLink ? `[${test.functionName}](${test.commandLink})` : `\`${test.functionName}\``;
+    body.push(`| PowerShell test | ${commandReference} |`);
+  }
   body.push(`| Tags | ${escapeTable(test.tags.join(", "))} |`, "");
   if (test.remediation && !test.markdown.includes(test.remediation)) {
     body.push("## Remediation", "", test.remediation, "");
@@ -424,6 +485,8 @@ ${generatedMarker}
 # Tests Overview
 
 This section is generated from the Maester test source. Each page includes the test ID, severity, tags, PowerShell command, overview, remediation details, and related references when available.
+
+Every test is researched, written, and refined by security experts from the Maester community — [meet the contributors](/contributors).
 
 ## Test Suites
 
@@ -503,6 +566,18 @@ function main() {
   const writes = [];
   clearGeneratedDocs();
 
+  const contributorData = computeContributorData(tests, { updateAliases: !checkMode });
+  contributorData.profilesById = new Map(contributorData.profiles.map((profile) => [profile.id, profile]));
+  // Tests not yet in the released docs version only resolve under /docs/next/.
+  const releasedVersions = JSON.parse(readFileSync(join(websiteRoot, "versions.json"), "utf8"));
+  const versionedTestsRoot = releasedVersions[0] ? join(websiteRoot, "versioned_docs", `version-${releasedVersions[0]}`, "tests") : "";
+  const docPathFor = (test) =>
+    versionedTestsRoot && existsSync(join(versionedTestsRoot, test.suite, `${test.id}.md`))
+      ? `/docs/tests/${test.id}`
+      : `/docs/next/tests/${test.id}`;
+  const testTitles = Object.fromEntries(tests.map((test) => [test.id, { title: test.title, path: docPathFor(test) }]));
+  writeGenerated(snapshotPath, `${JSON.stringify({ profiles: contributorData.profiles, attributions: contributorData.attributions, tests: testTitles }, null, 2)}\n`, writes);
+
   writeGenerated(join(docsTestsRoot, "readme.md"), renderRootIndex(tests), writes);
   writeGenerated(join(docsTestsRoot, "tags", "readme.md"), renderTagsIndex(tests), writes);
 
@@ -511,7 +586,7 @@ function main() {
     if (suiteTests.length === 0) continue;
     writeGenerated(join(docsTestsRoot, suite, "readme.md"), renderSuiteIndex(suite, suiteTests), writes);
     for (const test of suiteTests) {
-      writeGenerated(pagePathFor(test), renderTestPage(test), writes);
+      writeGenerated(pagePathFor(test), renderTestPage(test, contributorData), writes);
     }
   }
 
