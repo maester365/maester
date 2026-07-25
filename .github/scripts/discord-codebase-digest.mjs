@@ -17,6 +17,7 @@ const discordWebhook = parseDiscordWebhookUrl(process.env.DISCORD_CODEBASE_WEBHO
 const avatarUrl = process.env.DISCORD_AVATAR_URL;
 const now = new Date(process.env.DIGEST_NOW || Date.now());
 const mode = process.env.DIGEST_MODE || "daily";
+const triggerSchedule = process.env.DIGEST_TRIGGER_SCHEDULE || "";
 
 if (!token) {
   fail("GITHUB_TOKEN is required.");
@@ -33,9 +34,12 @@ if (mode === "monthly-backfill") {
 }
 
 async function runDailyDigest({ owner, repo }) {
-  if (!dryRun && !forcePost && melbourneHour(now) !== 9) {
-    console.log(`Skipping: local time in ${TIME_ZONE} is ${formatMelbourne(now)}, not 9am.`);
-    process.exit(0);
+  if (!dryRun && !forcePost) {
+    const skipReason = dailyPostSkipReason(now, triggerSchedule);
+    if (skipReason) {
+      console.log(`Skipping: ${skipReason}`);
+      process.exit(0);
+    }
   }
 
   const until = now;
@@ -785,6 +789,35 @@ function melbourneParts(date) {
     minute: Number(parts.find((part) => part.type === "minute")?.value),
     second: Number(parts.find((part) => part.type === "second")?.value),
   };
+}
+
+function dailyPostSkipReason(date, schedule) {
+  if (schedule) {
+    const expectedSchedule = expectedDailySchedule(date);
+    if (schedule !== expectedSchedule) {
+      return `schedule ${schedule} is not the active ${TIME_ZONE} schedule (${expectedSchedule}) for ${formatMelbourneDate(date)}.`;
+    }
+
+    return null;
+  }
+
+  if (melbourneHour(date) !== 9) {
+    return `local time in ${TIME_ZONE} is ${formatMelbourne(date)}, not 9am.`;
+  }
+
+  return null;
+}
+
+function expectedDailySchedule(date) {
+  return melbourneUtcOffsetHours(date) === 11
+    ? "0 22 * * *"
+    : "0 23 * * *";
+}
+
+function melbourneUtcOffsetHours(date) {
+  const parts = melbourneParts(date);
+  const localAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  return Math.round((localAsUtc - date.getTime()) / (60 * 60 * 1000));
 }
 
 function melbourneHour(date) {

@@ -54,4 +54,5 @@ jobs:
           DIGEST_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           DIGEST_FORCE_POST: ${{ github.event_name == 'workflow_dispatch' && inputs.force_post || false }}
           DIGEST_SINCE_HOURS: ${{ github.event_name == 'workflow_dispatch' && inputs.since_hours || '24' }}
+          DIGEST_TRIGGER_SCHEDULE: ${{ github.event_name == 'schedule' && github.event.schedule || '' }}
         run: node .github/scripts/discord-codebase-digest.mjs
