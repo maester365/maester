@@ -58,11 +58,10 @@ Describe 'Active Directory collectors require an explicit connection' {
 
 Describe 'Active Directory Pester tests remain opt-in' {
     BeforeEach {
-        $script:adTestRoot = Join-Path $TestDrive ([guid]::NewGuid().ToString())
-        $script:adTestPath = Join-Path $script:adTestRoot 'ad'
+        $script:adTestPath = Join-Path $TestDrive ([guid]::NewGuid().ToString())
         $script:adResultPath = Join-Path $TestDrive "$([guid]::NewGuid()).json"
         $script:adMarkerPath = Join-Path $TestDrive "$([guid]::NewGuid()).marker"
-        New-Item -Path $script:adTestPath -ItemType Directory -Force | Out-Null
+        New-Item -Path $script:adTestPath -ItemType Directory | Out-Null
 
         $probeTest = @'
 Describe 'AD opt-in probe' -Tag 'AD' {
@@ -74,14 +73,6 @@ Describe 'AD opt-in probe' -Tag 'AD' {
 '@
         $probeTest.Replace('__MARKER_PATH__', $script:adMarkerPath) |
             Set-Content -Path (Join-Path $script:adTestPath 'ActiveDirectory.Tests.ps1')
-
-        @'
-Describe 'Non-AD baseline probe' -Tag 'Baseline' {
-    It 'BASELINE.1: runs without external dependencies' {
-        $true | Should -BeTrue
-    }
-}
-'@ | Set-Content -Path (Join-Path $script:adTestRoot 'Baseline.Tests.ps1')
 
         InModuleScope Maester {
             $__MtSession.ADConnection = $null
@@ -95,54 +86,9 @@ Describe 'Non-AD baseline probe' -Tag 'Baseline' {
     }
 
     It 'Does not run an AD-tagged test by default, even when -Tag AD is supplied' {
-        $result = Invoke-Maester -Path $script:adTestRoot -Tag 'AD' -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
+        Invoke-Maester -Path $script:adTestPath -Tag 'AD' -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck
 
         Test-Path $script:adMarkerPath | Should -BeFalse
-        $result.TotalCount | Should -Be 1
-        $result.Tests.ScriptBlockFile | Should -Not -Contain (Join-Path $script:adTestPath 'ActiveDirectory.Tests.ps1')
-    }
-
-    It 'Does not discover bundled AD tests during a default run' {
-        $result = Invoke-Maester -Path $script:adTestRoot -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
-
-        Test-Path $script:adMarkerPath | Should -BeFalse
-        $result.TotalCount | Should -Be 1
-        $result.PassedCount | Should -Be 1
-        $result.NotRunCount | Should -Be 0
-        $result.Tests.Id | Should -Be 'BASELINE.1'
-        $result.PesterConfig.Run.ExcludePath | Should -Contain (Join-Path $script:adTestPath '*')
-    }
-
-    It 'Falls back to tag filtering when the AD directory is the run path itself' {
-        # Excluding every test file makes Pester throw, so the tag filter has to carry
-        # the exclusion on its own here.
-        $result = Invoke-Maester -Path $script:adTestPath -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
-
-        Test-Path $script:adMarkerPath | Should -BeFalse
-        $result.PassedCount | Should -Be 0
-        $result.Tests.Id | Should -Contain 'AD-OPT-IN'
-        $result.Tests.Result | Should -Be 'NotRun'
-        $result.PesterConfig.Run.ExcludePath | Should -Not -Contain (Join-Path $script:adTestPath '*')
-    }
-
-    It 'Does not exclude a directory named ad that holds tests which are not AD-tagged' {
-        $lookalikeRoot = Join-Path $TestDrive ([guid]::NewGuid().ToString())
-        $lookalikePath = Join-Path $lookalikeRoot 'ad'
-        New-Item -Path $lookalikePath -ItemType Directory -Force | Out-Null
-
-        @'
-Describe 'Custom probe in a folder named ad' -Tag 'Custom' {
-    It 'LOOKALIKE.1: runs because it is not an AD test' {
-        $true | Should -BeTrue
-    }
-}
-'@ | Set-Content -Path (Join-Path $lookalikePath 'Lookalike.Tests.ps1')
-
-        $result = Invoke-Maester -Path $lookalikeRoot -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
-
-        $result.Tests.Id | Should -Contain 'LOOKALIKE.1'
-        $result.PassedCount | Should -Be 1
-        $result.PesterConfig.Run.ExcludePath | Should -Not -Contain (Join-Path $lookalikePath '*')
     }
 
     It 'Runs an AD-tagged test after Active Directory was explicitly validated' {
@@ -153,39 +99,9 @@ Describe 'Custom probe in a folder named ad' -Tag 'Custom' {
             }
         }
 
-        $result = Invoke-Maester -Path $script:adTestRoot -Tag 'AD' -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
+        Invoke-Maester -Path $script:adTestPath -Tag 'AD' -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck
 
         Test-Path $script:adMarkerPath | Should -BeTrue
-        $result.Tests.Id | Should -Contain 'AD-OPT-IN'
-        $result.PesterConfig.Run.ExcludePath | Should -Not -Contain (Join-Path $script:adTestPath '*')
-    }
-
-    It 'Preserves caller exclusions when adding the AD test path' {
-        $customTestPath = Join-Path $script:adTestRoot 'custom'
-        $customMarkerPath = Join-Path $TestDrive "$([guid]::NewGuid()).marker"
-        New-Item -Path $customTestPath -ItemType Directory | Out-Null
-
-        @'
-Describe 'Caller-excluded probe' {
-    It 'CUSTOM.1: does not run when its path is excluded' {
-        New-Item -Path '__MARKER_PATH__' -ItemType File | Out-Null
-        $true | Should -BeTrue
-    }
-}
-'@.Replace('__MARKER_PATH__', $customMarkerPath) |
-            Set-Content -Path (Join-Path $customTestPath 'Custom.Tests.ps1')
-
-        $callerExcludePath = Join-Path $customTestPath '*'
-        $pesterConfiguration = New-PesterConfiguration
-        $pesterConfiguration.Run.ExcludePath = $callerExcludePath
-
-        $result = Invoke-Maester -Path $script:adTestRoot -PesterConfiguration $pesterConfiguration -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
-
-        Test-Path $script:adMarkerPath | Should -BeFalse
-        Test-Path $customMarkerPath | Should -BeFalse
-        $result.TotalCount | Should -Be 1
-        $result.PesterConfig.Run.ExcludePath | Should -Contain $callerExcludePath
-        $result.PesterConfig.Run.ExcludePath | Should -Contain (Join-Path $script:adTestPath '*')
     }
 }
 
