@@ -635,6 +635,7 @@ module.exports = [
     'commands/Test-MtExoSetScl',
     'commands/Test-MtFeatureUpdatePolicy',
     'commands/Test-MtGroupCreationRestricted',
+    'commands/Test-MtHighPrivilegeServicePrincipalsForAllUsers',
     'commands/Test-MtHighRiskAppPermissions',
     'commands/Test-MtIntuneAppControl',
     'commands/Test-MtIntuneASRRules',
