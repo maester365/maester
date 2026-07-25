@@ -24,7 +24,7 @@ In `maester365/maester`, create a GitHub Actions environment named exactly
 `maester-smoke-test`. Configure it before adding credentials:
 
 1. Do not configure required reviewers. Approved-pull-request quick runs and
-   every full run after a merge to `main` must start automatically.
+   full runs after PowerShell changes merge to `main` must start automatically.
 2. Disable **Allow administrators to bypass configured protection rules**.
 3. Restrict deployment branches and tags to the `main` branch.
 
@@ -170,8 +170,10 @@ write permission, mail permission, or client secret is required.
   that check to the `Protect main` ruleset's required status checks after this
   workflow has been merged to `main`; enabling it earlier would prevent this
   pull request from producing the new check.
-- Every push to `main`, including a merged pull request, starts the full
-  cross-platform Graph run automatically.
+- A push to `main` starts the full cross-platform Graph run only when it
+  includes a PowerShell script, module, or data-file change matching
+  `**/*.ps1`, `**/*.psm1`, or `**/*.psd1`. Documentation-only and other
+  non-PowerShell merges do not start the full run.
 - A weekly Monday 05:17 UTC run exercises the full published preview.
 - A manual run from `main` can select quick or full and either the `preview` or
   `latest` module channel. Manual runs from another ref fail before tenant
@@ -184,9 +186,10 @@ trusted context job can read actions and pull requests and create the explicit
 merge-gate check, but cannot request an OIDC token. Only the protected matrix
 receives `contents: read` and `id-token: write`.
 
-The action is pinned to the immutable commit for `maester-action` v1.2.0.
-Public result summaries, public artifacts, and telemetry remain disabled.
-After Maester produces a result, the workflow transfers only the HTML report
-directly to the core-only private release repository. The matrix uses
-`fail-fast: false` so a failure on one operating system does not hide the other
-platform results.
+The action is pinned to the immutable commit for `maester-action` v1.2.0. The
+action's public result details, public artifacts, and telemetry remain disabled;
+the public run summary contains only links protected by the private report
+repository's access controls. After Maester produces a result, the workflow
+transfers only the HTML report directly to the core-only private release
+repository. The matrix uses `fail-fast: false` so a failure on one operating
+system does not hide the other platform results.
