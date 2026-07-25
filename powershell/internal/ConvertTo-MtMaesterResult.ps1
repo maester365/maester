@@ -353,6 +353,9 @@
         }
 
         $timeSpanFormat = 'hh\:mm\:ss'
+        # Individual tests usually complete in well under a second, so keep milliseconds
+        # here. The run-level totals below stay on the coarser format.
+        $testTimeSpanFormat = 'hh\:mm\:ss\.fff'
         $mtTestInfo = [PSCustomObject]@{
             Index           = $testIndex
             Id              = $testId
@@ -366,7 +369,7 @@
             ScriptBlockFile = $test.ScriptBlock.File
             ErrorRecord     = $test.ErrorRecord
             Block           = $test.Block.ExpandedName
-            Duration        = $test.Duration.ToString($timeSpanFormat)
+            Duration        = $test.Duration.ToString($testTimeSpanFormat)
             ResultDetail    = $testResultDetail
         }
         $mtTests += $mtTestInfo

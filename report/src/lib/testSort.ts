@@ -5,11 +5,12 @@ interface SortableTestResult {
   Severity?: string
 }
 
+// Matches the Critical → Info order used by the Severity column sort.
 const severityOrder: Record<string, number> = {
-  High: 0,
-  Medium: 1,
-  Low: 2,
-  Critical: 3,
+  Critical: 0,
+  High: 1,
+  Medium: 2,
+  Low: 3,
   Info: 4,
 }
 

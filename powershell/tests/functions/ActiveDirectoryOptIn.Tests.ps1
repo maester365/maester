@@ -113,6 +113,38 @@ Describe 'Non-AD baseline probe' -Tag 'Baseline' {
         $result.PesterConfig.Run.ExcludePath | Should -Contain (Join-Path $script:adTestPath '*')
     }
 
+    It 'Falls back to tag filtering when the AD directory is the run path itself' {
+        # Excluding every test file makes Pester throw, so the tag filter has to carry
+        # the exclusion on its own here.
+        $result = Invoke-Maester -Path $script:adTestPath -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
+
+        Test-Path $script:adMarkerPath | Should -BeFalse
+        $result.PassedCount | Should -Be 0
+        $result.Tests.Id | Should -Contain 'AD-OPT-IN'
+        $result.Tests.Result | Should -Be 'NotRun'
+        $result.PesterConfig.Run.ExcludePath | Should -Not -Contain (Join-Path $script:adTestPath '*')
+    }
+
+    It 'Does not exclude a directory named ad that holds tests which are not AD-tagged' {
+        $lookalikeRoot = Join-Path $TestDrive ([guid]::NewGuid().ToString())
+        $lookalikePath = Join-Path $lookalikeRoot 'ad'
+        New-Item -Path $lookalikePath -ItemType Directory -Force | Out-Null
+
+        @'
+Describe 'Custom probe in a folder named ad' -Tag 'Custom' {
+    It 'LOOKALIKE.1: runs because it is not an AD test' {
+        $true | Should -BeTrue
+    }
+}
+'@ | Set-Content -Path (Join-Path $lookalikePath 'Lookalike.Tests.ps1')
+
+        $result = Invoke-Maester -Path $lookalikeRoot -OutputJsonFile $script:adResultPath -SkipGraphConnect -NonInteractive -NoLogo -DisableTelemetry -SkipVersionCheck -PassThru
+
+        $result.Tests.Id | Should -Contain 'LOOKALIKE.1'
+        $result.PassedCount | Should -Be 1
+        $result.PesterConfig.Run.ExcludePath | Should -Not -Contain (Join-Path $lookalikePath '*')
+    }
+
     It 'Runs an AD-tagged test after Active Directory was explicitly validated' {
         InModuleScope Maester {
             $__MtSession.ADConnection = [PSCustomObject]@{

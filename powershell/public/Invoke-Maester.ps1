@@ -303,7 +303,80 @@
         return $PesterConfiguration
     }
 
+    function TestIsActiveDirectoryTestDirectory($Path) {
+        # Excluding a directory by path is only equivalent to the AD tag exclusion when
+        # every test in it is AD-tagged. Verifying that keeps unrelated tests that happen
+        # to live in a folder named "ad" runnable. Scanning the files costs far less than
+        # letting Pester discover them.
+        $testFiles = @(Get-ChildItem -LiteralPath $Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue)
+        if ($testFiles.Count -eq 0) {
+            return $false
+        }
+
+        foreach ($testFile in $testFiles) {
+            if (-not (Select-String -LiteralPath $testFile.FullName -Pattern "-Tag\s+['`"]AD['`"]" -Quiet)) {
+                return $false
+            }
+        }
+
+        return $true
+    }
+
     function AddActiveDirectoryTestExclusions($PesterConfiguration) {
+        $activeDirectoryPaths = [System.Collections.Generic.List[string]]::new()
+        $remainingTestFileCount = 0
+
+        foreach ($runPath in @($PesterConfiguration.Run.Path.Value)) {
+            if ([string]::IsNullOrWhiteSpace($runPath)) {
+                continue
+            }
+
+            $resolvedRunPaths = @(Resolve-Path -Path $runPath -ErrorAction SilentlyContinue)
+            foreach ($resolvedRunPath in $resolvedRunPaths) {
+                if (-not (Test-Path -LiteralPath $resolvedRunPath.Path -PathType Container)) {
+                    continue
+                }
+
+                # A run path can be the bundled "ad" directory itself or the test root above it.
+                $candidatePath = if ((Split-Path -Path $resolvedRunPath.Path -Leaf) -eq 'ad') {
+                    $resolvedRunPath.Path
+                } else {
+                    Join-Path -Path $resolvedRunPath.Path -ChildPath 'ad'
+                }
+
+                $runPathTestFileCount = @(Get-ChildItem -LiteralPath $resolvedRunPath.Path -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue).Count
+
+                if (-not (Test-Path -LiteralPath $candidatePath -PathType Container)) {
+                    $remainingTestFileCount += $runPathTestFileCount
+                    continue
+                }
+
+                if (-not (TestIsActiveDirectoryTestDirectory $candidatePath)) {
+                    Write-Verbose "Not excluding '$candidatePath' by path because it contains tests that are not AD-tagged."
+                    $remainingTestFileCount += $runPathTestFileCount
+                    continue
+                }
+
+                $activeDirectoryTestFileCount = @(Get-ChildItem -LiteralPath $candidatePath -Recurse -File -Filter '*.Tests.ps1' -ErrorAction SilentlyContinue).Count
+                $remainingTestFileCount += $runPathTestFileCount - $activeDirectoryTestFileCount
+
+                if ($activeDirectoryPaths -notcontains $candidatePath) {
+                    $activeDirectoryPaths.Add($candidatePath)
+                }
+            }
+        }
+
+        if ($activeDirectoryPaths.Count -eq 0) {
+            return
+        }
+
+        if ($remainingTestFileCount -le 0) {
+            # Pester throws when every test file is excluded, so leave discovery alone and
+            # let the AD tag filter report the tests as NotRun instead.
+            Write-Verbose 'Not excluding Active Directory test paths because no other test files would remain.'
+            return
+        }
+
         $effectiveExcludePaths = [System.Collections.Generic.List[string]]::new()
         foreach ($excludePath in @($PesterConfiguration.Run.ExcludePath.Value)) {
             if (-not [string]::IsNullOrWhiteSpace($excludePath)) {
@@ -311,29 +384,13 @@
             }
         }
 
-        foreach ($runPath in @($PesterConfiguration.Run.Path.Value)) {
-            if ([string]::IsNullOrWhiteSpace($runPath)) {
-                continue
-            }
-
+        foreach ($activeDirectoryPath in $activeDirectoryPaths) {
             # Run.ExcludePath does not recursively exclude a directory in Pester 5,
             # so use a wildcard for each bundled "ad" test directory.
-            $resolvedRunPaths = @(Resolve-Path -Path $runPath -ErrorAction SilentlyContinue)
-            foreach ($resolvedRunPath in $resolvedRunPaths) {
-                if (-not (Test-Path -LiteralPath $resolvedRunPath.Path -PathType Container)) {
-                    continue
-                }
-
-                $activeDirectoryPath = Join-Path -Path $resolvedRunPath.Path -ChildPath 'ad'
-                if (-not (Test-Path -LiteralPath $activeDirectoryPath -PathType Container)) {
-                    continue
-                }
-
-                $activeDirectoryExcludePath = Join-Path -Path $activeDirectoryPath -ChildPath '*'
-                if ($effectiveExcludePaths -notcontains $activeDirectoryExcludePath) {
-                    $effectiveExcludePaths.Add($activeDirectoryExcludePath)
-                    Write-Verbose "Excluding Active Directory test path: $activeDirectoryExcludePath"
-                }
+            $activeDirectoryExcludePath = Join-Path -Path $activeDirectoryPath -ChildPath '*'
+            if ($effectiveExcludePaths -notcontains $activeDirectoryExcludePath) {
+                $effectiveExcludePaths.Add($activeDirectoryExcludePath)
+                Write-Verbose "Excluding Active Directory test path: $activeDirectoryExcludePath"
             }
         }
 
