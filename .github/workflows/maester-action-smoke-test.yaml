@@ -3,6 +3,10 @@ name: Demo tenant Invoke-Maester smoke test
 on:
   push:
     branches: [main]
+    paths:
+      - "**/*.ps1"
+      - "**/*.psd1"
+      - "**/*.psm1"
   workflow_run:
     workflows: ["Demo tenant quick approval trigger"]
     types: [completed]
