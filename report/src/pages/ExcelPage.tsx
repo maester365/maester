@@ -14,6 +14,7 @@ export default function ExcelPage() {
       "Title",
       "Severity",
       "Status",
+      "Duration",
       "Category",
       "Description",
       "Result",
@@ -27,6 +28,7 @@ export default function ExcelPage() {
         test.Title,
         test.Severity,
         test.Result,
+        test.Duration,
         test.Block,
         test.ResultDetail?.TestDescription,
         test.ResultDetail?.TestResult,
@@ -97,6 +99,7 @@ export default function ExcelPage() {
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Title</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Severity</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Status</th>
+              <th className="border-b border-gray-200 p-2 dark:border-gray-700">Duration</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Category</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Description</th>
               <th className="border-b border-gray-200 p-2 dark:border-gray-700">Result</th>
@@ -116,6 +119,7 @@ export default function ExcelPage() {
                 <td className="p-2">{test.Title}</td>
                 <td className="p-2">{test.Severity}</td>
                 <td className="max-w-xs truncate p-2">{test.Result}</td>
+                <td className="whitespace-nowrap p-2">{test.Duration}</td>
                 <td className="max-w-20 truncate p-2">{test.Block}</td>
                 <td
                   className="max-w-xs truncate p-2"

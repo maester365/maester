@@ -9,6 +9,9 @@ under `./module/`. The source tree (`powershell/`, `tests/`) is never modified.
 # Build, validate, and import for local development
 ./build/Build-LocalMaester.ps1
 
+# Build and embed the report, then build, validate, and import
+./build/Build-LocalMaester.ps1 -BuildReport
+
 # Standard build
 ./build/Build-MaesterModule.ps1
 

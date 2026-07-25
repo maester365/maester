@@ -109,6 +109,9 @@ This builds and validates the module, unloads any other Maester module, and
 imports the local build into the current PowerShell session. Run its packaged
 tests with `Invoke-Maester -Path ./module/maester-tests`.
 
+After changing the report, use `./build/Build-LocalMaester.ps1 -BuildReport` to
+build and embed the report template before building and importing the module.
+
 The `module/` folder is a build artifact — it is ignored by git and never committed to source control. Built modules are attached to each [GitHub Release](https://github.com/maester365/maester/releases) and published to the PowerShell Gallery from CI. See the [contributing guide](https://maester.dev/docs/contributing) for full details.
 
 ## Contributing
