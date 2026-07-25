@@ -12,7 +12,7 @@
             '9cee029c-6210-4654-90bb-17e6e9d36617'
         )
 
-        function New-TestServicePrincipal {
+        function Get-TestServicePrincipal {
             param(
                 [string] $AppId,
                 [bool] $AssignmentRequired = $true,
@@ -49,7 +49,7 @@
     It 'fails when a monitored first-party service principal is missing' {
         $servicePrincipals = $script:monitoredAppIds |
             Select-Object -Skip 1 |
-            ForEach-Object { New-TestServicePrincipal -AppId $_ }
+            ForEach-Object { Get-TestServicePrincipal -AppId $_ }
         Mock -ModuleName Maester Invoke-MtGraphRequest { return $servicePrincipals }
 
         Test-MtHighPrivilegeServicePrincipalsForAllUsers | Should -BeFalse
@@ -59,7 +59,7 @@
 
     It 'passes when every monitored service principal requires assignment' {
         $servicePrincipals = $script:monitoredAppIds |
-            ForEach-Object { New-TestServicePrincipal -AppId $_ }
+            ForEach-Object { Get-TestServicePrincipal -AppId $_ }
         Mock -ModuleName Maester Invoke-MtGraphRequest { return $servicePrincipals }
 
         Test-MtHighPrivilegeServicePrincipalsForAllUsers | Should -BeTrue
@@ -69,7 +69,7 @@
 
     It 'fails when a disabled service principal does not require assignment' {
         $servicePrincipals = $script:monitoredAppIds |
-            ForEach-Object { New-TestServicePrincipal -AppId $_ }
+            ForEach-Object { Get-TestServicePrincipal -AppId $_ }
         $servicePrincipals[0].appRoleAssignmentRequired = $false
         $servicePrincipals[0].accountEnabled = $false
         Mock -ModuleName Maester Invoke-MtGraphRequest { return $servicePrincipals }
