@@ -375,7 +375,7 @@ ${body.join("\n")}`;
 
 function renderSuiteIndex(suite, tests) {
   const config = suiteConfig[suite];
-  const rows = tests.map((test) => `| [${test.id}](../${test.id}) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`).join("\n");
+  const rows = tests.map((test) => `| [${test.id}](./${test.id}.md) | ${escapeTable(test.title)} | ${escapeTable(test.severity)} | ${escapeTable(test.category)} |`).join("\n");
   return `---
 id: overview
 title: ${yamlQuote(config.title)}
