@@ -14,14 +14,16 @@ description: "Searchable Maester test documentation generated from Pester tests,
 
 This section is generated from the Maester test source. Each page includes the test ID, severity, tags, PowerShell command, overview, remediation details, and related references when available.
 
+Every test is researched, written, and refined by security experts from the Maester community — [meet the contributors](/contributors).
+
 ## Test Suites
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 149 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 158 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
-| [CISA](./cisa) | 73 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
-| [CIS](./cis) | 49 | CIS Benchmark controls implemented as Maester tests. |
+| [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
+| [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
 | [ORCA](./orca) | 67 | ORCA Exchange Online security configuration tests included in Maester. |
 
 ## All Tests
@@ -60,6 +62,7 @@ This section is generated from the Maester test source. Each page includes the t
 | [CIS.M365.5.1.2.2](./CIS.M365.5.1.2.2) | Ensure third party integrated applications are not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.2.3](./CIS.M365.5.1.2.3) | Ensure | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.3.1](./CIS.M365.5.1.3.1) | Ensure a dynamic group for guest users is created | CIS | Unknown | CIS E3 Level 1 |
+| [CIS.M365.5.1.4.6](./CIS.M365.5.1.4.6) | Ensure users are restricted from recovering BitLocker keys | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.1](./CIS.M365.5.1.5.1) | Ensure user consent to apps accessing company data on their behalf is not allowed | CIS | Unknown | CIS E3 Level 2 |
 | [CIS.M365.5.1.5.2](./CIS.M365.5.1.5.2) | Ensure the admin consent workflow is enabled | CIS | Unknown | CIS E3 Level 1 |
 | [CIS.M365.5.1.6.2](./CIS.M365.5.1.6.2) | Ensure that guest user access is restricted | CIS | Unknown | CIS E3 Level 1 |
@@ -149,7 +152,13 @@ This section is generated from the Maester test source. Each page includes the t
 | [CISA.MS.EXO.9.4](./CISA.MS.EXO.9.4) | Alternatively chosen filtering solutions SHOULD offer services comparable to Microsoft Defender's Common Attachment Filter. | CISA | Medium | exchange |
 | [CISA.MS.EXO.9.5](./CISA.MS.EXO.9.5) | At a minimum, click-to-run files SHOULD be blocked (e.g., .exe, .cmd, and .vbe). | CISA | High | exchange |
 | [CISA.MS.SHAREPOINT.1.1](./CISA.MS.SHAREPOINT.1.1) | External sharing for SharePoint SHALL be limited to Existing guests or Only People in your organization. | CISA | Medium | spo |
+| [CISA.MS.SHAREPOINT.1.2](./CISA.MS.SHAREPOINT.1.2) | External sharing for OneDrive SHALL be limited to Existing guests or Only People in your organization. | CISA | Unknown | spo |
 | [CISA.MS.SHAREPOINT.1.3](./CISA.MS.SHAREPOINT.1.3) | External sharing SHALL be restricted to approved external domains and/or users in approved security groups per interagency collaboration needs. | CISA | High | spo |
+| [CISA.MS.SHAREPOINT.2.1](./CISA.MS.SHAREPOINT.2.1) | File and folder default sharing scope SHALL be set to Specific People. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.2.2](./CISA.MS.SHAREPOINT.2.2) | File and folder default sharing permissions SHALL be set to View only. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.1](./CISA.MS.SHAREPOINT.3.1) | Expiration days for Anyone links SHALL be set to 30 days or less. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.2](./CISA.MS.SHAREPOINT.3.2) | Allowable file and folder permissions for Anyone links SHALL be set to View only. | CISA | Unknown | spo |
+| [CISA.MS.SHAREPOINT.3.3](./CISA.MS.SHAREPOINT.3.3) | Reauthentication days for people who use a verification code SHALL be set to 30 days or less. | CISA | Unknown | spo |
 | [EIDSCA.AF01](./EIDSCA.AF01) | Authentication Method - FIDO2 security key - State. | Entra ID SCA | High | General |
 | [EIDSCA.AF02](./EIDSCA.AF02) | Authentication Method - FIDO2 security key - Allow self-service set up. | Entra ID SCA | Medium | General |
 | [EIDSCA.AF03](./EIDSCA.AF03) | Authentication Method - FIDO2 security key - Enforce attestation. | Entra ID SCA | High | General |
@@ -338,11 +347,20 @@ This section is generated from the Maester test source. Each page includes the t
 | [MT.1169](./MT.1169) | Catch-up Full Scan should be disabled | Maester | High | Defender |
 | [MT.1170](./MT.1170) | Catch-up Quick Scan should be disabled | Maester | High | Defender |
 | [MT.1171](./MT.1171) | Sample Submission should send safe samples automatically | Maester | High | Defender |
+| [MT.1172](./MT.1172) | Unified audit log ingestion is enabled | Maester | High | Purview |
+| [MT.1173](./MT.1173) | Sensitivity labels are published for files used by Microsoft 365 Copilot | Maester | Medium | Purview |
+| [MT.1174](./MT.1174) | Insider Risk Management policy for Risky AI usage is enabled | Maester | Medium | Purview |
+| [MT.1175](./MT.1175) | DLP policy is configured for the Microsoft 365 Copilot location | Maester | High | Purview |
+| [MT.1176](./MT.1176) | Retention policy is configured for the Microsoft Copilot location | Maester | Medium | Purview |
 | [MT.1177](./MT.1177) | Ensure LAPS Configuration Policy is properly set | Maester | Unknown | Intune |
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
 | [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
 | [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
 | [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Maester | Unknown | Entra |
+| [MT.1183](./MT.1183) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Maester | Medium | Entra |
+| [MT.1184](./MT.1184) | Conditional Access policy without any target resources configured | Maester | Medium | CA |
+| [MT.1185](./MT.1185) | Block legacy MSOnline (MSOL) PowerShell module | Maester | High | Entra |
+| [MT.1186](./MT.1186) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | High | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

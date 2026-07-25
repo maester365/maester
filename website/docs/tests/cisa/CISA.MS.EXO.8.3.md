@@ -20,6 +20,8 @@ keywords:
 
 # CISA.MS.EXO.8.3 - The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/soulemike" title="Michael Soule · Original author"><img src="https://github.com/soulemike.png" alt="Michael Soule" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/soulemike">Michael Soule</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 The selected DLP solution SHOULD offer services comparable to the native DLP solution offered by Microsoft.

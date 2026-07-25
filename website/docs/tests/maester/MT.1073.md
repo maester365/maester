@@ -19,6 +19,8 @@ keywords:
 
 # MT.1073 - Soft- and hard-matching of synchronized objects should be blocked.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/thomas-s-schmidt" title="Thomas Schmidt · Co-contributor"><img src="https://github.com/thomas-s-schmidt.png" alt="Thomas Schmidt" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure soft and hard matching for on-premises synchronization objects is blocked

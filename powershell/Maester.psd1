@@ -269,7 +269,7 @@
         'Test-MtGsaCompliantNetworkBreakGlassExcluded', 'Test-MtGsaForwardingProfileAssignmentNotNested', 'Test-MtGsaM365ProfileEnabled',
         'Test-MtGsaPrivateAccessAppAssignmentNotNested', 'Test-MtGsaPrivateAccessAppCompliantDevice',
         'Test-MtGsaPrivateAccessAppNotOnDefaultConnectorGroup', 'Test-MtGsaPrivateAccessAppSegmentHygiene', 'Test-MtGsaQuickAccessNoSignInFrequency',
-        'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
+        'Test-MtHighPrivilegeServicePrincipalsForAllUsers', 'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
         'Test-MtIntuneLAPSConfiguration', 'Test-MtIntuneManagedInstallerRules', 'Test-MtIntuneRbacGroupsProtected',
         'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtManagedDeviceCleanupSettings', 'Test-MtManagementGroupWriteRequirement',
         'Test-MtMdmAuthority', 'Test-MtMobileThreatDefenseConnectors', 'Test-MtMdeArchiveScanning',

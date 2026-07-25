@@ -19,6 +19,8 @@ keywords:
 
 # MT.1147 - Do not sync krbtgt_AzureAD to Entra ID
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/f-bader" title="Fabian Bader · Original author"><img src="https://github.com/f-bader.png" alt="Fabian Bader" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/f-bader">Fabian Bader</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure krbtgt_AzureAD is not synchronized from on-premises Active Directory.

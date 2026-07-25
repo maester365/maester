@@ -17,6 +17,8 @@ keywords:
 
 # MT.1064 - Management group creation should be limited to users with explicit write access
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/brianveldman" title="Beerd Veldman · Original author"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/brianveldman">Beerd Veldman</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 By default, all Entra ID security principals can create new management groups. This introduces governance and security risks, as it allows any user to create a new management group and link subscriptions to it without oversight.
@@ -45,7 +47,7 @@ To enable the requirement for write permissions:
 | Suite | Maester |
 | Category | Azure |
 | PowerShell test | [Test-MtManagementGroupWriteRequirement](/docs/commands/Test-MtManagementGroupWriteRequirement) |
-| Tags | Azure, MT.1064 |
+| Tags | Azure, Maester, MT.1064 |
 
 ## Source
 

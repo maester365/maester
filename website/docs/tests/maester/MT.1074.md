@@ -17,6 +17,8 @@ keywords:
 
 # MT.1074 - Mailboxes should not send outbound mails using the .onmicrosoft.com domain.
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/jeanphilippegeorge" title="Jean-Philippe George · Co-contributor"><img src="https://github.com/JeanPhilippeGeorge.png" alt="Jean-Philippe George" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure none or less than 100 outbound mails per day are being sent using the .onmicrosoft.com domain.

@@ -21,6 +21,8 @@ keywords:
 
 # MT.1051 - Apps with high-risk permissions having an indirect path to Global Admin
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/henrikpiecha" title="Henrik Piecha · Original author"><img src="https://github.com/HenrikPiecha.png" alt="Henrik Piecha" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/henrikpiecha">Henrik Piecha</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure no Microsoft Entra ID applications or service principals have Graph permissions with a risk of having a direct or indirect path to a Global Admin or a full tenant takeover.
@@ -91,7 +93,7 @@ To check the applications permissions:
 | Suite | Maester |
 | Category | App |
 | PowerShell test | [Test-MtHighRiskAppPermissions](/docs/commands/Test-MtHighRiskAppPermissions) |
-| Tags | App, Entra, Graph, LongRunning, MT.1051, Preview |
+| Tags | App, Entra, Graph, LongRunning, Maester, MT.1051, Preview |
 
 ## Source
 
