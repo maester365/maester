@@ -18,6 +18,8 @@ keywords:
 
 # MT.1121 - AI agents with generative orchestration should have custom instructions
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/lnfernux" title="Truls Thorstad Dahlsveen · Original author"><img src="https://github.com/lnfernux.png" alt="Truls Thorstad Dahlsveen" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/lnfernux">Truls Thorstad Dahlsveen</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 AI agents with generative orchestration should have custom instructions.

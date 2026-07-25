@@ -19,6 +19,8 @@ keywords:
 
 # CIS.M365.8.2.3 - Ensure external Teams users cannot initiate conversations
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 8.2.3 (L1) Ensure external Teams users cannot initiate conversations

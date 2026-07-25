@@ -17,6 +17,8 @@ keywords:
 
 # MT.1083 - Ensure Delicensing Resiliency is enabled
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/l-gosling" title="Lukas Gosling · Original author"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/l-gosling">Lukas Gosling</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 > **Important:** This test is only available if your tenant has at least **5000 non-trial Exchange Online licenses**.

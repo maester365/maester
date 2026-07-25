@@ -18,6 +18,8 @@ keywords:
 
 # MT.1056 - Ensure that no person has permanent access to all Azure subscriptions at the root scope
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/oppedijk" title="Erik Oppedijk · Original author"><img src="https://github.com/Oppedijk.png" alt="Erik Oppedijk" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/brianveldman" title="Beerd Veldman · Co-contributor"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/oppedijk">Erik Oppedijk</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 Ensure that no person has permanent access to Azure Subscriptions.
@@ -55,7 +57,7 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 | Suite | Maester |
 | Category | Privileged |
 | PowerShell test | [Test-MtUserAccessAdmin](/docs/commands/Test-MtUserAccessAdmin) |
-| Tags | Azure, MT.1056, Privileged |
+| Tags | Azure, Maester, MT.1056, Privileged |
 
 ## Source
 

@@ -266,7 +266,7 @@
         'Test-MtKrbtgtAzureADNotSynced', 'Test-MtExoDelicensingResiliency',
         'Test-MtExoMailTip', 'Test-MtExoModernAuth', 'Test-MtExoMoeraMailActivity', 'Test-MtExoOutlookAddin',
         'Test-MtExoRejectDirectSend', 'Test-MtExoSetScl', 'Test-MtFeatureUpdatePolicy', 'Test-MtGroupCreationRestricted',
-        'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
+        'Test-MtHighPrivilegeServicePrincipalsForAllUsers', 'Test-MtHighRiskAppPermissions', 'Test-MtIntuneAppControl', 'Test-MtIntuneASRRules', 'Test-MtIntuneDiagnosticSettings',
         'Test-MtIntuneLAPSConfiguration', 'Test-MtIntuneManagedInstallerRules', 'Test-MtIntuneRbacGroupsProtected',
         'Test-MtLimitOnMicrosoftDomainUsage', 'Test-MtManagedDeviceCleanupSettings', 'Test-MtManagementGroupWriteRequirement',
         'Test-MtMdmAuthority', 'Test-MtMobileThreatDefenseConnectors', 'Test-MtMdeArchiveScanning',

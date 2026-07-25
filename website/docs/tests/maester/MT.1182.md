@@ -17,6 +17,8 @@ keywords:
 
 # MT.1182 - Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100).
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/blindzero" title="Matthias · Original author"><img src="https://github.com/blindzero.png" alt="Matthias" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/blindzero">Matthias</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 A DMARC policy SHALL be published with reject policy for every verified and managed domain in the Entra tenent.

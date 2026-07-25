@@ -18,6 +18,8 @@ keywords:
 
 # MT.1117 - Published AI agents should not be dormant
 
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/lnfernux" title="Truls Thorstad Dahlsveen · Original author"><img src="https://github.com/lnfernux.png" alt="Truls Thorstad Dahlsveen" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/lnfernux">Truls Thorstad Dahlsveen</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+
 ## Overview
 
 AI agents should not remain dormant for extended periods.
