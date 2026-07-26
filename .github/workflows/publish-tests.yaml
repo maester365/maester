@@ -48,7 +48,7 @@ jobs:
         run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath ./tests/maester-config.json -ModuleVersion $env:RELEASE_TAG
       - name: Publish to maester-tests
         id: push_directory
-        uses: cpina/github-action-push-to-another-repository@3fc9348237c8c6954ff88e58719af8a88af543f7
+        uses: cpina/github-action-push-to-another-repository@55306faa4ed53b815ae49e564af8cfb359d32ae2 # v1.7.3
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
