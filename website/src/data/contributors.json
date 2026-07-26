@@ -561,7 +561,7 @@
         "MT.1098"
       ],
       "initials": "M",
-      "recentCommits": 7
+      "recentCommits": 6
     },
     {
       "id": "thomas-s-schmidt",
@@ -1180,7 +1180,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 15
+      "recentCommits": 13
     },
     {
       "id": "oed-metzb",
@@ -1284,6 +1284,36 @@
       "testsContributed": [],
       "initials": "TD",
       "recentCommits": 0
+    },
+    {
+      "id": "crmhh",
+      "github": "crmhh",
+      "name": "Christopher Brumm",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/crmhh.png",
+      "firstContribution": "2026-07-25",
+      "testsAuthored": [
+        "MT.1187",
+        "MT.1188",
+        "MT.1189",
+        "MT.1190",
+        "MT.1191",
+        "MT.1192",
+        "MT.1193",
+        "MT.1194",
+        "MT.1195"
+      ],
+      "testsContributed": [],
+      "initials": "CB",
+      "recentCommits": 1
     },
     {
       "id": "BakkerJan",
@@ -2948,7 +2978,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 10
+      "recentCommits": 12
     }
   ],
   "attributions": {
@@ -5454,6 +5484,42 @@
       "author": "BakkerJan",
       "contributors": []
     },
+    "MT.1187": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1188": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1189": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1190": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1191": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1192": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1193": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1194": {
+      "author": "crmhh",
+      "contributors": []
+    },
+    "MT.1195": {
+      "author": "crmhh",
+      "contributors": []
+    },
     "ORCA.100": {
       "author": "soulemike",
       "contributors": [
@@ -7382,6 +7448,42 @@
     "MT.1186": {
       "title": "High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users.",
       "path": "/docs/next/tests/MT.1186"
+    },
+    "MT.1187": {
+      "title": "The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled",
+      "path": "/docs/next/tests/MT.1187"
+    },
+    "MT.1188": {
+      "title": "Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device",
+      "path": "/docs/next/tests/MT.1188"
+    },
+    "MT.1189": {
+      "title": "Groups assigned to Global Secure Access traffic forwarding profiles should not be nested",
+      "path": "/docs/next/tests/MT.1189"
+    },
+    "MT.1190": {
+      "title": "Entra Private Access applications should not use the Default connector group",
+      "path": "/docs/next/tests/MT.1190"
+    },
+    "MT.1191": {
+      "title": "Break-glass accounts should be excluded from the Compliant Network Conditional Access policy",
+      "path": "/docs/next/tests/MT.1191"
+    },
+    "MT.1192": {
+      "title": "Groups assigned to Entra Private Access applications should not be nested",
+      "path": "/docs/next/tests/MT.1192"
+    },
+    "MT.1193": {
+      "title": "Entra Private Access application segments should avoid broad or risky destinations",
+      "path": "/docs/next/tests/MT.1193"
+    },
+    "MT.1194": {
+      "title": "The baseline Global Secure Access security profile should enforce a threat-intelligence floor",
+      "path": "/docs/next/tests/MT.1194"
+    },
+    "MT.1195": {
+      "title": "The Quick Access app should not be subject to a sign-in frequency Conditional Access control",
+      "path": "/docs/next/tests/MT.1195"
     },
     "ORCA.100": {
       "title": "Bulk Complaint Level threshold is between 4 and 6.",
