@@ -49,7 +49,9 @@ jobs:
 
       - name: Stamp maester-config.json version fields
         shell: pwsh
-        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion '${{ steps.moduleversion.outputs.tag }}'
+        env:
+          MODULE_VERSION: ${{ steps.moduleversion.outputs.tag }}
+        run: ./build/Update-MaesterConfigVersion.ps1 -ConfigPath tests/maester-config.json -ModuleVersion $env:MODULE_VERSION
 
       # ./module/ is a build artifact produced by Build-MaesterModule.ps1.
       # It is ignored by git and must never be committed to source control.
@@ -84,7 +86,9 @@ jobs:
         run: npm ci
 
       - name: Update website release version
-        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ steps.moduleversion.outputs.tag }}
+        env:
+          MODULE_VERSION: ${{ steps.moduleversion.outputs.tag }}
+        run: node ./build/Update-WebsiteReleaseVersion.mjs "$MODULE_VERSION"
 
       - name: Commit website release version
         uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d #v5

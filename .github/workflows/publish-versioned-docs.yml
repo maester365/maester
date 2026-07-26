@@ -40,7 +40,9 @@ jobs:
         run: npm ci
 
       - name: Update website release version
-        run: node ./build/Update-WebsiteReleaseVersion.mjs ${{ inputs.version }}
+        env:
+          WEBSITE_VERSION: ${{ inputs.version }}
+        run: node ./build/Update-WebsiteReleaseVersion.mjs "$WEBSITE_VERSION"
 
       - name: ✍️ Commit Version Files to Main Branch
         uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d #v5
