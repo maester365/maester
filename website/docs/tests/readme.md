@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 158 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 167 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -361,6 +361,15 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1184](./MT.1184) | Conditional Access policy without any target resources configured | Maester | Medium | CA |
 | [MT.1185](./MT.1185) | Block legacy MSOnline (MSOL) PowerShell module | Maester | High | Entra |
 | [MT.1186](./MT.1186) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | High | Entra |
+| [MT.1187](./MT.1187) | The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled | Maester | Unknown | Entra |
+| [MT.1188](./MT.1188) | Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device | Maester | Unknown | Entra |
+| [MT.1189](./MT.1189) | Groups assigned to Global Secure Access traffic forwarding profiles should not be nested | Maester | Unknown | Entra |
+| [MT.1190](./MT.1190) | Entra Private Access applications should not use the Default connector group | Maester | Unknown | Entra |
+| [MT.1191](./MT.1191) | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy | Maester | Unknown | Entra |
+| [MT.1192](./MT.1192) | Groups assigned to Entra Private Access applications should not be nested | Maester | Unknown | Entra |
+| [MT.1193](./MT.1193) | Entra Private Access application segments should avoid broad or risky destinations | Maester | Unknown | Entra |
+| [MT.1194](./MT.1194) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor | Maester | Unknown | Entra |
+| [MT.1195](./MT.1195) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Maester | Unknown | Entra |
 | [ORCA.100](./ORCA.100) | Bulk Complaint Level threshold is between 4 and 6. | ORCA | Medium | EXO |
 | [ORCA.101](./ORCA.101) | Bulk is marked as spam. | ORCA | Medium | EXO |
 | [ORCA.102](./ORCA.102) | Advanced Spam filter options are turned off. | ORCA | Medium | EXO |

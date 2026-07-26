@@ -176,3 +176,12 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1184](./MT.1184.md) | Conditional Access policy without any target resources configured | Medium | CA |
 | [MT.1185](./MT.1185.md) | Block legacy MSOnline (MSOL) PowerShell module | High | Entra |
 | [MT.1186](./MT.1186.md) | High-privilege first-party Entra Apps should only have explicitly assigned users instead of All Users. | High | Entra |
+| [MT.1187](./MT.1187.md) | The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled | Unknown | Entra |
+| [MT.1188](./MT.1188.md) | Entra Private Access applications should be covered by a Conditional Access policy that requires a managed device | Unknown | Entra |
+| [MT.1189](./MT.1189.md) | Groups assigned to Global Secure Access traffic forwarding profiles should not be nested | Unknown | Entra |
+| [MT.1190](./MT.1190.md) | Entra Private Access applications should not use the Default connector group | Unknown | Entra |
+| [MT.1191](./MT.1191.md) | Break-glass accounts should be excluded from the Compliant Network Conditional Access policy | Unknown | Entra |
+| [MT.1192](./MT.1192.md) | Groups assigned to Entra Private Access applications should not be nested | Unknown | Entra |
+| [MT.1193](./MT.1193.md) | Entra Private Access application segments should avoid broad or risky destinations | Unknown | Entra |
+| [MT.1194](./MT.1194.md) | The baseline Global Secure Access security profile should enforce a threat-intelligence floor | Unknown | Entra |
+| [MT.1195](./MT.1195.md) | The Quick Access app should not be subject to a sign-in frequency Conditional Access control | Unknown | Entra |
