@@ -109,6 +109,18 @@ Cloud-Architekt:
     x: thomas_live
     bluesky: naunheim.cloud
 
+crmhh:
+  name: Christopher Brumm
+  title: Microsoft Security MVP
+  mvp: true
+  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/cad9c18c-40fe-475d-b9d9-dbec9bce58c3
+  company: glueckkanja AG
+  location: Hamburg
+  url: https://chris-brumm.com
+  socials:
+    linkedin: christopherbrumm
+    bluesky: cbrhh.bsky.social
+
 DanielBradley1:
   name: Daniel Bradley
   title: Microsoft Security MVP and Blogger @ ourcloudnetwork.com
