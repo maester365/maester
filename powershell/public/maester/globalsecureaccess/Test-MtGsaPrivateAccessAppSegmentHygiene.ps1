@@ -36,6 +36,8 @@
         [int] $BroadIPv4MaskThreshold = 16
     )
 
+    Write-Verbose "Running Test-MtGsaPrivateAccessAppSegmentHygiene..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

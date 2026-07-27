@@ -22,6 +22,8 @@
     [OutputType([bool])]
     param ()
 
+    Write-Verbose "Running Test-MtGsaBaselineThreatIntelligenceEnforced..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
