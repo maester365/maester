@@ -8,9 +8,9 @@ The admin consent workflow (Preview) gives admins a secure way to grant access t
 
 #### Impact
 
-To approve requests, a reviewer must be a global administrator, cloud application administrator, or application administrator. The reviewer must already have one of these admin roles assigned; simply designating them as a reviewer doesn't elevate their privileges.
+To approve requests, a reviewer must be a Global Administrator, cloud Application Administrator, or Application Administrator. The reviewer must already have one of these admin roles assigned; simply designating them as a reviewer doesn't elevate their privileges.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Entra ID admin center](https://entra.microsoft.com).
 2. Under **Entra ID** select **Enterprise apps**

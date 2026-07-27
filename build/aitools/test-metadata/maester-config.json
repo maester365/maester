@@ -914,7 +914,7 @@
     },
     {
       "Id": "MT.1024.6",
-      "Title": "Entra Recommendation - Designate more than one global admin",
+      "Title": "Entra Recommendation - Designate more than one Global Administrator",
       "Severity": "High"
     },
     {
@@ -1054,12 +1054,12 @@
     },
     {
       "Id": "MT.1050",
-      "Title": "Apps with high-risk permissions having a direct path to Global Admin",
+      "Title": "Apps with high-risk permissions having a direct path to Global Administrator",
       "Severity": "High"
     },
     {
       "Id": "MT.1051",
-      "Title": "Apps with high-risk permissions having an indirect path to Global Admin",
+      "Title": "Apps with high-risk permissions having an indirect path to Global Administrator",
       "Severity": "High"
     },
     {

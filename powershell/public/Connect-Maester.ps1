@@ -62,7 +62,7 @@
 .EXAMPLE
    Connect-Maester -Privileged
 
-   Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
+   Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying Global Administrator roles in Privileged Identity Management.
 
 .EXAMPLE
    Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
@@ -107,7 +107,7 @@
       # If specified, the cmdlet will include the scope to send a channel message in Teams (ChannelMessage.Send).
       [switch] $SendTeamsMessage,
 
-      # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying global admin roles in PIM.
+      # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying Global Administrator roles in PIM.
       [switch] $Privileged,
 
       # If specified, the cmdlet will use the device code flow to authenticate to Graph and Azure.

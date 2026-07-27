@@ -27,7 +27,7 @@ A Conditional Access policy that enforces the Global Secure Access **Compliant N
 
 Every Compliant Network enforcement policy must therefore exclude all break-glass accounts - either directly, or via a group they belong to (nested group membership is honored, as Conditional Access evaluates it). Emergency access accounts are read from the `EmergencyAccessAccounts` setting in `maester-config.json`.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies** and open each flagged policy.
@@ -51,5 +51,5 @@ Every Compliant Network enforcement policy must therefore exclude all break-glas
 
 ## Source
 
-- Pester test: `tests/Maester/GlobalSecureAccess/Test-MtGsaCompliantNetworkBreakGlassExcluded.Tests.ps1`
-- PowerShell source: `powershell/public/maester/globalsecureaccess/Test-MtGsaCompliantNetworkBreakGlassExcluded.ps1`
+* Pester test: `tests/Maester/GlobalSecureAccess/Test-MtGsaCompliantNetworkBreakGlassExcluded.Tests.ps1`
+* PowerShell source: `powershell/public/maester/globalsecureaccess/Test-MtGsaCompliantNetworkBreakGlassExcluded.ps1`

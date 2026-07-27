@@ -38,11 +38,12 @@ Azure Container App Jobs allow you to run custom container images and run those 
 ### Configure Certificate Based Authentication for your Service Principal
 
 The following PowerShell script will enable you to:
+
 - Identify the Service Principal Application (Client) ID and Display Name and an existing Azure Key Vault Name
 - Install the necessary modules and prompt for authentication to Azure and Graph
- - If you are using a system with a managed identity for your build environment you can use the `-Identity` switch for the connection commands.
+- If you are using a system with a managed identity for your build environment you can use the `-Identity` switch for the connection commands.
 - Define a certificate policy and request Key Vault to create the certifcate
- - ⚠️ This policy creates a certificate that **will expire** after 12 months, ensure you update it appropriately
+- ⚠️ This policy creates a certificate that **will expire** after 12 months, ensure you update it appropriately
 - Wait until the certificate becomes available in the Key Vault
 - Retrieve the public key from the Key Vault
 - Set the public key as an authentication method for the Entra Application Registration
@@ -93,6 +94,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/appli
 Using Docker you can define process steps and save those steps as layers to an image. When you build an image it is possible for secret material to exist in the image's layers. To avoid this there are two components you will use below. The first is a PowerShell script, `main.ps1`, that you will instruct the Docker image to execute each time the image is run. The second is a simple Dockerfile that provides all the prerequisities for the PowerShell script.
 
 The following PowerShell script will enable you to:
+
 - Define the key aspects of your environment
 - Update any Maester tests each time the container is run
 - Connect to the environment as the container's managed identity
