@@ -1,0 +1,231 @@
+---
+sidebar_class_name: hidden
+description: "Establishes a GitHub Enterprise Cloud organization REST API session for Maester."
+id: Connect-MtGitHub
+title: Connect-MtGitHub
+hide_title: false
+hide_table_of_contents: false
+custom_edit_url: https://github.com/maester365/maester/blob/main/powershell/public/Connect-MtGitHub.ps1
+---
+
+## SYNOPSIS
+
+Establishes a GitHub Enterprise Cloud organization REST API session for Maester.
+
+## SYNTAX
+
+```powershell
+Connect-MtGitHub [[-Organization] <String>] [[-Token] <SecureString>] [[-ApiBaseUri] <String>]
+ [[-ApiVersion] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+## DESCRIPTION
+
+Establishes a GitHub Enterprise Cloud organization REST API session for Maester CIS
+benchmark tests.
+This is an organization-scoped session, not a full enterprise-admin
+session: enterprise-admin endpoints under /enterprises/\{enterprise\} are not verified
+by this command and would require a future enterprise-access probe if CIS controls
+need them.
+
+If no explicit token is provided, Maester signs in with the Maester CLI GitHub App
+using GitHub device flow.
+If the app is not installed or approved for the requested
+organization, Maester asks before opening the app install page and retries the org
+access probes after the user completes the GitHub install/approval step.
+If the
+user declines, Maester prints token-based auth guidance instead.
+It then validates
+the resulting token via four probes.
+The first three are blocking (any failure
+aborts the connection); the fourth is
+non-blocking (failure emits a warning but the session is still established):
+  1.
+GET /user                            - token identity (blocking)
+  2.
+GET /orgs/\{org\}                      - org metadata (blocking)
+  3.
+GET /user/memberships/orgs/\{org\}     - signed-in user's org membership (blocking)
+  4.
+GET /orgs/\{org\}/actions/permissions  - administration access probe (non-blocking)
+
+The membership probe is the real access gate: /orgs/\{org\} returns public metadata
+even for tokens with no relationship to the organization.
+Probe 3 intentionally
+uses /user/memberships/orgs/\{org\} because it verifies the signed-in user's own
+membership without requiring permission to read another user's membership record.
+A 4xx, malformed body, or missing state/role aborts with FailureReason =
+'OrgMembershipFailed'.
+A successful response whose membership state is anything
+other than 'active' (e.g.
+'pending' for an invitation that has not been accepted)
+also aborts the connection, with FailureReason = 'OrgMembershipPending' - only an
+active membership proves the user can act on the organization.
+
+Probe 4 verifies the token can reach an org-administration endpoint.
+GitHub
+documents /orgs/\{org\}/actions/permissions as requiring classic PAT 'admin:org' or
+fine-grained 'Organization Administration: read'.
+Failure here records
+AdministrationPermissionVerified = $false and emits a warning, but does not flip
+Connected to $false - the session remains usable for controls that don't require
+org administration access.
+
+On success, Role = 'admin' + RoleState = 'active' + AdministrationPermissionVerified
+= $true is the no-warning path.
+Other active roles (member, billing_manager, etc.)
+or admin-probe failure still connect but emit warnings indicating limited CIS
+coverage.
+Non-active membership states do not connect at all.
+
+A non-rate-limited HTTP 403 from GET /user aborts with FailureReason =
+'TokenForbidden'.
+Common causes include SAML SSO enforcement, IP allowlists,
+token/account blocking, or other authorization policies.
+A rate-limited 403
+is still classified as FailureReason = 'RateLimited'.
+
+A malformed JSON response from GET /orgs/\{org\} aborts with FailureReason =
+'OrgAccessFailed' and identifies the response parsing problem instead of
+blaming the PAT scope, organization name, or API base URI.
+
+The successful GET /orgs/\{org\} response is cached only after the full
+connection succeeds, so failed connection attempts do not seed org data.
+
+Token resolution order:
+  1.
+-Token parameter (SecureString)
+  2.
+MAESTER_GITHUB_TOKEN environment variable
+  3.
+GH_TOKEN environment variable (GitHub CLI convention)
+  4.
+Maester CLI GitHub App device flow (interactive sessions)
+
+Required permissions:
+  Maester GitHub App: Organization Members: read + Organization Administration: read
+  Classic PAT:        admin:org
+  Fine-grained PAT:   Organization Members: read + Organization Administration: read
+  Required role for full coverage: organization owner/admin
+
+Note: Connection success proves token validity and org access, not that all
+CIS control fields will be visible.
+Each CIS test validates field availability
+and skips with an informative message if required fields are absent.
+
+## EXAMPLES
+
+### EXAMPLE 1
+
+```powershell
+Connect-MtGitHub -Organization 'mycompany'
+```
+
+### EXAMPLE 2
+
+```powershell
+Connect-MtGitHub -Organization 'mycompany' -ApiBaseUri 'https://api.myco.ghe.com'
+```
+
+## PARAMETERS
+
+### -Organization
+
+GitHub organization login name.
+Falls back to GitHubOrganization in maester-config.json.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Token
+
+GitHub token as SecureString.
+Falls back to MAESTER_GITHUB_TOKEN, GH_TOKEN, or the
+Maester CLI GitHub App device flow.
+
+```yaml
+Type: SecureString
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ApiBaseUri
+
+GitHub API base URI.
+Falls back to GitHubApiBaseUri config, then https://api.github.com.
+Set to https://api.\{subdomain\}.ghe.com for GHE.com EMU deployments.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ApiVersion
+
+GitHub REST API version date.
+Falls back to GitHubApiVersion config, then 2022-11-28.
+GitHub defaults requests without X-GitHub-Api-Version to 2022-11-28.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+
+Determines how PowerShell responds to progress updates generated by a script, cmdlet, or provider, such as the progress bars generated by Write-Progress.
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### CommonParameters
+
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+
+## INPUTS
+
+## OUTPUTS
+
+## NOTES
+
+## RELATED LINKS
+
+[https://maester.dev/docs/commands/Connect-MtGitHub](https://maester.dev/docs/commands/Connect-MtGitHub)
