@@ -43,6 +43,8 @@ function Test-MtGsaQuickAccessNoSignInFrequency {
         [string[]] $AllowedPolicies
     )
 
+    Write-Verbose "Running Test-MtGsaQuickAccessNoSignInFrequency..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

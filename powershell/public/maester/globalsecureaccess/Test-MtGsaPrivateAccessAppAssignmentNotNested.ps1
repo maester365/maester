@@ -25,6 +25,8 @@
     [OutputType([bool])]
     param ()
 
+    Write-Verbose "Running Test-MtGsaPrivateAccessAppAssignmentNotNested..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
