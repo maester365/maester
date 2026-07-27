@@ -2914,6 +2914,15 @@
         "MT.1056",
         "MT.1057",
         "MT.1058",
+        "MT.1187",
+        "MT.1188",
+        "MT.1189",
+        "MT.1190",
+        "MT.1191",
+        "MT.1192",
+        "MT.1193",
+        "MT.1194",
+        "MT.1195",
         "ORCA.100",
         "ORCA.101",
         "ORCA.102",
@@ -2983,7 +2992,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 11
+      "recentCommits": 12
     }
   ],
   "attributions": {
@@ -5491,39 +5500,57 @@
     },
     "MT.1187": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1188": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1189": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1190": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1191": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1192": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1193": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1194": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "MT.1195": {
       "author": "crmhh",
-      "contributors": []
+      "contributors": [
+        "merill"
+      ]
     },
     "ORCA.100": {
       "author": "soulemike",
