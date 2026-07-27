@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 167 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 168 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -356,6 +356,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
 | [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
 | [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
+| [MT.1181](./MT.1181) | Conditional Access policy is present that blocks high agent risk signins | Maester | High | CA |
 | [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Maester | Unknown | Entra |
 | [MT.1183](./MT.1183) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Maester | Medium | Entra |
 | [MT.1184](./MT.1184) | Conditional Access policy without any target resources configured | Maester | Medium | CA |

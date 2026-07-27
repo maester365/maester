@@ -171,6 +171,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1178](./MT.1178.md) | Ensure ASR Rules are configured correctly | High | Intune |
 | [MT.1179](./MT.1179.md) | Ensure App Control for Business is enabled | High | Intune |
 | [MT.1180](./MT.1180.md) | Ensure Managed Installer Rules are configured correctly | Medium | Intune |
+| [MT.1181](./MT.1181.md) | Conditional Access policy is present that blocks high agent risk signins | High | CA |
 | [MT.1182](./MT.1182.md) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Unknown | Entra |
 | [MT.1183](./MT.1183.md) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Medium | Entra |
 | [MT.1184](./MT.1184.md) | Conditional Access policy without any target resources configured | Medium | CA |

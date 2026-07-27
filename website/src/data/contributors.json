@@ -2310,6 +2310,28 @@
       "recentCommits": 0
     },
     {
+      "id": "ExeqZ",
+      "github": "ExeqZ",
+      "name": "ExeqZ",
+      "title": "",
+      "mvp": false,
+      "mvpUrl": "",
+      "pinLast": false,
+      "company": "",
+      "location": "",
+      "locationFlag": "",
+      "url": "",
+      "socials": {},
+      "avatar": "https://github.com/ExeqZ.png",
+      "firstContribution": "2026-06-02",
+      "testsAuthored": [
+        "MT.1181"
+      ],
+      "testsContributed": [],
+      "initials": "E",
+      "recentCommits": 1
+    },
+    {
       "id": "jflieben",
       "github": "jflieben",
       "name": "Jos Lieben",
@@ -2915,6 +2937,7 @@
         "MT.1057",
         "MT.1058",
         "MT.1084",
+        "MT.1181",
         "MT.1187",
         "MT.1188",
         "MT.1189",
@@ -5480,6 +5503,12 @@
       "author": "OfirGavish",
       "contributors": []
     },
+    "MT.1181": {
+      "author": "ExeqZ",
+      "contributors": [
+        "merill"
+      ]
+    },
     "MT.1182": {
       "author": "blindzero",
       "contributors": []
@@ -7462,6 +7491,10 @@
     "MT.1180": {
       "title": "Ensure Managed Installer Rules are configured correctly",
       "path": "/docs/next/tests/MT.1180"
+    },
+    "MT.1181": {
+      "title": "Conditional Access policy is present that blocks high agent risk signins",
+      "path": "/docs/next/tests/MT.1181"
     },
     "MT.1182": {
       "title": "Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100).",
