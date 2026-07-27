@@ -376,7 +376,7 @@
         "MT.1085"
       ],
       "initials": "FB",
-      "recentCommits": 1
+      "recentCommits": 0
     },
     {
       "id": "bdrogja",
@@ -485,15 +485,17 @@
       "id": "Mynster9361",
       "github": "Mynster9361",
       "name": "-Mynster",
-      "title": "",
+      "title": "Cybersecurity consultant",
       "mvp": false,
       "mvpUrl": "",
       "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
+      "company": "TDC Erhverv",
+      "location": "Denmark",
+      "locationFlag": "🇩🇰",
+      "url": "https://mynster9361.github.io",
+      "socials": {
+        "linkedin": "mortenmynster"
+      },
       "avatar": "https://github.com/Mynster9361.png",
       "firstContribution": "2026-04-04",
       "testsAuthored": [
@@ -561,7 +563,7 @@
         "MT.1098"
       ],
       "initials": "M",
-      "recentCommits": 6
+      "recentCommits": 5
     },
     {
       "id": "thomas-s-schmidt",
@@ -1180,7 +1182,7 @@
         "ORCA.244"
       ],
       "initials": "SE",
-      "recentCommits": 13
+      "recentCommits": 12
     },
     {
       "id": "oed-metzb",
@@ -1289,15 +1291,18 @@
       "id": "crmhh",
       "github": "crmhh",
       "name": "Christopher Brumm",
-      "title": "",
-      "mvp": false,
-      "mvpUrl": "",
+      "title": "Microsoft Security MVP",
+      "mvp": true,
+      "mvpUrl": "https://mvp.microsoft.com/en-US/mvp/profile/cad9c18c-40fe-475d-b9d9-dbec9bce58c3",
       "pinLast": false,
-      "company": "",
-      "location": "",
-      "locationFlag": "",
-      "url": "",
-      "socials": {},
+      "company": "glueckkanja AG",
+      "location": "Hamburg",
+      "locationFlag": "🇩🇪",
+      "url": "https://chris-brumm.com",
+      "socials": {
+        "linkedin": "christopherbrumm",
+        "bluesky": "cbrhh.bsky.social"
+      },
       "avatar": "https://github.com/crmhh.png",
       "firstContribution": "2026-07-25",
       "testsAuthored": [
@@ -2978,7 +2983,7 @@
         "ORCA.244"
       ],
       "initials": "MF",
-      "recentCommits": 12
+      "recentCommits": 11
     }
   ],
   "attributions": {
