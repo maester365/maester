@@ -1132,7 +1132,7 @@
     {
       "Id": "MT.1072",
       "Severity": "High",
-      "Title": "Conditional access policies should not use the deprecated Approved Client App grant."
+      "Title": "Conditional Access policies should not use the deprecated Approved Client App grant."
     },
     {
       "Id": "MT.1073",

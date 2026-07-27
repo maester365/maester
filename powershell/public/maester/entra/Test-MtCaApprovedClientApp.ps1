@@ -1,7 +1,7 @@
 ﻿function Test-MtCaApprovedClientApp {
     <#
     .Synopsis
-    Checks if the tenant has no conditional access policy that requires an approved client app.
+    Checks if the tenant has no Conditional Access policy that requires an approved client app.
 
     .Description
     The approved client app grant is retiring in early March 2026.
@@ -31,14 +31,14 @@
         }
     }
 
-    # There should be no conditional access policies using the deprecated Approved Client App grant.
+    # There should be no Conditional Access policies using the deprecated Approved Client App grant.
     $result = ($policiesResult | Measure-Object).Count -eq 0
 
     if ($result) {
-        $testResult = "Well done! No conditional access use the deprecated Approved Client App grant."
+        $testResult = "Well done! No Conditional Access use the deprecated Approved Client App grant."
         Add-MtTestResultDetail -Result $testResult
     } else {
-        $testResult = "The following conditional access policies use the deprecated Approved Client App grant:`n`n%TestResult%"
+        $testResult = "The following Conditional Access policies use the deprecated Approved Client App grant:`n`n%TestResult%"
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
     }
     return $result

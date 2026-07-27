@@ -42,7 +42,7 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that block high risk sign-ins.`n`n"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that block high risk sign-ins.`n`n"
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that block high risk sign-ins.`n`n"
     }
 
     $checks = @{

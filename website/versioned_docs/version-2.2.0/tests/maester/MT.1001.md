@@ -1,6 +1,6 @@
 ---
 title: "MT.1001 - At least one Conditional Access policy is configured with device compliance."
-description: "Device compliance conditional access policy can be used to require devices to be compliant with the tenant's device compliance policy. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device"
+description: "Device compliance Conditional Access policy can be used to require devices to be compliant with the tenant's device compliance policy. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device"
 slug: /tests/MT.1001
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Device compliance conditional access policy can be used to require devices to be compliant with the tenant's device compliance policy.
+Device compliance Conditional Access policy can be used to require devices to be compliant with the tenant's device compliance policy.
 
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-compliant-device

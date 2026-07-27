@@ -11,9 +11,9 @@ Maester is a PowerShell based test automation framework to help you stay in cont
 
 As business needs evolve, we often need to make changes to our tenant configuration. As employees come and go, new features are added, and existing features are updated. How do you ensure that a change in one area doesn't introduce a security vulnerability in another?
 
-Take for example conditional access policies. You may have a policy that requires multi-factor authentication for a group of users. What if someone accidentally deletes the group or removes users from the group? **Your conditional access policy is now ineffective.**
+Take for example Conditional Access policies. You may have a policy that requires multi-factor authentication for a group of users. What if someone accidentally deletes the group or removes users from the group? **Your Conditional Access policy is now ineffective.**
 
-Let's take another scenario that is fairly common. What if the original author of the conditional access policy leaves the company and someone else makes a change to the policy without understanding the implications?
+Let's take another scenario that is fairly common. What if the original author of the Conditional Access policy leaves the company and someone else makes a change to the policy without understanding the implications?
 
 ## How does Maester help?
 

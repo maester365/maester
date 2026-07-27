@@ -1,6 +1,6 @@
 ---
 title: "MT.1016 - At least one Conditional Access policy is configured to require MFA for guest access."
-description: "This check verifies if there is at least one conditional access policy that requires multifactor authentication for all guest accounts. See Require multifactor authentication for guest access - Microsoft Learn"
+description: "This check verifies if there is at least one Conditional Access policy that requires multifactor authentication for all guest accounts. See Require multifactor authentication for guest access - Microsoft Learn"
 slug: /tests/MT.1016
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-This check verifies if there is at least one conditional access policy that requires multifactor authentication for all guest accounts.
+This check verifies if there is at least one Conditional Access policy that requires multifactor authentication for all guest accounts.
 
 See [Require multifactor authentication for guest access - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-policy-guest-mfa)
 

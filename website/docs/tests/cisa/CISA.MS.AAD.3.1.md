@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.3.1 - Phishing-resistant MFA SHALL be enforced for all users."
-description: "Phishing-resistant MFA SHALL be enforced for all users. Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized. Remediation action: Create a conditional access policy enforcing phishing-resistant MF…"
+description: "Phishing-resistant MFA SHALL be enforced for all users. Rationale: Weaker forms of MFA do not protect against sophisticated phishing attacks. By enforcing methods resistant to phishing, those risks are minimized. Remediation action: Create a Conditional Access policy enforcing phishing-resistant MF…"
 slug: /tests/CISA.MS.AAD.3.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -30,7 +30,7 @@ Rationale: Weaker forms of MFA do not protect against sophisticated phishing att
 
 #### Remediation action:
 
-Create a conditional access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new conditional access policy, per the values below:
+Create a Conditional Access policy enforcing phishing-resistant MFA for all users. Configure the following policy settings in the new Conditional Access policy, per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**

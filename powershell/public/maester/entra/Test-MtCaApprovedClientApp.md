@@ -1,4 +1,4 @@
-Checks if the tenant has no conditional access policy that requires an approved client app.
+Checks if the tenant has no Conditional Access policy that requires an approved client app.
 
 The approved client app grant is retiring in early March 2026. Organizations must transition all current Conditional Access policies that use only the Require Approved Client App grant control to Require Approved Client App or Application Protection Policy by March 2026. Additionally, for any new Conditional Access policy, only apply the Require application protection policy grant.
 

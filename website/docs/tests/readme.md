@@ -272,7 +272,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1069](./MT.1069) | Restrict non-admin users from creating security groups. | Maester | Low | Entra |
 | [MT.1070](./MT.1070) | Restrict device join to selected users/groups or none. | Maester | Medium | Entra |
 | [MT.1071](./MT.1071) | At least one Conditional Access policy explicitly includes Azure DevOps. | Maester | Medium | CA |
-| [MT.1072](./MT.1072) | Conditional access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
+| [MT.1072](./MT.1072) | Conditional Access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
 | [MT.1073](./MT.1073) | Soft- and hard-matching of synchronized objects should be blocked. | Maester | Medium | Entra |
 | [MT.1074](./MT.1074) | Mailboxes should not send outbound mails using the .onmicrosoft.com domain. | Maester | Medium | Exchange |
 | [MT.1075](./MT.1075) | Third Party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | Medium | App |

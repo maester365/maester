@@ -1,6 +1,6 @@
 ---
 title: "MT.1013 - At least one Conditional Access policy is configured to require new password when user risk is high."
-description: "Checks if the tenant has at least one conditional access policy requiring password change for high user risk. See User risk-based password change - Microsoft Learn"
+description: "Checks if the tenant has at least one Conditional Access policy requiring password change for high user risk. See User risk-based password change - Microsoft Learn"
 slug: /tests/MT.1013
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Checks if the tenant has at least one conditional access policy requiring password change for high user risk.
+Checks if the tenant has at least one Conditional Access policy requiring password change for high user risk.
 
 See [User risk-based password change - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk-user)
 

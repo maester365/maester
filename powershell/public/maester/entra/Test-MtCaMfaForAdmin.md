@@ -1,4 +1,4 @@
-This test checks if the tenant has at least one conditional access policy requiring MFA for admins.
+This test checks if the tenant has at least one Conditional Access policy requiring MFA for admins.
 The following roles are considered as admin roles:
 
 - Global Administrator

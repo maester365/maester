@@ -7128,7 +7128,7 @@
       "path": "/docs/tests/MT.1071"
     },
     "MT.1072": {
-      "title": "Conditional access policies should not use the deprecated Approved Client App grant.",
+      "title": "Conditional Access policies should not use the deprecated Approved Client App grant.",
       "path": "/docs/tests/MT.1072"
     },
     "MT.1073": {

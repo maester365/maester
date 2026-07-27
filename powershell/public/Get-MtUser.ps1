@@ -90,7 +90,7 @@
             }
         } elseif ( $UserType -in @("BreakGlass", "EmergencyAccess") ) {
             Write-Verbose "Getting $UserType users from the tenant."
-            Write-Verbose "Get all conditional access policies."
+            Write-Verbose "Get all Conditional Access policies."
             # Get all policies (the state of policy does not have to be enabled)
             $CAPolicies = Get-MtConditionalAccessPolicy | Where-Object { -not $_.conditions.applications.includeAuthenticationContextClassReferences }
 

@@ -1,6 +1,6 @@
 ---
 title: "MT.1008 - At least one Conditional Access policy is configured to require MFA for Azure management."
-description: "MFA for Azure management is a critical security control. This function checks if the tenant has at least one conditional access policy requiring multifactor authentication to access Azure management. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-…"
+description: "MFA for Azure management is a critical security control. This function checks if the tenant has at least one Conditional Access policy requiring multifactor authentication to access Azure management. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-…"
 slug: /tests/MT.1008
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -22,7 +22,7 @@ keywords:
 ## Overview
 
 MFA for Azure management is a critical security control. This function checks if the tenant has at least one
-conditional access policy requiring multifactor authentication to access Azure management.
+Conditional Access policy requiring multifactor authentication to access Azure management.
 
 Learn more:
 https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-azure-management

@@ -17,11 +17,11 @@ This guide will walk you through setting up Maester in Azure DevOps and automate
 
 ## Why Azure DevOps & Terraform?
 
-Azure DevOps is a great way to automate the daily running of Maester tests to monitor your tenant. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface. 
+Azure DevOps is a great way to automate the daily running of Maester tests to monitor your tenant. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
 
 Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
 
-Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for conditional access policies.
+Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for Conditional Access policies.
 
 Terraform is an open-source Infrastructure as Code (IaC) tool used to configure and deploy infrastructure across platforms like AWS, GCP, and Azure. We've created a Terraform module to simplify and streamline the deployment of Maester to Azure DevOps.
 
@@ -42,12 +42,12 @@ Terraform is an open-source Infrastructure as Code (IaC) tool used to configure 
 
 ## Terraform Module Deployment
 Now it's time to deploy the Maester Terraform module! 🔥
-First, add the temporary Personal Access Token (PAT) to your environment variables. 
+First, add the temporary Personal Access Token (PAT) to your environment variables.
 
 - `export AZDO_PERSONAL_ACCESS_TOKEN=<pat>`
 - `export AZDO_ORG_SERVICE_URL=https://dev.azure.com/<devOpsOrganizationName>`
 
-You can then easily use the Terraform module by creating a `main.tf` file with the following content. 
+You can then easily use the Terraform module by creating a `main.tf` file with the following content.
 - Make sure to update the required variables based on your environment information.
 
 ```terraform

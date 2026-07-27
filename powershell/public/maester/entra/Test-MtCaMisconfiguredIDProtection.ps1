@@ -51,9 +51,9 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies have both sign-in risk and user risk controls configured:`n`n%TestResult%"
         } else {
-            $testResult = 'Well done! No conditional access policies detected where sign-in risk and user risk are combined.'
+            $testResult = 'Well done! No Conditional Access policies detected where sign-in risk and user risk are combined.'
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess

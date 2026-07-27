@@ -1,4 +1,4 @@
-Checks if any conditional access policy explicitly includes Azure DevOps
+Checks if any Conditional Access policy explicitly includes Azure DevOps
 
 ## Description
 If your organization has Conditional Access policies targeting the Windows Azure Service Management API (App ID: 797f4846-ba00-4fd7-ba43-dac1f8f63013), those policies will no longer apply to Azure DevOps sign-ins. This may result in unprotected access unless these policies are updated to include Azure DevOps (App ID: 499b84ac-1321-427f-aa17-267ca6975798).

@@ -1,6 +1,6 @@
 ---
 title: "EIDSCA.AT01 - Authentication Method - Temporary Access Pass - State."
-description: "Whether the Temporary Access Pass is enabled in the tenant. Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy. Test script ``` https://graph.microsoft.com/beta/policies/authenticatio…"
+description: "Whether the Temporary Access Pass is enabled in the tenant. Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy. Test script ``` https://graph.microsoft.com/beta/policies/authenticatio…"
 slug: /tests/EIDSCA.AT01
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -25,7 +25,7 @@ keywords:
 
 Whether the Temporary Access Pass is enabled in the tenant.
 
-Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access Policy.
+Use Temporary Access Pass for secure onboarding users (initial password replacement) and enforce MFA for registering security information in Conditional Access policy.
 
 #### Test script
 ```

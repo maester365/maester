@@ -21,7 +21,7 @@ Azure DevOps is a great way to automate the daily running of Maester tests to mo
 
 Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
 
-Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for conditional access policies.
+Azure DevOps has native integration with Microsoft Entra including single sign on, user and group management as well as support for Conditional Access policies.
 
 ## Set up the Maester repository in Azure DevOps
 

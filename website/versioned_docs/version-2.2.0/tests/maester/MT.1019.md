@@ -1,6 +1,6 @@
 ---
 title: "MT.1019 - At least one Conditional Access policy is configured to enable application enforced restrictions."
-description: "Application enforced restrictions conditional access policy can be helpful to minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesAppRestrictions"
+description: "Application enforced restrictions Conditional Access policy can be helpful to minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesAppRestrictions"
 slug: /tests/MT.1019
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Application enforced restrictions conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
+Application enforced restrictions Conditional Access policy can be helpful to minimize the risk of data leakage from a shared device.
 
 Learn more:
 https://aka.ms/CATemplatesAppRestrictions

@@ -7,13 +7,13 @@ sidebar_position: 2
 
 In this section we will learn how to format test results to provide more context and make them easier to understand for the person viewing the results.
 
-Let's write a test to check if conditional access policies are following the company's standards.
+Let's write a test to check if Conditional Access policies are following the company's standards.
 
-## A custom Maester test to check conditional access policies standards
+## A custom Maester test to check Conditional Access policies standards
 
-Our organization has a policy that all disabled conditional access policies should include the reason for the policy being disabled. This is done by adding a note to the display name in the format `Disabled: <reason>`.
+Our organization has a policy that all disabled Conditional Access policies should include the reason for the policy being disabled. This is done by adding a note to the display name in the format `Disabled: <reason>`.
 
-To check if the conditional access policies are following this standard, we can write the following custom test and add it to the `ContosoEntra.Tests.ps1` file in the `Custom` folder (see previous article).
+To check if the Conditional Access policies are following this standard, we can write the following custom test and add it to the `ContosoEntra.Tests.ps1` file in the `Custom` folder (see previous article).
 
 You can copy and paste the following code and add it to the end of the `ContosoEntra.Tests.ps1` file.
 
@@ -34,7 +34,7 @@ Describe "ContosoEntraConfig" -Tag "CA", "Contoso" {
 
 You can run the test using `Invoke-Maester` and check the results.
 
-What you will notice is that the test results are not very informative. The test will pass or fail, but you won't know which conditional access policies are not following the standard.
+What you will notice is that the test results are not very informative. The test will pass or fail, but you won't know which Conditional Access policies are not following the standard.
 
 ![Test results without formatting](img/unformatted-test-result.png)
 
@@ -137,7 +137,7 @@ Common scenarios for using Investigate:
 
 To mark a test as requiring investigation, use the `-Investigate` switch:
 
-This example also shows how you can directly use the `Invoke-MtGraphRequest` function to get the conditional access policies from the Microsoft Graph API as well as create custom markdown to display the results.
+This example also shows how you can directly use the `Invoke-MtGraphRequest` function to get the Conditional Access policies from the Microsoft Graph API as well as create custom markdown to display the results.
 
 ```powershell
 Describe "ContosoEntraConfig" -Tag  "Contoso" {
@@ -147,10 +147,10 @@ Describe "ContosoEntraConfig" -Tag  "Contoso" {
 
         $readOnlyPolicies = $policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' }
 
-        $description = "Checks if read-only conditional access policies should be reviewed."
+        $description = "Checks if read-only Conditional Access policies should be reviewed."
 
         if ($readOnlyPolicies.Count -gt 0) {
-            $result = "Found $($readOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n"
+            $result = "Found $($readOnlyPolicies.Count) Conditional Access policies that are in report-only mode. Please review if this is intended.`n`n"
             $result += "| Policy Name | State |`n"
             $result += "| --- | --- |`n"
             foreach ($policy in $readOnlyPolicies) {
@@ -161,7 +161,7 @@ Describe "ContosoEntraConfig" -Tag  "Contoso" {
             Add-MtTestResultDetail -Description $description -Result "Well done. No report-only policies were found to investigate."
         }
 
-        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional access policies should not be in read-only mode for the long term. Please review and enable the policy."
+        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional Access policies should not be in read-only mode for the long term. Please review and enable the policy."
     }
 }
 ```
@@ -176,16 +176,16 @@ Describe "ContosoEntraConfig" -Tag  "Contoso" {
 
         $readOnlyPolicies = $policies | Where-Object { $_.state -eq 'enabledForReportingButNotEnforced' }
 
-        $description = "Checks if read-only conditional access policies should be reviewed."
+        $description = "Checks if read-only Conditional Access policies should be reviewed."
 
         if ($readOnlyPolicies.Count -gt 0) {
-            $result = "Found $($readOnlyPolicies.Count) conditional access policies that are in report-only mode. Please review if this is intended.`n`n%TestResult%"
+            $result = "Found $($readOnlyPolicies.Count) Conditional Access policies that are in report-only mode. Please review if this is intended.`n`n%TestResult%"
             Add-MtTestResultDetail -Description $description -Result $result -Investigate -GraphObjects $readOnlyPolicies -GraphObjectType ConditionalAccess
         } else {
             Add-MtTestResultDetail -Description $description -Result "Well done. No report-only policies were found to investigate."
         }
 
-        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional access policies should not be in read-only mode for the long term. Please review and enable the policy."
+        $readOnlyPolicies.Count | Should -Be 0 -Because "Conditional Access policies should not be in read-only mode for the long term. Please review and enable the policy."
     }
 }
 ```

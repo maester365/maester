@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaManagedDevice {
     <#
     .SYNOPSIS
-    Checks if Conditional Access Policy requiring managed device is enabled
+    Checks if a Conditional Access policy requiring managed device is enabled
 
     .DESCRIPTION
     Managed devices SHOULD be required for authentication.
@@ -55,7 +55,7 @@
     } elseif ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require a compliant or domain joined device:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that require managed devices."
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require managed devices."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
 
