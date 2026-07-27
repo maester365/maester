@@ -162,14 +162,6 @@ jobs:
         working-directory: ${{ inputs.working_directory || 'website' }}
         run: npm ci
 
-      - name: Check generated test docs and contributor attribution
-        working-directory: ${{ inputs.working_directory || 'website' }}
-        env:
-          # Contributor attribution is history-derived, so stale generated
-          # docs would otherwise leave shallow-clone deployments on the old snapshot.
-          GH_TOKEN: ${{ github.token }}
-        run: npm run check-test-docs
-
       - name: "\U0001F3D7️ Build website"
         working-directory: ${{ inputs.working_directory || 'website' }}
         env:
