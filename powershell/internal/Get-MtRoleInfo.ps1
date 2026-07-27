@@ -170,7 +170,7 @@ function Initialize-MtRoleDefinition {
     'TeamsReader' = [MtRoleDefinition]::new('1076ac91-f3d9-41a7-a339-dcdf5f480acc', $false)
     'TeamsTelephonyAdministrator' = [MtRoleDefinition]::new('aa38014f-0993-46e9-9b45-30501a20909d', $false)
     'TenantCreator' = [MtRoleDefinition]::new('112ca1a2-15ad-4102-995e-45b0bc479a6a', $false)
-    'TenantGovernanceAdministrator' = [MtRoleDefinition]::new('1981f584-96e9-4a6f-95b0-f522373f8fae', $false)
+    'TenantGovernanceAdministrator' = [MtRoleDefinition]::new('1981f584-96e9-4a6f-95b0-f522373f8fae', $true)
     'TenantGovernanceReader' = [MtRoleDefinition]::new('e0a4caa6-fe82-443f-b92f-d87341d17b2e', $false)
     'TenantGovernanceRelationshipAdministrator' = [MtRoleDefinition]::new('b8e31d83-1534-480f-9b10-0338ded51b7e', $false)
     'TenantGovernanceRelationshipReader' = [MtRoleDefinition]::new('124577f8-48ed-456a-839f-13b419002e33', $false)
