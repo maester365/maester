@@ -51,7 +51,7 @@
           $DirectAssignments | Where-Object { $_.principal.userType -eq 'Guest' }
           $testDescription = "
   Take attention on B2B collaboration user with Entra ID directory role assignments on $($FilteredAccessLevel).
-  Verify the affected external users, the user source (e.g., MSSP/partner or managing tenant) and if the privileged accounts pass your requirements for Conditional Access, Lifecycle Workflow and Identity Protection.
+  Verify the affected external users, the user source (e.g., MSSP/partner or managing tenant) and if the privileged accounts pass your requirements for Conditional Access, Lifecycle Workflow and ID Protection.
   Learn more about the best practices for privileges users:
     - [Securing privileged access for hybrid and cloud deployments in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning#ensure-separate-user-accounts-and-mail-forwarding-for-global-administrator-accounts)"
         }
