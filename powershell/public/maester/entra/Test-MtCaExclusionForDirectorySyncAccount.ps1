@@ -32,13 +32,17 @@
         $OnPremisesDirectorySyncAccountRole = Get-MtRoleInfo -RoleName 'OnPremisesDirectorySyncAccount'
 
         $Members = @()
+        $DirectorySynchronizationAccountsRoleId = $null
+        $OnPremisesDirectorySyncAccountRoleId = $null
         # Guard: Get-MtRoleInfo returns $null when $script:MtRoles is uninitialised (module reload issue).
         # Skip the Get-MtRoleMember call in that case to avoid a mandatory-parameter binding error.
         if ($null -ne $DirectorySynchronizationAccountsRole) {
-            $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRole
+            $DirectorySynchronizationAccountsRoleId = $DirectorySynchronizationAccountsRole.Id
+            $Members += Get-MtRoleMember -RoleId $DirectorySynchronizationAccountsRoleId
         }
         if ($null -ne $OnPremisesDirectorySyncAccountRole) {
-            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRole
+            $OnPremisesDirectorySyncAccountRoleId = $OnPremisesDirectorySyncAccountRole.Id
+            $Members += Get-MtRoleMember -RoleId $OnPremisesDirectorySyncAccountRoleId
         }
         $Members = @($Members | Where-Object { $null -ne $_ })
 
@@ -104,7 +108,7 @@
                 }
             }
 
-            if ( $DirectorySynchronizationAccountsRole -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.includeRoles ) {
+            if ( $DirectorySynchronizationAccountsRoleId -in $policy.conditions.users.includeRoles -or $OnPremisesDirectorySyncAccountRoleId -in $policy.conditions.users.includeRoles ) {
                 $PolicyIncludesRole = $true
             }
 
@@ -120,7 +124,7 @@
                 continue
             } else {
                 # Check if excluded by role
-                $excludedByRole = $DirectorySynchronizationAccountsRole -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRole -in $policy.conditions.users.excludeRoles
+                $excludedByRole = $DirectorySynchronizationAccountsRoleId -in $policy.conditions.users.excludeRoles -or $OnPremisesDirectorySyncAccountRoleId -in $policy.conditions.users.excludeRoles
 
                 # Check if all user members are individually excluded
                 $excludedByMember = $memberIds.Count -gt 0 -and @($memberIds | Where-Object { $_ -notin $policy.conditions.users.excludeUsers }).Count -eq 0
