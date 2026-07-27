@@ -94,7 +94,7 @@ The resource URLs used with `Get-AzAccessToken` differ depending on your Azure c
 
 ### Microsoft Graph PowerShell SDK Module
 
-The Microsoft Graph PowerShell SDK Module provides many [options for authenticating](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands).
+The Microsoft Graph PowerShell SDK Module provides many [options for authenticating](https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands).
 
 #### OAuth token-based authentication (recommended for automation)
 
@@ -122,7 +122,7 @@ Connect-MgGraph -AppId $applicationId -Certificate $cert -TenantId $tenantId -No
 
 ### Microsoft Azure Accounts PowerShell Module
 
-The Microsoft Azure Accounts PowerShell Module provides many [options for authenticating](https://learn.microsoft.com/en-us/powershell/azure/authenticate-noninteractive). Below is an example of using a X.509 Certificate private key file to authenticate to `$tenantId` as the `$applicationId` service principal.
+The Microsoft Azure Accounts PowerShell Module provides many [options for authenticating](https://learn.microsoft.com/powershell/azure/authenticate-noninteractive). Below is an example of using a X.509 Certificate private key file to authenticate to `$tenantId` as the `$applicationId` service principal.
 
 ```powershell
 #$applicationId = "xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx"
@@ -133,7 +133,7 @@ Connect-AzAccount -ServicePrincipal -ApplicationId $applicationId -TenantId $ten
 
 ### Microsoft Exchange Online and Security & Compliance PowerShell Modules
 
-The Microsoft Exchange Online and Security & Compliance PowerShell Modules provide many [options for authenticating](https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2).
+The Microsoft Exchange Online and Security & Compliance PowerShell Modules provide many [options for authenticating](https://learn.microsoft.com/powershell/exchange/app-only-auth-powershell-v2).
 
 #### OAuth token-based authentication (recommended for automation)
 
@@ -253,4 +253,4 @@ Install-Module ADOPS -Scope CurrentUser
 Connect-ADOPS -Organization <your-organization>
 ```
 
-> Some Azure DevOps tests require organization-level permissions such as *Project Collection Administrator* (e.g., AZDO.1030) or tenant-level permissions such as *Azure DevOps Administrator* (e.g., AZDO.1032–1036). See [Manage policies as Administrator](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites) and the [installation guide](../installation.md#installing-azure-devops-powershell-module).
+> Some Azure DevOps tests require organization-level permissions such as *Project Collection Administrator* (e.g., AZDO.1030) or tenant-level permissions such as *Azure DevOps Administrator* (e.g., AZDO.1032–1036). See [Manage policies as Administrator](https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators?view=azure-devops#prerequisites) and the [installation guide](../installation.md#installing-azure-devops-powershell-module).

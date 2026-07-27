@@ -36,13 +36,15 @@ Organizations such as NIST and Microsoft have updated their password policy reco
 #### Impact
 
 When setting passwords not to expire it is important to have other controls in place to supplement this setting. See below for related recommendations and user guidance.
+
 * Ban common passwords.
 * Educate users to not reuse organization passwords anywhere else.
 * Enforce Multi-Factor Authentication registration for all users.
 
-#### Remediation action:
+#### Remediation action
 
 To set Office 365 passwords are set to never expire:
+
 1. Navigate to [Microsoft 365 admin center](https://admin.microsoft.com).
 2. Click to expand **Settings** select **Org Settings**.
 3. Click on **Security & privacy**.
@@ -53,6 +55,7 @@ To set Office 365 passwords are set to never expire:
 
 1. Connect to the Microsoft Graph service using `Connect-MgGraph -Scopes "Domain.ReadWrite.All"`.
 2. Run the following Microsoft Graph PowerShell command:
+
 ```powershell
 Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 ```
@@ -62,7 +65,7 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
 * [NIST Special Publication 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html)
 * [CIS Password Policy Guide](https://www.cisecurity.org/insights/white-papers/cis-password-policy-guide)
-* [Password policy recommendations for Microsoft 365 passwords](https://learn.microsoft.com/en-us/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide)
+* [Password policy recommendations for Microsoft 365 passwords](https://learn.microsoft.com/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 43](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -78,5 +81,5 @@ Update-MgDomain -DomainId <Domain> -PasswordValidityPeriodInDays 2147483647
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisPasswordExpiry.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisPasswordExpiry.ps1`
+* Pester test: `tests/cis/Test-MtCisPasswordExpiry.Tests.ps1`
+* PowerShell source: `powershell/public/cis/Test-MtCisPasswordExpiry.ps1`

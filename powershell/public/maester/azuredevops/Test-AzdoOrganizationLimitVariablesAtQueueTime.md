@@ -2,8 +2,10 @@ User-defined variables should not be able to override system variables or variab
 
 Rationale: Only those variables explicitly marked as "Settable at queue time" can be set by user.
 
-#### Remediation action:
+#### Remediation action
+
 Enable the policy to limit variables that can be set at queue time.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Under the Pipelines section choose Settings.
@@ -14,4 +16,4 @@ Only those variables explicitly marked as "Settable at queue time" can be set at
 
 #### Related links
 
-* [Learn - Secure use of variables in a pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time)
+* [Learn - Secure use of variables in a pipeline](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time)

@@ -40,7 +40,7 @@ The admin consent workflow (Preview) gives admins a secure way to grant access t
 
 To approve requests, a reviewer must be a global administrator, cloud application administrator, or application administrator. The reviewer must already have one of these admin roles assigned; simply designating them as a reviewer doesn't elevate their privileges.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Entra ID admin center](https://entra.microsoft.com).
 2. Under **Entra ID** select **Enterprise apps**
@@ -52,7 +52,7 @@ To approve requests, a reviewer must be a global administrator, cloud applicatio
 #### Related links
 
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
-* [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
+* [Configure the admin consent workflow](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-admin-consent-workflow)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 214](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -68,5 +68,5 @@ To approve requests, a reviewer must be a global administrator, cloud applicatio
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisAdminConsentWorkflowEnabled.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisAdminConsentWorkflowEnabled.ps1`
+* Pester test: `tests/cis/Test-MtCisAdminConsentWorkflowEnabled.Tests.ps1`
+* PowerShell source: `powershell/public/cis/Test-MtCisAdminConsentWorkflowEnabled.ps1`

@@ -13,7 +13,7 @@ When `UnifiedAuditLogIngestionEnabled` is `False`:
 
 The test passes if `Get-AdminAuditLogConfig` returns `UnifiedAuditLogIngestionEnabled = True`.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online PowerShell as a Compliance Administrator or higher: `Connect-ExchangeOnline`.
 2. Run: `Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true`.
@@ -21,10 +21,10 @@ The test passes if `Get-AdminAuditLogConfig` returns `UnifiedAuditLogIngestionEn
 
 #### Related links
 
-- [Microsoft Learn — Turn auditing on or off](https://learn.microsoft.com/en-us/purview/audit-log-enable-disable)
-- [Microsoft Learn — Search the audit log](https://learn.microsoft.com/en-us/purview/audit-search)
-- [Microsoft Learn — Audit logs for Microsoft 365 Copilot interactions](https://learn.microsoft.com/en-us/purview/audit-copilot)
-- [Microsoft Learn — Data Security Posture Management for AI](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)
+- [Microsoft Learn — Turn auditing on or off](https://learn.microsoft.com/purview/audit-log-enable-disable)
+- [Microsoft Learn — Search the audit log](https://learn.microsoft.com/purview/audit-search)
+- [Microsoft Learn — Audit logs for Microsoft 365 Copilot interactions](https://learn.microsoft.com/purview/audit-copilot)
+- [Microsoft Learn — Data Security Posture Management for AI](https://learn.microsoft.com/purview/ai-microsoft-purview)
 
 <!--- Results --->
 %TestResult%

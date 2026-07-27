@@ -71,7 +71,7 @@ The Teams Role Based Access Control (RBAC) implementation utilizes service speci
   <summary>(Optional) Grant permissions to Azure</summary>
 ### (Optional) Grant permissions to Azure
 
-The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resource Names (URN) with a "/" separator for heirarchical scoping. There exists resources within the root (e.g., "/") scope that Microsoft retains strict control over by limiting supported interactions. As a Global Administrator you can [elevate access](https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
+The Azure Role Based Access Control (RBAC) implementation utilizes Uniform Resource Names (URN) with a "/" separator for heirarchical scoping. There exists resources within the root (e.g., "/") scope that Microsoft retains strict control over by limiting supported interactions. As a Global Administrator you can [elevate access](https://learn.microsoft.com/azure/role-based-access-control/elevate-access-global-admin?tabs=powershell) to become authorized for these limited interactions.
 
 > The Azure RBAC permissions are necessary to support tests that validate [Azure configurations](https://maester.dev/docs/installation#installing-azure-and-exchange-online-modules), such as the [CISA tests](https://maester.dev/docs/tests/cisa/entra#:~:text=Test%2DMtCisaDiagnosticSettings).
 
@@ -81,7 +81,7 @@ The following PowerShell script will enable you, with a Global Administrator rol
 - Install the necessary Az module and prompt for connection
 - Elevate your account access to the root scope
 - Create a role assignment for Reader access over the Root Scope
-- Create a role assignment for Reader access over the Entra ID (i.e., [aadiam provider](https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/identity#microsoftaadiam))
+- Create a role assignment for Reader access over the Entra ID (i.e., [aadiam provider](https://learn.microsoft.com/azure/role-based-access-control/permissions/identity#microsoftaadiam))
 - Identify the role assignment authorizing your account access to the root scope
 - Delete the root scope role assignment for your account
 
@@ -235,7 +235,6 @@ For device code flow (e.g. non-interactive sessions):
 ```powershell
 Connect-Maester -Service Graph,SharePointOnline -SharePointClientId "<Client ID>" -UseDeviceCode
 ```
-
 
 </details>
 

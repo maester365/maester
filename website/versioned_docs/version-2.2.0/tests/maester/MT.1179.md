@@ -35,7 +35,7 @@ Key settings this test evaluates:
 
 The test passes if **at least one App Control for Business policy is enforcing** (audit mode disabled) **AND** has either built-in controls selected or an uploaded XML policy with a non-empty payload. Audit-only policies and upload-mode policies with no XML payload are reported but do not satisfy the pass criterion, because they do not block untrusted executables.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Application control**.
@@ -54,9 +54,9 @@ The test passes if **at least one App Control for Business policy is enforcing**
 #### Related links
 
 - [Microsoft Intune - Application Control](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/applicationControl)
-- [Microsoft Learn - App Control for Business in Intune](https://learn.microsoft.com/en-us/mem/intune/protect/endpoint-security-app-control-policy)
-- [Microsoft Learn - Application Control for Windows](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/appcontrol)
-- [Microsoft Learn - Managed Installer and ISG options](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/design/configure-appcontrol-managed-installer)
+- [Microsoft Learn - App Control for Business in Intune](https://learn.microsoft.com/mem/intune/protect/endpoint-security-app-control-policy)
+- [Microsoft Learn - Application Control for Windows](https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/appcontrol)
+- [Microsoft Learn - Managed Installer and ISG options](https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/design/configure-appcontrol-managed-installer)
 
 ## Test Metadata
 

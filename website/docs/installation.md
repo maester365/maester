@@ -65,8 +65,8 @@ See [Connect to GitHub (optional)](connect-maester/readme.md#connect-to-github-o
 
 Exchange Online implements a [role-based access control model](https://learn.microsoft.com/exchange/permissions-exo/permissions-exo). The controls these cmdlets test require minimum roles of either of the following:
 
-* View-Only Configuration OR
-* O365SupportViewConfig
+- View-Only Configuration OR
+- O365SupportViewConfig
 
 ### Installing Azure DevOps PowerShell module
 
@@ -81,6 +81,7 @@ In order to run all the Azure DevOps tests, you need to connect to Azure DevOps.
 This is currently not included as part of [Connect-Maester](connect-maester/readme.md) and must be called separately. Run the following command to interactively connect using the Azure DevOps modules. A sign-in window will appear.
 
 Example with PowerShell variable
+
 ```powershell
 $AdoPSAllowInsecureAPIs = $true
 Import-Module ADOPS
@@ -88,6 +89,7 @@ Connect-ADOPS -Organization <Name Of DevOps Organization>
 ```
 
 Example with ArgumentList
+
 ```powershell
 Import-Module ADOPS -ArgumentList $true
 Connect-ADOPS -Organization <Name Of DevOps Organization>
@@ -95,13 +97,13 @@ Connect-ADOPS -Organization <Name Of DevOps Organization>
 
 > Note: Some of the API endpoints used for Azure DevOps tests use unsupported endpoints.
 To allow usage of unsupported endpoints, you must set `$true` in the argumentlist when importing the module, or set a PowerShell variable called "$AdoPSAllowInsecureAPIs" to `$true` before importing the module.
-Reference: https://github.com/AZDOPS/AZDOPS/issues/248
+Reference: <https://github.com/AZDOPS/AZDOPS/issues/248>
 
 ### Permissions
 
-Azure DevOps implements a [role-based access control model](https://learn.microsoft.com/en-us/azure/devops/organizations/security/permissions?view=azure-devops&tabs=preview-page). The controls these cmdlets test require the minimum role of:
+Azure DevOps implements a [role-based access control model](https://learn.microsoft.com/azure/devops/organizations/security/permissions?view=azure-devops&tabs=preview-page). The controls these cmdlets test require the minimum role of:
 
-* Project-Scoped Users at Organization level
+- Project-Scoped Users at Organization level
 
 ## Next Steps
 

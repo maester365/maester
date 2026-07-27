@@ -160,7 +160,7 @@ function GetPageMarkdownLink($uri) {
 }
 
 function GetGraphExplorerMarkDownLink($relativeUri, $apiVersion) {
-    $graphExplorerUrl = "https://developer.microsoft.com/en-us/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
+    $graphExplorerUrl = "https://developer.microsoft.com/graph/graph-explorer?request=$relativeUri&method=GET&version=$apiVersion&GraphUrl=https://graph.microsoft.com"
     return "[Open in Graph Explorer]($graphExplorerUrl)"
 }
 

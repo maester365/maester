@@ -46,7 +46,7 @@ jobs:
           title: Update Entra ID role definitions
           body: |
             Automated update of Entra ID built-in role definitions from the
-            [Microsoft permissions reference](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference).
+            [Microsoft permissions reference](https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference).
 
             Updates:
             - `powershell/internal/Get-MtRoleInfo.ps1` (role hashtable with GUIDs and privileged flags)

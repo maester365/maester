@@ -25,7 +25,7 @@ This test checks the Org-wide default meeting policy is configured to only allow
 
 Restricting who can present limits meeting disruptions and reduces the risk of unwanted or inappropriate content being shared.
 
-#### Remediation action:
+#### Remediation action
 
 To prevent standard attendees from sharing content during Teams meetings:
 
@@ -38,7 +38,7 @@ To prevent standard attendees from sharing content during Teams meetings:
 
 #### Related links
 
-* [Manage meeting policies for content sharing](https://learn.microsoft.com/en-us/microsoftteams/meeting-policies-content-sharing)
+* [Manage meeting policies for content sharing](https://learn.microsoft.com/microsoftteams/meeting-policies-content-sharing)
 * [7 tips for safe online meetings and collaboration with Microsoft Teams - Tip 3: Determine who can present content or share their screen in your Teams meeting](https://techcommunity.microsoft.com/blog/microsoftteamsblog/7-tips-for-safe-online-meetings-and-collaboration-with-microsoft-teams/2072303)
 
 ## Test Metadata
@@ -54,5 +54,5 @@ To prevent standard attendees from sharing content during Teams meetings:
 
 ## Source
 
-- Pester test: `tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1`
-- PowerShell source: `powershell/public/maester/teams/Test-MtTeamsRestrictParticipantGiveRequestControl.ps1`
+* Pester test: `tests/Maester/Teams/Test-TeamsMeeting.Tests.ps1`
+* PowerShell source: `powershell/public/maester/teams/Test-MtTeamsRestrictParticipantGiveRequestControl.ps1`

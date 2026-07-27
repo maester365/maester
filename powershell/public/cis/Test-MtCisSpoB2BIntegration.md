@@ -25,9 +25,9 @@ Set-SPOTenant -EnableAzureADB2BIntegration $true
 
 ## Related Links
 
-* [Enabling the integration](https://learn.microsoft.com/en-us/sharepoint/sharepoint-azureb2b-integration#enabling-the-integration)
-* [What is Microsoft Entra B2B collaboration?](https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b)
-* [Set-SPOTenant](https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
+* [Enabling the integration](https://learn.microsoft.com/sharepoint/sharepoint-azureb2b-integration#enabling-the-integration)
+* [What is Microsoft Entra B2B collaboration?](https://learn.microsoft.com/entra/external-id/what-is-b2b)
+* [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 368](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

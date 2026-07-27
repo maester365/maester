@@ -12,7 +12,7 @@ Follow the link below to restrict Microsoft 365 Group creation to approved users
 
 #### Related links
 
-- [Manage who can create Microsoft 365 Groups](https://learn.microsoft.com/en-us/microsoft-365/solutions/manage-creation-of-groups?view=o365-worldwide)
+- [Manage who can create Microsoft 365 Groups](https://learn.microsoft.com/microsoft-365/solutions/manage-creation-of-groups?view=o365-worldwide)
 
 <!--- Results --->
 

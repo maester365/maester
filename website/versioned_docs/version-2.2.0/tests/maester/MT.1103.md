@@ -29,7 +29,7 @@ This test checks whether Intune RBAC groups are protected either via Entra Restr
 
 Additional information:
 
-* See [Restricted management administrative units in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management)
+* See [Restricted management administrative units in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/admin-units-restricted-management)
 
 ## Test Metadata
 
@@ -44,5 +44,5 @@ Additional information:
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtIntuneRbacGroupsProtected.ps1`
+* Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
+* PowerShell source: `powershell/public/maester/intune/Test-MtIntuneRbacGroupsProtected.ps1`

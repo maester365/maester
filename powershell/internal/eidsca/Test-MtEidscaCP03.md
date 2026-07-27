@@ -1,8 +1,9 @@
 Defines whether user consent will be blocked when a risky request is detected
 
-[Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/configure-risk-based-step-up-consent)
+[Configure risk-based step-up consent - Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/azure/active-directory/manage-apps/configure-risk-based-step-up-consent)
 
 #### Test script
+
 ```
 https://graph.microsoft.com/beta/settings
 .values -eq 'true'
@@ -10,9 +11,8 @@ https://graph.microsoft.com/beta/settings
 
 #### Related links
 
-- [Open in Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer?request=settings&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
-- [directorySetting resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/en-us/graph/api/resources/directorysetting)
-
+- [Open in Graph Explorer](https://developer.microsoft.com/graph/graph-explorer?request=settings&method=GET&version=beta&GraphUrl=https://graph.microsoft.com)
+- [directorySetting resource type - Microsoft Graph beta | Microsoft Learn](https://learn.microsoft.com/graph/api/resources/directorysetting)
 
 ## MITRE ATT&CK
 
@@ -29,10 +29,10 @@ mindmap
       T1566.002 - Phishing: Spearphishing Link
       T1078 - Valid Accounts
 ```
+
 |Tactic|Technique|Mitigation|
 |---|---|---|
 |[TA0001 - Initial Access - Initial Access](https://attack.mitre.org/tactics/TA0001)|[T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002)<br/>[T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078)|[M1017 - User Training](https://attack.mitre.org/mitigations/M1017)<br/>[M1018 - User Account Management](https://attack.mitre.org/mitigations/M1018)<br/>[M1047 - Audit](https://attack.mitre.org/mitigations/M1047)|
-
 
 <!--- Results --->
 %TestResult%

@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status of anonymous status badges in Azure DevOps.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository
+    https://learn.microsoft.com/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cbrowser#add-a-status-badge-to-your-repository
 
 .EXAMPLE
     ```

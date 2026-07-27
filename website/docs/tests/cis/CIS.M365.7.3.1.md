@@ -55,8 +55,8 @@ Set-SPOTenant -DisallowInfectedFileDownload $true
 
 ## Related Links
 
-* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
-* [Overview of external sharing in SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/external-sharing-overview)
+* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#change-the-organization-level-external-sharing-setting)
+* [Overview of external sharing in SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/external-sharing-overview)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 394](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -72,5 +72,5 @@ Set-SPOTenant -DisallowInfectedFileDownload $true
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisSpoPreventDownloadMaliciousFile.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisSpoPreventDownloadMaliciousFile.ps1`
+* Pester test: `tests/cis/Test-MtCisSpoPreventDownloadMaliciousFile.Tests.ps1`
+* PowerShell source: `powershell/public/cis/Test-MtCisSpoPreventDownloadMaliciousFile.ps1`

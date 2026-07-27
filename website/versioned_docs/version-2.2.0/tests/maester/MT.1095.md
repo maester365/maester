@@ -23,10 +23,9 @@ keywords:
 
 This test checks if the Android Enterprise account connection is valid and has recently synchronized. The Android Enterprise connection is required to synchronize Android enterprise apps and allow device enrollment with Microsoft Intune.
 
-
 #### Remediation action
 
-The following Microsoft Learn article describes how to [Connect your Intune account to your managed Google Play account](https://learn.microsoft.com/en-us/intune/intune-service/enrollment/connect-intune-android-enterprise).
+The following Microsoft Learn article describes how to [Connect your Intune account to your managed Google Play account](https://learn.microsoft.com/intune/intune-service/enrollment/connect-intune-android-enterprise).
 
 Additional links:
 
@@ -46,5 +45,5 @@ Additional links:
 
 ## Source
 
-- Pester test: `tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1`
-- PowerShell source: `powershell/public/maester/intune/Test-MtAndroidEnterpriseConnection.ps1`
+* Pester test: `tests/Maester/Intune/Test-MtIntuneConnectorHealth.Tests.ps1`
+* PowerShell source: `powershell/public/maester/intune/Test-MtAndroidEnterpriseConnection.ps1`

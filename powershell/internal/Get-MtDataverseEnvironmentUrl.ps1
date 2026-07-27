@@ -19,7 +19,7 @@
     Returns a URL like 'https://org12345.api.crm.dynamics.com' or $null.
 
 .LINK
-    https://learn.microsoft.com/en-us/power-apps/developer/data-platform/discovery-service
+    https://learn.microsoft.com/power-apps/developer/data-platform/discovery-service
 #>
 
 function Get-MtDataverseEnvironmentUrl {

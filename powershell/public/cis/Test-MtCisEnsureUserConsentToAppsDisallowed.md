@@ -10,7 +10,7 @@ Attackers commonly use custom applications to trick users into granting them acc
 
 If user consent is disabled, previous consent grants will still be honored but all future consent operations must be performed by an administrator. Tenant-wide admin consent can be requested by users through an integrated administrator consent request workflow or through organizational support processes
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** and select **Enterprise apps**.
@@ -21,7 +21,7 @@ If user consent is disabled, previous consent grants will still be honored but a
 #### Related links
 
 * [Microsoft 365 Entra admin center](https://entra.microsoft.com)
-* [Configure how users consent to applications](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-user-consent?pivots=portal)
+* [Configure how users consent to applications](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-user-consent?pivots=portal)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 211](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

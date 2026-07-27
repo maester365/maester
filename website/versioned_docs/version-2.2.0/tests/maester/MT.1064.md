@@ -25,9 +25,10 @@ By default, all Entra ID security principals can create new management groups. T
 
 To prevent this, Azure provides a setting that enforces write permission requirements for the creation of new management groups. This ensures that only authorized users can manage the structure of your management group hierarchy.
 
-#### Remediation action:
+#### Remediation action
 
 To enable the requirement for write permissions:
+
 1. Navigate to the Microsoft Azure Portal: [https://portal.azure.com](https://portal.azure.com).
 2. In the search bar, type **Management groups** and open the blade.
 3. Select **Settings** in the left navigation menu.
@@ -36,7 +37,7 @@ To enable the requirement for write permissions:
 
 #### Related links
 
-* [Organize your resources with management groups](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview)
+* [Organize your resources with management groups](https://learn.microsoft.com/azure/governance/management-groups/overview)
 
 ## Test Metadata
 
@@ -51,5 +52,5 @@ To enable the requirement for write permissions:
 
 ## Source
 
-- Pester test: `tests/Maester/Azure/Test-MtManagementGroupWriteRequirement.Tests.ps1`
-- PowerShell source: `powershell/public/maester/azure/Test-MtManagementGroupWriteRequirement.ps1`
+* Pester test: `tests/Maester/Azure/Test-MtManagementGroupWriteRequirement.Tests.ps1`
+* PowerShell source: `powershell/public/maester/azure/Test-MtManagementGroupWriteRequirement.ps1`

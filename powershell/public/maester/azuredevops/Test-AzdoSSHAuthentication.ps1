@@ -6,7 +6,7 @@
     Checks the status of the possibility to use SSH keys to connect to Azure DevOps.
 
     https://aka.ms/vstspolicyssh
-    https://learn.microsoft.com/en-us/azure/devops/repos/git/auth-overview?view=azure-devops&source=recommendations&tabs=Windows
+    https://learn.microsoft.com/azure/devops/repos/git/auth-overview?view=azure-devops&source=recommendations&tabs=Windows
 
 .EXAMPLE
     ```

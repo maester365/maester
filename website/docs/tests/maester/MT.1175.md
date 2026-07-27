@@ -33,7 +33,7 @@ A DLP policy on the Copilot location lets you block Copilot interactions involvi
 
 The test passes when at least one **enabled, non-simulation** DLP policy targets the Microsoft 365 Copilot location. Detection inspects multiple Purview schema fields (`MicrosoftCopilotLocation`, `Workload`, `Locations`, and `EnforcementPlanes`) so policies created through the older preview surface and through the current Microsoft Purview portal / PowerShell paths are both recognised.
 
-#### Remediation action:
+#### Remediation action
 
 1. Open the [Microsoft Purview portal — Data Loss Prevention — Policies](https://purview.microsoft.com/datalossprevention/policies).
 2. Click **+ Create policy** and choose a Custom or template-based DLP policy.
@@ -45,9 +45,9 @@ The test passes when at least one **enabled, non-simulation** DLP policy targets
 
 #### Related links
 
-- [Microsoft Learn — DLP for Microsoft 365 Copilot](https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-learn-about)
-- [Microsoft Learn — Create a DLP policy](https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy)
-- [Microsoft Learn — Microsoft 365 Copilot oversharing assessment](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)
+- [Microsoft Learn — DLP for Microsoft 365 Copilot](https://learn.microsoft.com/purview/dlp-microsoft365-copilot-learn-about)
+- [Microsoft Learn — Create a DLP policy](https://learn.microsoft.com/purview/dlp-create-deploy-policy)
+- [Microsoft Learn — Microsoft 365 Copilot oversharing assessment](https://learn.microsoft.com/purview/ai-microsoft-purview)
 
 ## Test Metadata
 

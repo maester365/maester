@@ -41,7 +41,7 @@ Individuals who are not part of the organization will have to wait in the lobby 
 
 Any individual who dials into the meeting regardless of status will also have to wait in the lobby. This includes internal users who are considered unauthenticated when dialing in.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 2. Select **Settings & policies** > **Global (Org-wide default) settings**.
@@ -52,6 +52,7 @@ Any individual who dials into the meeting regardless of status will also have to
 
 1. Connect to Teams PowerShell using `Connect-MicrosoftTeams`.
 2. Run the following command to set the recommended state:
+
 ```powershell
 Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 ```
@@ -61,8 +62,8 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 #### Related links
 
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Overview of lobby settings and policies](https://learn.microsoft.com/en-us/microsoftteams/who-can-bypass-meeting-lobby#overview-of-lobby-settings-and-policies)
-* [Set-CsTeamsMeetingPolicy](https://learn.microsoft.com/en-us/powershell/module/microsoftteams/set-csteamsmeetingpolicy?view=teams-ps&viewFallbackFrom=skype-ps)
+* [Overview of lobby settings and policies](https://learn.microsoft.com/microsoftteams/who-can-bypass-meeting-lobby#overview-of-lobby-settings-and-policies)
+* [Set-CsTeamsMeetingPolicy](https://learn.microsoft.com/powershell/module/microsoftteams/set-csteamsmeetingpolicy?view=teams-ps&viewFallbackFrom=skype-ps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 434](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -78,5 +79,5 @@ Set-CsTeamsMeetingPolicy -Identity Global -AutoAdmittedUsers "InvitedUsers"
 
 ## Source
 
-- Pester test: `tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1`
-- PowerShell source: `powershell/public/cis/Test-MtCisTeamsLobbyBypass.ps1`
+* Pester test: `tests/cis/Test-MtCisTeamsLobbyBypass.Tests.ps1`
+* PowerShell source: `powershell/public/cis/Test-MtCisTeamsLobbyBypass.ps1`

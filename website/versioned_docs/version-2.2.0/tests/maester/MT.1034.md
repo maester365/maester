@@ -1,6 +1,6 @@
 ---
 title: "MT.1034 - MT.1034.$($EmergencyAccessUsers.IndexOf($_)): Emergency access users should not be blocked ($($_.userPrincipalName))"
-description: "This function tests a Conditional Access evaluation with What If for a given scenario. The function uses the Microsoft Graph API to evaluate the Conditional Access policies. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool https://learn.microsoft.com/en-us/powe…"
+description: "This function tests a Conditional Access evaluation with What If for a given scenario. The function uses the Microsoft Graph API to evaluate the Conditional Access policies. Learn more: https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool https://learn.microsoft.com/powe…"
 slug: /tests/MT.1034
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -28,8 +28,8 @@ This function tests a Conditional Access evaluation with What If for a given sce
 The function uses the Microsoft Graph API to evaluate the Conditional Access policies.
 
 Learn more:
-https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool
-https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta
+<https://learn.microsoft.com/entra/identity/conditional-access/what-if-tool>
+<https://learn.microsoft.com/powershell/module/microsoft.graph.beta.identity.signins/test-mgbetaidentityconditionalaccess?view=graph-powershell-beta>
 
 ## Test Metadata
 

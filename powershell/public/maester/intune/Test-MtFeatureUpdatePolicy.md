@@ -1,6 +1,5 @@
 This test checks for Windows Feature Update policies referencing unsupported Windows build versions.
-Additional information about Feature Update Policies: [Microsoft learn - Feature updates for Windows 10 and later policy in Intune](https://learn.microsoft.com/en-us/intune/intune-service/protect/windows-10-feature-updates).
-
+Additional information about Feature Update Policies: [Microsoft learn - Feature updates for Windows 10 and later policy in Intune](https://learn.microsoft.com/intune/intune-service/protect/windows-10-feature-updates).
 
 #### Remediation action
 

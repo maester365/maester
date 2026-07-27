@@ -2,8 +2,10 @@ Disable the ability to install and run tasks from the Marketplace, which gives y
 
 Rationale: Tasks from the marketplace should be reviewed and approved.
 
-#### Remediation action:
+#### Remediation action
+
 Enable the restriction to prevent marketplace tasks from executing in pipelines.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
@@ -14,4 +16,4 @@ With this enabled, pipelines will not use tasks installed from the Marketplace. 
 
 #### Related links
 
-* [Learn - Prevent malicious code execution](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution)
+* [Learn - Prevent malicious code execution](https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution)

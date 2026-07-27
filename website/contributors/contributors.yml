@@ -44,7 +44,7 @@ BakkerJan:
   name: Jan Bakker
   title: Microsoft MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/43008837-7976-eb11-a812-000d3a8dfe0d
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/43008837-7976-eb11-a812-000d3a8dfe0d
   location: Netherlands
   url: https://janbakker.tech
   socials:
@@ -55,7 +55,7 @@ bastienperez:
   name: Bastien Perez
   title: Consultant Microsoft 365 - Active Directory - Modern Workplace
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/afb2bc47-0ec6-4eec-8eab-777a131a9952
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/afb2bc47-0ec6-4eec-8eab-777a131a9952
   company: Clidsys
   location: Caen, France
   url: https://perezbastien.com
@@ -80,7 +80,7 @@ brianreidc7:
   name: Brian Reid
   title: One of the few Microsoft Certified Master (MCM) and MVPs worldwide
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/aa640ff3-3c9a-e411-93f2-9cb65495d3c4
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/aa640ff3-3c9a-e411-93f2-9cb65495d3c4
   company: NBConsult
   url: https://www.c7solutions.com
   socials:
@@ -90,7 +90,7 @@ brianveldman:
   name: Beerd Veldman
   title: Cloud Solution Architect
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/84f24f9e-8ec5-48f5-8c27-e32532c1d4d9
   location: Zwolle
   url: https://cloudtips.nl/
   socials:
@@ -101,7 +101,7 @@ Cloud-Architekt:
   name: Thomas Naunheim
   title: Microsoft Security MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/411a1416-38e8-ea11-a814-000d3a8dfe0d
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/411a1416-38e8-ea11-a814-000d3a8dfe0d
   location: Koblenz
   url: https://www.cloud-architekt.net
   socials:
@@ -113,7 +113,7 @@ crmhh:
   name: Christopher Brumm
   title: Microsoft Security MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/cad9c18c-40fe-475d-b9d9-dbec9bce58c3
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/cad9c18c-40fe-475d-b9d9-dbec9bce58c3
   company: glueckkanja AG
   location: Hamburg
   url: https://chris-brumm.com
@@ -125,7 +125,7 @@ DanielBradley1:
   name: Daniel Bradley
   title: Microsoft Security MVP and Blogger @ ourcloudnetwork.com
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/f62d6181-95fb-ed11-8f6d-000d3a560942
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/f62d6181-95fb-ed11-8f6d-000d3a560942
   company: ourcloudnetwork
   location: United Kingdom
   url: https://ourcloudnetwork.com/
@@ -149,7 +149,7 @@ f-bader:
   name: Fabian Bader
   title: Microsoft Security MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/2881ad4f-04c6-ec11-a7b5-0022482d3c49
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/2881ad4f-04c6-ec11-a7b5-0022482d3c49
   company: glueckkanja AG
   location: Hamburg, Germany
   url: https://cloudbrothers.info
@@ -248,7 +248,7 @@ lnfernux:
   name: Truls Thorstad Dahlsveen
   title: Hey everyone 🦥
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/964806cf-c755-ed11-9561-000d3a197333
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/964806cf-c755-ed11-9561-000d3a197333
   company: glueckkanja AG
   location: Norway
   url: https://www.infernux.no/
@@ -317,7 +317,7 @@ michaelmsonne:
   name: Michael Morten Sonne
   title: Microsoft MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/b6a5bd91-5ebd-4c84-8965-023a95273093
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/b6a5bd91-5ebd-4c84-8965-023a95273093
   company: MINDCORE
   location: The lovely Earth
   url: https://blog.sonnes.cloud
@@ -349,7 +349,7 @@ nicolonsky:
   name: Nicola Suter
   title: All things related to endpoints and security
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/51ab894c-e8d5-45f7-956f-43b7173ee0eb
   company: baseVISION
   location: Switzerland
   url: https://tech.nicolonsky.ch
@@ -432,7 +432,7 @@ RobbeVandenDaele:
   name: Robbe Van den Daele
   title: Passionate about Microsoft Security, Purple Teaming, and Security research
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/f6095ac4-5535-4a96-823b-f332add1cb41
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/f6095ac4-5535-4a96-823b-f332add1cb41
   company: The Collective
   location: Belgium
   url: https://hybridbrothers.com/
@@ -444,7 +444,7 @@ SamErde:
   name: Sam Erde
   title: Microsoft MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/d6fd6168-805b-49c5-801b-fbe6d20db428
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/d6fd6168-805b-49c5-801b-fbe6d20db428
   company: PatriotConsultingTech
   location: Charlotte, NC area
   url: https://day3bits.com
@@ -471,7 +471,7 @@ svrooij:
   name: Stephan van Rooij
   title: Microsoft MVP
   mvp: true
-  mvpUrl: https://mvp.microsoft.com/en-US/mvp/profile/cc128f12-003f-ed11-bba3-000d3a197333
+  mvpUrl: https://mvp.microsoft.com/mvp/profile/cc128f12-003f-ed11-bba3-000d3a197333
   company: Smartersoft BV
   location: The Netherlands
   url: https://svrooij.io
