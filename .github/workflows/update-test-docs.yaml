@@ -1,0 +1,78 @@
+# Regenerates test documentation and contributor attribution after source changes.
+name: Update generated test docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "powershell/**"
+      - "tests/**"
+      - "website/contributors/attribution-overrides.yml"
+      - "website/contributors/contributors.yml"
+      - "website/scripts/contributors.mjs"
+      - "website/scripts/generate-test-docs.mjs"
+      - ".github/workflows/update-test-docs.yaml"
+
+permissions: {}
+
+concurrency:
+  group: update-generated-test-docs
+  cancel-in-progress: false
+
+jobs:
+  update-generated-test-docs:
+    name: Update generated test docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Generate maester-bot app token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.MAESTER_BOT_APP_ID }}
+          private-key: ${{ secrets.MAESTER_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        working-directory: website
+        run: npm ci
+
+      - name: Generate test docs and contributor attribution
+        working-directory: website
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: npm run generate-test-docs
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: automation/update-test-docs
+          delete-branch: true
+          commit-message: Update generated test docs
+          title: Update generated test docs and contributor attribution
+          body: |
+            Automated refresh of generated test documentation and contributor attribution.
+
+            Source changes are derived from the full git history by `website/scripts/generate-test-docs.mjs`.
+          add-paths: |
+            website/contributors/email-aliases.json
+            website/docs/tests
+            website/src/data/contributors.json
