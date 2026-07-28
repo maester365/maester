@@ -11,7 +11,7 @@
     This test checks if all groups used in Conditional Access Policies are protected.
 
     Learn more:
-    https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
+    https://learn.microsoft.com/entra/identity/role-based-access-control/admin-units-restricted-management
 
     .Example
     Test-MtCaGroupsRestricted

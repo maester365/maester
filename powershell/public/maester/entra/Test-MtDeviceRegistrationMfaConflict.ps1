@@ -6,7 +6,7 @@
     .Description
     When MFA is required during device registration in Conditional Access policies, it must be disabled in the Entra ID Device settings.
     When both are enabled, the conditional access policy with the "Register device" user action will not work as expected. More information
-    can be found at: https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy
+    can be found at: https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-registration#create-a-conditional-access-policy
 
     .Example
     Test-MtDeviceRegistrationMfaConflict

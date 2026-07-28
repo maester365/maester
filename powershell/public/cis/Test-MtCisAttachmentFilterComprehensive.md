@@ -12,11 +12,13 @@ Defining a comprehensive list of attachments can help protect against additional
 
 For file types that are business necessary users will need to use other organizationally approved methods to transfer blocked extension types between business partners.
 
-#### Remediation action:
+#### Remediation action
 
 To implement a new policy containing a comprehensive list of extensions:
+
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following script after editing **InternalSenderAdminAddress**:
+
 ```
 # Create an attachment policy and associated rule. The rule is
 # intentionally disabled allowing the org to enable it when ready
@@ -62,14 +64,15 @@ $Rule = @{
 }
 New-MalwareFilterRule @Rule
 ```
+
 3. When prepared enable the rule either through the UI or PowerShell.
 
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Get-MalwareFilterPolicy](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
-* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
-* [File format reference for Word, Excel, and PowerPoint](https://learn.microsoft.com/en-us/office/compatibility/office-file-format-reference)
+* [Get-MalwareFilterPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
+* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
+* [File format reference for Word, Excel, and PowerPoint](https://learn.microsoft.com/office/compatibility/office-file-format-reference)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 109](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

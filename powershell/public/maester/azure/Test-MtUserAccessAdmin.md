@@ -24,7 +24,7 @@ az role assignment delete --role "User Access Administrator" --assignee adminnam
 
 #### Related links
 
-* [Manage who can create Microsoft 365 Groups](https://learn.microsoft.com/en-us/microsoft-365/solutions/manage-creation-of-groups?view=o365-worldwide)
+* [Manage who can create Microsoft 365 Groups](https://learn.microsoft.com/microsoft-365/solutions/manage-creation-of-groups?view=o365-worldwide)
 
 <!--- Results --->
 %TestResult%

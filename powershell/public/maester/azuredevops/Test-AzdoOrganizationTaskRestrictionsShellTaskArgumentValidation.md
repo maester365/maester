@@ -2,8 +2,10 @@ Enable Shell Task Validation to prevent code injection.
 
 Rationale: Code injection through arguments parameters should be prevented.
 
-#### Remediation action:
+#### Remediation action
+
 Enable the policy to stop these requests and notifications.
+
 1. Sign in to your organization.
 2. Choose Organization settings.
 3. Select Settings under Pipelines.
@@ -11,6 +13,7 @@ Enable the policy to stop these requests and notifications.
 
 **Results:**
 This validation applies to the arguments parameter in the following specific tasks:
+
 - PowerShell
 - BatchScript
 - Bash
@@ -20,4 +23,4 @@ This validation applies to the arguments parameter in the following specific tas
 
 #### Related links
 
-* [Learn - Shell Tasks Validation](https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation)
+- [Learn - Shell Tasks Validation](https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#shellTasksValidation)

@@ -22,7 +22,7 @@ To approve requests, a reviewer must be a Global Administrator, Cloud Applicatio
 #### Related links
 
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
-* [Configure the admin consent workflow](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/configure-admin-consent-workflow)
+* [Configure the admin consent workflow](https://learn.microsoft.com/entra/identity/enterprise-apps/configure-admin-consent-workflow)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 214](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

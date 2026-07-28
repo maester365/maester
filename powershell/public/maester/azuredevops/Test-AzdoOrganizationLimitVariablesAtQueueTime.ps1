@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks if user defined variables are able to override system variables or variables not defined by the pipeline author.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time
+    https://learn.microsoft.com/azure/devops/pipelines/security/inputs?view=azure-devops#limit-variables-that-can-be-set-at-queue-time
 
 .EXAMPLE
     ```

@@ -2,15 +2,15 @@ Azure Artifacts provides 2 GiB of free storage for each organization. Once your 
 
 Rationale: The storage limit should not be reached; hitting it blocks artifact publication.
 
+#### Remediation action
 
-#### Remediation action:
-- [Configure retention policies](https://learn.microsoft.com/en-us/azure/devops/artifacts/how-to/delete-and-recover-packages?view=azure-devops&tabs=nuget#delete-packages-automatically-with-retention-policies)
-- [Set up billing](https://learn.microsoft.com/en-us/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing)
+- [Configure retention policies](https://learn.microsoft.com/azure/devops/artifacts/how-to/delete-and-recover-packages?view=azure-devops&tabs=nuget#delete-packages-automatically-with-retention-policies)
+- [Set up billing](https://learn.microsoft.com/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing)
 - Increase Artifacts storage limit
-  - [Set up billing for your organization.](https://learn.microsoft.com/en-us/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing)
+  - [Set up billing for your organization.](https://learn.microsoft.com/azure/devops/organizations/billing/set-up-billing-for-your-organization-vs?view=azure-devops#set-up-billing)
   - Sign in to your Azure DevOps organization, select Organization settings > Billing, and select No limit, pay for what you use from the Usage limit dropdown.
   - Select Save when you are done.
 
 #### Related links
 
-* [Learn - Package size and count limits](https://learn.microsoft.com/en-us/azure/devops/artifacts/reference/limits?view=azure-devops)
+- [Learn - Package size and count limits](https://learn.microsoft.com/azure/devops/artifacts/reference/limits?view=azure-devops)

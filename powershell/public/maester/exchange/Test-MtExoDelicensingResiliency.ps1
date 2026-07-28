@@ -44,7 +44,7 @@
 
     # If license requirements are not met, return early with informative message
     if ($meetsLicenseRequirement -ne $true) {
-        Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Not enough non-trial licenses. See [Delicensing Resiliency](https://learn.microsoft.com/en-us/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)"
+        Add-MtTestResultDetail -SkippedBecause "Custom" -SkippedCustomReason "Not enough non-trial licenses. See [Delicensing Resiliency](https://learn.microsoft.com/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)"
         return $null
     }
 
