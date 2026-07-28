@@ -66,8 +66,8 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1047](./MT.1047.md) | Restrict anonymous users from starting Teams meetings | Medium | Teams |
 | [MT.1048](./MT.1048.md) | Limit external participants from having control in a Teams meeting | Medium | Teams |
 | [MT.1049](./MT.1049.md) | Conditional Access policies for User Risk and Sign-in Risk should be configured separately. | High | CA |
-| [MT.1050](./MT.1050.md) | Apps with high-risk permissions having a direct path to Global Administrator | High | App |
-| [MT.1051](./MT.1051.md) | Apps with high-risk permissions having an indirect path to Global Administrator | High | App |
+| [MT.1050](./MT.1050.md) | Apps with high-risk permissions having a direct path to Global Admin | High | App |
+| [MT.1051](./MT.1051.md) | Apps with high-risk permissions having an indirect path to Global Admin | High | App |
 | [MT.1052](./MT.1052.md) | At least one Conditional Access policy is targeting the Device Code authentication flow. | High | CA |
 | [MT.1053](./MT.1053.md) | Ensure intune device clean-up rule is configured | Medium | Intune |
 | [MT.1054](./MT.1054.md) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Medium | Intune |
@@ -104,7 +104,7 @@ These tests are maintained by the Maester community and validate Microsoft 365, 
 | [MT.1087](./MT.1087.md) | Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. | High | XSPM |
 | [MT.1088](./MT.1088.md) | Devices with critical credentials should be protected by TPM. | Medium | XSPM |
 | [MT.1089](./MT.1089.md) | Devices with critical credentials should be protected by Credential Guard. | Medium | XSPM |
-| [MT.1090](./MT.1090.md) | Global Administrator role should not be added as local administrator on the device during Microsoft Entra join | Medium | Entra |
+| [MT.1090](./MT.1090.md) | Global administrator role should not be added as local administrator on the device during Microsoft Entra join | Medium | Entra |
 | [MT.1091](./MT.1091.md) | Registering user should not be added as local administrator on the device during Microsoft Entra join | Medium | Entra |
 | [MT.1092](./MT.1092.md) | Intune APNS certificate should be valid for more than 30 days | High | Intune |
 | [MT.1093](./MT.1093.md) | Apple Automated Device Enrollment Tokens should be valid for more than 30 days | High | Intune |

@@ -7044,11 +7044,11 @@
       "path": "/docs/tests/MT.1049"
     },
     "MT.1050": {
-      "title": "Apps with high-risk permissions having a direct path to Global Administrator",
+      "title": "Apps with high-risk permissions having a direct path to Global Admin",
       "path": "/docs/tests/MT.1050"
     },
     "MT.1051": {
-      "title": "Apps with high-risk permissions having an indirect path to Global Administrator",
+      "title": "Apps with high-risk permissions having an indirect path to Global Admin",
       "path": "/docs/tests/MT.1051"
     },
     "MT.1052": {
@@ -7196,7 +7196,7 @@
       "path": "/docs/tests/MT.1089"
     },
     "MT.1090": {
-      "title": "Global Administrator role should not be added as local administrator on the device during Microsoft Entra join",
+      "title": "Global administrator role should not be added as local administrator on the device during Microsoft Entra join",
       "path": "/docs/tests/MT.1090"
     },
     "MT.1091": {

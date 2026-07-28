@@ -117,7 +117,7 @@
       "ResultDetail": {
         "TestTitle": "CIS.M365.1.1.3: (L1) Ensure that between two and four global admins are designated",
         "TestResult": "\nYour tenant does not have the appropriate number of Global Administrators.",
-        "TestDescription": "1.1.3 (L1) Ensure that between two and four global admins are designated\n\nMore than one Global Administrator should be designated so a single admin can be monitored and to provide redundancy should a single admin leave an organization. Additionally, there should be no more than four global admins set for any tenant. Ideally Global Administrators will have no licenses assigned to them.\n\n#### Remediation action:\n\nTo correct the number of global tenant administrators:\n1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).\n2. Select **Users** > **Active Users**.\n3. In the Search field enter the name of the user to be made a Global Administrator.\n4. To create a new Global Administrator:\n 1. Select the user's name.\n 2. A window will appear to the right.\n 3. Select **Manage roles**.\n 4. Select **Admin center access**.\n 5. Check **Global Administrator**.\n 6. Click Save changes.\n\nTo remove Global Admins:\n1. Select **User**.\n2. Under Roles select **Manage roles**.\n3. De-Select the appropriate role.\n4. Click **Save changes**.\n\n#### Related links\n\n* [Microsoft 365 Admin Center](https://admin.microsoft.com)\n* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 26](https://www.cisecurity.org/benchmark/microsoft_365)\n\n",
+        "TestDescription": "1.1.3 (L1) Ensure that between two and four global admins are designated\n\nMore than one global administrator should be designated so a single admin can be monitored and to provide redundancy should a single admin leave an organization. Additionally, there should be no more than four global admins set for any tenant. Ideally global administrators will have no licenses assigned to them.\n\n#### Remediation action:\n\nTo correct the number of global tenant administrators:\n1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).\n2. Select **Users** > **Active Users**.\n3. In the Search field enter the name of the user to be made a Global Administrator.\n4. To create a new Global Admin:\n 1. Select the user's name.\n 2. A window will appear to the right.\n 3. Select **Manage roles**.\n 4. Select **Admin center access**.\n 5. Check **Global Administrator**.\n 6. Click Save changes.\n\nTo remove Global Admins:\n1. Select **User**.\n2. Under Roles select **Manage roles**.\n3. De-Select the appropriate role.\n4. Click **Save changes**.\n\n#### Related links\n\n* [Microsoft 365 Admin Center](https://admin.microsoft.com)\n* [CIS Microsoft 365 Foundations Benchmark v4.0.0 - Page 26](https://www.cisecurity.org/benchmark/microsoft_365)\n\n",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -2674,13 +2674,13 @@
         "Entra ID Free"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        $result = Test-MtCisaGlobalAdminRatio\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"more granular role assignments exist than Global Administrator assignments.\"\n        }\n    ",
+      "ScriptBlock": "\n        $result = Test-MtCisaGlobalAdminRatio\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"more granular role assignments exist than global admin assignments.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cisa/entra/Test-MtCisaGlobalAdminRatio.Tests.ps1",
       "ErrorRecord": [
         {
           "Exception": {
             "TargetSite": null,
-            "Message": "Expected $true, because more granular role assignments exist than Global Administrator assignments., but got $false.",
+            "Message": "Expected $true, because more granular role assignments exist than global admin assignments., but got $false.",
             "Data": "System.Collections.ListDictionaryInternal",
             "InnerException": null,
             "HelpLink": null,
@@ -2689,10 +2689,10 @@
             "StackTrace": null
           },
           "TargetObject": {
-            "Message": "Expected $true, because more granular role assignments exist than Global Administrator assignments., but got $false.",
+            "Message": "Expected $true, because more granular role assignments exist than global admin assignments., but got $false.",
             "File": "/Users/merill/GitHub/maester/tests/cisa/entra/Test-MtCisaGlobalAdminRatio.Tests.ps1",
             "Line": "6",
-            "LineText": "            $result | Should -Be $true -Because \"more granular role assignments exist than Global Administrator assignments.\"",
+            "LineText": "            $result | Should -Be $true -Because \"more granular role assignments exist than global admin assignments.\"",
             "Terminating": true
           },
           "CategoryInfo": {
@@ -2840,7 +2840,7 @@
       "ResultDetail": {
         "TestTitle": "CISA.MS.AAD.7.4: Permanent active role assignments SHALL NOT be allowed for highly privileged roles.",
         "TestResult": "\nYour tenant has active assignments without expiration to privileged roles.\n",
-        "TestDescription": "Permanent active role assignments SHALL NOT be allowed for highly privileged roles.\n\nRationale: Instead of giving users permanent assignments to privileged roles, provisioning access just in time lessens exposure if those accounts become compromised. In Azure AD PIM or an alternative PAM system, just in time access can be provisioned by assigning users to roles as eligible instead of perpetually active.\n\nNote: Exceptions to this policy are:\n* **Emergency access** accounts that need **perpetual access** to the tenant in the rare event of system degradation or other scenarios.\n* Some types of **service accounts** that require a user account with privileged roles; since these accounts are used by software programs, they **cannot** perform role activation.\n\n#### Remediation action:\n\n1. In **Entra admin center** select **Show more** and **Roles & adminis** and then **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.\n\n    Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.\n\n2. Select the **Global Administrator** role.\n3. Under **Manage**, select **Assignments** and click the **Active assignments** tab.\n4. Verify there are no users or groups with a value of **Permanent** in the **End time** column. If there are any, recreate those assignments to have an expiration date using Entra ID PIM or an alternative PAM system. If a group is identified and it is enrolled in PIM for Groups, see the exception cases below for details.\n\n#### Related links\n\n* [Entra admin center - Roles and administrators | All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)\n* [CISA 7.4 Highly Privileged User Access - MS.AAD.7.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad74v1)\n* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L856)\n\n",
+        "TestDescription": "Permanent active role assignments SHALL NOT be allowed for highly privileged roles.\n\nRationale: Instead of giving users permanent assignments to privileged roles, provisioning access just in time lessens exposure if those accounts become compromised. In Azure AD PIM or an alternative PAM system, just in time access can be provisioned by assigning users to roles as eligible instead of perpetually active.\n\nNote: Exceptions to this policy are:\n* **Emergency access** accounts that need **perpetual access** to the tenant in the rare event of system degradation or other scenarios.\n* Some types of **service accounts** that require a user account with privileged roles; since these accounts are used by software programs, they **cannot** perform role activation.\n\n#### Remediation action:\n\n1. In **Entra admin center** select **Show more** and **Roles & adminis** and then **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.\n\n    Perform the steps below for each highly privileged role. We reference the Global Administrator role as an example.\n\n2. Select the **Global administrator** role.\n3. Under **Manage**, select **Assignments** and click the **Active assignments** tab.\n4. Verify there are no users or groups with a value of **Permanent** in the **End time** column. If there are any, recreate those assignments to have an expiration date using Entra ID PIM or an alternative PAM system. If a group is identified and it is enrolled in PIM for Groups, see the exception cases below for details.\n\n#### Related links\n\n* [Entra admin center - Roles and administrators | All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)\n* [CISA 7.4 Highly Privileged User Access - MS.AAD.7.4v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad74v1)\n* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L856)\n\n",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -2868,7 +2868,7 @@
       "ResultDetail": {
         "TestTitle": "CISA.MS.AAD.7.5: Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.",
         "TestResult": "\nWell done. Your tenant has no unmanaged active role assignments.\n",
-        "TestDescription": "Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.\n\nRationale: Provisioning users to privileged roles within a PAM system enables enforcement of numerous privileged access policies and monitoring. If privileged users are assigned directly to roles in the M365 admin center or via PowerShell outside of the context of a PAM system, a significant set of critical security capabilities are bypassed.\n\n#### Remediation action:\n\n1. In **Entra admin center** select **Show more** > **Roles & admins** and then select **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.\n\n    Perform the steps below for each highly privileged role. We reference the **Global Administrator** role as an example.\n\n2. Select the **Global Administrator** role.\n3. Under **Manage**, select **Assignments** and click the **Active assignments** tab.\n4. For each user or group listed, examine the value in the Start time column. If it contains a value of -, this indicates the respective user/group was assigned to that role outside of Entra ID PIM. If the role was assigned outside of Entra ID PIM, delete the assignment and recreate it using Entra ID PIM.\n\n#### Related links\n\n* [Entra admin center - Roles and administrators | All roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)\n* [CISA 7.5 Highly Privileged User Access - MS.AAD.7.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad75v1)\n* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L907)\n\n",
+        "TestDescription": "Provisioning users to highly privileged roles SHALL NOT occur outside of a PAM system.\n\nRationale: Provisioning users to privileged roles within a PAM system enables enforcement of numerous privileged access policies and monitoring. If privileged users are assigned directly to roles in the M365 admin center or via PowerShell outside of the context of a PAM system, a significant set of critical security capabilities are bypassed.\n\n#### Remediation action:\n\n1. In **Entra admin center** select **Show more** > **Roles & admins** and then select **[All roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles)**.\n\n    Perform the steps below for each highly privileged role. We reference the **Global Administrator** role as an example.\n\n2. Select the **Global administrator** role.\n3. Under **Manage**, select **Assignments** and click the **Active assignments** tab.\n4. For each user or group listed, examine the value in the Start time column. If it contains a value of -, this indicates the respective user/group was assigned to that role outside of Entra ID PIM. If the role was assigned outside of Entra ID PIM, delete the assignment and recreate it using Entra ID PIM.\n\n#### Related links\n\n* [Entra admin center - Roles and administrators | All roles](https://entra.microsoft.com/#view/Microsoft_Azure_PIMCommon/ResourceMenuBlade/~/roles/resourceId//resourceType/tenant/provider/aadroles)\n* [CISA 7.5 Highly Privileged User Access - MS.AAD.7.5v1](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/aad.md#msaad75v1)\n* [CISA ScubaGear Rego Reference](https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/Rego/AADConfig.rego#L907)\n\n",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -3046,13 +3046,13 @@
         "Entra ID P2"
       ],
       "Result": "Failed",
-      "ScriptBlock": "\n        $result = Test-MtCisaActivationNotification -GlobalAdminOnly\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"notifications are set for activation of the Global Administrator role.\"\n        }\n    ",
+      "ScriptBlock": "\n        $result = Test-MtCisaActivationNotification -GlobalAdminOnly\n\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"notifications are set for activation of the Global Admin role.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/cisa/entra/Test-MtCisaActivationNotificationGlobalAdmin.Tests.ps1",
       "ErrorRecord": [
         {
           "Exception": {
             "TargetSite": null,
-            "Message": "Expected $true, because notifications are set for activation of the Global Administrator role., but got $false.",
+            "Message": "Expected $true, because notifications are set for activation of the Global Admin role., but got $false.",
             "Data": "System.Collections.ListDictionaryInternal",
             "InnerException": null,
             "HelpLink": null,
@@ -3061,10 +3061,10 @@
             "StackTrace": null
           },
           "TargetObject": {
-            "Message": "Expected $true, because notifications are set for activation of the Global Administrator role., but got $false.",
+            "Message": "Expected $true, because notifications are set for activation of the Global Admin role., but got $false.",
             "File": "/Users/merill/GitHub/maester/tests/cisa/entra/Test-MtCisaActivationNotificationGlobalAdmin.Tests.ps1",
             "Line": "6",
-            "LineText": "            $result | Should -Be $true -Because \"notifications are set for activation of the Global Administrator role.\"",
+            "LineText": "            $result | Should -Be $true -Because \"notifications are set for activation of the Global Admin role.\"",
             "Terminating": true
           },
           "CategoryInfo": {
@@ -8294,7 +8294,7 @@
       "ResultDetail": {
         "TestTitle": "MT.1014: At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins. See https://maester.dev/docs/tests/MT.1014",
         "TestResult": "There was no conditional access policy requiring compliant or Microsoft Entra hybrid joined device for administrators.",
-        "TestDescription": "\nMicrosoft recommends requiring device compliance for administrators that are members of the following roles:\n\n* Global Administrator\n* Application Administrator\n* Authentication Administrator\n* Billing Administrator\n* Cloud Application Administrator\n* Conditional Access Administrator\n* Exchange Administrator\n* Helpdesk Administrator\n* Password Administrator\n* Privileged Authentication Administrator\n* Privileged Role Administrator\n* Security Administrator\n* SharePoint Administrator\n* User Administrator\n\nSee [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)",
+        "TestDescription": "\nMicrosoft recommends requiring device compliance for administrators that are members of the following roles:\n\n* Global administrator\n* Application administrator\n* Authentication Administrator\n* Billing administrator\n* Cloud application administrator\n* Conditional Access administrator\n* Exchange administrator\n* Helpdesk administrator\n* Password administrator\n* Privileged authentication administrator\n* Privileged Role Administrator\n* Security administrator\n* SharePoint administrator\n* User administrator\n\nSee [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -8812,7 +8812,7 @@
       "Duration": "00:00:00",
       "ResultDetail": {
         "TestTitle": "MT.1024.5: Entra Recommendation - Use least privileged administrative roles ",
-        "TestResult": "You currently have 5 users with privileged administrative roles. \n\n➡️ Open [Recommendation - Use least privileged administrative roles ](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_roleOverlap) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. Identify the users in your organization with a persistent Global Administrator role assigned. Go to Microsoft Entra ID > Roles and administrators and select the Global Administrator role in the table. Identify the global admins you want to reassign to a different role. [Go to Roles and administrators in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RolesAndAdministrators).\n\n2. Assign these users to roles where they can complete necessary tasks with the least amount of privilege required. For example, if a user is primarily responsible for Exchange Online administration, they should be assigned that role instead of Global Administrator. Be sure to have at least two global admins designated to allow for full access to the network if one of the accounts is locked out or compromised. [Check out this overview of available limited administrative roles](https://docs.microsoft.com/azure/active-directory/roles/delegate-by-task).\n\n3. After these persistent global admins have been reassigned new roles, return to Roles and administrators and select the Global Administrator role. Select the users that no longer need persistent access and then click Remove. [Go to Roles and administrators in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RolesAndAdministrators).\n\n4. Emergency access accounts: If the only other Global Administrator accounts your organization has set up are for \"break-glass\" scenarios, which are ineligible for role reassignment, we recommend that you set the status of this action to “Dismissed” or “Risk accepted”. [Learn more about emergency access accounts](https://docs.microsoft.com/azure/active-directory/roles/security-emergency-access).",
+        "TestResult": "You currently have 5 users with privileged administrative roles. \n\n➡️ Open [Recommendation - Use least privileged administrative roles ](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_roleOverlap) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. Identify the users in your organization with a persistent global administrator role assigned. Go to Microsoft Entra ID > Roles and administrators and select the Global administrator role in the table. Identify the global admins you want to reassign to a different role. [Go to Roles and administrators in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RolesAndAdministrators).\n\n2. Assign these users to roles where they can complete necessary tasks with the least amount of privilege required. For example, if a user is primarily responsible for Exchange Online administration, they should be assigned that role instead of global administrator. Be sure to have at least two global admins designated to allow for full access to the network if one of the accounts is locked out or compromised. [Check out this overview of available limited administrative roles](https://docs.microsoft.com/azure/active-directory/roles/delegate-by-task).\n\n3. After these persistent global admins have been reassigned new roles, return to Roles and administrators and select the Global administrator role. Select the users that no longer need persistent access and then click Remove. [Go to Roles and administrators in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RolesAndAdministrators).\n\n4. Emergency access accounts: If the only other global admin accounts your organization has set up are for \"break-glass\" scenarios, which are ineligible for role reassignment, we recommend that you set the status of this action to “Dismissed” or “Risk accepted”. [Learn more about emergency access accounts](https://docs.microsoft.com/azure/active-directory/roles/security-emergency-access).",
         "TestDescription": "Ensure that your administrators can accomplish their work with the least amount of privilege assigned to their account. Assigning users roles like Password Administrator or Exchange Online Administrator, instead of Global Administrator, reduces the likelihood of a global administrative privileged account being breached.",
         "SkippedReason": null,
         "Severity": "",
@@ -8822,8 +8822,8 @@
     },
     {
       "Id": "MT.1024.6",
-      "Title": "Entra Recommendation - Designate more than one Global Administrator",
-      "Name": "MT.1024.6: Entra Recommendation - Designate more than one Global Administrator",
+      "Title": "Entra Recommendation - Designate more than one global admin",
+      "Name": "MT.1024.6: Entra Recommendation - Designate more than one global admin",
       "HelpUrl": "",
       "Tag": [
         "Maester",
@@ -8839,9 +8839,9 @@
       "Block": "Maester/Entra",
       "Duration": "00:00:00",
       "ResultDetail": {
-        "TestTitle": "MT.1024.6: Entra Recommendation - Designate more than one Global Administrator",
-        "TestResult": "You currently have 7 global admins.\n\n➡️ Open [Recommendation - Designate more than one Global Administrator](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_oneAdmin) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. Assign more than one user a Global Administrator role in your organization. Go to Microsoft Entra ID > Roles and administrators and select the Global Administrator role in the table. Then click Add assignments. [Go to the Global Administrator role in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_Azure_PIMCommon/UserRolesViewModelMenuBlade/members/roleObjectId/62e90394-69f5-4237-9190-012177145e10/roleId/62e90394-69f5-4237-9190-012177145e10/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20administrator/isRoleCustom//resourceScopeId/%2F/resourceId/26497ce3-3756-4f53-ac9d-f4d438ca62e7).",
-        "TestDescription": "Having more than one Global Administrator helps if you’re unable to fulfill the needs or obligations of your organization. It's important to have a delegate or an emergency access account that someone from your team can access if necessary. It also allows admins the ability to monitor each other for signs of a breach.",
+        "TestTitle": "MT.1024.6: Entra Recommendation - Designate more than one global admin",
+        "TestResult": "You currently have 7 global admins.\n\n➡️ Open [Recommendation - Designate more than one global admin](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_oneAdmin) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. Assign more than one user a global administrator role in your organization. Go to Microsoft Entra ID > Roles and administrators and select the Global administrator role in the table. Then click Add assignments. [Go to the Global administrator role in Microsoft Entra ID](https://portal.azure.com/#blade/Microsoft_Azure_PIMCommon/UserRolesViewModelMenuBlade/members/roleObjectId/62e90394-69f5-4237-9190-012177145e10/roleId/62e90394-69f5-4237-9190-012177145e10/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20administrator/isRoleCustom//resourceScopeId/%2F/resourceId/26497ce3-3756-4f53-ac9d-f4d438ca62e7).",
+        "TestDescription": "Having more than one global administrator helps if you’re unable to fulfill the needs or obligations of your organization. It's important to have a delegate or an emergency access account that someone from your team can access if necessary. It also allows admins the ability to monitor each other for signs of a breach.",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -9183,7 +9183,7 @@
         {
           "Exception": {
             "TargetSite": null,
-            "Message": "Expected strings to be the same, because Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global Administrator, Authentication Administrator, Billing Administrator, Conditional Access Administrator, Exchange Administrator, Helpdesk Administrator, Security Administrator, SharePoint Administrator, User Administrator., but they were different.\nExpected length: 17\nActual length:   6\nStrings differ at index 0.\nExpected: 'completedBySystem'\nBut was:  'active'\n           ^",
+            "Message": "Expected strings to be the same, because Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global administrator, Authentication administrator, Billing administrator, Conditional Access administrator, Exchange administrator, Helpdesk administrator, Security administrator, SharePoint administrator, User administrator., but they were different.\nExpected length: 17\nActual length:   6\nStrings differ at index 0.\nExpected: 'completedBySystem'\nBut was:  'active'\n           ^",
             "Data": "System.Collections.ListDictionaryInternal",
             "InnerException": null,
             "HelpLink": null,
@@ -9192,7 +9192,7 @@
             "StackTrace": null
           },
           "TargetObject": {
-            "Message": "Expected strings to be the same, because Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global Administrator, Authentication Administrator, Billing Administrator, Conditional Access Administrator, Exchange Administrator, Helpdesk Administrator, Security Administrator, SharePoint Administrator, User Administrator., but they were different.\nExpected length: 17\nActual length:   6\nStrings differ at index 0.\nExpected: 'completedBySystem'\nBut was:  'active'\n           ^",
+            "Message": "Expected strings to be the same, because Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global administrator, Authentication administrator, Billing administrator, Conditional Access administrator, Exchange administrator, Helpdesk administrator, Security administrator, SharePoint administrator, User administrator., but they were different.\nExpected length: 17\nActual length:   6\nStrings differ at index 0.\nExpected: 'completedBySystem'\nBut was:  'active'\n           ^",
             "File": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-EntraRecommendations.Tests.ps1",
             "Line": "96",
             "LineText": "        $status | Should -Be \"completedBySystem\" -Because $benefits",
@@ -9236,7 +9236,7 @@
       "ResultDetail": {
         "TestTitle": "MT.1024.12: Entra Recommendation - Require multifactor authentication for administrative roles",
         "TestResult": "You have 5 of 9 users with administrative roles that aren’t registered and protected with MFA.\n\nIf the recommendation is not applicable for your tenant, it can be marked as **Dismissed** for Maester to skip it in the future. \n\n➡️ Open [Recommendation - Require multifactor authentication for administrative roles](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_adminMFAV2) in the Entra admin portal.\n\n#### Impacted resources\n\n | Status | Name | First detected| \n| --- | --- | --- |\n| ✅ Pass | [merillf_gmail.com#EXT#@pora.onmicrosoft.com]() | 05/23/2024 08:10:57 | \n| ✅ Pass | [emergency@elapora.com]() | 11/09/2024 08:10:41 | \n| ✅ Pass | [tyler@elapora.com]() | 02/07/2025 08:14:49 | \n| ✅ Pass | [merill@elapora.com]() | 03/09/2025 08:14:07 | \n| ✅ Pass | [AdeleV@pora.onmicrosoft.com]() | 03/21/2025 08:17:23 | \n| ❌ Fail | [emergency@elapora.com]() | 04/17/2025 08:17:37 | \n| ❌ Fail | [merill@elapora.com]() | 04/17/2025 08:17:37 | \n| ❌ Fail | [merillf_gmail.com#EXT#@pora.onmicrosoft.com]() | 04/17/2025 08:17:37 | \n| ❌ Fail | [ann@elapora.com]() | 04/17/2025 08:17:37 | \n| ❌ Fail | [tyler@elapora.com]() | 04/17/2025 08:17:37 | \n\n\n#### Remediation actions:\n\n1. We provide step-by-step guidance to select and enable the right MFA method for your organization in the Microsoft 365 admin center. [Go to the Microsoft 365 MFA wizard](https://admin.microsoft.com/adminportal/home?Q=SecureScore#/featureexplorer/security/ConditionalAccess).\n\n2. If you would like to perform the implementation yourself, first check what Microsoft Entra ID license you have under “Prerequisites” in Microsoft Secure Score or [see your license type under \"Basic information\" in the Microsoft Entra ID Overview.](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview).\n\n3. If you’ve invested in Microsoft Entra ID Premium P1 or P2 licenses, you can create a Conditional Access policy from scratch or by using a template. [Follow these steps to create a Conditional Access policy from scratch or by using a template](https://docs.microsoft.com/azure/active-directory/conditional-access/howto-conditional-access-policy-admin-mfa).\n\n4. If you would like to perform the implementation yourself and you’re using Microsoft Entra ID Free, turn on security defaults. Note: Security defaults and Conditional Access can’t be used side by side. [Enable security defaults](https://docs.microsoft.com/azure/active-directory/fundamentals/concept-fundamentals-security-defaults).\n\n5. Keep track of your admin’s progress of registering authentication methods by going to Microsoft Entra ID > Security > Authentication methods > User registration details (requires Microsoft Entra ID Premium P1 or P2 licenses). [Go to User registration details](https://portal.azure.com/#view/Microsoft_AAD_IAM/AuthenticationMethodsMenuBlade/~/UserRegistrationDetails).",
-        "TestDescription": "Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global Administrator, Authentication Administrator, Billing Administrator, Conditional Access Administrator, Exchange Administrator, Helpdesk Administrator, Security Administrator, SharePoint Administrator, User Administrator.",
+        "TestDescription": "Requiring multifactor authentication (MFA) for administrative roles makes it harder for attackers to access accounts. Administrative roles have higher permissions than typical users. If any of those accounts are compromised, your entire organization is exposed. At a minimum, protect the following roles: Global administrator, Authentication administrator, Billing administrator, Conditional Access administrator, Exchange administrator, Helpdesk administrator, Security administrator, SharePoint administrator, User administrator.",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -9686,7 +9686,7 @@
       "Duration": "00:00:00",
       "ResultDetail": {
         "TestTitle": "MT.1024.8: Entra Recommendation - Do not expire passwords",
-        "TestResult": "Your current policy is set to never let passwords expire.\n\n➡️ Open [Recommendation - Do not expire passwords](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_pwagePolicyNew) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. In the Microsoft 365 admin center, go to Settings > Org Settings > Security & privacy > Password expiration policy. Then check the box \"Set passwords to never expire (recommended)\". You must be a Global Administrator to edit the password policy. [Go to Password expiration policy in Microsoft 365](https://admin.microsoft.com/#/Settings/SecurityPrivacy/:/Settings/L1/PasswordPolicy).\n\n2. If your organization has an on-premises implementation, we recommend that you set the status for this action to “Completed” or “Resolved through alternate mitigation”.[]().",
+        "TestResult": "Your current policy is set to never let passwords expire.\n\n➡️ Open [Recommendation - Do not expire passwords](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RecommendationDetails.ReactView/recommendationId/0817c655-a853-4d8f-9723-3a333b5b9235_pwagePolicyNew) in the Entra admin portal.\n\n#### Remediation actions:\n\n1. In the Microsoft 365 admin center, go to Settings > Org Settings > Security & privacy > Password expiration policy. Then check the box \"Set passwords to never expire (recommended)\". You must be a global admin to edit the password policy. [Go to Password expiration policy in Microsoft 365](https://admin.microsoft.com/#/Settings/SecurityPrivacy/:/Settings/L1/PasswordPolicy).\n\n2. If your organization has an on-premises implementation, we recommend that you set the status for this action to “Completed” or “Resolved through alternate mitigation”.[]().",
         "TestDescription": "Research has found that when periodic password resets are enforced, passwords become less secure. Users tend to pick a weaker password and vary it slightly for each reset. If a user creates a strong password (long, complex and without any pragmatic words present), it should remain as strong in the future as it is today. It is Microsoft's official security position to not expire passwords periodically without a specific reason, and recommends that cloud-only tenants set the password policy to never expire.",
         "SkippedReason": null,
         "Severity": "",
@@ -10176,7 +10176,7 @@
         {
           "Exception": {
             "TargetSite": null,
-            "Message": "Expected $true, because Global Administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk., but got $false.",
+            "Message": "Expected $true, because Global administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk., but got $false.",
             "Data": "System.Collections.ListDictionaryInternal",
             "InnerException": null,
             "HelpLink": null,
@@ -10185,7 +10185,7 @@
             "StackTrace": null
           },
           "TargetObject": {
-            "Message": "Expected $true, because Global Administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk., but got $false.",
+            "Message": "Expected $true, because Global administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk., but got $false.",
             "File": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-PrivilegedAssignments.Tests.ps1",
             "Line": "54",
             "LineText": "            $check.numberOfAffectedItems -eq \"0\" | Should -Be $true -Because $check.securityImpact",
@@ -10228,8 +10228,8 @@
       "Duration": "00:00:00",
       "ResultDetail": {
         "TestTitle": "MT.1032: Limited number of Global Admins are assigned. See https://maester.dev/docs/tests/MT.1032",
-        "TestResult": "The percentage of Global Administrators is high, relative to other privileged roles. It is recommended to use least privileged roles, with just enough privileges to perform the required tasks.\n\n\n  -  Damien Bowden (damien.bowden@elapora.com)\n   -  Tyler Chan (tyler@elapora.com)\n   -  Bagul Atayewa (bagula@elapora.com)\n   -  Emergency Access (emergency@elapora.com)\n   -  Joshua Fernando (joshua@elapora.com)\n   -  Ann Quinzon (ann@elapora.com)\n   -  Bob Leaf (merillf_gmail.com#EXT#@pora.onmicrosoft.com)\n\nGet more details from the PIM alert [There are too many Global Administrators](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/TooManyGlobalAdminsAssignedToTenantAlert/resourceId/0817c655-a853-4d8f-9723-3a333b5b9235) in the Azure Portal.\n",
-        "TestDescription": "\n\n**Security Impact**\n\n\nGlobal Administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk.\n\n**Mitigation steps**\n\n\n·Review the users in the list and remove any that do not absolutely need the Global Administrator role.\r\n·Assign lower privileged roles to these users instead.\n\n**How to prevent**\n\n\nAssign users the least privileged role they need.\n",
+        "TestResult": "The percentage of global administrators is high, relative to other privileged roles. It is recommended to use least privileged roles, with just enough privileges to perform the required tasks.\n\n\n  -  Damien Bowden (damien.bowden@elapora.com)\n   -  Tyler Chan (tyler@elapora.com)\n   -  Bagul Atayewa (bagula@elapora.com)\n   -  Emergency Access (emergency@elapora.com)\n   -  Joshua Fernando (joshua@elapora.com)\n   -  Ann Quinzon (ann@elapora.com)\n   -  Bob Leaf (merillf_gmail.com#EXT#@pora.onmicrosoft.com)\n\nGet more details from the PIM alert [There are too many global administrators](https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/AlertDetail/providerId/aadroles/alertId/TooManyGlobalAdminsAssignedToTenantAlert/resourceId/0817c655-a853-4d8f-9723-3a333b5b9235) in the Azure Portal.\n",
+        "TestDescription": "\n\n**Security Impact**\n\n\nGlobal administrator is the highest privileged role. If a Global Administrator is compromised, the attacker gains access to all of their permissions, which puts your whole system at risk.\n\n**Mitigation steps**\n\n\n·Review the users in the list and remove any that do not absolutely need the Global Administrator role.\r\n·Assign lower privileged roles to these users instead.\n\n**How to prevent**\n\n\nAssign users the least privileged role they need.\n",
         "SkippedReason": null,
         "Severity": "",
         "TestSkipped": "",
@@ -14933,8 +14933,8 @@
     },
     {
       "Id": "MT.1050",
-      "Title": "Apps with high-risk permissions having a direct path to Global Administrator",
-      "Name": "MT.1050: Apps with high-risk permissions having a direct path to Global Administrator",
+      "Title": "Apps with high-risk permissions having a direct path to Global Admin",
+      "Name": "MT.1050: Apps with high-risk permissions having a direct path to Global Admin",
       "HelpUrl": "",
       "Tag": [
         "Entra",
@@ -14943,7 +14943,7 @@
         "MT.1050"
       ],
       "Result": "NotRun",
-      "ScriptBlock": "\n        $result = Test-MtHighRiskAppPermissions -AttackPath \"Direct\"\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no graph application has permissions with a risk of having a direct path to Global Administrator and full tenant takeover.\"\n        }\n    ",
+      "ScriptBlock": "\n        $result = Test-MtHighRiskAppPermissions -AttackPath \"Direct\"\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no graph application has permissions with a risk of having a direct path to Global Admin and full tenant takeover.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1",
       "ErrorRecord": [],
       "Block": "Maester/Entra",
@@ -14952,8 +14952,8 @@
     },
     {
       "Id": "MT.1051",
-      "Title": "Apps with high-risk permissions having an indirect path to Global Administrator",
-      "Name": "MT.1051: Apps with high-risk permissions having an indirect path to Global Administrator",
+      "Title": "Apps with high-risk permissions having an indirect path to Global Admin",
+      "Name": "MT.1051: Apps with high-risk permissions having an indirect path to Global Admin",
       "HelpUrl": "",
       "Tag": [
         "Entra",
@@ -14962,7 +14962,7 @@
         "MT.1051"
       ],
       "Result": "NotRun",
-      "ScriptBlock": "\n        $result = Test-MtHighRiskAppPermissions -AttackPath \"Indirect\"\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no graph application has permissions with a risk of having an indirect path to Global Administrator and full tenant takeover.\"\n        }\n    ",
+      "ScriptBlock": "\n        $result = Test-MtHighRiskAppPermissions -AttackPath \"Indirect\"\n        if ($null -ne $result) {\n            $result | Should -Be $true -Because \"no graph application has permissions with a risk of having an indirect path to Global Admin and full tenant takeover.\"\n        }\n    ",
       "ScriptBlockFile": "/Users/merill/GitHub/maester/tests/Maester/Entra/Test-MtHighRiskAppPermissions.Tests.ps1",
       "ErrorRecord": [],
       "Block": "Maester/Entra",
