@@ -8,9 +8,9 @@ The recommended state is to create a dynamic group that includes guest accounts.
 
 Dynamic groups allow for an automated method to assign group membership.
 
-Guest user accounts will be automatically added to this group and through this existing conditional access rules, access controls and other security measures will ensure that new guest accounts are restricted in the same manner as existing guest accounts.
+Guest user accounts will be automatically added to this group and through these existing Conditional Access policies, access controls and other security measures will ensure that new guest accounts are restricted in the same manner as existing guest accounts.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Identity** select **Groups**.
@@ -28,6 +28,7 @@ Guest user accounts will be automatically added to this group and through this e
 
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "Group.ReadWrite.All"`
 2. In the script below edit DisplayName and MailNickname as needed and run:
+
 ```powershell
 $params = @{
    DisplayName = "Dynamic Guest Group"
@@ -43,11 +44,11 @@ New-MgGroup @params
 
 #### Related links
 
-* [Microsoft 365 Entra admin center](https://entra.microsoft.com)
-* [Create or update a dynamic membership group in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/groups-create-rule)
-* [Manage rules for dynamic membership groups in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership)
-* [Create and manage dynamic membership groups for B2B collaboration in Microsoft Entra External ID](https://learn.microsoft.com/en-us/entra/external-id/use-dynamic-groups)
-* [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 185](https://www.cisecurity.org/benchmark/microsoft_365)
+- [Microsoft 365 Entra admin center](https://entra.microsoft.com)
+- [Create or update a dynamic membership group in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/groups-create-rule)
+- [Manage rules for dynamic membership groups in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/groups-dynamic-membership)
+- [Create and manage dynamic membership groups for B2B collaboration in Microsoft Entra External ID](https://learn.microsoft.com/entra/external-id/use-dynamic-groups)
+- [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 185](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->
 %TestResult%

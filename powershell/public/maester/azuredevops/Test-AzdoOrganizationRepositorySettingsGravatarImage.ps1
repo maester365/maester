@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status if Gravatar images are shown for users outside of your enterprise.
 
-    https://learn.microsoft.com/en-us/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images
+    https://learn.microsoft.com/azure/devops/repos/git/repository-settings?view=azure-devops&tabs=browser#gravatar-images
 
 .EXAMPLE
     ```

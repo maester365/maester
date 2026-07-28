@@ -73,8 +73,8 @@ function Test-MtCaGap {
     This function checks if all objects found in policy exclusions are found in policy inclusions.
 
     .Description
-    Checks for gaps in conditional access policies, by looking for excluded objects which are not specifically included
-    in another conditional access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
+    Checks for gaps in Conditional Access policies, by looking for excluded objects which are not specifically included
+    in another Conditional Access policy. Instead of looking at the historical sign-ins to find gaps, we try to spot possibly
     overlooked exclusions which do not have a fallback.
 
     .Example
@@ -90,9 +90,9 @@ function Test-MtCaGap {
     $result = $false
     $testDescription = 'All excluded objects should have a fallback include in another policy'
 
-    # Get the enabled conditional access policies
+    # Get the enabled Conditional Access policies
     $policies = Get-MtConditionalAccessPolicy | Where-Object { $_.state -eq 'enabled' }
-    Write-Verbose "Retrieved conditional access policies:`n $policies"
+    Write-Verbose "Retrieved Conditional Access policies:`n $policies"
 
     # Variables related to users
     [System.Collections.ArrayList]$excludedUsers = @()

@@ -1,10 +1,10 @@
 ﻿function Test-MtCaDeviceComplianceAdminsExists {
   <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring device compliance for admins.
+    Checks if the tenant has at least one Conditional Access policy requiring device compliance for admins.
 
     .Description
-    Device compliance conditional access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
+    Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
     This is a good way to prevent AITM attacks.
 
     Learn more:
@@ -50,23 +50,23 @@
     $testDescription = '
 Microsoft recommends requiring device compliance for administrators that are members of the following roles:
 
-* Global administrator
-* Application administrator
+* Global Administrator
+* Application Administrator
 * Authentication Administrator
-* Billing administrator
-* Cloud application administrator
-* Conditional Access administrator
-* Exchange administrator
-* Helpdesk administrator
-* Password administrator
-* Privileged authentication administrator
+* Billing Administrator
+* Cloud Application Administrator
+* Conditional Access Administrator
+* Exchange Administrator
+* Helpdesk Administrator
+* Password Administrator
+* Privileged Authentication Administrator
 * Privileged Role Administrator
-* Security administrator
-* SharePoint administrator
-* User administrator
+* Security Administrator
+* SharePoint Administrator
+* User Administrator
 
 See [Require compliant or Microsoft Entra hybrid joined device for administrators - Microsoft Learn](https://aka.ms/CATemplatesAdminDevices)'
-    $testResult = "These conditional access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
+    $testResult = "These Conditional Access policies require compliant or Microsoft Entra hybrid joined device for administrators:`n`n"
 
     $result = $false
     foreach ($policy in $policies) {
@@ -89,14 +89,14 @@ See [Require compliant or Microsoft Entra hybrid joined device for administrator
         $PolicyIncludesAllRoles -and
         $policy.conditions.applications.includeApplications -eq 'All'
       ) {
-        Write-Verbose -Message "Found a conditional access policy requiring device compliance for admins: $($policy.displayName)"
+        Write-Verbose -Message "Found a Conditional Access policy requiring device compliance for admins: $($policy.displayName)"
         $testResult += "  - [$($policy.displayName)](https://entra.microsoft.com/#view/Microsoft_AAD_ConditionalAccess/PolicyBlade/policyId/$($($policy.id))?%23view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies?=)`n"
         $result = $true
       }
     }
 
     if ($result -eq $false) {
-      $testResult = 'There was no conditional access policy requiring compliant or Microsoft Entra hybrid joined device for administrators.'
+      $testResult = 'There was no Conditional Access policy requiring compliant or Microsoft Entra hybrid joined device for administrators.'
     }
     Add-MtTestResultDetail -Description $testDescription -Result $testResult
 

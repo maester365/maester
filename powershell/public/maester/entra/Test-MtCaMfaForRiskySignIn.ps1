@@ -1,10 +1,10 @@
 ﻿function Test-MtCaMfaForRiskySignIn {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins.
+    Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication for risky sign-ins.
 
     .Description
-    MFA for risky sign-ins conditional access policy can be used to require MFA for all users in the tenant.
+    MFA for risky sign-ins Conditional Access policy can be used to require MFA for all users in the tenant.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk
@@ -52,9 +52,9 @@
         }
 
         if ( $result ) {
-            $testResult = "The following conditional access policies require multi-factor authentication for risky sign-ins`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for risky sign-ins`n`n%TestResult%"
         } else {
-            $testResult = "No conditional access policy requires multi-factor authentication for risky sign-ins."
+            $testResult = "No Conditional Access policy requires multi-factor authentication for risky sign-ins."
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess

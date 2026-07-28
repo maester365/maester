@@ -19,7 +19,7 @@ keywords:
 
 # MT.1195 - The Quick Access app should not be subject to a sign-in frequency Conditional Access control
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -36,7 +36,7 @@ An enabled sign-in frequency policy that targets Quick Access is a **Fail**, unl
 
 Reviewed, accepted exceptions can be **allow-listed** by policy id or display name via the `GsaQuickAccessSignInFrequencyAllowedPolicies` global setting in `maester-config.json`; those are reported as **Accepted** and never fail.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies** and open each **Fail** policy.

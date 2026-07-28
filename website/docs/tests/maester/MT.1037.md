@@ -17,7 +17,7 @@ keywords:
 
 # MT.1037 - Only users with Presenter role are allowed to present in Teams meetings
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/merill" title="Merill Fernando · Original author"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/merill">Merill Fernando</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -25,7 +25,7 @@ This test checks the Org-wide default meeting policy is configured to only allow
 
 Restricting who can present limits meeting disruptions and reduces the risk of unwanted or inappropriate content being shared.
 
-#### Remediation action:
+#### Remediation action
 
 To prevent standard attendees from sharing content during Teams meetings:
 
@@ -38,7 +38,7 @@ To prevent standard attendees from sharing content during Teams meetings:
 
 #### Related links
 
-* [Manage meeting policies for content sharing](https://learn.microsoft.com/en-us/microsoftteams/meeting-policies-content-sharing)
+* [Manage meeting policies for content sharing](https://learn.microsoft.com/microsoftteams/meeting-policies-content-sharing)
 * [7 tips for safe online meetings and collaboration with Microsoft Teams - Tip 3: Determine who can present content or share their screen in your Teams meeting](https://techcommunity.microsoft.com/blog/microsoftteamsblog/7-tips-for-safe-online-meetings-and-collaboration-with-microsoft-teams/2072303)
 
 ## Test Metadata

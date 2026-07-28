@@ -64,12 +64,16 @@
             }
         }
 
-        # Default mock: Get-MtRoleInfo returns the correct GUIDs by role name
+        # Default mock: Get-MtRoleInfo returns role-definition objects, matching the real command.
         Mock -ModuleName Maester Get-MtRoleInfo {
             param($RoleName)
             switch ($RoleName) {
-                'DirectorySynchronizationAccounts' { return $script:DirSyncRoleId }
-                'OnPremisesDirectorySyncAccount' { return $script:OnPremRoleId }
+                'DirectorySynchronizationAccounts' {
+                    return [PSCustomObject]@{ Id = $script:DirSyncRoleId; IsPrivileged = $false }
+                }
+                'OnPremisesDirectorySyncAccount' {
+                    return [PSCustomObject]@{ Id = $script:OnPremRoleId; IsPrivileged = $false }
+                }
             }
         }
     }
@@ -84,6 +88,19 @@
             Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
 
             Test-MtCaExclusionForDirectorySyncAccount | Should -BeTrue
+        }
+
+        It 'Should pass role GUIDs rather than role-definition objects to Get-MtRoleMember' {
+            Mock -ModuleName Maester Get-MtConditionalAccessPolicy { return @() }
+
+            Test-MtCaExclusionForDirectorySyncAccount
+
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                "$RoleId" -eq 'd29b2b05-8046-44ba-8758-1e26182fcf32'
+            }
+            Should -Invoke Get-MtRoleMember -ModuleName Maester -Times 1 -Exactly -ParameterFilter {
+                "$RoleId" -eq 'a92aed5d-d78a-4d16-b381-09adb37eb3b0'
+            }
         }
     }
 

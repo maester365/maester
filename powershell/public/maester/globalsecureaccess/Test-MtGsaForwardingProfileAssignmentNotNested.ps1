@@ -25,6 +25,8 @@
     [OutputType([bool])]
     param ()
 
+    Write-Verbose "Running Test-MtGsaForwardingProfileAssignmentNotNested..."
+
     if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null

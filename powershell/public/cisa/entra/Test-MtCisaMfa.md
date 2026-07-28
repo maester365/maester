@@ -4,7 +4,7 @@ Rationale: This is a stopgap security policy to help protect the tenant if phish
 
 #### Remediation action:
 
-If phishing-resistant MFA has not been enforced for all users yet, create a conditional access policy that enforces MFA but does not dictate MFA method. Configure the following policy settings in the new conditional access policy, per the values below:
+If phishing-resistant MFA has not been enforced for all users yet, create a Conditional Access policy that enforces MFA but does not dictate MFA method. Configure the following policy settings in the new Conditional Access policy, per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**

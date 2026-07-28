@@ -17,7 +17,7 @@ keywords:
 
 # MT.1064 - Management group creation should be limited to users with explicit write access
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/brianveldman" title="Beerd Veldman · Original author"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/brianveldman">Beerd Veldman</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/brianveldman" title="Beerd Veldman · Original author"><img src="https://github.com/brianveldman.png" alt="Beerd Veldman" /></a><a className="test-byline-avatar" href="/contributors/l-gosling" title="Lukas Gosling · Co-contributor"><img src="https://github.com/l-gosling.png" alt="Lukas Gosling" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/brianveldman">Beerd Veldman</a> with 3 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -25,9 +25,10 @@ By default, all Entra ID security principals can create new management groups. T
 
 To prevent this, Azure provides a setting that enforces write permission requirements for the creation of new management groups. This ensures that only authorized users can manage the structure of your management group hierarchy.
 
-#### Remediation action:
+#### Remediation action
 
 To enable the requirement for write permissions:
+
 1. Navigate to the Microsoft Azure Portal: [https://portal.azure.com](https://portal.azure.com).
 2. In the search bar, type **Management groups** and open the blade.
 3. Select **Settings** in the left navigation menu.
@@ -36,7 +37,7 @@ To enable the requirement for write permissions:
 
 #### Related links
 
-* [Organize your resources with management groups](https://learn.microsoft.com/en-us/azure/governance/management-groups/overview)
+* [Organize your resources with management groups](https://learn.microsoft.com/azure/governance/management-groups/overview)
 
 ## Test Metadata
 

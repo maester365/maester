@@ -10,12 +10,12 @@
     .EXAMPLE
     Test-MtCisaActivationNotification
 
-    Returns true if notifications are set for activation of the highly privileged roles other than Global Admin
+    Returns true if notifications are set for activation of the highly privileged roles other than Global Administrator
 
     .EXAMPLE
     Test-MtCisaActivationNotification -GlobalAdminOnly
 
-    Returns true if notifications are set for activation of the Global Admin role
+    Returns true if notifications are set for activation of the Global Administrator role
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaActivationNotification

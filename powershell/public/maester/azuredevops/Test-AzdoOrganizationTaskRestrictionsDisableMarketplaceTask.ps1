@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the ability to install and run tasks from the Marketplace, which gives you greater control over the code that executes in a pipeline.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution
+    https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops#prevent-malicious-code-execution
 
 .EXAMPLE
     ```

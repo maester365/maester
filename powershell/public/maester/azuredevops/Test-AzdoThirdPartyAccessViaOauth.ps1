@@ -6,7 +6,7 @@
     Checks the status of Third-party application access via OAuth.
 
     https://aka.ms/vstspolicyoauth
-    https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/azure-devops-oauth?view=azure-devops
+    https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/azure-devops-oauth?view=azure-devops
 
 
 .EXAMPLE

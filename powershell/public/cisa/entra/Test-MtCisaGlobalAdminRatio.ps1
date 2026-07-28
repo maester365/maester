@@ -9,7 +9,7 @@
     .EXAMPLE
     Test-MtCisaGlobalAdminRatio
 
-    Returns true if global admin to privileged roles ration is 1 or less
+    Returns true if Global Administrator to privileged roles ration is 1 or less
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCisaGlobalAdminRatio
@@ -18,7 +18,7 @@
     [OutputType([bool])]
     param()
 
-    if(!(Test-MtConnection Graph)){
+    if (!(Test-MtConnection Graph)) {
         Add-MtTestResultDetail -SkippedBecause NotConnectedGraph
         return $null
     }
@@ -26,7 +26,7 @@
     $roles = Get-MtRole -CisaHighlyPrivilegedRoles
     $roleAssignments = @()
 
-    foreach($role in $roles){
+    foreach ($role in $roles) {
         $assignments = $null
         $roleAssignment = [PSCustomObject]@{
             role        = $role.id
@@ -38,14 +38,14 @@
     }
 
     $globalAdministrators = $roleAssignments | Where-Object {`
-        $_.role -eq "62e90394-69f5-4237-9190-012177145e10"} | ` # Global Administrator
-        Select-Object -ExpandProperty assignments | Where-Object {`
-        $_.'@odata.type' -eq "#microsoft.graph.user"}
+            $_.role -eq "62e90394-69f5-4237-9190-012177145e10" } | # Global Administrator
+    Select-Object -ExpandProperty assignments | Where-Object {`
+            $_.'@odata.type' -eq "#microsoft.graph.user" }
 
     $otherAssignments = $roleAssignments | Where-Object {`
-        $_.role -ne "62e90394-69f5-4237-9190-012177145e10"} | ` # Global Administrator
-        Select-Object -ExpandProperty assignments | Where-Object {`
-        $_.'@odata.type' -eq "#microsoft.graph.user"}
+            $_.role -ne "62e90394-69f5-4237-9190-012177145e10" } | # Global Administrator
+    Select-Object -ExpandProperty assignments | Where-Object {`
+            $_.'@odata.type' -eq "#microsoft.graph.user" }
 
     If ($otherAssignments.Count) {
         $ratio = 0
@@ -58,7 +58,7 @@
     $link = "https://entra.microsoft.com/#view/Microsoft_AAD_IAM/RolesManagementMenuBlade/~/AllRoles"
 
     if ($testResult) {
-        $testResultMarkdown = "Well done. Your tenant has more granular [role assignments]($link) than global admin assignments.`n`n%TestResult%"
+        $testResultMarkdown = "Well done. Your tenant has more granular [role assignments]($link) than Global Administrator assignments.`n`n%TestResult%"
     } else {
         $testResultMarkdown = "Your tenant does not have enough granular [role assignments]($link).`n`n%TestResult%"
     }

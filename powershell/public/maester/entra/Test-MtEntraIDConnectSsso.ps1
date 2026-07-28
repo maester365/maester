@@ -60,8 +60,26 @@
         $DeviceInfoAvailable = ((Invoke-MtGraphRequest @params).results.ColumnName -contains "DeviceId")
         $UnifiedMdiInfoAvailable = $IdentityLogonEventsAvailable -and $DeviceInfoAvailable
     } catch {
-        Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
-        return $null
+        $statusCode = $_.Exception.Response.StatusCode.value__
+        if ($null -eq $statusCode) {
+            $statusCode = $_.Exception.StatusCode.value__
+        }
+        $errorText = @(
+            $_.Exception.Message
+            $_.ErrorDetails.Message
+            $_.ToString()
+        ) -join "`n"
+        $isMissingHuntingTable = (
+            ($statusCode -eq 400 -or $errorText -match '\b400 Bad Request\b') -and
+            $errorText -match "Failed to resolve table or column expression named '(IdentityLogonEvents|DeviceInfo)'"
+        )
+
+        if ($isMissingHuntingTable) {
+            $UnifiedMdiInfoAvailable = $false
+        } else {
+            Add-MtTestResultDetail -SkippedBecause Error -SkippedError $_
+            return $null
+        }
     }
 
     if ( $UnifiedMdiInfoAvailable -eq $false) {

@@ -38,5 +38,5 @@ Update-MgPolicyAuthorizationPolicy -AuthorizationPolicyId $authPolicy.Id -BodyPa
 
 #### Related links
 
-- [Manage default user permissions in Entra ID](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/users-default-permissions)
-- [Authorization policy in Entra ID](https://learn.microsoft.com/en-us/graph/api/resources/authorizationpolicy)
+- [Manage default user permissions in Entra ID](https://learn.microsoft.com/azure/active-directory/fundamentals/users-default-permissions)
+- [Authorization policy in Entra ID](https://learn.microsoft.com/graph/api/resources/authorizationpolicy)

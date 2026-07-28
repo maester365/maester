@@ -5,8 +5,8 @@
 .DESCRIPTION
     Checks the status if users are able to choose what stages to run or skip.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops
+    https://learn.microsoft.com/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml
+    https://learn.microsoft.com/azure/devops/pipelines/security/overview?view=azure-devops
 
 .EXAMPLE
     ```

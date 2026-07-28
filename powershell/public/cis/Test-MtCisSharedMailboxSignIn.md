@@ -7,9 +7,10 @@ emails from "Contoso Support" or "Building A Reception Desk." Shared mailboxes a
 
 The intent of the shared mailbox is the only allow delegated access from other mailboxes. An admin could reset the password, or an attacker could potentially gain access to the shared mailbox allowing the direct sign-in to the shared mailbox and subsequently the sending of email from a sender that does not have a unique identity. To prevent this, block sign-in for the account that is associated with the shared mailbox
 
-#### Remediation action:
+#### Remediation action
 
 Block sign-in to shared mailboxes in the UI:
+
 1. Navigate to Microsoft 365 admin center [https://admin.microsoft.com](https://admin.microsoft.com).
 2. Click to expand **Teams & groups** and select **Shared mailboxes**.
 3. Take note of all shared mailboxes.
@@ -23,11 +24,14 @@ Block sign-in to shared mailboxes in the UI:
 1. Connect to Microsoft Graph using `Connect-MgGraph -Scopes "User.ReadWrite.All"`
 2. Connect to Exchange Online using `Connect-ExchangeOnline`.
 3. To disable sign-in for a single account:
+
 ```powershell
 $MBX = Get-EXOMailbox -Identity TestUser@example.com
 Update-MgUser -UserId $MBX.ExternalDirectoryObjectId -AccountEnabled:$false
 ```
+
 3. The following will block sign-in to all Shared Mailboxes.
+
 ```powershell
 $MBX = Get-EXOMailbox -RecipientTypeDetails SharedMailbox
 $MBX | ForEach-Object { Update-MgUser -UserId $_.ExternalDirectoryObjectId -AccountEnabled:$false }
@@ -36,9 +40,9 @@ $MBX | ForEach-Object { Update-MgUser -UserId $_.ExternalDirectoryObjectId -Acco
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [About shared mailboxes in Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/admin/email/about-shared-mailboxes?view=o365-worldwide)
-* [Create a shared mailbox](https://learn.microsoft.com/en-us/microsoft-365/admin/email/create-a-shared-mailbox?view=o365-worldwide#block-sign-in-for-the-shared-mailbox-account)
-* [Block Microsoft 365 user accounts with PowerShell](https://learn.microsoft.com/en-us/microsoft-365/enterprise/block-user-accounts-with-microsoft-365-powershell?view=o365-worldwide#block-individual-user-accounts)
+* [About shared mailboxes in Microsoft 365](https://learn.microsoft.com/microsoft-365/admin/email/about-shared-mailboxes?view=o365-worldwide)
+* [Create a shared mailbox](https://learn.microsoft.com/microsoft-365/admin/email/create-a-shared-mailbox?view=o365-worldwide#block-sign-in-for-the-shared-mailbox-account)
+* [Block Microsoft 365 user accounts with PowerShell](https://learn.microsoft.com/microsoft-365/enterprise/block-user-accounts-with-microsoft-365-powershell?view=o365-worldwide#block-individual-user-accounts)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 39](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

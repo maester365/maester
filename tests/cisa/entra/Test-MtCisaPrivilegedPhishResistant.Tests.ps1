@@ -3,7 +3,7 @@ Describe "CISA" -Tag "MS.AAD", "MS.AAD.3.6", "CISA.MS.AAD.3.6", "CISA",  "Entra 
         $result = Test-MtCisaPrivilegedPhishResistant
 
         if ($null -ne $result) {
-            $result | Should -Be $true -Because "an enabled conditional access policy for highly privileged roles should require phishing resistant MFA."
+            $result | Should -Be $true -Because "an enabled Conditional Access policy for highly privileged roles should require phishing resistant MFA."
         }
     }
 }

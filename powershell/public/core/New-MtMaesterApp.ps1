@@ -128,7 +128,7 @@
             $detected = Get-MtGitHubRepoFromGit
             if ($detected) {
                 $GitHubOrganization = $detected.Organization
-                $GitHubRepository   = $detected.Repository
+                $GitHubRepository = $detected.Repository
                 Write-Host "Auto-detected GitHub repository from git remote: $GitHubOrganization/$GitHubRepository" -ForegroundColor Cyan
             }
         } elseif (-not $GitHubOrganization -or -not $GitHubRepository) {
@@ -143,7 +143,7 @@
     }
 
     if (-not $Name) {
-        if($GitHubOrganization -and $GitHubRepository) {
+        if ($GitHubOrganization -and $GitHubRepository) {
             $Name = "Maester DevOps Account - $GitHubOrganization/$GitHubRepository"
         } else {
             $Name = "Maester DevOps Account"
@@ -229,9 +229,9 @@
 
     if ($useGitHubFlow) {
         $ficParams = @{
-            AppId               = $app.appId
-            GitHubOrganization  = $GitHubOrganization
-            GitHubRepository    = $GitHubRepository
+            AppId              = $app.appId
+            GitHubOrganization = $GitHubOrganization
+            GitHubRepository   = $GitHubRepository
         }
         if ($SetGitHubSecrets) { $ficParams['SetGitHubSecrets'] = $true }
         Add-MtMaesterAppFederatedCredential @ficParams

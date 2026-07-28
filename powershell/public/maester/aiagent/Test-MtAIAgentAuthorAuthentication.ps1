@@ -10,7 +10,7 @@
     user to authenticate. This creates a privilege escalation risk — the agent
     operates with the maker's permissions regardless of who is chatting with it.
 
-    Reference: https://www.microsoft.com/en-us/security/blog/2026/02/12/copilot-studio-agent-security-top-10-risks-detect-prevent/
+    Reference: https://www.microsoft.com/security/blog/2026/02/12/copilot-studio-agent-security-top-10-risks-detect-prevent/
 
 .OUTPUTS
     [bool] - Returns $true if no agents use author/maker authentication,

@@ -18,7 +18,7 @@ keywords:
 
 # MT.1187 - The Microsoft 365 traffic forwarding profile in Global Secure Access should be enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -26,7 +26,7 @@ The Microsoft 365 traffic forwarding profile routes Microsoft 365 traffic (Excha
 
 Enabling the Microsoft 365 profile unlocks:
 
-* **Source IP restoration** for Microsoft 365 sign-in logs and Identity Protection detections
+* **Source IP restoration** for Microsoft 365 sign-in logs and Microsoft Entra ID Protection detections
 * The **Compliant Network** signal in Conditional Access (token replay protection)
 * **Universal Tenant Restrictions** to help prevent data exfiltration to other tenants
 * **Network access traffic logs** (`NetworkAccessTraffic`) for security operations

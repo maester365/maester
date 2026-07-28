@@ -11,7 +11,7 @@ An enabled sign-in frequency policy that targets Quick Access is a **Fail**, unl
 
 Reviewed, accepted exceptions can be **allow-listed** by policy id or display name via the `GsaQuickAccessSignInFrequencyAllowedPolicies` global setting in `maester-config.json`; those are reported as **Accepted** and never fail.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies** and open each **Fail** policy.

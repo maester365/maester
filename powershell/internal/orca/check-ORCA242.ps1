@@ -36,7 +36,7 @@ class ORCA242 : ORCACheck
         $this.DataType="Current Value"
         $this.ChiValue=[ORCACHI]::Critical
         $this.Links= @{
-            "Automated investigation and response in Microsoft 365 Defender"="https://learn.microsoft.com/en-us/microsoft-365/security/defender/m365d-autoir"
+            "Automated investigation and response in Microsoft 365 Defender"="https://learn.microsoft.com/microsoft-365/security/defender/m365d-autoir"
         }
     }
 
