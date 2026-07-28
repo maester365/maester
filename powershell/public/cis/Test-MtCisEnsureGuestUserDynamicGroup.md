@@ -8,7 +8,7 @@ The recommended state is to create a dynamic group that includes guest accounts.
 
 Dynamic groups allow for an automated method to assign group membership.
 
-Guest user accounts will be automatically added to this group and through this existing Conditional Access rules, access controls and other security measures will ensure that new guest accounts are restricted in the same manner as existing guest accounts.
+Guest user accounts will be automatically added to this group and through these existing Conditional Access policies, access controls and other security measures will ensure that new guest accounts are restricted in the same manner as existing guest accounts.
 
 #### Remediation action:
 

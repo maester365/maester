@@ -18,7 +18,7 @@
     .Example
     Test-MtCaAllAppsExists -SkipCheckAllUsers
 
-    Returns true if at least one Conditional Access policy exists that targets all cloud apps and all users, but skips the check for all users.
+    Returns true if at least one Conditional Access policy exists that targets all cloud apps; the check for all users is skipped.
 
     .LINK
     https://maester.dev/docs/commands/Test-MtCaAllAppsExists

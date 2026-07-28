@@ -36,7 +36,7 @@ function Test-MtCaAgentRiskBlockPolicy {
         }
 
         if ( $result ) {
-            $testResult = "Well done! The following Conditional Access policies sufficiently blockes high risk agent identities:`n`n%TestResult%"
+            $testResult = "Well done! The following Conditional Access policies sufficiently block high-risk agent identities:`n`n%TestResult%"
         } else {
             $testResult = 'No Conditional Access policy found that targets high risk agent identities.'
         }

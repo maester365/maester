@@ -76,9 +76,9 @@ See [Require MFA for administrators - Microsoft Learn](https://learn.microsoft.c
         }
 
         if ( $result ) {
-            $testResult = "The following Conditional Access policies require multi-factor authentication for azure management:`n`n%TestResult%"
+            $testResult = "The following Conditional Access policies require multi-factor authentication for Azure management:`n`n%TestResult%"
         } else {
-            $testResult = 'No Conditional Access policy requires multi-factor authentication for azure management resources.'
+            $testResult = 'No Conditional Access policy requires multi-factor authentication for Azure management resources.'
         }
         Add-MtTestResultDetail -Description $testDescription -GraphObjects $policiesResult -Result $testResult -GraphObjectType ConditionalAccess
 

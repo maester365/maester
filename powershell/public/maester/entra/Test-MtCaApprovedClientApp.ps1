@@ -35,7 +35,7 @@
     $result = ($policiesResult | Measure-Object).Count -eq 0
 
     if ($result) {
-        $testResult = "Well done! No Conditional Access use the deprecated Approved Client App grant."
+        $testResult = "Well done! No Conditional Access policies use the deprecated Approved Client App grant."
         Add-MtTestResultDetail -Result $testResult
     } else {
         $testResult = "The following Conditional Access policies use the deprecated Approved Client App grant:`n`n%TestResult%"

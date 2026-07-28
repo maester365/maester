@@ -35,7 +35,7 @@
 Microsoft recommends disabling browser persistence for users accessing the tenant from a unmanaged device.
 
 See [Require reauthentication and disable browser persistence - Microsoft Learn](https://aka.ms/CATemplatesBrowserSession)'
-        $testResult = "These Conditional Access policies enforce the use of a compliant device :`n`n"
+        $testResult = "These Conditional Access policies enforce sign-in frequency:`n`n"
 
         $result = $false
         foreach ($policy in $policies) {
