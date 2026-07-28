@@ -269,7 +269,7 @@ run_maester_tests_inline:
 <TabItem value="secret" label="Custom workflow using client secret" default>
 
 :::warning
-Client secret authentication is not recommended for long-term automation, and it´s prefer that you use workload identity federation when possible. Client secrets expire, require manual rotation and manual updates in your pipeline/repository variables.
+Client secret authentication is not recommended for long-term automation, and we recommend using workload identity federation when possible. Client secrets expire, require manual rotation and manual updates in your pipeline/repository variables.
 :::
 
 <CreateEntraApp/>

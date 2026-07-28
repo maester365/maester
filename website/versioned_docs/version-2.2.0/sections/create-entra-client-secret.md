@@ -1,7 +1,7 @@
 ### Create a client secret
 
 :::warning
-Client secret authentication is not recommended for long-term automation, and it´s prefer that you use workload identity federation when possible. Client secrets expire, require manual rotation and manual updates in your pipeline/repository variables.
+Client secret authentication is not recommended for long-term automation, and we recommend using workload identity federation when possible. Client secrets expire, require manual rotation and manual updates in your pipeline/repository variables.
 :::
 
 - Select **Certificates & secrets** > **Client secrets** > **New client secret**
