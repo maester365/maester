@@ -30,7 +30,7 @@ Rationale: To disable the legacy authentication methods screen for the tenant, c
 
 #### Remediation action:
 
-If phishing-resistant MFA has not been enforced for all users yet, create a Conditional Access policy that enforces MFA but does not dictate MFA method. Configure the following policy settings in the new Conditional Access policy, per the values below:
+If phishing-resistant MFA has not been enforced for all users yet, create a conditional access policy that enforces MFA but does not dictate MFA method. Configure the following policy settings in the new conditional access policy, per the values below:
 
 1. Go through the process of [migrating from the legacy Azure AD MFA and Self-Service Password Reset (SSPR) administration pages to the new unified Authentication Methods policy page](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-methods-manage).
 2. Once ready to finish the migration, [set the **Manage Migration** option to **Migration Complete**](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-methods-manage#finish-the-migration).

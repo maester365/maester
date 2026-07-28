@@ -1,6 +1,6 @@
 ---
 title: "MT.1018 - At least one Conditional Access policy is configured to enforce sign-in frequency for non-corporate devices."
-description: "Sign-in frequency Conditional Access policy can be helpful to minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesBrowserSession"
+description: "Sign-in frequency conditional access policy can be helpful to minimize the risk of data leakage from a shared device. Learn more: https://aka.ms/CATemplatesBrowserSession"
 slug: /tests/MT.1018
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Sign-in frequency Conditional Access policy can be helpful to minimize the risk of data leakage from a shared device.
+Sign-in frequency conditional access policy can be helpful to minimize the risk of data leakage from a shared device.
 
 Learn more:
 https://aka.ms/CATemplatesBrowserSession

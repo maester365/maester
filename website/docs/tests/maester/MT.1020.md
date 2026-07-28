@@ -1,6 +1,6 @@
 ---
 title: "MT.1020 - All Conditional Access policies are configured to exclude directory synchronization accounts or do not scope them."
-description: "The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID. These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users. Entra ID connect does not support multifactor authentication. Restrict access with t…"
+description: "The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID. These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users. Entra ID connect does not support multifactor authentication. Restrict access with t…"
 slug: /tests/MT.1020
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -22,7 +22,7 @@ keywords:
 ## Overview
 
 The directory synchronization accounts are used to synchronize the on-premises directory with Entra ID.
-These accounts should be excluded from all Conditional Access policies scoped to all cloud apps and all users.
+These accounts should be excluded from all conditional access policies scoped to all cloud apps and all users.
 Entra ID connect does not support multifactor authentication.
 Restrict access with these accounts to trusted networks.
 

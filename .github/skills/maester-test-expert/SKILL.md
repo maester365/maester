@@ -499,7 +499,7 @@ From `website/docs/tests/maester/MT.1001.md`:
 ```markdown
 ---
 title: MT.1001 - At least one Conditional Access policy is configured with device compliance
-description: Device compliance Conditional Access policy can be used to require devices to be compliant with the tenant's security configuration.
+description: Device compliance conditional access policy can be used to require devices to be compliant with the tenant's security configuration.
 slug: /tests/MT.1001
 sidebar_class_name: hidden
 ---
@@ -508,11 +508,11 @@ sidebar_class_name: hidden
 
 ## Description
 
-Device compliance Conditional Access policy can be used to require devices to be compliant with the tenant's security configuration.
+Device compliance conditional access policy can be used to require devices to be compliant with the tenant's security configuration.
 
 ## How to fix
 
-Create a Conditional Access policy that requires devices to have device compliance.
+Create a conditional access policy that requires devices to have device compliance.
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a Conditional Access Administrator.
 2. Browse to **Protection** > **Conditional Access** > **Policies**.

@@ -1,6 +1,6 @@
 ---
 title: "MT.1012 - At least one Conditional Access policy is configured to require MFA for risky sign-ins."
-description: "Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication for risky sign-ins. See Sign-in risk-based multifactor authentication - Microsoft Learn"
+description: "Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins. See Sign-in risk-based multifactor authentication - Microsoft Learn"
 slug: /tests/MT.1012
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Checks if the tenant has at least one Conditional Access policy requiring multifactor authentication for risky sign-ins.
+Checks if the tenant has at least one conditional access policy requiring multifactor authentication for risky sign-ins.
 
 See [Sign-in risk-based multifactor authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-risk)
 

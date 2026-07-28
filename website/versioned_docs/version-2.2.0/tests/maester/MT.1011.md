@@ -1,6 +1,6 @@
 ---
 title: "MT.1011 - At least one Conditional Access policy is configured to secure security info registration only from a trusted location."
-description: "Checks if the tenant has at least one Conditional Access policy securing security info registration. See Securing security info registration - Microsoft Learn"
+description: "Checks if the tenant has at least one conditional access policy securing security info registration. See Securing security info registration - Microsoft Learn"
 slug: /tests/MT.1011
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Checks if the tenant has at least one Conditional Access policy securing security info registration.
+Checks if the tenant has at least one conditional access policy securing security info registration.
 
 See [Securing security info registration - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-registration)
 

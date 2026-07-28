@@ -1,6 +1,6 @@
 ---
 title: "MT.1014 - At least one Conditional Access policy is configured to require compliant or Entra hybrid joined devices for admins."
-description: "Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins. This is a good way to prevent AITM attacks. Learn more: https://aka.ms/CATemplatesAdminDevices"
+description: "Device compliance conditional access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins. This is a good way to prevent AITM attacks. Learn more: https://aka.ms/CATemplatesAdminDevices"
 slug: /tests/MT.1014
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Device compliance Conditional Access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
+Device compliance conditional access policy can be used to require devices to be compliant or hybrid Azure AD joined for admins.
 This is a good way to prevent AITM attacks.
 
 Learn more:

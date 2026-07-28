@@ -13,7 +13,7 @@ const textContent = {
   <strong>Apply modern DevSecOps practices</strong> and continuously monitor critical aspects of your Microsoft cloud.
   `,
   whatIf: `
-  Avoid creating loopholes in your Conditional Access policies and test to see the impact of a policy change before it is applied.<br/><br/>
+  Avoid creating loopholes in your conditional access policies and test to see the impact of a policy change before it is applied.<br/><br/>
 
   <strong>Identity is the new control plane!</strong> Create iron-clad tests to ensure your tenant's posture is always secure as your access policies evolve.
   `,
@@ -29,7 +29,7 @@ each test.
 <br/><br/>`,
   quickFix: `
 Test details include direct links to the Microsoft admin portals.<br/><br/>
-<strong>Jump straight</strong> into the Conditional Access policy that needs to be fixed or the group that needs to be reviewed.
+<strong>Jump straight</strong> into the conditional access policy that needs to be fixed or the group that needs to be reviewed.
 <br/><br/>`,
   eidsca: `
 Maester includes over 40+ out of the box tests from <a href="/docs/tests/eidsca/">Entra ID Security Config Analyzer (EIDSCA).</a><br/><br/>

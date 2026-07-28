@@ -1,6 +1,6 @@
 ---
 title: "MT.1017 - At least one Conditional Access policy is configured to enforce non persistent browser session for non-corporate devices."
-description: "Non persistent browser session Conditional Access policy can be helpful to minimize the risk of data leakage from a unmanaged device. Learn more: https://aka.ms/CATemplatesBrowserSession"
+description: "Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device. Learn more: https://aka.ms/CATemplatesBrowserSession"
 slug: /tests/MT.1017
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-Non persistent browser session Conditional Access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
+Non persistent browser session conditional access policy can be helpful to minimize the risk of data leakage from a unmanaged device.
 
 Learn more:
 https://aka.ms/CATemplatesBrowserSession

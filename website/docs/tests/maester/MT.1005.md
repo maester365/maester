@@ -1,6 +1,6 @@
 ---
 title: "MT.1005 - All Conditional Access policies are configured to exclude at least one emergency/break glass account or group."
-description: "It is recommended to have at least one emergency/break glass account or account group excluded from all Conditional Access policies. This allows for emergency access to the tenant in case of a misconfiguration or other issues. See Manage emergency access accounts in Microsoft Entra ID - Microsoft L…"
+description: "It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies. This allows for emergency access to the tenant in case of a misconfiguration or other issues. See Manage emergency access accounts in Microsoft Entra ID - Microsoft L…"
 slug: /tests/MT.1005
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-It is recommended to have at least one emergency/break glass account or account group excluded from all Conditional Access policies.
+It is recommended to have at least one emergency/break glass account or account group excluded from all conditional access policies.
 This allows for emergency access to the tenant in case of a misconfiguration or other issues.
 
 See [Manage emergency access accounts in Microsoft Entra ID - Microsoft Learn](https://learn.microsoft.com/entra/identity/role-based-access-control/security-emergency-access)

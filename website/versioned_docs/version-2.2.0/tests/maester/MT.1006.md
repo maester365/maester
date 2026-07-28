@@ -1,6 +1,6 @@
 ---
 title: "MT.1006 - At least one Conditional Access policy is configured to require MFA for admins."
-description: "This test checks if the tenant has at least one Conditional Access policy requiring MFA for admins. The following roles are considered as admin roles: - Global Administrator - Application Administrator - Authentication Administrator - Billing Administrator - Cloud Application Administrator - Condit…"
+description: "This test checks if the tenant has at least one conditional access policy requiring MFA for admins. The following roles are considered as admin roles: - Global Administrator - Application Administrator - Authentication Administrator - Billing Administrator - Cloud Application Administrator - Condit…"
 slug: /tests/MT.1006
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -21,7 +21,7 @@ keywords:
 
 ## Overview
 
-This test checks if the tenant has at least one Conditional Access policy requiring MFA for admins.
+This test checks if the tenant has at least one conditional access policy requiring MFA for admins.
 The following roles are considered as admin roles:
 
 - Global Administrator

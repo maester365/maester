@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.1.1 - Legacy authentication SHALL be blocked."
-description: "Legacy authentication SHALL be blocked. Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft. Remediation action: Follow the guide below to create a Conditional Access policy that b…"
+description: "Legacy authentication SHALL be blocked. Rationale: The security risk of allowing legacy authentication protocols is they do not support MFA. Blocking legacy protocols reduces the impact of user credential theft. Remediation action: Follow the guide below to create a conditional access policy that b…"
 slug: /tests/CISA.MS.AAD.1.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -30,7 +30,7 @@ Rationale: The security risk of allowing legacy authentication protocols is they
 
 #### Remediation action:
 
-Follow the guide below to create a Conditional Access policy that blocks legacy authentication.
+Follow the guide below to create a conditional access policy that blocks legacy authentication.
 
 - [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy#create-a-conditional-access-policy)
 

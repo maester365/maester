@@ -8,7 +8,7 @@ The [**Conditional Access What If policy tool**](https://learn.microsoft.com/ent
 
 The What If policy tool now is now supported in Microsoft Graph API allowing sign-in simulations to be run programmatically.
 
-## Conditional Access regression testing with Maester
+## Conditional access regression testing with Maester
 
 The Maester framework allows you to define tests that can be run against your Conditional Access policies using the What If API. The tests can be run as part of your daily automation tests and when you make changes to your policies.
 
