@@ -10,7 +10,7 @@ Allowing users to install third-party or unverified apps poses a potential risk 
 
 Users will only be able to install approved classes of apps.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
 2. Click to expand **Teams apps** select **Manage apps**.
@@ -23,8 +23,8 @@ Users will only be able to install approved classes of apps.
 #### Related links
 
 * [Microsoft Teams Admin Center](https://admin.teams.microsoft.com).
-* [Use app centric management to manage access to apps](https://learn.microsoft.com/en-us/microsoftteams/app-centric-management)
-* [Disabling non-Microsoft and custom apps](https://learn.microsoft.com/en-us/defender-office-365/step-by-step-guides/reducing-attack-surface-in-microsoft-teams?view=o365-worldwide#disabling-third-party--custom-apps)
+* [Use app centric management to manage access to apps](https://learn.microsoft.com/microsoftteams/app-centric-management)
+* [Disabling non-Microsoft and custom apps](https://learn.microsoft.com/defender-office-365/step-by-step-guides/reducing-attack-surface-in-microsoft-teams?view=o365-worldwide#disabling-third-party--custom-apps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 425](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

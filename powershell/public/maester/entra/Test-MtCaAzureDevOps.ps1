@@ -1,7 +1,7 @@
 ﻿function Test-MtCaAzureDevOps {
     <#
     .Synopsis
-    Checks if any conditional access policy explicitly includes Azure DevOps
+    Checks if any Conditional Access policy explicitly includes Azure DevOps
 
     .Description
     Azure DevOps will no longer rely on the Azure Resource Manager (ARM) resource during sign-in or token refresh flows.
@@ -49,10 +49,10 @@
             }
         }
         if (($policiesResult | Measure-Object).Count -ne 0) {
-            $testResult = "Well done! There are conditional access policies that explicitly include Azure DevOps.`n`n%TestResult%"
+            $testResult = "Well done! There are Conditional Access policies that explicitly include Azure DevOps.`n`n%TestResult%"
             Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess
         } else {
-            $testResult = 'There are no conditional access policies that explicitly target Azure DevOps.'
+            $testResult = 'There are no Conditional Access policies that explicitly target Azure DevOps.'
             Add-MtTestResultDetail -Result $testResult
         }
         return $result

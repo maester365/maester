@@ -8,7 +8,7 @@
     anomaly detection. Setting up a stream also allows you to store more than 90-days of auditing data,
     which is the maximum amount of data that Azure DevOps keeps for your organizations.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops
+    https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops
 
 .EXAMPLE
     ```
@@ -37,7 +37,7 @@ function Test-AzdoAuditStream {
 
     if ($null -eq $AuditStreams) {
         $Message = "Audit Streams was not found. This may be due to insufficient permissions or the Azure DevOps Organization is not backed by an Entra ID tenant.
-        Please see [Manage Audit Streams](https://learn.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#prerequisites)"
+        Please see [Manage Audit Streams](https://learn.microsoft.com/azure/devops/organizations/audit/auditing-streaming?view=azure-devops#prerequisites)"
         Write-Verbose $Message
         Add-MtTestResultDetail -SkippedBecause Custom -SkippedCustomReason $Message
         return $null

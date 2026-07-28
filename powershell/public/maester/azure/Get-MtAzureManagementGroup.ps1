@@ -7,8 +7,8 @@
     This function retrieves all Azure Management Groups by querying the Azure Management API.
     Returns an array of management groups that are accessible to the current user.
 
-    * [Quickstart: Create a management group](https://learn.microsoft.com/en-us/azure/governance/management-groups/create-management-group-portal)
-    * [Azure Management Groups Overview](https://docs.microsoft.com/en-us/azure/governance/management-groups/overview)
+    * [Quickstart: Create a management group](https://learn.microsoft.com/azure/governance/management-groups/create-management-group-portal)
+    * [Azure Management Groups Overview](https://docs.microsoft.com/azure/governance/management-groups/overview)
 
     .EXAMPLE
     Get-MtAzureManagementGroup

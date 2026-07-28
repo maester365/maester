@@ -42,7 +42,7 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that block high risk users :`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that block high risk users."
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that block high risk users."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $blockPolicies
 

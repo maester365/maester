@@ -24,7 +24,7 @@ keywords:
 
 # CIS.M365.5.1.4.6 - Ensure users are restricted from recovering BitLocker keys
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bakkerjan" title="Jan Bakker · Original author"><img src="https://github.com/BakkerJan.png" alt="Jan Bakker" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bakkerjan">Jan Bakker</a> with <a href="/contributors/buckeyeguyjflo">John Flores</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -40,7 +40,7 @@ Restricting user access to the self-service BitLocker recovery key portal helps 
 
 Users will no longer be able to retrieve their own BitLocker recovery key(s) from the My Account portal or the Microsoft Entra admin center. They'll need to contact a Cloud Device Administrator, Helpdesk Administrator, Intune Administrator, Security Administrator, or Security Reader to recover the key, which increases the support burden during device recovery scenarios.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft 365 Entra admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** and select **Devices** > **Device settings**.
@@ -52,9 +52,9 @@ Alternatively, use Microsoft Graph PowerShell:
 ```powershell
 Connect-MgGraph -Scopes Policy.ReadWrite.Authorization
 $params = @{
-	defaultUserRolePermissions = @{
-		allowedToReadBitlockerKeysForOwnedDevice = $false
-	}
+ defaultUserRolePermissions = @{
+  allowedToReadBitlockerKeysForOwnedDevice = $false
+ }
 }
 Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/policies/authorizationPolicy" -Body $params
 ```
@@ -62,7 +62,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 #### Related links
 
 * [Microsoft 365 Entra admin center - Device settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview)
-* [Manage devices in Microsoft Entra ID using the Microsoft Entra admin center](https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities#configure-device-settings)
+* [Manage devices in Microsoft Entra ID using the Microsoft Entra admin center](https://learn.microsoft.com/entra/identity/devices/manage-device-identities#configure-device-settings)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Control 5.1.4.6](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

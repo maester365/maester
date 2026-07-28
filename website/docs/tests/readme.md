@@ -20,7 +20,7 @@ Every test is researched, written, and refined by security experts from the Maes
 
 | Suite | Tests | Description |
 | --- | ---: | --- |
-| [Maester](./maester) | 167 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
+| [Maester](./maester) | 168 | Maester security tests for Microsoft 365 and Microsoft Entra configurations. |
 | [Entra ID SCA](./eidsca) | 44 | Entra ID Security Config Analyzer tests mapped to Microsoft Entra security configuration checks. |
 | [CISA](./cisa) | 79 | CISA SCuBA baseline tests for Microsoft 365 security configurations. |
 | [CIS](./cis) | 50 | CIS Benchmark controls implemented as Maester tests. |
@@ -251,8 +251,8 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1047](./MT.1047) | Restrict anonymous users from starting Teams meetings | Maester | Medium | Teams |
 | [MT.1048](./MT.1048) | Limit external participants from having control in a Teams meeting | Maester | Medium | Teams |
 | [MT.1049](./MT.1049) | Conditional Access policies for User Risk and Sign-in Risk should be configured separately. | Maester | High | CA |
-| [MT.1050](./MT.1050) | Apps with high-risk permissions having a direct path to Global Admin | Maester | High | App |
-| [MT.1051](./MT.1051) | Apps with high-risk permissions having an indirect path to Global Admin | Maester | High | App |
+| [MT.1050](./MT.1050) | Apps with high-risk permissions having a direct path to Global Administrator | Maester | High | App |
+| [MT.1051](./MT.1051) | Apps with high-risk permissions having an indirect path to Global Administrator | Maester | High | App |
 | [MT.1052](./MT.1052) | At least one Conditional Access policy is targeting the Device Code authentication flow. | Maester | High | CA |
 | [MT.1053](./MT.1053) | Ensure intune device clean-up rule is configured | Maester | Medium | Intune |
 | [MT.1054](./MT.1054) | Ensure built-in Device Compliance Policy marks devices with no compliance policy assigned as 'Not compliant' | Maester | Medium | Intune |
@@ -272,7 +272,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1069](./MT.1069) | Restrict non-admin users from creating security groups. | Maester | Low | Entra |
 | [MT.1070](./MT.1070) | Restrict device join to selected users/groups or none. | Maester | Medium | Entra |
 | [MT.1071](./MT.1071) | At least one Conditional Access policy explicitly includes Azure DevOps. | Maester | Medium | CA |
-| [MT.1072](./MT.1072) | Conditional access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
+| [MT.1072](./MT.1072) | Conditional Access policies should not use the deprecated Approved Client App grant. | Maester | High | CA |
 | [MT.1073](./MT.1073) | Soft- and hard-matching of synchronized objects should be blocked. | Maester | Medium | Entra |
 | [MT.1074](./MT.1074) | Mailboxes should not send outbound mails using the .onmicrosoft.com domain. | Maester | Medium | Exchange |
 | [MT.1075](./MT.1075) | Third Party Entra Apps should only have explicitly assigned users instead of All Users. | Maester | Medium | App |
@@ -289,7 +289,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1087](./MT.1087) | Devices should not be publicly exposed with remotely exploitable, highly likely to be exploited, high or critical severity CVE's. | Maester | High | XSPM |
 | [MT.1088](./MT.1088) | Devices with critical credentials should be protected by TPM. | Maester | Medium | XSPM |
 | [MT.1089](./MT.1089) | Devices with critical credentials should be protected by Credential Guard. | Maester | Medium | XSPM |
-| [MT.1090](./MT.1090) | Global administrator role should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
+| [MT.1090](./MT.1090) | Global Administrator role should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
 | [MT.1091](./MT.1091) | Registering user should not be added as local administrator on the device during Microsoft Entra join | Maester | Medium | Entra |
 | [MT.1092](./MT.1092) | Intune APNS certificate should be valid for more than 30 days | Maester | High | Intune |
 | [MT.1093](./MT.1093) | Apple Automated Device Enrollment Tokens should be valid for more than 30 days | Maester | High | Intune |
@@ -356,6 +356,7 @@ Every test is researched, written, and refined by security experts from the Maes
 | [MT.1178](./MT.1178) | Ensure ASR Rules are configured correctly | Maester | High | Intune |
 | [MT.1179](./MT.1179) | Ensure App Control for Business is enabled | Maester | High | Intune |
 | [MT.1180](./MT.1180) | Ensure Managed Installer Rules are configured correctly | Maester | Medium | Intune |
+| [MT.1181](./MT.1181) | Conditional Access policy is present that blocks high agent risk signins | Maester | High | CA |
 | [MT.1182](./MT.1182) | Entra managed and verified domains should have mature DMARC policy (p=reject, pct=100). | Maester | Unknown | Entra |
 | [MT.1183](./MT.1183) | Temporary bypass for onPremisesObjectIdentifier updates should be disabled | Maester | Medium | Entra |
 | [MT.1184](./MT.1184) | Conditional Access policy without any target resources configured | Maester | Medium | CA |

@@ -13,7 +13,7 @@ The test requires Microsoft 365 E5 or the Insider Risk Management add-on. The te
 
 The test passes when at least one Insider Risk policy with an AI-related scenario / template is enabled.
 
-#### Remediation action:
+#### Remediation action
 
 1. Open the [Microsoft Purview portal — Insider Risk Management — Policies](https://purview.microsoft.com/insiderriskmgmt/policies).
 2. Click **+ Create policy**.
@@ -25,9 +25,9 @@ The test passes when at least one Insider Risk policy with an AI-related scenari
 
 #### Related links
 
-- [Microsoft Learn — Insider Risk Management policies](https://learn.microsoft.com/en-us/purview/insider-risk-management-policies)
-- [Microsoft Learn — Detect risky use of AI with Insider Risk Management](https://learn.microsoft.com/en-us/purview/insider-risk-management-policy-templates)
-- [Microsoft Learn — Microsoft Purview AI Hub & DSPM for AI](https://learn.microsoft.com/en-us/purview/ai-microsoft-purview)
+- [Microsoft Learn — Insider Risk Management policies](https://learn.microsoft.com/purview/insider-risk-management-policies)
+- [Microsoft Learn — Detect risky use of AI with Insider Risk Management](https://learn.microsoft.com/purview/insider-risk-management-policy-templates)
+- [Microsoft Learn — Microsoft Purview AI Hub & DSPM for AI](https://learn.microsoft.com/purview/ai-microsoft-purview)
 
 <!--- Results --->
 %TestResult%

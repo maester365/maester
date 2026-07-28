@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the configuration of external guest access to Azure DevOps.
 
-    https://learn.microsoft.com/en-us/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access
+    https://learn.microsoft.com/azure/devops/organizations/security/security-overview?view=azure-devops#manage-external-guest-access
 
 .EXAMPLE
     ```

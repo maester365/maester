@@ -1,10 +1,10 @@
 ﻿function Get-MtConditionalAccessPolicy {
     <#
     .Synopsis
-    Returns all the conditional access policies in the tenant.
+    Returns all the Conditional Access policies in the tenant.
 
     .Description
-    Returns all the conditional access policies in the tenant.
+    Returns all the Conditional Access policies in the tenant.
 
     .Example
     Get-MtConditionalAccessPolicy
@@ -19,7 +19,7 @@
     [Switch]$DisableCache
   )
 
-  Write-Verbose -Message "Getting conditional access policies."
+  Write-Verbose -Message "Getting Conditional Access policies."
 
   return Invoke-MtGraphRequest -RelativeUri 'identity/conditionalAccess/policies' -ApiVersion beta -DisableCache:$DisableCache
 

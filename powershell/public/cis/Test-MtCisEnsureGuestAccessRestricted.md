@@ -18,11 +18,12 @@ When using the 'most restrictive' setting, guests will only be able to access th
 
 There are some known issues with Yammer that will prevent guests that are signed in from leaving the group.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Entra ID admin center](https://entra.microsoft.com).
 2. Click to expand **Entra ID** > **External Identities** select **External collaboration settings**.
 3. Under **Guest user access** set **Guest user access restrictions** to one of the following:
+
 * State: **Guest users have limited access to properties and memberships of directory objects**
 * State: **Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)**
 
@@ -30,11 +31,14 @@ There are some known issues with Yammer that will prevent guests that are signed
 
 1. Connect to Microsoft Graph using Connect-MgGraph -Scopes "Policy.ReadWrite.Authorization"
 2. Run the following command to set the guest user access restrictions to default:
+
 ```powershell
 # Guest users have limited access to properties and memberships of directory objects
 Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '10dae51f-b6af-4016-8d66-8c2a99b929b3'
 ```
+
 3. Or, run the following command to set it to the "most restrictive":
+
 ```powershell
 # Guest user access is restricted to properties and memberships of their own directory objects (most restrictive)
 Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa82404023b'
@@ -45,7 +49,7 @@ Update-MgPolicyAuthorizationPolicy -GuestUserRoleId '2af84b1e-32c8-42b7-82bc-daa
 #### Related links
 
 * [Microsoft Entra ID admin center](https://entra.microsoft.com)
-* [Restrict guest access permissions in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/users-restrict-guest-permissions)
+* [Restrict guest access permissions in Microsoft Entra ID](https://learn.microsoft.com/entra/identity/users/users-restrict-guest-permissions)
 * [Cyber Kill Chain](https://www.lockheedmartin.com/en-us/capabilities/cyber/cyber-kill-chain.html)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 221](https://www.cisecurity.org/benchmark/microsoft_365)
 

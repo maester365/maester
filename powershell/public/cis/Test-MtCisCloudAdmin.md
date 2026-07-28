@@ -10,20 +10,18 @@ In a hybrid environment, having separate accounts will help ensure that in the e
 
 Administrative users will need to utilize login/logout functionality to switch accounts when performing administrative tasks, which means they will not benefit from SSO. This will require a migration process from the 'daily driver' account to a dedicated admin account. Once the new admin account is created, permission sets should be migrated from the 'daily driver' account to the new admin account. This includes both M365 and Azure RBAC roles. Failure to migrate Azure RBAC roles could prevent an admin from seeing their subscriptions/resources while using their admin account.
 
-
-#### Remediation action:
+#### Remediation action
 
 Remediation will require first identifying the privileged accounts that are synced from onpremises and then creating a new cloud-only account for that user. Once a replacement account is established, the hybrid account should have its role reduced to that of a nonprivileged user or removed depending on the need.
-
 
 #### Related links
 
 * [Microsoft 365 Admin Center](https://admin.microsoft.com)
-* [Add users and assign licenses in Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/admin/add-users/add-users?view=o365-worldwide)
-* [Step 2. Protect your Microsoft 365 privileged accounts](https://learn.microsoft.com/en-us/microsoft-365/enterprise/protect-your-global-administrator-accounts?view=o365-worldwide)
-* [9. Use cloud native accounts for Microsoft Entra roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices#9-use-cloud-native-accounts-for-microsoft-entra-roles)
-* [What is Microsoft Entra?](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra)
-* [Microsoft Entra built-in roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference)
+* [Add users and assign licenses in Microsoft 365](https://learn.microsoft.com/microsoft-365/admin/add-users/add-users?view=o365-worldwide)
+* [Step 2. Protect your Microsoft 365 privileged accounts](https://learn.microsoft.com/microsoft-365/enterprise/protect-your-global-administrator-accounts?view=o365-worldwide)
+* [9. Use cloud native accounts for Microsoft Entra roles](https://learn.microsoft.com/entra/identity/role-based-access-control/best-practices#9-use-cloud-native-accounts-for-microsoft-entra-roles)
+* [What is Microsoft Entra?](https://learn.microsoft.com/entra/fundamentals/what-is-entra)
+* [Microsoft Entra built-in roles](https://learn.microsoft.com/entra/identity/role-based-access-control/permissions-reference)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 20](https://www.cisecurity.org/benchmark/microsoft_365)
 
 <!--- Results --->

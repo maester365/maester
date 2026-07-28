@@ -3,12 +3,14 @@ Ensure at least one Intune App Control for Business policy has **Managed Install
 When Managed Installer is enabled in an App Control for Business policy, applications deployed through Intune (or SCCM) are automatically trusted and allowed to run without needing explicit allow rules in the code integrity policy. This dramatically simplifies App Control deployment in enterprise environments.
 
 **Without Managed Installer:**
+
 - Every application must have an explicit allow rule in the App Control policy
 - Line-of-business (LOB) apps deployed via Intune may be blocked unexpectedly
 - Help desk tickets increase due to false positives from legitimate software being blocked
 - IT teams must maintain complex allow lists that change with every app update
 
 **With Managed Installer:**
+
 - Apps deployed through Intune are automatically whitelisted at install time
 - Only user-installed, sideloaded, or internet-downloaded apps are subject to policy restrictions
 - Reduces false positives while maintaining security against unauthorized software
@@ -16,7 +18,7 @@ When Managed Installer is enabled in an App Control for Business policy, applica
 
 The test passes if **at least one App Control for Business policy is in Enforce mode** (audit mode disabled) **AND** has **Trust apps from managed installer** enabled **AND** has an active control (built-in controls selected OR a non-empty uploaded XML payload). Managed Installer enabled on an audit-only App Control, or on an enforce-mode upload policy with an empty XML payload, does not actively trust deployed apps because the underlying App Control policy is not blocking anything. This mirrors the active-control gate used by MT.1179.
 
-#### Remediation action:
+#### Remediation action
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Application control**.
@@ -32,9 +34,9 @@ The test passes if **at least one App Control for Business policy is in Enforce 
 #### Related links
 
 - [Microsoft Intune - Application Control](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/applicationControl)
-- [Microsoft Learn - Configure Managed Installer in Intune](https://learn.microsoft.com/en-us/mem/intune/protect/endpoint-security-app-control-policy)
-- [Microsoft Learn - Automatically allow apps deployed by a managed installer](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/design/configure-appcontrol-managed-installer)
-- [Microsoft Learn - App Control for Business overview](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/appcontrol)
+- [Microsoft Learn - Configure Managed Installer in Intune](https://learn.microsoft.com/mem/intune/protect/endpoint-security-app-control-policy)
+- [Microsoft Learn - Automatically allow apps deployed by a managed installer](https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/design/configure-appcontrol-managed-installer)
+- [Microsoft Learn - App Control for Business overview](https://learn.microsoft.com/windows/security/application-security/application-control/app-control-for-business/appcontrol)
 
 <!--- Results --->
 %TestResult%

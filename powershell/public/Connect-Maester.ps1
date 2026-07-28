@@ -62,7 +62,7 @@
 .EXAMPLE
    Connect-Maester -Privileged
 
-   Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
+   Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying Global Administrator roles in Privileged Identity Management.
 
 .EXAMPLE
    Connect-Maester -Environment USGov -AzureEnvironment AzureUSGovernment -ExchangeEnvironmentName O365USGovGCCHigh
@@ -107,7 +107,7 @@
       # If specified, the cmdlet will include the scope to send a channel message in Teams (ChannelMessage.Send).
       [switch] $SendTeamsMessage,
 
-      # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying global admin roles in PIM.
+      # If specified, the cmdlet will include the scopes for read write API endpoints. This is currently required for querying Global Administrator roles in PIM.
       [switch] $Privileged,
 
       # If specified, the cmdlet will use the device code flow to authenticate to Graph and Azure.
@@ -137,7 +137,7 @@
       # The Tenant ID to connect to, if not specified the sign-in user's default tenant is used.
       [string]$TenantId,
 
-      # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+      # The Client ID of the app to connect to for Graph. If not specified, the default Graph PowerShell CLI enterprise app will be used. Reference on how to create an enterprise app: https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
       [string]$GraphClientId,
 
       # The Client ID of the PnP Entra ID app for SharePoint Online. Required when Service includes SharePointOnline.
@@ -293,7 +293,7 @@
             }
             Write-Verbose 'Connecting to Microsoft Security & Compliance PowerShell'
             if ($Service -notcontains 'ExchangeOnline' -and $Service -notcontains 'All') {
-               Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/en-us/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
+               Write-Host "`nThe Security & Compliance module is dependent on the Exchange Online module. Please include ExchangeOnline when specifying the services.`nFor more information see https://learn.microsoft.com/powershell/exchange/connect-to-scc-powershell" -ForegroundColor Red
             } else {
                if ($UseDeviceCode) {
                   Write-Host "`nThe Security & Compliance module does not support device code flow authentication." -ForegroundColor Red
@@ -387,7 +387,7 @@
                   Connect-MicrosoftTeams > $null
                }
             } catch [Management.Automation.CommandNotFoundException] {
-               Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/en-us/microsoftteams/teams-powershell-install" -ForegroundColor Red
+               Write-Host "`nThe Teams PowerShell module is not installed. Please install the module using the following command. For more information see https://learn.microsoft.com/microsoftteams/teams-powershell-install" -ForegroundColor Red
                Write-Host "`Install-Module MicrosoftTeams -Scope CurrentUser`n" -ForegroundColor Yellow
             }
          }

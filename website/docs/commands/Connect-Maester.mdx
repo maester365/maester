@@ -122,7 +122,7 @@ Connects to Microsoft Graph with the ChannelMessage.Send scope.
 Connect-Maester -Privileged
 ```
 
-Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying global admin roles in Privileged Identity Management.
+Connects to Microsoft Graph with additional privileged scopes such as **RoleEligibilitySchedule.ReadWrite.Directory** that are required for querying Global Administrator roles in Privileged Identity Management.
 
 ### EXAMPLE 11
 
@@ -212,7 +212,7 @@ Accept wildcard characters: False
 ### -Privileged
 
 If specified, the cmdlet will include the scopes for read write API endpoints.
-This is currently required for querying global admin roles in PIM.
+This is currently required for querying Global Administrator roles in PIM.
 
 ```yaml
 Type: SwitchParameter
@@ -352,7 +352,7 @@ Accept wildcard characters: False
 
 The Client ID of the app to connect to for Graph.
 If not specified, the default Graph PowerShell CLI enterprise app will be used.
-Reference on how to create an enterprise app: https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
+Reference on how to create an enterprise app: https://learn.microsoft.com/powershell/microsoftgraph/authentication-commands?view=graph-powershell-1.0#use-delegated-access-with-a-custom-application-for-microsoft-graph-powershell
 
 ```yaml
 Type: String

@@ -5,7 +5,7 @@
 .DESCRIPTION
     Checks the status if Azure Pipelines can automatically build and validate every pull request and commit to your GitHub repository.
 
-    https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks
+    https://learn.microsoft.com/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#validate-contributions-from-forks
 
 .EXAMPLE
     ```

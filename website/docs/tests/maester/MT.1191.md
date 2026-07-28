@@ -19,7 +19,7 @@ keywords:
 
 # MT.1191 - Break-glass accounts should be excluded from the Compliant Network Conditional Access policy
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with <a href="/contributors/merill">Merill Fernando</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/crmhh" title="Christopher Brumm · Original author"><img src="https://github.com/crmhh.png" alt="Christopher Brumm" /></a><a className="test-byline-avatar" href="/contributors/merill" title="Merill Fernando · Co-contributor"><img src="https://github.com/merill.png" alt="Merill Fernando" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/crmhh">Christopher Brumm</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -27,7 +27,7 @@ A Conditional Access policy that enforces the Global Secure Access **Compliant N
 
 Every Compliant Network enforcement policy must therefore exclude all break-glass accounts - either directly, or via a group they belong to (nested group membership is honored, as Conditional Access evaluates it). Emergency access accounts are read from the `EmergencyAccessAccounts` setting in `maester-config.json`.
 
-#### Remediation action:
+#### Remediation action
 
 1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com) as at least a **Conditional Access Administrator**.
 2. Browse to **Entra ID** > **Conditional Access** > **Policies** and open each flagged policy.

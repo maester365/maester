@@ -1,10 +1,10 @@
 Users detected as high risk SHALL be blocked.
 
-Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. This prevents compromised accounts from accessing the tenant.
+Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant.
 
 #### Remediation action:
 
-Create a conditional access policy blocking users categorized as high risk by the Identity Protection service. Configure the following policy settings in the new conditional access policy as per the values below:
+Create a Conditional Access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following policy settings in the new Conditional Access policy as per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**

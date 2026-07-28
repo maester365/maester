@@ -25,7 +25,7 @@ keywords:
 
 # CIS.M365.7.2.7 - Ensure link sharing is restricted in SharePoint and OneDrive
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/mynster9361" title="-Mynster · Original author"><img src="https://github.com/Mynster9361.png" alt="-Mynster" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/mynster9361">-Mynster</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -44,7 +44,6 @@ By defaulting to specific people, the user will first need to consider whether o
 3. Scroll to **File and folder links.**
 4. Set **Choose the type of link that's selected by default when users share files and folders in SharePoint and OneDrive to Specific people (only the people the user specifies) or Only people in your organization.**
 
-
 ### PowerShell
 
 1. Connect to SharePoint Online using `Connect-SPOService`
@@ -54,7 +53,7 @@ By defaulting to specific people, the user will first need to consider whether o
 Set-SPOTenant -DefaultSharingLinkType Direct
 ```
 
-3. Or, to set a more restrictive state:
+1. Or, to set a more restrictive state:
 
 ```powershell
 Set-SPOTenant -DefaultSharingLinkType Internal
@@ -64,7 +63,7 @@ Set-SPOTenant -DefaultSharingLinkType Internal
 
 ## Related Links
 
-* [Set-SPOTenant](https://learn.microsoft.com/en-us/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
+* [Set-SPOTenant](https://learn.microsoft.com/powershell/module/microsoft.online.sharepoint.powershell/set-spotenant?view=sharepoint-ps)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 381](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

@@ -28,7 +28,7 @@
     [string[]]$FilteredAccessLevel = $null,
 
     [Parameter(ValueFromPipelineByPropertyName = $true, Position = 2)]
-    # Specify break glass accounts to exclude. Defaults to automatic detection based on conditional access policy exclusions.
+    # Specify break glass accounts to exclude. Defaults to automatic detection based on Conditional Access policy exclusions.
     [object[]]$FilteredBreakGlass = (Get-MtUser -UserType EmergencyAccess)
   )
 

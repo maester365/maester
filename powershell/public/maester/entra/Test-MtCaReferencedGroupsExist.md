@@ -6,7 +6,7 @@ Deleted groups in your policy can lead to unexpected gaps. This may result in Co
 
 To fix this issue:
 
-* Open the impacted Conditional access policy.
+* Open the impacted Conditional Access policy.
 * If the group is no longer needed, click Save to remove the referenced group from the policy.
 * If the group is still needed, update the policy to target a valid group.
 
