@@ -939,7 +939,7 @@ $AdReconGroupMembers = {
     $groups=Import-Csv "$path\$domain\Groups.csv"
     $users=Import-Csv "$path\$domain\Users.csv"
 
-    #https://docs.microsoft.com/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory
+    #https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory
     $privilegedGroups=@(
         "Access Control Assistance Operators",
         "Account Operators",
@@ -1026,7 +1026,7 @@ $AdReconGroupMembers = {
         "Terminal Server License Servers"
     )
 
-    #https://docs.microsoft.com/exchange/plan-and-deploy/active-directory/ad-changes
+    #https://docs.microsoft.com/en-us/exchange/plan-and-deploy/active-directory/ad-changes
     $exchangeGroups=@(
         "Compliance Management",
         "Delegated Setup",
@@ -1359,7 +1359,7 @@ $AdDaclsAdDacls = {
     param($path,$domain,$file)
     $dacls=Import-Csv "$path\$domain\$file"
 
-    #1/2022 - https://docs.microsoft.com/dotnet/api/system.directoryservices.activedirectoryrights?view=dotnet-plat-ext-6.0
+    #1/2022 - https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.activedirectoryrights?view=dotnet-plat-ext-6.0
     $privilegedAcls=@(
         "AccessSystemSecurity",
         "CreateChild",
@@ -1374,7 +1374,7 @@ $AdDaclsAdDacls = {
         "Self"
     )
 
-    #1/2022 - https://docs.microsoft.com/windows/win32/adschema/extended-rights
+    #1/2022 - https://docs.microsoft.com/en-us/windows/win32/adschema/extended-rights
     $privilegedExtensions=@(
         "Add GUID",
         "Change Domain Master",
@@ -1576,9 +1576,9 @@ foreach($computer in $computerInfo)
     "$domain,$file,computerinfo.json.14,$($doc.CsCaption)-OSE is a virtual machine ($($doc.CsHypervisorPresent)-$($doc.HyperVisorPresent))"
     "$domain,$file,computerinfo.json.15,$($doc.CsCaption)-Encrytion is set to $($doc.OsEncryptionLevel)"
     "$domain,$file,computerinfo.json.16,$($doc.CsCaption)-Device Guard is $($doc.DeviceGuardSmartStatus) [0=Off|1=Configured|2=Running]"
-    #https://docs.microsoft.com/dotnet/api/microsoft.powershell.commands.deviceguardsmartstatus?view=powershellsdk-1.1.0
+    #https://docs.microsoft.com/en-us/dotnet/api/microsoft.powershell.commands.deviceguardsmartstatus?view=powershellsdk-1.1.0
     "$domain,$file,computerinfo.json.17,$($doc.CsCaption)-Data Execution Prevention is available $($doc.OsDataExecutionPreventionAvailable) and policy is set to $($doc.OsDataExecutionPreventionSupportPolicy) [0=Off|1=On|2=OptIn|3=OptOut]"
-    #https://docs.microsoft.com/dotnet/api/microsoft.powershell.commands.dataexecutionpreventionsupportpolicy?view=powershellsdk-1.1.0
+    #https://docs.microsoft.com/en-us/dotnet/api/microsoft.powershell.commands.dataexecutionpreventionsupportpolicy?view=powershellsdk-1.1.0
     "$domain,$file,computerinfo.json.18,$($doc.CsCaption)-$(($doc.CsNetworkAdapters|measure).Count) network adapters identified"
     $doc.CsNetworkAdapters|%{"$domain,$file,computerinfo.json.19,$($doc.CsCaption)-$($_.ConnectionID) adapter ($($_.Description)) with IP Address $($_.IPAddresses) from DHCP ($($_.DHCPEnabled)) server $($_.DHCPServer)"}
 }
@@ -1645,8 +1645,8 @@ foreach($computer in $connections)
 {
     $doc=gc $computer.FullName|ConvertFrom-Json
     $comp=($doc|select -First 1|select -ExpandProperty CimSystemProperties).ServerName
-    #https://docs.microsoft.com/previous-versions/windows/desktop/nettcpipprov/msft-nettcpconnection#:~:text=The%20state%20of%20the%20TCP%20connection
-    #Non-dynamic listening ports - https://docs.microsoft.com/troubleshoot/windows-server/networking/default-dynamic-port-range-tcpip-chang
+    #https://docs.microsoft.com/en-us/previous-versions/windows/desktop/nettcpipprov/msft-nettcpconnection#:~:text=The%20state%20of%20the%20TCP%20connection
+    #Non-dynamic listening ports - https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/default-dynamic-port-range-tcpip-chang
     "$domain,$file,nettcpconnection.json.01,$comp-$(($doc|?{$_.State -eq 2 -and $_.LocalPort -notin @(1024..65535)}|group LocalPort|measure).Count) non-dynamic listening ports identified"
     #$doc|?{$_.State -eq 2 -and $_.LocalPort -notin @(1024..65535)}|group LocalPort|%{"$domain,$file,nettcpconnection.json.02,$comp-TCP Port $($_.Name) listening"}
     "$domain,$file,nettcpconnection.json.03,$comp-$(($doc|?{$_.State -eq 2 -and $_.LocalPort -notin @(49152..65535)}|group LocalPort|measure).Count) non-dynamic (2012+) listening ports identified"

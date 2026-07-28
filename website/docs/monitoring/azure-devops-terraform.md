@@ -17,7 +17,7 @@ This guide will walk you through setting up Maester in Azure DevOps and automate
 
 ## Why Azure DevOps & Terraform?
 
-Azure DevOps is a great way to automate the daily running of Maester tests to monitor your tenant. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface.
+Azure DevOps is a great way to automate the daily running of Maester tests to monitor your tenant. You can use Azure DevOps to run Maester tests on a schedule, such as daily, and view the results in the Azure DevOps interface. 
 
 Azure DevOps comes with a [free tier](https://azure.microsoft.com/pricing/details/devops/azure-devops-services/) that includes 1,800 minutes of Maester test runs per month (unlimited hours if you use a self-hosted agent).
 
@@ -25,30 +25,29 @@ Azure DevOps has native integration with Microsoft Entra including single sign o
 
 Terraform is an open-source Infrastructure as Code (IaC) tool used to configure and deploy infrastructure across platforms like AWS, GCP, and Azure. We've created a Terraform module to simplify and streamline the deployment of Maester to Azure DevOps.
 
+
 ### Pre-requisites
 
 - If this is your first time using Azure DevOps, you will first need to create an organization.
   - [Azure DevOps - Create an organization](https://learn.microsoft.com/azure/devops/organizations/accounts/create-organization)
     :::tip
-    To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form <https://aka.ms/azpipelines-parallelism-request> (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
+    To enable the free tier, to use a Microsoft-hosted agent, for Azure Pipelines you will need to submit this form https://aka.ms/azpipelines-parallelism-request (it can take a few days before you can use the pipeline.) In the interim you can use a [self-hosted agent](https://learn.microsoft.com/azure/devops/pipelines/agents/agents?view=azure-devops&tabs=yaml%2Cbrowser#self-hosted-agents) to get started.
     :::
 - You must have the **Global Administrator** role in your Entra tenant. This is so the necessary permissions can be consented to the Managed Identity.
 - You must have the permissions to create a temporary PAT (Personal Access Token) with Full Access in Azure DevOps to deploy the necessary Azure DevOps resources.
   - You can safely delete the PAT after deployment.
 - You must also have Terraform & Azure CLI installed on your machine:
-  - [Azure CLI installation](https://learn.microsoft.com/cli/azure/install-azure-cli)
+  - [Azure CLI installation](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
   - [Terraform installation](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 ## Terraform Module Deployment
-
 Now it's time to deploy the Maester Terraform module! 🔥
-First, add the temporary Personal Access Token (PAT) to your environment variables.
+First, add the temporary Personal Access Token (PAT) to your environment variables. 
 
 - `export AZDO_PERSONAL_ACCESS_TOKEN=<pat>`
 - `export AZDO_ORG_SERVICE_URL=https://dev.azure.com/<devOpsOrganizationName>`
 
-You can then easily use the Terraform module by creating a `main.tf` file with the following content.
-
+You can then easily use the Terraform module by creating a `main.tf` file with the following content. 
 - Make sure to update the required variables based on your environment information.
 
 ```terraform
@@ -63,11 +62,9 @@ module "maester" {
 ```
 
 Initialize the Configuration:
-
 - `terraform init -upgrade`
 
 Plan and Apply:
-
 - `terraform plan -out main.tfplan`
 - `terraform apply main.tfplan`
 
@@ -99,6 +96,7 @@ The Maester report can be downloaded and viewed by selecting the **Published** a
 The **Tests** tab shows a detailed view of each test, including the test name, duration, and status.
 
 ![Screenshot of Azure DevOps Pipeline Tests Page](assets/azure-devops-terraform-tests-page.png)
+
 
 ## Keeping your Maester tests up to date
 

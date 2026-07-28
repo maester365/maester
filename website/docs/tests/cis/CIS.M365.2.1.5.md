@@ -37,7 +37,8 @@ Safe Attachments for SharePoint, OneDrive, and Microsoft Teams protect organizat
 
 Impact associated with Safe Attachments is minimal, and equivalent to impact associated with anti-virus scanners in an environment.
 
-#### Remediation action
+
+#### Remediation action:
 
 To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 
@@ -54,7 +55,6 @@ To enable Safe Attachments for SharePoint, OneDrive, and Microsoft Teams:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
-
 ```powershell
 Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -AllowSafeDocsOpen $false
 ```
@@ -62,7 +62,7 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Safe Attachments for SharePoint, OneDrive, and Microsoft Teams](https://learn.microsoft.com/defender-office-365/safe-attachments-for-spo-odfb-teams-about)
+* [Safe Attachments for SharePoint, OneDrive, and Microsoft Teams](https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-for-spo-odfb-teams-about)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 88](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -78,5 +78,5 @@ Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -Allow
 
 ## Source
 
-* Pester test: `tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1`
-* PowerShell source: `powershell/public/cis/Test-MtCisSafeAttachmentsAtpPolicy.ps1`
+- Pester test: `tests/cis/Test-MtCisSafeAttachmentsAtpPolicy.Tests.ps1`
+- PowerShell source: `powershell/public/cis/Test-MtCisSafeAttachmentsAtpPolicy.ps1`

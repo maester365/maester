@@ -13,13 +13,12 @@ Your Maester monitoring workflow can be configured to send an email summary at t
 ## Prerequisites
 
 Before you can send email alerts using Exchange Online you need to grant the application access to a mailbox. There's two ways to assign the this permissions:
-
 - [Using RBAC for Applications](#using-rbac-for-applications) for scoped access **(Recommended)**
 - [Using Graph permission](#using-graph-permissions) in Entra and limiting access to mailbox using Application Access Policy
 
 ### Using RBAC for Applications
 
-[RBAC for Applications](https://learn.microsoft.com/exchange/permissions-exo/application-rbac) is the newest and most secure way to grant least privilege access to applications in Exchange Online. The example below will dynamically grant an app `Mail.Send` permission for the specific mailbox only.
+[RBAC for Applications](https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac) is the newest and most secure way to grant least privilege access to applications in Exchange Online. The example below will dynamically grant an app `Mail.Send` permission for the specific mailbox only.
 
 The application should **not** be assigned `Mail.Send` application permission in Entra, see warning below.
 
@@ -108,7 +107,6 @@ Send-MtMail $results -Recipient $recipients -UserId $userId -TestResultsUri $tes
 ```
 
 ### Azure DevOps
-
 **Link:** `$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)`
 
 ```powershell

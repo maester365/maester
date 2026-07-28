@@ -36,7 +36,7 @@ Microsoft Purview now exposes Copilot retention through two surfaces:
 
 The test passes when at least one enabled Microsoft Purview retention policy targets Microsoft Copilot interactions on **either** surface.
 
-#### Remediation action
+#### Remediation action:
 
 1. Open the [Microsoft Purview portal — Data Lifecycle Management — Policies](https://purview.microsoft.com/datalifecyclemanagement/policies).
 2. Click **+ New retention policy**.
@@ -53,9 +53,9 @@ The test passes when at least one enabled Microsoft Purview retention policy tar
 
 #### Related links
 
-- [Microsoft Learn — Retention policies for Microsoft 365 Copilot](https://learn.microsoft.com/purview/retention-policies-copilot)
-- [Microsoft Learn — Learn about retention](https://learn.microsoft.com/purview/retention)
-- [Microsoft Learn — Audit and eDiscovery for Microsoft 365 Copilot](https://learn.microsoft.com/purview/audit-copilot)
+- [Microsoft Learn — Retention policies for Microsoft 365 Copilot](https://learn.microsoft.com/en-us/purview/retention-policies-copilot)
+- [Microsoft Learn — Learn about retention](https://learn.microsoft.com/en-us/purview/retention)
+- [Microsoft Learn — Audit and eDiscovery for Microsoft 365 Copilot](https://learn.microsoft.com/en-us/purview/audit-copilot)
 
 ## Test Metadata
 

@@ -37,10 +37,9 @@ Blocking known malicious file types can help prevent malware-infested files from
 
 Blocking common malicious file types should not cause an impact in modern computing environments.
 
-#### Remediation action
+#### Remediation action:
 
 To enable the Common Attachment Types Filter:
-
 1. Navigate to [Microsoft 365 Defender](https://security.microsoft.com).
 2. Click to expand **Email & collaboration** select **Policies & rules**.
 3. On the Policies & rules page select **Threat policies**.
@@ -52,7 +51,6 @@ To enable the Common Attachment Types Filter:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following Exchange Online PowerShell command:
-
 ```powershell
 Set-MalwareFilterPolicy -Identity Default -EnableFileFilter $true
 ```
@@ -62,8 +60,8 @@ Set-MalwareFilterPolicy -Identity Default -EnableFileFilter $true
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Get-MalwareFilterPolicy](https://learn.microsoft.com/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
-* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
+* [Get-MalwareFilterPolicy](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-malwarefilterpolicy?view=exchange-ps)
+* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-policies-configure?view=o365-worldwide)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 78](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -79,5 +77,5 @@ Set-MalwareFilterPolicy -Identity Default -EnableFileFilter $true
 
 ## Source
 
-* Pester test: `tests/cis/Test-MtCisAttachmentFilter.Tests.ps1`
-* PowerShell source: `powershell/public/cis/Test-MtCisAttachmentFilter.ps1`
+- Pester test: `tests/cis/Test-MtCisAttachmentFilter.Tests.ps1`
+- PowerShell source: `powershell/public/cis/Test-MtCisAttachmentFilter.ps1`

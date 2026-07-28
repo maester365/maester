@@ -21,15 +21,15 @@ Here's a sneak peek at the some of the checks from ORCA that will be included in
 
 ## What is ORCA?
 
-[Cam Murray](https://github.com/cammurray) created the [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) PowerShell module to help align tenant configuration with Microsoft's recommended configurations. Many of these settings are available in the [configuration analyzer](https://learn.microsoft.com/defender-office-365/configuration-analyzer-for-security-policies) today, but ORCA provided these insights earlier and often in a more concise approach. Building these configuration items as tests in Maester provided an awesome way to build on the core ORCA module value and bring even more context into the configuration state of a tenant.
+[Cam Murray](https://github.com/cammurray) created the [Office 365 Recommended Configuration Analyzer (ORCA)](https://github.com/cammurray/orca) PowerShell module to help align tenant configuration with Microsoft's recommended configurations. Many of these settings are available in the [configuration analyzer](https://learn.microsoft.com/en-us/defender-office-365/configuration-analyzer-for-security-policies) today, but ORCA provided these insights earlier and often in a more concise approach. Building these configuration items as tests in Maester provided an awesome way to build on the core ORCA module value and bring even more context into the configuration state of a tenant.
 
 ## How to build?
 
-The ORCA module utilizes user defined types with [enumerations](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_enum) and [classes](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_classes) heavily. This is the best approach for an individual module and helps produce well-typed and structured code bases. It also can be challenging when trying to merge code bases dynamically as those types within the module need to exist outside the module.
+The ORCA module utilizes user defined types with [enumerations](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_enum) and [classes](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_classes) heavily. This is the best approach for an individual module and helps produce well-typed and structured code bases. It also can be challenging when trying to merge code bases dynamically as those types within the module need to exist outside the module.
 
 > [Git Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) have their own issues too so definitely avoid those unless the challenges are worth it.
 
-To handle this, PowerShell has this awesome feature called the [abstract syntax tree (AST)](https://learn.microsoft.com/dotnet/api/system.management.automation.language.ast). This feature allows you to parse PowerShell files and interface with them as structured objects. Using the AST the Maester team was able to build a [script](https://github.com/maester365/maester/blob/main/build/orca/Update-OrcaTests.ps1) to parse the ORCA code base and dynamically build the necessary functions, tests, and report details for incorporating with the Maester module.
+To handle this, PowerShell has this awesome feature called the [abstract syntax tree (AST)](https://learn.microsoft.com/en-us/dotnet/api/system.management.automation.language.ast). This feature allows you to parse PowerShell files and interface with them as structured objects. Using the AST the Maester team was able to build a [script](https://github.com/maester365/maester/blob/main/build/orca/Update-OrcaTests.ps1) to parse the ORCA code base and dynamically build the necessary functions, tests, and report details for incorporating with the Maester module.
 
 > Similarly and even more elegantly the EIDSCA team was able to incorporate their module as [well](https://github.com/maester365/maester/blob/main/build/eidsca/Update-EidscaTests.ps1).
 
@@ -48,20 +48,18 @@ Located in `/build/orca/Update-OrcaTests.ps1` is the build mechanism for each te
     - Get-AnyPolicyState.ps1
 3. Each ORCA check located in `/build/orca/orca/Checks/` are processed and compiled into Maester tests like so:
     1. A `$content` variable is prepared and contains the following properties:
-
         | Property | Purpose |
         | ----------- | --- |
-        | file | Name of the check script |
-        | content | Content of the check script |
-        | name | Name of the check |
-        | pass | Text requirement of passing |
-        | fail | Text for remediation |
-        | func | Name of the test function |
-        | control | Check control number |
-        | area | Check category/area |
+        | file        | Name of the check script  |
+        | content     | Content of the check script |
+        | name        | Name of the check |
+        | pass        | Text requirement of passing |
+        | fail        | Text for remediation |
+        | func        | Name of the test function |
+        | control     | Check control number |
+        | area        | Check category/area |
         | description | Check description |
-        | links | Check related links |
-
+        | links       | Check related links |
     2. Each property listed above are populated using regular expressions on the raw value of the ORCA check content.
     3. `$testId` is derived from `$content.func` to fit the Maester test id format.
         > If it is not possible to derive it using the expected ORCA test function name format (ORCA.n or ORCA.n.n), where the last number is optional and can be any number of digits, it will skip processing this test. A manual fixed id must be added to `$mapping = @{}` at line ~187
@@ -135,9 +133,9 @@ With this build script, the Maester module can now dynamically build the necessa
 ## Acknowledgements
 
 Huge shoutout to the Maester team for all of their awesome contributions in this substantial addition, including:
-- [Thomas S. Schmidt](https://github.com/tdcthosc) @ [TDC Erhverv Security Insights](https://tdc.dk/securityinsights/)
-- [Cameron Moore](https://github.com/moorereason)
-- [Cam Murray](https://github.com/cammurray)
+* [Thomas S. Schmidt](https://github.com/tdcthosc) @ [TDC Erhverv Security Insights](https://tdc.dk/securityinsights/)
+* [Cameron Moore](https://github.com/moorereason)
+* [Cam Murray](https://github.com/cammurray)
 
 ## Contributors
 

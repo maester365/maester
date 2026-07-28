@@ -25,7 +25,8 @@ keywords:
 
 Delicensing Resiliency SHOULD be enabled to maintain access to mailboxes when licenses are removed.
 
-#### Remediation action
+
+#### Remediation action:
 
 Enable Delicensing Resiliency by running the following PowerShell command in Exchange Online:
 
@@ -49,8 +50,8 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 
 #### Related links
 
-* [Delayed Delicensing in Exchange Online](https://learn.microsoft.com/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)
-* [Set-OrganizationConfig](https://docs.microsoft.com/powershell/module/exchange/set-organizationconfig)
+* [Delayed Delicensing in Exchange Online](https://learn.microsoft.com/en-us/Exchange/recipients-in-exchange-online/manage-user-mailboxes/exchange-online-delicensing-resiliency)
+* [Set-OrganizationConfig](https://docs.microsoft.com/en-us/powershell/module/exchange/set-organizationconfig)
 
 ## Test Metadata
 
@@ -65,5 +66,5 @@ Set-OrganizationConfig -EndUserMailNotificationForDelayedDelicensingEnabled:$tru
 
 ## Source
 
-* Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
-* PowerShell source: `powershell/public/maester/exchange/Test-MtExoDelicensingResiliency.ps1`
+- Pester test: `tests/Maester/Exchange/Test-ExchangeSetting.Tests.ps1`
+- PowerShell source: `powershell/public/maester/exchange/Test-MtExoDelicensingResiliency.ps1`

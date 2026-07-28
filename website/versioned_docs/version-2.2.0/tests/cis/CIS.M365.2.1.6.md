@@ -37,7 +37,7 @@ A blocked account is a good indication that the account in question has been bre
 
 Notification of users that have been blocked should not cause an impact to the user.
 
-#### Remediation action
+#### Remediation action:
 
 To set the Exchange Online Spam Policies:
 
@@ -54,7 +54,6 @@ To set the Exchange Online Spam Policies:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following PowerShell command:
-
 ```powershell
 $BccEmailAddress = @("<INSERT-EMAIL>")
 $NotifyEmailAddress = @("<INSERT-EMAIL>")
@@ -66,7 +65,7 @@ Set-HostedOutboundSpamFilterPolicy -Identity Default -BccSuspiciousOutboundAddit
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Outbound spam protection for cloud mailboxes](https://learn.microsoft.com/defender-office-365/outbound-spam-protection-about)
+* [Outbound spam protection for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/outbound-spam-protection-about)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 91](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -82,5 +81,5 @@ Set-HostedOutboundSpamFilterPolicy -Identity Default -BccSuspiciousOutboundAddit
 
 ## Source
 
-* Pester test: `tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1`
-* PowerShell source: `powershell/public/cis/Test-MtCisOutboundSpamFilterPolicy.ps1`
+- Pester test: `tests/cis/Test-MtCisOutboundSpamFilterPolicy.Tests.ps1`
+- PowerShell source: `powershell/public/cis/Test-MtCisOutboundSpamFilterPolicy.ps1`

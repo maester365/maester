@@ -36,13 +36,12 @@ The test passes when **all** of the following are true:
 - At least one **label** has the `File` scope (`Get-Label` where `ContentType` includes `File`).
 - That file-scoped label is **included in a published label policy** (a file-scoped label that exists but isn't in any published policy does not count as compliant).
 
-#### Remediation action
+#### Remediation action:
 
 1. Open the [Microsoft Purview portal — Information Protection — Labels](https://purview.microsoft.com/informationprotection/labels).
 2. Create or edit a sensitivity label and ensure **Files** is selected under "Define the scope for this label".
 3. Open **Label policies** and publish the label to the relevant users or groups.
 4. Verify with PowerShell after a few minutes:
-
    ```powershell
    Connect-IPPSSession
    Get-LabelPolicy | Where-Object { $_.Mode -eq 'Enforce' }
@@ -51,9 +50,9 @@ The test passes when **all** of the following are true:
 
 #### Related links
 
-- [Microsoft Learn — Sensitivity labels overview](https://learn.microsoft.com/purview/sensitivity-labels)
-- [Microsoft Learn — Microsoft 365 Copilot data protection and sensitivity labels](https://learn.microsoft.com/copilot/microsoft-365/microsoft-365-copilot-privacy)
-- [Microsoft Learn — How Copilot inherits sensitivity labels](https://learn.microsoft.com/purview/sensitivity-labels-coauthoring)
+- [Microsoft Learn — Sensitivity labels overview](https://learn.microsoft.com/en-us/purview/sensitivity-labels)
+- [Microsoft Learn — Microsoft 365 Copilot data protection and sensitivity labels](https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy)
+- [Microsoft Learn — How Copilot inherits sensitivity labels](https://learn.microsoft.com/en-us/purview/sensitivity-labels-coauthoring)
 
 ## Test Metadata
 

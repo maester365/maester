@@ -35,7 +35,7 @@ Key settings this test evaluates:
 
 The test passes if **at least one LAPS policy** meets **all** of the criteria above (Entra backup AND complexity is `_4` or `_8` AND length >= 14 AND a defined post-auth action). The Intune Settings Catalog only exposes `_1`..`_4` plus the newer `_8` ("improved 4-class") choice for `PasswordComplexity`, so `_4` and `_8` are the only values that satisfy the 4-character-class requirement. A policy that only sets Backup Directory is no longer sufficient.
 
-#### Remediation action
+#### Remediation action:
 
 1. Navigate to [Microsoft Intune admin center](https://intune.microsoft.com).
 2. Go to **Endpoint security** > **Account protection**.
@@ -54,8 +54,8 @@ The test passes if **at least one LAPS policy** meets **all** of the criteria ab
 #### Related links
 
 - [Microsoft Intune - Endpoint Security Account Protection](https://intune.microsoft.com/#view/Microsoft_Intune_Workflows/SecurityManagementMenu/~/accountprotection)
-- [Microsoft Learn - Windows LAPS with Microsoft Intune](https://learn.microsoft.com/mem/intune/protect/windows-laps-overview)
-- [Microsoft Learn - Windows LAPS CSP reference](https://learn.microsoft.com/windows/client-management/mdm/laps-csp)
+- [Microsoft Learn - Windows LAPS with Microsoft Intune](https://learn.microsoft.com/en-us/mem/intune/protect/windows-laps-overview)
+- [Microsoft Learn - Windows LAPS CSP reference](https://learn.microsoft.com/en-us/windows/client-management/mdm/laps-csp)
 - [CIS Benchmark - Ensure LAPS is configured for local admin accounts](https://www.cisecurity.org/benchmark/microsoft_intune_for_windows)
 
 ## Test Metadata

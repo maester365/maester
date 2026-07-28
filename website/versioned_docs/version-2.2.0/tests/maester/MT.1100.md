@@ -50,7 +50,7 @@ New-AzRoleAssignment -ObjectId $UserId -RoleDefinitionName 'Intune Diagnostic Se
 
 #### Remediation action
 
-* Check the following Microsoft learn article to [Send Intune log data to Azure Storage, Event Hubs, or Log Analytics](https://learn.microsoft.com/intune/intune-service/fundamentals/review-logs-using-azure-monitor).
+* Check the following Microsoft learn article to [Send Intune log data to Azure Storage, Event Hubs, or Log Analytics](https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor).
 
 * Existing diagnostic settings can be viewed within the [Intune Diagnostics settings blade](https://intune.microsoft.com/#view/Microsoft_Intune_DeviceSettings/TenantAdminMenu/~/diagnostics).
 
@@ -67,5 +67,5 @@ New-AzRoleAssignment -ObjectId $UserId -RoleDefinitionName 'Intune Diagnostic Se
 
 ## Source
 
-* Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
-* PowerShell source: `powershell/public/maester/intune/Test-MtIntuneDiagnosticSettings.ps1`
+- Pester test: `tests/Maester/Intune/Test-MtIntunePlatform.Tests.ps1`
+- PowerShell source: `powershell/public/maester/intune/Test-MtIntuneDiagnosticSettings.ps1`

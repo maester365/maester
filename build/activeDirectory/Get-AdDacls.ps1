@@ -72,7 +72,7 @@ foreach ($DnBase in $DnBases)
     $ObjSearcher.PageSize = 200
     $objSearcher.SearchRoot = "LDAP://$DnBase"
     $ObjSearcher.Filter = "(|(objectClass=domain)(objectCategory=organizationalunit)(objectCategory=groupPolicyContainer)(samAccountType=805306368)(samAccountType=805306369)(samaccounttype=268435456)(samaccounttype=268435457)(samaccounttype=536870912)(samaccounttype=536870913))"
-    # https://msdn.microsoft.com/library/system.directoryservices.securitymasks(v=vs.110).aspx
+    # https://msdn.microsoft.com/en-us/library/system.directoryservices.securitymasks(v=vs.110).aspx
     $ObjSearcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Sacl
     $ObjSearcher.PropertiesToLoad.AddRange(("displayname","distinguishedname","name","ntsecuritydescriptor","objectclass","objectsid"))
     $ObjSearcher.SearchScope = "Subtree"
@@ -93,7 +93,7 @@ foreach ($DnBase in $DnBases)
     $ObjSearcher.PageSize = 200
     $objSearcher.SearchRoot = "LDAP://$DnBase"
     $ObjSearcher.Filter = "(objectClass=container)"
-    # https://msdn.microsoft.com/library/system.directoryservices.securitymasks(v=vs.110).aspx
+    # https://msdn.microsoft.com/en-us/library/system.directoryservices.securitymasks(v=vs.110).aspx
     $ObjSearcher.SecurityMasks = $ObjSearcher.SecurityMasks = [System.DirectoryServices.SecurityMasks]::Dacl -bor [System.DirectoryServices.SecurityMasks]::Group -bor [System.DirectoryServices.SecurityMasks]::Owner -bor [System.DirectoryServices.SecurityMasks]::Sacl
     $ObjSearcher.PropertiesToLoad.AddRange(("distinguishedname","name","ntsecuritydescriptor","objectclass"))
     $ObjSearcher.SearchScope = "OneLevel"

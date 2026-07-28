@@ -39,10 +39,9 @@ This setting alerts administrators that an internal user sent a message that con
 
 Notification of account with potential issues should not have an impact on the user
 
-#### Remediation action
+#### Remediation action:
 
 To enable notifications for internal users sending malware:
-
 1. Navigate to Microsoft 365 Defender [https://security.microsoft.com](https://security.microsoft.com).
 2. Click to expand **E-mail & Collaboration** select **Policies & rules**.
 3. On the Policies & rules page select **Threat policies**.
@@ -55,7 +54,6 @@ To enable notifications for internal users sending malware:
 
 1. Connect to Exchange Online using `Connect-ExchangeOnline`.
 2. Run the following command:
-
 ```powershell
 Set-MalwareFilterPolicy -Identity '{Identity Name}' -EnableInternalSenderAdminNotifications $True -InternalSenderAdminAddress {admin@domain1.com}
 ```
@@ -65,8 +63,8 @@ Set-MalwareFilterPolicy -Identity '{Identity Name}' -EnableInternalSenderAdminNo
 #### Related links
 
 * [Microsoft 365 Defender](https://security.microsoft.com)
-* [Anti-malware protection for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-protection-about)
-* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/defender-office-365/anti-malware-policies-configure)
+* [Anti-malware protection for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-protection-about)
+* [Configure anti-malware policies for cloud mailboxes](https://learn.microsoft.com/en-us/defender-office-365/anti-malware-policies-configure)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 81](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -82,5 +80,5 @@ Set-MalwareFilterPolicy -Identity '{Identity Name}' -EnableInternalSenderAdminNo
 
 ## Source
 
-* Pester test: `tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1`
-* PowerShell source: `powershell/public/cis/Test-MtCisInternalMalwareNotification.ps1`
+- Pester test: `tests/cis/Test-MtCisInternalMalwareNotification.Tests.ps1`
+- PowerShell source: `powershell/public/cis/Test-MtCisInternalMalwareNotification.ps1`

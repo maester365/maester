@@ -63,7 +63,7 @@ Set-SPOTenant -DefaultLinkPermission View
 
 ## Related Links
 
-* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/sharepoint/turn-external-sharing-on-or-off#file-and-folder-links)
+* [Manage sharing settings for SharePoint and OneDrive in Microsoft 365](https://learn.microsoft.com/en-us/sharepoint/turn-external-sharing-on-or-off#file-and-folder-links)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 391](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata
@@ -79,5 +79,5 @@ Set-SPOTenant -DefaultLinkPermission View
 
 ## Source
 
-* Pester test: `tests/cis/Test-MtCisSpoDefaultSharingLinkPermission.Tests.ps1`
-* PowerShell source: `powershell/public/cis/Test-MtCisSpoDefaultSharingLinkPermission.ps1`
+- Pester test: `tests/cis/Test-MtCisSpoDefaultSharingLinkPermission.Tests.ps1`
+- PowerShell source: `powershell/public/cis/Test-MtCisSpoDefaultSharingLinkPermission.ps1`

@@ -31,20 +31,17 @@ If you can't remediate an affected object before enforcement, Microsoft Entra ID
 
 Enabling this feature flag reduces the protection provided by hard match security enforcement for the entire tenant, not just the object you're remediating. It should only be used as a temporary bypass for a validated migration, recovery, or consolidation scenario, and disabled again as soon as remediation is complete. Leaving it enabled indefinitely re-opens the risk of an on-premises object taking over the wrong, potentially privileged, cloud account.
 
-#### Remediation action
+#### Remediation action:
 
 To check and disable the temporary bypass using Graph PowerShell:
 
 1. Connect to Graph using **Connect-MgGraph -Scopes "OnPremDirectorySynchronization.ReadWrite.All"**.
 2. Run the following PowerShell command to review the current value:
-
 ```powershell
 $onPremSync = Get-MgDirectoryOnPremiseSynchronization
 $onPremSync.Features | fl
 ```
-
 3. If `AllowOnPremUpdateOfOnPremisesObjectIdentifierEnabled` is `$true` and remediation is complete, disable it:
-
 ```powershell
 $onPremSync = Get-MgDirectoryOnPremiseSynchronization
 $onPremSync.Features.AllowOnPremUpdateOfOnPremisesObjectIdentifierEnabled = $false
@@ -55,8 +52,8 @@ Update-MgDirectoryOnPremiseSynchronization `
 
 #### Related links
 
-* [Configure Microsoft Entra Connect for an existing tenant - Temporarily allow onPremisesObjectIdentifier updates | Microsoft Learn](https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-install-existing-tenant#temporarily-allow-onpremisesobjectidentifier-updates)
-* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization)
+* [Configure Microsoft Entra Connect for an existing tenant - Temporarily allow onPremisesObjectIdentifier updates | Microsoft Learn](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-install-existing-tenant#temporarily-allow-onpremisesobjectidentifier-updates)
+* [Update-MgDirectoryOnPremiseSynchronization | Microsoft Learn - Graph PowerShell v1.0](https://learn.microsoft.com/en-us/powershell/module/microsoft.graph.identity.directorymanagement/update-mgdirectoryonpremisesynchronization)
 
 ## Test Metadata
 
@@ -71,5 +68,5 @@ Update-MgDirectoryOnPremiseSynchronization `
 
 ## Source
 
-* Pester test: `tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1`
-* PowerShell source: `powershell/public/maester/entra/Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked.ps1`
+- Pester test: `tests/Maester/Entra/Test-MtOnPremisesSynchronization.Tests.ps1`
+- PowerShell source: `powershell/public/maester/entra/Test-MtEntraIDConnectSyncOnPremisesObjectIdentifierUpdatesBlocked.ps1`
