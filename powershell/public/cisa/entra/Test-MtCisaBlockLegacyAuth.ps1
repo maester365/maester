@@ -54,7 +54,7 @@
     if ($testResult) {
         $testResultMarkdown = "Your tenant has one or more policies that block legacy authentication:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant lacks sufficient conditional access policies that block legacy authentication for all cloud apps."
+        $testResultMarkdown = "Your tenant lacks sufficient Conditional Access policies that block legacy authentication for all cloud apps."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $blockPolicies
 

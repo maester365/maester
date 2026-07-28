@@ -1,7 +1,7 @@
 ﻿function Test-MtCisaPrivilegedPhishResistant {
     <#
     .SYNOPSIS
-    Checks if Conditional Access Policy requiring phishing resistant authentication methods for privileged roles is enabled
+    Checks if a Conditional Access policy requiring phishing resistant authentication methods for privileged roles is enabled
 
     .DESCRIPTION
     Phishing-resistant MFA SHALL be required for highly privileged roles.
@@ -44,7 +44,7 @@
     if ($testResult) {
         $testResultMarkdown = "Well done. Your tenant has one or more policies that require phishing resistant MFA for highly privileged users:`n`n%TestResult%"
     } else {
-        $testResultMarkdown = "Your tenant does not have any conditional access policies that require phishing resistant MFA for highly privileged users."
+        $testResultMarkdown = "Your tenant does not have any Conditional Access policies that require phishing resistant MFA for highly privileged users."
     }
     Add-MtTestResultDetail -Result $testResultMarkdown -GraphObjectType ConditionalAccess -GraphObjects $policies
 

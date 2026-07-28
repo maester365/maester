@@ -1,4 +1,4 @@
-Checks if any conditional access policy explicitly includes Azure DevOps
+Checks if any Conditional Access policy explicitly includes Azure DevOps
 
 ## Description
 

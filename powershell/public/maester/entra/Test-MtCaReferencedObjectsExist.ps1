@@ -1,17 +1,17 @@
 function Test-MtCaReferencedObjectsExist {
 <#
     .Synopsis
-    Checks if any conditional access policies reference non-existent users, groups, or roles.
+    Checks if any Conditional Access policies reference non-existent users, groups, or roles.
 
     .Description
-    This test checks if all users, groups, and roles referenced in conditional access policies still exist in the tenant.
-    Non-existent or deleted objects in conditional access policies can lead to unexpected behavior and security gaps.
+    This test checks if all users, groups, and roles referenced in Conditional Access policies still exist in the tenant.
+    Non-existent or deleted objects in Conditional Access policies can lead to unexpected behavior and security gaps.
     When a user, group, or role is deleted but still referenced in a policy, it may cause the policy to not apply as expected.
 
     The test examines:
-    - Include/exclude users in conditional access policies
-    - Include/exclude groups in conditional access policies
-    - Include/exclude roles in conditional access policies (role definition IDs)
+    - Include/exclude users in Conditional Access policies
+    - Include/exclude groups in Conditional Access policies
+    - Include/exclude roles in Conditional Access policies (role definition IDs)
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-users-groups
@@ -82,7 +82,7 @@ function Test-MtCaReferencedObjectsExist {
                     $GraphErrorResult = $null
                     $role = $_
                     Write-Verbose "Checking role: $role"
-                    # Check roleManagement/directory/roleDefinitions as conditional access policies reference role definition IDs
+                    # Check roleManagement/directory/roleDefinitions as Conditional Access policies reference role definition IDs
                     Invoke-MtGraphRequest -RelativeUri "roleManagement/directory/roleDefinitions/$role" -ApiVersion beta -ErrorVariable GraphErrorResult -ErrorAction SilentlyContinue | Out-Null
                 } catch {
                     Write-Verbose "Error checking role $role : $($GraphErrorResult.Message)"

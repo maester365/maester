@@ -11,7 +11,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import yaml from "js-yaml";
+import { load as loadYamlDocument } from "js-yaml";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const websiteRoot = join(scriptDir, "..");
@@ -27,7 +27,7 @@ const noreplyPattern = /^(?:\d+\+)?([A-Za-z0-9-]+)@users\.noreply\.github\.com$/
 
 function loadYaml(path) {
   if (!existsSync(path)) return {};
-  return yaml.load(readFileSync(path, "utf8")) ?? {};
+  return loadYamlDocument(readFileSync(path, "utf8")) ?? {};
 }
 
 function slugify(value) {

@@ -1,7 +1,7 @@
 function Test-MtCaAgentRiskBlockPolicy {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy that blocks agent identities based on their risk level.
+    Checks if the tenant has at least one Conditional Access policy that blocks agent identities based on their risk level.
 
     .Description
     Organizations should block agent identities that are detected as high risk by Microsoft Entra ID Protection to helping prevent potentially compromised AI agents from accessing your organization's resources.
@@ -36,9 +36,9 @@ function Test-MtCaAgentRiskBlockPolicy {
         }
 
         if ( $result ) {
-            $testResult = "Well done! The following conditional access policies sufficiently blockes high risk agent identities:`n`n%TestResult%"
+            $testResult = "Well done! The following Conditional Access policies sufficiently block high-risk agent identities:`n`n%TestResult%"
         } else {
-            $testResult = 'No conditional access policy found that targets high risk agent identities.'
+            $testResult = 'No Conditional Access policy found that targets high risk agent identities.'
         }
 
         Add-MtTestResultDetail -Result $testResult -GraphObjects $policiesResult -GraphObjectType ConditionalAccess

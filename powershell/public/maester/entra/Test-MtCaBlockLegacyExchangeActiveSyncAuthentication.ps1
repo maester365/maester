@@ -1,11 +1,11 @@
 ﻿function Test-MtCaBlockLegacyExchangeActiveSyncAuthentication {
     <#
     .Synopsis
-    Checks if the tenant has at least one conditional access policy that blocks legacy authentication for Exchange Active Sync authentication.
+    Checks if the tenant has at least one Conditional Access policy that blocks legacy authentication for Exchange Active Sync authentication.
 
     .Description
     Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
-    conditional access policy that blocks legacy authentication.
+    Conditional Access policy that blocks legacy authentication.
 
     Learn more:
     https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy
@@ -30,10 +30,10 @@
 
         $testDescription = '
 Legacy authentication is an unsecure method to authenticate. This function checks if the tenant has at least one
-conditional access policy that blocks legacy authentication.
+Conditional Access policy that blocks legacy authentication.
 
 See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/entra/identity/conditional-access/howto-conditional-access-policy-block-legacy)'
-        $testResult = "These conditional access policies block legacy authentication for Exchange Active Sync:`n`n"
+        $testResult = "These Conditional Access policies block legacy authentication for Exchange Active Sync:`n`n"
 
 
         $result = $false
@@ -54,7 +54,7 @@ See [Block legacy authentication - Microsoft Learn](https://learn.microsoft.com/
         }
 
         if ($result -eq $false) {
-            $testResult = 'There was no conditional access policy blocking legacy authentication for Exchange Active Sync.'
+            $testResult = 'There was no Conditional Access policy blocking legacy authentication for Exchange Active Sync.'
         }
 
         Add-MtTestResultDetail -Description $testDescription -Result $testResult
