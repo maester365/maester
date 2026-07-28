@@ -53,9 +53,9 @@ Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true
 
 * [Microsoft 365 Purview](https://purview.microsoft.com)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Page 149](https://www.cisecurity.org/benchmark/microsoft_365)
-* [Turn auditing on or off](https://learn.microsoft.com/en-us/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal)
-* [Set-AdminAuditLogConfig](https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/set-adminauditlogconfig?view=exchange-ps)
-* [Verify the auditing status for your organization](https://learn.microsoft.com/en-us/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal#verify-the-auditing-status-for-your-organization)
+* [Turn auditing on or off](https://learn.microsoft.com/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal)
+* [Set-AdminAuditLogConfig](https://learn.microsoft.com/powershell/module/exchangepowershell/set-adminauditlogconfig?view=exchange-ps)
+* [Verify the auditing status for your organization](https://learn.microsoft.com/purview/audit-log-enable-disable?view=o365-worldwide&tabs=microsoft-purview-portal#verify-the-auditing-status-for-your-organization)
 
 ## Test Metadata
 

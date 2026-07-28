@@ -62,7 +62,7 @@ Invoke-MgGraphRequest -Method PATCH -Uri "https://graph.microsoft.com/v1.0/polic
 #### Related links
 
 * [Microsoft 365 Entra admin center - Device settings](https://entra.microsoft.com/#view/Microsoft_AAD_Devices/DevicesMenuBlade/~/DeviceSettings/menuId/Overview)
-* [Manage devices in Microsoft Entra ID using the Microsoft Entra admin center](https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities#configure-device-settings)
+* [Manage devices in Microsoft Entra ID using the Microsoft Entra admin center](https://learn.microsoft.com/entra/identity/devices/manage-device-identities#configure-device-settings)
 * [CIS Microsoft 365 Foundations Benchmark v6.0.1 - Control 5.1.4.6](https://www.cisecurity.org/benchmark/microsoft_365)
 
 ## Test Metadata

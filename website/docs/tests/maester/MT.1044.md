@@ -17,7 +17,7 @@ keywords:
 
 # MT.1044 - Ensure modern authentication for Exchange Online is enabled
 
-<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with <a href="/contributors/samerde">Sam Erde</a></span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
+<div className="test-byline"><div className="test-byline-avatars"><a className="test-byline-avatar test-byline-avatar--author" href="/contributors/bastienperez" title="Bastien Perez · Original author"><img src="https://github.com/bastienperez.png" alt="Bastien Perez" /></a><a className="test-byline-avatar" href="/contributors/samerde" title="Sam Erde · Co-contributor"><img src="https://github.com/SamErde.png" alt="Sam Erde" /></a><a className="test-byline-avatar" href="/contributors/buckeyeguyjflo" title="John Flores · Co-contributor"><img src="https://github.com/BuckeyeGuyJFlo.png" alt="John Flores" /></a></div><div className="test-byline-meta"><span className="test-byline-text">Contributed by <a href="/contributors/bastienperez">Bastien Perez</a> with 2 co-contributors</span><a className="test-byline-link" href="/contributors">All contributors →</a></div></div>
 
 ## Overview
 
@@ -25,28 +25,32 @@ Modern authentication for Exchange Online MUST be enabled
 
 Rationale: Modern authentication enables enhanced security features like multifactor authentication (MFA), certificate-based authentication (CBA), and third-party SAML identity providers. Without modern authentication, users are more vulnerable to password-based attacks.
 
-#### Remediation action:
+#### Remediation action
 
 1. Connect to Exchange Online:
+
 ```powershell
 Connect-ExchangeOnline
 ```
 
-2. Enable modern authentication:
+1. Enable modern authentication:
+
 ```powershell
 Set-OrganizationConfig -OAuth2ClientProfileEnabled $true
 ```
 
-3. Verify the setting:
+1. Verify the setting:
+
 ```powershell
 (Get-OrganizationConfig).OAuth2ClientProfileEnabled
 ```
+
 The result should be `True`.
 
 #### Related links
 
-* [Enable or disable modern authentication in Exchange Online](https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/enable-or-disable-modern-authentication-in-exchange-online)
-* [Modern authentication overview](https://learn.microsoft.com/en-us/microsoft-365/enterprise/modern-auth-for-office-2013-and-2016)
+* [Enable or disable modern authentication in Exchange Online](https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/enable-or-disable-modern-authentication-in-exchange-online)
+* [Modern authentication overview](https://learn.microsoft.com/microsoft-365/enterprise/modern-auth-for-office-2013-and-2016)
 * [Microsoft Secure Score - Enable modern authentication](https://security.microsoft.com/securescore)
 
 ## Test Metadata

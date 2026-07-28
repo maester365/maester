@@ -1,6 +1,6 @@
 ---
 title: "CISA.MS.AAD.2.1 - Users detected as high risk SHALL be blocked."
-description: "Users detected as high risk SHALL be blocked. Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. Remediation action: Create a conditional access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following poli…"
+description: "Users detected as high risk SHALL be blocked. Rationale: Blocking high-risk users may prevent compromised accounts from accessing the tenant. Remediation action: Create a Conditional Access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following poli…"
 slug: /tests/CISA.MS.AAD.2.1
 className: generated-test-doc
 sidebar_class_name: hidden
@@ -30,7 +30,7 @@ Rationale: Blocking high-risk users may prevent compromised accounts from access
 
 #### Remediation action:
 
-Create a conditional access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following policy settings in the new conditional access policy as per the values below:
+Create a Conditional Access policy blocking users categorized as high risk by Microsoft Entra ID Protection. Configure the following policy settings in the new Conditional Access policy as per the values below:
 
 * Users > Include > **All users**
 * Target resources > Cloud apps > **All cloud apps**
